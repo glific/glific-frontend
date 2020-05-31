@@ -9,5 +9,3 @@ export const TagPage: React.SFC<TagPageProps> = () => {
     </div>
   );
 };
-
-export default TagPage;

@@ -1,0 +1,56 @@
+.Navigationbar {
+  height: 56px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #140a6d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 90;
+  color: aliceblue;
+}
+
+.Navigationbar nav {
+  height: 100%;
+}
+
+.NavigationItems {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  height: 100%;
+}
+
+.NavigationItem {
+  margin: 10px 0;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 6px;
+}
+
+.NavigationItem a {
+  color: aliceblue;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.NavigationItem a:hover,
+.NavigationItem a:active,
+.NavigationItem a.active {
+  color: #e3e30a;
+}
+
+.Content {
+  margin-top: 72px;
+  margin-left: 10px;
+}
