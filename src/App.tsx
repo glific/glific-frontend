@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
 import { TagPage } from './components/pages/TagPage/TagPage';
+import { Tag } from './containers/Tag/Tag';
 import { DashboardPage } from './components/pages/DashboardPage/DashboardPage';
 import styles from './App.module.css';
 
@@ -27,6 +28,8 @@ const App = () => {
       <div className={styles.Content}>
         <Switch>
           <Route path="/tag" exact component={TagPage} />
+          <Route path="/tag/add" exact component={Tag} />
+          <Route path="/tag/:id/edit" exact component={Tag} />
           <Route path="/" exact component={DashboardPage} />
         </Switch>
       </div>
