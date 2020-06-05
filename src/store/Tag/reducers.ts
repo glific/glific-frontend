@@ -32,7 +32,7 @@ const addTag = (state: TagState, action: any) => {
   return updateObject(state, { tags: currentTags });
 };
 
-const fetchTags = (state: TagState, action: any) => {
+const fetchTags = (state: TagState) => {
   return state;
 }
 
@@ -53,7 +53,7 @@ export function TagReducer(
 ): TagState {
   switch (action.type) {
     case FETCH_TAGS:
-      return fetchTags(state, action);
+      return fetchTags(state);
     case ADD_TAG:
       return addTag(state, action);
     case EDIT_TAG:

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
@@ -10,13 +10,23 @@ export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
+
   const tagList = useSelector((state: AppState) => {
     return state.tag.tags;
   });
+
   const dispatch = useDispatch();
+  const onFetchTags = useCallback(() => {
+    dispatch(tagActions.fetchTags());
+  }, [dispatch]);
+
   const onTagDelete = (tagId: number) => {
     dispatch(tagActions.deleteTag(tagId));
   };
+
+  useEffect(() => {
+    onFetchTags();
+  }, [onFetchTags]);
 
   if (newTag) {
     return <Redirect to="/tag/add" />;

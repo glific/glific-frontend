@@ -1,9 +1,8 @@
 import { Tag, FETCH_TAGS, ADD_TAG, EDIT_TAG, DELETE_TAG } from "./types";
 
-export const fetchTags = (tags: Tag) => {
+export const fetchTags = () => {
   return {
     type: FETCH_TAGS,
-    payload: tags,
   };
 };
 
