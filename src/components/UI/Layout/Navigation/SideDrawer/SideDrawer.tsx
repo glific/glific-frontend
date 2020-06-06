@@ -20,9 +20,6 @@ const drawerWidth = 200;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
     drawer: {
       [theme.breakpoints.up('sm')]: {
         width: drawerWidth,

@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
-    TypographyStyle: {
+    typographyStyle: {
       flex: 1,
     },
   })
@@ -51,7 +51,7 @@ export const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography className={classes.TypographyStyle} variant="h6" noWrap>
+        <Typography className={classes.typographyStyle} variant="h6" noWrap>
           Glific
         </Typography>
         <AccountCircleSharpIcon />
