@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { TagReducer } from './Tag/reducers';
+import { TagReducer } from '../store/Tag/reducers';
 
 const rootReducer = combineReducers({
   tag: TagReducer,

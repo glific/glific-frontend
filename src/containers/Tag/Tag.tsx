@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { AppState } from '../../store/StoreConfig';
+import { AppState } from '../../config/store';
 import styles from './Tag.module.css';
 import * as tagActions from '../../store/Tag/actions';
 import * as tagTypes from '../../store/Tag/types';
