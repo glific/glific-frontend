@@ -11,8 +11,6 @@ import {
 import AccountCircleSharpIcon from '@material-ui/icons/AccountCircleSharp';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import styles from './Header.module.css';
-
 export interface HeaderProps {
   MenuToggle: () => void;
 }
@@ -21,7 +19,7 @@ const drawerWidth = 200;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
-      [theme.breakpoints.up('xs')]: {
+      [theme.breakpoints.up('sm')]: {
         width: `calc(100% - ${drawerWidth}px)`,
         marginLeft: drawerWidth,
       },
@@ -32,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    TypographyStyle: {
+      flex: 1,
+    },
   })
 );
 
@@ -39,7 +40,7 @@ export const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
   const classes = useStyles();
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <IconButton
           color="inherit"
@@ -50,7 +51,9 @@ export const Header: React.SFC<HeaderProps> = (props: HeaderProps) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography className={styles.TypographyStyle}>Glific</Typography>
+        <Typography className={classes.TypographyStyle} variant="h6" noWrap>
+          Glific
+        </Typography>
         <AccountCircleSharpIcon />
       </Toolbar>
     </AppBar>

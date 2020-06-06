@@ -1,14 +1,27 @@
 import React from 'react';
 
-import styles from './Content.module.css';
+import { makeStyles, createStyles, Theme } from '@material-ui/core';
 
 export interface ContentProps {}
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+  })
+);
+
 export const Content: React.SFC<ContentProps> = (props) => {
+  const classes = useStyles();
   return (
-    <div className={styles.Content}>
-      <main>{props.children}</main>
-    </div>
+    <main className={classes.content}>
+      <div className={classes.toolbar} />
+      <div>{props.children}</div>
+    </main>
   );
 };
 

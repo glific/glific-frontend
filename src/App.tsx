@@ -5,10 +5,11 @@ import { Layout } from './components/UI/Layout/Layout';
 import { TagPage } from './components/pages/TagPage/TagPage';
 import { Tag } from './containers/Tag/Tag';
 import { DashboardPage } from './components/pages/DashboardPage/DashboardPage';
+import styles from './App.module.css';
 
 const App = () => {
   return (
-    <div className="App">
+    <div className={styles.App}>
       <Layout>
         <Switch>
           <Route path="/tag" exact component={TagPage} />
