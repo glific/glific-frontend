@@ -1,6 +1,6 @@
 export interface Tag {
   id: number;
-  name: string;
+  label: string;
   description: string;
   is_active: boolean;
   is_reserved: boolean;

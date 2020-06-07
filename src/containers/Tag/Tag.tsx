@@ -28,7 +28,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   const tagId = props.match ? props.match.params.id : null;
   const tag = tagId ? tagList.find((tag) => tag.id === Number(tagId)) : null;
 
-  const [name, setName] = useState(tag ? tag.name : '');
+  const [name, setName] = useState(tag ? tag.label : '');
   const [description, setDescription] = useState(tag ? tag.description : '');
   const [isActive, setIsActive] = useState(tag ? tag.is_active : false);
   const [isReserved, setIsReserved] = useState(tag ? tag.is_reserved : false);
@@ -39,7 +39,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   const saveHandler = () => {
     const payload: tagTypes.Tag = {
       id: Number(tag ? tagId : Math.floor(Math.random() * Math.floor(100))),
-      name: name,
+      label: name,
       description: description,
       is_active: isActive,
       is_reserved: isReserved,
