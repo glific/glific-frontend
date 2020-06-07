@@ -10,13 +10,14 @@ import {
 } from '@material-ui/core';
 
 import SideMenus from '../SideMenus/SideMenus';
+import * as constants from '../../../../../common/constants';
 
 export interface SideDrawerProps {
   MenuToggle: () => void;
   isMobile: boolean;
 }
 
-const drawerWidth = 200;
+const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

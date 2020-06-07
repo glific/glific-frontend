@@ -11,11 +11,13 @@ import {
 import AccountCircleSharpIcon from '@material-ui/icons/AccountCircleSharp';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import * as constants from '../../../../common/constants';
+
 export interface HeaderProps {
   MenuToggle: () => void;
 }
 
-const drawerWidth = 200;
+const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
