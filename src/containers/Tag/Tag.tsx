@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -6,53 +6,154 @@ import { AppState } from '../../config/store';
 import styles from './Tag.module.css';
 import * as tagActions from '../../store/Tag/actions';
 import * as tagTypes from '../../store/Tag/types';
+import { useQuery, gql, useMutation } from '@apollo/client';
 
 export interface TagProps {
   match: any;
 }
 
+const GET_LANGUAGES = gql`
+  {
+    languages {
+      id
+      label
+    }
+  }
+`;
+
+const GET_TAGS = gql`
+  {
+    tags {
+      id
+      description
+      label
+    }
+  }
+`;
+
+const GET_TAG = gql`
+  query getTag($id: ID!) {
+    tag(id: $id) {
+      tag {
+        id
+        label
+        description
+        isActive
+        isReserved
+        language {
+          id
+        }
+      }
+    }
+  }
+`;
+
+const CREATE_TAG = gql`
+  mutation creTag($input: TagInput!) {
+    createTag(input: $input) {
+      tag {
+        id
+        description
+        label
+        isActive
+        isReserved
+        language {
+          id
+        }
+      }
+    }
+  }
+`;
+
+const UPDATE_TAG = gql`
+  mutation updateTag($id: ID!, $input: TagInput!) {
+    updateTag(id: $id, input: $input) {
+      tag {
+        id
+        label
+        isActive
+        isReserved
+        description
+        language {
+          id
+        }
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export const Tag: React.SFC<TagProps> = (props) => {
-  const tagList = useSelector((state: AppState) => {
-    return state.tag.tags;
+  const tagId = props.match.params.id ? props.match.params.id : false;
+  const { loading, error, data } = useQuery(GET_TAG, {
+    variables: { id: tagId },
+    skip: !tagId,
   });
+  const [updateTag] = useMutation(UPDATE_TAG);
+  const languages = useQuery(GET_LANGUAGES);
 
-  const dispatch = useDispatch();
-  const onTagAdd = (tag: tagTypes.Tag) => {
-    dispatch(tagActions.addTag(tag));
-  };
-
-  const onTagEdit = (tag: tagTypes.Tag) => {
-    dispatch(tagActions.editTag(tag));
-  };
-
-  const tagId = props.match ? props.match.params.id : null;
-  const tag = tagId ? tagList.find((tag) => tag.id === Number(tagId)) : null;
-
-  const [name, setName] = useState(tag ? tag.label : '');
-  const [description, setDescription] = useState(tag ? tag.description : '');
-  const [isActive, setIsActive] = useState(tag ? tag.is_active : false);
-  const [isReserved, setIsReserved] = useState(tag ? tag.is_reserved : false);
-  const [languageId, setLanguageId] = useState(tag ? tag.language_id : '');
-  const [parentId, setParentId] = useState(tag ? tag.parent_id : '');
+  const [label, setLabel] = useState('');
+  const [description, setDescription] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const [isReserved, setIsReserved] = useState(false);
+  const [languageId, setLanguageId] = useState(1);
+  const [parentId, setParentId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
+  const [createTag] = useMutation(CREATE_TAG, {
+    update(cache, { data: { createTag } }) {
+      const tags: any = cache.readQuery({ query: GET_TAGS });
+
+      cache.writeQuery({
+        query: GET_TAGS,
+        data: { tags: tags.tags.concat(createTag.tag) },
+      });
+    },
+  });
+
+  let tag: any = null;
+
+  useEffect(() => {
+    if (tagId && data) {
+      tag = tagId ? data.tag.tag : null;
+      setLabel(tag.label);
+      setDescription(tag.description);
+      setIsActive(tag.isActive);
+      setIsReserved(tag.isReserved);
+      setLanguageId(tag.language.id);
+      setParentId(tag.parent_id);
+    }
+  }, [data]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
   const saveHandler = () => {
-    const payload: tagTypes.Tag = {
-      id: Number(tag ? tagId : Math.floor(Math.random() * Math.floor(100))),
-      label: name,
+    const payload = {
+      label: label,
       description: description,
-      is_active: isActive,
-      is_reserved: isReserved,
-      language_id: Number(languageId),
-      parent_id: Number(parentId),
+      isActive: isActive,
+      isReserved: isReserved,
+      languageId: Number(languageId),
     };
 
-    if (tag) {
-      onTagEdit(payload);
+    if (tagId) {
+      updateTag({
+        variables: {
+          id: tagId,
+          input: payload,
+        },
+      });
     } else {
-      onTagAdd(payload);
+      createTag({
+        variables: {
+          input: payload,
+        },
+      });
     }
-
     setFormSubmitted(true);
   };
 
@@ -64,6 +165,16 @@ export const Tag: React.SFC<TagProps> = (props) => {
     return <Redirect to="/tag" />;
   }
 
+  const languageOptions = languages.data
+    ? languages.data.languages.map((language: any) => {
+        return (
+          <option value={language.id} key={language.id}>
+            {language.label}
+          </option>
+        );
+      })
+    : null;
+
   let form = (
     <>
       <div className={styles.Input}>
@@ -71,8 +182,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
         <input
           type="text"
           name="name"
-          value={name}
-          onChange={(event) => setName(event?.target.value)}
+          value={label}
+          onChange={(event) => setLabel(event?.target.value)}
         />
       </div>
       <div className={styles.Input}>
@@ -104,21 +215,13 @@ export const Tag: React.SFC<TagProps> = (props) => {
       </div>
       <div className={styles.Input}>
         <label className={styles.Label}>Language</label>
-        <input
-          type="number"
+        <select
           name="language_id"
           value={languageId}
-          onChange={(event) => setLanguageId(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Parent</label>
-        <input
-          type="number"
-          name="parent_id"
-          value={parentId}
-          onChange={(event) => setParentId(event?.target.value)}
-        />
+          onChange={(event) => setLanguageId(Number(event?.target.value))}
+        >
+          {languageOptions}
+        </select>
       </div>
       <button color="primary" onClick={saveHandler}>
         Save
