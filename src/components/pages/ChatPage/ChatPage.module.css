@@ -1,0 +1,14 @@
+.ChatPage {
+  width: 100%;
+}
+
+.ChatMessages {
+  width: 80%;
+  float: left;
+  border: 1px black solid;
+}
+
+.ChatConversations {
+  width: 20%;
+  float: left;
+}
