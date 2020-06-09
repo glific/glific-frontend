@@ -1,7 +1,7 @@
 export const sideDrawerMenus = [
   {
     title: 'Dashboard',
-    path: '/dashboard',
+    path: '/',
     icon: 'dashboard',
   },
   {
