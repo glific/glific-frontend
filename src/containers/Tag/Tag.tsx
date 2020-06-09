@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { AppState } from '../../config/store';
+import { Formik, Form, Field } from 'formik';
+import { Button, LinearProgress, MenuItem } from '@material-ui/core';
+import { TextField, Checkbox, Select } from 'formik-material-ui';
+import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
-import * as tagActions from '../../store/Tag/actions';
 import * as tagTypes from '../../store/Tag/types';
 import { useQuery, gql, useMutation } from '@apollo/client';
 
@@ -100,7 +100,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isReserved, setIsReserved] = useState(false);
   const [languageId, setLanguageId] = useState(1);
-  const [parentId, setParentId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [createTag] = useMutation(CREATE_TAG, {
@@ -124,20 +123,19 @@ export const Tag: React.SFC<TagProps> = (props) => {
       setIsActive(tag.isActive);
       setIsReserved(tag.isReserved);
       setLanguageId(tag.language.id);
-      setParentId(tag.parent_id);
     }
   }, [data]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  const saveHandler = () => {
+  const saveHandler = (tag: tagTypes.Tag) => {
     const payload: tagTypes.Tag = {
-      label: label,
-      description: description,
-      isActive: isActive,
-      isReserved: isReserved,
-      languageId: Number(languageId),
+      label: tag.label,
+      description: tag.description,
+      isActive: tag.isActive,
+      isReserved: tag.isReserved,
+      languageId: Number(tag.languageId),
     };
 
     if (tagId) {
@@ -177,59 +175,65 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   let form = (
     <>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={label}
-          onChange={(event) => setLabel(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Description</label>
-        <input
-          type="text"
-          name="description"
-          value={description}
-          onChange={(event) => setDescription(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Is Active?</label>
-        <input
-          type="checkbox"
-          name="is_active"
-          checked={isActive}
-          onChange={(event) => setIsActive(event?.target.checked)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Is Reserved?</label>
-        <input
-          type="checkbox"
-          name="is_reserved"
-          checked={isReserved}
-          onChange={(event) => setIsReserved(event?.target.checked)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Language</label>
-        <select
-          name="language_id"
-          value={languageId}
-          onChange={(event) => setLanguageId(Number(event?.target.value))}
-        >
-          {languageOptions}
-        </select>
-      </div>
-      <button color="primary" onClick={saveHandler}>
-        Save
-      </button>
-      &nbsp;
-      <button color="secondary" onClick={cancelHandler}>
-        Cancel
-      </button>
+      <Formik
+        enableReinitialize
+        initialValues={{
+          label: label,
+          description: description,
+          isActive: isActive,
+          isReserved: isReserved,
+          languageId: languageId,
+        }}
+        validate={(values) => {
+          const errors: Partial<tagTypes.Tag> = {};
+          if (!values.label) {
+            errors.label = 'Required';
+          }
+          if (!values.description) {
+            errors.description = 'Required';
+          }
+          return errors;
+        }}
+        onSubmit={(tag) => {
+          saveHandler(tag);
+        }}
+      >
+        {({ submitForm }) => (
+          <Form>
+            <div className={styles.Input}>
+              <label className={styles.Label}>Label</label>
+              <Field component={TextField} name="label" type="text" />
+            </div>
+            <div className={styles.Input}>
+              <label className={styles.Label}>Description</label>
+              <Field component={TextField} type="text" name="description" />
+            </div>
+            <div className={styles.Input}>
+              <label className={styles.Label}>Is Active?</label>
+              <Field component={CheckboxWithLabel} type="checkbox" name="isActive" />
+            </div>
+            <div className={styles.Input}>
+              <label className={styles.Label}>Is Reserved?</label>
+              <Field component={CheckboxWithLabel} name="isReserved" type="checkbox" />
+            </div>
+            <div className={styles.Input}>
+              <label className={styles.Label}>Language</label>
+              <Field component={Select} name="languageId">
+                {languageOptions}
+              </Field>
+            </div>
+            <div className={styles.Buttons}>
+              <Button variant="contained" color="primary" onClick={submitForm}>
+                Save
+              </Button>
+              &nbsp;
+              <Button variant="contained" color="default" onClick={cancelHandler}>
+                Cancel
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </>
   );
 
