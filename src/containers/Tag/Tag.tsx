@@ -7,6 +7,7 @@ import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
 import * as tagTypes from '../../store/Tag/types';
 import { useQuery, gql, useMutation } from '@apollo/client';
+import Paper from '@material-ui/core/Paper';
 
 export interface TagProps {
   match: any;
@@ -165,12 +166,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-      return (
-        <option value={language.id} key={language.id}>
-          {language.label}
-        </option>
-      );
-    })
+        return (
+          <MenuItem value={language.id} key={language.id}>
+            {language.label}
+          </MenuItem>
+        );
+      })
     : null;
 
   let form = (
@@ -188,6 +189,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
           const errors: Partial<tagTypes.Tag> = {};
           if (!values.label) {
             errors.label = 'Required';
+          } else if (values.label.length > 10) {
+            errors.label = 'Too Long';
           }
           if (!values.description) {
             errors.description = 'Required';
@@ -199,39 +202,41 @@ export const Tag: React.SFC<TagProps> = (props) => {
         }}
       >
         {({ submitForm }) => (
-          <Form>
-            <div className={styles.Input}>
-              <label className={styles.Label}>Label</label>
-              <Field component={TextField} name="label" type="text" />
-            </div>
-            <div className={styles.Input}>
-              <label className={styles.Label}>Description</label>
-              <Field component={TextField} type="text" name="description" />
-            </div>
-            <div className={styles.Input}>
-              <label className={styles.Label}>Is Active?</label>
-              <Field component={CheckboxWithLabel} type="checkbox" name="isActive" />
-            </div>
-            <div className={styles.Input}>
-              <label className={styles.Label}>Is Reserved?</label>
-              <Field component={CheckboxWithLabel} name="isReserved" type="checkbox" />
-            </div>
-            <div className={styles.Input}>
-              <label className={styles.Label}>Language</label>
-              <Field component={Select} name="languageId">
-                {languageOptions}
-              </Field>
-            </div>
-            <div className={styles.Buttons}>
-              <Button variant="contained" color="primary" onClick={submitForm}>
-                Save
-              </Button>
-              &nbsp;
-              <Button variant="contained" color="default" onClick={cancelHandler}>
-                Cancel
-              </Button>
-            </div>
-          </Form>
+          <Paper elevation={3}>
+            <Form className={styles.Form}>
+              <div className={styles.Input}>
+                <label className={styles.Label}>Label</label>
+                <Field component={TextField} name="label" type="text" />
+              </div>
+              <div className={styles.Input}>
+                <label className={styles.Label}>Description</label>
+                <Field component={TextField} type="text" name="description" />
+              </div>
+              <div className={styles.Input}>
+                <label className={styles.Label}>Is Active?</label>
+                <Field component={CheckboxWithLabel} type="checkbox" name="isActive" />
+              </div>
+              <div className={styles.Input}>
+                <label className={styles.Label}>Is Reserved?</label>
+                <Field component={CheckboxWithLabel} name="isReserved" type="checkbox" />
+              </div>
+              <div className={styles.Input}>
+                <label className={styles.Label}>Language</label>
+                <Field component={Select} name="languageId">
+                  {languageOptions}
+                </Field>
+              </div>
+              <div className={styles.Buttons}>
+                <Button variant="contained" color="primary" onClick={submitForm}>
+                  Save
+                </Button>
+                &nbsp;&nbsp;
+                <Button variant="contained" color="default" onClick={cancelHandler}>
+                  Cancel
+                </Button>
+              </div>
+            </Form>
+          </Paper>
         )}
       </Formik>
     </>
@@ -239,7 +244,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   return (
     <div className={styles.TagAdd}>
-      <h4>{tag ? 'Edit tag information' : 'Enter tag information'}</h4>
+      <h3>{tagId ? 'Edit tag information' : 'Enter tag information'}</h3>
       {form}
     </div>
   );
