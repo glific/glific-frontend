@@ -38,7 +38,7 @@ const DELETE_TAG = gql`
   }
 `;
 
-export interface TagListProps {}
+export interface TagListProps { }
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
@@ -49,10 +49,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache, { data: { deleteTag } }) {
       const tags: any = cache.readQuery({ query: GET_TAGS });
-      tags.tags = tags.tags.filter((val: any) => val.id !== deleteId);
+      const tagsCopy = JSON.parse(JSON.stringify(tags));
+      tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
       cache.writeQuery({
         query: GET_TAGS,
-        data: tags,
+        data: tagsCopy,
       });
     },
   });
@@ -104,7 +105,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id)}>
+            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id!)}>
               <DeleteIcon />
             </IconButton>
           </TableCell>
@@ -112,7 +113,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       );
     });
   } else {
-    listing = <p>There are no tags.</p>;
+    listing = (
+      <TableRow>
+        <TableCell>There are no tags.</TableCell>
+      </TableRow>
+    );
   }
 
   return (
@@ -131,8 +136,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
-          {listing}
+          <TableBody>{listing}</TableBody>
         </Table>
       </TableContainer>
     </div>
