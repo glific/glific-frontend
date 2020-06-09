@@ -9,9 +9,7 @@ test('check if rendering the home page correctly', () => {
       <App />
     </BrowserRouter>
   );
-  const projectTitle = getByText(/Glific/i);
-  expect(projectTitle).toBeInTheDocument();
 
-  const welcomeMessage = getByText(/Welcome to Dashboard!/i);
+  const welcomeMessage = getByText(/Welcome to Glific!/i);
   expect(welcomeMessage).toBeInTheDocument();
 });
