@@ -132,7 +132,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   if (error) return <p>Error :(</p>;
 
   const saveHandler = () => {
-    const payload = {
+    const payload: tagTypes.Tag = {
       label: label,
       description: description,
       isActive: isActive,
@@ -167,12 +167,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-        return (
-          <option value={language.id} key={language.id}>
-            {language.label}
-          </option>
-        );
-      })
+      return (
+        <option value={language.id} key={language.id}>
+          {language.label}
+        </option>
+      );
+    })
     : null;
 
   let form = (

@@ -1,11 +1,10 @@
 export interface Tag {
-  id: number;
+  id?: number;
   label: string;
   description: string;
-  is_active: boolean;
-  is_reserved: boolean;
-  language_id: number;
-  parent_id: number;
+  isActive: boolean;
+  isReserved: boolean;
+  languageId: number;
   //created_date: Date;
 }
 

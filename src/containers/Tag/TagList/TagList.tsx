@@ -38,7 +38,7 @@ const DELETE_TAG = gql`
   }
 `;
 
-export interface TagListProps {}
+export interface TagListProps { }
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
@@ -105,7 +105,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id)}>
+            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id!)}>
               <DeleteIcon />
             </IconButton>
           </TableCell>
