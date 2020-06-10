@@ -15,7 +15,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   if (props.conversations.length > 0) {
     conversationList = props.conversations.map((conversation: any) => {
-      console.log(conversation);
       return (
         <ChatConversation
           key={conversation.contactId}

@@ -1,3 +1,7 @@
+.ChatMessage {
+  padding-top: 5px;
+}
+
 .Content {
   position: relative;
 	max-width: 480px;

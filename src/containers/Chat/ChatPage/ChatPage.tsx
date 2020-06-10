@@ -15,11 +15,11 @@ const chatData = [
         content: 'Hello!'
       },
       {
-        date: 'June 1, 2020',
+        date: 'June 2, 2020',
         content: 'Can I get some help!'
       },
       {
-        date: 'June 2, 2020',
+        date: 'June 4, 2020',
         content: 'Anyone available help!'
       },
     ]
@@ -33,7 +33,7 @@ const chatData = [
         content: 'Hi'
       },
       {
-        date: 'June 3, 2020',
+        date: 'June 4, 2020',
         content: 'Can I get some help!'
       },
       {
@@ -48,6 +48,42 @@ const chatData = [
     messages: [
       {
         date: 'June 6, 2020',
+        content: 'Can I get some help!'
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Help needed!'
+      },
+      {
+        date: 'June 8, 2020',
+        content: 'Anyone available help!'
+      },
+    ]
+  },
+  {
+    contactId: 4,
+    contactName: 'Bary Allen',
+    messages: [
+      {
+        date: 'June 6, 2020',
+        content: 'Anyone available help!',
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Can I get some help!'
+      },
+      {
+        date: 'June 8, 2020',
+        content: 'Help needed!',
+      },
+    ]
+  },
+  {
+    contactId: 5,
+    contactName: 'Black Widow',
+    messages: [
+      {
+        date: 'June 5, 2020',
         content: 'Help needed!'
       },
       {
@@ -55,8 +91,44 @@ const chatData = [
         content: 'Can I get some help!'
       },
       {
-        date: 'June 7, 2020',
+        date: 'June 9, 2020',
         content: 'Anyone available help!'
+      },
+    ]
+  },
+  {
+    contactId: 6,
+    contactName: 'Wonder Woman',
+    messages: [
+      {
+        date: 'June 6, 2020',
+        content: 'Anyone available help!'
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Can I get some help!'
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Help!'
+      },
+    ]
+  },
+  {
+    contactId: 6,
+    contactName: 'Peter Parker',
+    messages: [
+      {
+        date: 'June 6, 2020',
+        content: 'Can I get some help!'
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Can I get some help!'
+      },
+      {
+        date: 'June 7, 2020',
+        content: 'Anyone!'
       },
     ]
   },

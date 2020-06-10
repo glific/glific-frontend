@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
 
-import styles from './ChatConversation.module.css';
+//import styles from './ChatConversation.module.css';
 import { ListIcon } from '../../../../components/UI/ListIcon/ListIcon'
 
 export interface ChatConversationProps {
