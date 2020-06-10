@@ -1,50 +1,59 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography, ListItemText, ListItem, List } from '@material-ui/core';
 
 import ChatConversation from './ChatConversation/ChatConversation';
+import styles from './ChatConversations.module.css';
 
 const conversations = [
   {
-    conversationId: 1,
+    contactId: 1,
     contactName: 'Jane Doe',
     lastMessage: 'Hello!',
   },
   {
-    conversationId: 2,
+    contactId: 2,
     contactName: 'Peter Parker',
     lastMessage: 'Need Help',
   },
   {
-    conversationId: 3,
+    contactId: 3,
     contactName: 'Luke Skywalker',
     lastMessage: 'Can I get Help',
   },
 ];
 
-export interface ChatConversationsProps {}
+export interface ChatConversationsProps { }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   let conversationList;
 
   if (conversations.length > 0) {
-    conversationList = conversations.map((conversation, index) => {
+    conversationList = conversations.map((conversation) => {
       return (
         <ChatConversation
-          conversationId={conversation.conversationId}
+          key={conversation.contactId}
+          contactId={conversation.contactId}
           contactName={conversation.contactName}
           lastMessage={conversation.lastMessage}
         />
       );
     });
   } else {
-    conversationList = <p>You do not have any conversations.</p>;
+    conversationList =
+      <ListItem>
+        <ListItemText
+          secondary={'You do not have any conversations.'}
+        />
+      </ListItem >
   }
 
   return (
-    <div>
+    <div className={styles.ChatConversations}>
       <Typography variant="h6">Conversations</Typography>
       <input type="text" placeholder="type to search" />
-      <div>{conversationList}</div>
+      <List>
+        {conversationList}
+      </List>
     </div>
   );
 };
