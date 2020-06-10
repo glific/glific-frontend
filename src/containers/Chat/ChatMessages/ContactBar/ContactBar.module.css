@@ -1,0 +1,11 @@
+.ContactBar {
+  height: 50px;
+  background-color: #2196f3;
+  color: white;
+  padding: 10px;
+}
+
+.MenuIcon {
+  float: right;
+  vertical-align: middle;
+}

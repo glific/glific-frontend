@@ -4,37 +4,24 @@ import { Typography, ListItemText, ListItem, List } from '@material-ui/core';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 
-const conversations = [
-  {
-    contactId: 1,
-    contactName: 'Jane Doe',
-    lastMessage: 'Hello!',
-  },
-  {
-    contactId: 2,
-    contactName: 'Peter Parker',
-    lastMessage: 'Need Help',
-  },
-  {
-    contactId: 3,
-    contactName: 'Luke Skywalker',
-    lastMessage: 'Can I get Help',
-  },
-];
+export interface ChatConversationsProps {
+  //TO FIX: define clear type once this is hooked with backend
+  conversations: any;
+  selectedConversation: number;
+}
 
-export interface ChatConversationsProps { }
-
-export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
+export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   let conversationList;
 
-  if (conversations.length > 0) {
-    conversationList = conversations.map((conversation) => {
+  if (props.conversations.length > 0) {
+    conversationList = props.conversations.map((conversation: any) => {
+      console.log(conversation);
       return (
         <ChatConversation
           key={conversation.contactId}
           contactId={conversation.contactId}
           contactName={conversation.contactName}
-          lastMessage={conversation.lastMessage}
+          lastMessage={conversation.messages[0].content}
         />
       );
     });
@@ -49,7 +36,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
 
   return (
     <div className={styles.ChatConversations}>
-      <Typography variant="h6">Conversations</Typography>
+      <Typography variant="h6">Chats</Typography>
+      <br />
       <input type="text" placeholder="type to search" />
       <List>
         {conversationList}

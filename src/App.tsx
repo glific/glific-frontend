@@ -5,7 +5,7 @@ import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
 import { DashboardPage } from './components/pages/DashboardPage/DashboardPage';
-import ChatPage from './components/pages/ChatPage/ChatPage';
+import ChatPage from './containers/Chat/ChatPage/ChatPage';
 import styles from './App.module.css';
 
 const App = () => {

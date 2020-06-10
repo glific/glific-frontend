@@ -1,19 +1,29 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
+import styles from './ChatMessages.module.css';
 
-export interface ChatMessagesProps {}
+export interface ChatMessagesProps {
+  //TO FIX: define clear type once this is hooked with backend
+  chatMessages: any
+}
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = () => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = (props) => {
+
+  const messageList = props.chatMessages.messages.map((message: any, index: number) => {
+    return <ChatMessage {...message} key={index} />
+  });
+
   return (
-    <Typography variant="h6">
-      <ContactBar />
-      <ChatMessage />
+    <div className={styles.ChatMessages}>
+      <ContactBar contactName={props.chatMessages.contactName} />
+      <div className={styles.MessageList}>
+        {messageList}
+      </div>
       <ChatInput />
-    </Typography>
+    </div>
   );
 };
 

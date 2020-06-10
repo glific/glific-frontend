@@ -1,0 +1,9 @@
+.ChatMessages {
+  position: relative;
+  height: 600px;
+}
+
+.MessageList {
+  /* height: 600px; */
+  padding-left: 10px;
+}

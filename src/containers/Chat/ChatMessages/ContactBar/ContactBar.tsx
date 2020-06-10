@@ -1,12 +1,22 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 
-export interface ContactBarProps {}
+import styles from './ContactBar.module.css';
+import ListIcon from '../../../../components/UI/ListIcon/ListIcon';
 
-export const ContactBar: React.SFC<ContactBarProps> = () => {
+export interface ContactBarProps {
+  contactName: string;
+}
+
+export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   return (
-    <div>
-      <Typography variant="h6">Jane Doe</Typography>
+    <div className={styles.ContactBar}>
+      <Typography variant="h6" noWrap>
+        {props.contactName}
+        <div className={styles.MenuIcon}>
+          <ListIcon icon="verticalmenu" />
+        </div>
+      </Typography>
     </div>
   );
 };
