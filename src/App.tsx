@@ -15,6 +15,7 @@ const App = () => {
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
+          <Route path="/tag/:action" exact component={TagPage} />
           <Route path="/" exact component={DashboardPage} />
         </Switch>
       </Layout>

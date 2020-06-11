@@ -102,6 +102,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   const [isReserved, setIsReserved] = useState(false);
   const [languageId, setLanguageId] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [tagAction, setTagAction] = useState('');
 
   const [createTag] = useMutation(CREATE_TAG, {
     update(cache, { data: { createTag } }) {
@@ -146,12 +147,14 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
+      setTagAction('edit');
     } else {
       createTag({
         variables: {
           input: payload,
         },
       });
+      setTagAction('create');
     }
     setFormSubmitted(true);
   };
@@ -161,7 +164,14 @@ export const Tag: React.SFC<TagProps> = (props) => {
   };
 
   if (formSubmitted) {
-    return <Redirect to="/tag" />;
+    // return <Redirect to="/tag" />;
+    return (
+      <Redirect
+        to={{
+          pathname: `/tag/${tagAction}`,
+        }}
+      />
+    );
   }
 
   const languageOptions = languages.data

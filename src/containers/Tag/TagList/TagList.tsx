@@ -17,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import { Tag } from '../../../store/Tag/types';
 import styles from './TagList.module.css';
+import ToastMessage from '../../../components/UI/ToastMessage/ToastMessage';
 
 const GET_TAGS = gql`
   {
@@ -39,9 +40,25 @@ const DELETE_TAG = gql`
   }
 `;
 
-export interface TagListProps { }
+export interface TagListProps {
+  match: any;
+}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
+  let toastMessage: string = '';
+  let setToastMessage: Function;
+  if (props.match.params.action == 'create') {
+    toastMessage = 'Tag has been created';
+  } else if (props.match.params.action == 'edit') {
+    toastMessage = 'Tag has been edited';
+  }
+  // Toast Message States
+  [toastMessage, setToastMessage] = useState(toastMessage);
+
+  const [showToast, setShowToast] = useState(
+    props.match.params.action == 'create' || props.match.params.action == 'edit' ? true : false
+  );
+
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
@@ -89,6 +106,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
+    setShowToast(true);
+    setToastMessage('Tag has been Deleted...');
   };
 
   let listing: any;
@@ -121,6 +140,24 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     );
   }
 
+  let message;
+
+  const handleCloseEvent = () => {
+    setShowToast(false);
+  };
+
+  if (showToast) {
+    message = (
+      <ToastMessage
+        open={showToast}
+        severity="success"
+        message={toastMessage}
+        seconds={4000}
+        handleClose={handleCloseEvent}
+      />
+    );
+  }
+
   return (
     <div>
       <div className={styles.AddButtton}>
@@ -142,6 +179,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
           <TableBody>{listing}</TableBody>
         </Table>
       </TableContainer>
+      {message}
     </div>
   );
 };
