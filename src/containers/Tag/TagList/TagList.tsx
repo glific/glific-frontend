@@ -38,7 +38,7 @@ const DELETE_TAG = gql`
   }
 `;
 
-export interface TagListProps { }
+export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
