@@ -17,26 +17,8 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import styles from './TagList.module.css';
 
-const GET_TAGS = gql`
-  {
-    tags {
-      id
-      label
-      description
-    }
-  }
-`;
-
-const DELETE_TAG = gql`
-  mutation deleteTag($id: ID!) {
-    deleteTag(id: $id) {
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
+import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 export interface TagListProps {}
 
@@ -47,7 +29,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
-    update(cache, { data: { deleteTag } }) {
+    update(cache) {
       const tags: any = cache.readQuery({ query: GET_TAGS });
       const tagsCopy = JSON.parse(JSON.stringify(tags));
       tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
