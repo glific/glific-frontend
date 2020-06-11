@@ -5,7 +5,6 @@ import { Button, LinearProgress, MenuItem } from '@material-ui/core';
 import { TextField, Checkbox, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
-import * as tagTypes from '../../store/Tag/types';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 
@@ -130,8 +129,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  const saveHandler = (tag: tagTypes.Tag) => {
-    const payload: tagTypes.Tag = {
+  const saveHandler = (tag: any) => {
+    const payload = {
       label: tag.label,
       description: tag.description,
       isActive: tag.isActive,
@@ -166,12 +165,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-        return (
-          <MenuItem value={language.id} key={language.id}>
-            {language.label}
-          </MenuItem>
-        );
-      })
+      return (
+        <MenuItem value={language.id} key={language.id}>
+          {language.label}
+        </MenuItem>
+      );
+    })
     : null;
 
   let form = (
@@ -186,7 +185,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
           languageId: languageId,
         }}
         validate={(values) => {
-          const errors: Partial<tagTypes.Tag> = {};
+          const errors: Partial<any> = {};
           if (!values.label) {
             errors.label = 'Required';
           } else if (values.label.length > 10) {
