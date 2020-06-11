@@ -4,3 +4,17 @@
   max-width: 300px;
   padding-left: 10px;
 }
+
+.InputBox {
+  width: calc(100% - 50px);
+  border: none;
+  border-radius: 999px;
+  /* padding: 10px; */
+  padding-left: 20px;
+  padding-right: 20px;
+  /* font-size: 15px; */
+  outline: none;
+  box-shadow: 0 1px silver;
+  font-size: 18px;
+  line-height: 45px;
+}

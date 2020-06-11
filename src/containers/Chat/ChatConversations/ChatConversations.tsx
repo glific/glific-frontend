@@ -37,7 +37,16 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     <div className={styles.ChatConversations}>
       <Typography variant="h6">Chats</Typography>
       <br />
-      <input type="text" placeholder="type to search" />
+
+      <input
+        className={styles.InputBox}
+        data-testid="message-input"
+        type="text"
+        placeholder="Search"
+      // value={message}
+      // onKeyPress={onKeyPress}
+      // onChange={onChange}
+      />
       <List>
         {conversationList}
       </List>
