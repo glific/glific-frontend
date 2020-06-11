@@ -14,9 +14,9 @@ interface Props {
 // Since attribute severity can only have 5 values,
 type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
 
-function Alert(props: AlertProps) {
+const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+};
 
 const ToastMessage: React.SFC<Props> = ({ open, severity, message, seconds, handleClose }) => {
   const handleCloseButton = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
