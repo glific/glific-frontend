@@ -12,17 +12,17 @@ const chatData = [
     messages: [
       {
         date: 'June 1, 2020',
-        content: 'Hello!'
+        content: 'Hello!',
       },
       {
         date: 'June 2, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 4, 2020',
-        content: 'Anyone available help!'
+        content: 'Anyone available help!',
       },
-    ]
+    ],
   },
   {
     contactId: 2,
@@ -30,17 +30,17 @@ const chatData = [
     messages: [
       {
         date: 'June 3, 2020',
-        content: 'Hi'
+        content: 'Hi',
       },
       {
         date: 'June 4, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 5, 2020',
-        content: 'Anyone available help!'
+        content: 'Anyone available help!',
       },
-    ]
+    ],
   },
   {
     contactId: 3,
@@ -48,17 +48,17 @@ const chatData = [
     messages: [
       {
         date: 'June 6, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Help needed!'
+        content: 'Help needed!',
       },
       {
         date: 'June 8, 2020',
-        content: 'Anyone available help!'
+        content: 'Anyone available help!',
       },
-    ]
+    ],
   },
   {
     contactId: 4,
@@ -70,13 +70,13 @@ const chatData = [
       },
       {
         date: 'June 7, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 8, 2020',
         content: 'Help needed!',
       },
-    ]
+    ],
   },
   {
     contactId: 5,
@@ -84,17 +84,17 @@ const chatData = [
     messages: [
       {
         date: 'June 5, 2020',
-        content: 'Help needed!'
+        content: 'Help needed!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 9, 2020',
-        content: 'Anyone available help!'
+        content: 'Anyone available help!',
       },
-    ]
+    ],
   },
   {
     contactId: 6,
@@ -102,17 +102,17 @@ const chatData = [
     messages: [
       {
         date: 'June 6, 2020',
-        content: 'Anyone available help!'
+        content: 'Anyone available help!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Help!'
+        content: 'Help!',
       },
-    ]
+    ],
   },
   {
     contactId: 6,
@@ -120,21 +120,21 @@ const chatData = [
     messages: [
       {
         date: 'June 6, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Can I get some help!'
+        content: 'Can I get some help!',
       },
       {
         date: 'June 7, 2020',
-        content: 'Anyone!'
+        content: 'Anyone!',
       },
-    ]
+    ],
   },
-]
+];
 
-export interface ChatPageProps { }
+export interface ChatPageProps {}
 
 const ChatPage: React.SFC<ChatPageProps> = () => {
   const [selectedConversation, setSelectedConversation] = useState(0);

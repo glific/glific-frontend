@@ -19,9 +19,9 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     case 'chat':
       return <ChatBubbleSharpIcon />;
     case 'conversation':
-      return <ForumSharpIcon />
+      return <ForumSharpIcon />;
     case 'verticalmenu':
-      return <MoreVertSharpIcon />
+      return <MoreVertSharpIcon />;
     default:
       return <HomeSharpIcon />;
   }

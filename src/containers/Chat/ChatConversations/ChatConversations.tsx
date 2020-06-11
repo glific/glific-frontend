@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, ListItemText, ListItem, List } from '@material-ui/core';
+import { Typography, List, Toolbar, Container } from '@material-ui/core';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
@@ -20,24 +20,21 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           key={conversation.contactId}
           contactId={conversation.contactId}
           contactName={conversation.contactName}
-          lastMessage={conversation.messages[0].content}
+          lastMessage={conversation.messages[0]}
         />
       );
     });
   } else {
-    conversationList =
-      <ListItem>
-        <ListItemText
-          secondary={'You do not have any conversations.'}
-        />
-      </ListItem >
+    conversationList = <p>You do not have any conversations.</p>;
   }
 
   return (
-    <div className={styles.ChatConversations}>
-      <Typography variant="h6">Chats</Typography>
-      <br />
+    <Container className={styles.ChatConversations}>
+      <Toolbar>
+        <Typography variant="h6">Chats</Typography>
+      </Toolbar>
 
+      {/* 
       <input
         className={styles.InputBox}
         data-testid="message-input"
@@ -46,11 +43,15 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       // value={message}
       // onKeyPress={onKeyPress}
       // onChange={onChange}
-      />
-      <List>
-        {conversationList}
-      </List>
-    </div>
+      /> */}
+      <Container className={styles.ListingContainer}>
+        {conversationList ? (
+          <List className={styles.StyledList}>{conversationList}</List>
+        ) : (
+          { conversationList }
+        )}
+      </Container>
+    </Container>
   );
 };
 

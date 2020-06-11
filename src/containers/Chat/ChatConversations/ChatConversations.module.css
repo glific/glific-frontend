@@ -1,20 +1,29 @@
 .ChatConversations {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   max-width: 300px;
   padding-left: 10px;
 }
 
-.InputBox {
+.ListingContainer {
+  height: calc(100% - 56px);
+  overflow-y: overlay;
+}
+
+.StyledList {
+  padding: 0 !important;
+}
+
+/* .InputBox {
   width: calc(100% - 50px);
   border: none;
-  border-radius: 999px;
-  /* padding: 10px; */
-  padding-left: 20px;
-  padding-right: 20px;
-  /* font-size: 15px; */
-  outline: none;
+  border-radius: 999px; */
+/* padding: 10px; */
+/* padding-left: 20px;
+  padding-right: 20px; */
+/* font-size: 15px; */
+/* outline: none;
   box-shadow: 0 1px silver;
   font-size: 18px;
   line-height: 45px;
-}
+} */

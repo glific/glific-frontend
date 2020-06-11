@@ -4,7 +4,7 @@ import SendIcon from '@material-ui/icons/Send';
 
 import styles from './ChatInput.module.css';
 
-export interface ChatInputProps { }
+export interface ChatInputProps {}
 
 export const ChatInput: React.SFC<ChatInputProps> = () => {
   return (
@@ -14,9 +14,9 @@ export const ChatInput: React.SFC<ChatInputProps> = () => {
         data-testid="message-input"
         type="text"
         placeholder="Type a message"
-      // value={message}
-      // onKeyPress={onKeyPress}
-      // onChange={onChange}
+        // value={message}
+        // onKeyPress={onKeyPress}
+        // onChange={onChange}
       />
 
       <Button
@@ -24,11 +24,11 @@ export const ChatInput: React.SFC<ChatInputProps> = () => {
         data-testid="send-button"
         variant="contained"
         color="primary"
-      // onClick={submitMessage}>
+        // onClick={submitMessage}>
       >
         <SendIcon />
       </Button>
-    </div >
+    </div>
   );
 };
 
