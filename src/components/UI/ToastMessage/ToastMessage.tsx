@@ -1,6 +1,5 @@
 import React from 'react';
-import { Snackbar, Button, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Snackbar } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 interface Props {
