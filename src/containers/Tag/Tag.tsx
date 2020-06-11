@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button, LinearProgress, MenuItem } from '@material-ui/core';
-import { TextField, Checkbox, Select } from 'formik-material-ui';
+import { Button, MenuItem } from '@material-ui/core';
+import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
 import { useQuery, gql, useMutation } from '@apollo/client';
