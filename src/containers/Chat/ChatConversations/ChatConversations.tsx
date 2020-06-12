@@ -46,17 +46,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       <Toolbar>
         <Typography variant="h6">Chats</Typography>
       </Toolbar>
-
-      {/* 
-      <input
-        className={styles.InputBox}
-        data-testid="message-input"
-        type="text"
-        placeholder="Search"
-      // value={message}
-      // onKeyPress={onKeyPress}
-      // onChange={onChange}
-      /> */}
       <Container className={styles.ListingContainer}>
         {conversationList ? (
           <List className={styles.StyledList}>{conversationList}</List>

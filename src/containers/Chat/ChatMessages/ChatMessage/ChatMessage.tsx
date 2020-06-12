@@ -11,8 +11,8 @@ export interface ChatMessageProps {
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   return (
     <div className={styles.ChatMessage}>
-      <span>June 3, 2020</span>
-      <p className={styles.Content}>{props.body}</p>
+      <div className={styles.Content}>{props.body}</div>
+      <div className={styles.Date}>June 3, 2020</div>
     </div>
   );
 };

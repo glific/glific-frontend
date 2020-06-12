@@ -1,22 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import SendIcon from '@material-ui/icons/Send';
+import { Container } from '@material-ui/core';
 
 import styles from './ChatInput.module.css';
 
-export interface ChatInputProps {}
+export interface ChatInputProps {
+  onSendMessage(content: string): any;
+}
 
-export const ChatInput: React.SFC<ChatInputProps> = () => {
+export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
+  const [message, setMessage] = useState('');
+
+  const onKeyPress = (e: any) => {
+    if (e.charCode === 13) {
+      submitMessage();
+    }
+  };
+
+  const onChange = ({ target }: any) => {
+    setMessage(target.value);
+  };
+
+  const submitMessage = () => {
+    if (!message) return;
+
+    setMessage('');
+
+    if (typeof onSendMessage === 'function') {
+      onSendMessage(message);
+    }
+  };
+
   return (
-    <div className={styles.ChatInput}>
+    <Container className={styles.ChatInput}>
       <input
         className={styles.InputBox}
         data-testid="message-input"
         type="text"
         placeholder="Type a message"
-        // value={message}
-        // onKeyPress={onKeyPress}
-        // onChange={onChange}
+        value={message}
+        onKeyPress={onKeyPress}
+        onChange={onChange}
       />
 
       <Button
@@ -24,11 +49,11 @@ export const ChatInput: React.SFC<ChatInputProps> = () => {
         data-testid="send-button"
         variant="contained"
         color="primary"
-        // onClick={submitMessage}>
+        onClick={submitMessage}
       >
         <SendIcon />
       </Button>
-    </div>
+    </Container>
   );
 };
 

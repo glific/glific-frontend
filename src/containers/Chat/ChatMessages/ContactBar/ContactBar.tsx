@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Toolbar, Typography, IconButton } from '@material-ui/core';
 
 import styles from './ContactBar.module.css';
 import ListIcon from '../../../../components/UI/ListIcon/ListIcon';
@@ -10,14 +10,14 @@ export interface ContactBarProps {
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   return (
-    <div className={styles.ContactBar}>
+    <Toolbar className={styles.ContactBar} color="primary">
       <Typography variant="h6" noWrap>
         {props.contactName}
-        <div className={styles.MenuIcon}>
-          <ListIcon icon="verticalmenu" />
-        </div>
       </Typography>
-    </div>
+      <IconButton color="primary" aria-label="upload picture" component="span">
+        <ListIcon icon="verticalmenu" />
+      </IconButton>
+    </Toolbar>
   );
 };
 

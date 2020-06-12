@@ -1,27 +1,49 @@
 .ChatMessage {
-  padding-top: 5px;
+  float: right;
+  background-color: #bce0f5;
+  display: inline-block;
+  position: relative;
+  max-width: 100%;
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  clear: both;
+}
+
+.ChatMessage::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.ChatMessage::before {
+  /* background-image: url(); */
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 12px;
+  height: 19px;
+  right: -11px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .Content {
-  position: relative;
-  max-width: 480px;
-
-  padding: 8px 22px;
-  border-radius: 1rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+  padding: 18px 7px;
+  word-wrap: break-word;
 }
 
-/* .Content::before {
-	content: '';
-	position: absolute;
-	width: 0;
-	height: 0;
-	bottom: 100%;
-	left: 24px;
-	border: .75rem solid transparent;
-	border-top: none;
+.Content::after {
+  content: '';
+  display: inline;
+}
 
-	border-bottom-color: #fff;
-  filter: drop-shadow(0 -0.0625rem 0.0625rem rgba(0, 0, 0, .1));
-  height: auto;
-} */
+.Date {
+  position: absolute;
+  bottom: 2px;
+  right: 7px;
+  color: gray;
+  font-size: 12px;
+}

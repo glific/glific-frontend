@@ -6,6 +6,7 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
+import { Container } from '@material-ui/core';
 
 export interface ChatMessagesProps {
   chatId: string;
@@ -46,6 +47,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
     return null;
   }
 
+  const onSendMessage = (content: string) => {};
+
   let conversations = data.conversations;
 
   let messageList;
@@ -60,11 +63,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   }
 
   return (
-    <div className={styles.ChatMessages}>
+    <Container className={styles.ChatMessages}>
       <ContactBar contactName={contactName} />
-      <div className={styles.MessageList}>{messageList}</div>
-      <ChatInput />
-    </div>
+      <Container className={styles.MessageList}>{messageList}</Container>
+      <ChatInput onSendMessage={onSendMessage} />
+    </Container>
   );
 };
 
