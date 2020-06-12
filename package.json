@@ -17,26 +17,22 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
-    "formsy-react": "^2.0.3",
+    "formik": "^2.1.4",
+    "formik-material-ui": "^2.0.0-beta.1",
     "graphql": "^15.0.0",
     "react": "^16.13.1",
     "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "redux": "^4.0.5",
-    "redux-devtools-extension": "^2.13.8",
-    "redux-thunk": "^2.3.0",
-    "styled-components": "^5.1.1",
-    "trie-search": "^1.2.11",
     "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write"
   },
   "eslintConfig": {
     "extends": "react-app"

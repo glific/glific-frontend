@@ -18,29 +18,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import DataTable from 'react-data-table-component';
 
-import { Tag } from '../../../store/Tag/types';
 import styles from './TagList.module.css';
 
-const GET_TAGS = gql`
-  {
-    tags {
-      id
-      label
-      description
-    }
-  }
-`;
-
-const DELETE_TAG = gql`
-  mutation deleteTag($id: ID!) {
-    deleteTag(id: $id) {
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
+import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 // Add a couple of parameters of this query (OFFSET, LIMIT).
 const FILTER_TAGS = gql`
@@ -70,7 +51,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
-    update(cache, { data: { deleteTag } }) {
+    update(cache) {
       const tags: any = cache.readQuery({ query: GET_TAGS });
       const tagsCopy = JSON.parse(JSON.stringify(tags));
       tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
@@ -80,25 +61,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       });
     },
   });
-
-  // TO-DO: Need to figure out how to use apollo with redux hence keeping below commented for now
-  // const tagList = useSelector((state: AppState) => {
-  //   return state.tag.tags;
-  // });
-
-  // const dispatch = useDispatch();
-
-  // const onFetchTags = useCallback(() => {
-  //   dispatch(tagActions.fetchTags());
-  // }, [dispatch]);
-
-  // const onTagDelete = (tagId: number) => {
-  //   dispatch(tagActions.deleteTag(tagId));
-  // };
-
-  // useEffect(() => {
-  //   onFetchTags();
-  // }, [onFetchTags]);
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
@@ -178,7 +140,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   return (
     <div>
       <div className={styles.AddButtton}>
-        <button onClick={() => setNewTag(true)}>New Tag</button>
+        <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
+          New Tag
+        </Button>
       </div>
       <br />
       <br />
