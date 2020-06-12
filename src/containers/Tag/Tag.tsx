@@ -4,6 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import { Button, MenuItem } from '@material-ui/core';
 import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
+import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
@@ -41,6 +42,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
     },
   });
 
+  const client = useApolloClient();
+
   let tag: any = null;
 
   useEffect(() => {
@@ -73,11 +76,29 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
+
+      client.writeQuery({
+        query: gql`
+          query notificationMessage {
+            message
+          }
+        `,
+        data: { message: 'Edited' },
+      });
     } else {
       createTag({
         variables: {
           input: payload,
         },
+      });
+
+      client.writeQuery({
+        query: gql`
+          query notificationMessage {
+            message
+          }
+        `,
+        data: { message: 'Added' },
       });
     }
     setFormSubmitted(true);
@@ -93,12 +114,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-      return (
-        <MenuItem value={language.id} key={language.id}>
-          {language.label}
-        </MenuItem>
-      );
-    })
+        return (
+          <MenuItem value={language.id} key={language.id}>
+            {language.label}
+          </MenuItem>
+        );
+      })
     : null;
 
   let form = (

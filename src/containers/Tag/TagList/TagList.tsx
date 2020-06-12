@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, gql, useMutation } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import {
   Paper,
   TableContainer,
@@ -22,10 +23,22 @@ import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 export interface TagListProps {}
 
+const notificationMessage = gql`
+  {
+    message @client
+  }
+`;
+
 export const TagList: React.SFC<TagListProps> = (props) => {
+  const client = useApolloClient();
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
+
+  const message = useQuery(notificationMessage);
+
+  const h = message.data;
+  console.log(message.data);
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
@@ -51,6 +64,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
+    client.writeQuery({
+      query: gql`
+        query notificationMessage {
+          message
+        }
+      `,
+      data: { message: 'Deleted' },
+    });
   };
 
   let listing: any;
@@ -85,6 +106,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   return (
     <div>
+      {h ? alert(h.message) : null}
       <div className={styles.AddButtton}>
         <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
           New Tag
