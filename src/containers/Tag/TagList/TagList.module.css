@@ -2,6 +2,27 @@
   min-width: 250px;
 }
 
+.TitleBar {
+  margin-bottom: 50px;
+}
+
 .AddButtton {
   float: right;
+  margin-bottom: 10px;
+}
+
+.PaginationTable .rdt_TableCell {
+  font-size: 4px;
+  border-radius: 5px;
+  height: 120px;
+}
+
+.rdt_TableCell {
+  height: 120px;
+}
+
+.searchBar {
+  background-color: #d3d3d3;
+  padding: 5px;
+  border-radius: 5px;
 }

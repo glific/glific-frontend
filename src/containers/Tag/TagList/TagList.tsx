@@ -10,9 +10,13 @@ import {
   TableHead,
   TableBody,
   IconButton,
+  InputBase,
+  Button,
 } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import DataTable from 'react-data-table-component';
 
 import { Tag } from '../../../store/Tag/types';
 import styles from './TagList.module.css';
@@ -38,12 +42,31 @@ const DELETE_TAG = gql`
   }
 `;
 
-export interface TagListProps { }
+// Add a couple of parameters of this query (OFFSET, LIMIT).
+const FILTER_TAGS = gql`
+  query tags($filter: TagFilter!, $order: SortOrder!) {
+    tags(filter: $filter, order: $order) {
+      id
+      label
+      description
+    }
+  }
+`;
+
+export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
-
-  const { loading, error, data } = useQuery(GET_TAGS);
+  // const { loading, error, data } = useQuery(GET_TAGS);
+  const { loading, error, data, fetchMore, refetch } = useQuery(FILTER_TAGS, {
+    variables: {
+      filter: {
+        label: '',
+      },
+      order: 'ASC',
+    },
+    fetchPolicy: 'cache-and-network',
+  });
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
@@ -83,41 +106,73 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  const tagList = data.tags;
 
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
   };
 
-  let listing: any;
-  if (tagList.length > 0) {
-    listing = tagList.map((n: Tag) => {
+  // Reformat all tags to be entered in table
+  function getIcons(id: number | undefined) {
+    if (id) {
       return (
-        <TableRow key={n.id}>
-          <TableCell component="th" scope="row">
-            {n.label}
-          </TableCell>
-          <TableCell scope="row">{n.description}</TableCell>
-          <TableCell>
-            <Link to={'/tag/' + n.id + '/edit'}>
-              <IconButton aria-label="Edit" color="default">
-                <EditIcon />
-              </IconButton>
-            </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id!)}>
-              <DeleteIcon />
+        <>
+          <Link to={'/tag/' + id + '/edit'}>
+            <IconButton aria-label="Edit" color="default">
+              <EditIcon />
             </IconButton>
-          </TableCell>
-        </TableRow>
+          </Link>
+          <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(id!)}>
+            <DeleteIcon />
+          </IconButton>
+        </>
       );
+    }
+  }
+
+  function formatTags(tags: Array<Tag>) {
+    return tags.map((t: Tag) => {
+      return {
+        label: t.label,
+        description: t.description,
+        operations: getIcons(t.id),
+      };
     });
-  } else {
-    listing = (
-      <TableRow>
-        <TableCell>There are no tags.</TableCell>
-      </TableRow>
-    );
+  }
+
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    let searchVal = e.target.nameSearch.value.trim();
+    console.log('you searched', searchVal);
+    refetch({
+      filter: {
+        label: searchVal,
+      },
+      order: 'ASC',
+    });
+  };
+
+  const columns = [
+    {
+      name: 'Name',
+      selector: 'label',
+      sortable: true,
+    },
+    {
+      name: 'Description',
+      selector: 'description',
+      sortable: true,
+    },
+    {
+      name: 'Operations',
+      selector: 'operations',
+      sortable: false,
+    },
+  ];
+
+  let tagList;
+  if (data) {
+    tagList = formatTags(data.tags);
   }
 
   return (
@@ -127,18 +182,40 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       </div>
       <br />
       <br />
-      <TableContainer component={Paper}>
-        <Table className={styles.Table} aria-label="tag listing">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{listing}</TableBody>
-        </Table>
-      </TableContainer>
+
+      {/* Search functionality */}
+      <form onSubmit={handleSearch}>
+        <div className={styles.searchBar}>
+          <SearchIcon style={{ verticalAlign: 'middle' }} />
+          <InputBase
+            placeholder="Search a name..."
+            inputProps={{ 'aria-label': 'search' }}
+            type="text"
+            name="nameSearch"
+          />
+          <Button color="primary" variant="contained" type="submit">
+            Search
+          </Button>
+        </div>
+      </form>
+
+      {/* Table */}
+      {tagList ? (
+        <DataTable
+          className={styles.PaginationTable}
+          columns={columns}
+          data={tagList}
+          pagination={true}
+          noHeader={true}
+          onChangePage={console.log}
+          // paginationTotalRows={50}
+        />
+      ) : (
+        <div>There are no tags.</div>
+        // <TableRow>
+        //   <TableCell>There are no tags.</TableCell>
+        // </TableRow>
+      )}
     </div>
   );
 };
