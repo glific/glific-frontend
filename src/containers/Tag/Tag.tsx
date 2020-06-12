@@ -8,7 +8,7 @@ import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
-import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES, GET_TAGS, GET_TAG, NOTIFICATION } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
@@ -78,11 +78,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       });
 
       client.writeQuery({
-        query: gql`
-          query notificationMessage {
-            message
-          }
-        `,
+        query: NOTIFICATION,
         data: { message: 'Edited' },
       });
     } else {
@@ -93,11 +89,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       });
 
       client.writeQuery({
-        query: gql`
-          query notificationMessage {
-            message
-          }
-        `,
+        query: NOTIFICATION,
         data: { message: 'Added' },
       });
     }

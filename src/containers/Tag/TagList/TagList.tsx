@@ -18,16 +18,10 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import styles from './TagList.module.css';
 
-import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { GET_TAGS, NOTIFICATION } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 export interface TagListProps {}
-
-const notificationMessage = gql`
-  {
-    message @client
-  }
-`;
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
@@ -35,7 +29,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const { loading, error, data } = useQuery(GET_TAGS);
 
-  const message = useQuery(notificationMessage);
+  const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
@@ -51,13 +45,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   useEffect(() => {
-    if (message.data) if (message.data.message) alert(message.data.message);
+    if (message.data && message.data.message) alert(message.data.message);
     client.writeQuery({
-      query: gql`
-        query notificationMessage {
-          message
-        }
-      `,
+      query: NOTIFICATION,
       data: { message: null },
     });
   }, [data]);
