@@ -37,9 +37,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const message = useQuery(notificationMessage);
 
-  const h = message.data;
-  console.log(message.data);
-
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
@@ -54,7 +51,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   useEffect(() => {
-    if (h) if (h.message) alert(h.message);
+    if (message.data) if (message.data.message) alert(message.data.message);
     client.writeQuery({
       query: gql`
         query notificationMessage {
