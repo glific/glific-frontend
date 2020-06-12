@@ -54,8 +54,16 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   useEffect(() => {
-    if (h) alert(h.message);
-  }, [h]);
+    if (h) if (h.message) alert(h.message);
+    client.writeQuery({
+      query: gql`
+        query notificationMessage {
+          message
+        }
+      `,
+      data: { message: null },
+    });
+  }, [data]);
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
