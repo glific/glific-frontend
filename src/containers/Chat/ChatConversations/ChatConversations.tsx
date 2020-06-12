@@ -1,25 +1,56 @@
 import React from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
+import { History } from 'history';
+import { gql, useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 
 export interface ChatConversationsProps {
-  //TO FIX: define clear type once this is hooked with backend
-  conversations: any;
-  selectedConversation: number;
+  //history: History;
 }
 
-export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
-  let conversationList;
+const GET_CONVERSATION_QUERY = gql`
+query conversations($nc: Int!, $sc: Int!) {
+  conversations(numberOfConversations: $nc, sizeOfConversations: $sc) {
+    contact {
+      id
+      name
+    }
+    messages {
+      id
+      body
+    }
+  }
+}
+`;
 
-  if (props.conversations.length > 0) {
-    conversationList = props.conversations.map((conversation: any) => {
+export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
+  const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
+    variables: {
+      "nc": 20,
+      "sc": 3
+    },
+  });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  if (data === undefined || data.conversations === undefined) {
+    return null;
+  }
+
+  let conversations = data.conversations;
+
+  let conversationList;
+  console.log(conversations)
+  if (conversations.length > 0) {
+    conversationList = conversations.map((conversation: any) => {
       return (
         <ChatConversation
-          key={conversation.contactId}
-          contactId={conversation.contactId}
-          contactName={conversation.contactName}
+          key={conversation.contact.id}
+          contactId={conversation.contact.id}
+          contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]}
         />
       );
@@ -48,8 +79,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         {conversationList ? (
           <List className={styles.StyledList}>{conversationList}</List>
         ) : (
-          { conversationList }
-        )}
+            { conversationList }
+          )}
       </Container>
     </Container>
   );

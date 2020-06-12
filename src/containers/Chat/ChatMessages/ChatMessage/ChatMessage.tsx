@@ -3,15 +3,16 @@ import React from 'react';
 import styles from './ChatMessage.module.css';
 
 export interface ChatMessageProps {
-  content: string;
-  date: string;
+  id: string
+  body: string;
+  // date: string;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   return (
     <div className={styles.ChatMessage}>
-      <span>{props.date}</span>
-      <p className={styles.Content}>{props.content}</p>
+      <span>June 3, 2020</span>
+      <p className={styles.Content}>{props.body}</p>
     </div>
   );
 };
