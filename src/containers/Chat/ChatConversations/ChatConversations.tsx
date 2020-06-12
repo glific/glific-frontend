@@ -1,29 +1,12 @@
 import React from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
-import { History } from 'history';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
+import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 
-export interface ChatConversationsProps {
-  //history: History;
-}
-
-const GET_CONVERSATION_QUERY = gql`
-query conversations($nc: Int!, $sc: Int!) {
-  conversations(numberOfConversations: $nc, sizeOfConversations: $sc) {
-    contact {
-      id
-      name
-    }
-    messages {
-      id
-      body
-    }
-  }
-}
-`;
+export interface ChatConversationsProps { }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {

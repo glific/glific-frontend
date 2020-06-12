@@ -1,26 +1,11 @@
 import React, { useState } from 'react';
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
-
-
-const GET_CONVERSATION_MESSAGE_QUERY = gql`
-query conversations($nc: Int!, $sc: Int!, $filter: ConversationFilter) {
-  conversations(numberOfConversations: $nc, sizeOfConversations: $sc, filter: $filter) {
-    contact {
-      id
-      name
-    }
-    messages {
-      id
-      body
-    }
-  }
-}
-`;
+import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 
 export interface ChatMessagesProps {
   chatId: string;
