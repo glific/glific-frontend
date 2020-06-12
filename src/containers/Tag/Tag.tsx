@@ -5,6 +5,8 @@ import { Button, MenuItem } from '@material-ui/core';
 import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
+
+import { Input } from '../../components/UI/Form/Input/Input';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
@@ -93,12 +95,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-      return (
-        <MenuItem value={language.id} key={language.id}>
-          {language.label}
-        </MenuItem>
-      );
-    })
+        return (
+          <MenuItem value={language.id} key={language.id}>
+            {language.label}
+          </MenuItem>
+        );
+      })
     : null;
 
   let form = (
@@ -131,10 +133,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
         {({ submitForm }) => (
           <Paper elevation={3}>
             <Form className={styles.Form}>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Label</label>
-                <Field component={TextField} name="label" type="text" />
-              </div>
+              <Field render={Input} name="label" type="text" Label="kk" />
+
               <div className={styles.Input}>
                 <label className={styles.Label}>Description</label>
                 <Field component={TextField} type="text" name="description" />
