@@ -18,7 +18,8 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import styles from './TagList.module.css';
 
-import { GET_TAGS, NOTIFICATION } from '../../../graphql/queries/Tag';
+import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 export interface TagListProps {}
