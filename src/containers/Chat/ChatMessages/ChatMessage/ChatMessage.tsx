@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './ChatMessage.module.css';
 
 export interface ChatMessageProps {
-  id: string
+  id: string;
   body: string;
   // date: string;
 }

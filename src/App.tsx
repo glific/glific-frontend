@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
@@ -9,6 +9,8 @@ import ChatPage from './components/pages/ChatPage/ChatPage';
 import styles from './App.module.css';
 
 const App = () => {
+  const defaultRedirect = () => <Redirect to="/" />;
+
   return (
     <div className={styles.App}>
       <Layout>
@@ -17,7 +19,6 @@ const App = () => {
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
           <Route path="/chat" exact component={ChatPage} />
-
           <Route
             exact
             path="/chat/:chatId"
@@ -27,6 +28,7 @@ const App = () => {
           />
           <Route path="/" exact component={DashboardPage} />
         </Switch>
+        <Route exact path="/" render={defaultRedirect} />
       </Layout>
     </div>
   );

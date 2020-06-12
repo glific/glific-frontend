@@ -16,8 +16,12 @@ export interface ChatConversationProps {
 
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   return (
-    <ListItem button className={styles.StyledListItem}
-      component={Link} to={"/chat/" + props.contactId} >
+    <ListItem
+      button
+      className={styles.StyledListItem}
+      component={Link}
+      to={'/chat/' + props.contactId}
+    >
       <ListItemAvatar>
         <Avatar>
           <ListIcon icon="conversation" />
@@ -28,7 +32,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         <div className={styles.MessageContent}>{props.lastMessage.body}</div>
         <div className={styles.MessageDate}>June 2, 2020</div>
       </div>
-    </ListItem >
+    </ListItem>
   );
 };
 

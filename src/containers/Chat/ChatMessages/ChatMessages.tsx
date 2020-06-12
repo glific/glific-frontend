@@ -21,9 +21,9 @@ interface ChatMessagesInterface {
     contact: {
       id: string;
       name: string;
-    }
+    };
     messages: Array<ConversationMessage>;
-  }
+  };
 }
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
@@ -33,9 +33,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
 
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: {
-      "nc": 1,
-      "sc": 25,
-      "filter": { "id": chatId }
+      nc: 1,
+      sc: 25,
+      filter: { id: chatId },
     },
   });
 
@@ -48,16 +48,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
 
   let conversations = data.conversations;
 
-  const messageList = conversations
-    .map((conversation: any) => {
+  let messageList;
+  let contactName;
+  if (conversations.length > 0) {
+    contactName = conversations[0].contact.name;
+    messageList = conversations.map((conversation: any) => {
       return conversation.messages.map((message: any, index: number) => {
         return <ChatMessage {...message} key={index} />;
       });
     });
+  }
 
   return (
     <div className={styles.ChatMessages}>
-      <ContactBar contactName={conversations[0].contact.name} />
+      <ContactBar contactName={contactName} />
       <div className={styles.MessageList}>{messageList}</div>
       <ChatInput />
     </div>

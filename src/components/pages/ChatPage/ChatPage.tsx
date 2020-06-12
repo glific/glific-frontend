@@ -9,9 +9,7 @@ export interface ChatPageProps {
   chatId: string;
 }
 
-
 const ChatPage: React.SFC<ChatPageProps> = ({ chatId }) => {
-
   return (
     <Paper>
       <div className={styles.ChatPage}>

@@ -6,13 +6,13 @@ import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 
-export interface ChatConversationsProps { }
+export interface ChatConversationsProps {}
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: {
-      "nc": 20,
-      "sc": 3
+      nc: 20,
+      sc: 3,
     },
   });
 
@@ -26,7 +26,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   let conversations = data.conversations;
 
   let conversationList;
-  console.log(conversations)
   if (conversations.length > 0) {
     conversationList = conversations.map((conversation: any) => {
       return (
@@ -62,8 +61,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
         {conversationList ? (
           <List className={styles.StyledList}>{conversationList}</List>
         ) : (
-            { conversationList }
-          )}
+          { conversationList }
+        )}
       </Container>
     </Container>
   );
