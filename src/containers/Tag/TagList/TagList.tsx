@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -53,6 +53,10 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
+  useEffect(() => {
+    if (h) alert(h.message);
+  }, [h]);
+
   if (newTag) {
     return <Redirect to="/tag/add" />;
   }
@@ -106,7 +110,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   return (
     <div>
-      {h ? alert(h.message) : null}
       <div className={styles.AddButtton}>
         <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
           New Tag
