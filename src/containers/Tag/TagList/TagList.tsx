@@ -50,7 +50,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       query: NOTIFICATION,
       data: { message: null },
     });
-  }, [data]);
+  }, [message, client]);
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
@@ -64,11 +64,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     deleteId = id;
     deleteTag({ variables: { id } });
     client.writeQuery({
-      query: gql`
-        query notificationMessage {
-          message
-        }
-      `,
+      query: NOTIFICATION,
       data: { message: 'Deleted' },
     });
   };
