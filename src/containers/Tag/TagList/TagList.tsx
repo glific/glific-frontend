@@ -65,7 +65,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     deleteTag({ variables: { id } });
     client.writeQuery({
       query: NOTIFICATION,
-      data: { message: 'Deleted' },
+      data: { message: 'Tag deleted successfully!' },
     });
   };
 

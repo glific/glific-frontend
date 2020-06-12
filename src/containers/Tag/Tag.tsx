@@ -68,6 +68,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       isReserved: tag.isReserved,
       languageId: Number(tag.languageId),
     };
+    let message;
 
     if (tagId) {
       updateTag({
@@ -76,23 +77,19 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
-
-      client.writeQuery({
-        query: NOTIFICATION,
-        data: { message: 'Edited' },
-      });
+      message = 'Tag edited successfully!';
     } else {
       createTag({
         variables: {
           input: payload,
         },
       });
-
-      client.writeQuery({
-        query: NOTIFICATION,
-        data: { message: 'Added' },
-      });
+      message = 'Tag added successfully!';
     }
+    client.writeQuery({
+      query: NOTIFICATION,
+      data: { message },
+    });
     setFormSubmitted(true);
   };
 
