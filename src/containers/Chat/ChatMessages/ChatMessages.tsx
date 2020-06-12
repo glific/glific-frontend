@@ -63,7 +63,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   }
 
   return (
-    <Container className={styles.ChatMessages}>
+    <Container className={styles.ChatMessages} disableGutters>
       <ContactBar contactName={contactName} />
       <Container className={styles.MessageList}>{messageList}</Container>
       <ChatInput onSendMessage={onSendMessage} />
