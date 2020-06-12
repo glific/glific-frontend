@@ -18,10 +18,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import DataTable from 'react-data-table-component';
 
-import styles from './TagList.module.css';
-
+// import { Tag } from '../../../store/Tag/types';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
+
+import styles from './TagList.module.css';
 
 // Add a couple of parameters of this query (OFFSET, LIMIT).
 const FILTER_TAGS = gql`
@@ -92,8 +93,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     }
   }
 
-  function formatTags(tags: Array<Tag>) {
-    return tags.map((t: Tag) => {
+  function formatTags(tags: Array<any>) {
+    // Should be type tag, import Tag type into file
+    return tags.map((t: any) => {
       return {
         label: t.label,
         description: t.description,
