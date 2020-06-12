@@ -1,19 +1,21 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { Field } from 'formik';
-import styles from './Input.module.css';
+import styles from './Checkbox.module.css';
+import Checkbox from '@material-ui/core/Checkbox';
 
-export interface InputElementProps {
+export interface CheckboxElementProps {
   type?: any;
+  field: any;
+
   label: string;
-  name: string;
+  form: any;
 }
 
-export const Checkbox: React.SFC<InputElementProps> = (props) => {
+export const CheckboxElement: React.SFC<CheckboxElementProps> = (props) => {
   return (
     <div className={styles.Input}>
       <label className={styles.Label}>{props.label}</label>
-      <Field component={TextField} name={props.name} type={props.type} />
+      <Checkbox {...props.field} />
     </div>
   );
 };

@@ -1,19 +1,31 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
-import { Field } from 'formik';
-import styles from './Input.module.css';
+import MenuItem from '@material-ui/core/MenuItem';
+import styles from './Dropdown.module.css';
+import Select from '@material-ui/core/Select';
 
-export interface InputElementProps {
+export interface DropdownElementProps {
   type?: any;
+  field: any;
+  options: any;
   label: string;
-  name: string;
+  form: any;
 }
 
-export const Input: React.SFC<InputElementProps> = (props) => {
+export const Dropdown: React.SFC<DropdownElementProps> = (props) => {
+  console.log(props);
+  const options = props.options
+    ? props.options.map((option: any) => {
+        return (
+          <MenuItem value={option.id} key={option.id}>
+            {option.label}
+          </MenuItem>
+        );
+      })
+    : null;
   return (
     <div className={styles.Input}>
       <label className={styles.Label}>{props.label}</label>
-      <Field component={TextField} name={props.name} type={props.type} />
+      <Select {...props.field}>{options}</Select>
     </div>
   );
 };

@@ -1,25 +1,28 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
-import { Field } from 'formik';
+
 import styles from './Input.module.css';
-import { useField, withFormik } from 'formik';
 
 export interface InputElementProps {
   type?: any;
   field: any;
-  meta: any;
-  helpers: any;
-  Label: string;
+
+  label: string;
   form: any;
 }
 
 export const Input: React.SFC<InputElementProps> = (props) => {
-  console.log(props);
-  const meta = props.meta.error;
+  const touched = props.form.touched;
+  const error = props.form.errors;
+  const name = props.field.name;
   return (
     <div className={styles.Input}>
-      <label className={styles.Label}>{props.Label}</label>
-      <TextField error={meta ? true : false} helperText={meta} {...props.field} />
+      <label className={styles.Label}>{props.label}</label>
+      <TextField
+        error={error[name] && touched[name] ? true : false}
+        helperText={touched[name] ? error[name] : null}
+        {...props.field}
+      />
     </div>
   );
 };

@@ -7,6 +7,8 @@ import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
 
 import { Input } from '../../components/UI/Form/Input/Input';
+import { CheckboxElement } from '../../components/UI/Form/Checkbox/Checkbox';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
@@ -60,6 +62,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   if (error) return <p>Error :(</p>;
 
   const saveHandler = (tag: any) => {
+    console.log(tag);
     const payload = {
       label: tag.label,
       description: tag.description,
@@ -93,15 +96,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
     return <Redirect to="/tag" />;
   }
 
-  const languageOptions = languages.data
-    ? languages.data.languages.map((language: any) => {
-        return (
-          <MenuItem value={language.id} key={language.id}>
-            {language.label}
-          </MenuItem>
-        );
-      })
-    : null;
+  const languageOptions = languages.data ? languages.data.languages : null;
 
   let form = (
     <>
@@ -133,26 +128,30 @@ export const Tag: React.SFC<TagProps> = (props) => {
         {({ submitForm }) => (
           <Paper elevation={3}>
             <Form className={styles.Form}>
-              <Field render={Input} name="label" type="text" Label="kk" />
+              <Field component={Input} name="label" type="text" label="Label" />
+              <Field component={Input} type="text" name="description" label="Description" />
 
-              <div className={styles.Input}>
-                <label className={styles.Label}>Description</label>
-                <Field component={TextField} type="text" name="description" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Is Active?</label>
-                <Field component={CheckboxWithLabel} type="checkbox" name="isActive" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Is Reserved?</label>
-                <Field component={CheckboxWithLabel} name="isReserved" type="checkbox" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Language</label>
-                <Field component={Select} name="languageId">
-                  {languageOptions}
-                </Field>
-              </div>
+              <Field
+                component={CheckboxElement}
+                type="checkbox"
+                name="isActive"
+                label="Is Active"
+              />
+
+              <Field
+                component={CheckboxElement}
+                name="isReserved"
+                type="checkbox"
+                label="Is Reserved"
+              />
+
+              <Field
+                component={Dropdown}
+                name="languageId"
+                options={languageOptions}
+                label="Language"
+              />
+
               <div className={styles.Buttons}>
                 <Button variant="contained" color="primary" onClick={submitForm}>
                   Save
