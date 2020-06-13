@@ -12,8 +12,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  // <React.StrictMode>
-  <>
+  <React.StrictMode>
     <CssBaseline />
     <ApolloProvider client={gqlClient}>
       <ThemeProvider theme={theme}>
@@ -22,8 +21,7 @@ ReactDOM.render(
         </BrowserRouter>
       </ThemeProvider>
     </ApolloProvider>
-  </>,
-  // </React.StrictMode>,
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
