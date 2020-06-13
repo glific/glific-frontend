@@ -5,7 +5,7 @@ import { Button, MenuItem } from '@material-ui/core';
 import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
@@ -93,12 +93,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-      return (
-        <MenuItem value={language.id} key={language.id}>
-          {language.label}
-        </MenuItem>
-      );
-    })
+        return (
+          <MenuItem value={language.id} key={language.id}>
+            {language.label}
+          </MenuItem>
+        );
+      })
     : null;
 
   let form = (
