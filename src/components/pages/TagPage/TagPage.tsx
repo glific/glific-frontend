@@ -8,7 +8,7 @@ export interface TagPageProps {}
 export const TagPage: React.SFC<TagPageProps> = () => {
   return (
     <div>
-      <Typography variant="h5">Tags</Typography>
+      {/* <Typography variant="h5">Tags</Typography> */}
       <TagList />
     </div>
   );
