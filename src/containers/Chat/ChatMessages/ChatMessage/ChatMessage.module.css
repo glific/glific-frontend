@@ -9,6 +9,7 @@
   margin-top: 10px;
   margin-bottom: 10px;
   clear: both;
+  min-width: 85px;
 }
 
 .ChatMessage::after {
