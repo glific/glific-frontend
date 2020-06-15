@@ -4,10 +4,12 @@ import { Formik, Form, Field } from 'formik';
 import { Button, MenuItem } from '@material-ui/core';
 import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
+import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { setNotification } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
@@ -41,6 +43,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
     },
   });
 
+  const client = useApolloClient();
+
   let tag: any = null;
 
   useEffect(() => {
@@ -65,6 +69,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       isReserved: tag.isReserved,
       languageId: Number(tag.languageId),
     };
+    let message;
 
     if (tagId) {
       updateTag({
@@ -73,13 +78,16 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
+      message = 'Tag edited successfully!';
     } else {
       createTag({
         variables: {
           input: payload,
         },
       });
+      message = 'Tag added successfully!';
     }
+    setNotification(client, message);
     setFormSubmitted(true);
   };
 
@@ -93,12 +101,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-      return (
-        <MenuItem value={language.id} key={language.id}>
-          {language.label}
-        </MenuItem>
-      );
-    })
+        return (
+          <MenuItem value={language.id} key={language.id}>
+            {language.label}
+          </MenuItem>
+        );
+      })
     : null;
 
   let form = (
