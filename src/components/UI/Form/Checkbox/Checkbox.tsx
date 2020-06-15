@@ -1,5 +1,4 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
 import styles from './Checkbox.module.css';
 import { Checkbox as CheckboxElement } from '@material-ui/core';
 
