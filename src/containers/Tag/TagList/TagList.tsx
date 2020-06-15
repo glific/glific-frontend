@@ -48,7 +48,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   useEffect(() => {
     if (message.data && message.data.message) alert(message.data.message);
-    setNotification(client, NOTIFICATION, null);
+    setNotification(client, null);
   }, [message, client]);
 
   if (newTag) {
@@ -62,7 +62,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
-    setNotification(client, NOTIFICATION, 'Tag deleted Successfully');
+    setNotification(client, 'Tag deleted Successfully');
   };
 
   let listing: any;

@@ -1,6 +1,7 @@
-export const setNotification = (client: any, query: any, message: string | null) => {
+import { NOTIFICATION } from '../graphql/queries/Notification';
+export const setNotification = (client: any, message: string | null) => {
   client.writeQuery({
-    query: query,
+    query: NOTIFICATION,
     data: { message },
   });
 };
