@@ -12,7 +12,6 @@ export interface DropdownProps {
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
-  console.log(props);
   const options = props.options
     ? props.options.map((option: any) => {
         return (
