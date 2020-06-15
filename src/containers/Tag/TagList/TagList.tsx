@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { notify } from '../../../common/notification';
+import { setNotification } from '../../../common/notification';
 import {
   Paper,
   TableContainer,
@@ -48,7 +48,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   useEffect(() => {
     if (message.data && message.data.message) alert(message.data.message);
-    notify(client, NOTIFICATION, null);
+    setNotification(client, NOTIFICATION, null);
   }, [message, client]);
 
   if (newTag) {
@@ -62,7 +62,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
-    notify(client, NOTIFICATION, 'Tag deleted Successfully');
+    setNotification(client, NOTIFICATION, 'Tag deleted Successfully');
   };
 
   let listing: any;
