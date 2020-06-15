@@ -10,6 +10,7 @@ import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
+import { notify } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
@@ -87,10 +88,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       });
       message = 'Tag added successfully!';
     }
-    client.writeQuery({
-      query: NOTIFICATION,
-      data: { message },
-    });
+    notify(client, NOTIFICATION, message);
     setFormSubmitted(true);
   };
 

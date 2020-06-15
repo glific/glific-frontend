@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
+import { notify } from '../../../common/notification';
 import {
   Paper,
   TableContainer,
@@ -47,10 +48,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   useEffect(() => {
     if (message.data && message.data.message) alert(message.data.message);
-    client.writeQuery({
-      query: NOTIFICATION,
-      data: { message: null },
-    });
+    notify(client, NOTIFICATION, null);
   }, [message, client]);
 
   if (newTag) {
@@ -64,10 +62,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
-    client.writeQuery({
-      query: NOTIFICATION,
-      data: { message: 'Tag deleted successfully!' },
-    });
+    notify(client, NOTIFICATION, 'Tag deleted Successfully');
   };
 
   let listing: any;
