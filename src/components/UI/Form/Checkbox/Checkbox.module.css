@@ -1,0 +1,10 @@
+.Checkbox {
+  display: flex;
+  padding: 20px;
+}
+
+.Label {
+  width: 50%;
+  align-self: center;
+  font-weight: bold;
+}
