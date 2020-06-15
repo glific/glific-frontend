@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button, MenuItem } from '@material-ui/core';
-import { TextField, Select } from 'formik-material-ui';
-import { CheckboxWithLabel } from 'formik-material-ui';
+import { Button, MenuItem, Select } from '@material-ui/core';
+
 import styles from './Tag.module.css';
 
 import { Input } from '../../components/UI/Form/Input/Input';
-import { CheckboxElement } from '../../components/UI/Form/Checkbox/Checkbox';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
@@ -98,6 +97,26 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data ? languages.data.languages : null;
 
+  const formFields = [
+    { component: Input, name: 'label', type: 'text', label: 'label', options: null },
+    { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
+    { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
+    {
+      component: Checkbox,
+      name: 'isReserved',
+      type: 'checkbox',
+      label: 'Is Reserved',
+      options: null,
+    },
+    {
+      component: Dropdown,
+      name: 'languageId',
+      type: null,
+      label: 'Language',
+      options: languageOptions,
+    },
+  ];
+
   let form = (
     <>
       <Formik
@@ -128,30 +147,17 @@ export const Tag: React.SFC<TagProps> = (props) => {
         {({ submitForm }) => (
           <Paper elevation={3}>
             <Form className={styles.Form}>
-              <Field component={Input} name="label" type="text" label="Label" />
-              <Field component={Input} type="text" name="description" label="Description" />
-
-              <Field
-                component={CheckboxElement}
-                type="checkbox"
-                name="isActive"
-                label="Is Active"
-              />
-
-              <Field
-                component={CheckboxElement}
-                name="isReserved"
-                type="checkbox"
-                label="Is Reserved"
-              />
-
-              <Field
-                component={Dropdown}
-                name="languageId"
-                options={languageOptions}
-                label="Language"
-              />
-
+              {formFields.map((field) => {
+                return (
+                  <Field
+                    component={field.component}
+                    name={field.name}
+                    type={field.type}
+                    label={field.label}
+                    options={field.options}
+                  ></Field>
+                );
+              })}
               <div className={styles.Buttons}>
                 <Button variant="contained" color="primary" onClick={submitForm}>
                   Save

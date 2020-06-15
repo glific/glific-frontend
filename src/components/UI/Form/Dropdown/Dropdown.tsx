@@ -23,7 +23,7 @@ export const Dropdown: React.SFC<DropdownElementProps> = (props) => {
       })
     : null;
   return (
-    <div className={styles.Input}>
+    <div className={styles.Dropdown}>
       <label className={styles.Label}>{props.label}</label>
       <Select {...props.field}>{options}</Select>
     </div>

@@ -3,7 +3,7 @@ import { TextField } from '@material-ui/core';
 
 import styles from './Input.module.css';
 
-export interface InputElementProps {
+export interface InputProps {
   type?: any;
   field: any;
 
@@ -11,10 +11,11 @@ export interface InputElementProps {
   form: any;
 }
 
-export const Input: React.SFC<InputElementProps> = (props) => {
+export const Input: React.SFC<InputProps> = (props) => {
   const touched = props.form.touched;
   const error = props.form.errors;
   const name = props.field.name;
+
   return (
     <div className={styles.Input}>
       <label className={styles.Label}>{props.label}</label>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
 import styles from './Checkbox.module.css';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Checkbox as CheckBox } from '@material-ui/core';
 
-export interface CheckboxElementProps {
+export interface CheckboxProps {
   type?: any;
   field: any;
 
@@ -11,11 +11,11 @@ export interface CheckboxElementProps {
   form: any;
 }
 
-export const CheckboxElement: React.SFC<CheckboxElementProps> = (props) => {
+export const Checkbox: React.SFC<CheckboxProps> = (props) => {
   return (
-    <div className={styles.Input}>
+    <div className={styles.Checkbox}>
       <label className={styles.Label}>{props.label}</label>
-      <Checkbox {...props.field} />
+      <CheckBox {...props.field} />
     </div>
   );
 };
