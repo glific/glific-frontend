@@ -1,91 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button, LinearProgress, MenuItem } from '@material-ui/core';
-import { TextField, Checkbox, Select } from 'formik-material-ui';
+import { Button, MenuItem } from '@material-ui/core';
+import { TextField, Select } from 'formik-material-ui';
 import { CheckboxWithLabel } from 'formik-material-ui';
 import styles from './Tag.module.css';
-import * as tagTypes from '../../store/Tag/types';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
+import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
   match: any;
 }
-
-const GET_LANGUAGES = gql`
-  {
-    languages {
-      id
-      label
-    }
-  }
-`;
-
-const GET_TAGS = gql`
-  {
-    tags {
-      id
-      description
-      label
-    }
-  }
-`;
-
-const GET_TAG = gql`
-  query getTag($id: ID!) {
-    tag(id: $id) {
-      tag {
-        id
-        label
-        description
-        isActive
-        isReserved
-        language {
-          id
-        }
-      }
-    }
-  }
-`;
-
-const CREATE_TAG = gql`
-  mutation creTag($input: TagInput!) {
-    createTag(input: $input) {
-      tag {
-        id
-        description
-        label
-        isActive
-        isReserved
-        language {
-          id
-        }
-      }
-    }
-  }
-`;
-
-const UPDATE_TAG = gql`
-  mutation updateTag($id: ID!, $input: TagInput!) {
-    updateTag(id: $id, input: $input) {
-      tag {
-        id
-        label
-        isActive
-        isReserved
-        description
-        language {
-          id
-        }
-      }
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
 
 export const Tag: React.SFC<TagProps> = (props) => {
   const tagId = props.match.params.id ? props.match.params.id : false;
@@ -130,8 +57,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
-  const saveHandler = (tag: tagTypes.Tag) => {
-    const payload: tagTypes.Tag = {
+  const saveHandler = (tag: any) => {
+    const payload = {
       label: tag.label,
       description: tag.description,
       isActive: tag.isActive,
@@ -166,12 +93,12 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
-        return (
-          <MenuItem value={language.id} key={language.id}>
-            {language.label}
-          </MenuItem>
-        );
-      })
+      return (
+        <MenuItem value={language.id} key={language.id}>
+          {language.label}
+        </MenuItem>
+      );
+    })
     : null;
 
   let form = (
@@ -186,7 +113,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
           languageId: languageId,
         }}
         validate={(values) => {
-          const errors: Partial<tagTypes.Tag> = {};
+          const errors: Partial<any> = {};
           if (!values.label) {
             errors.label = 'Required';
           } else if (values.label.length > 10) {

@@ -15,31 +15,12 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { Tag } from '../../../store/Tag/types';
 import styles from './TagList.module.css';
 
-const GET_TAGS = gql`
-  {
-    tags {
-      id
-      label
-      description
-    }
-  }
-`;
+import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
-const DELETE_TAG = gql`
-  mutation deleteTag($id: ID!) {
-    deleteTag(id: $id) {
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
-
-export interface TagListProps { }
+export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
@@ -48,7 +29,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
-    update(cache, { data: { deleteTag } }) {
+    update(cache) {
       const tags: any = cache.readQuery({ query: GET_TAGS });
       const tagsCopy = JSON.parse(JSON.stringify(tags));
       tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
@@ -58,25 +39,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       });
     },
   });
-
-  // TO-DO: Need to figure out how to use apollo with redux hence keeping below commented for now
-  // const tagList = useSelector((state: AppState) => {
-  //   return state.tag.tags;
-  // });
-
-  // const dispatch = useDispatch();
-
-  // const onFetchTags = useCallback(() => {
-  //   dispatch(tagActions.fetchTags());
-  // }, [dispatch]);
-
-  // const onTagDelete = (tagId: number) => {
-  //   dispatch(tagActions.deleteTag(tagId));
-  // };
-
-  // useEffect(() => {
-  //   onFetchTags();
-  // }, [onFetchTags]);
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
@@ -93,7 +55,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let listing: any;
   if (tagList.length > 0) {
-    listing = tagList.map((n: Tag) => {
+    listing = tagList.map((n: any) => {
       return (
         <TableRow key={n.id}>
           <TableCell component="th" scope="row">
