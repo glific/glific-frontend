@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button } from '@material-ui/core';
-
-import styles from './Tag.module.css';
-
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Button } from '@material-ui/core';
+import { useApolloClient } from '@apollo/client';
+import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { setNotification } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
@@ -44,6 +44,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
     },
   });
 
+  const client = useApolloClient();
+
   let tag: any = null;
 
   useEffect(() => {
@@ -68,6 +70,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       isReserved: tag.isReserved,
       languageId: Number(tag.languageId),
     };
+    let message;
 
     if (tagId) {
       updateTag({
@@ -76,13 +79,16 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
+      message = 'Tag edited successfully!';
     } else {
       createTag({
         variables: {
           input: payload,
         },
       });
+      message = 'Tag added successfully!';
     }
+    setNotification(client, message);
     setFormSubmitted(true);
   };
 
@@ -95,7 +101,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;
-
   const formFields = [
     { component: Input, name: 'label', type: 'text', label: 'label', options: null },
     { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
