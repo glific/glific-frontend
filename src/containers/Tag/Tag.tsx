@@ -61,7 +61,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
   if (error) return <p>Error :(</p>;
 
   const saveHandler = (tag: any) => {
-    console.log(tag);
     const payload = {
       label: tag.label,
       description: tag.description,

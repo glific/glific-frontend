@@ -3,7 +3,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import styles from './Dropdown.module.css';
 import Select from '@material-ui/core/Select';
 
-export interface DropdownElementProps {
+export interface DropdownProps {
   type?: any;
   field: any;
   options: any;
@@ -11,7 +11,7 @@ export interface DropdownElementProps {
   form: any;
 }
 
-export const Dropdown: React.SFC<DropdownElementProps> = (props) => {
+export const Dropdown: React.SFC<DropdownProps> = (props) => {
   console.log(props);
   const options = props.options
     ? props.options.map((option: any) => {
