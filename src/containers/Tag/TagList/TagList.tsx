@@ -96,12 +96,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   return (
     <div>
       <div className={styles.AddButtton}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setNewTag(true)}
-          text="New Tag"
-        />
+        <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
+          New Tag
+        </Button>
       </div>
       <br />
       <br />

@@ -163,9 +163,13 @@ export const Tag: React.SFC<TagProps> = (props) => {
                 );
               })}
               <div className={styles.Buttons}>
-                <Button variant="contained" color="primary" onClick={submitForm} text="Save" />
+                <Button variant="contained" color="primary" onClick={submitForm}>
+                  Save
+                </Button>
                 &nbsp;&nbsp;
-                <Button variant="contained" color="default" onClick={cancelHandler} text="Cancel" />
+                <Button variant="contained" color="default" onClick={cancelHandler}>
+                  Cancel
+                </Button>
               </div>
             </Form>
           </Paper>
