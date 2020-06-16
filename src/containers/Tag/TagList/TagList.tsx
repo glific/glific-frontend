@@ -12,8 +12,8 @@ import {
   TableHead,
   TableBody,
   IconButton,
-  Button,
 } from '@material-ui/core';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
