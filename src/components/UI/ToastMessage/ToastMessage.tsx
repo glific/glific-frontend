@@ -1,42 +1,38 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Snackbar } from '@material-ui/core';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+// import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert';
 
 interface Props {
   open: boolean;
   severity: Severity;
   message: String;
-  seconds: number;
+  // seconds: number;
   handleClose: Function;
 }
 
 // Since attribute severity can only have 5 values,
 type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
 
-const Alert = (props: AlertProps) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
+type CloseButton = (event: SyntheticEvent<Element, Event>) => void;
 
-const ToastMessage: React.SFC<Props> = ({ open, severity, message, seconds, handleClose }) => {
-  const handleCloseButton = (event: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
-    handleClose();
+const ToastMessage: React.SFC<Props> = ({ open, severity, message, handleClose }) => {
+  const handleCloseButton = (event: SyntheticEvent<Element, Event>) => {
+    handleClose(false);
   };
   return (
-    <div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={open}
-        autoHideDuration={seconds}
-        onClose={handleCloseButton}
-      >
-        <Alert onClose={handleCloseButton} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
-    </div>
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+      open={open}
+      autoHideDuration={4000}
+    >
+      <Alert severity={severity} onClose={handleCloseButton}>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 };
 
