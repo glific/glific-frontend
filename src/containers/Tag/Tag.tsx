@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button, MenuItem } from '@material-ui/core';
-import { TextField, Select } from 'formik-material-ui';
-import { CheckboxWithLabel } from 'formik-material-ui';
+import { Input } from '../../components/UI/Form/Input/Input';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Button } from '@material-ui/core';
+import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { setNotification } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
@@ -41,6 +44,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
     },
   });
 
+  const client = useApolloClient();
+
   let tag: any = null;
 
   useEffect(() => {
@@ -65,6 +70,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       isReserved: tag.isReserved,
       languageId: Number(tag.languageId),
     };
+    let message;
 
     if (tagId) {
       updateTag({
@@ -73,13 +79,16 @@ export const Tag: React.SFC<TagProps> = (props) => {
           input: payload,
         },
       });
+      message = 'Tag edited successfully!';
     } else {
       createTag({
         variables: {
           input: payload,
         },
       });
+      message = 'Tag added successfully!';
     }
+    setNotification(client, message);
     setFormSubmitted(true);
   };
 
@@ -91,6 +100,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
     return <Redirect to="/tag" />;
   }
 
+<<<<<<< HEAD
   const languageOptions = languages.data
     ? languages.data.languages.map((language: any) => {
         return (
@@ -100,6 +110,28 @@ export const Tag: React.SFC<TagProps> = (props) => {
         );
       })
     : null;
+=======
+  const languageOptions = languages.data ? languages.data.languages : null;
+  const formFields = [
+    { component: Input, name: 'label', type: 'text', label: 'label', options: null },
+    { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
+    { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
+    {
+      component: Checkbox,
+      name: 'isReserved',
+      type: 'checkbox',
+      label: 'Is Reserved',
+      options: null,
+    },
+    {
+      component: Dropdown,
+      name: 'languageId',
+      type: null,
+      label: 'Language',
+      options: languageOptions,
+    },
+  ];
+>>>>>>> master
 
   let form = (
     <>
@@ -131,28 +163,17 @@ export const Tag: React.SFC<TagProps> = (props) => {
         {({ submitForm }) => (
           <Paper elevation={3}>
             <Form className={styles.Form}>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Label</label>
-                <Field component={TextField} name="label" type="text" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Description</label>
-                <Field component={TextField} type="text" name="description" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Is Active?</label>
-                <Field component={CheckboxWithLabel} type="checkbox" name="isActive" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Is Reserved?</label>
-                <Field component={CheckboxWithLabel} name="isReserved" type="checkbox" />
-              </div>
-              <div className={styles.Input}>
-                <label className={styles.Label}>Language</label>
-                <Field component={Select} name="languageId">
-                  {languageOptions}
-                </Field>
-              </div>
+              {formFields.map((field) => {
+                return (
+                  <Field
+                    component={field.component}
+                    name={field.name}
+                    type={field.type}
+                    label={field.label}
+                    options={field.options}
+                  ></Field>
+                );
+              })}
               <div className={styles.Buttons}>
                 <Button variant="contained" color="primary" onClick={submitForm}>
                   Save

@@ -3,12 +3,15 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { IconButton, InputBase, Button, Typography, Divider } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import { useApolloClient } from '@apollo/client';
+import { setNotification } from '../../../common/notification';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import { TableComponent } from '../../../components/UI/TableComponent/TableComponent';
 
 import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 import styles from './TagList.module.css';
@@ -16,6 +19,7 @@ import styles from './TagList.module.css';
 export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
+  const client = useApolloClient();
   const [newTag, setNewTag] = useState(false);
 
   // For measuring when to get a new request for data.
@@ -88,6 +92,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const message = useQuery(NOTIFICATION);
+
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
@@ -101,6 +107,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
+  useEffect(() => {
+    if (message.data && message.data.message) alert(message.data.message);
+    setNotification(client, null);
+  }, [message, client]);
+
   if (newTag) {
     return <Redirect to="/tag/add" />;
   }
@@ -111,6 +122,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
+    setNotification(client, 'Tag deleted Successfully');
   };
 
   // Reformat all tags to be entered in table
