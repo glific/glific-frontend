@@ -1,56 +1,37 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import ToastMessage from './ToastMessage';
 import Alert from '@material-ui/lab/Alert';
-import { Snackbar } from '@material-ui/core';
 
 describe('<ToastMessage />', () => {
-  let wrapper: any;
-  let open = true;
+  const mockCallback = jest.fn();
 
-  const handleClose = () => {
-    return (open = false);
-  };
+  it('should not display toast message if open is false', () => {
+    const wrapper = mount(
+      <ToastMessage
+        open={false}
+        severity={'success'}
+        message={'Saved.'}
+        handleClose={mockCallback}
+      />
+    );
 
-  beforeEach(() => {
-    wrapper = shallow(<ToastMessage />);
+    expect(wrapper.find('button.MuiButtonBase-root')).toHaveLength(0);
   });
 
-  it('should not display any text if open is false', () => {
-    // const wrapper = shallow(<ToastMessage />);
-    expect(wrapper.find(Alert).text()).toBe('');
+  it('should display the message text as passed in the prop', () => {
+    const wrapper = shallow(
+      <ToastMessage open severity={'success'} message={'Saved.'} handleClose={mockCallback} />
+    );
+    expect(wrapper.find(Alert).text()).toBe('Saved.');
   });
 
-  it('should provide same message passing in prop', () => {
-    wrapper.setProps({
-      open: open,
-      message: 'Hello',
-      severity: 'success',
-      seconds: 4000,
-      handleClose: handleClose,
-    });
+  it('should check if the callback method is called when close button clicked', () => {
+    const wrapper = mount(
+      <ToastMessage open severity={'success'} message={'Saved.'} handleClose={mockCallback} />
+    );
 
-    expect(wrapper.find(Alert).text()).toBe('Hello');
-  });
-
-  it('should close toastmessage if close button is selected', () => {
-    wrapper.setProps({
-      open: open,
-      message: 'Hello',
-      severity: 'success',
-      seconds: 4000,
-      handleCloseButton: wrapper.setProps({ open: false }),
-    });
-
-    // Used to Invoke the function
-
-    wrapper
-      .find(Alert)
-      .invoke('onClose')()
-      .then(() => {
-        expect(wrapper.find(Alert).text()).toBe('');
-      });
-
-    console.log(wrapper.find(Alert).props());
+    wrapper.find('button.MuiButtonBase-root').simulate('click');
+    expect(mockCallback).toHaveBeenCalled();
   });
 });
