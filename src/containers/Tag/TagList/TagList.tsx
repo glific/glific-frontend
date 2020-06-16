@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
+import { setNotification } from '../../../common/notification';
 import {
   Paper,
   TableContainer,
@@ -14,18 +16,20 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-
 import styles from './TagList.module.css';
-
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 
 export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
+  const client = useApolloClient();
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
+
+  const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
@@ -40,6 +44,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
+  useEffect(() => {
+    if (message.data && message.data.message) alert(message.data.message);
+    setNotification(client, null);
+  }, [message, client]);
+
   if (newTag) {
     return <Redirect to="/tag/add" />;
   }
@@ -51,6 +60,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTag({ variables: { id } });
+    setNotification(client, 'Tag deleted Successfully');
   };
 
   let listing: any;
