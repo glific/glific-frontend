@@ -3,8 +3,8 @@ import { Snackbar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 interface Props {
-  open: boolean;
-  severity: Severity;
+  open?: boolean;
+  severity?: Severity;
   message: String;
   handleClose: Function;
 }
@@ -12,7 +12,12 @@ interface Props {
 // Since attribute severity can only have 5 values,
 type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
 
-const ToastMessage: React.SFC<Props> = ({ open, severity, message, handleClose }) => {
+export const ToastMessage: React.SFC<Props> = ({
+  open = true,
+  severity = 'success',
+  message,
+  handleClose,
+}) => {
   const handleCloseButton = (event?: React.SyntheticEvent) => {
     handleClose(false);
   };
