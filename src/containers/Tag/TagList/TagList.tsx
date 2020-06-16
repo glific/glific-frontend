@@ -12,8 +12,8 @@ import {
   TableHead,
   TableBody,
   IconButton,
-  Button,
 } from '@material-ui/core';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
@@ -96,9 +96,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   return (
     <div>
       <div className={styles.AddButtton}>
-        <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
-          New Tag
-        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setNewTag(true)}
+          text="New Tag"
+        />
       </div>
       <br />
       <br />

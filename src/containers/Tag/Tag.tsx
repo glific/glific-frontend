@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
+import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { Button } from '@material-ui/core';
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
@@ -163,13 +163,9 @@ export const Tag: React.SFC<TagProps> = (props) => {
                 );
               })}
               <div className={styles.Buttons}>
-                <Button variant="contained" color="primary" onClick={submitForm}>
-                  Save
-                </Button>
+                <Button variant="contained" color="primary" onClick={submitForm} text="Save" />
                 &nbsp;&nbsp;
-                <Button variant="contained" color="default" onClick={cancelHandler}>
-                  Cancel
-                </Button>
+                <Button variant="contained" color="default" onClick={cancelHandler} text="Cancel" />
               </div>
             </Form>
           </Paper>
