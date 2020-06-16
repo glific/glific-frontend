@@ -100,17 +100,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
     return <Redirect to="/tag" />;
   }
 
-<<<<<<< HEAD
-  const languageOptions = languages.data
-    ? languages.data.languages.map((language: any) => {
-        return (
-          <MenuItem value={language.id} key={language.id}>
-            {language.label}
-          </MenuItem>
-        );
-      })
-    : null;
-=======
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFields = [
     { component: Input, name: 'label', type: 'text', label: 'label', options: null },
@@ -131,7 +120,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
       options: languageOptions,
     },
   ];
->>>>>>> master
 
   let form = (
     <>
