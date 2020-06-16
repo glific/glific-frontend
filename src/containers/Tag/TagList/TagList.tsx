@@ -6,7 +6,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import DataTable from 'react-data-table-component';
+import { TableComponent } from '../../../components/UI/TableComponent/TableComponent';
 
 import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
@@ -19,28 +19,38 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
 
   // For measuring when to get a new request for data.
-  const [pageRows, setPageRows] = useState(10);
-  const [pageNum, setPageNum] = useState(1);
+  const [tableVals, setTableVals] = useState({
+    pageNum: 1,
+    pageRows: 10,
+    sortDirection: 'ASC',
+  });
+
+  // const [pageRows, setPageRows] = useState(10);
+  // const [pageNum, setPageNum] = useState(1);
+  // const [sortDirection, setSortDirection] = useState('ASC');
   const [searchVal, setSearchVal] = useState('');
-  const [sortDirection, setSortDirection] = useState('ASC');
 
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // These methods might not even be needed?
+  const handleTableChange = (attribute: string, newVal: number | string) => {
+    setTableVals({
+      ...tableVals,
+      [attribute]: newVal,
+    });
+  };
 
-  // Makes a new fetch request for new data from the back-end.
   useEffect(() => {
     refetch({
       filter: {
         label: searchVal,
       },
       opts: {
-        limit: pageRows,
-        offset: (pageNum - 1) * pageRows, // May need to change the math here for different `Rows per page` changes.
-        order: sortDirection,
+        limit: tableVals.pageNum,
+        offset: (tableVals.pageNum - 1) * tableVals.pageRows, // May need to change the math here for different `Rows per page` changes.
+        order: tableVals.sortDirection,
       },
     });
-  }, [searchVal, pageNum, pageRows, sortDirection]);
+  }, [searchVal, setTableVals]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -70,9 +80,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         label: searchVal,
       },
       opts: {
-        limit: pageRows,
+        limit: 10,
         offset: 0,
-        order: sortDirection,
+        order: 'DESC',
       },
     },
     fetchPolicy: 'cache-and-network',
@@ -160,10 +170,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   // Get tag data and total number of tags.
   let tagList: any;
   if (data) {
+    console.log('data', data.tags);
     tagList = formatTags(data.tags);
   }
 
-  let tagCount: number = pageRows;
+  let tagCount: number = tableVals.pageRows;
   if (countData) {
     tagCount = countData.countTags;
   }
@@ -212,26 +223,21 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         </div>
       </div>
 
-      {/* Table */}
+      {/* columns, data, onChangePage, onChangeRowsPerPage, paginationTotalRows, paginationPerPage, onSort, defaultSortAsc */}
+      {/* callBack(pageNum, pageRows, sortDirection) */}
       {tagList ? (
-        <DataTable
-          className={styles.Table}
+        <TableComponent
           columns={columns}
           data={tagList}
-          pagination
-          noHeader
-          onChangePage={(page, totalRows) => setPageNum(page)} // passes (page, totalRows)
-          onChangeRowsPerPage={(currentRowsPerPage, currentPage) => setPageRows(currentRowsPerPage)} // passes (currentRowsPerPage, currentPage)
-          paginationTotalRows={tagCount}
-          paginationServer
-          paginationPerPage={pageRows}
-          sortServer
-          // BUG: When trying to sort on a column, you have to click the column twice in order to see any changes.
-          onSort={(column, sortBy) => {
-            setPageNum(1);
-            setSortDirection(sortBy === 'asc' ? 'ASC' : 'DESC');
-          }} // passes (column, sortDirection, event)
-          defaultSortAsc={sortDirection === 'ASC'} // used to change icon direction
+          totalRows={tagCount}
+          handleTableChange={handleTableChange}
+          tableVals={tableVals}
+          // handlePageChange={handlePageChange}
+          // handleRowChange={handleRowChange}
+          // handleSortDirection={handleSortDirection}
+          // page={pageNum}
+          // rows={pageRows}
+          // direction={sortDirection}
         />
       ) : (
         <div>There are no tags.</div>
@@ -239,3 +245,28 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     </>
   );
 };
+
+// {/* Table */}
+// {/* // {tagList ? (
+// //   <DataTable
+// //     className={styles.Table}
+// //     columns={columns}
+// //     data={tagList}
+// //     pagination
+// //     noHeader
+// //     onChangePage={(page, totalRows) => setPageNum(page)} // passes (page, totalRows)
+// //     onChangeRowsPerPage={(currentRowsPerPage, currentPage) => setPageRows(currentRowsPerPage)} // passes (currentRowsPerPage, currentPage)
+// //     paginationTotalRows={tagCount}
+// //     paginationServer
+// //     paginationPerPage={pageRows}
+// //     sortServer
+// //     // BUG: When trying to sort on a column, you have to click the column twice in order to see any changes.
+// //     onSort={(column, sortBy) => {
+// //       setPageNum(1);
+// //       setSortDirection(sortBy === 'asc' ? 'ASC' : 'DESC');
+// //     }} // passes (column, sortDirection, event)
+// //     defaultSortAsc={sortDirection === 'ASC'} // used to change icon direction
+// //   />
+// // ) : (
+// //   <div>There are no tags.</div>
+// // )} */}
