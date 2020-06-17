@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import { IconButton, InputBase, Button, Typography, Divider } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
+import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
+import SearchIcon from '@material-ui/icons/Search';
 import { ClientTable } from '../../../components/UI/ClientTable/ClientTable';
 import { ServerTable } from '../../../components/UI/ServerTable/ServerTable';
-
 import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
@@ -236,12 +236,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               ) : null}
             </div>
           </form>
-          <Button
-            color="primary"
-            variant="contained"
-            disableElevation={true}
-            onClick={() => setNewTag(true)}
-          >
+          <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
             Add New
           </Button>
         </div>
