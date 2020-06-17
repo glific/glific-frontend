@@ -1,6 +1,6 @@
 import React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
-import { mount, configure } from 'enzyme';
+import { shallow, configure } from 'enzyme';
 import { Checkbox } from './Checkbox';
 import { Checkbox as CheckboxElement } from '@material-ui/core';
 
@@ -8,22 +8,22 @@ configure({ adapter: new Adapter() });
 
 describe('<Checbox />', () => {
   it('renders <Checkbox /> component', () => {
-    const wrapper = mount(<Checkbox />);
+    const wrapper = shallow(<Checkbox />);
     expect(wrapper).toBeTruthy();
   });
 
-  it('Correct Label', () => {
-    const wrapper = mount(<Checkbox label="Is Active" />);
+  it('should have correct Label', () => {
+    const wrapper = shallow(<Checkbox label="Is Active" />);
     expect(wrapper.find('label').text()).toEqual('Is Active');
   });
 
-  it('Initial value', () => {
-    const wrapper = mount(<Checkbox />);
-    expect(wrapper.find('input').getDOMNode().checked).toEqual(false);
+  it('should have an Initial value', () => {
+    const wrapper = shallow(<Checkbox field={{ checked: false }} />);
+    expect(wrapper.find(CheckboxElement).props().checked).toEqual(false);
   });
 
-  it('Value on Change', () => {
-    const wrapper = mount(<Checkbox field={{ checked: true }} />);
-    expect(wrapper.find('input').getDOMNode().checked).toEqual(true);
+  it('changes on value change', () => {
+    const wrapper = shallow(<Checkbox field={{ checked: true }} />);
+    expect(wrapper.find(CheckboxElement).props().checked).toEqual(true);
   });
 });
