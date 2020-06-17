@@ -21,11 +21,16 @@ import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
+import DialogBox from '../../../components/UI/DialogBox/DialogBox';
 
 export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
+
+  // DialogBox states
+  const [tagID, setTagID] = useState(0);
+
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
@@ -45,13 +50,38 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
+  const onClick = (id: any) => {
+    setTagID(id);
+  };
   const closeToastMessage = () => {
     setNotification(client, null);
+  };
+
+  const closeDialogBox = () => {
+    setTagID(0);
+  };
+
+  const handleDeleteEvent = () => {
+    if (tagID !== null) {
+      deleteHandler(tagID);
+    }
+    setTagID(0);
   };
 
   let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
+
+  let dialogBox;
+  if (tagID) {
+    dialogBox = (
+      <DialogBox
+        message="Are you sure you want to delete the tag?"
+        handleClose={closeDialogBox}
+        handleDelete={handleDeleteEvent}
+      />
+    );
   }
 
   if (newTag) {
@@ -83,7 +113,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id!)}>
+            <IconButton aria-label="Delete" color="default" onClick={() => onClick(n.id!)}>
               <DeleteIcon />
             </IconButton>
           </TableCell>
@@ -101,6 +131,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   return (
     <div>
       {toastMessage}
+      {dialogBox}
       <div className={styles.AddButtton}>
         <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
           New Tag
