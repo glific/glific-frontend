@@ -12,17 +12,17 @@ describe('<Checbox />', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('should have correct Label', () => {
+  it('should have correct label', () => {
     const wrapper = shallow(<Checkbox label="Is Active" />);
     expect(wrapper.find('label').text()).toEqual('Is Active');
   });
 
-  it('should have an Initial value', () => {
+  it('should have an initial value', () => {
     const wrapper = shallow(<Checkbox field={{ checked: false }} />);
     expect(wrapper.find(CheckboxElement).props().checked).toEqual(false);
   });
 
-  it('changes on value change', () => {
+  it('it checked when checked flag is true', () => {
     const wrapper = shallow(<Checkbox field={{ checked: true }} />);
     expect(wrapper.find(CheckboxElement).props().checked).toEqual(true);
   });

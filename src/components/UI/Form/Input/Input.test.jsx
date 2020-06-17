@@ -1,7 +1,6 @@
 import React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
 import { shallow, configure } from 'enzyme';
-
 import { Input } from './Input';
 import { TextField } from '@material-ui/core';
 
@@ -19,11 +18,11 @@ describe('<Input />', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('Correct Label', () => {
+  it('should have correct label', () => {
     expect(wrapper.find('label').text()).toEqual('My Input');
   });
 
-  it('Initial value', () => {
+  it('should have an initial value', () => {
     expect(wrapper.find(TextField).props().value).toEqual('');
   });
 });

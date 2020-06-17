@@ -12,12 +12,12 @@ describe('<Dropdown />', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('Correct Label', () => {
+  it('should have correct label', () => {
     const wrapper = shallow(<Dropdown label="Dropdown" />);
     expect(wrapper.find('label').text()).toEqual('Dropdown');
   });
 
-  it('Initial value', () => {
+  it('should have an initial value', () => {
     const wrapper = shallow(<Dropdown field={{ value: 1 }} />);
     expect(wrapper.find(Select).props().value).toEqual(1);
   });
