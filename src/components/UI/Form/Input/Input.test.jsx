@@ -1,10 +1,7 @@
 import React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure } from 'enzyme';
+import { shallow } from 'enzyme';
 import { TextField } from '@material-ui/core';
 import { Input } from './Input';
-
-configure({ adapter: new Adapter() });
 
 describe('<Input />', () => {
   const wrapper = shallow(
