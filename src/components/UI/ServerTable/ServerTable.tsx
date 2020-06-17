@@ -11,7 +11,7 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 
-export interface ServerTableProps {
+interface ServerTableProps {
   columnNames: Array<string>;
   data: any;
   totalRows: number;
