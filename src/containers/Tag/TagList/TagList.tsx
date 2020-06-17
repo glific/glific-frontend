@@ -14,6 +14,7 @@ import { ServerTable } from '../../../components/UI/ServerTable/ServerTable';
 import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 
 import styles from './TagList.module.css';
 
@@ -112,10 +113,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-    if (message.data && message.data.message) alert(message.data.message);
+  const closeToastMessage = () => {
     setNotification(client, null);
-  }, [message, client]);
+  };
+
+  let toastMessage;
+  if (message.data && message.data.message) {
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
@@ -236,9 +241,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               ) : null}
             </div>
           </form>
-          <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
-            Add New
-          </Button>
+          <div>
+            {toastMessage}
+            <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
+              Add New
+            </Button>
+          </div>
         </div>
       </div>
 
