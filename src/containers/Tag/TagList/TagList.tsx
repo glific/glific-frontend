@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -12,14 +12,15 @@ import {
   TableHead,
   TableBody,
   IconButton,
-  Button,
 } from '@material-ui/core';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 
 export interface TagListProps {}
 
@@ -44,10 +45,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-    if (message.data && message.data.message) alert(message.data.message);
+  const closeToastMessage = () => {
     setNotification(client, null);
-  }, [message, client]);
+  };
+
+  let toastMessage;
+  if (message.data && message.data.message) {
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
 
   if (newTag) {
     return <Redirect to="/tag/add" />;
@@ -95,6 +100,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   return (
     <div>
+      {toastMessage}
       <div className={styles.AddButtton}>
         <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
           New Tag
