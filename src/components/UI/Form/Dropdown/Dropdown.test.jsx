@@ -1,8 +1,8 @@
 import React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
 import { shallow, configure } from 'enzyme';
-import { Dropdown } from './Dropdown';
 import { Select } from '@material-ui/core';
+import { Dropdown } from './Dropdown';
 
 configure({ adapter: new Adapter() });
 

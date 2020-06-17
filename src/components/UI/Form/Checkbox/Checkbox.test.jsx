@@ -1,10 +1,7 @@
 import React from 'react';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure } from 'enzyme';
-import { Checkbox } from './Checkbox';
+import { shallow } from 'enzyme';
 import { Checkbox as CheckboxElement } from '@material-ui/core';
-
-configure({ adapter: new Adapter() });
+import { Checkbox } from './Checkbox';
 
 describe('<Checbox />', () => {
   it('renders <Checkbox /> component', () => {
