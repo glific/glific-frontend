@@ -116,7 +116,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
     contactName = conversations[0].contact.name;
     messageList = conversations.map((conversation: any) => {
       return conversation.messages.map((message: any, index: number) => {
-        return <ChatMessage {...message} key={index} />;
+        return <ChatMessage {...message} contactId={chatId} key={index} />;
       });
     });
   }

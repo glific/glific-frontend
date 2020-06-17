@@ -1,6 +1,4 @@
 .ChatMessage {
-  float: right;
-  background-color: #bce0f5;
   display: inline-block;
   position: relative;
   max-width: 100%;
@@ -19,16 +17,32 @@
 }
 
 .ChatMessage::before {
-  /* background-image: url(); */
   content: '';
   position: absolute;
   bottom: 3px;
   width: 12px;
   height: 19px;
-  right: -11px;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
+}
+
+.Mine {
+  float: right;
+  background-color: #bce0f5;
+}
+
+.Mine::before {
+  right: -11px;
+}
+
+.Other {
+  float: left;
+  background-color: #fff;
+}
+
+.Other::before {
+  left: -11px;
 }
 
 .Content {

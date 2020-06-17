@@ -25,6 +25,12 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
       messages {
         id
         body
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
       }
     }
   }
