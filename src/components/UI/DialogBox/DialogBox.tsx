@@ -38,7 +38,7 @@ const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleCancel,
           <Button onClick={handleCancelButton} color="primary">
             Disagree
           </Button>
-          <Button onClick={handleOKButton} color="primary" autoFocus>
+          <Button onClick={handleOKButton} color="secondary" autoFocus>
             Agree
           </Button>
         </DialogActions>
