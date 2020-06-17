@@ -9,17 +9,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 interface DialogProps {
   open?: boolean;
   message: String;
-  handleDelete: Function;
-  handleClose: Function;
+  handleCancel: Function;
+  handleOK: Function;
 }
 
-const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleDelete, handleClose }) => {
+const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleCancel, handleOK }) => {
   const handleCancelButton = () => {
-    handleClose();
+    handleCancel();
   };
 
   const handleOKButton = () => {
-    handleDelete();
+    handleOK();
   };
 
   return (
