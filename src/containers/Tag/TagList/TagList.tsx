@@ -61,7 +61,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     setTagID(0);
   };
 
-  const handleDeleteEvent = () => {
+  const handleDeleteTag = () => {
     if (tagID !== null) {
       deleteHandler(tagID);
     }
@@ -78,8 +78,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     dialogBox = (
       <DialogBox
         message="Are you sure you want to delete the tag?"
-        handleClose={closeDialogBox}
-        handleDelete={handleDeleteEvent}
+        handleCancel={closeDialogBox}
+        handleOK={handleDeleteTag}
       />
     );
   }
