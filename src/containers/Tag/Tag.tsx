@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -18,19 +18,37 @@ export interface TagProps {
 }
 
 export const Tag: React.SFC<TagProps> = (props) => {
+  const languages = useQuery(GET_LANGUAGES, {
+    onCompleted: (data) => {
+      setLanguageId('1');
+    },
+  });
   const tagId = props.match.params.id ? props.match.params.id : false;
-  const { loading, error, data } = useQuery(GET_TAG, {
+  const { loading, error } = useQuery(GET_TAG, {
     variables: { id: tagId },
     skip: !tagId,
+    onCompleted: (data) => {
+      if (tagId && data) {
+        tag = data.tag.tag;
+        setLabel(tag.label);
+        setDescription(tag.description);
+        setIsActive(tag.isActive);
+        setIsReserved(tag.isReserved);
+        setLanguageId(tag.language.id);
+      }
+    },
   });
-  const [updateTag] = useMutation(UPDATE_TAG);
-  const languages = useQuery(GET_LANGUAGES);
+  const [updateTag] = useMutation(UPDATE_TAG, {
+    onCompleted: () => {
+      setFormSubmitted(true);
+    },
+  });
 
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [isActive, setIsActive] = useState(false);
   const [isReserved, setIsReserved] = useState(false);
-  const [languageId, setLanguageId] = useState(1);
+  const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [createTag] = useMutation(CREATE_TAG, {
@@ -42,22 +60,14 @@ export const Tag: React.SFC<TagProps> = (props) => {
         data: { tags: tags.tags.concat(createTag.tag) },
       });
     },
+    onCompleted: () => {
+      setFormSubmitted(true);
+    },
   });
 
   const client = useApolloClient();
 
   let tag: any = null;
-
-  useEffect(() => {
-    if (tagId && data) {
-      tag = tagId ? data.tag.tag : null;
-      setLabel(tag.label);
-      setDescription(tag.description);
-      setIsActive(tag.isActive);
-      setIsReserved(tag.isReserved);
-      setLanguageId(tag.language.id);
-    }
-  }, [data]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -89,7 +99,6 @@ export const Tag: React.SFC<TagProps> = (props) => {
       message = 'Tag added successfully!';
     }
     setNotification(client, message);
-    setFormSubmitted(true);
   };
 
   const cancelHandler = () => {
@@ -151,9 +160,10 @@ export const Tag: React.SFC<TagProps> = (props) => {
         {({ submitForm }) => (
           <Paper elevation={3}>
             <Form className={styles.Form}>
-              {formFields.map((field) => {
+              {formFields.map((field, index) => {
                 return (
                   <Field
+                    key={index}
                     component={field.component}
                     name={field.name}
                     type={field.type}

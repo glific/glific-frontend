@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
 import {
@@ -28,9 +28,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
   const [newTag, setNewTag] = useState(false);
 
-  const { loading, error, data } = useQuery(GET_TAGS);
+  const [getTags, { loading, data }] = useLazyQuery(GET_TAGS);
 
-  const message = useQuery(NOTIFICATION);
+  const [messages, message] = useLazyQuery(NOTIFICATION);
 
   let deleteId: number = 0;
   const [deleteTag] = useMutation(DELETE_TAG, {
@@ -44,6 +44,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       });
     },
   });
+
+  useEffect(() => {
+    getTags();
+    messages();
+  }, [getTags, data, messages]);
 
   const closeToastMessage = () => {
     setNotification(client, null);
@@ -59,8 +64,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   }
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-  const tagList = data.tags;
 
   const deleteHandler = (id: number) => {
     deleteId = id;
@@ -69,8 +72,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   };
 
   let listing: any;
-  if (tagList.length > 0) {
-    listing = tagList.map((n: any) => {
+  if (data && data.tags.length > 0) {
+    listing = data.tags.map((n: any) => {
       return (
         <TableRow key={n.id}>
           <TableCell component="th" scope="row">
