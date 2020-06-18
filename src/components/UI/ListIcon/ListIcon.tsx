@@ -12,7 +12,7 @@ export interface ListIconProps {
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
   switch (props.icon) {
-    case 'dashbord':
+    case 'dashboard':
       return <HomeSharpIcon />;
     case 'tag':
       return <LabelSharpIcon />;
@@ -20,7 +20,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
       return <ChatBubbleSharpIcon />;
     case 'conversation':
       return <ForumSharpIcon />;
-    case 'verticalmenu':
+    case 'verticalMenu':
       return <MoreVertSharpIcon />;
     default:
       return <HomeSharpIcon />;
