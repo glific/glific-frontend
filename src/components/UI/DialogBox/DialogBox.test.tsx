@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import DialogBox from './DialogBox';
+import { DialogBox } from './DialogBox';
 
 describe('<DialogBox', () => {
   const mockCallbackCancel = jest.fn();
