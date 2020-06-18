@@ -21,11 +21,16 @@ import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface TagListProps {}
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
+
+  // DialogBox states
+  const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
+
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
@@ -45,13 +50,38 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
+  const showDialogHandler = (id: any) => {
+    setDeleteTagID(id);
+  };
   const closeToastMessage = () => {
     setNotification(client, null);
+  };
+
+  const closeDialogBox = () => {
+    setDeleteTagID(null);
+  };
+
+  const handleDeleteTag = () => {
+    if (deleteTagID !== null) {
+      deleteHandler(deleteTagID);
+    }
+    setDeleteTagID(null);
   };
 
   let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
+
+  let dialogBox;
+  if (deleteTagID) {
+    dialogBox = (
+      <DialogBox
+        message="Are you sure you want to delete the tag?"
+        handleCancel={closeDialogBox}
+        handleOK={handleDeleteTag}
+      />
+    );
   }
 
   if (newTag) {
@@ -83,7 +113,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(n.id!)}>
+            <IconButton
+              aria-label="Delete"
+              color="default"
+              onClick={() => showDialogHandler(n.id!)}
+            >
               <DeleteIcon />
             </IconButton>
           </TableCell>
@@ -101,6 +135,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   return (
     <div>
       {toastMessage}
+      {dialogBox}
       <div className={styles.AddButtton}>
         <Button variant="contained" color="primary" onClick={() => setNewTag(true)}>
           New Tag
