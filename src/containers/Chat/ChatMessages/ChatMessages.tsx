@@ -45,6 +45,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   });
 
   const conversations = data?.conversations;
+
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
@@ -72,27 +73,28 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
             type: 'TEXT',
           },
         },
-        update: (client, { data }) => {
-          if (data && data.createMessage) {
-            // add new conversation
-            const newConversations = {
-              ...conversations[0],
-              messages: conversations[0].messages.concat(data.createMessage),
-            };
+        update: (cache, { data }) => {
+          // add new conversation
+          const tags: any = cache.readQuery({
+            query: GET_CONVERSATION_MESSAGE_QUERY,
+            variables: {
+              count: 1,
+              size: 25,
+              filter: {},
+            },
+          });
 
-            // make a copy of current conversations
-            const currentConversations = { ...conversations };
+          if (data.createMessage.message) {
+            const message = data.createMessage.message;
 
-            // merge new conversation with current.
-            const newData = {
-              ...currentConversations,
-              0: newConversations,
-            };
-
-            client.writeQuery({
+            cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
-              variables: { chatId },
-              data: { conversations: newData },
+              variables: {
+                count: 1,
+                size: 25,
+                filter: {},
+              },
+              data: { conversations: tags.conversations[0].messages.concat(message) },
             });
           }
         },
@@ -115,9 +117,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
     // TO FIX: API should always return contact data
     contactName = conversations[0].contact.name;
     messageList = conversations.map((conversation: any) => {
-      return conversation.messages.map((message: any, index: number) => {
-        return <ChatMessage {...message} contactId={chatId} key={index} />;
-      });
+      return conversation.messages
+        .map((message: any, index: number) => {
+          return <ChatMessage {...message} contactId={chatId} key={index} />;
+        })
+        .reverse();
     });
   }
 
