@@ -29,7 +29,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
 
   // DialogBox states
-  const [tagID, setTagID] = useState(0);
+  const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
 
   const [newTag, setNewTag] = useState(false);
 
@@ -51,21 +51,21 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const showDialogHandler = (id: any) => {
-    setTagID(id);
+    setDeleteTagID(id);
   };
   const closeToastMessage = () => {
     setNotification(client, null);
   };
 
   const closeDialogBox = () => {
-    setTagID(0);
+    setDeleteTagID(null);
   };
 
   const handleDeleteTag = () => {
-    if (tagID !== null) {
-      deleteHandler(tagID);
+    if (deleteTagID !== null) {
+      deleteHandler(deleteTagID);
     }
-    setTagID(0);
+    setDeleteTagID(null);
   };
 
   let toastMessage;
@@ -74,7 +74,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   }
 
   let dialogBox;
-  if (tagID) {
+  if (deleteTagID) {
     dialogBox = (
       <DialogBox
         message="Are you sure you want to delete the tag?"
