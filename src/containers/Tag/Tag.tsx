@@ -20,7 +20,7 @@ export interface TagProps {
 export const Tag: React.SFC<TagProps> = (props) => {
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
-      setLanguageId('1');
+      setLanguageId(data.languages[0].id);
     },
   });
   const tagId = props.match.params.id ? props.match.params.id : false;
