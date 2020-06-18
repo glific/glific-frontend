@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Checkbox as CheckboxElement } from '@material-ui/core';
 import { Checkbox } from './Checkbox';
 
-describe('<Checbox />', () => {
+describe('<Checkbox />', () => {
   it('renders <Checkbox /> component', () => {
     const wrapper = shallow(<Checkbox />);
     expect(wrapper).toBeTruthy();

@@ -1,6 +1,5 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-// import { Checkbox as CheckboxElement } from '@material-ui/core';
 import { Button } from './Button';
 
 describe('<Button />', () => {
