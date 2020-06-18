@@ -14,6 +14,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
+import { Loading } from '../../../components/UI/Layout/Loading/Loading'
+import { ErrorMessage } from '../../../components/UI/Layout/ErrorMessage/ErrorMessage'
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
@@ -22,14 +24,16 @@ import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 
-export interface TagListProps {}
+export interface TagListProps { }
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
-
+  console.log(error)
+  console.log(loading)
+  console.log(data)
   const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
@@ -58,8 +62,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     return <Redirect to="/tag/add" />;
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (loading) return <Loading />;
+  if (error) return <ErrorMessage error={error?.message} />;
   const tagList = data.tags;
 
   const deleteHandler = (id: number) => {
