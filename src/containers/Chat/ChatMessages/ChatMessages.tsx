@@ -75,7 +75,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
         },
         update: (cache, { data }) => {
           // add new conversation
-          const tags: any = cache.readQuery({
+          const messages: any = cache.readQuery({
             query: GET_CONVERSATION_MESSAGE_QUERY,
             variables: {
               count: 1,
@@ -94,7 +94,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
                 size: 25,
                 filter: {},
               },
-              data: { conversations: tags.conversations[0].messages.concat(message) },
+              data: { conversations: messages.conversations[0].messages.concat(message) },
             });
           }
         },
