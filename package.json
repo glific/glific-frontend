@@ -58,6 +58,7 @@
     ],
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}",
+      "!src/config/*.{ts,tsx}",
       "!src/index.tsx"
     ],
     "coverageReporters": [
