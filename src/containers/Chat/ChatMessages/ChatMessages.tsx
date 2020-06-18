@@ -38,8 +38,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   // let's get the conversation for last contacted contact.
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: {
-      nc: 1,
-      sc: 25,
+      count: 1,
+      size: 25,
       filter: { id: chatId },
     },
   });

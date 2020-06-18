@@ -11,8 +11,8 @@ export interface ChatConversationsProps {}
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: {
-      nc: 20,
-      sc: 3,
+      count: 20,
+      size: 3,
     },
   });
 
