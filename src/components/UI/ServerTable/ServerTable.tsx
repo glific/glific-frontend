@@ -10,6 +10,7 @@ import {
   Paper,
   TableSortLabel,
 } from '@material-ui/core';
+import styles from './ServerTable.module.css';
 
 interface ServerTableProps {
   columnNames: Array<string>;
@@ -49,7 +50,7 @@ export const ServerTable: React.SFC<ServerTableProps> = (props) => {
                     active={name === props.tableVals.sortCol}
                     direction={props.tableVals.sortDirection}
                     onClick={() => {
-                      props.handleTableChange('currSort', name);
+                      props.handleTableChange('sortCol', name);
                       props.handleTableChange(
                         'sortDirection',
                         props.tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
