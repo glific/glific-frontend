@@ -21,7 +21,7 @@ import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import DialogBox from '../../../components/UI/DialogBox/DialogBox';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface TagListProps {}
 
@@ -50,7 +50,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
-  const onClick = (id: any) => {
+  const showDialogHandler = (id: any) => {
     setTagID(id);
   };
   const closeToastMessage = () => {
@@ -113,7 +113,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-            <IconButton aria-label="Delete" color="default" onClick={() => onClick(n.id!)}>
+            <IconButton
+              aria-label="Delete"
+              color="default"
+              onClick={() => showDialogHandler(n.id!)}
+            >
               <DeleteIcon />
             </IconButton>
           </TableCell>

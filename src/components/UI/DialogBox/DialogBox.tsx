@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import { Button } from '../Form/Button/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -13,7 +13,12 @@ interface DialogProps {
   handleOK: Function;
 }
 
-const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleCancel, handleOK }) => {
+export const DialogBox: React.SFC<DialogProps> = ({
+  open = true,
+  message,
+  handleCancel,
+  handleOK,
+}) => {
   const handleCancelButton = () => {
     handleCancel();
   };
@@ -35,10 +40,10 @@ const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleCancel,
           <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelButton} color="primary">
+          <Button variant={'contained'} onClick={handleCancelButton} color="primary">
             Disagree
           </Button>
-          <Button onClick={handleOKButton} color="secondary" autoFocus>
+          <Button onClick={handleOKButton} color="secondary" variant={'contained'}>
             Agree
           </Button>
         </DialogActions>
@@ -46,5 +51,3 @@ const DialogBox: React.SFC<DialogProps> = ({ open = true, message, handleCancel,
     </div>
   );
 };
-
-export default DialogBox;
