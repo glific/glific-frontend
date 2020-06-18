@@ -1,0 +1,13 @@
+.ChatMessages {
+  display: flex;
+  flex-flow: column;
+  height: 85vh;
+}
+
+.MessageList {
+  display: block;
+  flex: 2;
+  overflow-y: overlay;
+  padding: 0 15px;
+  height: calc(100% - 124px);
+}
