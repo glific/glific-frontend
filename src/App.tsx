@@ -21,9 +21,9 @@ const App = () => {
           <Route path="/chat" exact component={ChatPage} />
           <Route
             exact
-            path="/chat/:chatId"
-            component={({ match }: RouteComponentProps<{ chatId: string }>) => (
-              <ChatPage chatId={match.params.chatId} />
+            path="/chat/:contactId"
+            component={({ match }: RouteComponentProps<{ contactId: string }>) => (
+              <ChatPage contactId={match.params.contactId} />
             )}
           />
           <Route path="/" exact component={DashboardPage} />
