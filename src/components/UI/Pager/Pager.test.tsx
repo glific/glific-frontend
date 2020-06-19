@@ -1,6 +1,6 @@
-import React from 'react';
-import { ServerTable } from './ServerTable';
-import { shallow, mount, render } from 'enzyme';
+import React, { ChangeEvent } from 'react';
+import { Pager } from './Pager';
+import { shallow, mount } from 'enzyme';
 import {
   Table,
   TableHead,
@@ -9,7 +9,6 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-  Paper,
   TableSortLabel,
 } from '@material-ui/core';
 
@@ -34,14 +33,10 @@ describe('Server Table test', () => {
   const totalRows = 5;
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
-    // Otherwise, set all values like normal
-    // console.log('att', attribute);
-    // console.log('val', newVal);
     tableVals = {
       ...tableVals,
       [attribute]: newVal,
     };
-    // console.log('new vals', tableVals);
   };
 
   let tableVals: {
@@ -58,7 +53,7 @@ describe('Server Table test', () => {
 
   // For easier testing purposes (don't need to re-write this over and over).
   const createTable = () => (
-    <ServerTable
+    <Pager
       columnNames={columnNames}
       data={data}
       totalRows={totalRows}
@@ -67,8 +62,7 @@ describe('Server Table test', () => {
     />
   );
 
-  // CORRECTLY IMPLEMENTED
-  //   // console.log(wrapper.debug());
+  // TEST CASES
 
   it('renders a component properly', () => {
     const wrapper = shallow(createTable());
@@ -93,6 +87,18 @@ describe('Server Table test', () => {
     expect(pagProps.rowsPerPageOptions).toEqual([10, 15, 20, 25, 30]);
     expect(pagProps.onChangePage).toBeInstanceOf(Function);
     expect(pagProps.onChangeRowsPerPage).toBeInstanceOf(Function);
+  });
+
+  it('passes in tableVals correctly', () => {
+    const wrapper = shallow(createTable());
+    expect(wrapper.find(TablePagination).prop('page')).toEqual(tableVals.pageNum);
+    expect(wrapper.find(TablePagination).prop('rowsPerPage')).toEqual(tableVals.pageRows);
+    let sortLabel = wrapper
+      .find(TableSortLabel)
+      .findWhere((obj) => obj.text() === tableVals.sortCol)
+      .at(0);
+    expect(sortLabel.prop('active')).toEqual(true);
+    expect(sortLabel.prop('direction')).toEqual(tableVals.sortDirection);
   });
 
   it('renders column names correctly', () => {
@@ -135,50 +141,40 @@ describe('Server Table test', () => {
     // Backward
     wrapper.find(TablePagination).invoke('onChangePage')(null, 0);
     expect(tableVals.pageNum).toEqual(0);
-    // Random page
-    wrapper.find(TablePagination).invoke('onChangePage')(null, 5);
-    expect(tableVals.pageNum).toEqual(5);
   });
 
-  // BROKEN AT THE MOMENT, handleChange not being called.
+  it('changing rows per page', () => {
+    const wrapper = mount(createTable());
+    let event = {
+      target: {
+        value: '15',
+      },
+    };
+    const changePageRows = (newNum: string) => {
+      event.target.value = newNum;
+    };
+    wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+      event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    );
+    expect(tableVals.pageRows).toEqual(15);
+    changePageRows('30');
+    wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+      event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    );
+    expect(tableVals.pageRows).toEqual(30);
+    changePageRows('10');
+    wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+      event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    );
+    expect(tableVals.pageRows).toEqual(10);
+  });
 
-  // Changing rows per page works properly
-  // it('changing rows per page', () => {
-  //   const wrapper = shallow(createTable());
-  //   let event = {
-  //     target: {
-  //       value: 15,
-  //     },
-  //   };
-  //   const changePageRows = (newNum: number) => {
-  //     event.target.value = newNum;
-  //   };
-  //   // Simulate changing rows per page
-  //   // const onChangeMock = jest.fn();
-  //   // let newTable = (
-  //   //   <ServerTable
-  //   //     columnNames={columnNames}
-  //   //     data={data}
-  //   //     totalRows={totalRows}
-  //   //     handleTableChange={onChangeMock}
-  //   //     tableVals={tableVals}
-  //   //   />
-  //   // );
-  //   wrapper.find(TablePagination).simulate('onChangeRowsPerPage', { event });
-  //   expect(tableVals.pageRows).toEqual(15);
-  //   // changePageRows(20);
-  // });
-
-  // Changing sort by column works properly
-  // it('changing sort by column', () => {
-  //   const wrapper = shallow(createTable());
-  //   for (let i = 0; i < columnNames.length; i++) {
-  //     // Expected behavior
-  //     // console.log(wrapper.debug());
-  //     wrapper.find(TableSortLabel).at(i).invoke('onClick');
-  //     expect(tableVals.sortCol).toEqual(columnNames[i]);
-  //     expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
-  //   }
-  // });
-  // Passes in the tableVals correctly.
+  it('changing sort by column', () => {
+    const wrapper = mount(createTable());
+    for (let i = 0; i < columnNames.length; i++) {
+      wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
+      expect(tableVals.sortCol).toEqual(columnNames[i]);
+      expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
+    }
+  });
 });

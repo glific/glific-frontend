@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { ClientTable } from '../../../components/UI/ClientTable/ClientTable';
-import { ServerTable } from '../../../components/UI/ServerTable/ServerTable';
+import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
@@ -252,17 +252,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
       {/* Rendering list of tags */}
       {tagList ? (
-        <ClientTable columns={oldColumns} data={tagList} />
-      ) : (
-        <div>There are no tags.</div>
-      )}
-
-      <br />
-      <br />
-
-      {/* Testing MaterialUI table */}
-      {tagList ? (
-        <ServerTable
+        <Pager
           columnNames={columnNames}
           data={tagList}
           totalRows={tagCount}

@@ -10,9 +10,8 @@ import {
   Paper,
   TableSortLabel,
 } from '@material-ui/core';
-import styles from './ServerTable.module.css';
 
-interface ServerTableProps {
+interface PagerProps {
   columnNames: Array<string>;
   data: any;
   totalRows: number;
@@ -24,8 +23,8 @@ interface ServerTableProps {
     sortDirection: 'asc' | 'desc';
   };
 }
-
-export const ServerTable: React.SFC<ServerTableProps> = (props) => {
+// Change name to Pager
+export const Pager: React.SFC<PagerProps> = (props) => {
   // Creates the rows for the table
   const createRows = () => {
     const createRow = (entry: any) => {
