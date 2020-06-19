@@ -42,7 +42,7 @@ describe('<DialogBox', () => {
       />
     );
 
-    wrapper.find('button.MuiButton-textPrimary').simulate('click');
+    wrapper.find('button.MuiButton-containedPrimary').simulate('click');
     expect(mockCallbackCancel).toHaveBeenCalled();
   });
 
@@ -56,7 +56,7 @@ describe('<DialogBox', () => {
       />
     );
 
-    wrapper.find('button.MuiButton-textSecondary').simulate('click');
+    wrapper.find('button.MuiButton-containedSecondary').simulate('click');
     expect(mockCallbackOK).toHaveBeenCalled();
   });
 });
