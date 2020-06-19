@@ -179,25 +179,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     resetTableVals();
   };
 
-  // Making different columns for the table
-  const oldColumns = [
-    {
-      name: 'Name',
-      selector: 'label',
-      sortable: true,
-    },
-    {
-      name: 'Description',
-      selector: 'description',
-      sortable: false,
-    },
-    {
-      name: 'Operations',
-      selector: 'operations',
-      sortable: false,
-    },
-  ];
-
   // Get tag data and total number of tags.
   let tagList: any;
   if (data) {
