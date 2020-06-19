@@ -1,0 +1,11 @@
+.CenterItems {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+    flex-direction: column;
+}
+
+.LoadingPadding {
+    padding-bottom: 25px;
+}

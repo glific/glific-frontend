@@ -5,6 +5,7 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Loading } from '../../components/UI/Layout/Loading/Loading'
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
@@ -69,7 +70,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   let tag: any = null;
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   const saveHandler = (tag: any) => {
