@@ -25,6 +25,7 @@ query conversation($size: Int!, $contactId: Gid!, $filter: ConversationFilter! )
     messages {
       id
       body
+      insertedAt
       receiver {
         id
       }

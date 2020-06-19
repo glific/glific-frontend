@@ -25,6 +25,7 @@
     "formik": "^2.1.4",
     "formik-material-ui": "^2.0.0-beta.1",
     "graphql": "^15.0.0",
+    "moment": "^2.27.0",
     "phoenix": "^1.5.3",
     "react": "^16.13.1",
     "react-data-table-component": "^6.9.3",
