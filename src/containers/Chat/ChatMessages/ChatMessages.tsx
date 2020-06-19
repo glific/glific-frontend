@@ -17,6 +17,17 @@ export interface ChatMessagesProps {
 interface ConversationMessage {
   id: string;
   body: string;
+  insertedAt: string;
+  receiver: {
+    id: string;
+  };
+  sender: {
+    id: string;
+  };
+  tags: {
+    id: string;
+    label: string;
+  };
 }
 
 interface ChatMessagesInterface {

@@ -10,6 +10,11 @@ export const GET_CONVERSATION_QUERY = gql`
       messages {
         id
         body
+        insertedAt
+        tags {
+          id
+          label
+        }
       }
     }
   }
