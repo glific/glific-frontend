@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading'
-import { ErrorMessage } from '../../../components/UI/Layout/ErrorMessage/ErrorMessage'
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
@@ -60,7 +59,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   }
 
   if (loading) return <Loading />;
-  if (error) return <ErrorMessage error={error?.message} />;
+  if (error) return <p>Error</p>;
   const tagList = data.tags;
 
   const deleteHandler = (id: number) => {

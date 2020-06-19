@@ -6,7 +6,6 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { Loading } from '../../components/UI/Layout/Loading/Loading'
-import { ErrorMessage } from '../../components/UI/Layout/ErrorMessage/ErrorMessage'
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
@@ -62,7 +61,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   }, [data]);
 
   if (loading) return <Loading />;
-  if (error) return <ErrorMessage error={error?.message} />;
+  if (error) return <p>Error</p>;
 
   const saveHandler = (tag: any) => {
     const payload = {
