@@ -5,6 +5,7 @@ import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
 import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
+import { Loading } from '../../../components/UI/Layout/Loading/Loading'
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
@@ -15,7 +16,6 @@ import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-
 import styles from './TagList.module.css';
 
 export interface TagListProps {}
@@ -155,7 +155,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     return <Redirect to="/tag/add" />;
   }
 
-  if (loading || l) return <p>Loading...</p>;
+  if (loading || l) return <Loading />;
   if (error || e) return <p>Error :(</p>;
 
   const deleteHandler = (id: number) => {
