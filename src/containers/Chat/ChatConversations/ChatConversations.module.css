@@ -1,0 +1,15 @@
+.ChatConversations {
+  width: 100%;
+  height: 85vh;
+  max-width: 300px;
+  padding-left: 10px;
+}
+
+.ListingContainer {
+  height: calc(100% - 70px);
+  overflow-y: overlay;
+}
+
+.StyledList {
+  padding: 0 !important;
+}
