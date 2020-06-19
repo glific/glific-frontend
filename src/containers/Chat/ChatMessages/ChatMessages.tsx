@@ -75,12 +75,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
         },
         update: (cache, { data }) => {
           // add new conversation
+          console.log(data);
           const messages: any = cache.readQuery({
             query: GET_CONVERSATION_MESSAGE_QUERY,
             variables: {
               count: 1,
               size: 25,
-              filter: {},
+              filter: { id: chatId },
             },
           });
 
@@ -92,7 +93,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
               variables: {
                 count: 1,
                 size: 25,
-                filter: {},
+                filter: { id: chatId },
               },
               data: { conversations: messages.conversations[0].messages.concat(message) },
             });
@@ -100,7 +101,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
         },
       });
     },
-    [conversations, chatId, createMessage]
+    [chatId, createMessage]
   );
 
   if (loading) return <p>Loading...</p>;
@@ -117,11 +118,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
     // TO FIX: API should always return contact data
     contactName = conversations[0].contact.name;
     messageList = conversations.map((conversation: any) => {
-      return conversation.messages
-        .map((message: any, index: number) => {
-          return <ChatMessage {...message} contactId={chatId} key={index} />;
-        })
-        .reverse();
+      return conversation.messages.map((message: any, index: number) => {
+        return <ChatMessage {...message} contactId={chatId} key={index} />;
+      });
     });
   }
 

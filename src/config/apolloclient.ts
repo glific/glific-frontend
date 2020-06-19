@@ -1,11 +1,10 @@
 import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
-import { hasSubscription } from '@jumpn/utils-graphql';
 import absinthe from './absinthe';
 
-// see example 1
+const subscribe = require('@jumpn/utils-graphql');
 
 const link = split(
-  (operation) => hasSubscription(operation.query),
+  (operation) => subscribe.hasSubscription(operation.query),
   absinthe,
   createHttpLink({ uri: 'http://localhost:4000/api' })
 );
