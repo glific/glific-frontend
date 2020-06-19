@@ -80,13 +80,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
             variables: queryVariables,
           });
 
+          const messagesCopy = JSON.parse(JSON.stringify(messages));
+
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-
+            messagesCopy.conversations[0].messages = messagesCopy.conversations[0].messages.push(
+              message
+            );
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
-              data: { conversations: messages.conversations[0].messages.concat(message) },
+              data: messagesCopy,
             });
           }
         },
