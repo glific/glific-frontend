@@ -74,8 +74,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
           },
         },
         update: (cache, { data }) => {
-          // add new conversation
-          console.log(data);
           const messages: any = cache.readQuery({
             query: GET_CONVERSATION_MESSAGE_QUERY,
             variables: {
