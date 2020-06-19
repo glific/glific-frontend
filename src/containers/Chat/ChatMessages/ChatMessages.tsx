@@ -82,9 +82,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversations[0].messages = messagesCopy.conversations[0].messages.push(
-              message
-            );
+            messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
