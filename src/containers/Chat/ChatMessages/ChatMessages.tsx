@@ -8,6 +8,7 @@ import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatMessagesProps {
   contactId: string;
@@ -95,7 +96,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     [contactId, createMessage, queryVariables]
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   const conversations = data?.conversation;

@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatConversationsProps {}
 
@@ -16,7 +17,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     },
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   if (data === undefined || data.conversations === undefined) {
