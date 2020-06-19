@@ -10,7 +10,6 @@ describe('Loading test', () => {
 
     it('renders component properly', () => {
         const wrapper = shallow(createLoading());
-        console.log(wrapper.find(CircularProgress).props())
         expect(wrapper).toBeTruthy();
     });
 });

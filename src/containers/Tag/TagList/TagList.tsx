@@ -31,9 +31,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [newTag, setNewTag] = useState(false);
 
   const { loading, error, data } = useQuery(GET_TAGS);
-  console.log(error)
-  console.log(loading)
-  console.log(data)
   const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
