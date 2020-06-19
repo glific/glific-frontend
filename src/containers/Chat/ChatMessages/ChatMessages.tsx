@@ -36,12 +36,13 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   // let's get the conversation for last contacted contact.
+  const queryVariables = {
+    count: 1,
+    size: 25,
+    filter: { id: chatId },
+  };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-    variables: {
-      count: 1,
-      size: 25,
-      filter: { id: chatId },
-    },
+    variables: queryVariables,
   });
 
   const conversations = data?.conversations;
@@ -76,11 +77,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
         update: (cache, { data }) => {
           const messages: any = cache.readQuery({
             query: GET_CONVERSATION_MESSAGE_QUERY,
-            variables: {
-              count: 1,
-              size: 25,
-              filter: { id: chatId },
-            },
+            variables: queryVariables,
           });
 
           if (data.createMessage.message) {
@@ -88,18 +85,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
 
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
-              variables: {
-                count: 1,
-                size: 25,
-                filter: { id: chatId },
-              },
+              variables: queryVariables,
               data: { conversations: messages.conversations[0].messages.concat(message) },
             });
           }
         },
       });
     },
-    [chatId, createMessage]
+    [chatId, createMessage, queryVariables]
   );
 
   if (loading) return <p>Loading...</p>;
