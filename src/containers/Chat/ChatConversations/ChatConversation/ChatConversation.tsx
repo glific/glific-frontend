@@ -13,7 +13,7 @@ export interface ChatConversationProps {
     body: string;
     insertedAt: string;
     tags: {
-      id: string;
+      id: number;
       label: string;
     };
   };
@@ -33,9 +33,13 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         </Avatar>
       </ListItemAvatar>
       <div className={styles.ChatInfo}>
-        <div className={styles.ChatName}>{props.contactName}</div>
-        <div className={styles.MessageContent}>{props.lastMessage.body}</div>
-        <div className={styles.MessageDate}>
+        <div className={styles.ChatName} data-testid="name">
+          {props.contactName}
+        </div>
+        <div className={styles.MessageContent} data-testid="content">
+          {props.lastMessage.body}
+        </div>
+        <div className={styles.MessageDate} data-testid="date">
           {moment(props.lastMessage.insertedAt).format('HH:mm')}
         </div>
       </div>
