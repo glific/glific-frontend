@@ -4,11 +4,11 @@ import moment from 'moment';
 import styles from './ChatMessage.module.css';
 
 export interface ChatMessageProps {
-  id: string;
+  id: number;
   body: string;
-  contactId: string;
+  contactId: number;
   receiver: {
-    id: string;
+    id: number;
   };
   insertedAt: string;
 }
@@ -22,8 +22,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   return (
     <div className={[styles.ChatMessage, additionalClass].join(' ')}>
-      <div className={styles.Content}>{props.body}</div>
-      <div className={styles.Date}>{moment(props.insertedAt).format('HH:mm')}</div>
+      <div className={styles.Content} data-testid="content">
+        {props.body}
+      </div>
+      <div className={styles.Date} data-testid="date">
+        {moment(props.insertedAt).format('HH:mm')}
+      </div>
     </div>
   );
 };
