@@ -13,7 +13,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
 
   const onKeyPress = (e: any) => {
-    if (e.charCode === 13) {
+    if (e.key === 'Enter') {
       submitMessage();
     }
   };
