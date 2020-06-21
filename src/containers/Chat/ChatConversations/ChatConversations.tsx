@@ -39,7 +39,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       );
     });
   } else {
-    conversationList = <p>You do not have any conversations.</p>;
+    conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
   return (

@@ -26,7 +26,7 @@ describe('<ChatConversation />', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
 
-  test('it should render the message date  correctly', () => {
+  test('it should render the message date correctly', () => {
     expect(wrapper.find('[data-testid="date"]').text()).toEqual('00:14');
   });
 
