@@ -111,7 +111,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (error) return <p>Error :(</p>;
 
   const conversations = data?.conversation;
-  console.log('conversations', conversations);
+
   // we are always loading first conversation, hence incase chatid is not passed set it
   if (contactId === undefined) {
     contactId = conversations.contact.id;
