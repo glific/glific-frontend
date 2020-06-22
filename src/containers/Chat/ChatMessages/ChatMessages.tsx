@@ -36,15 +36,17 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
   // let's get the conversation for last contacted contact.
+  const queryVariables = {
+    count: 1,
+    size: 25,
+    filter: { id: chatId },
+  };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-    variables: {
-      count: 1,
-      size: 25,
-      filter: { id: chatId },
-    },
+    variables: queryVariables,
   });
 
   const conversations = data?.conversations;
+
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
@@ -72,33 +74,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
             type: 'TEXT',
           },
         },
-        update: (client, { data }) => {
-          if (data && data.createMessage) {
-            // add new conversation
-            const newConversations = {
-              ...conversations[0],
-              messages: conversations[0].messages.concat(data.createMessage),
-            };
+        update: (cache, { data }) => {
+          const messages: any = cache.readQuery({
+            query: GET_CONVERSATION_MESSAGE_QUERY,
+            variables: queryVariables,
+          });
 
-            // make a copy of current conversations
-            const currentConversations = { ...conversations };
+          const messagesCopy = JSON.parse(JSON.stringify(messages));
 
-            // merge new conversation with current.
-            const newData = {
-              ...currentConversations,
-              0: newConversations,
-            };
-
-            client.writeQuery({
+          if (data.createMessage.message) {
+            const message = data.createMessage.message;
+            messagesCopy.conversations[0].messages = messagesCopy.conversations[0].messages.push(
+              message
+            );
+            cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
-              variables: { chatId },
-              data: { conversations: newData },
+              variables: queryVariables,
+              data: messagesCopy,
             });
           }
         },
       });
     },
-    [conversations, chatId, createMessage]
+    [chatId, createMessage, queryVariables]
   );
 
   if (loading) return <p>Loading...</p>;

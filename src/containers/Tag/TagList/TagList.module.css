@@ -1,8 +1,87 @@
-.Table {
-  min-width: 250px;
+.Buttons {
+  border-color: #e0e0e0;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
 }
 
-.AddButtton {
-  float: right;
-  margin-bottom: 20px;
+.Table {
+  border-radius: 10px;
+}
+
+.Title {
+  vertical-align: middle;
+  height: 75%;
+}
+
+.IconButton {
+  background-color: '#e0e0e0';
+}
+
+.AddButton {
+  height: 80%;
+  text-transform: capitalize;
+  border-radius: 20px;
+  margin-left: 10px;
+}
+
+.Header {
+  display: flex;
+  padding: 10px;
+  justify-content: space-between;
+  background-color: #e0e0e0;
+  align-items: center;
+  border-radius: 10px;
+  height: 70px;
+}
+
+.HideSearch {
+  width: 0px;
+  height: 100%;
+  border: 0px;
+  border-radius: 10px;
+  outline: none;
+  background: #fcfcfc;
+  transition: all 0.35s ease;
+}
+
+.ShowSearch {
+  width: 318px;
+  height: 100%;
+  padding: 0 10px;
+  background: #ffffff;
+  transition: all 0.35s ease;
+  border-radius: 10px;
+}
+
+.SearchBar {
+  background-color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  width: 350px;
+  padding: 0px;
+  transition: all 0.35s ease;
+}
+
+.SearchIcon {
+  border-color: #e0e0e0;
+  vertical-align: middle;
+}
+
+.HideSearchBar {
+  width: 0px;
+  transition: all 0.35s ease;
+}
+
+.CloseIcon {
+  vertical-align: middle;
+  color: #a8a8a8;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.ResetSearch {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
 }

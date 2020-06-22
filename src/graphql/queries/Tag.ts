@@ -27,6 +27,22 @@ export const GET_TAG = gql`
   }
 `;
 
+export const GET_TAGS_COUNT = gql`
+  query countTags($filter: TagFilter!) {
+    countTags(filter: $filter)
+  }
+`;
+
+export const FILTER_TAGS = gql`
+  query tags($filter: TagFilter!, $opts: Opts!) {
+    tags(filter: $filter, opts: $opts) {
+      id
+      label
+      description
+    }
+  }
+`;
+
 export const GET_LANGUAGES = gql`
   {
     languages {
