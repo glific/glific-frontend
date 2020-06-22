@@ -1,6 +1,7 @@
 # Glific - Two Way Open Source Communication Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![](https://github.com/glific/glific-frontend/workflows/Continuous%20Integration/badge.svg)
 
 Frontend interface built using React.
 
