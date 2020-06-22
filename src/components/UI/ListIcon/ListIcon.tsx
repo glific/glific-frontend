@@ -12,8 +12,6 @@ export interface ListIconProps {
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
   switch (props.icon) {
-    case 'dashboard':
-      return <HomeSharpIcon />;
     case 'tag':
       return <LabelSharpIcon />;
     case 'chat':

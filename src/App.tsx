@@ -4,12 +4,11 @@ import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
-import { DashboardPage } from './components/pages/DashboardPage/DashboardPage';
 import ChatPage from './components/pages/ChatPage/ChatPage';
 import styles from './App.module.css';
 
 const App = () => {
-  const defaultRedirect = () => <Redirect to="/" />;
+  const defaultRedirect = () => <Redirect to="/chat" />;
 
   return (
     <div className={styles.App}>
@@ -26,7 +25,6 @@ const App = () => {
               <ChatPage contactId={match.params.contactId} />
             )}
           />
-          <Route path="/" exact component={DashboardPage} />
         </Switch>
         <Route exact path="/" render={defaultRedirect} />
       </Layout>
