@@ -1,10 +1,5 @@
 export const sideDrawerMenus = [
   {
-    title: 'Dashboard',
-    path: '/',
-    icon: 'dashboard',
-  },
-  {
     title: 'Chats',
     path: '/chat',
     icon: 'chat',
