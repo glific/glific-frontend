@@ -19,11 +19,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import styles from './TagList.module.css';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { DELETE_TAG } from '../../../graphql/mutations/Tag';
+import { DELETE_TAG, UPDATE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
-export interface TagListProps {}
+export interface TagListProps { }
 
 export const TagList: React.SFC<TagListProps> = (props) => {
   const client = useApolloClient();
@@ -32,6 +32,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
 
   const [newTag, setNewTag] = useState(false);
+
+  const [showError, setShowError] = useState(true);
 
   const { loading, error, data } = useQuery(GET_TAGS);
 
@@ -70,7 +72,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let toastMessage;
   if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} vertical='bottom' horizontal='left' />;
   }
 
   let dialogBox;
@@ -88,8 +90,18 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     return <Redirect to="/tag/add" />;
   }
 
+  const handleErrorClose = () => {
+    setShowError(false);
+  }
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error && showError) return <ToastMessage
+    open={true == showError}
+    severity='error'
+    message={error?.message}
+    handleClose={handleErrorClose}
+    vertical='top'
+    horizontal='center' />;
   const tagList = data.tags;
 
   const deleteHandler = (id: number) => {

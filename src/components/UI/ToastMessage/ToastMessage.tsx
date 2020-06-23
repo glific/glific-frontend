@@ -1,5 +1,5 @@
 import React from 'react';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar, SnackbarOrigin } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 interface Props {
@@ -7,6 +7,8 @@ interface Props {
   severity?: Severity;
   message: String;
   handleClose: Function;
+  vertical: SnackbarOrigin['vertical'];
+  horizontal: SnackbarOrigin['horizontal'];
 }
 
 // Since attribute severity can only have 5 values,
@@ -17,6 +19,8 @@ export const ToastMessage: React.SFC<Props> = ({
   severity = 'success',
   message,
   handleClose,
+  vertical = 'bottom',
+  horizontal = 'left',
 }) => {
   const handleCloseButton = (event?: React.SyntheticEvent) => {
     handleClose(false);
@@ -24,8 +28,8 @@ export const ToastMessage: React.SFC<Props> = ({
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
+        vertical: vertical,
+        horizontal: horizontal,
       }}
       open={open}
       autoHideDuration={4000}

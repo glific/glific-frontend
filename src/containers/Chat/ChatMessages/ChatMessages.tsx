@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { Container } from '@material-ui/core';
 
@@ -8,6 +8,7 @@ import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage'
 
 export interface ChatMessagesProps {
   chatId: string;
@@ -46,6 +47,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
 
   const conversations = data?.conversations;
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+  const [showError, setShowError] = useState(true);
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
@@ -101,8 +103,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
     [conversations, chatId, createMessage]
   );
 
+  const handleErrorClose = () => {
+    setShowError(false);
+  }
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error && showError) return <ToastMessage
+    open={true}
+    severity='error'
+    message={error?.message}
+    handleClose={handleErrorClose}
+    vertical='top'
+    horizontal='center'
+  >
+  </ToastMessage>;
 
   // we are always loading first conversation, hence incase chatid is not passed set it
   if (chatId === undefined) {

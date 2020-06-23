@@ -5,6 +5,7 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage'
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
@@ -32,6 +33,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
   const [isReserved, setIsReserved] = useState(false);
   const [languageId, setLanguageId] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [showError, setShowError] = useState(true);
 
   const [createTag] = useMutation(CREATE_TAG, {
     update(cache, { data: { createTag } }) {
@@ -59,8 +61,19 @@ export const Tag: React.SFC<TagProps> = (props) => {
     }
   }, [data]);
 
+  const handleErrorClose = () => {
+    setShowError(false);
+  }
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error && showError) return <ToastMessage
+    open={true}
+    severity='error'
+    message={error?.message}
+    handleClose={handleErrorClose}
+    vertical='top'
+    horizontal='center'
+  />;
 
   const saveHandler = (tag: any) => {
     const payload = {

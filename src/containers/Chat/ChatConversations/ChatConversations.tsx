@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage'
 
-export interface ChatConversationsProps {}
+export interface ChatConversationsProps { }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
+  const [showError, setShowError] = useState(true);
+
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: {
       count: 20,
@@ -16,8 +19,19 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     },
   });
 
+  const handleErrorClose = () => {
+    setShowError(false);
+  }
+
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (error && showError) return <ToastMessage
+    open={true}
+    severity='error'
+    message={error?.message}
+    handleClose={handleErrorClose}
+    vertical='top'
+    horizontal='center'
+  />;
 
   if (data === undefined || data.conversations === undefined) {
     return null;
@@ -50,8 +64,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
         {conversationList ? (
           <List className={styles.StyledList}>{conversationList}</List>
         ) : (
-          { conversationList }
-        )}
+            { conversationList }
+          )}
       </Container>
     </Container>
   );
