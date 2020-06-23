@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { render, wait, screen, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
@@ -7,7 +7,9 @@ import { TagList } from './TagList';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 import { Tag } from '../Tag';
+import { act } from 'react-test-renderer';
 
+afterEach(cleanup);
 const mocks = [
   {
     request: {
@@ -191,5 +193,26 @@ describe('<TagList />', () => {
     await wait();
 
     expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
+  });
+
+  test('delete button opens dialog box', async () => {
+    const { container, getByText, rerender } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <TagList />
+        </Router>
+      </MockedProvider>
+    );
+
+    await wait();
+
+    const { queryByLabelText } = within(container.querySelector('tbody tr'));
+    const button = queryByLabelText('Delete');
+
+    fireEvent.click(button);
+
+    await wait();
+
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
   });
 });
