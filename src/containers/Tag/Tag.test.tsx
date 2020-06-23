@@ -43,7 +43,6 @@ const mocks = [
   {
     request: {
       query: GET_TAGS_COUNT,
-
       variables: {
         filter: {
           label: '',
@@ -59,7 +58,6 @@ const mocks = [
   {
     request: {
       query: FILTER_TAGS,
-
       variables: {
         filter: {
           label: '',
@@ -143,9 +141,7 @@ describe('<Tag />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     expect(container.querySelector('form')).toBeInTheDocument();
   });
 
@@ -157,9 +153,7 @@ describe('<Tag />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
     expect(container.querySelector('input[name="description"]')).toBeInTheDocument();
     expect(container.querySelector('input[name="isReserved"]')).toBeInTheDocument();
@@ -177,14 +171,12 @@ describe('<Tag />', () => {
     );
 
     await wait();
-
     expect(container.querySelector('input[name="label"]').getAttribute('value')).toBe('important');
     expect(container.querySelector('input[name="description"]').getAttribute('value')).toBe(
       'important label'
     );
     expect(container.querySelector('input[name="isReserved"]').getAttribute('value')).toBe('false');
     expect(container.querySelector('input[name="isActive"]').getAttribute('value')).toBe('true');
-
     expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
   });
 
@@ -199,21 +191,13 @@ describe('<Tag />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     const { queryByText } = within(container.querySelector('form'));
-
     const button = queryByText('Cancel');
-
     fireEvent.click(button);
-
     expect(getByText('Loading...')).toBeInTheDocument();
-
     await wait();
-
     expect(getByText('Tags')).toBeInTheDocument();
-
     unmount();
   });
 });
@@ -232,7 +216,6 @@ describe('Save Button', () => {
     );
 
     await wait();
-
     fireEvent.change(container.querySelector('input[name="label"]'), {
       target: { value: 'new Tag' },
     });
@@ -248,15 +231,10 @@ describe('Save Button', () => {
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },
     });
-
     const { queryByText } = within(container.querySelector('form'));
-
     const button = queryByText('Save');
-
     fireEvent.click(button);
-
     await wait();
-
     const { getByText } = within(container.querySelector('tbody'));
     expect(getByText('new Tag')).toBeInTheDocument();
   });
