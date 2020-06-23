@@ -1,19 +1,8 @@
 import React from 'react';
-import {
-  Hidden,
-  Drawer,
-  makeStyles,
-  createStyles,
-  Theme,
-  useTheme,
-  Divider,
-  Typography,
-  ListItem,
-} from '@material-ui/core';
+import { Drawer, ListItem } from '@material-ui/core';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 import SideMenus from '../SideMenus/SideMenus';
-import * as constants from '../../../../../common/constants';
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
 
@@ -42,21 +31,19 @@ describe('side drawer testing', () => {
   it('callback is working', () => {
     const wrapper = mount(component);
     // console.log(wrapper.debug());
-    console.log(isToggled);
-    console.log(
-      wrapper
-        .find(Drawer)
-        .findWhere((obj) => !!obj.props().onClose === true)
-        .at(0)
-        .props()
-    );
-    console.log(isToggled);
-    // expect(isToggled).toBe(true);
+    let callBackObj = wrapper.find(Drawer).filterWhere((obj) => !!obj.props().onClose);
+    callBackObj.simulate('close');
+    callBackObj.invoke('onClose');
+    // expect(wrapper).toHaveBeenCalled();
   });
 
-  // constants number appear with the same tests (in the same order).
-  // for (let i = 0; i < 4; i++) {
-  // console.log(wrapper.find(Typography).at(i).text());
-  // }
-  // expect(wrapper).toHaveBeenCalled();
+  it('correct menu items rendered', () => {
+    const wrapper = mount(component);
+    // Find drawer that has the onClose prop
+    let correctDrawer = wrapper.find(Drawer).filterWhere((n) => !!n.props().onClose);
+    let menuItems = correctDrawer.find(ListItem);
+    for (let i = 0; i < menuItems.length; i++) {
+      expect(menuItems.at(i).text()).toEqual(sideDrawerMenus[i].title);
+    }
+  });
 });
