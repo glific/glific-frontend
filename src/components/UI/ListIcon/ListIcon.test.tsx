@@ -9,6 +9,12 @@ import ForumSharpIcon from '@material-ui/icons/ForumSharp';
 import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 describe('list icon tests', () => {
+  const iconList: { [type: string]: any } = {
+    tag: LabelSharpIcon,
+    chat: ChatBubbleSharpIcon,
+    conversation: ForumSharpIcon,
+    verticalMenu: MoreVertSharpIcon,
+  };
   const createIcon = (type: string) => {
     return <ListIcon icon={type} />;
   };
@@ -18,19 +24,13 @@ describe('list icon tests', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('renders label sharp', () => {
-    const wrapper = shallow(createIcon('tag'));
-    console.log(wrapper.find(LabelSharpIcon).length);
+  it('renders appropriate tags', () => {
+    let keys = Object.keys(iconList);
+    for (let i = 0; i < keys.length; i++) {
+      const wrapper = shallow(createIcon(keys[i]));
+      expect(wrapper.find(iconList[keys[i]]).length).toEqual(1);
+    }
+    const wrapper = shallow(createIcon('default case'));
+    expect(wrapper.find(HomeSharpIcon).length).toEqual(1);
   });
-
-  // case 'tag':
-  //   return <LabelSharpIcon />;
-  // case 'chat':
-  //   return <ChatBubbleSharpIcon />;
-  // case 'conversation':
-  //   return <ForumSharpIcon />;
-  // case 'verticalMenu':
-  //   return <MoreVertSharpIcon />;
-  // default:
-  //   return <HomeSharpIcon />;
 });
