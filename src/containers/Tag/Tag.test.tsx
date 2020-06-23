@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_LANGUAGES, GET_TAG } from '../../graphql/queries/Tag';
 import { Tag } from './Tag';
-import { within } from '@testing-library/dom';
 
 const mocks = [
   {
