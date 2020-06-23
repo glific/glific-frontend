@@ -164,7 +164,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const deleteHandler = (id: number) => {
     deleteId = id;
-    deleteTag({ variables: { id: id } });
+    deleteTag({ variables: { id } });
     setNotification(client, 'Tag deleted Successfully');
   };
 
