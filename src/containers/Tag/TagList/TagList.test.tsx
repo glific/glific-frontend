@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
 import { TagList } from './TagList';
+import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 import { Tag } from '../Tag';
@@ -11,6 +12,21 @@ import { act } from 'react-test-renderer';
 
 afterEach(cleanup);
 const mocks = [
+  {
+    request: {
+      query: DELETE_TAG,
+      variables: {
+        id: '87',
+      },
+    },
+    result: {
+      data: {
+        deleteTag: {
+          errors: null,
+        },
+      },
+    },
+  },
   {
     request: {
       query: GET_LANGUAGES,
@@ -194,8 +210,10 @@ describe('<TagList />', () => {
 
     expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
   });
+});
 
-  test('delete button opens dialog box', async () => {
+describe('<Dialogbox />', () => {
+  test('click on delete button opens dialog box', async () => {
     const { container, getByText, rerender } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
@@ -214,5 +232,33 @@ describe('<TagList />', () => {
     await wait();
 
     expect(screen.queryByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('click on agree button shows alert', async () => {
+    const { container, getByText, rerender } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <TagList />
+        </Router>
+      </MockedProvider>
+    );
+
+    await wait();
+
+    const { queryByLabelText } = within(container.querySelector('tbody tr'));
+    const button = queryByLabelText('Delete');
+
+    fireEvent.click(button);
+
+    await wait();
+
+    const agreeButton = screen
+      .queryByRole('dialog')
+      ?.querySelector('button.MuiButton-containedSecondary');
+    fireEvent.click(agreeButton);
+
+    await wait();
+
+    expect(screen.queryByRole('alert')).toBeInTheDocument();
   });
 });
