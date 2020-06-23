@@ -2,7 +2,7 @@ import React from 'react';
 import { render, wait } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_LANGUAGES } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES, GET_TAG } from '../../graphql/queries/Tag';
 import { Tag } from './Tag';
 import { within } from '@testing-library/dom';
 
@@ -26,6 +26,31 @@ const mocks = [
       },
     },
   },
+
+  {
+    request: {
+      query: GET_TAG,
+      variables: {
+        id: 1,
+      },
+    },
+    result: {
+      data: {
+        tag: {
+          tag: {
+            id: 1,
+            label: 'important',
+            description: 'important label',
+            isActive: true,
+            isReserved: false,
+            language: {
+              id: 1,
+            },
+          },
+        },
+      },
+    },
+  },
 ];
 
 describe('<Tag />', () => {
@@ -43,7 +68,7 @@ describe('<Tag />', () => {
     expect(container.querySelector('form')).toBeInTheDocument();
   });
 
-  it('should have a form with labels', async () => {
+  it('should have a form with inputs', async () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
@@ -54,12 +79,31 @@ describe('<Tag />', () => {
 
     await wait();
 
-    const { getByText } = within(container.querySelector('form'));
+    expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="description"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="isReserved"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="isActive"]')).toBeInTheDocument();
+    expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
+  });
 
-    expect(getByText('label')).toBeInTheDocument();
-    expect(getByText('Description')).toBeInTheDocument();
-    expect(getByText('Is Active')).toBeInTheDocument();
-    expect(getByText('Is Reserved')).toBeInTheDocument();
-    expect(getByText('Language')).toBeInTheDocument();
+  test('inputs should have mock values', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <Tag match={{ params: { id: 1 } }} />
+        </Router>
+      </MockedProvider>
+    );
+
+    await wait();
+
+    expect(container.querySelector('input[name="label"]').getAttribute('value')).toBe('important');
+    expect(container.querySelector('input[name="description"]').getAttribute('value')).toBe(
+      'important label'
+    );
+    expect(container.querySelector('input[name="isReserved"]').getAttribute('value')).toBe('false');
+    expect(container.querySelector('input[name="isActive"]').getAttribute('value')).toBe('true');
+
+    expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
   });
 });
