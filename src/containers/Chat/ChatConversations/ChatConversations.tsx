@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatConversationsProps {}
 
@@ -12,11 +13,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: {
       count: 20,
-      size: 3,
+      size: 1,
     },
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   if (data === undefined || data.conversations === undefined) {
@@ -38,7 +39,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       );
     });
   } else {
-    conversationList = <p>You do not have any conversations.</p>;
+    conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
   return (

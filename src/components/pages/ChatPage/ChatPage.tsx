@@ -6,15 +6,15 @@ import { ChatMessages } from '../../../containers/Chat/ChatMessages/ChatMessages
 import { ChatConversations } from '../../../containers/Chat/ChatConversations/ChatConversations';
 
 export interface ChatPageProps {
-  chatId: string;
+  contactId: string;
 }
 
-const ChatPage: React.SFC<ChatPageProps> = ({ chatId }) => {
+const ChatPage: React.SFC<ChatPageProps> = ({ contactId }) => {
   return (
     <Paper>
       <div className={styles.ChatPage}>
         <div className={styles.ChatMessages}>
-          <ChatMessages chatId={chatId} />
+          <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations />
