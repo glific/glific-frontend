@@ -19,6 +19,16 @@ export interface TagProps {
 }
 
 export const Tag: React.SFC<TagProps> = (props) => {
+  const queryVariables = {
+    filter: {
+      label: '',
+    },
+    opts: {
+      limit: 10,
+      offset: 0,
+      order: 'ASC',
+    },
+  };
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
       setLanguageId(data.languages[0].id);
@@ -54,10 +64,14 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const [createTag] = useMutation(CREATE_TAG, {
     update(cache, { data: { createTag } }) {
-      const tags: any = cache.readQuery({ query: FILTER_TAGS });
+      const tags: any = cache.readQuery({
+        query: FILTER_TAGS,
+        variables: queryVariables,
+      });
 
       cache.writeQuery({
         query: FILTER_TAGS,
+        variables: queryVariables,
         data: { tags: tags.tags.concat(createTag.tag) },
       });
     },

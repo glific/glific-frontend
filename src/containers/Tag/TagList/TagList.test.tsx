@@ -8,7 +8,6 @@ import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 import { Tag } from '../Tag';
-import { act } from 'react-test-renderer';
 
 afterEach(cleanup);
 const mocks = [
