@@ -1,6 +1,6 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { ListIcon } from './ListIcon';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 
 import HomeSharpIcon from '@material-ui/icons/HomeSharp';
 import LabelSharpIcon from '@material-ui/icons/LabelSharp';
