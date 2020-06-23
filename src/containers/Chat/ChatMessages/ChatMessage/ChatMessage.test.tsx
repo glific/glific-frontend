@@ -5,6 +5,7 @@ import ChatMessage from './ChatMessage';
 import moment from 'moment';
 
 describe('<ChatMessage />', () => {
+  const insertedAt = '2020-06-19T18:44:02Z';
   const defaultProps = {
     id: 1,
     body: 'Hello there!',
@@ -12,7 +13,7 @@ describe('<ChatMessage />', () => {
     receiver: {
       id: 2,
     },
-    insertedAt: '2020-06-19T18:44:02Z',
+    insertedAt,
   };
 
   const wrapper = shallow(<ChatMessage {...defaultProps} />);
@@ -21,9 +22,7 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the message date  correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
-      moment('2020-06-19T18:44:02Z').format('HH:mm')
-    );
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('HH:mm'));
   });
 
   test('it should render "Other" class for the content', () => {

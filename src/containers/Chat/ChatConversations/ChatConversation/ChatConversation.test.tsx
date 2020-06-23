@@ -5,12 +5,13 @@ import ChatConversation from './ChatConversation';
 import moment from 'moment';
 
 describe('<ChatConversation />', () => {
+  const insertedAt = '2020-06-19T18:44:02Z';
   const defaultProps = {
     contactId: 1,
     contactName: 'Jane Doe',
     lastMessage: {
       body: 'Hello there!',
-      insertedAt: '2020-06-19T18:44:02Z',
+      insertedAt,
       tags: {
         id: 1,
         label: 'Unread',
@@ -28,9 +29,7 @@ describe('<ChatConversation />', () => {
   });
 
   test('it should render the message date correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
-      moment('2020-06-19T18:44:02Z').format('HH:mm')
-    );
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('HH:mm'));
   });
 
   test('it should render the tags correctly', () => {
