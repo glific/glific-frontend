@@ -2,6 +2,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 import ChatMessage from './ChatMessage';
+import moment from 'moment';
 
 describe('<ChatMessage />', () => {
   const defaultProps = {
@@ -20,7 +21,9 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the message date  correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual('00:14');
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
+      moment('2020-06-19T18:44:02Z').format('HH:mm')
+    );
   });
 
   test('it should render "Other" class for the content', () => {
