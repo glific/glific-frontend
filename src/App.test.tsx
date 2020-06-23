@@ -1,15 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { shallow } from 'enzyme';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 
 test('check if rendering the home page correctly', () => {
-  const { getByText } = render(
+  const wrapper = shallow(
     <BrowserRouter>
       <App />
     </BrowserRouter>
   );
 
-  const welcomeMessage = getByText(/Welcome to Glific!/i);
-  expect(welcomeMessage).toBeInTheDocument();
+  expect(wrapper.exists()).toBe(true);
 });
