@@ -1,59 +1,105 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { AppState } from '../../config/store';
+import { Formik, Form, Field } from 'formik';
+import { Button } from '../../components/UI/Form/Button/Button';
+import { Input } from '../../components/UI/Form/Input/Input';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Loading } from '../../components/UI/Layout/Loading/Loading'
+import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
-import * as tagActions from '../../store/Tag/actions';
-import * as tagTypes from '../../store/Tag/types';
+import { useQuery, useMutation } from '@apollo/client';
+import Paper from '@material-ui/core/Paper';
+import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { setNotification } from '../../common/notification';
+import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
   match: any;
 }
 
 export const Tag: React.SFC<TagProps> = (props) => {
-  const tagList = useSelector((state: AppState) => {
-    return state.tag.tags;
+  const languages = useQuery(GET_LANGUAGES, {
+    onCompleted: (data) => {
+      setLanguageId(data.languages[0].id);
+    },
+  });
+  const tagId = props.match.params.id ? props.match.params.id : false;
+  const { loading, error } = useQuery(GET_TAG, {
+    variables: { id: tagId },
+    skip: !tagId,
+    onCompleted: (data) => {
+      if (tagId && data) {
+        tag = data.tag.tag;
+        setLabel(tag.label);
+        setDescription(tag.description);
+        setIsActive(tag.isActive);
+        setIsReserved(tag.isReserved);
+        setLanguageId(tag.language.id);
+      }
+    },
+  });
+  const [updateTag] = useMutation(UPDATE_TAG, {
+    onCompleted: () => {
+      setFormSubmitted(true);
+    },
   });
 
-  const dispatch = useDispatch();
-  const onTagAdd = (tag: tagTypes.Tag) => {
-    dispatch(tagActions.addTag(tag));
-  };
-
-  const onTagEdit = (tag: tagTypes.Tag) => {
-    dispatch(tagActions.editTag(tag));
-  };
-
-  const tagId = props.match ? props.match.params.id : null;
-  const tag = tagId ? tagList.find((tag) => tag.id === Number(tagId)) : null;
-
-  const [name, setName] = useState(tag ? tag.label : '');
-  const [description, setDescription] = useState(tag ? tag.description : '');
-  const [isActive, setIsActive] = useState(tag ? tag.is_active : false);
-  const [isReserved, setIsReserved] = useState(tag ? tag.is_reserved : false);
-  const [languageId, setLanguageId] = useState(tag ? tag.language_id : '');
-  const [parentId, setParentId] = useState(tag ? tag.parent_id : '');
+  const [label, setLabel] = useState('');
+  const [description, setDescription] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const [isReserved, setIsReserved] = useState(false);
+  const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const saveHandler = () => {
-    const payload: tagTypes.Tag = {
-      id: Number(tag ? tagId : Math.floor(Math.random() * Math.floor(100))),
-      label: name,
-      description: description,
-      is_active: isActive,
-      is_reserved: isReserved,
-      language_id: Number(languageId),
-      parent_id: Number(parentId),
+  const [createTag] = useMutation(CREATE_TAG, {
+    update(cache, { data: { createTag } }) {
+      const tags: any = cache.readQuery({ query: GET_TAGS });
+
+      cache.writeQuery({
+        query: GET_TAGS,
+        data: { tags: tags.tags.concat(createTag.tag) },
+      });
+    },
+    onCompleted: () => {
+      setFormSubmitted(true);
+    },
+  });
+
+  const client = useApolloClient();
+
+  let tag: any = null;
+
+  if (loading) return <Loading />;
+  if (error) return <p>Error :(</p>;
+
+  const saveHandler = (tag: any) => {
+    const payload = {
+      label: tag.label,
+      description: tag.description,
+      isActive: tag.isActive,
+      isReserved: tag.isReserved,
+      languageId: Number(tag.languageId),
     };
+    let message;
 
-    if (tag) {
-      onTagEdit(payload);
+    if (tagId) {
+      updateTag({
+        variables: {
+          id: tagId,
+          input: payload,
+        },
+      });
+      message = 'Tag edited successfully!';
     } else {
-      onTagAdd(payload);
+      createTag({
+        variables: {
+          input: payload,
+        },
+      });
+      message = 'Tag added successfully!';
     }
-
-    setFormSubmitted(true);
+    setNotification(client, message);
   };
 
   const cancelHandler = () => {
@@ -64,75 +110,88 @@ export const Tag: React.SFC<TagProps> = (props) => {
     return <Redirect to="/tag" />;
   }
 
+  const languageOptions = languages.data ? languages.data.languages : null;
+  const formFields = [
+    { component: Input, name: 'label', type: 'text', label: 'label', options: null },
+    { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
+    { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
+    {
+      component: Checkbox,
+      name: 'isReserved',
+      type: 'checkbox',
+      label: 'Is Reserved',
+      options: null,
+    },
+    {
+      component: Dropdown,
+      name: 'languageId',
+      type: null,
+      label: 'Language',
+      options: languageOptions,
+    },
+  ];
+
   let form = (
     <>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={name}
-          onChange={(event) => setName(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Description</label>
-        <input
-          type="text"
-          name="description"
-          value={description}
-          onChange={(event) => setDescription(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Is Active?</label>
-        <input
-          type="checkbox"
-          name="is_active"
-          checked={isActive}
-          onChange={(event) => setIsActive(event?.target.checked)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Is Reserved?</label>
-        <input
-          type="checkbox"
-          name="is_reserved"
-          checked={isReserved}
-          onChange={(event) => setIsReserved(event?.target.checked)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Language</label>
-        <input
-          type="number"
-          name="language_id"
-          value={languageId}
-          onChange={(event) => setLanguageId(event?.target.value)}
-        />
-      </div>
-      <div className={styles.Input}>
-        <label className={styles.Label}>Parent</label>
-        <input
-          type="number"
-          name="parent_id"
-          value={parentId}
-          onChange={(event) => setParentId(event?.target.value)}
-        />
-      </div>
-      <button color="primary" onClick={saveHandler}>
-        Save
-      </button>
-      &nbsp;
-      <button color="secondary" onClick={cancelHandler}>
-        Cancel
-      </button>
+      <Formik
+        enableReinitialize
+        initialValues={{
+          label: label,
+          description: description,
+          isActive: isActive,
+          isReserved: isReserved,
+          languageId: languageId,
+        }}
+        validate={(values) => {
+          const errors: Partial<any> = {};
+          if (!values.label) {
+            errors.label = 'Required';
+          } else if (values.label.length > 10) {
+            errors.label = 'Too Long';
+          }
+          if (!values.description) {
+            errors.description = 'Required';
+          }
+          return errors;
+        }}
+        onSubmit={(tag) => {
+          saveHandler(tag);
+        }}
+      >
+        {({ submitForm }) => (
+          <Paper elevation={3}>
+            <Form className={styles.Form}>
+              {formFields.map((field, index) => {
+                return (
+                  <Field
+                    key={index}
+                    component={field.component}
+                    name={field.name}
+                    type={field.type}
+                    label={field.label}
+                    options={field.options}
+                  ></Field>
+                );
+              })}
+              <div className={styles.Buttons}>
+                <Button variant="contained" color="primary" onClick={submitForm}>
+                  Save
+                </Button>
+                &nbsp;&nbsp;
+                <Button variant="contained" color="default" onClick={cancelHandler}>
+                  Cancel
+                </Button>
+              </div>
+            </Form>
+          </Paper>
+        )}
+      </Formik>
     </>
   );
 
   return (
     <div className={styles.TagAdd}>
-      <h4>{tag ? 'Edit tag information' : 'Enter tag information'}</h4>
+      <h3>{tagId ? 'Edit tag information' : 'Enter tag information'}</h3>
       {form}
     </div>
   );

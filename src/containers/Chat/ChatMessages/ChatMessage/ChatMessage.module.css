@@ -1,0 +1,64 @@
+.ChatMessage {
+  display: inline-block;
+  position: relative;
+  max-width: 100%;
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  clear: both;
+  min-width: 85px;
+}
+
+.ChatMessage::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.ChatMessage::before {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 12px;
+  height: 19px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.Mine {
+  float: right;
+  background-color: #bce0f5;
+}
+
+.Mine::before {
+  right: -11px;
+}
+
+.Other {
+  float: left;
+  background-color: #fff;
+}
+
+.Other::before {
+  left: -11px;
+}
+
+.Content {
+  padding: 18px 7px;
+  word-wrap: break-word;
+}
+
+.Content::after {
+  content: '';
+  display: inline;
+}
+
+.Date {
+  position: absolute;
+  bottom: 2px;
+  right: 7px;
+  color: gray;
+  font-size: 12px;
+}

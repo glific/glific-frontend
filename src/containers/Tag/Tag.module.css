@@ -15,12 +15,25 @@
 }
 
 .Input {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+  display: flex;
+  padding: 20px;
 }
 
 .Label {
+  width: 50%;
+  align-self: center;
   font-weight: bold;
-  display: flex;
+}
+
+.TagAdd {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.Form {
+  padding: 20px 50px;
+}
+
+.Buttons {
+  text-align: center;
 }
