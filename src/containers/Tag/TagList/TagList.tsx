@@ -32,6 +32,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   // DialogBox states
   const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
+  const [deleteTagName, setDeleteTagName] = useState<string>('');
 
   const [newTag, setNewTag] = useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -105,6 +106,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
+
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
       const tags: any = cache.readQuery({
@@ -121,7 +123,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     },
   });
 
-  const showDialogHandler = (id: any) => {
+  const showDialogHandler = (id: any, label: string) => {
+    setDeleteTagName(label);
     setDeleteTagID(id);
   };
   const closeToastMessage = () => {
@@ -148,10 +151,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   if (deleteTagID) {
     dialogBox = (
       <DialogBox
-        message="Are you sure you want to delete the tag?"
+        title={`Delete Tag: ${deleteTagName}`}
         handleCancel={closeDialogBox}
-        handleOK={handleDeleteTag}
-      />
+        handleOk={handleDeleteTag}
+      >
+        Are you sure you want to delete the tag?
+      </DialogBox>
     );
   }
 
@@ -169,7 +174,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   };
 
   // Reformat all tags to be entered in table
-  function getIcons(id: number | undefined) {
+  function getIcons(id: number | undefined, label: string) {
     if (id) {
       return (
         <>
@@ -178,7 +183,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton aria-label="Delete" color="default" onClick={() => showDialogHandler(id!)}>
+          <IconButton
+            aria-label="Delete"
+            color="default"
+            onClick={() => showDialogHandler(id!, label)}
+          >
             <DeleteIcon />
           </IconButton>
         </>
@@ -192,7 +201,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       return {
         label: t.label,
         description: t.description,
-        operations: getIcons(t.id),
+        operations: getIcons(t.id, t.label),
       };
     });
   }
