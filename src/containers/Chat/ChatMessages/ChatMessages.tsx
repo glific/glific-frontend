@@ -8,14 +8,26 @@ import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatMessagesProps {
-  chatId: string;
+  contactId: string;
 }
 
 interface ConversationMessage {
   id: string;
   body: string;
+  insertedAt: string;
+  receiver: {
+    id: string;
+  };
+  sender: {
+    id: string;
+  };
+  tags: {
+    id: string;
+    label: string;
+  };
 }
 
 interface ChatMessagesInterface {
@@ -34,18 +46,16 @@ interface ConversationResult {
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // let's get the conversation for last contacted contact.
   const queryVariables = {
-    count: 1,
     size: 25,
-    filter: { id: chatId },
+    contactId: contactId,
+    filter: {},
   };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: queryVariables,
   });
-
-  const conversations = data?.conversations;
 
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
@@ -55,7 +65,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
       const payload = {
         body: body,
         senderId: 1,
-        receiverId: chatId,
+        receiverId: contactId,
         type: 'TEXT',
         flow: 'OUTBOUND',
       };
@@ -69,7 +79,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
             id: Math.random().toString(36).substr(2, 9),
             body: body,
             senderId: 1,
-            receiverId: chatId,
+            receiverId: contactId,
             flow: 'OUTBOUND',
             type: 'TEXT',
           },
@@ -84,9 +94,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversations[0].messages = messagesCopy.conversations[0].messages.push(
-              message
-            );
+            messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
@@ -96,32 +104,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ chatId }) => {
         },
       });
     },
-    [chatId, createMessage, queryVariables]
+    [contactId, createMessage, queryVariables]
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  const conversations = data?.conversation;
+
   // we are always loading first conversation, hence incase chatid is not passed set it
-  if (chatId === undefined) {
-    chatId = conversations[0].contact.id;
+  if (contactId === undefined) {
+    contactId = conversations.contact.id;
   }
 
   let messageList;
-  let contactName;
-  if (conversations.length > 0) {
-    // TO FIX: API should always return contact data
-    contactName = conversations[0].contact.name;
-    messageList = conversations.map((conversation: any) => {
-      return conversation.messages.map((message: any, index: number) => {
-        return <ChatMessage {...message} contactId={chatId} key={index} />;
-      });
+  if (conversations.messages.length > 0) {
+    messageList = conversations.messages.map((message: any, index: number) => {
+      return <ChatMessage {...message} contactId={contactId} key={index} />;
     });
   }
 
   return (
     <Container className={styles.ChatMessages} disableGutters>
-      <ContactBar contactName={contactName} />
+      <ContactBar contactName={conversations.contact.name} />
       <Container className={styles.MessageList}>{messageList}</Container>
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>

@@ -1,15 +1,39 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+
+import { shallow, mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
+
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import ChatPage from './components/pages/ChatPage/ChatPage';
 
-test('check if rendering the home page correctly', () => {
-  const { getByText } = render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
+describe('<App /> ', () => {
+  test('it should render <App /> component correctly', () => {
+    const wrapper = shallow(<App />);
+    expect(wrapper.exists()).toBe(true);
+  });
 
-  const welcomeMessage = getByText(/Welcome to Glific!/i);
-  expect(welcomeMessage).toBeInTheDocument();
+  test('it should render <ChatPage /> component by default', () => {
+    const wrapper = mount(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/']}>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    expect(wrapper.find(ChatPage)).toHaveLength(1);
+  });
+
+  test('it should render <ChatPage /> component correctly if params are passed', () => {
+    const wrapper = mount(
+      <MockedProvider>
+        <MemoryRouter initialEntries={['/chat/1']}>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    expect(wrapper.find(ChatPage)).toHaveLength(1);
+  });
 });

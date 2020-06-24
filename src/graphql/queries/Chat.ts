@@ -10,28 +10,38 @@ export const GET_CONVERSATION_QUERY = gql`
       messages {
         id
         body
+        insertedAt
+        tags {
+          id
+          label
+        }
       }
     }
   }
 `;
 
 export const GET_CONVERSATION_MESSAGE_QUERY = gql`
-  query conversations($count: Int!, $size: Int!, $filter: ConversationFilter) {
-    conversations(numberOfConversations: $count, sizeOfConversations: $size, filter: $filter) {
-      contact {
+query conversation($size: Int!, $contactId: Gid!, $filter: ConversationFilter! ) {
+  conversation(sizeOfConversations: $size, contactId: $contactId, filter: $filter) {
+    contact {
+      id
+      name
+    }
+    messages {
+      id
+      body
+      insertedAt
+      receiver {
         id
-        name
       }
-      messages {
+      sender {
         id
-        body
-        receiver {
-          id
-        }
-        sender {
-          id
-        }
+      }
+      tags {
+        id
+        label
       }
     }
   }
+}
 `;
