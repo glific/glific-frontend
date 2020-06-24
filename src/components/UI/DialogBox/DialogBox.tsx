@@ -8,16 +8,22 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 interface DialogProps {
   open?: boolean;
-  message: String;
+  title: string;
   handleCancel: Function;
   handleOK: Function;
+  children?: any;
+  discard?: string;
+  confirm?: string;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
-  message,
+  title,
   handleCancel,
   handleOK,
+  children,
+  discard = 'Cancel',
+  confirm = 'Confirm',
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -35,16 +41,16 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
+          <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant={'contained'} onClick={handleCancelButton} color="primary">
-            Disagree
+            {discard}
           </Button>
           <Button onClick={handleOKButton} color="secondary" variant={'contained'}>
-            Agree
+            {confirm}
           </Button>
         </DialogActions>
       </Dialog>

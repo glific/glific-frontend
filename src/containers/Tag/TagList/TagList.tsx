@@ -5,7 +5,7 @@ import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
 import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading'
+import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
@@ -143,11 +143,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   let dialogBox;
   if (deleteTagID) {
     dialogBox = (
-      <DialogBox
-        message="Are you sure you want to delete the tag?"
-        handleCancel={closeDialogBox}
-        handleOK={handleDeleteTag}
-      />
+      <DialogBox title="Delete Tag" handleCancel={closeDialogBox} handleOK={handleDeleteTag}>
+        Are you sure you want to delete the tag?
+      </DialogBox>
     );
   }
 
@@ -174,7 +172,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(id!)}>
+          <IconButton aria-label="Delete" color="default" onClick={() => showDialogHandler(id!)}>
             <DeleteIcon />
           </IconButton>
         </>
