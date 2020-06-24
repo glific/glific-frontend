@@ -22,8 +22,8 @@ export const DialogBox: React.SFC<DialogProps> = ({
   handleCancel,
   handleOk,
   children,
-  buttonOk = 'Cancel',
-  buttonCancel = 'Confirm',
+  buttonOk = 'Confirm',
+  buttonCancel = 'Cancel',
 }) => {
   const handleCancelButton = () => {
     handleCancel();

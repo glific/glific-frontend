@@ -106,7 +106,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
-  let deleteName: string = '';
 
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
