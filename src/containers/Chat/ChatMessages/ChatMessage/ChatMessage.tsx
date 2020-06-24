@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { GeneralTooltip } from '../../../../components/UI/GeneralTooltip/GeneralTooltip';
+import { Tooltip } from '../../../../components/UI/GeneralTooltip/Tooltip';
 
 import styles from './ChatMessage.module.css';
 
@@ -23,11 +23,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   return (
     <div className={[styles.ChatMessage, additionalClass].join(' ')}>
-      <GeneralTooltip title={moment(props.insertedAt).format('MMM, DD YYYY')} placement="right">
+      <Tooltip title={moment(props.insertedAt).format('MMM, DD YYYY')} placement="right">
         <div className={styles.Content} data-testid="content">
           {props.body}
         </div>
-      </GeneralTooltip>
+      </Tooltip>
       <div className={styles.Date} data-testid="date">
         {moment(props.insertedAt).format('HH:mm')}
       </div>
