@@ -73,14 +73,14 @@ const mocks = [
       data: {
         tags: [
           {
-            description: 'important task',
             id: '87',
             label: 'Important',
+            description: 'important task',
           },
           {
-            description: 'complete this task',
             id: '94',
             label: 'To Do',
+            description: 'complete this task',
           },
         ],
       },
