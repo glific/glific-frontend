@@ -222,7 +222,7 @@ describe('Save Button', () => {
     fireEvent.change(container.querySelector('input[name="description"]'), {
       target: { value: 'new Tag description' },
     });
-    fireEvent.change(container.querySelector('input[name="isReserved"]'));
+    fireEvent.click(container.querySelector('input[name="isReserved"]'));
     fireEvent.click(container.querySelector('input[name="isActive"]'));
 
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
