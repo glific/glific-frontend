@@ -11,11 +11,13 @@ interface DialogProps {
   message: String;
   handleCancel: Function;
   handleOK: Function;
+  children?: any;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   message,
+  children,
   handleCancel,
   handleOK,
 }) => {
@@ -37,7 +39,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
       >
         <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
+          <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant={'contained'} onClick={handleCancelButton} color="primary">

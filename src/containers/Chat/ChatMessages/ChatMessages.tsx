@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { Container } from '@material-ui/core';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { Container, FormGroup } from '@material-ui/core';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
+import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
   contactId: string;
@@ -48,8 +50,10 @@ interface ConversationResult {
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+  const [loadTags, Tags] = useLazyQuery(GET_TAGS);
   const [popup, setPopup] = useState(null);
   const [dialog, setDialogbox] = useState(false);
+  const [search, setSearch] = useState('');
   // let's get the conversation for last contacted contact.
   const queryVariables = {
     size: 25,
@@ -123,12 +127,31 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
   if (dialog) {
+    const tagList = Tags.data
+      ? Tags.data.tags.map((tag: any) => {
+          if (tag.label.toLowerCase().includes(search)) {
+            return (
+              <FormControlLabel
+                control={<Checkbox name="checkedB" color="primary" />}
+                label={tag.label}
+              />
+            );
+          } else {
+            return null;
+          }
+        })
+      : null;
     dialogBox = (
-      <DialogBox
-        message="Are you sure you want to delete the tag?"
-        handleCancel={closeDialogBox}
-        handleOK={handleDeleteTag}
-      />
+      <DialogBox message="Assign a tag" handleCancel={closeDialogBox} handleOK={handleDeleteTag}>
+        <TextField
+          id="outlined-basic"
+          label="Search"
+          variant="outlined"
+          onChange={(event) => setSearch(event.target.value)}
+        />
+
+        <FormGroup>{tagList}</FormGroup>
+      </DialogBox>
     );
   }
 
@@ -157,7 +180,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           key={index}
           popup={message.id === popup}
           onClick={() => showPopup(message.id)}
-          setDialog={() => setDialogbox(!dialog)}
+          setDialog={() => {
+            loadTags();
+            setDialogbox(!dialog);
+            setPopup(null);
+          }}
         />
       );
     });

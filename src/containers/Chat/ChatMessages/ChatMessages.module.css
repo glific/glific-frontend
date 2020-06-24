@@ -11,3 +11,21 @@
   padding: 0 15px;
   height: calc(100% - 124px);
 }
+
+.Search {
+  width: 318px;
+  height: 100%;
+  padding: 0 10px;
+  background: #ffffff;
+  transition: all 0.35s ease;
+  border-radius: 10px;
+}
+
+.SearchBar {
+  background-color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  width: 350px;
+  padding: 0px;
+  transition: all 0.35s ease;
+}
