@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
 import absinthe from './absinthe';
-import { URI } from './../config';
+import { URI } from './config';
 
 const subscribe = require('@jumpn/utils-graphql');
 
