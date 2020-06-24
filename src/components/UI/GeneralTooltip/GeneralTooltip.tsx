@@ -4,13 +4,13 @@ import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 interface GeneralTooltipProps {
   title: String;
   placement: TooltipProps['placement'];
-  body: any;
+  children: React.ReactNode;
 }
 
 export const GeneralTooltip: React.SFC<GeneralTooltipProps> = (props: GeneralTooltipProps) => {
   return (
     <Tooltip title={props.title} placement={props.placement} arrow>
-      {props.body}
+      <div>{props.children}</div>
     </Tooltip>
   );
 };
