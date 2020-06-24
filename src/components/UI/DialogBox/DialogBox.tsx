@@ -10,27 +10,27 @@ interface DialogProps {
   open?: boolean;
   title: string;
   handleCancel: Function;
-  handleOK: Function;
+  handleOk: Function;
   children?: any;
-  discard?: string;
-  confirm?: string;
+  buttonOk?: string;
+  buttonCancel?: string;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   title,
   handleCancel,
-  handleOK,
+  handleOk,
   children,
-  discard = 'Cancel',
-  confirm = 'Confirm',
+  buttonOk = 'Cancel',
+  buttonCancel = 'Confirm',
 }) => {
   const handleCancelButton = () => {
     handleCancel();
   };
 
   const handleOKButton = () => {
-    handleOK();
+    handleOk();
   };
 
   return (
@@ -47,10 +47,10 @@ export const DialogBox: React.SFC<DialogProps> = ({
         </DialogContent>
         <DialogActions>
           <Button variant={'contained'} onClick={handleCancelButton} color="primary">
-            {discard}
+            {buttonCancel}
           </Button>
           <Button onClick={handleOKButton} color="secondary" variant={'contained'}>
-            {confirm}
+            {buttonOk}
           </Button>
         </DialogActions>
       </Dialog>
