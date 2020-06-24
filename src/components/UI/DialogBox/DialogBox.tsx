@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Button } from '../Form/Button/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,7 +11,7 @@ interface DialogProps {
   title: string;
   handleCancel: Function;
   handleOk: Function;
-  children?: any;
+  children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
 }
