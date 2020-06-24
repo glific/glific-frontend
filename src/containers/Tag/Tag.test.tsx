@@ -16,7 +16,7 @@ const mocks = [
       variables: {
         input: {
           description: 'new Tag description',
-          isActive: false,
+          isActive: true,
           isReserved: false,
           label: 'new Tag',
           languageId: 1,
@@ -222,12 +222,9 @@ describe('Save Button', () => {
     fireEvent.change(container.querySelector('input[name="description"]'), {
       target: { value: 'new Tag description' },
     });
-    fireEvent.change(container.querySelector('input[name="isReserved"]'), {
-      target: { value: true },
-    });
-    fireEvent.change(container.querySelector('input[name="isActive"]'), {
-      target: { value: false },
-    });
+    fireEvent.change(container.querySelector('input[name="isReserved"]'));
+    fireEvent.click(container.querySelector('input[name="isActive"]'));
+
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },
     });
