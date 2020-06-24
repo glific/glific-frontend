@@ -6,7 +6,7 @@
 }
 
 .InputBox {
-  width: calc(100% - 55px);
+  width: calc(100% - 112px);
   border: none;
   border-radius: 999px;
   padding: 5px;
@@ -27,4 +27,12 @@
   margin-right: 0 !important;
   color: white !important;
   padding-left: 20px !important;
+}
+
+.EmojiPicker {
+  width: 50px;
+  float: left;
+}
+
+.InputContainer {
 }
