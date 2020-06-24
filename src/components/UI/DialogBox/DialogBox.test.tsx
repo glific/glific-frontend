@@ -24,7 +24,7 @@ describe('<DialogBox', () => {
       <DialogBox
         open
         title={'Are you sure?'}
-        handleOK={mockCallbackOK}
+        handleOk={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
     );
@@ -37,7 +37,7 @@ describe('<DialogBox', () => {
       <DialogBox
         open
         title={'Are you sure?'}
-        handleOK={mockCallbackOK}
+        handleOk={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
     );
@@ -51,7 +51,7 @@ describe('<DialogBox', () => {
       <DialogBox
         open
         title={'Are you sure?'}
-        handleOK={mockCallbackOK}
+        handleOk={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
     );

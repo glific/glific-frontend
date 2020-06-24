@@ -5,12 +5,12 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { Loading } from '../../components/UI/Layout/Loading/Loading'
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
-import { GET_LANGUAGES, GET_TAGS, GET_TAG } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES, GET_TAG, FILTER_TAGS } from '../../graphql/queries/Tag';
 import { setNotification } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 
@@ -54,10 +54,10 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const [createTag] = useMutation(CREATE_TAG, {
     update(cache, { data: { createTag } }) {
-      const tags: any = cache.readQuery({ query: GET_TAGS });
+      const tags: any = cache.readQuery({ query: FILTER_TAGS });
 
       cache.writeQuery({
-        query: GET_TAGS,
+        query: FILTER_TAGS,
         data: { tags: tags.tags.concat(createTag.tag) },
       });
     },

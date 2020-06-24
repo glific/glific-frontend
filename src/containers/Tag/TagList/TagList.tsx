@@ -11,7 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
-import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
@@ -110,11 +110,15 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
-      const tags: any = cache.readQuery({ query: GET_TAGS });
+      const tags: any = cache.readQuery({
+        query: FILTER_TAGS,
+        variables: filterPayload(),
+      });
       const tagsCopy = JSON.parse(JSON.stringify(tags));
       tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
       cache.writeQuery({
-        query: GET_TAGS,
+        query: FILTER_TAGS,
+        variables: filterPayload(),
         data: tagsCopy,
       });
     },
