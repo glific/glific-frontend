@@ -9,7 +9,7 @@ import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
+import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
@@ -54,6 +54,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [popup, setPopup] = useState(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
+
+  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG);
   // let's get the conversation for last contacted contact.
   const queryVariables = {
     size: 25,
@@ -121,9 +123,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setDialogbox(false);
   };
 
-  const handleDeleteTag = () => {
-    setDialogbox(false);
-  };
+  const handleSubmit = () => {};
 
   let dialogBox;
   if (dialog) {
@@ -142,15 +142,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         })
       : null;
     dialogBox = (
-      <DialogBox message="Assign a tag" handleCancel={closeDialogBox} handleOK={handleDeleteTag}>
+      <DialogBox message="Assign a tag" handleCancel={closeDialogBox} handleOK={handleSubmit}>
         <TextField
           id="outlined-basic"
           label="Search"
           variant="outlined"
           onChange={(event) => setSearch(event.target.value)}
         />
-
-        <FormGroup>{tagList}</FormGroup>
+        <form onChange={(event) => console.log(event.target)}>
+          <FormGroup>{tagList}</FormGroup>
+        </form>
       </DialogBox>
     );
   }
