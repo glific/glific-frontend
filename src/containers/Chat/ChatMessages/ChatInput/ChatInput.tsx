@@ -40,6 +40,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   if (showEmojiPicker) {
     emojiPicker = (
       <Picker
+        data-testid="emoji-popup"
         title="Pick your emoji…"
         emoji="point_up"
         style={{ position: 'absolute', bottom: '55px', left: '223px' }}
@@ -52,6 +53,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     <Container className={styles.ChatInput}>
       <div className={styles.EmojiPicker}>
         <IconButton
+          data-testid="emoji-picker"
           color="primary"
           aria-label="pick emoji"
           component="span"
