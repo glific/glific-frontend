@@ -25,6 +25,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     <div className={[styles.ChatMessage, additionalClass].join(' ')}>
       <GeneralTooltip
         title={moment(props.insertedAt).format('MMM, DD YYYY')}
+        placement="right"
         body={
           <div className={styles.Content} data-testid="content">
             {props.body}
