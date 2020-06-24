@@ -1,14 +1,31 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { render, wait, screen, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
 import { TagList } from './TagList';
+import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 import { Tag } from '../Tag';
 
+afterEach(cleanup);
 const mocks = [
+  {
+    request: {
+      query: DELETE_TAG,
+      variables: {
+        id: '87',
+      },
+    },
+    result: {
+      data: {
+        deleteTag: {
+          errors: null,
+        },
+      },
+    },
+  },
   {
     request: {
       query: GET_LANGUAGES,
@@ -31,7 +48,6 @@ const mocks = [
   {
     request: {
       query: GET_TAGS_COUNT,
-
       variables: {
         filter: {
           label: '',
@@ -47,7 +63,6 @@ const mocks = [
   {
     request: {
       query: FILTER_TAGS,
-
       variables: {
         filter: {
           label: '',
@@ -63,14 +78,14 @@ const mocks = [
       data: {
         tags: [
           {
-            description: 'Hey There',
             id: '87',
-            label: 'Message',
+            label: 'Good message',
+            description: 'Hey There',
           },
           {
-            description: 'something',
             id: '94',
-            label: 'Good message',
+            label: 'Message',
+            description: 'some description',
           },
         ],
       },
@@ -89,7 +104,6 @@ describe('<TagList />', () => {
     );
 
     expect(getByText('Loading...')).toBeInTheDocument();
-
     await wait();
   });
 
@@ -101,9 +115,7 @@ describe('<TagList />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
   });
 
@@ -115,9 +127,7 @@ describe('<TagList />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
@@ -131,9 +141,7 @@ describe('<TagList />', () => {
     );
 
     await wait();
-
     const { getByText } = within(container.querySelector('thead'));
-
     expect(getByText('Name')).toBeInTheDocument();
     expect(getByText('Description')).toBeInTheDocument();
     expect(getByText('Actions')).toBeInTheDocument();
@@ -147,7 +155,6 @@ describe('<TagList />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
     const { getByLabelText } = within(container.querySelector('tbody tr'));
     expect(getByLabelText('Edit')).toBeInTheDocument();
@@ -165,14 +172,10 @@ describe('<TagList />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     const button = container.querySelector('button.MuiButton-containedPrimary');
     fireEvent.click(button);
-
     await wait();
-
     expect(container.querySelector('div.TagAdd')).toBeInTheDocument();
   });
 
@@ -187,9 +190,46 @@ describe('<TagList />', () => {
         </Router>
       </MockedProvider>
     );
-
     await wait();
-
     expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
+  });
+});
+
+describe('<Dialogbox />', () => {
+  test('click on delete button opens dialog box', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <TagList />
+        </Router>
+      </MockedProvider>
+    );
+    await wait();
+    const { queryByLabelText } = within(container.querySelector('tbody tr'));
+    const button = queryByLabelText('Delete');
+    fireEvent.click(button);
+    await wait();
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('click on agree button shows alert', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <TagList />
+        </Router>
+      </MockedProvider>
+    );
+    await wait();
+    const { queryByLabelText } = within(container.querySelector('tbody tr'));
+    const button = queryByLabelText('Delete');
+    fireEvent.click(button);
+    await wait();
+    const agreeButton = screen
+      .queryByRole('dialog')
+      ?.querySelector('button.MuiButton-containedSecondary');
+    fireEvent.click(agreeButton);
+    await wait();
+    expect(screen.queryByRole('alert')).toBeInTheDocument();
   });
 });
