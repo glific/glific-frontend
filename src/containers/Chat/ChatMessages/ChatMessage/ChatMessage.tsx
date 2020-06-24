@@ -23,11 +23,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   return (
     <div className={[styles.ChatMessage, additionalClass].join(' ')}>
-      <Tooltip title={moment(props.insertedAt).format('MMM, DD YYYY')} placement="right">
-        <div className={styles.Content} data-testid="content">
+      <div className={styles.Content} data-testid="content">
+        <Tooltip title={moment(props.insertedAt).format('MMM, DD YYYY')} placement="right">
           {props.body}
-        </div>
-      </Tooltip>
+        </Tooltip>
+      </div>
       <div className={styles.Date} data-testid="date">
         {moment(props.insertedAt).format('HH:mm')}
       </div>
