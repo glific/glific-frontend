@@ -62,3 +62,9 @@
   color: gray;
   font-size: 12px;
 }
+
+.Popper {
+  padding: 10px 30px 10px 10px !important;
+  font-weight: bolder !important;
+  text-transform: none !important;
+}

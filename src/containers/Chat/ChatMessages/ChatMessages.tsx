@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { Container } from '@material-ui/core';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
@@ -47,6 +48,8 @@ interface ConversationResult {
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+  const [popup, setPopup] = useState(null);
+  const [dialog, setDialogbox] = useState(false);
   // let's get the conversation for last contacted contact.
   const queryVariables = {
     size: 25,
@@ -110,6 +113,33 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  const closeDialogBox = () => {
+    setDialogbox(false);
+  };
+
+  const handleDeleteTag = () => {
+    setDialogbox(false);
+  };
+
+  let dialogBox;
+  if (dialog) {
+    dialogBox = (
+      <DialogBox
+        message="Are you sure you want to delete the tag?"
+        handleCancel={closeDialogBox}
+        handleOK={handleDeleteTag}
+      />
+    );
+  }
+
+  const showPopup = (id: any) => {
+    if (id === popup) {
+      setPopup(null);
+    } else {
+      setPopup(id);
+    }
+  };
+
   const conversations = data?.conversation;
 
   // we are always loading first conversation, hence incase chatid is not passed set it
@@ -120,12 +150,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let messageList;
   if (conversations.messages.length > 0) {
     messageList = conversations.messages.map((message: any, index: number) => {
-      return <ChatMessage {...message} contactId={contactId} key={index} />;
+      return (
+        <ChatMessage
+          {...message}
+          contactId={contactId}
+          key={index}
+          popup={message.id === popup}
+          onClick={() => showPopup(message.id)}
+          setDialog={() => setDialogbox(!dialog)}
+        />
+      );
     });
   }
 
   return (
     <Container className={styles.ChatMessages} disableGutters>
+      {dialogBox}
       <ContactBar contactName={conversations.contact.name} />
       <Container className={styles.MessageList}>{messageList}</Container>
       <ChatInput onSendMessage={sendMessageHandler} />
