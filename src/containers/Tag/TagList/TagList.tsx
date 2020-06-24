@@ -5,13 +5,13 @@ import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
 import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading'
+import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
-import { GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
@@ -32,6 +32,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   // DialogBox states
   const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
+  const [deleteTagName, setDeleteTagName] = useState<string>('');
 
   const [newTag, setNewTag] = useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -105,19 +106,25 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const message = useQuery(NOTIFICATION);
 
   let deleteId: number = 0;
+
   const [deleteTag] = useMutation(DELETE_TAG, {
     update(cache) {
-      const tags: any = cache.readQuery({ query: GET_TAGS });
+      const tags: any = cache.readQuery({
+        query: FILTER_TAGS,
+        variables: filterPayload(),
+      });
       const tagsCopy = JSON.parse(JSON.stringify(tags));
       tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
       cache.writeQuery({
-        query: GET_TAGS,
+        query: FILTER_TAGS,
+        variables: filterPayload(),
         data: tagsCopy,
       });
     },
   });
 
-  const showDialogHandler = (id: any) => {
+  const showDialogHandler = (id: any, label: string) => {
+    setDeleteTagName(label);
     setDeleteTagID(id);
   };
   const closeToastMessage = () => {
@@ -144,10 +151,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   if (deleteTagID) {
     dialogBox = (
       <DialogBox
-        message="Are you sure you want to delete the tag?"
+        title={`Delete Tag: ${deleteTagName}`}
         handleCancel={closeDialogBox}
-        handleOK={handleDeleteTag}
-      />
+        handleOk={handleDeleteTag}
+      >
+        Are you sure you want to delete the tag?
+      </DialogBox>
     );
   }
 
@@ -165,7 +174,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   };
 
   // Reformat all tags to be entered in table
-  function getIcons(id: number | undefined) {
+  function getIcons(id: number | undefined, label: string) {
     if (id) {
       return (
         <>
@@ -174,7 +183,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton aria-label="Delete" color="default" onClick={() => deleteHandler(id!)}>
+          <IconButton
+            aria-label="Delete"
+            color="default"
+            onClick={() => showDialogHandler(id!, label)}
+          >
             <DeleteIcon />
           </IconButton>
         </>
@@ -188,7 +201,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       return {
         label: t.label,
         description: t.description,
-        operations: getIcons(t.id),
+        operations: getIcons(t.id, t.label),
       };
     });
   }
