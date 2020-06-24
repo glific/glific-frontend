@@ -23,7 +23,7 @@ describe('<DialogBox', () => {
     const wrapper = mount(
       <DialogBox
         open
-        message={'Are you sure?'}
+        title={'Are you sure?'}
         handleOK={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
@@ -36,7 +36,7 @@ describe('<DialogBox', () => {
     const wrapper = mount(
       <DialogBox
         open
-        message={'Are you sure?'}
+        title={'Are you sure?'}
         handleOK={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
@@ -50,7 +50,7 @@ describe('<DialogBox', () => {
     const wrapper = mount(
       <DialogBox
         open
-        message={'Are you sure?'}
+        title={'Are you sure?'}
         handleOK={mockCallbackOK}
         handleCancel={mockCallbackCancel}
       />
