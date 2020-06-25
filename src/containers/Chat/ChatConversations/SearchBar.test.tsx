@@ -13,6 +13,12 @@ describe('<SearchBar/>', () => {
 
   it('initialized properly', () => {
     const wrapper = shallow(component());
-    console.log(wrapper.find('form'));
+    expect(wrapper.exists()).toBe(true);
   });
+
+  // Submit is called
+  // Reset is called
+  // Change in local search val?
+  // Default search val without input
+  // Default search val with input
 });
