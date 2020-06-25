@@ -22,7 +22,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
         <div className={isOpen ? styles.SearchBar : styles.HideSearchBar}>
           <InputBase
             className={isOpen ? styles.ShowSearch : styles.HideSearch}
-            name="searchInput"
+            name="searchInput" // This is important for extracting the search value in parent component.
             onChange={(e) => setSearchVal(e.target.value)}
             value={searchVal}
           />
