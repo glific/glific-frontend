@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Header } from './Header/Header';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
 
