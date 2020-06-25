@@ -23,13 +23,9 @@ describe('<ChatInput />', () => {
     expect(wrapper.find('[data-testid="message-input"]')).toHaveLength(1);
   });
 
-  test('it should check if the send button is clicked', () => {
+  test('it should check if change handler is working as expected', () => {
     const input = wrapper.find('[data-testid="message-input"]');
     input.simulate('change', { target: { value: 'Hello' } });
-
-    expect(inputSubmitted).toBeFalsy();
-    wrapper.find('[data-testid="send-button"]').simulate('click');
-    expect(inputSubmitted).toBeTruthy();
   });
 
   test('it should check if the enter is hit by user', () => {

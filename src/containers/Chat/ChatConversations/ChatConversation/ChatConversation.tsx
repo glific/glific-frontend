@@ -1,10 +1,9 @@
 import React from 'react';
-import { ListItem, ListItemAvatar, Avatar } from '@material-ui/core';
+import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import styles from './ChatConversation.module.css';
-import { ListIcon } from '../../../../components/UI/ListIcon/ListIcon';
 
 export interface ChatConversationProps {
   contactId: number;

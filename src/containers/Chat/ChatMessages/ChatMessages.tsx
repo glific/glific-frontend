@@ -185,7 +185,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     value = [].slice.call(value);
     const trueValues = value.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
-    console.log(form);
     if (trueValues.size == 0) {
       setDialogbox(false);
       setPopup(null);
@@ -269,9 +268,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     contactId = conversations.contact.id;
   }
 
-  let messageList;
+  let messageList: any;
   if (conversations.messages.length > 0) {
-    messageList = conversations.messages.map((message: any, index: number) => {
+    const reverseConversation = [...conversations.messages];
+    reverseConversation.reverse();
+    messageList = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
           {...message}
