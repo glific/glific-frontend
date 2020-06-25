@@ -55,7 +55,38 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
 
-  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG);
+  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
+    onCompleted: (data) => {
+      setPopup(null);
+      mySet.clear();
+      setDialogbox(false);
+    },
+    update: (cache, { data }) => {
+      const messages: any = cache.readQuery({
+        query: GET_CONVERSATION_MESSAGE_QUERY,
+        variables: queryVariables,
+      });
+
+      const messagesCopy = JSON.parse(JSON.stringify(messages));
+      if (data.createMessageTag.messageTag.tag) {
+        const tag = data.createMessageTag.messageTag.tag;
+        messagesCopy.conversation.messages = messagesCopy.conversation.messages.map(
+          (message: any) => {
+            if (message.id == data.createMessageTag.messageTag.message.id) {
+              message.tags.push(tag);
+              return message;
+            } else return message;
+          }
+        );
+
+        cache.writeQuery({
+          query: GET_CONVERSATION_MESSAGE_QUERY,
+          variables: queryVariables,
+          data: messagesCopy,
+        });
+      }
+    },
+  });
   // let's get the conversation for last contacted contact.
   const queryVariables = {
     size: 25,
@@ -122,8 +153,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const closeDialogBox = () => {
     setDialogbox(false);
   };
+  let mySet = new Set();
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    mySet.forEach((value) => {
+      createMessageTag({
+        variables: {
+          input: {
+            messageId: popup,
+            tagId: value,
+          },
+        },
+      });
+    });
+  };
+
+  const handleCheckbox = (event: any) => {
+    if (mySet.has(event.target.name)) mySet.delete(event.target.name);
+    else mySet.add(event.target.name);
+
+    console.log(mySet, popup);
+  };
 
   let dialogBox;
   if (dialog) {
@@ -132,7 +182,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
-                control={<Checkbox name="checkedB" color="primary" />}
+                control={<Checkbox name={tag.id} color="primary" />}
                 label={tag.label}
               />
             );
@@ -142,16 +192,26 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         })
       : null;
     dialogBox = (
-      <DialogBox message="Assign a tag" handleCancel={closeDialogBox} handleOK={handleSubmit}>
-        <TextField
-          id="outlined-basic"
-          label="Search"
-          variant="outlined"
-          onChange={(event) => setSearch(event.target.value)}
-        />
-        <form onChange={(event) => console.log(event.target)}>
-          <FormGroup>{tagList}</FormGroup>
-        </form>
+      <DialogBox
+        title="Assign tag to message"
+        handleCancel={closeDialogBox}
+        handleOk={handleSubmit}
+      >
+        <div className={styles.DialogBox}>
+          <TextField
+            className={styles.SearchInput}
+            id="outlined-basic"
+            label="Search"
+            variant="outlined"
+            onChange={(event) => setSearch(event.target.value)}
+            fullWidth
+          />
+          <div>
+            <form onChange={handleCheckbox}>
+              <FormGroup className={styles.Form}>{tagList}</FormGroup>
+            </form>
+          </div>
+        </div>
       </DialogBox>
     );
   }
@@ -184,7 +244,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           setDialog={() => {
             loadTags();
             setDialogbox(!dialog);
-            setPopup(null);
           }}
         />
       );

@@ -42,9 +42,8 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
-        </DialogContent>
+        <DialogContent>{children}</DialogContent>
+
         <DialogActions>
           <Button variant={'contained'} onClick={handleCancelButton} color="primary">
             {buttonCancel}

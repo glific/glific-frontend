@@ -4,6 +4,11 @@
   height: 85vh;
 }
 
+.DialogBox {
+  height: 400px;
+  width: 500px;
+}
+
 .MessageList {
   display: block;
   flex: 2;
@@ -28,4 +33,12 @@
   width: 350px;
   padding: 0px;
   transition: all 0.35s ease;
+}
+
+.SearchInput {
+  position: absolute !important;
+  width: 500px !important;
+}
+
+.Form {
 }

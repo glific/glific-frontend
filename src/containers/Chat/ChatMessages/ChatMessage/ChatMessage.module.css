@@ -27,6 +27,11 @@
   background-size: contain;
 }
 
+.button {
+  height: fit-content;
+  margin-top: 25px !important;
+}
+
 .Mine {
   float: right;
   background-color: #bce0f5;
@@ -67,4 +72,14 @@
   padding: 10px 30px 10px 10px !important;
   font-weight: bolder !important;
   text-transform: none !important;
+}
+
+.Chip {
+  display: unset !important;
+  padding: 1px !important;
+  margin-right: 3px;
+}
+
+.Inline {
+  display: flex;
 }

@@ -21,8 +21,11 @@ export const CREATE_MESSAGE_MUTATION = gql`
 
 export const CREATE_MESSAGE_TAG = gql`
   mutation createMessageTag($input: MessageTagInput!) {
-    createMessage(input: $input) {
+    createMessageTag(input: $input) {
       messageTag {
+        message {
+          id
+        }
         tag {
           label
         }
