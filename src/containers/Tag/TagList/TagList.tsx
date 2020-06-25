@@ -7,9 +7,7 @@ import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -216,18 +214,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     });
   };
 
-  const otherHandleSearch = (e: any) => {
-    e.preventDefault();
-    // let searchVal = e.target.nameSearch.value.trim();
-    let searchVal = e.target.searchInput.value.trim();
-    setSearchVal(searchVal);
-    resetTableVals();
-  };
-
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.nameSearch.value.trim();
-    // let searchVal = e.target.searchInput.value.trim();
+    let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
@@ -250,56 +239,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
           Tags
         </Typography>
         <div className={styles.Buttons}>
-          {/* <IconButton className={styles.IconButton} onClick={() => setIsOpen(!isOpen)}>
-            <SearchIcon className={styles.SearchIcon}></SearchIcon>
-          </IconButton>
-          <form onSubmit={props.handleSubmit}>
-            <div className={isOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={props.searchVal}
-                className={isOpen ? styles.ShowSearch : styles.HideSearch}
-                name="searchInput"
-              />
-              {isOpen ? (
-                <div className={styles.ResetSearch} onClick={props.onReset}>
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
-            </div>
-          </form> */}
-          {/* <SearchBar
-            handleSubmit={otherHandleSearch}
+          <SearchBar
+            handleSubmit={handleSearch}
             onReset={() => {
               setSearchVal('');
-              // resetTableVals();
+              resetTableVals();
             }}
             searchVal={searchVal}
-          /> */}
-          <IconButton className={styles.IconButton} onClick={() => setSearchOpen(!searchOpen)}>
-            <SearchIcon className={styles.SearchIcon}></SearchIcon>
-          </IconButton>
-          <form onSubmit={handleSearch}>
-            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={searchVal}
-                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
-                name="nameSearch"
-              />
-              {searchOpen ? (
-                <div
-                  className={styles.ResetSearch}
-                  onClick={() => {
-                    setSearchVal('');
-                    resetTableVals();
-                  }}
-                >
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
-            </div>
-          </form>
+          />
           <div>
             {toastMessage}
             {dialogBox}

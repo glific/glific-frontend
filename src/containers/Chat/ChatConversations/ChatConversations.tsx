@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
-import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
+import { FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 

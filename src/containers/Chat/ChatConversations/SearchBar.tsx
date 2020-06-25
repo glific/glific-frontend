@@ -7,11 +7,14 @@ import styles from './SearchBar.module.css';
 export interface SearchBarProps {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
+  // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
+  // different functionalities, look at `ChatConversations` for without, and `TagList` with.
+  searchVal?: string;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchVal, setSearchVal] = useState('');
+  const [localSearchVal, setLocalSearchVal] = useState('');
 
   return (
     <>
@@ -20,17 +23,25 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
       </IconButton>
       <form onSubmit={props.handleSubmit}>
         <div className={isOpen ? styles.SearchBar : styles.HideSearchBar}>
-          <InputBase
-            className={isOpen ? styles.ShowSearch : styles.HideSearch}
-            name="searchInput" // This is important for extracting the search value in parent component.
-            onChange={(e) => setSearchVal(e.target.value)}
-            value={searchVal}
-          />
+          {props.searchVal ? (
+            <InputBase
+              className={isOpen ? styles.ShowSearch : styles.HideSearch}
+              name="searchInput" // This is important for extracting the search value in parent component.
+              defaultValue={props.searchVal}
+            />
+          ) : (
+            <InputBase
+              className={isOpen ? styles.ShowSearch : styles.HideSearch}
+              name="searchInput" // This is important for extracting the search value in parent component.
+              onChange={(e) => setLocalSearchVal(e.target.value)}
+              value={localSearchVal}
+            />
+          )}
           {isOpen ? (
             <div
               className={styles.ResetSearch}
               onClick={() => {
-                setSearchVal('');
+                setLocalSearchVal('');
                 props.onReset();
               }}
             >
