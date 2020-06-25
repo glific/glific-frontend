@@ -1,12 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { Container, FormGroup } from '@material-ui/core';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-
+import { setNotification } from '../../../common/notification';
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
@@ -50,6 +52,8 @@ interface ConversationResult {
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+  const client = useApolloClient();
+  const message = useQuery(NOTIFICATION);
   const [loadTags, Tags] = useLazyQuery(GET_TAGS);
   const [popup, setPopup] = useState(null);
   const [dialog, setDialogbox] = useState(false);
@@ -59,6 +63,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     onCompleted: (data) => {
       setPopup(null);
       mySet.clear();
+      setSearch('');
+      setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
     },
     update: (cache, { data }) => {
@@ -150,6 +156,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  //toast
+  const closeToastMessage = () => {
+    setNotification(client, null);
+  };
+
+  let toastMessage;
+  if (message.data && message.data.message) {
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
+
   const closeDialogBox = () => {
     setDialogbox(false);
   };
@@ -208,7 +224,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           />
           <div>
             <form onChange={handleCheckbox}>
-              <FormGroup className={styles.Form}>{tagList}</FormGroup>
+              <FormGroup style={{ overflow: 'auto', maxHeight: '100%' }}>{tagList}</FormGroup>
             </form>
           </div>
         </div>
@@ -253,6 +269,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   return (
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
+      {toastMessage}
       <ContactBar contactName={conversations.contact.name} />
       <Container className={styles.MessageList}>{messageList}</Container>
       <ChatInput onSendMessage={sendMessageHandler} />
