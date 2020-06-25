@@ -58,7 +58,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
-  const [checkedValues, setCheckedValues] = useState(null);
 
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
@@ -78,7 +77,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         const tag = data.createMessageTag.messageTag.tag;
         messagesCopy.conversation.messages = messagesCopy.conversation.messages.map(
           (message: any) => {
-            if (message.id == data.createMessageTag.messageTag.message.id) {
+            if (message.id === data.createMessageTag.messageTag.message.id) {
               message.tags.push(tag);
               return message;
             } else return message;
@@ -185,7 +184,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     messageTags = [].slice.call(messageTags);
     const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
-    if (selectedTags.size == 0) {
+    if (selectedTags.size === 0) {
       setDialogbox(false);
       setEditTagsMessageId(null);
     } else {
@@ -208,7 +207,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   if (dialog) {
     let messageTags = conversations.messages.filter(
-      (message: any) => message.id == editTagsMessageId
+      (message: any) => message.id === editTagsMessageId
     );
 
     if (messageTags.length > 0) {
@@ -225,6 +224,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
+                key={tag.id}
                 control={<Checkbox name={tag.id} color="primary" defaultChecked={checked} />}
                 label={tag.label}
               />

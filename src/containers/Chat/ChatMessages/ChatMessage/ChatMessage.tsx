@@ -32,7 +32,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tag;
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
-      return <Chip size="small" label={tag.label} color="primary" className={styles.Chip} />;
+      return (
+        <Chip size="small" key={tag.id} label={tag.label} color="primary" className={styles.Chip} />
+      );
     });
 
   useEffect(() => {
