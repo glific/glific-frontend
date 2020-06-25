@@ -49,9 +49,9 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // let's get the conversation for last contacted contact.
   const queryVariables = {
-    size: 25,
     contactId: contactId,
     filter: {},
+    messageOpts: {},
   };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: queryVariables,
@@ -106,7 +106,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
     [contactId, createMessage, queryVariables]
   );
-
+  if (data) {
+    console.log(data.conversation);
+  }
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
