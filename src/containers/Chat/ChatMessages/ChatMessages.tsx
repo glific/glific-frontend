@@ -106,9 +106,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
     [contactId, createMessage, queryVariables]
   );
-  if (data) {
-    console.log(data.conversation);
-  }
+
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
