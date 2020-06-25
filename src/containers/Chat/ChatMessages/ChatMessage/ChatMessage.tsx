@@ -3,7 +3,6 @@ import moment from 'moment';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { IconButton } from '@material-ui/core';
 import Popper from '@material-ui/core/Popper';
-
 import { Button, Chip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
@@ -37,8 +36,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     });
 
   useEffect(() => {
-    if (props.popup) setAnchorEl(Ref.current);
-    else {
+    if (props.popup) {
+      setAnchorEl(Ref.current);
+    } else {
       setAnchorEl(null);
     }
   }, [props.popup]);

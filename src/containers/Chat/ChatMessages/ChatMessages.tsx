@@ -55,14 +55,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const client = useApolloClient();
   const message = useQuery(NOTIFICATION);
   const [loadTags, Tags] = useLazyQuery(GET_TAGS);
-  const [popup, setPopup] = useState(null);
+  const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
   const [checkedValues, setCheckedValues] = useState(null);
 
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
-      setPopup(null);
+      setEditTagsMessageId(null);
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
@@ -175,26 +175,26 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const closeDialogBox = () => {
     setDialogbox(false);
-    setPopup(null);
+    setEditTagsMessageId(null);
     setSearch('');
   };
 
   const handleSubmit = () => {
-    const form = document.getElementById('tagsForm');
-    let value: any = form?.getElementsByClassName('PrivateSwitchBase-input-25');
-    value = [].slice.call(value);
-    const trueValues = value.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
+    const tagsForm = document.getElementById('tagsForm');
+    let messageTags: any = tagsForm?.getElementsByClassName('PrivateSwitchBase-input-25');
+    messageTags = [].slice.call(messageTags);
+    const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
-    if (trueValues.size == 0) {
+    if (selectedTags.size == 0) {
       setDialogbox(false);
-      setPopup(null);
+      setEditTagsMessageId(null);
     } else {
-      trueValues.forEach((value: number) => {
+      selectedTags.forEach((tagId: number) => {
         createMessageTag({
           variables: {
             input: {
-              messageId: popup,
-              tagId: value,
+              messageId: editTagsMessageId,
+              tagId: tagId,
             },
           },
         });
@@ -207,17 +207,21 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let dialogBox;
 
   if (dialog) {
-    let includedTags = conversations.messages.filter((message: any) => message.id == popup);
+    let messageTags = conversations.messages.filter(
+      (message: any) => message.id == editTagsMessageId
+    );
 
-    if (includedTags.length > 0) includedTags = includedTags[0].tags;
+    if (messageTags.length > 0) {
+      messageTags = messageTags[0].tags;
+    }
 
-    const includedTagId = includedTags.map((tag: any) => {
+    const messageTagId = messageTags.map((tag: any) => {
       return tag.id;
     });
 
     const tagList = Tags.data
       ? Tags.data.tags.map((tag: any) => {
-          const checked = includedTagId.includes(tag.id.toString());
+          const checked = messageTagId.includes(tag.id.toString());
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
@@ -255,11 +259,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     );
   }
 
-  const showPopup = (id: any) => {
-    if (id === popup) {
-      setPopup(null);
+  const showEditTagsDialog = (id: number) => {
+    if (id === editTagsMessageId) {
+      setEditTagsMessageId(null);
     } else {
-      setPopup(id);
+      setEditTagsMessageId(id);
     }
   };
 
@@ -278,8 +282,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           {...message}
           contactId={contactId}
           key={index}
-          popup={message.id === popup}
-          onClick={() => showPopup(message.id)}
+          popup={message.id === editTagsMessageId}
+          onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadTags();
             setDialogbox(!dialog);
