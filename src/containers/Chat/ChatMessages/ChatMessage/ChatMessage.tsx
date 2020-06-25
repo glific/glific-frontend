@@ -52,7 +52,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   let iconLeft = false;
   let tags: string | undefined = undefined;
-
+  let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
 
@@ -61,6 +61,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     mineColor = null;
     iconLeft = true;
     tags = styles.TagsReceiver;
+    placement = 'bottom-start';
   }
 
   return (
@@ -74,7 +75,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           <div className={styles.Date} data-testid="date">
             {moment(props.insertedAt).format('HH:mm')}
           </div>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement={'bottom-start'} transition>
+          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
