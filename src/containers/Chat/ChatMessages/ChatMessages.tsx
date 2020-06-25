@@ -54,7 +54,7 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const client = useApolloClient();
   const message = useQuery(NOTIFICATION);
-  const [loadTags, Tags] = useLazyQuery(GET_TAGS);
+  const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
@@ -181,7 +181,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const handleSubmit = () => {
     const tagsForm = document.getElementById('tagsForm');
-    let messageTags: any = tagsForm?.getElementsByClassName('PrivateSwitchBase-input-25');
+    let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
     messageTags = [].slice.call(messageTags);
     const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
@@ -219,8 +219,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       return tag.id;
     });
 
-    const tagList = Tags.data
-      ? Tags.data.tags.map((tag: any) => {
+    const tagList = AllTags.data
+      ? AllTags.data.tags.map((tag: any) => {
           const checked = messageTagId.includes(tag.id.toString());
           if (tag.label.toLowerCase().includes(search)) {
             return (
@@ -285,7 +285,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           popup={message.id === editTagsMessageId}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
-            loadTags();
+            loadAllTags();
             setDialogbox(!dialog);
           }}
         />
