@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import ChatInput from './ChatInput';
 
 describe('<ChatInput />', () => {
@@ -48,7 +48,7 @@ describe('<ChatInput />', () => {
 
     expect(wrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
 
-    // select an emoji
+    // TODO: select an emoji
     //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
 
     // close the emoji popup
