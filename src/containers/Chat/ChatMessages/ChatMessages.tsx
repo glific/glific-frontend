@@ -58,11 +58,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [popup, setPopup] = useState(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
+  const [checkedValues, setCheckedValues] = useState(null);
 
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
       setPopup(null);
-      mySet.clear();
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
@@ -176,37 +176,53 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const closeDialogBox = () => {
     setDialogbox(false);
     setPopup(null);
+    setSearch('');
   };
-  let mySet = new Set();
 
   const handleSubmit = () => {
-    mySet.forEach((value) => {
-      createMessageTag({
-        variables: {
-          input: {
-            messageId: popup,
-            tagId: value,
+    const form = document.getElementById('tagsForm');
+    let value: any = form?.getElementsByClassName('PrivateSwitchBase-input-25');
+    value = [].slice.call(value);
+    const trueValues = value.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
+
+    console.log(form);
+    if (trueValues.size == 0) {
+      setDialogbox(false);
+      setPopup(null);
+    } else {
+      trueValues.forEach((value: number) => {
+        createMessageTag({
+          variables: {
+            input: {
+              messageId: popup,
+              tagId: value,
+            },
           },
-        },
+        });
       });
-    });
+    }
   };
 
-  const handleCheckbox = (event: any) => {
-    if (mySet.has(event.target.name)) mySet.delete(event.target.name);
-    else mySet.add(event.target.name);
-
-    console.log(mySet, popup);
-  };
+  const conversations = data?.conversation;
 
   let dialogBox;
+
   if (dialog) {
+    let includedTags = conversations.messages.filter((message: any) => message.id == popup);
+
+    if (includedTags.length > 0) includedTags = includedTags[0].tags;
+
+    const includedTagId = includedTags.map((tag: any) => {
+      return tag.id;
+    });
+
     const tagList = Tags.data
       ? Tags.data.tags.map((tag: any) => {
+          const checked = includedTagId.includes(tag.id.toString());
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
-                control={<Checkbox name={tag.id} color="primary" />}
+                control={<Checkbox name={tag.id} color="primary" defaultChecked={checked} />}
                 label={tag.label}
               />
             );
@@ -231,7 +247,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             fullWidth
           />
           <div>
-            <form onChange={handleCheckbox} className={styles.Form}>
+            <form id="tagsForm" className={styles.Form}>
               <FormGroup>{tagList}</FormGroup>
             </form>
           </div>
@@ -247,8 +263,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setPopup(id);
     }
   };
-
-  const conversations = data?.conversation;
 
   // we are always loading first conversation, hence incase chatid is not passed set it
   if (contactId === undefined) {
