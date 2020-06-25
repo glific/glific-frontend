@@ -83,3 +83,7 @@
 .Inline {
   display: flex;
 }
+
+.Tags {
+  padding-left: 30px;
+}

@@ -1,5 +1,6 @@
 .ChatMessages {
   display: flex;
+  padding-left: 0px !important;
   flex-flow: column;
   height: 85vh;
 }
@@ -12,7 +13,7 @@
   display: block;
   flex: 2;
   overflow-y: overlay;
-  padding: 0 15px;
+  padding-left: 0px !important;
   height: calc(100% - 124px);
 }
 
@@ -41,7 +42,7 @@
 }
 
 .Form {
-  height: 250px !important;
+  height: 40vh !important;
   width: 100%;
   margin-top: 60px;
   position: relative !important;

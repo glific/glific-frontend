@@ -76,8 +76,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           </Popper>
         </div>
       </div>
-
-      {tag}
+      <div className={styles.Tags}>{tag}</div>
     </div>
   );
 };
