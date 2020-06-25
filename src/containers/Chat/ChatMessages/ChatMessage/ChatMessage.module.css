@@ -38,12 +38,12 @@
 }
 
 .MineColor {
-  background-color: #bce0f5;
+  background-color: #fff;
   width: 100%;
 }
 
 .OtherColor {
-  background-color: #fff;
+  background-color: #a9d5c0;
 }
 
 .Mine::before {
