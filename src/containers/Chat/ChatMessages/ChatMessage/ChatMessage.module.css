@@ -29,7 +29,7 @@
 
 .Mine {
   float: right;
-  background-color: #bce0f5;
+  background-color: #ffffff;
 }
 
 .Mine::before {
@@ -38,7 +38,7 @@
 
 .Other {
   float: left;
-  background-color: #fff;
+  background-color: #a9d5c0;
 }
 
 .Other::before {

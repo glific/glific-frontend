@@ -8,6 +8,8 @@
 .ListingContainer {
   height: calc(100% - 70px);
   overflow-y: overlay;
+  padding: 0px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .StyledList {
