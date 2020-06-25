@@ -16,24 +16,20 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const onKeyPress = (e: any) => {
+  const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
-      submitMessage();
+      if (!message) return;
+
+      setMessage('');
+
+      if (typeof onSendMessage === 'function') {
+        onSendMessage(message);
+      }
     }
   };
 
-  const onChange = ({ target }: any) => {
+  const changeHandler = ({ target }: any) => {
     setMessage(target.value);
-  };
-
-  const submitMessage = () => {
-    if (!message) return;
-
-    setMessage('');
-
-    if (typeof onSendMessage === 'function') {
-      onSendMessage(message);
-    }
   };
 
   let emojiPicker;
@@ -43,7 +39,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
         data-testid="emoji-popup"
         title="Pick your emoji…"
         emoji="point_up"
-        style={{ position: 'absolute', bottom: '55px', left: '223px' }}
+        style={{ position: 'absolute', bottom: '190px', right: '444px' }}
         onSelect={(emoji: any) => setMessage(message + emoji.native)}
       />
     );
@@ -51,6 +47,18 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <Container className={styles.ChatInput}>
+      <div className={styles.InputContainer}>
+        <input
+          className={styles.InputBox}
+          data-testid="message-input"
+          type="text"
+          placeholder="Type a message"
+          value={message}
+          onKeyPress={keyPressHandler}
+          onChange={changeHandler}
+          onClick={() => setShowEmojiPicker(false)}
+        />
+      </div>
       <div className={styles.EmojiPicker}>
         <IconButton
           data-testid="emoji-picker"
@@ -63,28 +71,6 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             😀
           </span>
         </IconButton>
-      </div>
-      <div className={styles.InputContainer}>
-        <input
-          className={styles.InputBox}
-          data-testid="message-input"
-          type="text"
-          placeholder="Type a message"
-          value={message}
-          onKeyPress={onKeyPress}
-          onChange={onChange}
-          onClick={() => setShowEmojiPicker(false)}
-        />
-
-        <Button
-          className={styles.SendButton}
-          data-testid="send-button"
-          variant="contained"
-          color="primary"
-          onClick={submitMessage}
-        >
-          <SendIcon />
-        </Button>
       </div>
       {emojiPicker}
     </Container>
