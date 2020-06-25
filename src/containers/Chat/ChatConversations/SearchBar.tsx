@@ -4,15 +4,15 @@ import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
 import styles from './SearchBar.module.css';
 
-// /* <SearchBar handleSubmit={handleSearch} isOpen={searchOpen} onReset={resetSearch} defaultVal={searchVal}/> */
 export interface SearchBarProps {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  searchVal: string;
   onReset: () => void;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
+
   return (
     <>
       <IconButton className={styles.IconButton} onClick={() => setIsOpen(!isOpen)}>
@@ -21,12 +21,19 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
       <form onSubmit={props.handleSubmit}>
         <div className={isOpen ? styles.SearchBar : styles.HideSearchBar}>
           <InputBase
-            defaultValue={props.searchVal}
             className={isOpen ? styles.ShowSearch : styles.HideSearch}
             name="searchInput"
+            onChange={(e) => setSearchVal(e.target.value)}
+            value={searchVal}
           />
           {isOpen ? (
-            <div className={styles.ResetSearch} onClick={props.onReset}>
+            <div
+              className={styles.ResetSearch}
+              onClick={() => {
+                setSearchVal('');
+                props.onReset();
+              }}
+            >
               <Divider orientation="vertical" />
               <CloseIcon className={styles.CloseIcon}></CloseIcon>
             </div>

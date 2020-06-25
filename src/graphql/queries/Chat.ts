@@ -45,3 +45,23 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
     }
   }
 `;
+
+export const FILTER_CONVERSATIONS_QUERY = gql`
+  query search($term: String!, $opts: Opts!) {
+    search(term: $term, opts: $opts) {
+      contact {
+        id
+        name
+      }
+      messages {
+        id
+        body
+        insertedAt
+        tags {
+          id
+          label
+        }
+      }
+    }
+  }
+`;
