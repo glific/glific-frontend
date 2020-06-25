@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_CONVERSATION_QUERY = gql`
-  query conversations($count: Int!, $size: Int!) {
-    conversations(numberOfConversations: $count, sizeOfConversations: $size) {
+  query conversations($contactOpts: Opts!, $filter: ConversationsFilter!, $messageOpts: Opts!) {
+    conversations(contactOpts: $contactOpts, filter: $filter, messageOpts: $messageOpts) {
       contact {
         id
         name
@@ -21,27 +21,27 @@ export const GET_CONVERSATION_QUERY = gql`
 `;
 
 export const GET_CONVERSATION_MESSAGE_QUERY = gql`
-query conversation($size: Int!, $contactId: Gid!, $filter: ConversationFilter! ) {
-  conversation(sizeOfConversations: $size, contactId: $contactId, filter: $filter) {
-    contact {
-      id
-      name
-    }
-    messages {
-      id
-      body
-      insertedAt
-      receiver {
+  query conversation($contactId: Gid!, $filter: ConversationFilter!, $messageOpts: Opts!) {
+    conversation(contactId: $contactId, filter: $filter, messageOpts: $messageOpts) {
+      contact {
         id
+        name
       }
-      sender {
+      messages {
         id
-      }
-      tags {
-        id
-        label
+        body
+        insertedAt
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+        }
       }
     }
   }
-}
 `;

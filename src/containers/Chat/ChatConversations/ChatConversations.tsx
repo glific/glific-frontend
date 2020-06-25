@@ -16,8 +16,13 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   // Not sure if this is a refetch for other filtered data, or if I should change the query structure all together.
   const { loading, error, data, refetch } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: {
-      count: 20,
-      size: 1,
+      contactOpts: {
+        limit: 20,
+      },
+      filter: {},
+      messageOpts: {
+        limit: 1,
+      },
     },
   });
 
