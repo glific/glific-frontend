@@ -35,7 +35,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const [newTag, setNewTag] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
   const columnNames = ['Name', 'Description', 'Actions'];
