@@ -1,14 +1,10 @@
 .ContactBar {
-  background-color: #3f51b5;
-  color: white;
-  padding: 0;
+  padding: 16px;
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 .ContactName {
   line-height: 56px;
-}
-
-.IconButton {
 }

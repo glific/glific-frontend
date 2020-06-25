@@ -29,7 +29,7 @@ describe('<ChatConversation />', () => {
   });
 
   test('it should render the message date correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('HH:mm'));
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('D/M/Y'));
   });
 
   test('it should render the tags correctly', () => {
