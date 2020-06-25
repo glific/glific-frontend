@@ -15,9 +15,10 @@ export const Layout: React.SFC<LayoutProps> = (props) => {
 
   return (
     <>
-      {/* <Header MenuToggle={handleDrawerToggle} /> */}
       <SideDrawer MenuToggle={handleDrawerToggle} isMobile={mobileOpen} />
-      <Content {...props} />
+      <main>
+        <div>{props.children}</div>
+      </main>
     </>
   );
 };
