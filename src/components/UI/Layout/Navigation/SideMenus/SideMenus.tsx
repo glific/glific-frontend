@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 
 import { sideDrawerMenus } from '../../../../../config/menu';
@@ -10,7 +10,7 @@ export interface SideMenusProps {}
 const SideMenus: React.SFC<SideMenusProps> = () => {
   const menuList = sideDrawerMenus.map((menu) => {
     return (
-      <ListItem button key={menu.icon} component={Link} to={menu.path}>
+      <ListItem button key={menu.icon} component={NavLink} to={menu.path}>
         <ListItemIcon>
           <ListIcon icon={menu.icon} />
         </ListItemIcon>
