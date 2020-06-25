@@ -3,13 +3,12 @@ import moment from 'moment';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { IconButton } from '@material-ui/core';
 import Popper from '@material-ui/core/Popper';
-import Typography from '@material-ui/core/Typography';
+
 import { Button, Chip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
 import styles from './ChatMessage.module.css';
-import { from } from '@apollo/client';
 
 export interface ChatMessageProps {
   id: number;
@@ -58,7 +57,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   if (props.receiver.id === props.contactId) {
     additionalClass = styles.Other;
-    mineColor = null;
+    mineColor = styles.OtherColor;
     iconLeft = true;
     tags = styles.TagsReceiver;
     placement = 'bottom-start';

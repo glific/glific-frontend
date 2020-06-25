@@ -42,6 +42,10 @@
   width: 100%;
 }
 
+.OtherColor {
+  background-color: #fff;
+}
+
 .Mine::before {
   right: -11px;
 }
@@ -49,7 +53,6 @@
 .Other {
   float: left;
   clear: both;
-  background-color: #fff;
 }
 
 .Other::before {
