@@ -2,6 +2,7 @@
   display: flex;
   flex-flow: column;
   height: 85vh;
+  background-color: #f9f7f4;
 }
 
 .MessageList {
