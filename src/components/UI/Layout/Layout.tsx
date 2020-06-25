@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Header } from './Header/Header';
-import { Content } from './Content/Content';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
+import styles from './Layout.module.css';
 
 export interface LayoutProps {}
 
@@ -15,9 +14,10 @@ export const Layout: React.SFC<LayoutProps> = (props) => {
 
   return (
     <>
-      <Header MenuToggle={handleDrawerToggle} />
       <SideDrawer MenuToggle={handleDrawerToggle} isMobile={mobileOpen} />
-      <Content {...props} />
+      <main className={styles.Main}>
+        <div>{props.children}</div>
+      </main>
     </>
   );
 };

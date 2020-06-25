@@ -48,6 +48,11 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // let's get the conversation for last contacted contact.
+  // TODO Temporary fix
+  if (!contactId) {
+    contactId = '2';
+  }
+
   const queryVariables = {
     contactId: contactId,
     filter: {},
