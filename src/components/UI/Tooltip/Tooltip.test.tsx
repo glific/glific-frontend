@@ -17,8 +17,6 @@ describe('Tooltip test', () => {
   it('renders Tooltip', () => {
     const wrapper = shallow(createTooltip());
     expect(wrapper.find(Tooltip)).toBeTruthy();
-    console.log(wrapper.props());
-    console.log('hi');
   });
 
   it('displays correct title', () => {
