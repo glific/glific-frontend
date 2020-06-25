@@ -5,7 +5,12 @@
 
 Frontend interface built using React.
 
+## Installation steps
+
 **Note: First you will need to setup the backend application from this repo: https://github.com/glific/glific**
+
+1. Create a new file `.env` in the projecct root directory and copy the contents from `.env.example`.
+2. Update the `.env` file with relevant configurations.
 
 ## Available Scripts
 

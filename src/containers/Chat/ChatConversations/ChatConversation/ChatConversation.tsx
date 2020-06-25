@@ -1,10 +1,9 @@
 import React from 'react';
-import { ListItem, ListItemAvatar, Avatar } from '@material-ui/core';
+import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import styles from './ChatConversation.module.css';
-import { ListIcon } from '../../../../components/UI/ListIcon/ListIcon';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -27,11 +26,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       to={'/chat/' + props.contactId}
     >
-      <ListItemAvatar>
-        <Avatar>
-          <ListIcon icon="conversation" />
-        </Avatar>
-      </ListItemAvatar>
       <div className={styles.ChatInfo}>
         <div className={styles.ChatName} data-testid="name">
           {props.contactName}
@@ -40,7 +34,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {props.lastMessage.body}
         </div>
         <div className={styles.MessageDate} data-testid="date">
-          {moment(props.lastMessage.insertedAt).format('HH:mm')}
+          {moment(props.lastMessage.insertedAt).format('D/M/Y')}
         </div>
       </div>
     </ListItem>

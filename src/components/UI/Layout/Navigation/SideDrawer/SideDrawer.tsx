@@ -7,6 +7,8 @@ import {
   Theme,
   useTheme,
   Divider,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
 
 import SideMenus from '../SideMenus/SideMenus';
@@ -27,8 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
         flexShrink: 0,
       },
     },
-    // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
     drawerPaper: {
       width: drawerWidth,
     },
@@ -41,7 +41,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <Toolbar>
+        <Typography variant="h6">Glific</Typography>
+      </Toolbar>
       <Divider />
       <SideMenus />
     </div>
