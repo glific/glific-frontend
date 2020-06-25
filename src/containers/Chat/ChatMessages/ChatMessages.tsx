@@ -168,6 +168,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const closeDialogBox = () => {
     setDialogbox(false);
+    setPopup(null);
   };
   let mySet = new Set();
 
@@ -223,8 +224,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             fullWidth
           />
           <div>
-            <form onChange={handleCheckbox}>
-              <FormGroup style={{ overflow: 'auto', maxHeight: '100%' }}>{tagList}</FormGroup>
+            <form onChange={handleCheckbox} className={styles.Form}>
+              <FormGroup>{tagList}</FormGroup>
             </form>
           </div>
         </div>

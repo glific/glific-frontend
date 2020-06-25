@@ -6,7 +6,6 @@
 
 .DialogBox {
   width: 500px;
-  height: 400px;
 }
 
 .MessageList {
@@ -37,7 +36,14 @@
 
 .SearchInput {
   position: absolute !important;
-
   top: 60px;
   width: 500px !important;
+}
+
+.Form {
+  height: 250px !important;
+  width: 100%;
+  margin-top: 60px;
+  position: relative !important;
+  overflow: auto !important;
 }
