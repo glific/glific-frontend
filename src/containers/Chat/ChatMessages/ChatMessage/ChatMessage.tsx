@@ -31,7 +31,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
   let tag;
-  if (props.tags.length > 0)
+  if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return <Chip size="small" label={tag.label} color="primary" className={styles.Chip} />;
     });
