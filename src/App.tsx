@@ -4,6 +4,7 @@ import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
+import { LanguagePage } from './components/pages/LanguagePage/LanguagePage';
 import ChatPage from './components/pages/ChatPage/ChatPage';
 import styles from './App.module.css';
 
@@ -26,6 +27,7 @@ const App = () => {
               <ChatPage contactId={match.params.contactId} />
             )}
           />
+          <Route path="/language" exact component={LanguagePage} />
         </Switch>
         <Route exact path="/" render={defaultRedirect} />
       </Layout>

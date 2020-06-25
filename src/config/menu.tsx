@@ -9,4 +9,9 @@ export const sideDrawerMenus = [
     path: '/tag',
     icon: 'tag',
   },
+  {
+    title: 'Languages',
+    path: '/language',
+    icon: 'language',
+  },
 ];
