@@ -51,7 +51,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const queryVariables = {
     contactId: contactId,
     filter: {},
-    messageOpts: {},
+    messageOpts: {
+      limit: 25,
+    },
   };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: queryVariables,
