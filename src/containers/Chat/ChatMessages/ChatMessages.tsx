@@ -124,9 +124,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     contactId = conversations.contact.id;
   }
 
-  let messageList;
+  let messageList: any;
   if (conversations.messages.length > 0) {
-    messageList = conversations.messages.map((message: any, index: number) => {
+    const reverseConversation = [...conversations.messages];
+    reverseConversation.reverse();
+    messageList = reverseConversation.map((message: any, index: number) => {
       return <ChatMessage {...message} contactId={contactId} key={index} />;
     });
   }
