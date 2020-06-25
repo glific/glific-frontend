@@ -1,5 +1,5 @@
 import React from 'react';
-import { Toolbar, Typography, IconButton } from '@material-ui/core';
+import { Toolbar, Typography } from '@material-ui/core';
 
 import styles from './ContactBar.module.css';
 
