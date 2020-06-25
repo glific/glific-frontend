@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { Tooltip } from '../../../../components/UI/GeneralTooltip/Tooltip';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 import styles from './ChatMessage.module.css';
 
