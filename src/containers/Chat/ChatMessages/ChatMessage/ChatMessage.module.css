@@ -27,9 +27,23 @@
   background-size: contain;
 }
 
+.button {
+  height: fit-content;
+  margin-top: 25px !important;
+}
+
 .Mine {
   float: right;
-  background-color: #ffffff;
+  clear: both;
+}
+
+.MineColor {
+  background-color: #fff;
+  width: 100%;
+}
+
+.OtherColor {
+  background-color: #a9d5c0;
 }
 
 .Mine::before {
@@ -38,7 +52,7 @@
 
 .Other {
   float: left;
-  background-color: #a9d5c0;
+  clear: both;
 }
 
 .Other::before {
@@ -61,4 +75,24 @@
   right: 7px;
   color: gray;
   font-size: 12px;
+}
+
+.Popper {
+  padding: 10px 30px 10px 10px !important;
+  font-weight: bolder !important;
+  text-transform: none !important;
+}
+
+.Chip {
+  display: unset !important;
+  padding: 1px !important;
+  margin-right: 3px;
+}
+
+.Inline {
+  display: flex;
+}
+
+.TagsReceiver {
+  padding-left: 30px;
 }

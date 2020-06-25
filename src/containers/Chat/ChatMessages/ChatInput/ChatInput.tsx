@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import SendIcon from '@material-ui/icons/Send';
 import IconButton from '@material-ui/core/IconButton';
 import { Container } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
