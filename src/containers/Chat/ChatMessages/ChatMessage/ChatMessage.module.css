@@ -34,7 +34,12 @@
 
 .Mine {
   float: right;
+  clear: both;
+}
+
+.MineColor {
   background-color: #bce0f5;
+  width: 100%;
 }
 
 .Mine::before {
@@ -43,6 +48,7 @@
 
 .Other {
   float: left;
+  clear: both;
   background-color: #fff;
 }
 
@@ -84,6 +90,6 @@
   display: flex;
 }
 
-.Tags {
+.TagsReceiver {
   padding-left: 30px;
 }

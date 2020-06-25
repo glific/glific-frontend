@@ -44,19 +44,30 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   }, [props.popup]);
 
+  const icon = (
+    <IconButton size="small" onClick={props.onClick} ref={Ref} className={styles.button}>
+      <ExpandMoreRoundedIcon />
+    </IconButton>
+  );
+
+  let iconLeft = false;
+  let tags: string | undefined = undefined;
+
   let additionalClass = styles.Mine;
+  let mineColor: string | null = styles.MineColor;
 
   if (props.receiver.id === props.contactId) {
     additionalClass = styles.Other;
+    mineColor = null;
+    iconLeft = true;
+    tags = styles.TagsReceiver;
   }
 
   return (
-    <div className={styles.additionalClass}>
+    <div className={additionalClass}>
       <div className={styles.Inline}>
-        <IconButton size="small" onClick={props.onClick} ref={Ref} className={styles.button}>
-          <ExpandMoreRoundedIcon />
-        </IconButton>
-        <div className={styles.ChatMessage}>
+        {iconLeft ? icon : null}
+        <div className={`${styles.ChatMessage} ${mineColor}`}>
           <div className={styles.Content} data-testid="content">
             {props.body}
           </div>
@@ -75,8 +86,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             )}
           </Popper>
         </div>
+        {iconLeft ? null : icon}
       </div>
-      <div className={styles.Tags}>{tag}</div>
+      <div className={tags}>{tag}</div>
     </div>
   );
 };
