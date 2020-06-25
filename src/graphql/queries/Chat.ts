@@ -20,28 +20,48 @@ export const GET_CONVERSATION_QUERY = gql`
   }
 `;
 
-export const GET_CONVERSATION_MESSAGE_QUERY = gql`
-query conversation($size: Int!, $contactId: Gid!, $filter: ConversationFilter! ) {
-  conversation(sizeOfConversations: $size, contactId: $contactId, filter: $filter) {
-    contact {
-      id
-      name
-    }
-    messages {
-      id
-      body
-      insertedAt
-      receiver {
+export const NEW_CONVO_QUERY = gql`
+  query conversations($contactOpts: Opts!, $filter: ConversationsFilter!, $messageOpts: Opts!) {
+    conversations(contactOpts: $contactOpts, filter: $filter, messageOpts: $messageOpts) {
+      contact {
         id
+        name
       }
-      sender {
+      messages {
         id
-      }
-      tags {
-        id
-        label
+        body
+        insertedAt
+        tags {
+          id
+          label
+        }
       }
     }
   }
-}
+`;
+
+export const GET_CONVERSATION_MESSAGE_QUERY = gql`
+  query conversation($size: Int!, $contactId: Gid!, $filter: ConversationFilter!) {
+    conversation(sizeOfConversations: $size, contactId: $contactId, filter: $filter) {
+      contact {
+        id
+        name
+      }
+      messages {
+        id
+        body
+        insertedAt
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+        }
+      }
+    }
+  }
 `;
