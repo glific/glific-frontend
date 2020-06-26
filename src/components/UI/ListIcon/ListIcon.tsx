@@ -8,20 +8,22 @@ import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 export interface ListIconProps {
   icon: string;
+  fontSize: FontSize;
 }
 
-export const ListIcon: React.SFC<ListIconProps> = (props) => {
-  switch (props.icon) {
+type FontSize = 'small' | 'large' | undefined;
+export const ListIcon: React.SFC<ListIconProps> = ({ icon, fontSize }) => {
+  switch (icon) {
     case 'tag':
-      return <LabelSharpIcon />;
+      return <LabelSharpIcon fontSize={fontSize} />;
     case 'chat':
-      return <ChatBubbleSharpIcon />;
+      return <ChatBubbleSharpIcon fontSize={fontSize} />;
     case 'conversation':
-      return <ForumSharpIcon />;
+      return <ForumSharpIcon fontSize={fontSize} />;
     case 'verticalMenu':
-      return <MoreVertSharpIcon />;
+      return <MoreVertSharpIcon fontSize={fontSize} />;
     default:
-      return <HomeSharpIcon />;
+      return <HomeSharpIcon fontSize={fontSize} />;
   }
 };
 
