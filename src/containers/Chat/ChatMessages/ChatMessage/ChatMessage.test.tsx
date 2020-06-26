@@ -46,7 +46,7 @@ describe('<ChatMessage />', () => {
     expect(wrapper.find('.Other')).toHaveLength(1);
   });
 
-  test('it should render the tags correctly', async () => {
+  test('it should render the tags correctly', () => {
     const { container, getByTestId } = render(<ChatMessage {...defaultProps} />);
 
     const tags = within(getByTestId('tags'));
@@ -54,7 +54,7 @@ describe('<ChatMessage />', () => {
     expect(tags.getByText('important')).toBeInTheDocument();
   });
 
-  test('it should render the message icon', async () => {
+  test('it should render the message icon', () => {
     const { container } = render(<ChatMessage {...defaultProps} />);
 
     expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
