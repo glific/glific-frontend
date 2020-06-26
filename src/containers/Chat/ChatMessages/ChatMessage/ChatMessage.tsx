@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
@@ -25,8 +25,8 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
-  const Ref = React.useRef(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const Ref = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
