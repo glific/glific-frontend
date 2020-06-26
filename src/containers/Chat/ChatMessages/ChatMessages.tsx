@@ -58,6 +58,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
 
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
@@ -65,6 +66,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
+      setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
       const messages: any = cache.readQuery({
@@ -173,6 +175,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const closeDialogBox = () => {
+    setSelectedMessageTags(null);
     setDialogbox(false);
     setEditTagsMessageId(null);
     setSearch('');
@@ -206,26 +209,33 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let dialogBox;
 
   if (dialog) {
-    let messageTags = conversations.messages.filter(
-      (message: any) => message.id === editTagsMessageId
-    );
-
-    if (messageTags.length > 0) {
-      messageTags = messageTags[0].tags;
-    }
-
-    const messageTagId = messageTags.map((tag: any) => {
-      return tag.id;
-    });
-
     const tagList = AllTags.data
       ? AllTags.data.tags.map((tag: any) => {
-          const checked = messageTagId.includes(tag.id.toString());
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
                 key={tag.id}
-                control={<Checkbox name={tag.id} color="primary" defaultChecked={checked} />}
+                control={
+                  <Checkbox
+                    name={tag.id}
+                    color="primary"
+                    checked={selectedMessageTags?.includes(tag.id.toString())}
+                    onChange={(event: any) => {
+                      if (selectedMessageTags?.includes(event?.target.name.toString()))
+                        setSelectedMessageTags(
+                          selectedMessageTags?.filter(
+                            (messageTag: any) => messageTag.id !== event?.target.name
+                          )
+                        );
+                      else {
+                        setSelectedMessageTags([
+                          ...selectedMessageTags,
+                          event.target.name.toString(),
+                        ]);
+                      }
+                    }}
+                  />
+                }
                 label={tag.label}
               />
             );
@@ -286,6 +296,21 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
+
+            let messageTags = conversations.messages.filter(
+              (message: any) => message.id === editTagsMessageId
+            );
+
+            if (messageTags.length > 0) {
+              messageTags = messageTags[0].tags;
+            }
+
+            const messageTagId = messageTags.map((tag: any) => {
+              return tag.id;
+            });
+
+            setSelectedMessageTags(messageTagId);
+
             setDialogbox(!dialog);
           }}
         />
