@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import moment from 'moment';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { IconButton } from '@material-ui/core';
 import Popper from '@material-ui/core/Popper';
@@ -70,9 +71,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <div className={styles.Content} data-testid="content">
-            {props.body}
-          </div>
+          <Tooltip title={moment(props.insertedAt).format('DD/MM/YY')} placement="right">
+            <div className={styles.Content} data-testid="content">
+              {props.body}
+            </div>
+          </Tooltip>
           <div className={styles.Date} data-testid="date">
             {moment(props.insertedAt).format('HH:mm')}
           </div>
