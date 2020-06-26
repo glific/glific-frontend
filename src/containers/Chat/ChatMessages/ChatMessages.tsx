@@ -114,52 +114,49 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
-  const sendMessageHandler = useCallback(
-    (body: string) => {
-      const payload = {
-        body: body,
-        senderId: 1,
-        receiverId: contactId,
-        type: 'TEXT',
-        flow: 'OUTBOUND',
-      };
+  const sendMessageHandler = (body: string) => {
+    const payload = {
+      body: body,
+      senderId: 1,
+      receiverId: contactId,
+      type: 'TEXT',
+      flow: 'OUTBOUND',
+    };
 
-      createMessage({
-        variables: { input: payload },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          createMessage: {
-            __typename: 'Message',
-            id: Math.random().toString(36).substr(2, 9),
-            body: body,
-            senderId: 1,
-            receiverId: contactId,
-            flow: 'OUTBOUND',
-            type: 'TEXT',
-          },
+    createMessage({
+      variables: { input: payload },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createMessage: {
+          __typename: 'Message',
+          id: Math.random().toString(36).substr(2, 9),
+          body: body,
+          senderId: 1,
+          receiverId: contactId,
+          flow: 'OUTBOUND',
+          type: 'TEXT',
         },
-        update: (cache, { data }) => {
-          const messages: any = cache.readQuery({
+      },
+      update: (cache, { data }) => {
+        const messages: any = cache.readQuery({
+          query: GET_CONVERSATION_MESSAGE_QUERY,
+          variables: queryVariables,
+        });
+
+        const messagesCopy = JSON.parse(JSON.stringify(messages));
+
+        if (data.createMessage.message) {
+          const message = data.createMessage.message;
+          messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
+          cache.writeQuery({
             query: GET_CONVERSATION_MESSAGE_QUERY,
             variables: queryVariables,
+            data: messagesCopy,
           });
-
-          const messagesCopy = JSON.parse(JSON.stringify(messages));
-
-          if (data.createMessage.message) {
-            const message = data.createMessage.message;
-            messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
-            cache.writeQuery({
-              query: GET_CONVERSATION_MESSAGE_QUERY,
-              variables: queryVariables,
-              data: messagesCopy,
-            });
-          }
-        },
-      });
-    },
-    [contactId, createMessage, queryVariables]
-  );
+        }
+      },
+    });
+  };
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
@@ -323,7 +320,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       {dialogBox}
       {toastMessage}
       <ContactBar contactName={conversations.contact.name} />
-      <Container className={styles.MessageList}>{messageList}</Container>
+      <Container className={styles.MessageList} data-testid="messageContainer">
+        {messageList}
+      </Container>
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );

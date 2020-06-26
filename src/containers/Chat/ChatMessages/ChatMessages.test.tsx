@@ -5,9 +5,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
 import { ChatMessages } from './ChatMessages';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
+import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
+import { CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 
 global.document.createRange = () => ({
   setStart: () => {},
@@ -18,7 +20,6 @@ global.document.createRange = () => ({
   },
 });
 
-afterEach(cleanup);
 const mocks = [
   {
     request: {
@@ -77,13 +78,45 @@ const mocks = [
       },
     },
   },
+  {
+    request: {
+      query: CREATE_MESSAGE_MUTATION,
+      variables: {
+        input: {
+          body: 'Hey There Wow',
+          senderId: 1,
+          receiverId: '2',
+          type: 'TEXT',
+          flow: 'OUTBOUND',
+        },
+      },
+    },
+    result: {
+      data: {
+        createMessage: {
+          message: {
+            body: 'Hey There Wow',
+            flow: 'OUTBOUND',
+            id: '10388',
+            receiver: {
+              id: '2',
+            },
+            sender: {
+              id: '1',
+            },
+            type: 'TEXT',
+          },
+        },
+      },
+    },
+  },
 ];
 
 describe('<ChatMessages />', () => {
   it('should have loading', async () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -94,7 +127,7 @@ describe('<ChatMessages />', () => {
   it('should have title as contact name', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -106,7 +139,7 @@ describe('<ChatMessages />', () => {
   it('input should function properly', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -122,7 +155,7 @@ describe('<ChatMessages />', () => {
   it('input should have an emoji picker', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -134,7 +167,7 @@ describe('<ChatMessages />', () => {
   it('It should contain the mock message', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -146,7 +179,7 @@ describe('<ChatMessages />', () => {
   test('click on assign tag should open a dialog box with mock messages', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
+        <ChatMessages contactId="2" />
       </MockedProvider>
     );
 
@@ -159,23 +192,5 @@ describe('<ChatMessages />', () => {
     await wait();
 
     expect(screen.getByTestId('dialogBox')).toHaveTextContent('Good message');
-  });
-
-  test('add a new message on submit to input box', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages />
-      </MockedProvider>
-    );
-
-    await wait();
-    fireEvent.change(getByTestId('message-input'), {
-      target: { value: 'Hey There Wow' },
-    });
-    fireEvent.keyDown(getByTestId('message-input'), { key: 'Enter', code: 'Enter' });
-
-    await wait();
-
-    expect(getByTestId('content')).toHaveTextContent('Hey there watUp');
   });
 });
