@@ -71,7 +71,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <Tooltip title={moment(props.insertedAt).format('MMM, DD YYYY')} placement="right">
+          <Tooltip title={moment(props.insertedAt).format('DD/MM/YY')} placement="right">
             <div className={styles.Content} data-testid="content">
               {props.body}
             </div>
