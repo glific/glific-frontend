@@ -6,7 +6,7 @@
 }
 
 .InputBox {
-  width: calc(100% - 55px);
+  width: calc(100% - 112px);
   border: none;
   border-radius: 999px;
   padding: 5px;
@@ -19,12 +19,20 @@
   line-height: 35px;
 }
 
-.SendButton {
-  min-width: 50px !important;
-  width: 50px !important;
-  border-radius: 999px !important;
-  margin: 0 5px !important;
-  margin-right: 0 !important;
-  color: white !important;
-  padding-left: 20px !important;
+.EmojiPicker {
+  width: 50px;
+  float: right;
+}
+
+.InputContainer {
+  width: 60%;
+  position: absolute;
+}
+
+.EmojiPickerPopup {
+  width: 338px;
+  position: absolute;
+  bottom: 140px;
+  right: 176px;
+  z-index: 1;
 }

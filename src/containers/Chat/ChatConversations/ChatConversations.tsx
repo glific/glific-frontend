@@ -65,13 +65,13 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   };
 
   return (
-    <Container className={styles.ChatConversations}>
+    <Container className={styles.ChatConversations} disableGutters>
       <Toolbar>
         <Typography variant="h6">Chats</Typography>
         {/* Adding search/filter functionality for different messages */}
         <SearchBar handleSubmit={handleSearch} onReset={() => setSearchVal('')} />
       </Toolbar>
-      <Container className={styles.ListingContainer}>
+      <Container className={styles.ListingContainer} disableGutters>
         {conversationList ? (
           <List className={styles.StyledList}>{conversationList}</List>
         ) : (
