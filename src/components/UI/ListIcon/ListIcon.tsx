@@ -8,7 +8,7 @@ import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
 
 export interface ListIconProps {
   icon: string;
-  fontSize: FontSize;
+  fontSize?: FontSize;
 }
 
 type FontSize = 'small' | 'large' | undefined;
