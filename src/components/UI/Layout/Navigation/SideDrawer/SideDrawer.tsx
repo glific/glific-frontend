@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Hidden,
   Drawer,
@@ -14,10 +14,7 @@ import {
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 
-export interface SideDrawerProps {
-  MenuToggle: () => void;
-  isMobile: boolean;
-}
+export interface SideDrawerProps {}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
@@ -38,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
   const theme = useTheme();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const drawer = (
     <div>
@@ -58,8 +56,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           container={container}
           variant="temporary"
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-          open={props.isMobile}
-          onClose={props.MenuToggle}
+          open={mobileOpen}
+          onClose={() => setMobileOpen(!mobileOpen)}
           classes={{
             paper: classes.drawerPaper,
           }}
