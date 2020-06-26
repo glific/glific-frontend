@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
@@ -6,7 +6,7 @@ import styles from './Layout.module.css';
 export interface LayoutProps {}
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
