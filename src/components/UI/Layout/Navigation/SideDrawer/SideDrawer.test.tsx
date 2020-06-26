@@ -17,11 +17,11 @@ describe('side drawer testing', () => {
   };
   const component = (
     <Router>
-      <SideDrawer MenuToggle={changeToggle} isMobile={isToggled} />
+      <SideDrawer />
     </Router>
   );
 
-  it('initialized properly', () => {
+  it('it should be initialized properly', () => {
     const wrapper = mount(component);
     expect(wrapper).toBeTruthy();
     // Use Hidden at index 0 because there's two Drawer components.
@@ -30,11 +30,9 @@ describe('side drawer testing', () => {
 
   it('callback is working', () => {
     const wrapper = mount(component);
-    // console.log(wrapper.debug());
     let callBackObj = wrapper.find(Drawer).filterWhere((obj) => !!obj.props().onClose);
     callBackObj.simulate('close');
     callBackObj.invoke('onClose');
-    // expect(wrapper).toHaveBeenCalled();
   });
 
   it('correct menu items rendered', () => {
