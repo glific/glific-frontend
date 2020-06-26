@@ -90,7 +90,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         </div>
         {iconLeft ? null : icon}
       </div>
-      <div className={tags}>{tag}</div>
+      <div className={tags} data-testid="tags">
+        {tag}
+      </div>
     </div>
   );
 };
