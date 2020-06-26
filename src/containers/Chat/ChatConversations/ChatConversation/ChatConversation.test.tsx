@@ -1,8 +1,9 @@
 import React from 'react';
-
 import { shallow } from 'enzyme';
-import ChatConversation from './ChatConversation';
 import moment from 'moment';
+
+import ChatConversation from './ChatConversation';
+import { DATE_FORMAT } from '../../../../common/constants';
 
 describe('<ChatConversation />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
@@ -29,7 +30,9 @@ describe('<ChatConversation />', () => {
   });
 
   test('it should render the message date correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('D/M/Y'));
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
+      moment(insertedAt).format(DATE_FORMAT)
+    );
   });
 
   test('it should render the tags correctly', () => {
