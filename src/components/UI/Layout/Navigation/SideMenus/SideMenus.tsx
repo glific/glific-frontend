@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 
@@ -8,7 +8,7 @@ import ListIcon from '../../../ListIcon/ListIcon';
 export interface SideMenusProps {}
 
 const SideMenus: React.SFC<SideMenusProps> = () => {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const menuList = sideDrawerMenus.map((menu, i) => {
     return (
       <ListItem
