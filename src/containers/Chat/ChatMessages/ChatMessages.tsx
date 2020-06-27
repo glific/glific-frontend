@@ -109,6 +109,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: queryVariables,
+    fetchPolicy: 'cache-first',
+    onCompleted: (data) => console.log(data),
   });
 
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
@@ -148,12 +150,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
+            messagesCopy.conversation.messages = messagesCopy.conversation.messages.concat(message);
+            console.log(messagesCopy);
+
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
               data: messagesCopy,
             });
+
+            console.log(messagesCopy.conversation.messages);
           }
         },
       });
@@ -161,7 +167,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     [contactId, createMessage, queryVariables]
   );
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return <Loading />;
+  }
   if (error) return <p>Error :(</p>;
 
   //toast

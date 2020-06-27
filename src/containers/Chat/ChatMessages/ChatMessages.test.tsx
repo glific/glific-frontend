@@ -30,19 +30,19 @@ const mocks = [
       data: {
         conversation: {
           contact: {
-            id: 1,
+            id: '2',
             name: 'Vaibhav',
           },
           messages: [
             {
-              id: 1,
+              id: '1',
               body: 'Hey there whats up?',
               insertedAt: '2020-06-25T13:36:43Z',
               receiver: {
-                id: 2,
+                id: '2',
               },
               sender: {
-                id: 1,
+                id: '1',
               },
               tags: [
                 {
@@ -96,7 +96,7 @@ const mocks = [
         createMessage: {
           message: {
             body: 'Hey There Wow',
-            flow: 'OUTBOUND',
+            insertedAt: '2020-06-25T13:36:43Z',
             id: '10388',
             receiver: {
               id: '2',
@@ -104,7 +104,13 @@ const mocks = [
             sender: {
               id: '1',
             },
-            type: 'TEXT',
+
+            tags: [
+              {
+                id: 1,
+                label: 'critical',
+              },
+            ],
           },
         },
       },
@@ -178,5 +184,26 @@ describe('<ChatMessages />', () => {
     fireEvent.click(getByTestId('dialogButton'));
     await wait();
     expect(screen.getByTestId('dialogBox')).toHaveTextContent('Good message');
+  });
+
+  test('add a new message on submit to input box', async () => {
+    const { getAllByTestId, getByTestId, rerender } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessages contactId="2" />
+      </MockedProvider>
+    );
+
+    await wait();
+    fireEvent.change(getByTestId('message-input'), {
+      target: { value: 'Hey There Wow' },
+    });
+
+    await wait();
+
+    fireEvent.keyPress(getByTestId('message-input'), { key: 'Enter', code: 13, charCode: 13 });
+
+    await wait();
+
+    expect(getByTestId('messageContainer')).toHaveTextContent('Hey There Wow');
   });
 });
