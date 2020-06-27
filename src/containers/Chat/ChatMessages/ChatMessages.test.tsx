@@ -192,18 +192,13 @@ describe('<ChatMessages />', () => {
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
     fireEvent.change(getByTestId('message-input'), {
       target: { value: 'Hey There Wow' },
     });
-
     await wait();
-
     fireEvent.keyPress(getByTestId('message-input'), { key: 'Enter', code: 13, charCode: 13 });
-
     await wait();
-
     expect(getByTestId('messageContainer')).toHaveTextContent('Hey There Wow');
   });
 });
