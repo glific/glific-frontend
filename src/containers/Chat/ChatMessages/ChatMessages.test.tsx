@@ -36,7 +36,7 @@ const mocks = [
           messages: [
             {
               id: 1,
-              body: 'Hey there watsUp',
+              body: 'Hey there whats up?',
               insertedAt: '2020-06-25T13:36:43Z',
               receiver: {
                 id: 2,
@@ -113,13 +113,12 @@ const mocks = [
 ];
 
 describe('<ChatMessages />', () => {
-  it('should have loading', async () => {
+  it('should have loading state', async () => {
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
   });
@@ -130,50 +129,41 @@ describe('<ChatMessages />', () => {
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
-
     expect(getByTestId('name')).toHaveTextContent('Vaibhav');
   });
 
-  it('input should function properly', async () => {
+  test('input should function properly', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
-
     fireEvent.change(getByTestId('message-input'), {
       target: { value: 'Hey There' },
     });
-
     expect(getByTestId('message-input').getAttribute('value')).toBe('Hey There');
   });
 
-  it('input should have an emoji picker', async () => {
+  it('should have an emoji picker', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
-
     expect(getByTestId('emoji-picker')).toBeInTheDocument();
   });
 
-  it('It should contain the mock message', async () => {
+  it('should contain the mock message', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
-
-    expect(getByTestId('content')).toHaveTextContent('Hey there watsUp');
+    expect(getByTestId('content')).toHaveTextContent('Hey there whats up?');
   });
 
   test('click on assign tag should open a dialog box with mock messages', async () => {
@@ -182,15 +172,11 @@ describe('<ChatMessages />', () => {
         <ChatMessages contactId="2" />
       </MockedProvider>
     );
-
     await wait();
     fireEvent.click(getByTestId('messageOptions'));
-
     await wait();
     fireEvent.click(getByTestId('dialogButton'));
-
     await wait();
-
     expect(screen.getByTestId('dialogBox')).toHaveTextContent('Good message');
   });
 });

@@ -48,15 +48,12 @@ describe('<ChatMessage />', () => {
 
   test('it should render the tags correctly', () => {
     const { container, getByTestId } = render(<ChatMessage {...defaultProps} />);
-
     const tags = within(getByTestId('tags'));
-
     expect(tags.getByText('important')).toBeInTheDocument();
   });
 
-  test('it should render the message icon', () => {
+  test('it should render the down arrow icon', () => {
     const { container } = render(<ChatMessage {...defaultProps} />);
-
     expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
   });
 
@@ -64,7 +61,6 @@ describe('<ChatMessage />', () => {
     const { container } = render(<ChatMessage {...defaultProps} />);
     fireEvent.click(container.querySelector('button.MuiIconButton-sizeSmall'));
     await wait();
-
     expect(screen.getByText('Assign tag')).toBeInTheDocument();
   });
 });
