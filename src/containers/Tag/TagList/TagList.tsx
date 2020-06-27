@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -83,6 +83,17 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     }
   );
+  useEffect(() => {
+    if (searchVal !== '') {
+      console.log('dd');
+      refetch(filterPayload());
+      refetchCount({
+        filter: {
+          label: searchVal,
+        },
+      });
+    }
+  }, [searchVal]);
 
   // Get tag data here
   const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {
@@ -152,15 +163,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   if (loading || l) return <Loading />;
   if (error || e) return <p>Error :(</p>;
-
-  if (searchVal !== '') {
-    refetch(filterPayload());
-    refetchCount({
-      filter: {
-        label: searchVal,
-      },
-    });
-  }
 
   const deleteHandler = (id: number) => {
     deleteId = id;
