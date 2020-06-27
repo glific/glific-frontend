@@ -18,11 +18,6 @@ export const CREATE_TAG = gql`
         id
         description
         label
-        isActive
-        isReserved
-        language {
-          id
-        }
       }
     }
   }
@@ -34,16 +29,7 @@ export const UPDATE_TAG = gql`
       tag {
         id
         label
-        isActive
-        isReserved
         description
-        language {
-          id
-        }
-      }
-      errors {
-        key
-        message
       }
     }
   }
