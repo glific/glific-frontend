@@ -1,4 +1,4 @@
-import { SOCKET } from './config';
+import { SOCKET } from '.';
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
 const Socket = require('phoenix');

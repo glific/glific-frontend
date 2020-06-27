@@ -12,6 +12,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
+    "@sentry/browser": "^5.18.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
