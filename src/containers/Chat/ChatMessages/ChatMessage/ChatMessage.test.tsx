@@ -1,8 +1,10 @@
 import React from 'react';
 import { render, wait, within, fireEvent, screen, cleanup } from '@testing-library/react';
-import { shallow } from 'enzyme';
-import ChatMessage from './ChatMessage';
 import moment from 'moment';
+import { shallow } from 'enzyme';
+
+import ChatMessage from './ChatMessage';
+import { TIME_FORMAT } from '../../../../common/constants';
 
 global.document.createRange = () => ({
   setStart: () => {},
@@ -22,9 +24,10 @@ describe('<ChatMessage />', () => {
     receiver: {
       id: 2,
     },
-    popup: 3,
+    popup: 1,
     open: true,
     insertedAt,
+
     tags: [
       {
         id: 1,
@@ -39,7 +42,9 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the message date  correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(moment(insertedAt).format('HH:mm'));
+    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
+      moment(insertedAt).format(TIME_FORMAT)
+    );
   });
 
   test('it should render "Other" class for the content', () => {
@@ -57,10 +62,9 @@ describe('<ChatMessage />', () => {
     expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
   });
 
-  test('button click should open popup', async () => {
+  test('it should render popup', async () => {
     const { container } = render(<ChatMessage {...defaultProps} />);
-    fireEvent.click(container.querySelector('button.MuiIconButton-sizeSmall'));
-    await wait();
+
     expect(screen.getByText('Assign tag')).toBeInTheDocument();
   });
 });

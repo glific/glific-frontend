@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { IconButton } from '@material-ui/core';
@@ -7,7 +7,9 @@ import { Button, Chip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
+import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 
 export interface ChatMessageProps {
   id: number;
@@ -24,8 +26,8 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
-  const Ref = React.useRef(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const Ref = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
@@ -76,11 +78,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <div className={styles.Content} data-testid="content">
-            {props.body}
-          </div>
+          <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
+            <div className={styles.Content} data-testid="content">
+              {props.body}
+            </div>
+          </Tooltip>
           <div className={styles.Date} data-testid="date">
-            {moment(props.insertedAt).format('HH:mm')}
+            {moment(props.insertedAt).format(TIME_FORMAT)}
           </div>
           <Popper
             id={id}
