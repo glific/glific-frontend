@@ -51,40 +51,42 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <Container className={styles.ChatInput}>
-      <div className={styles.InputContainer}>
-        <input
-          className={styles.InputBox}
-          data-testid="message-input"
-          type="text"
-          placeholder="Start typing..."
-          value={message}
-          onKeyPress={keyPressHandler}
-          onChange={changeHandler}
-          onClick={() => setShowEmojiPicker(false)}
-        />
-      </div>
-      <div className={styles.EmojiPicker}>
-        <IconButton
-          data-testid="emoji-picker"
-          color="primary"
-          aria-label="pick emoji"
-          component="span"
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        >
-          <span role="img" aria-label="pick emoji">
+      <div className={styles.ChatInputElements}>
+        <div className={styles.InputContainer}>
+          <input
+            className={styles.InputBox}
+            data-testid="message-input"
+            type="text"
+            placeholder="Start typing..."
+            value={message}
+            onKeyPress={keyPressHandler}
+            onChange={changeHandler}
+            onClick={() => setShowEmojiPicker(false)}
+          />
+        </div>
+        <div className={styles.EmojiContainer}>
+          <IconButton
+            data-testid="emoji-picker"
+            color="primary"
+            aria-label="pick emoji"
+            component="span"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
             😀
-          </span>
-        </IconButton>
-        <Button
-          className={styles.SendButton}
-          data-testid="send-button"
-          variant="contained"
-          color="primary"
-          onClick={submitMessage}
-        >
-          Send
-          <img src={sendMessageIcon} alt="Send Message" />
-        </Button>
+          </IconButton>
+        </div>
+        <div className={styles.SendButtonContainer}>
+          <Button
+            className={styles.SendButton}
+            data-testid="send-button"
+            variant="contained"
+            color="primary"
+            onClick={submitMessage}
+          >
+            Send
+            <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
+          </Button>
+        </div>
       </div>
       {emojiPicker}
     </Container>
