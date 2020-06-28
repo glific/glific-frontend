@@ -36,3 +36,7 @@
   right: 176px;
   z-index: 1;
 }
+
+.SendButton {
+  border-radius: 20px;
+}

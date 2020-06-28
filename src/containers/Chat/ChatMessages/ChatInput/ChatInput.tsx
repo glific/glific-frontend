@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container } from '@material-ui/core';
+import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
 import styles from './ChatInput.module.css';
+
+import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -16,18 +18,22 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
-      if (!message) return;
-
-      setMessage('');
-
-      if (typeof onSendMessage === 'function') {
-        onSendMessage(message);
-      }
+      submitMessage();
     }
   };
 
   const changeHandler = ({ target }: any) => {
     setMessage(target.value);
+  };
+
+  const submitMessage = () => {
+    if (!message) return;
+
+    setMessage('');
+
+    if (typeof onSendMessage === 'function') {
+      onSendMessage(message);
+    }
   };
 
   let emojiPicker;
@@ -50,7 +56,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
           className={styles.InputBox}
           data-testid="message-input"
           type="text"
-          placeholder="Type a message"
+          placeholder="Start typing..."
           value={message}
           onKeyPress={keyPressHandler}
           onChange={changeHandler}
@@ -69,6 +75,16 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             😀
           </span>
         </IconButton>
+        <Button
+          className={styles.SendButton}
+          data-testid="send-button"
+          variant="contained"
+          color="primary"
+          onClick={submitMessage}
+        >
+          Send
+          <img src={sendMessageIcon} alt="Send Message" />
+        </Button>
       </div>
       {emojiPicker}
     </Container>
