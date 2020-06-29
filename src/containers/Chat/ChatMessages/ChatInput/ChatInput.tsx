@@ -72,7 +72,9 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             component="span"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           >
-            😀
+            <span role="img" aria-label="pick emoji">
+              😀
+            </span>
           </IconButton>
         </div>
         <div className={styles.SendButtonContainer}>
