@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600&display=swap');
 .ChatMessage {
   display: inline-block;
   position: relative;
@@ -73,7 +73,7 @@
 
 .Content {
   font-size: 16px;
-  font-weight: normal;
+  font-weight: 400;
   line-height: 20px;
   color: #073f24;
   padding: 8px 16px;
@@ -112,7 +112,7 @@
 .Tag {
   font-family: 'Heebo', sans-serif;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 500;
   color: #073f24;
   margin-right: 3px;
 }
