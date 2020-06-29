@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import ChatMessage from './ChatMessage';
-import { ApolloProvider } from '@apollo/client';
 
-import gqlClient from '../../../../config/apolloclient';
 import moment from 'moment';
 
 describe('<ChatMessage />', () => {
@@ -19,13 +17,7 @@ describe('<ChatMessage />', () => {
     insertedAt,
   };
 
-  const wrapper = mount(
-    <ApolloProvider client={gqlClient}>
-      <ChatMessage {...defaultProps} />
-    </ApolloProvider>
-  );
-
-  // const wrapper = shallow(<ChatMessage {...defaultProps} />);
+  const wrapper = shallow(<ChatMessage {...defaultProps} />);
   test('it should render the message content correctly', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
