@@ -85,7 +85,12 @@
   display: inline;
 }
 
+.DateLeft {
+  justify-content: flex-end;
+}
+
 .Date {
+  display: flex;
   color: gray;
   font-size: 10px;
   margin-bottom: 7px;
@@ -102,6 +107,10 @@
   display: flex;
 }
 
+.TagsLeft {
+  justify-content: flex-end;
+}
+
 .Tags {
   display: flex;
   line-height: 12px;
@@ -114,7 +123,6 @@
   font-size: 12px;
   font-weight: 500;
   color: #073f24;
-  margin-right: 3px;
 }
 
 .TagIcon {

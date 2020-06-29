@@ -53,6 +53,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
   let iconPlacement = styles.ButtonLeft;
+  let datePlacement: string | null = styles.DateLeft;
+  let tagsPlacement: string | null = styles.TagsLeft;
 
   if (props.receiver.id === props.contactId) {
     additionalClass = styles.Other;
@@ -60,6 +62,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     iconLeft = true;
     placement = 'bottom-start';
     iconPlacement = styles.ButtonRight;
+    datePlacement = null;
+    tagsPlacement = null;
   }
 
   const icon = (
@@ -89,10 +93,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               )}
             </Popper>
           </div>
-          <div className={styles.Date} data-testid="date">
+          <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
             {moment(props.insertedAt).format(TIME_FORMAT)}
           </div>
-          {tag ? <div className={styles.Tags}>{tag}</div> : null}
+          {tag ? <div className={`${styles.Tags} ${tagsPlacement}`}>{tag}</div> : null}
         </div>
         {iconLeft ? null : icon}
       </div>
