@@ -76,7 +76,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (showSaveMessageDialog) {
     saveTemplateMessage = (
       <AddToMessageTemplate
-        info={props.id}
+        id={props.id}
         message={props.body}
         changeDisplay={saveMessageTemplate}
       />

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import ChatMessage from './ChatMessage';
-
 import moment from 'moment';
 
 describe('<ChatMessage />', () => {
@@ -17,7 +16,7 @@ describe('<ChatMessage />', () => {
     insertedAt,
   };
 
-  const wrapper = shallow(<ChatMessage {...defaultProps} />);
+  const wrapper = mount(<ChatMessage {...defaultProps} />);
   test('it should render the message content correctly', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
@@ -28,6 +27,11 @@ describe('<ChatMessage />', () => {
 
   test('it should render "Other" class for the content', () => {
     expect(wrapper.find('.Other')).toHaveLength(1);
+  });
+
+  test('it should render menu on click of Icon', () => {
+    wrapper.find('button.MuiButtonBase-root').simulate('click');
+    console.log(wrapper.parent().find('div#simple-popper').exists());
   });
 
   test('it should render the tags correctly', () => {

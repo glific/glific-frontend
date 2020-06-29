@@ -6,13 +6,13 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
 
 interface AddToMessageTemplateProps {
-  info: any;
+  id: any;
   message: any;
   changeDisplay: Function;
 }
 
 const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
-  info,
+  id,
   message,
   changeDisplay,
 }) => {
@@ -47,7 +47,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   const handleOKButton = () => {
     saveTemplate({
       variables: {
-        messageId: info,
+        messageId: id,
         templateInput: {
           label: messageTemplate,
           shortcode: messageTemplate,
