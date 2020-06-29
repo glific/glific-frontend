@@ -33,11 +33,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
-        <span key={tag.id} className={styles.Tag}>
+        <div key={tag.id} className={styles.Tag}>
           <TagIcon className={styles.TagIcon} />
-
           {tag.label}
-        </span>
+        </div>
       );
     });
 

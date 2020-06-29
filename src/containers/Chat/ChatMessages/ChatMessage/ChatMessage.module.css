@@ -88,6 +88,8 @@
 .Date {
   color: gray;
   font-size: 10px;
+  margin-bottom: 7px;
+  line-height: normal;
 }
 
 .Popper {
@@ -101,9 +103,10 @@
 }
 
 .Tags {
+  display: flex;
   line-height: 12px;
   margin-bottom: 11px;
-  margin-top: 7px;
+  flex-wrap: wrap;
 }
 
 .Tag {
@@ -112,13 +115,13 @@
   font-weight: bold;
   color: #073f24;
   margin-right: 3px;
-  margin-bottom: 12px;
 }
 
 .TagIcon {
   margin-right: 4.27px;
+  font-weight: bold;
   width: 10px;
-  vertical-align: middle;
+  vertical-align: text-top;
 }
 
 .Message {
