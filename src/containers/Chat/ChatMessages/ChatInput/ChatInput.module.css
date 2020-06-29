@@ -1,7 +1,5 @@
 .ChatInput {
-  display: flex;
-  height: 100px;
-  width: calc(100% - 10px);
+  padding-top: 15px;
 }
 
 .ChatInputElements {
