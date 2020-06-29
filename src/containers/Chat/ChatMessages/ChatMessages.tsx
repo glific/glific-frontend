@@ -221,6 +221,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                 key={tag.id}
                 control={
                   <Checkbox
+                    data-testid="dialogCheckbox"
                     name={tag.id}
                     color="primary"
                     checked={selectedMessageTags?.includes(tag.id.toString())}

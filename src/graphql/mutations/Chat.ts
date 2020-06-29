@@ -30,6 +30,7 @@ export const CREATE_MESSAGE_TAG = gql`
           id
         }
         tag {
+          id
           label
         }
       }

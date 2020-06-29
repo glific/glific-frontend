@@ -5,11 +5,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
 import { ChatMessages } from './ChatMessages';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION } from '../../../graphql/mutations/Chat';
+import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { Switch, Route } from 'react-router-dom';
-import { within, fireEvent } from '@testing-library/dom';
-import { CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
+import { within, fireEvent, waitForDomChange } from '@testing-library/dom';
 
 global.document.createRange = () => ({
   setStart: () => {},
@@ -46,7 +45,7 @@ const mocks = [
               },
               tags: [
                 {
-                  id: 1,
+                  id: '1',
                   label: 'important',
                 },
               ],
@@ -70,11 +69,63 @@ const mocks = [
             description: 'Hey There',
           },
           {
-            id: '94',
-            label: 'Message',
+            id: '1',
+            label: 'important',
             description: 'some description',
           },
         ],
+      },
+    },
+  },
+  {
+    request: {
+      query: CREATE_MESSAGE_TAG,
+      variables: {
+        input: {
+          messageId: '1',
+          tagId: '87',
+        },
+      },
+    },
+    result: {
+      data: {
+        createMessageTag: {
+          messageTag: {
+            message: {
+              id: '1',
+            },
+            tag: {
+              id: '87',
+              label: 'Good message',
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: CREATE_MESSAGE_TAG,
+      variables: {
+        input: {
+          messageId: '1',
+          tagId: '1',
+        },
+      },
+    },
+    result: {
+      data: {
+        createMessageTag: {
+          messageTag: {
+            message: {
+              id: '1',
+            },
+            tag: {
+              id: '1',
+              label: 'important',
+            },
+          },
+        },
       },
     },
   },
@@ -183,7 +234,7 @@ describe('<ChatMessages />', () => {
     await wait();
     fireEvent.click(getByTestId('dialogButton'));
     await wait();
-    expect(screen.getByTestId('dialogBox')).toHaveTextContent('Good message');
+    expect(getByTestId('dialogBox')).toHaveTextContent('Good message');
   });
 
   test('add a new message on submit to input box', async () => {
@@ -200,5 +251,24 @@ describe('<ChatMessages />', () => {
     fireEvent.keyPress(getByTestId('message-input'), { key: 'Enter', code: 13, charCode: 13 });
     await wait();
     expect(getByTestId('messageContainer')).toHaveTextContent('Hey There Wow');
+  });
+
+  test('assign a tag to message', async () => {
+    const { container, getAllByTestId, getByTestId, getByText, queryByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessages contactId="2" />
+      </MockedProvider>
+    );
+    await wait();
+    fireEvent.click(getByTestId('messageOptions'));
+    await wait();
+    fireEvent.click(getByTestId('dialogButton'));
+    await wait();
+    fireEvent.click(getAllByTestId('dialogCheckbox')[0].querySelector('input'));
+    fireEvent.click(getAllByTestId('dialogCheckbox')[1].querySelector('input'));
+    await wait();
+    fireEvent.click(getByText('Confirm'));
+    await wait();
+    expect(getByText('Good message')).toBeInTheDocument();
   });
 });
