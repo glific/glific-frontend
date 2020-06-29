@@ -1,5 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import React, { useCallback, useState, useEffect } from 'react';
+import {
+  useQuery,
+  useMutation,
+  useLazyQuery,
+  useApolloClient,
+  InMemoryCache,
+} from '@apollo/client';
 import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import moment from 'moment';
 
@@ -18,6 +24,7 @@ import {
   CREATE_MESSAGE_TAG,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../../graphql/subscriptions/Chat';
 
 export interface ChatMessagesProps {
   conversationIndex: number;
@@ -168,6 +175,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
     },
     [createAndSendMessage, queryVariables, receiverId, conversationIndex, allConversations]
   );
+
+  // handle subscription for message received
+  // TODO: We might have to move this code, commenting for now.
+  // const getMessageResponse = useCallback(() => {
+  //   subscribeToMore({
+  //     document: MESSAGE_RECEIVED_SUBSCRIPTION,
+  //     variables: queryVariables,
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       if (!subscriptionData.data) return prev;
+  //       const newMessage = subscriptionData.data.receivedMessage;
+  //       return Object.assign({}, prev, {
+  //         conversation: {
+  //           messages: [newMessage, ...prev.conversation.messages],
+  //         },
+  //       });
+  //     },
+  //   });
+  // }, [subscribeToMore, queryVariables]);
+
+  // useEffect(() => {
+  //   console.log('useeffect called');
+  //   getMessageResponse();
+  // }, [getMessageResponse]);
 
   //toast
   const closeToastMessage = () => {
