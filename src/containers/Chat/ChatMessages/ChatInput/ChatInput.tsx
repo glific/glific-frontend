@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container } from '@material-ui/core';
+import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
 import styles from './ChatInput.module.css';
+
+import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -16,18 +18,22 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
-      if (!message) return;
-
-      setMessage('');
-
-      if (typeof onSendMessage === 'function') {
-        onSendMessage(message);
-      }
+      submitMessage();
     }
   };
 
   const changeHandler = ({ target }: any) => {
     setMessage(target.value);
+  };
+
+  const submitMessage = () => {
+    if (!message) return;
+
+    setMessage('');
+
+    if (typeof onSendMessage === 'function') {
+      onSendMessage(message);
+    }
   };
 
   let emojiPicker;
@@ -45,30 +51,43 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <Container className={styles.ChatInput}>
-      <div className={styles.InputContainer}>
-        <input
-          className={styles.InputBox}
-          data-testid="message-input"
-          type="text"
-          placeholder="Type a message"
-          value={message}
-          onKeyPress={keyPressHandler}
-          onChange={changeHandler}
-          onClick={() => setShowEmojiPicker(false)}
-        />
-      </div>
-      <div className={styles.EmojiPicker}>
-        <IconButton
-          data-testid="emoji-picker"
-          color="primary"
-          aria-label="pick emoji"
-          component="span"
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        >
-          <span role="img" aria-label="pick emoji">
+      <div className={styles.ChatInputElements}>
+        <div className={styles.InputContainer}>
+          <input
+            className={styles.InputBox}
+            data-testid="message-input"
+            type="text"
+            placeholder="Start typing..."
+            value={message}
+            onKeyPress={keyPressHandler}
+            onChange={changeHandler}
+            onClick={() => setShowEmojiPicker(false)}
+          />
+        </div>
+        <div className={styles.EmojiContainer}>
+          <IconButton
+            data-testid="emoji-picker"
+            color="primary"
+            aria-label="pick emoji"
+            component="span"
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
             😀
-          </span>
-        </IconButton>
+          </IconButton>
+        </div>
+        <div className={styles.SendButtonContainer}>
+          <Button
+            className={styles.SendButton}
+            data-testid="send-button"
+            variant="contained"
+            color="primary"
+            onClick={submitMessage}
+            disabled={message.length === 0}
+          >
+            Send
+            <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
+          </Button>
+        </div>
       </div>
       {emojiPicker}
     </Container>
