@@ -274,9 +274,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let messageList: any;
   if (conversations.messages.length > 0) {
-    const reverseConversation = [...conversations.messages];
-    reverseConversation.reverse();
-    messageList = reverseConversation.map((message: any, index: number) => {
+    let reverseConversation = [...conversations.messages];
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
           {...message}
@@ -288,9 +287,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             loadAllTags();
             setDialogbox(!dialog);
           }}
+          focus={index === 0}
         />
       );
     });
+
+    messageList = reverseConversation.reverse();
   }
 
   return (

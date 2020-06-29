@@ -23,10 +23,12 @@ export interface ChatMessageProps {
   tags: any;
   popup: any;
   setDialog: any;
+  focus: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const Ref = useRef(null);
+  const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
@@ -47,6 +49,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   }, [props.popup]);
 
+  useEffect(() => {
+    if (props.focus) {
+      messageRef.current?.scrollIntoView();
+    }
+  }, [props]);
+
   const icon = (
     <IconButton size="small" onClick={props.onClick} ref={Ref} className={styles.button}>
       <ExpandMoreRoundedIcon />
@@ -64,11 +72,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     mineColor = styles.OtherColor;
     iconLeft = true;
     tags = styles.TagsReceiver;
+
     placement = 'bottom-start';
   }
 
   return (
-    <div className={additionalClass}>
+    <div className={additionalClass} ref={messageRef}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
