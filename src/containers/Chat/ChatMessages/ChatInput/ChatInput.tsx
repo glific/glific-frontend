@@ -82,6 +82,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             variant="contained"
             color="primary"
             onClick={submitMessage}
+            disabled={message.length === 0}
           >
             Send
             <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
