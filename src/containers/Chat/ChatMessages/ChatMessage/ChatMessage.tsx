@@ -30,15 +30,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
   let tag;
-  if (props.tags && props.tags.length > 0)
-    tag = props.tags.map((tag: any) => {
-      return (
-        <div key={tag.id} className={styles.Tag}>
-          <TagIcon className={styles.TagIcon} />
-          {tag.label}
-        </div>
-      );
-    });
 
   useEffect(() => {
     if (props.popup) {
@@ -55,6 +46,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
   let tagsPlacement: string | null = styles.TagsLeft;
+  let tagPlacement: string | null = styles.TagLeft;
 
   if (props.receiver.id === props.contactId) {
     additionalClass = styles.Other;
@@ -64,7 +56,18 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     iconPlacement = styles.ButtonRight;
     datePlacement = null;
     tagsPlacement = null;
+    tagPlacement = null;
   }
+
+  if (props.tags && props.tags.length > 0)
+    tag = props.tags.map((tag: any) => {
+      return (
+        <div key={tag.id} className={`${styles.Tag} ${tagPlacement}`}>
+          <TagIcon className={styles.TagIcon} />
+          {tag.label}
+        </div>
+      );
+    });
 
   const icon = (
     <div onClick={props.onClick} ref={Ref} className={`${styles.Button} ${iconPlacement}`}></div>
