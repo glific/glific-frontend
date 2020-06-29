@@ -1,11 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
 .ChatMessage {
   display: inline-block;
   position: relative;
   max-width: 100%;
-  border-radius: 7px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  margin-top: 10px;
-  margin-bottom: 10px;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  margin-bottom: 6px;
   clear: both;
   min-width: 85px;
 }
@@ -27,9 +28,20 @@
   background-size: contain;
 }
 
-.button {
-  height: fit-content;
-  margin-top: 25px !important;
+.Button {
+  margin: 12px;
+  background: url('../../../../assets/icon/Dropdown.svg');
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
+.ButtonLeft {
+  margin-left: 8px;
+}
+
+.ButtonRight {
+  margin-right: 8px;
 }
 
 .Mine {
@@ -60,7 +72,11 @@
 }
 
 .Content {
-  padding: 18px 7px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 20px;
+  color: #073f24;
+  padding: 8px 16px;
   word-wrap: break-word;
 }
 
@@ -70,11 +86,8 @@
 }
 
 .Date {
-  position: absolute;
-  bottom: 2px;
-  right: 7px;
   color: gray;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .Popper {
@@ -83,16 +96,31 @@
   text-transform: none !important;
 }
 
-.Chip {
-  display: unset !important;
-  padding: 1px !important;
-  margin-right: 3px;
-}
-
 .Inline {
   display: flex;
 }
 
-.TagsReceiver {
-  padding-left: 30px;
+.Tags {
+  line-height: 12px;
+  margin-bottom: 11px;
+  margin-top: 7px;
+}
+
+.Tag {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #073f24;
+  margin-right: 3px;
+  margin-bottom: 12px;
+}
+
+.TagIcon {
+  margin-right: 4.27px;
+  width: 10px;
+  vertical-align: middle;
+}
+
+.Message {
+  max-width: 404px;
 }

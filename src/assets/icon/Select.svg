@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Select</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Select" stroke="#119656" stroke-width="2">
+            <g>
+                <circle id="Oval" cx="6" cy="6" r="5"></circle>
+                <path d="M4,6.88759782 L4.78485443,5.76857105 C5.10198525,5.31641346 5.72561673,5.20695264 6.17777432,5.52408347 C6.29407505,5.60565358 6.39166223,5.71106612 6.46403712,5.83330123 L8.037308,8.49042342 L8.037308,8.49042342" id="Triangle" stroke-linecap="round" transform="translate(6.018654, 6.495212) scale(1, -1) translate(-6.018654, -6.495212) "></path>
+            </g>
+        </g>
+    </g>
+</svg>
