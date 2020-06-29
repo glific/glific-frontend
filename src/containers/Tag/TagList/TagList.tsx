@@ -85,7 +85,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   );
   useEffect(() => {
     if (searchVal !== '') {
-      console.log('dd');
       refetch(filterPayload());
       refetchCount({
         filter: {
