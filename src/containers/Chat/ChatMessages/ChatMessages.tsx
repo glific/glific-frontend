@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { Container, FormGroup } from '@material-ui/core';
+import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
+
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../common/notification';
-import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
@@ -11,11 +11,14 @@ import styles from './ChatMessages.module.css';
 import moment from 'moment';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../common/constants';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
+import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
+import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import gqlClient from '../../../config/apolloclient';
 
 export interface ChatMessagesProps {
   contactId: string;
@@ -96,23 +99,48 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       }
     },
   });
-  // let's get the conversation for last contacted contact.
-  // TODO Temporary fix
-  if (!contactId) {
-    contactId = '2';
-  }
 
+  // let's get the conversation for last contacted contact.
+  // // TODO Temporary fix
+  // if (!contactId) {
+  //   contactId = '2';
+  // }
+
+  // const queryVariables = {
+  //   contactId: contactId,
+  //   filter: {},
+  //   messageOpts: {
+  //     limit: 25,
+  //   },
+  // };
+  // const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
+  //   variables: queryVariables,
+  //   fetchPolicy: 'cache-first',
+  // });
+
+  // get the conversations stored from the cache
   const queryVariables = {
-    contactId: contactId,
+    contactOpts: {
+      limit: 50,
+    },
     filter: {},
     messageOpts: {
-      limit: 25,
+      limit: 100,
     },
   };
-  const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
+
+  const data: any = gqlClient.readQuery({
+    query: GET_CONVERSATION_QUERY,
     variables: queryVariables,
-    fetchPolicy: 'cache-first',
   });
+
+  // use contact id to filter if it is passed via url, else use the first conversation
+  let conversationInfo: any = [];
+  if (!contactId) {
+    contactId = data.conversations[0].contact.id;
+    conversationInfo = data.conversations[0];
+  }
+  console.log('conversationInfo', conversationInfo);
 
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
@@ -164,11 +192,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     [contactId, createMessage, queryVariables]
   );
 
-  if (loading) {
-    return <Loading />;
-  }
-  if (error) return <p>Error :(</p>;
-
   //toast
   const closeToastMessage = () => {
     setNotification(client, null);
@@ -209,7 +232,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   };
 
-  const conversations = data?.conversation;
+  //const conversations = conversationMessages;
 
   let dialogBox;
 
@@ -283,14 +306,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   };
 
-  // we are always loading first conversation, hence incase chatid is not passed set it
-  if (contactId === undefined) {
-    contactId = conversations.contact.id;
-  }
-
   let messageList: any;
-  if (conversations.messages.length > 0) {
-    let reverseConversation = [...conversations.messages];
+  if (conversationInfo.messages.length > 0) {
+    let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
@@ -301,7 +319,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
-            let messageTags = conversations.messages.filter(
+
+            let messageTags = conversationInfo.messages.filter(
               (message: any) => message.id === editTagsMessageId
             );
             if (messageTags.length > 0) {
@@ -331,7 +350,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversations.contact.name} />
+      <ContactBar contactName={conversationInfo.contact.name} />
       <Container className={styles.MessageList} data-testid="messageContainer">
         {messageList}
       </Container>
