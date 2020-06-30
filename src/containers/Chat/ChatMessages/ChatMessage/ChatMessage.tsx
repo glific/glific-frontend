@@ -25,6 +25,7 @@ export interface ChatMessageProps {
   popup: any;
   setDialog: any;
   focus: boolean;
+  showMessage: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -81,6 +82,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       );
     });
 
+  const date = props.showMessage ? (
+    <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
+      {moment(props.insertedAt).format(TIME_FORMAT)}
+    </div>
+  ) : null;
+
   const icon = (
     <MessageIcon
       onClick={props.onClick}
@@ -121,9 +128,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       </div>
 
       <div className={messageDetails}>
-        <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
-          {moment(props.insertedAt).format(TIME_FORMAT)}
-        </div>
+        {date}
         {tag ? <div className={`${styles.Tags} ${tagsPlacement}`}>{tag}</div> : null}
       </div>
     </div>
