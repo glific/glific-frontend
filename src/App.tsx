@@ -4,7 +4,7 @@ import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
-import ChatPage from './components/pages/ChatPage/ChatPage';
+import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 
 const App = () => {
@@ -18,12 +18,12 @@ const App = () => {
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
           {/* Doesn't this error without a passed in `contactId`? */}
-          <Route path="/chat" exact component={ChatPage} />
+          <Route path="/chat" exact component={Chat} />
           <Route
             exact
             path="/chat/:contactId"
             component={({ match }: RouteComponentProps<{ contactId: string }>) => (
-              <ChatPage contactId={match.params.contactId} />
+              <Chat contactId={match.params.contactId} />
             )}
           />
         </Switch>
