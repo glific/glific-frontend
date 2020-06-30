@@ -74,7 +74,9 @@
       "!src/index.tsx"
     ],
     "coverageReporters": [
-      "text"
+      "text",
+      "html",
+      "lcov"
     ]
   },
   "devDependencies": {
