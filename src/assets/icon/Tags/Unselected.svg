@@ -1,12 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Icon/Tags/Unselected</title>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icon/Tags/Unselected">
-            <g id="Group" transform="translate(0.000000, 3.000000)">
-                <path d="M16,1 L7.17639138,1 C6.92190154,1 6.67698582,1.0970276 6.49154278,1.27131461 L2.17443638,5.33395164 C1.99710968,5.53235124 1.91314606,5.78309543 1.92083404,6.03099729 C1.92876694,6.28679663 2.03428399,6.53956967 2.23550491,6.72868539 L6.49154278,10.7286854 C6.67698582,10.9029724 6.92190154,11 7.17639138,11 L16,11 C16.2761424,11 16.5261424,10.8880712 16.7071068,10.7071068 C16.8880712,10.5261424 17,10.2761424 17,10 L17,2 C17,1.72385763 16.8880712,1.47385763 16.7071068,1.29289322 C16.5261424,1.11192881 16.2761424,1 16,1 Z" id="Rectangle-Copy-4" stroke="#93A29B" stroke-width="2"></path>
-                <circle id="Oval" fill="#93A29B" cx="7" cy="6" r="1"></circle>
-            </g>
-        </g>
-    </g>
-</svg>
+<?xml version="1.0" encoding="UTF-8"?> <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title>Icon/Tags/Unselected</title> <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Icon/Tags/Unselected"> <g id="Group" transform="translate(0.000000, 3.000000)"> <path d="M16,1 L7.17639138,1 C6.92190154,1 6.67698582,1.0970276 6.49154278,1.27131461 L2.17443638,5.33395164 C1.99710968,5.53235124 1.91314606,5.78309543 1.92083404,6.03099729 C1.92876694,6.28679663 2.03428399,6.53956967 2.23550491,6.72868539 L6.49154278,10.7286854 C6.67698582,10.9029724 6.92190154,11 7.17639138,11 L16,11 C16.2761424,11 16.5261424,10.8880712 16.7071068,10.7071068 C16.8880712,10.5261424 17,10.2761424 17,10 L17,2 C17,1.72385763 16.8880712,1.47385763 16.7071068,1.29289322 C16.5261424,1.11192881 16.2761424,1 16,1 Z" id="Rectangle-Copy-4" stroke="#93A29B" stroke-width="2"></path> <circle id="Oval" fill="#93A29B" cx="7" cy="6" r="1"></circle> </g> </g> </g> </svg>
