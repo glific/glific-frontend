@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  List,
-  styled,
-  Button,
-  TextField,
-  NoSsr,
-} from '@material-ui/core';
+import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import styles from './SideMenus.module.css';
@@ -17,19 +8,37 @@ import styles from './SideMenus.module.css';
 import { sideDrawerMenus } from '../../../../../config/menu';
 import ListIcon from '../../../ListIcon/ListIcon';
 
-export interface SideMenusProps {}
+export interface SideMenusProps {
+  opened: boolean;
+}
 
 const useStyles = makeStyles({
   listStyle: {
     display: 'inline-block',
     width: '100%',
   },
+  // listItem: {
+  //   disableRipple: true,
+  //   borderRadius: '12px',
+  //   padding: '5px 0px 5px 9px',
+  //   // width: '90%',
+  //   // margin: '0 5px 0 5px',
+  //   '&$selected': {
+  //     background: '#69b37d',
+  //   },
+  //   '&:hover': {
+  //     background: '#ededed',
+  //   },
+  //   '&$selected:hover': {
+  //     background: '#429e65',
+  //   },
+  // },
   itemRoot: {
     disableRipple: true,
     borderRadius: '12px',
-    padding: '5px 0px 5px 5px',
+    padding: '5px 0px 5px 9px',
     width: '90%',
-    margin: 'auto',
+    margin: '0 5px 0 5px',
     '&$selected': {
       background: '#69b37d',
     },
@@ -41,9 +50,26 @@ const useStyles = makeStyles({
     },
   },
   selected: {},
+  closedRoot: {
+    disabledRipple: true,
+    borderRadius: '12px',
+    padding: '9px',
+    width: '60%',
+    margin: '0 0 0 5px',
+    '&$selected': {
+      background: 'blue',
+    },
+    '&:hover': {
+      background: '#ededed',
+    },
+    '&$selected:hover': {
+      background: '#429e65',
+    },
+  },
+  closedSelected: {},
 });
 
-const SideMenus: React.SFC<SideMenusProps> = () => {
+const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const menuList = sideDrawerMenus.map((menu, i) => {
@@ -52,7 +78,11 @@ const SideMenus: React.SFC<SideMenusProps> = () => {
         button
         disableRipple={true}
         selected={selectedIndex === i}
-        classes={{ root: classes.itemRoot, selected: classes.selected }}
+        classes={
+          props.opened
+            ? { root: classes.itemRoot, selected: classes.selected }
+            : { root: classes.closedRoot, selected: classes.closedSelected }
+        }
         key={menu.icon}
         component={NavLink}
         to={menu.path}
@@ -61,7 +91,7 @@ const SideMenus: React.SFC<SideMenusProps> = () => {
         <ListItemIcon>
           <ListIcon icon={menu.icon} />
         </ListItemIcon>
-        <ListItemText primary={menu.title} />
+        {props.opened ? <ListItemText primary={menu.title} /> : null}
       </ListItem>
     );
   });

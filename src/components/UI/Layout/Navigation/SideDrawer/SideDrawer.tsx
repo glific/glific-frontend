@@ -27,21 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
     },
-    appBar: {
-      zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
     menuButton: {
       marginRight: 36,
     },
@@ -91,6 +76,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     anotherToolBar: {
       padding: '0px',
+      // transition: theme.transitions.create('width', {
+      //   easing: theme.transitions.easing.sharp,
+      //   duration: theme.transitions.duration.leavingScreen,
+      // }),
     },
     title: {
       alignSelf: 'center',
@@ -109,7 +98,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [fullOpen, setFullOpen] = React.useState(true);
+  const [fullOpen, setFullOpen] = React.useState(false);
 
   const drawer = (
     <div>
@@ -134,8 +123,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           </IconButton>
         )}
       </Toolbar>
-      {/* <Divider /> */}
-      <SideMenus />
+      <SideMenus opened={fullOpen} />
     </div>
   );
 
