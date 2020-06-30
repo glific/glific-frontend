@@ -227,7 +227,7 @@ describe('<Dialogbox />', () => {
     await wait();
     const agreeButton = screen
       .queryByRole('dialog')
-      ?.querySelector('button.MuiButton-containedSecondary');
+      ?.querySelector('button.MuiButton-containedPrimary');
     fireEvent.click(agreeButton);
     await wait();
     expect(screen.queryByRole('alert')).toBeInTheDocument();
