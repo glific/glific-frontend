@@ -11,10 +11,15 @@ Frontend interface built using React.
 
 1. Create a new file `.env` in the projecct root directory and copy the contents from `.env.example`.
 2. Update the `.env` file with relevant configurations.
+3. Run `yarn install`
 
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `yarn install`
+
+Install the dependencies and required packages.<br />
 
 ### `yarn start`
 
@@ -27,6 +32,10 @@ You will also see any lint errors in the console.
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br />
+
+### `yarn test:coverage`
+
+Launches the test runner in the interactive watch mode and code converage stats.<br />
 
 ### `yarn build`
 
@@ -44,3 +53,4 @@ Your app is ready to be deployed!
 - [Google Drive](https://drive.google.com/drive/folders/1aMQvS8xWRnIEtsIkRgLodhDAM-0hg0v1?usp=sharing)
 - [Product Features](https://docs.google.com/document/d/1uUWmvFkPXJ1xVMr2xaBYJztoItnqxBnfqABz5ad6Zl8/edit?usp=sharing)
 - [Blogs](https://chintugudiya.org/tag/glific/)
+- [Discord(https://discord.gg/scsrGUw)]
