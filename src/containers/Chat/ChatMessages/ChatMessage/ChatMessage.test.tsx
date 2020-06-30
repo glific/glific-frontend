@@ -15,6 +15,8 @@ global.document.createRange = () => ({
   },
 });
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
 describe('<ChatMessage />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
   const defaultProps = {

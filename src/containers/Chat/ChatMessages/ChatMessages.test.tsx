@@ -19,6 +19,8 @@ global.document.createRange = () => ({
   },
 });
 
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
 const mocks = [
   {
     request: {
@@ -270,5 +272,16 @@ describe('<ChatMessages />', () => {
     fireEvent.click(getByText('Confirm'));
     await wait();
     expect(getByText('Good message')).toBeInTheDocument();
+  });
+
+  test('focus on the latest message', async () => {
+    const { container, getByTestId, getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessages contactId="2" />
+      </MockedProvider>
+    );
+    await wait();
+    const message = getByTestId('message');
+    expect(message.scrollIntoView).toBeCalled();
   });
 });
