@@ -12,6 +12,7 @@ import {
 } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../../graphql/subscriptions/Chat';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent, waitForDomChange } from '@testing-library/dom';
 import initialCacheState from './ChatMessages.test.json';
@@ -139,7 +140,7 @@ const mocks = [
   },
   {
     request: {
-      query: CREATE_MESSAGE_MUTATION,
+      query: CREATE_AND_SEND_MESSAGE_MUTATION,
       variables: {
         input: {
           body: 'Hey There Wow',
@@ -152,7 +153,7 @@ const mocks = [
     },
     result: {
       data: {
-        createMessage: {
+        createAndSendMessage: {
           message: {
             body: 'Hey There Wow',
             insertedAt: '2020-06-25T13:36:43Z',
