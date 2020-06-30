@@ -17,13 +17,12 @@ const App = () => {
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
-          {/* Doesn't this error without a passed in `contactId`? */}
           <Route path="/chat" exact component={Chat} />
           <Route
             exact
-            path="/chat/:contactId"
-            component={({ match }: RouteComponentProps<{ contactId: string }>) => (
-              <Chat contactId={match.params.contactId} />
+            path="/chat/:conversationIndex"
+            component={({ match }: RouteComponentProps<{ conversationIndex: any }>) => (
+              <Chat conversationIndex={match.params.conversationIndex} />
             )}
           />
         </Switch>

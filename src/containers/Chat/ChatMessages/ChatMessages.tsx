@@ -20,7 +20,7 @@ import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mu
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  contactId: string;
+  conversationIndex: number;
 }
 
 interface ConversationMessage {
@@ -55,7 +55,7 @@ interface ConversationResult {
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
@@ -123,10 +123,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = [];
-  if (!contactId) {
-    contactId = data.conversations[0].contact.id;
-    conversationInfo = data.conversations[0];
+  if (!conversationIndex) {
+    conversationIndex = 0;
   }
+
+  conversationInfo = data.conversations[conversationIndex];
+  const receiverId = data.conversations[conversationIndex].contact.id;
+
   console.log('conversationInfo', conversationInfo);
 
   // this function is called when the message is sent
@@ -135,7 +138,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       const payload = {
         body: body,
         senderId: 1,
-        receiverId: contactId,
+        receiverId: receiverId,
         type: 'TEXT',
         flow: 'OUTBOUND',
       };
@@ -149,7 +152,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             id: Math.random().toString(36).substr(2, 9),
             body: body,
             senderId: 1,
-            receiverId: contactId,
+            receiverId: receiverId,
             flow: 'OUTBOUND',
             type: 'TEXT',
           },
@@ -174,7 +177,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         },
       });
     },
-    [contactId, createMessage, queryVariables]
+    [conversationIndex, createMessage, queryVariables]
   );
 
   //toast
@@ -298,7 +301,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       return (
         <ChatMessage
           {...message}
-          contactId={contactId}
+          contactId={receiverId}
           key={index}
           popup={message.id === editTagsMessageId}
           onClick={() => showEditTagsDialog(message.id)}

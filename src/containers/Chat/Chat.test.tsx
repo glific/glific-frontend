@@ -5,7 +5,7 @@ import Chat from './Chat';
 
 describe('<Chat />', () => {
   const defaultProps = {
-    contactId: '1',
+    conversationIndex: '1',
   };
 
   const wrapper = shallow(<Chat {...defaultProps} />);

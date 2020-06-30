@@ -33,10 +33,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   // build the conversation list only if there are conversations
   let conversationList;
   if (conversations.length > 0) {
-    conversationList = conversations.map((conversation: any) => {
+    conversationList = conversations.map((conversation: any, index: number) => {
       return (
         <ChatConversation
           key={conversation.contact.id}
+          conversationIndex={index}
           contactId={conversation.contact.id}
           contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]}

@@ -10,10 +10,10 @@ import styles from './Chat.module.css';
 import { GET_CONVERSATION_QUERY } from '../../graphql/queries/Chat';
 
 export interface ChatProps {
-  contactId: string;
+  conversationIndex: number;
 }
 
-const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+const Chat: React.SFC<ChatProps> = ({ conversationIndex }) => {
   // fetch the default conversations
   // default queryvariables
   const queryVariables = {
@@ -41,7 +41,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     <Paper>
       <div className={styles.Chat}>
         <div className={styles.ChatMessages}>
-          <ChatMessages contactId={contactId} />
+          <ChatMessages conversationIndex={conversationIndex} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations />
