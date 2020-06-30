@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { ReactComponent as TagIcon } from '../../../../assets/icon/Tags/Selected.svg';
+import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Selected.svg';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
-import { ReactComponent as MessageIcon } from '../../../../assets/icon/Dropdown.svg';
-import { ReactComponent as CrossIcon } from '../../../../assets/icon/Cross.svg';
+import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
