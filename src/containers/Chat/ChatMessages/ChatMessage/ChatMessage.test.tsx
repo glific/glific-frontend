@@ -29,6 +29,7 @@ describe('<ChatMessage />', () => {
     popup: 1,
     open: true,
     insertedAt,
+    showMessage:true,
 
     tags: [
       {
@@ -43,7 +44,8 @@ describe('<ChatMessage />', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
 
-  test('it should render the message date  correctly', () => {
+  test('it should render the message date correctly', () => {
+    
     expect(wrapper.find('[data-testid="date"]').text()).toEqual(
       moment(insertedAt).format(TIME_FORMAT)
     );
