@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     drawerPaper: {
-      width: "15%",
+      width: drawerWidth,
     },
   })
 );
