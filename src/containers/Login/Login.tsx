@@ -7,9 +7,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import styles from './Login.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import styles from './Login.module.css';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,6 +31,7 @@ export interface LoginProps {}
 interface State {
   password: string;
   showPassword: boolean;
+  phoneNumber: string;
 }
 
 export const Login: React.SFC<LoginProps> = () => {
@@ -38,6 +39,7 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const [values, setValues] = React.useState<State>({
     password: '',
+    phoneNumber: '',
     showPassword: false,
   });
 
@@ -53,7 +55,7 @@ export const Login: React.SFC<LoginProps> = () => {
     event.preventDefault();
   };
 
-  const handleLoginButton = () => {
+  const handleSubmit = () => {
     console.log('hello');
   };
 
@@ -65,7 +67,12 @@ export const Login: React.SFC<LoginProps> = () => {
         </div>
         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
           <InputLabel>Phone Number</InputLabel>
-          <OutlinedInput id="phone-number" label="Phone Number" type="integer" />
+          <OutlinedInput
+            id="phone-number"
+            label="Phone Number"
+            type="integer"
+            onChange={handleChange('phoneNumber')}
+          />
         </FormControl>
         <FormControl
           className={clsx(classes.margin, classes.textField, classes.bottomMargin)}
@@ -92,7 +99,7 @@ export const Login: React.SFC<LoginProps> = () => {
             }
           />
         </FormControl>
-        <Button onClick={handleLoginButton} color="primary" variant={'contained'}>
+        <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Login
         </Button>
       </div>
