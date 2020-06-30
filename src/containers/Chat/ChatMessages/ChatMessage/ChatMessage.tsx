@@ -47,7 +47,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     if (props.focus) {
       messageRef.current?.scrollIntoView();
     }
-  }, [props]);
+  }, [props.id]);
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -74,7 +74,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
-        <div key={tag.id} className={`${styles.Tag} ${tagPlacement}`}>
+        <div key={tag.id} className={`${styles.Tag} ${tagPlacement}`} data-testid="tags">
           <TagIcon className={styles.TagIcon} />
           {tag.label}
         </div>
@@ -86,6 +86,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       onClick={props.onClick}
       ref={Ref}
       className={`${styles.Button} ${iconPlacement}`}
+      data-testid="messageOptions"
     />
   );
 

@@ -60,8 +60,8 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the down arrow icon', () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
-    expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
+    const { getByTestId } = render(<ChatMessage {...defaultProps} />);
+    expect(getByTestId('messageOptions')).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
