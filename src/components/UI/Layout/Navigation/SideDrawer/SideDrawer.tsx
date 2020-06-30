@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexShrink: 0,
       whiteSpace: 'nowrap',
     },
+    navClose: {
+      width: '72px',
+    },
     drawerOpen: {
       width: drawerWidth,
       transition: theme.transitions.create('width', {
@@ -73,17 +76,32 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolbar: {
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      // ...theme.mixins.toolbar,
     },
     content: {
       flexGrow: 1,
       padding: theme.spacing(3),
     },
     drawerPaper: {},
+    outerBox: {
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'space-between',
+    },
+    anotherToolBar: {
+      padding: '0px',
+    },
+    title: {
+      alignSelf: 'center',
+      margin: '0 0 0 15px',
+    },
+    iconButton: {
+      margin: '0 10px 0 0',
+    },
+    closedIcon: {
+      margin: '12px 12px 12px 15px',
+    },
   })
 );
 
@@ -91,20 +109,20 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [fullOpen, setFullOpen] = React.useState(false);
+  const [fullOpen, setFullOpen] = React.useState(true);
 
   const drawer = (
     <div>
-      <Toolbar>
+      <Toolbar className={classes.anotherToolBar}>
         {fullOpen ? (
-          <>
-            <Typography variant="h6">Glific</Typography>
-            <div className={classes.toolbar}>
-              <IconButton onClick={() => setFullOpen(false)}>
-                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              </IconButton>
-            </div>
-          </>
+          <div className={classes.outerBox}>
+            <Typography variant="h6" className={classes.title}>
+              Glific
+            </Typography>
+            <IconButton className={classes.iconButton} onClick={() => setFullOpen(false)}>
+              <MenuIcon />
+            </IconButton>
+          </div>
         ) : (
           <IconButton
             color="inherit"
@@ -125,6 +143,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   return (
     <nav className={classes.drawer} aria-label="navigation menus">
+      {/* <nav
+      className={clsx({
+        [classes.drawer]: fullOpen,
+        [classes.navClose]: !fullOpen,
+      })}
+      aria-label="navigation menus"
+    ></nav> */}
       {/* What is the purpose of this drawer? */}
       <Hidden smUp implementation="css">
         <Drawer
