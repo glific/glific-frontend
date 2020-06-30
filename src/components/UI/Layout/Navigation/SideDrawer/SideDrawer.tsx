@@ -134,7 +134,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           </IconButton>
         )}
       </Toolbar>
-      <Divider />
+      {/* <Divider /> */}
       <SideMenus />
     </div>
   );
@@ -142,14 +142,14 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const container = window !== undefined ? () => window.document.body : undefined;
 
   return (
-    <nav className={classes.drawer} aria-label="navigation menus">
-      {/* <nav
+    // <nav className={classes.drawer} aria-label="navigation menus">
+    <nav
       className={clsx({
         [classes.drawer]: fullOpen,
         [classes.navClose]: !fullOpen,
       })}
       aria-label="navigation menus"
-    ></nav> */}
+    >
       {/* What is the purpose of this drawer? */}
       <Hidden smUp implementation="css">
         <Drawer
