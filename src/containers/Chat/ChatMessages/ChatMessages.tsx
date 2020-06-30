@@ -149,8 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversation.messages = messagesCopy.conversation.messages.concat(message);
-
+            messagesCopy.conversation.messages = [message, ...messagesCopy.conversation.messages];
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
@@ -289,9 +288,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let messageList: any;
   if (conversations.messages.length > 0) {
-    const reverseConversation = [...conversations.messages];
-    reverseConversation.reverse();
-    messageList = reverseConversation.map((message: any, index: number) => {
+    let reverseConversation = [...conversations.messages];
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
           {...message}
@@ -318,9 +316,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
             setDialogbox(!dialog);
           }}
+          focus={index === 0}
         />
       );
     });
+
+    messageList = reverseConversation.reverse();
   }
 
   return (
