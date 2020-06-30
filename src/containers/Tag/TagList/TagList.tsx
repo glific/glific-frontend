@@ -72,19 +72,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     };
   };
 
-  useEffect(() => {
-    refetch(filterPayload());
-  }, [searchVal, setTableVals]);
-
-  // Make a new count request for a new count of the # of rows from this query in the back-end.
-  useEffect(() => {
-    refetchCount({
-      filter: {
-        label: searchVal,
-      },
-    });
-  }, [searchVal]);
-
   // Get the total number of tags here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
     GET_TAGS_COUNT,
@@ -96,11 +83,20 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     }
   );
+  useEffect(() => {
+    if (searchVal !== '') {
+      refetch(filterPayload());
+      refetchCount({
+        filter: {
+          label: searchVal,
+        },
+      });
+    }
+  }, [searchVal]);
 
   // Get tag data here
   const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {
     variables: filterPayload(),
-    fetchPolicy: 'cache-and-network',
   });
 
   const message = useQuery(NOTIFICATION);

@@ -1,9 +1,21 @@
 import React from 'react';
+import { render, wait, within, fireEvent, screen, cleanup } from '@testing-library/react';
 import moment from 'moment';
 import { shallow } from 'enzyme';
 
 import ChatMessage from './ChatMessage';
 import { TIME_FORMAT } from '../../../../common/constants';
+
+global.document.createRange = () => ({
+  setStart: () => {},
+  setEnd: () => {},
+  commonAncestorContainer: {
+    nodeName: 'BODY',
+    ownerDocument: document,
+  },
+});
+
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 describe('<ChatMessage />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
@@ -14,11 +26,16 @@ describe('<ChatMessage />', () => {
     receiver: {
       id: 2,
     },
+    popup: 1,
+    open: true,
     insertedAt,
-    onClick: Function,
-    tags: [],
-    popup: false,
-    setDialog: false,
+
+    tags: [
+      {
+        id: 1,
+        label: 'important',
+      },
+    ],
   };
 
   const wrapper = shallow(<ChatMessage {...defaultProps} />);
@@ -37,6 +54,19 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the tags correctly', () => {
-    //TODO: add the test once tag functionality is implemented
+    const { container, getByTestId } = render(<ChatMessage {...defaultProps} />);
+    const tags = within(getByTestId('tags'));
+    expect(tags.getByText('important')).toBeInTheDocument();
+  });
+
+  test('it should render the down arrow icon', () => {
+    const { container } = render(<ChatMessage {...defaultProps} />);
+    expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
+  });
+
+  test('it should render popup', async () => {
+    const { container } = render(<ChatMessage {...defaultProps} />);
+
+    expect(screen.getByText('Assign tag')).toBeInTheDocument();
   });
 });

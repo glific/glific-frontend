@@ -24,10 +24,12 @@ export interface ChatMessageProps {
   tags: any;
   popup: any;
   setDialog: any;
+  focus: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const Ref = useRef(null);
+  const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
@@ -40,6 +42,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       setAnchorEl(null);
     }
   }, [props.popup]);
+
+  useEffect(() => {
+    if (props.focus) {
+      messageRef.current?.scrollIntoView();
+    }
+  }, [props]);
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -82,7 +90,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   );
 
   return (
-    <div className={additionalClass}>
+    <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
@@ -95,7 +103,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
-                  <Button className={styles.Popper} color="primary" onClick={props.setDialog}>
+                  <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={props.setDialog}
+                    data-testid="dialogButton"
+                  >
                     Assign tag
                   </Button>
                 </Paper>

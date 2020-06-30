@@ -35,6 +35,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   return (
     <div>
       <Dialog
+        data-testid="dialogBox"
         open={open}
         onClose={handleCancelButton}
         aria-labelledby="alert-dialog-title"
