@@ -2,7 +2,7 @@
   display: flex;
   padding-left: 0px !important;
   flex-flow: column;
-  height: 85vh;
+  height: 100vh;
   background-color: #f9f7f4;
 }
 
@@ -15,7 +15,7 @@
   flex: 2;
   overflow-y: overlay;
   padding-left: 0px !important;
-  height: calc(100% - 124px);
+  height: calc(100% - 175px);
 }
 
 .Search {
