@@ -18,7 +18,6 @@ import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
-import gqlClient from '../../../config/apolloclient';
 
 export interface ChatMessagesProps {
   contactId: string;
@@ -57,7 +56,9 @@ interface ConversationResult {
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+  // create an instance of apolloclient
   const client = useApolloClient();
+
   const message = useQuery(NOTIFICATION);
   const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
@@ -65,6 +66,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
 
+  // create message mutation
+  const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+
+  // tagging message mutation
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
       setEditTagsMessageId(null);
@@ -100,24 +105,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
   });
 
-  // let's get the conversation for last contacted contact.
-  // // TODO Temporary fix
-  // if (!contactId) {
-  //   contactId = '2';
-  // }
-
-  // const queryVariables = {
-  //   contactId: contactId,
-  //   filter: {},
-  //   messageOpts: {
-  //     limit: 25,
-  //   },
-  // };
-  // const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-  //   variables: queryVariables,
-  //   fetchPolicy: 'cache-first',
-  // });
-
   // get the conversations stored from the cache
   const queryVariables = {
     contactOpts: {
@@ -129,7 +116,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
   };
 
-  const data: any = gqlClient.readQuery({
+  const data: any = client.readQuery({
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,
   });
@@ -141,8 +128,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     conversationInfo = data.conversations[0];
   }
   console.log('conversationInfo', conversationInfo);
-
-  const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(

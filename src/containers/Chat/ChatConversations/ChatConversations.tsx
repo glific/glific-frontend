@@ -4,12 +4,15 @@ import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
-import gqlClient from '../../../config/apolloclient';
+import { useApolloClient } from '@apollo/client';
 
 export interface ChatConversationsProps {}
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   // get the conversations stored from the cache
+  // create an instance of apolloclient
+  const client = useApolloClient();
+
   const queryVariables = {
     contactOpts: {
       limit: 50,
@@ -20,7 +23,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     },
   };
 
-  const data: any = gqlClient.readQuery({
+  const data: any = client.readQuery({
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,
   });
