@@ -6,8 +6,9 @@
   border-radius: 12px;
   font-family: 'Heebo', sans-serif;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  margin-bottom: 6px;
+
   clear: both;
+  max-width: 404px;
   min-width: 85px;
 }
 
@@ -29,10 +30,8 @@
 }
 
 .Button {
-  margin: 12px;
-  background: url('../../../../assets/icon/Dropdown.svg');
-  width: 12px;
-  height: 12px;
+  margin: auto 12px;
+  flex: none;
   cursor: pointer;
 }
 
@@ -45,6 +44,7 @@
 }
 
 .Mine {
+  max-width: 404px;
   float: right;
   clear: both;
 }
@@ -63,6 +63,7 @@
 }
 
 .Other {
+  max-width: 404px;
   float: left;
   clear: both;
 }
@@ -119,8 +120,8 @@
 }
 
 .TagLeft {
-  margin-right: 0px;
-  margin-left: 3px;
+  margin-right: 0px !important;
+  margin-left: 8px;
 }
 
 .Tag {
@@ -128,16 +129,22 @@
   font-size: 12px;
   font-weight: 500;
   color: #073f24;
-  margin-right: 3px;
+  margin-right: 8px;
 }
 
 .TagIcon {
   margin-right: 4.27px;
   font-weight: bold;
-  width: 10px;
+  width: 11px;
   vertical-align: text-top;
 }
 
-.Message {
-  max-width: 404px;
+.MessageDetailsSender {
+  margin-left: 32px;
+  margin-top: 6px;
+}
+
+.MessageDetails {
+  margin-top: 6px;
+  margin-right: 32px;
 }

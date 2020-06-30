@@ -3,6 +3,8 @@ import moment from 'moment';
 import { ReactComponent as TagIcon } from '../../../../assets/icon/Tags/Selected.svg';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
+import { ReactComponent as MessageIcon } from '../../../../assets/icon/Dropdown.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/icon/Cross.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
@@ -47,6 +49,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let datePlacement: string | null = styles.DateLeft;
   let tagsPlacement: string | null = styles.TagsLeft;
   let tagPlacement: string | null = styles.TagLeft;
+  let messageDetails = styles.MessageDetails;
 
   if (props.receiver.id === props.contactId) {
     additionalClass = styles.Other;
@@ -57,6 +60,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     datePlacement = null;
     tagsPlacement = null;
     tagPlacement = null;
+    messageDetails = styles.MessageDetailsSender;
   }
 
   if (props.tags && props.tags.length > 0)
@@ -70,38 +74,43 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     });
 
   const icon = (
-    <div onClick={props.onClick} ref={Ref} className={`${styles.Button} ${iconPlacement}`}></div>
+    <MessageIcon
+      onClick={props.onClick}
+      ref={Ref}
+      className={`${styles.Button} ${iconPlacement}`}
+    />
   );
 
   return (
     <div className={additionalClass}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
-        <div className={styles.Message}>
-          <div className={`${styles.ChatMessage} ${mineColor}`}>
-            <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
-              <div className={styles.Content} data-testid="content">
-                {props.body}
-              </div>
-            </Tooltip>
-            <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={350}>
-                  <Paper elevation={3}>
-                    <Button className={styles.Popper} color="primary" onClick={props.setDialog}>
-                      Assign tag
-                    </Button>
-                  </Paper>
-                </Fade>
-              )}
-            </Popper>
-          </div>
-          <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
-            {moment(props.insertedAt).format(TIME_FORMAT)}
-          </div>
-          {tag ? <div className={`${styles.Tags} ${tagsPlacement}`}>{tag}</div> : null}
+        <div className={`${styles.ChatMessage} ${mineColor}`}>
+          <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
+            <div className={styles.Content} data-testid="content">
+              {props.body}
+            </div>
+          </Tooltip>
+          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper elevation={3}>
+                  <Button className={styles.Popper} color="primary" onClick={props.setDialog}>
+                    Assign tag
+                  </Button>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
         </div>
         {iconLeft ? null : icon}
+      </div>
+
+      <div className={messageDetails}>
+        <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
+          {moment(props.insertedAt).format(TIME_FORMAT)}
+        </div>
+        {tag ? <div className={`${styles.Tags} ${tagsPlacement}`}>{tag}</div> : null}
       </div>
     </div>
   );
