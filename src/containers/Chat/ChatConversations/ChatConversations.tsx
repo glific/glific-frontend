@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
-import { useQuery, InMemoryCache } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';

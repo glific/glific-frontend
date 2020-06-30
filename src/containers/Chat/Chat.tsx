@@ -26,7 +26,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
   };
 
-  const { loading, error, data, client } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
   });
 
