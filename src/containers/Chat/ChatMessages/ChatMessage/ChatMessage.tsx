@@ -56,7 +56,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   }, [props]);
 
   const icon = (
-    <IconButton size="small" onClick={props.onClick} ref={Ref} className={styles.button}>
+    <IconButton
+      size="small"
+      onClick={props.onClick}
+      ref={Ref}
+      className={styles.button}
+      data-testid="messageOptions"
+    >
       <ExpandMoreRoundedIcon />
     </IconButton>
   );
@@ -89,11 +95,23 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           <div className={styles.Date} data-testid="date">
             {moment(props.insertedAt).format(TIME_FORMAT)}
           </div>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
+          <Popper
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+            data-testid="popup"
+          >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
-                  <Button className={styles.Popper} color="primary" onClick={props.setDialog}>
+                  <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={props.setDialog}
+                    data-testid="dialogButton"
+                  >
                     Assign tag
                   </Button>
                 </Paper>
@@ -103,7 +121,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         </div>
         {iconLeft ? null : icon}
       </div>
-      <div className={tags}>{tag}</div>
+      <div className={tags} data-testid="tags">
+        {tag}
+      </div>
     </div>
   );
 };

@@ -6,14 +6,17 @@ export const CREATE_MESSAGE_MUTATION = gql`
       message {
         id
         body
+        insertedAt
         sender {
           id
         }
         receiver {
           id
         }
-        type
-        flow
+        tags {
+          id
+          label
+        }
       }
     }
   }
@@ -27,6 +30,7 @@ export const CREATE_MESSAGE_TAG = gql`
           id
         }
         tag {
+          id
           label
         }
       }

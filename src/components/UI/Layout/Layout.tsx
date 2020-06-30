@@ -6,15 +6,9 @@ import styles from './Layout.module.css';
 export interface LayoutProps {}
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
   return (
     <>
-      <SideDrawer MenuToggle={handleDrawerToggle} isMobile={mobileOpen} />
+      <SideDrawer />
       <main className={styles.Main}>
         <div>{props.children}</div>
       </main>

@@ -1,32 +1,38 @@
 .ChatInput {
+  padding-top: 15px;
+}
+
+.ChatInputElements {
   display: flex;
-  height: 50px;
-  padding: 5px;
-  width: calc(100% - 10px);
+  height: 64px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px !important;
+  background-color: #ffffff;
+}
+
+.InputContainer {
+  width: 80%;
+}
+
+.EmojiContainer {
+  margin-top: -6px;
+}
+
+.SendButtonContainer {
+  padding-left: 5px;
 }
 
 .InputBox {
-  width: calc(100% - 112px);
+  width: 100%;
   border: none;
   border-radius: 999px;
   padding: 5px;
   padding-left: 20px;
-  padding-right: 20px;
-  font-size: 15px;
+  padding-right: 15px;
+  font-size: 16px;
   outline: none;
-  box-shadow: 0 1px silver;
-  font-size: 18px;
   line-height: 35px;
-}
-
-.EmojiPicker {
-  width: 50px;
-  float: right;
-}
-
-.InputContainer {
-  width: 60%;
-  position: absolute;
 }
 
 .EmojiPickerPopup {
@@ -35,4 +41,14 @@
   bottom: 140px;
   right: 176px;
   z-index: 1;
+}
+
+.SendButton {
+  border-radius: 20px !important;
+  width: 99px;
+  height: 40px;
+}
+
+.SendIcon {
+  padding-left: 8px;
 }
