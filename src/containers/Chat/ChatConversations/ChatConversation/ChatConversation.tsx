@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import styles from './ChatConversation.module.css';
+import { DATE_FORMAT } from '../../../../common/constants';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -34,7 +35,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {props.lastMessage.body}
         </div>
         <div className={styles.MessageDate} data-testid="date">
-          {moment(props.lastMessage.insertedAt).format('D/M/Y')}
+          {moment(props.lastMessage.insertedAt).format(DATE_FORMAT)}
         </div>
       </div>
     </ListItem>

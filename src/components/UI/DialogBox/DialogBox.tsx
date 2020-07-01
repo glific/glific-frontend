@@ -35,6 +35,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   return (
     <div>
       <Dialog
+        data-testid="dialogBox"
         open={open}
         onClose={handleCancelButton}
         aria-labelledby="alert-dialog-title"
@@ -44,10 +45,10 @@ export const DialogBox: React.SFC<DialogProps> = ({
         <DialogContent>{children}</DialogContent>
 
         <DialogActions>
-          <Button variant={'contained'} onClick={handleCancelButton} color="primary">
+          <Button variant={'contained'} onClick={handleCancelButton} color="default">
             {buttonCancel}
           </Button>
-          <Button onClick={handleOKButton} color="secondary" variant={'contained'}>
+          <Button onClick={handleOKButton} color="primary" variant={'contained'}>
             {buttonOk}
           </Button>
         </DialogActions>

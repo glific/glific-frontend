@@ -3,9 +3,9 @@ import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
-import styles from './ChatConversations.module.css';
-import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import styles from './ChatConversations.module.css';
 
 export interface ChatConversationsProps {}
 

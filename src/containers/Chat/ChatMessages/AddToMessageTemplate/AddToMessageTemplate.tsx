@@ -4,6 +4,7 @@ import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/Me
 import { TextField } from '@material-ui/core';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
+import styles from './AddToMessageTemplate.module.css';
 
 interface AddToMessageTemplateProps {
   id: any;
@@ -28,15 +29,20 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   };
 
   let textField = (
-    <TextField
-      autoFocus
-      margin="dense"
-      id="name"
-      type="text"
-      fullWidth
-      value={messageTemplate}
-      onChange={onChange}
-    />
+    <div className={styles.DialogContainer}>
+      <TextField
+        autoFocus
+        multiline
+        rows={4}
+        variant="outlined"
+        margin="dense"
+        id="name"
+        type="text"
+        fullWidth
+        value={messageTemplate}
+        onChange={onChange}
+      />
+    </div>
   );
 
   const handleCloseButton = () => {
