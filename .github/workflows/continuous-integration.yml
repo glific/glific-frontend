@@ -13,18 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-
-
       - name: Install Dependencies
         run: yarn install
 
-      - name: Test
-        run: yarn test --watchAll=false
+      - name: Run test and generate coverage report
+        run: yarn test --coverage --watchAll=false
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
