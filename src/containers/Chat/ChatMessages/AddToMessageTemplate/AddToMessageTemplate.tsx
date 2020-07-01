@@ -38,6 +38,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
         margin="dense"
         id="name"
         type="text"
+        label="label"
         fullWidth
         value={messageTemplate}
         onChange={onChange}
