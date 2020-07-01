@@ -129,7 +129,7 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
 
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFields = [
-    { component: Input, name: 'label', type: 'text', label: 'label', options: null },
+    { component: Input, name: 'label', type: 'text', label: 'Label', options: null },
     { component: Input, name: 'body', type: 'text', label: 'Body', options: null },
     { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
 
@@ -201,7 +201,7 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
 
   return (
     <div className={styles.MessageAdd}>
-      <h3>{messageId ? 'Edit message information' : 'Enter message information'}</h3>
+      <h3>{messageId ? 'Edit template information' : 'Enter template information'}</h3>
       {form}
     </div>
   );

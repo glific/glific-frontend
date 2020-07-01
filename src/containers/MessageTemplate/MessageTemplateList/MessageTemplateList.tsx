@@ -39,7 +39,7 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
-  const columnNames = ['Name', 'Description', 'Actions'];
+  const columnNames = ['Label', 'Body', 'Actions'];
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -235,7 +235,7 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
-          Messages
+          Templates
         </Typography>
         <div className={styles.Buttons}>
           <IconButton className={styles.IconButton} onClick={() => setSearchOpen(!searchOpen)}>
