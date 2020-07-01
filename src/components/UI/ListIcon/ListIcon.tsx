@@ -1,28 +1,37 @@
 import React from 'react';
+import chatIcon from '../../../assets/images/icons/MenuItems/Chat.svg';
+import tagIcon from '../../../assets/images/icons/MenuItems/Tag.svg';
+import broadcastIcon from '../../../assets/images/icons/MenuItems/Broadcast.svg';
+import automationIcon from '../../../assets/images/icons/MenuItems/Automation.svg';
+import collectionsIcon from '../../../assets/images/icons/MenuItems/Collection.svg';
+import goalsIcon from '../../../assets/images/icons/MenuItems/Goal.svg';
+import analyticsIcon from '../../../assets/images/icons/MenuItems/Analytics.svg';
 
-import HomeSharpIcon from '@material-ui/icons/HomeSharp';
-import LabelSharpIcon from '@material-ui/icons/LabelSharp';
-import ChatBubbleSharpIcon from '@material-ui/icons/ChatBubbleSharp';
-import ForumSharpIcon from '@material-ui/icons/ForumSharp';
-import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
+import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
   icon: string;
+  selected: boolean;
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
-  switch (props.icon) {
-    case 'tag':
-      return <LabelSharpIcon />;
-    case 'chat':
-      return <ChatBubbleSharpIcon />;
-    case 'conversation':
-      return <ForumSharpIcon />;
-    case 'verticalMenu':
-      return <MoreVertSharpIcon />;
-    default:
-      return <HomeSharpIcon />;
-  }
+  const stringsToIcons: { [iconName: string]: string } = {
+    chat: chatIcon,
+    tag: tagIcon,
+    broadcast: broadcastIcon,
+    automation: automationIcon,
+    collection: collectionsIcon,
+    goal: goalsIcon,
+    analytics: analyticsIcon,
+  };
+
+  return (
+    <img
+      src={stringsToIcons[props.icon]}
+      className={props.selected ? styles.SelectedColor : undefined}
+      alt={'Selected '.concat(props.icon)}
+    />
+  );
 };
 
 export default ListIcon;
