@@ -8,6 +8,8 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
+import moment from 'moment';
+import { DATE_FORMAT, TIME_FORMAT } from '../../../common/constants';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
@@ -299,24 +301,25 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
-
             let messageTags = conversations.messages.filter(
               (message: any) => message.id === editTagsMessageId
             );
-
             if (messageTags.length > 0) {
               messageTags = messageTags[0].tags;
             }
-
             const messageTagId = messageTags.map((tag: any) => {
               return tag.id;
             });
-
             setSelectedMessageTags(messageTagId);
-
             setDialogbox(!dialog);
           }}
           focus={index === 0}
+          showMessage={
+            index != 0
+              ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
+                moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
+              : true
+          }
         />
       );
     });
