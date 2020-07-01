@@ -58,6 +58,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
+  const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
 
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
@@ -65,6 +66,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
+      setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
       const messages: any = cache.readQuery({
@@ -107,6 +109,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
   const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: queryVariables,
+    fetchPolicy: 'cache-first',
   });
 
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
@@ -146,7 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversation.messages = messagesCopy.conversation.messages.push(message);
+            messagesCopy.conversation.messages = [message, ...messagesCopy.conversation.messages];
             cache.writeQuery({
               query: GET_CONVERSATION_MESSAGE_QUERY,
               variables: queryVariables,
@@ -159,7 +162,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     [contactId, createMessage, queryVariables]
   );
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return <Loading />;
+  }
   if (error) return <p>Error :(</p>;
 
   //toast
@@ -173,6 +178,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const closeDialogBox = () => {
+    setSelectedMessageTags(null);
     setDialogbox(false);
     setEditTagsMessageId(null);
     setSearch('');
@@ -206,26 +212,34 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let dialogBox;
 
   if (dialog) {
-    let messageTags = conversations.messages.filter(
-      (message: any) => message.id === editTagsMessageId
-    );
-
-    if (messageTags.length > 0) {
-      messageTags = messageTags[0].tags;
-    }
-
-    const messageTagId = messageTags.map((tag: any) => {
-      return tag.id;
-    });
-
     const tagList = AllTags.data
       ? AllTags.data.tags.map((tag: any) => {
-          const checked = messageTagId.includes(tag.id.toString());
           if (tag.label.toLowerCase().includes(search)) {
             return (
               <FormControlLabel
                 key={tag.id}
-                control={<Checkbox name={tag.id} color="primary" defaultChecked={checked} />}
+                control={
+                  <Checkbox
+                    data-testid="dialogCheckbox"
+                    name={tag.id}
+                    color="primary"
+                    checked={selectedMessageTags?.includes(tag.id.toString())}
+                    onChange={(event: any) => {
+                      if (selectedMessageTags?.includes(event?.target.name.toString())) {
+                        setSelectedMessageTags(
+                          selectedMessageTags?.filter(
+                            (messageTag: any) => messageTag != event?.target.name
+                          )
+                        );
+                      } else {
+                        setSelectedMessageTags([
+                          ...selectedMessageTags,
+                          event.target.name.toString(),
+                        ]);
+                      }
+                    }}
+                  />
+                }
                 label={tag.label}
               />
             );
@@ -274,9 +288,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let messageList: any;
   if (conversations.messages.length > 0) {
-    const reverseConversation = [...conversations.messages];
-    reverseConversation.reverse();
-    messageList = reverseConversation.map((message: any, index: number) => {
+    let reverseConversation = [...conversations.messages];
+    reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
           {...message}
@@ -286,11 +299,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
+
+            let messageTags = conversations.messages.filter(
+              (message: any) => message.id === editTagsMessageId
+            );
+
+            if (messageTags.length > 0) {
+              messageTags = messageTags[0].tags;
+            }
+
+            const messageTagId = messageTags.map((tag: any) => {
+              return tag.id;
+            });
+
+            setSelectedMessageTags(messageTagId);
+
             setDialogbox(!dialog);
           }}
+          focus={index === 0}
         />
       );
     });
+
+    messageList = reverseConversation.reverse();
   }
 
   return (
@@ -298,7 +329,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       {dialogBox}
       {toastMessage}
       <ContactBar contactName={conversations.contact.name} />
-      <Container className={styles.MessageList}>{messageList}</Container>
+      <Container className={styles.MessageList} data-testid="messageContainer">
+        {messageList}
+      </Container>
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );

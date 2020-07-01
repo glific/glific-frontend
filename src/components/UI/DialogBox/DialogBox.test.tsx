@@ -32,7 +32,21 @@ describe('<DialogBox', () => {
     expect(wrapper.find('h2.MuiTypography-root').text()).toBe('Are you sure?');
   });
 
-  it('should check if callback method is called when cancle button is clicked', () => {
+  it('should check if callback method is called when cancel button is clicked', () => {
+    const wrapper = mount(
+      <DialogBox
+        open
+        title={'Are you sure?'}
+        handleOk={mockCallbackOK}
+        handleCancel={mockCallbackCancel}
+      />
+    );
+
+    wrapper.find('button.MuiButton-contained').first().simulate('click');
+    expect(mockCallbackCancel).toHaveBeenCalled();
+  });
+
+  it('should check if callback method is called when cancel button is clicked', () => {
     const wrapper = mount(
       <DialogBox
         open
@@ -43,20 +57,6 @@ describe('<DialogBox', () => {
     );
 
     wrapper.find('button.MuiButton-containedPrimary').simulate('click');
-    expect(mockCallbackCancel).toHaveBeenCalled();
-  });
-
-  it('should check if callback method is called when cancle button is clicked', () => {
-    const wrapper = mount(
-      <DialogBox
-        open
-        title={'Are you sure?'}
-        handleOk={mockCallbackOK}
-        handleCancel={mockCallbackCancel}
-      />
-    );
-
-    wrapper.find('button.MuiButton-containedSecondary').simulate('click');
     expect(mockCallbackOK).toHaveBeenCalled();
   });
 });

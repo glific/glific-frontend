@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import { IconButton } from '@material-ui/core';
@@ -7,7 +7,9 @@ import { Button, Chip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
+import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 
 export interface ChatMessageProps {
   id: number;
@@ -21,11 +23,13 @@ export interface ChatMessageProps {
   tags: any;
   popup: any;
   setDialog: any;
+  focus: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
-  const Ref = React.useRef(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const Ref = useRef(null);
+  const messageRef = useRef<null | HTMLDivElement>(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
@@ -45,8 +49,20 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   }, [props.popup]);
 
+  useEffect(() => {
+    if (props.focus) {
+      messageRef.current?.scrollIntoView();
+    }
+  }, [props]);
+
   const icon = (
-    <IconButton size="small" onClick={props.onClick} ref={Ref} className={styles.button}>
+    <IconButton
+      size="small"
+      onClick={props.onClick}
+      ref={Ref}
+      className={styles.button}
+      data-testid="messageOptions"
+    >
       <ExpandMoreRoundedIcon />
     </IconButton>
   );
@@ -62,25 +78,40 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     mineColor = styles.OtherColor;
     iconLeft = true;
     tags = styles.TagsReceiver;
+
     placement = 'bottom-start';
   }
 
   return (
-    <div className={additionalClass}>
+    <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <div className={styles.Content} data-testid="content">
-            {props.body}
-          </div>
+          <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
+            <div className={styles.Content} data-testid="content">
+              {props.body}
+            </div>
+          </Tooltip>
           <div className={styles.Date} data-testid="date">
-            {moment(props.insertedAt).format('HH:mm')}
+            {moment(props.insertedAt).format(TIME_FORMAT)}
           </div>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
+          <Popper
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+            data-testid="popup"
+          >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
-                  <Button className={styles.Popper} color="primary" onClick={props.setDialog}>
+                  <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={props.setDialog}
+                    data-testid="dialogButton"
+                  >
                     Assign tag
                   </Button>
                 </Paper>
@@ -90,7 +121,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         </div>
         {iconLeft ? null : icon}
       </div>
-      <div className={tags}>{tag}</div>
+      <div className={tags} data-testid="tags">
+        {tag}
+      </div>
     </div>
   );
 };

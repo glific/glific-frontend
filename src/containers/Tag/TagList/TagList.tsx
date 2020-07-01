@@ -94,11 +94,20 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     }
   );
+  useEffect(() => {
+    if (searchVal !== '') {
+      refetch(filterPayload());
+      refetchCount({
+        filter: {
+          label: searchVal,
+        },
+      });
+    }
+  }, [searchVal]);
 
   // Get tag data here
   const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {
     variables: filterPayload(),
-    fetchPolicy: 'cache-and-network',
   });
 
   const message = useQuery(NOTIFICATION);
