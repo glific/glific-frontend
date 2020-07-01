@@ -29,7 +29,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     <img
       src={stringsToIcons[props.icon]}
       className={props.selected ? styles.SelectedColor : undefined}
-      alt={'Selected'.concat(props.icon)}
+      alt={'Selected '.concat(props.icon)}
     />
   );
 };
