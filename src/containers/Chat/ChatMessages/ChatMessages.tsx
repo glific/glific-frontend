@@ -287,7 +287,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   let messageList: any;
-  if (conversations.messages.length > 0) {
+
+  // Must have a contact + conversations in order for messages to render.
+  if (conversations && conversations.messages.length > 0) {
     let reverseConversation = [...conversations.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
@@ -328,10 +330,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversations.contact.name} />
-      <Container className={styles.MessageList} data-testid="messageContainer">
-        {messageList}
-      </Container>
+      <ContactBar contactName={conversations ? conversations.contact.name : 'No contacts'} />
+      {/* To avoid warnings with empty children in Container */}
+      {messageList ? (
+        <Container className={styles.MessageList} data-testid="messageContainer">
+          {messageList}
+        </Container>
+      ) : (
+        <div className={styles.MessageList} data-testid="messageContainer">
+          {messageList}
+        </div>
+      )}
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );
