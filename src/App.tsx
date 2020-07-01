@@ -5,6 +5,7 @@ import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
 import ChatPage from './components/pages/ChatPage/ChatPage';
+import { Registration } from './components/pages/Registration/Registration';
 import styles from './App.module.css';
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
     <div className={styles.App}>
       <Layout>
         <Switch>
+          <Route path="/registration" exact component={Registration} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
