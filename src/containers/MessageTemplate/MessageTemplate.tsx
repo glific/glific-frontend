@@ -23,11 +23,7 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
     filter: {
       label: '',
     },
-    opts: {
-      limit: 10,
-      offset: 0,
-      order: 'ASC',
-    },
+    order: 'ASC',
   };
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
