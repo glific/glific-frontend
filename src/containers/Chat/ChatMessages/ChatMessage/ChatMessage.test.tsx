@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, wait, within, fireEvent, screen, cleanup } from '@testing-library/react';
 import moment from 'moment';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import ChatMessage from './ChatMessage';
 import { TIME_FORMAT } from '../../../../common/constants';
@@ -53,11 +53,6 @@ describe('<ChatMessage />', () => {
     expect(wrapper.find('.Other')).toHaveLength(1);
   });
 
-  test('it should render menu on click of Icon', () => {
-    wrapper.find('button.MuiButtonBase-root').simulate('click');
-    console.log(wrapper.parent().find('div#simple-popper').exists());
-  });
-
   test('it should render the tags correctly', () => {
     const { container, getByTestId } = render(<ChatMessage {...defaultProps} />);
     const tags = within(getByTestId('tags'));
@@ -65,13 +60,13 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the down arrow icon', () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
-    expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
+    const { getAllByTestId } = render(<ChatMessage {...defaultProps} />);
+    expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
+    const { getAllByTestId } = render(<ChatMessage {...defaultProps} />);
 
-    expect(screen.getByText('Assign tag')).toBeInTheDocument();
+    expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 });

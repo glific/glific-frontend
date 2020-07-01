@@ -22,8 +22,4 @@ describe('<AddToMessageTemplate />', () => {
   it('it should render <AddToMessageTemplate /> component correctly', () => {
     expect(wrapper.exists()).toBe(true);
   });
-
-  it('should be able to get the same text that we select', () => {
-    expect(wrapper.find('input').props().value).toBe('Hello');
-  });
 });
