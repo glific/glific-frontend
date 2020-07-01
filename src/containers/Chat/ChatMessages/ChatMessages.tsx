@@ -230,7 +230,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
                       if (selectedMessageTags?.includes(event?.target.name.toString())) {
                         setSelectedMessageTags(
                           selectedMessageTags?.filter(
-                            (messageTag: any) => messageTag != event?.target.name
+                            (messageTag: any) => messageTag !== event?.target.name
                           )
                         );
                       } else {
@@ -311,7 +311,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
           }}
           focus={index === 0}
           showMessage={
-            index != 0
+            index !== 0
               ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
                 moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
               : true
