@@ -80,18 +80,15 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
     }
   );
   useEffect(() => {
-    if (searchVal !== '') {
-      refetch(filterPayload());
-      refetchCount({
-        filter: {
-          label: searchVal,
-        },
-      });
-    }
+    refetchCount({
+      filter: {
+        label: searchVal,
+      },
+    });
   }, [searchVal]);
 
   // Get message data here
-  const { loading, error, data, refetch } = useQuery(FILTER_MESSAGES, {
+  const { loading, error, data } = useQuery(FILTER_MESSAGES, {
     variables: filterPayload(),
   });
 
@@ -114,6 +111,10 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
         variables: filterPayload(),
         data: messagesCopy,
       });
+    },
+
+    onCompleted: () => {
+      refetchCount();
     },
   });
 

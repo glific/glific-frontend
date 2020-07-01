@@ -10,15 +10,16 @@ import { useApolloClient } from '@apollo/client';
 import styles from './MessageTemplate.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
-import { GET_LANGUAGES, GET_TAG, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_MESSAGE, FILTER_MESSAGES } from '../../graphql/queries/Message';
+import { GET_LANGUAGES } from '../../graphql/queries/Tag';
 import { setNotification } from '../../common/notification';
-import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
+import { UPDATE_MESSAGE, CREATE_MESSAGE } from '../../graphql/mutations/Message';
 
-export interface TagProps {
+export interface MessageProps {
   match: any;
 }
 
-export const MessageTemplate: React.SFC<TagProps> = (props) => {
+export const MessageTemplate: React.SFC<MessageProps> = (props) => {
   const queryVariables = {
     filter: {
       label: '',
@@ -30,45 +31,49 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
       setLanguageId(data.languages[0].id);
     },
   });
-  const tagId = props.match.params.id ? props.match.params.id : false;
-  const { loading, error } = useQuery(GET_TAG, {
-    variables: { id: tagId },
-    skip: !tagId,
+
+  const messageId = props.match.params.id ? props.match.params.id : false;
+  const { loading, error } = useQuery(GET_MESSAGE, {
+    variables: { id: messageId },
+    skip: !messageId,
     onCompleted: (data) => {
-      if (tagId && data) {
-        tag = data.tag.tag;
-        setLabel(tag.label);
-        setDescription(tag.description);
-        setIsActive(tag.isActive);
-        setIsReserved(tag.isReserved);
-        setLanguageId(tag.language.id);
+      if (messageId && data) {
+        message = data.sessionTemplate.sessionTemplate;
+        setLabel(message.label);
+        setBody(message.body);
+        setIsActive(message.isActive);
+        setLanguageId(message.language.id);
       }
     },
   });
-  const [updateTag] = useMutation(UPDATE_TAG, {
+  const [updateMessage] = useMutation(UPDATE_MESSAGE, {
     onCompleted: () => {
       setFormSubmitted(true);
     },
   });
 
   const [label, setLabel] = useState('');
-  const [description, setDescription] = useState('');
+  const [body, setBody] = useState('');
   const [isActive, setIsActive] = useState(false);
-  const [isReserved, setIsReserved] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const [createTag] = useMutation(CREATE_TAG, {
-    update(cache, { data: { createTag } }) {
-      const tags: any = cache.readQuery({
-        query: FILTER_TAGS,
+  const [createMessage] = useMutation(CREATE_MESSAGE, {
+    update(cache, { data: { createSessionTemplate } }) {
+      const messages: any = cache.readQuery({
+        query: FILTER_MESSAGES,
         variables: queryVariables,
       });
-
+      console.log(
+        messages,
+        messages.sessionTemplates.concat(createSessionTemplate.sessionTemplate)
+      );
       cache.writeQuery({
-        query: FILTER_TAGS,
+        query: FILTER_MESSAGES,
         variables: queryVariables,
-        data: { tags: tags.tags.concat(createTag.tag) },
+        data: {
+          sessionTemplates: messages.sessionTemplates.concat(createSessionTemplate.sessionTemplate),
+        },
       });
     },
     onCompleted: () => {
@@ -78,38 +83,40 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
 
   const client = useApolloClient();
 
-  let tag: any = null;
+  let message: any = null;
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  const saveHandler = (tag: any) => {
+  const saveHandler = (message: any) => {
     const payload = {
-      label: tag.label,
-      description: tag.description,
-      isActive: tag.isActive,
-      isReserved: tag.isReserved,
-      languageId: Number(tag.languageId),
+      label: message.label,
+      body: message.body,
+      isActive: message.isActive,
+      languageId: Number(message.languageId),
+      type: 'TEXT',
     };
-    let message;
 
-    if (tagId) {
-      updateTag({
+    console.log(payload);
+    let notificationMessage;
+
+    if (messageId) {
+      updateMessage({
         variables: {
-          id: tagId,
+          id: messageId,
           input: payload,
         },
       });
-      message = 'Tag edited successfully!';
+      notificationMessage = 'Message edited successfully!';
     } else {
-      createTag({
+      createMessage({
         variables: {
           input: payload,
         },
       });
-      message = 'Tag added successfully!';
+      notificationMessage = 'Message added successfully!';
     }
-    setNotification(client, message);
+    setNotification(client, notificationMessage);
   };
 
   const cancelHandler = () => {
@@ -117,21 +124,15 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
   };
 
   if (formSubmitted) {
-    return <Redirect to="/tag" />;
+    return <Redirect to="/template" />;
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFields = [
     { component: Input, name: 'label', type: 'text', label: 'label', options: null },
-    { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
+    { component: Input, name: 'body', type: 'text', label: 'Body', options: null },
     { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
-    {
-      component: Checkbox,
-      name: 'isReserved',
-      type: 'checkbox',
-      label: 'Is Reserved',
-      options: null,
-    },
+
     {
       component: Dropdown,
       name: 'languageId',
@@ -147,9 +148,8 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
         enableReinitialize
         initialValues={{
           label: label,
-          description: description,
+          body: body,
           isActive: isActive,
-          isReserved: isReserved,
           languageId: languageId,
         }}
         validate={(values) => {
@@ -159,13 +159,13 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
           } else if (values.label.length > 10) {
             errors.label = 'Too Long';
           }
-          if (!values.description) {
-            errors.description = 'Required';
+          if (!values.body) {
+            errors.body = 'Required';
           }
           return errors;
         }}
-        onSubmit={(tag) => {
-          saveHandler(tag);
+        onSubmit={(message) => {
+          saveHandler(message);
         }}
       >
         {({ submitForm }) => (
@@ -200,8 +200,8 @@ export const MessageTemplate: React.SFC<TagProps> = (props) => {
   );
 
   return (
-    <div className={styles.TagAdd}>
-      <h3>{tagId ? 'Edit tag information' : 'Enter tag information'}</h3>
+    <div className={styles.MessageAdd}>
+      <h3>{messageId ? 'Edit message information' : 'Enter message information'}</h3>
       {form}
     </div>
   );

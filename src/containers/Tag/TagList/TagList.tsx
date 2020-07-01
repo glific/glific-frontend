@@ -117,6 +117,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         data: tagsCopy,
       });
     },
+    onCompleted: () => {
+      refetchCount();
+    },
   });
 
   const showDialogHandler = (id: any, label: string) => {

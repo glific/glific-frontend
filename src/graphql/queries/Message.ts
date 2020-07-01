@@ -15,3 +15,19 @@ export const FILTER_MESSAGES = gql`
     }
   }
 `;
+
+export const GET_MESSAGE = gql`
+  query getsessionTemplate($id: ID!) {
+    sessionTemplate(id: $id) {
+      sessionTemplate {
+        id
+        label
+        body
+        isActive
+        language {
+          id
+        }
+      }
+    }
+  }
+`;

@@ -11,25 +11,25 @@ export const DELETE_MESSAGE = gql`
   }
 `;
 
-export const CREATE_TAG = gql`
-  mutation creTag($input: TagInput!) {
-    createTag(input: $input) {
-      tag {
+export const CREATE_MESSAGE = gql`
+  mutation createSessionTemplate($input: SessionTemplateInput!) {
+    createSessionTemplate(input: $input) {
+      sessionTemplate {
         id
-        description
+        body
         label
       }
     }
   }
 `;
 
-export const UPDATE_TAG = gql`
-  mutation updateTag($id: ID!, $input: TagInput!) {
-    updateTag(id: $id, input: $input) {
-      tag {
+export const UPDATE_MESSAGE = gql`
+  mutation updateSessionTemplate($id: ID!, $input: SessionTemplateInput!) {
+    updateSessionTemplate(id: $id, input: $input) {
+      sessionTemplate {
         id
         label
-        description
+        body
       }
     }
   }
