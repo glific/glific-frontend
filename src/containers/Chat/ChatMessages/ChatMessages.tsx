@@ -9,12 +9,10 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import moment from 'moment';
-import { DATE_FORMAT, TIME_FORMAT } from '../../../common/constants';
+import { TIME_FORMAT } from '../../../common/constants';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
@@ -69,42 +67,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
   // create message mutation
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
-  // tagging message mutation
-  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
-    onCompleted: (data) => {
-      setEditTagsMessageId(null);
-      setSearch('');
-      setNotification(client, 'Tags added succesfully');
-      setDialogbox(false);
-      setSelectedMessageTags(null);
-    },
-    update: (cache, { data }) => {
-      const messages: any = cache.readQuery({
-        query: GET_CONVERSATION_MESSAGE_QUERY,
-        variables: queryVariables,
-      });
-
-      const messagesCopy = JSON.parse(JSON.stringify(messages));
-      if (data.createMessageTag.messageTag.tag) {
-        const tag = data.createMessageTag.messageTag.tag;
-        messagesCopy.conversation.messages = messagesCopy.conversation.messages.map(
-          (message: any) => {
-            if (message.id === data.createMessageTag.messageTag.message.id) {
-              message.tags.push(tag);
-              return message;
-            } else return message;
-          }
-        );
-
-        cache.writeQuery({
-          query: GET_CONVERSATION_MESSAGE_QUERY,
-          variables: queryVariables,
-          data: messagesCopy,
-        });
-      }
-    },
-  });
-
   // get the conversations stored from the cache
   const queryVariables = {
     contactOpts: {
@@ -116,7 +78,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
     },
   };
 
-  const data: any = client.readQuery({
+  const allConversations: any = client.readQuery({
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,
   });
@@ -127,8 +89,39 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
     conversationIndex = 0;
   }
 
-  conversationInfo = data.conversations[conversationIndex];
-  const receiverId = data.conversations[conversationIndex].contact.id;
+  conversationInfo = allConversations.conversations[conversationIndex];
+  const receiverId = allConversations.conversations[conversationIndex].contact.id;
+
+  // tagging message mutation
+  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
+    onCompleted: (data) => {
+      setEditTagsMessageId(null);
+      setSearch('');
+      setNotification(client, 'Tags added succesfully');
+      setDialogbox(false);
+      setSelectedMessageTags(null);
+    },
+    update: (cache, { data }) => {
+      const messagesCopy = JSON.parse(JSON.stringify(allConversations));
+      if (data.createMessageTag.messageTag.tag) {
+        const tag = data.createMessageTag.messageTag.tag;
+        messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
+          conversationIndex
+        ].messages.map((message: any) => {
+          if (message.id === data.createMessageTag.messageTag.message.id) {
+            message.tags.push(tag);
+            return message;
+          } else return message;
+        });
+
+        cache.writeQuery({
+          query: GET_CONVERSATION_QUERY,
+          variables: queryVariables,
+          data: messagesCopy,
+        });
+      }
+    },
+  });
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
@@ -156,18 +149,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
           },
         },
         update: (cache, { data }) => {
-          const messages: any = cache.readQuery({
-            query: GET_CONVERSATION_MESSAGE_QUERY,
-            variables: queryVariables,
-          });
-
-          const messagesCopy = JSON.parse(JSON.stringify(messages));
+          const messagesCopy = JSON.parse(JSON.stringify(allConversations));
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversation.messages = [message, ...messagesCopy.conversation.messages];
+            messagesCopy.conversations[conversationIndex].messages = [
+              message,
+              ...messagesCopy.conversations[conversationIndex].messages,
+            ];
             cache.writeQuery({
-              query: GET_CONVERSATION_MESSAGE_QUERY,
+              query: GET_CONVERSATION_QUERY,
               variables: queryVariables,
               data: messagesCopy,
             });
@@ -175,7 +166,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
         },
       });
     },
-    [createMessage, queryVariables, receiverId]
+    [createMessage, queryVariables, receiverId, conversationIndex, allConversations]
   );
 
   //toast
