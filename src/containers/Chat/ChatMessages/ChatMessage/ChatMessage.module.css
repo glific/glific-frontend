@@ -107,18 +107,18 @@
   display: flex;
 }
 
-.TagsLeft {
+.TagContainerSender {
   justify-content: flex-end;
 }
 
-.Tags {
+.TagContainer {
   display: flex;
   line-height: 12px;
   margin-bottom: 11px;
   flex-wrap: wrap;
 }
 
-.TagLeft {
+.TagMargin {
   margin-right: 0px !important;
   margin-left: 8px;
 }

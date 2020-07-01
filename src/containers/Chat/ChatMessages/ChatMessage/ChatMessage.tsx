@@ -19,6 +19,9 @@ export interface ChatMessageProps {
   receiver: {
     id: number;
   };
+  sender: {
+    id: number;
+  };
   insertedAt: string;
   onClick: any;
   tags: any;
@@ -56,26 +59,26 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let mineColor: string | null = styles.MineColor;
   let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
-  let tagsPlacement: string | null = styles.TagsLeft;
-  let tagPlacement: string | null = styles.TagLeft;
+  let tagContainer: string | null = styles.TagContainerSender;
+  let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
 
-  if (props.receiver.id === props.contactId) {
+  if (props.sender.id === props.contactId) {
     additionalClass = styles.Other;
     mineColor = styles.OtherColor;
     iconLeft = true;
     placement = 'bottom-start';
     iconPlacement = styles.ButtonRight;
     datePlacement = null;
-    tagsPlacement = null;
-    tagPlacement = null;
+    tagContainer = null;
+    tagMargin = null;
     messageDetails = styles.MessageDetailsSender;
   }
 
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
-        <div key={tag.id} className={`${styles.Tag} ${tagPlacement}`} data-testid="tags">
+        <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
           <TagIcon className={styles.TagIcon} />
           {tag.label}
         </div>
@@ -129,7 +132,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
       <div className={messageDetails}>
         {date}
-        {tag ? <div className={`${styles.Tags} ${tagsPlacement}`}>{tag}</div> : null}
+        {tag ? <div className={`${styles.TagContainer} ${tagContainer}`}>{tag}</div> : null}
       </div>
     </div>
   );
