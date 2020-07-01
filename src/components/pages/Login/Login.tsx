@@ -7,7 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../components/UI/Form/Button/Button';
+import { Button } from '../../UI/Form/Button/Button';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import styles from './Login.module.css';
 import clsx from 'clsx';

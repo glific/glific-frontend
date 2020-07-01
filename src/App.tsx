@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
-import { Login } from './containers/Login/Login'
+import { Login } from './components/pages/Login/Login';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
