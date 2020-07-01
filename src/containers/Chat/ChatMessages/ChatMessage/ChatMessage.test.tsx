@@ -24,12 +24,15 @@ describe('<ChatMessage />', () => {
     body: 'Hello there!',
     contactId: 2,
     receiver: {
+      id: 1,
+    },
+    sender: {
       id: 2,
     },
     popup: 1,
     open: true,
     insertedAt,
-    showMessage:true,
+    showMessage: true,
 
     tags: [
       {
@@ -45,7 +48,6 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the message date correctly', () => {
-    
     expect(wrapper.find('[data-testid="date"]').text()).toEqual(
       moment(insertedAt).format(TIME_FORMAT)
     );
