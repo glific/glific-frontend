@@ -16,7 +16,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const { loading, error, data, refetch } = useQuery<any>(FILTER_CONVERSATIONS_QUERY, {
     variables: {
       term: '',
-      opts: {
+      shouldSave: true,
+      searchLabel: '',
+      messageOpts: {
+        limit: 10,
+      },
+      contactOpts: {
         limit: 10,
       },
     },

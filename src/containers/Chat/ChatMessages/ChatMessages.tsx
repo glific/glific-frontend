@@ -97,7 +97,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // let's get the conversation for last contacted contact.
   // TODO Temporary fix
   if (!contactId) {
-    contactId = '2';
+    contactId = '482'; // Calvin- fix because I deleted contact with ID 2 for testing.
   }
 
   const queryVariables = {

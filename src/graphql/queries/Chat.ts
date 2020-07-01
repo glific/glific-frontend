@@ -47,20 +47,30 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
 `;
 
 export const FILTER_CONVERSATIONS_QUERY = gql`
-  query search($term: String!, $opts: Opts!) {
-    search(term: $term, opts: $opts) {
+  query search(
+    $term: String!
+    $shouldSave: Boolean!
+    $searchLabel: String!
+    $messageOpts: Opts!
+    $contactOpts: Opts!
+  ) {
+    search(
+      term: $term
+      saveSearch: $shouldSave
+      searchLabel: $searchLabel
+      messageOpts: $messageOpts
+      contactOpts: $contactOpts
+    ) {
       contact {
         id
         name
+        phone
       }
       messages {
         id
         body
-        insertedAt
-        tags {
-          id
-          label
-        }
+        flow
+        type
       }
     }
   }
