@@ -5,6 +5,7 @@ import LabelSharpIcon from '@material-ui/icons/LabelSharp';
 import ChatBubbleSharpIcon from '@material-ui/icons/ChatBubbleSharp';
 import ForumSharpIcon from '@material-ui/icons/ForumSharp';
 import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 export interface ListIconProps {
   icon: string;
@@ -20,6 +21,8 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
       return <ForumSharpIcon />;
     case 'verticalMenu':
       return <MoreVertSharpIcon />;
+    case 'messageTemplate':
+      return <ChatBubbleIcon />;
     default:
       return <HomeSharpIcon />;
   }

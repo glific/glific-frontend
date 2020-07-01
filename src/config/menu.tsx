@@ -9,4 +9,9 @@ export const sideDrawerMenus = [
     path: '/tag',
     icon: 'tag',
   },
+  {
+    title: 'Templates',
+    path: '/template',
+    icon: 'messageTemplate',
+  },
 ];

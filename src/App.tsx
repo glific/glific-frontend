@@ -4,6 +4,8 @@ import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
+import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
+import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import ChatPage from './components/pages/ChatPage/ChatPage';
 import styles from './App.module.css';
 
@@ -19,6 +21,9 @@ const App = () => {
           <Route path="/tag/:id/edit" exact component={Tag} />
           {/* Doesn't this error without a passed in `contactId`? */}
           <Route path="/chat" exact component={ChatPage} />
+          <Route path="/template" exact component={MessageTemplatePage} />
+          <Route path="/template/add" exact component={MessageTemplate} />
+          <Route path="/template/:id/edit" exact component={MessageTemplate} />
           <Route
             exact
             path="/chat/:contactId"
