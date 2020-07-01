@@ -17,47 +17,32 @@ const useStyles = makeStyles({
     display: 'inline-block',
     width: '100%',
   },
-  // listItem: {
-  //   disableRipple: true,
-  //   borderRadius: '12px',
-  //   padding: '5px 0px 5px 9px',
-  //   // width: '90%',
-  //   // margin: '0 5px 0 5px',
-  //   '&$selected': {
-  //     background: '#69b37d',
-  //   },
-  //   '&:hover': {
-  //     background: '#ededed',
-  //   },
-  //   '&$selected:hover': {
-  //     background: '#429e65',
-  //   },
-  // },
   itemRoot: {
     disableRipple: true,
     borderRadius: '12px',
-    padding: '5px 0px 5px 9px',
+    padding: '7px 0px 7px 9px',
     width: '90%',
     margin: '0 5px 0 5px',
     '&$selected': {
-      background: '#69b37d',
+      background: '#E2F1EA',
     },
     '&:hover': {
       background: '#ededed',
     },
     '&$selected:hover': {
-      background: '#429e65',
+      background: '#c3ebd8',
     },
   },
   selected: {},
+  // Current doesn't totally work-- selected + hover do not changed colors.
   closedRoot: {
     disabledRipple: true,
     borderRadius: '12px',
-    padding: '9px',
+    padding: '12px 9px 12px 9px',
     width: '60%',
     margin: '0 0 0 5px',
     '&$selected': {
-      background: 'blue',
+      background: '#E2F1EA',
     },
     '&:hover': {
       background: '#ededed',
@@ -67,6 +52,14 @@ const useStyles = makeStyles({
     },
   },
   closedSelected: {},
+  SelectedText: {
+    color: '#119656',
+    fontFamily: 'Heebo, sans-serif',
+  },
+  UnselectedText: {
+    color: '#93A29B',
+    fontFamily: 'Heebo, sans-serif',
+  },
 });
 
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
@@ -89,9 +82,15 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         onClick={() => setSelectedIndex(i)}
       >
         <ListItemIcon>
-          <ListIcon icon={menu.icon} />
+          <ListIcon icon={menu.icon} selected={selectedIndex === i} />
         </ListItemIcon>
-        {props.opened ? <ListItemText primary={menu.title} /> : null}
+        {props.opened ? (
+          <ListItemText
+            disableTypography
+            className={selectedIndex === i ? classes.SelectedText : classes.UnselectedText}
+            primary={menu.title}
+          />
+        ) : null}
       </ListItem>
     );
   });

@@ -10,27 +10,30 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
+import chatIcon from '../../../../../assets/images/icons/MenuItems/Chat.svg';
 
 export interface SideDrawerProps {}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
+const theme = createMuiTheme({
+  typography: {
+    h6: {
+      fontSize: 24,
+      fontFamily: 'Tenor Sans, sans-serif',
+      color: '#0D6B3D',
+    },
+  },
+});
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
-    menuButton: {
-      marginRight: 36,
-    },
-    hide: {
-      display: 'none',
-    },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
@@ -59,8 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolbar: {
       display: 'flex',
-      // necessary for content to be below app bar
-      // ...theme.mixins.toolbar,
     },
     content: {
       flexGrow: 1,
@@ -94,33 +95,31 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
-  const theme = useTheme();
+  // const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [fullOpen, setFullOpen] = React.useState(false);
+  const [fullOpen, setFullOpen] = React.useState(true);
 
   const drawer = (
     <div>
       <Toolbar className={classes.anotherToolBar}>
         {fullOpen ? (
           <div className={classes.outerBox}>
-            <Typography variant="h6" className={classes.title}>
-              Glific
-            </Typography>
+            <ThemeProvider theme={theme}>
+              <Typography variant="h6" className={classes.title}>
+                Glific
+              </Typography>
+            </ThemeProvider>
             <IconButton className={classes.iconButton} onClick={() => setFullOpen(false)}>
               <MenuIcon />
             </IconButton>
           </div>
         ) : (
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => setFullOpen(true)}
-            // className={(classes.menuButton, clsx({ [classes.hide]: fullOpen }))}
-          >
+          <IconButton color="inherit" aria-label="open drawer" onClick={() => setFullOpen(true)}>
             <MenuIcon />
           </IconButton>
         )}
       </Toolbar>
+      <Divider />
       <SideMenus opened={fullOpen} />
     </div>
   );
@@ -128,7 +127,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const container = window !== undefined ? () => window.document.body : undefined;
 
   return (
-    // <nav className={classes.drawer} aria-label="navigation menus">
     <nav
       className={clsx({
         [classes.drawer]: fullOpen,
@@ -157,9 +155,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       {/* Rendered */}
       <Hidden xsDown implementation="css">
         <Drawer
-          // classes={{
-          //   paper: classes.drawerPaper,
-          // }}
           className={clsx(classes.drawer, {
             [classes.drawerOpen]: fullOpen,
             [classes.drawerClose]: !fullOpen,
