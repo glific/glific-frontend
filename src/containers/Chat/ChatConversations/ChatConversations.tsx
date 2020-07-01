@@ -22,7 +22,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
         limit: 10,
       },
       contactOpts: {
-        limit: 10,
+        limit: 10, // Doesn't work atm.
       },
     },
   });
