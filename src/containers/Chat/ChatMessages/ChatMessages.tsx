@@ -130,8 +130,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
   conversationInfo = data.conversations[conversationIndex];
   const receiverId = data.conversations[conversationIndex].contact.id;
 
-  console.log('conversationInfo', conversationInfo);
-
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
     (body: string) => {
@@ -177,7 +175,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
         },
       });
     },
-    [conversationIndex, createMessage, queryVariables]
+    [createMessage, queryVariables, receiverId]
   );
 
   //toast
