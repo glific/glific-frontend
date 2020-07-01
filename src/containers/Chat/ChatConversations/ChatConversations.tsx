@@ -1,42 +1,43 @@
 import React from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
 
 import ChatConversation from './ChatConversation/ChatConversation';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 import styles from './ChatConversations.module.css';
+import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import { useApolloClient } from '@apollo/client';
 
 export interface ChatConversationsProps {}
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
-  const { loading, error, data } = useQuery<any>(GET_CONVERSATION_QUERY, {
-    variables: {
-      contactOpts: {
-        limit: 20,
-      },
-      filter: {},
-      messageOpts: {
-        limit: 1,
-      },
+  // get the conversations stored from the cache
+  // create an instance of apolloclient
+  const client = useApolloClient();
+
+  const queryVariables = {
+    contactOpts: {
+      limit: 50,
     },
+    filter: {},
+    messageOpts: {
+      limit: 100,
+    },
+  };
+
+  const data: any = client.readQuery({
+    query: GET_CONVERSATION_QUERY,
+    variables: queryVariables,
   });
-
-  if (loading) return <Loading />;
-  if (error) return <p>Error :(</p>;
-
-  if (data === undefined || data.conversations === undefined) {
-    return null;
-  }
 
   let conversations = data.conversations;
 
+  // build the conversation list only if there are conversations
   let conversationList;
   if (conversations.length > 0) {
-    conversationList = conversations.map((conversation: any) => {
+    conversationList = conversations.map((conversation: any, index: number) => {
       return (
         <ChatConversation
           key={conversation.contact.id}
+          conversationIndex={index}
           contactId={conversation.contact.id}
           contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]}
@@ -47,6 +48,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
+  // render the component
   return (
     <Container className={styles.ChatConversations} disableGutters>
       <Toolbar>
