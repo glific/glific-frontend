@@ -7,6 +7,7 @@ import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
 
 export interface ChatConversationProps {
+  conversationIndex: number;
   contactId: number;
   contactName: string;
   lastMessage: {
@@ -25,7 +26,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       button
       className={styles.StyledListItem}
       component={Link}
-      to={'/chat/' + props.contactId}
+      to={'/chat/' + props.conversationIndex}
     >
       <div className={styles.ChatInfo}>
         <div className={styles.ChatName} data-testid="name">
