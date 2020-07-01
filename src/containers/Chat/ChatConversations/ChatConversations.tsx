@@ -60,6 +60,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   //     }
   //     return filtered;
   //   }, []);
+
   // get the conversations stored from the cache
   // create an instance of apolloclient
   const client = useApolloClient();

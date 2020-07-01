@@ -122,25 +122,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
       }
     },
   });
-  // let's get the conversation for last contacted contact.
-  // TODO Temporary fix
-  // if (!contactId) {
-  //   contactId = '482'; // Calvin- fix because I deleted contact with ID 2 for testing.
-  // }
-
-  // const queryVariables = {
-  //   contactId: contactId,
-  //   filter: {},
-  //   messageOpts: {
-  //     limit: 25,
-  //   },
-  // };
-  // const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-  //   variables: queryVariables,
-  //   fetchPolicy: 'cache-first',
-  // });
-
-  // const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
