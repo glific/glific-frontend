@@ -2,11 +2,12 @@
   display: inline-block;
   position: relative;
   max-width: 100%;
-  border-radius: 7px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  margin-top: 10px;
-  margin-bottom: 10px;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
   clear: both;
+  max-width: 404px;
   min-width: 85px;
 }
 
@@ -27,12 +28,22 @@
   background-size: contain;
 }
 
-.button {
-  height: fit-content;
-  margin-top: 25px !important;
+.Button {
+  margin: auto 12px;
+  flex: none;
+  cursor: pointer;
+}
+
+.ButtonLeft {
+  margin-left: 8px;
+}
+
+.ButtonRight {
+  margin-right: 8px;
 }
 
 .Mine {
+  max-width: 404px;
   float: right;
   clear: both;
 }
@@ -51,6 +62,7 @@
 }
 
 .Other {
+  max-width: 404px;
   float: left;
   clear: both;
 }
@@ -60,7 +72,11 @@
 }
 
 .Content {
-  padding: 18px 7px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #073f24;
+  padding: 8px 16px;
   word-wrap: break-word;
 }
 
@@ -69,12 +85,16 @@
   display: inline;
 }
 
+.DateLeft {
+  justify-content: flex-end;
+}
+
 .Date {
-  position: absolute;
-  bottom: 2px;
-  right: 7px;
+  display: flex;
   color: gray;
-  font-size: 12px;
+  font-size: 10px;
+  margin-bottom: 7px;
+  line-height: normal;
 }
 
 .Popper {
@@ -83,16 +103,47 @@
   text-transform: none !important;
 }
 
-.Chip {
-  display: unset !important;
-  padding: 1px !important;
-  margin-right: 3px;
-}
-
 .Inline {
   display: flex;
 }
 
-.TagsReceiver {
-  padding-left: 30px;
+.TagContainerSender {
+  justify-content: flex-end;
+}
+
+.TagContainer {
+  display: flex;
+  line-height: 12px;
+  margin-bottom: 11px;
+  flex-wrap: wrap;
+}
+
+.TagMargin {
+  margin-right: 0px !important;
+  margin-left: 8px;
+}
+
+.Tag {
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #073f24;
+  margin-right: 8px;
+}
+
+.TagIcon {
+  margin-right: 4.27px;
+  font-weight: bold;
+  width: 11px;
+  vertical-align: text-top;
+}
+
+.MessageDetailsSender {
+  margin-left: 32px;
+  margin-top: 6px;
+}
+
+.MessageDetails {
+  margin-top: 6px;
+  margin-right: 32px;
 }
