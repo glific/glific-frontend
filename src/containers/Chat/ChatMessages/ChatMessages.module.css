@@ -14,7 +14,7 @@
   display: block;
   flex: 2;
   padding-top: 11.5px !important;
-  overflow-y: overlay;
+  overflow-y: auto;
   padding-left: 0px !important;
   padding-right: 16px !important;
   height: calc(100% - 175px);
