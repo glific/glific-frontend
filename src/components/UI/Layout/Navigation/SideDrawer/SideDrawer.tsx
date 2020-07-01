@@ -5,7 +5,6 @@ import {
   makeStyles,
   createStyles,
   Theme,
-  useTheme,
   Divider,
   Toolbar,
   Typography,
@@ -16,7 +15,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
-import chatIcon from '../../../../../assets/images/icons/MenuItems/Chat.svg';
 
 export interface SideDrawerProps {}
 
@@ -75,10 +73,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     anotherToolBar: {
       padding: '0px',
-      // transition: theme.transitions.create('width', {
-      //   easing: theme.transitions.easing.sharp,
-      //   duration: theme.transitions.duration.leavingScreen,
-      // }),
     },
     title: {
       alignSelf: 'center',
@@ -134,7 +128,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       })}
       aria-label="navigation menus"
     >
-      {/* What is the purpose of this drawer? */}
       <Hidden smUp implementation="css">
         <Drawer
           container={container}

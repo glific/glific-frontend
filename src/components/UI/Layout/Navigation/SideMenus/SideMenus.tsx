@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import styles from './SideMenus.module.css';
 
 import { sideDrawerMenus } from '../../../../../config/menu';
 import ListIcon from '../../../ListIcon/ListIcon';
