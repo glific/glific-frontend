@@ -18,6 +18,7 @@ const App = () => {
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
           <Route path="/chat" exact component={Chat} />
+          {/* This part isn't working properly */}
           <Route
             exact
             path="/chat/:conversationIndex"

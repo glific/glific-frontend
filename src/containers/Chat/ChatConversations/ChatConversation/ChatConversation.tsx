@@ -26,7 +26,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       button
       className={styles.StyledListItem}
       component={Link}
-      to={'/chat/' + props.conversationIndex}
+      to={'/chat/' + props.conversationIndex} // Index doesn't equal ID
     >
       <div className={styles.ChatInfo}>
         <div className={styles.ChatName} data-testid="name">
