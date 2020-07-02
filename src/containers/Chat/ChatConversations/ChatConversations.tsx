@@ -16,6 +16,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   // create an instance of apolloclient
   const client = useApolloClient();
   const [searchVal, setSearchVal] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0); // This won't work all the time, if the default chat opened is not at index 0. (see ChatMessage for similar behavior).
 
   const queryVariables = {
     contactOpts: {
@@ -87,6 +88,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
         <ChatConversation
           key={conversation.contact.id}
           conversationIndex={index}
+          selected={selectedIndex === index}
+          onClick={(i: number) => setSelectedIndex(i)}
           contactId={conversation.contact.id}
           contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
