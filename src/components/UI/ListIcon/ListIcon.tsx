@@ -1,30 +1,37 @@
 import React from 'react';
+import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
+import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
+import broadcastIcon from '../../../assets/images/icons/Broadcast/Unselected.svg';
+import automationIcon from '../../../assets/images/icons/Automations/Unselected.svg';
+import collectionsIcon from '../../../assets/images/icons/Collections/Unselected.svg';
+import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
+import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
 
-import HomeSharpIcon from '@material-ui/icons/HomeSharp';
-import LabelSharpIcon from '@material-ui/icons/LabelSharp';
-import ChatBubbleSharpIcon from '@material-ui/icons/ChatBubbleSharp';
-import ForumSharpIcon from '@material-ui/icons/ForumSharp';
-import MoreVertSharpIcon from '@material-ui/icons/MoreVertSharp';
+import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
   icon: string;
-  fontSize?: FontSize;
+  selected: boolean;
 }
 
-type FontSize = 'small' | 'large' | undefined;
-export const ListIcon: React.SFC<ListIconProps> = ({ icon, fontSize }) => {
-  switch (icon) {
-    case 'tag':
-      return <LabelSharpIcon fontSize={fontSize} />;
-    case 'chat':
-      return <ChatBubbleSharpIcon fontSize={fontSize} />;
-    case 'conversation':
-      return <ForumSharpIcon fontSize={fontSize} />;
-    case 'verticalMenu':
-      return <MoreVertSharpIcon fontSize={fontSize} />;
-    default:
-      return <HomeSharpIcon fontSize={fontSize} />;
-  }
+export const ListIcon: React.SFC<ListIconProps> = (props) => {
+  const stringsToIcons: { [iconName: string]: string } = {
+    chat: chatIcon,
+    tag: tagIcon,
+    broadcast: broadcastIcon,
+    automation: automationIcon,
+    collection: collectionsIcon,
+    goal: goalsIcon,
+    analytics: analyticsIcon,
+  };
+
+  return (
+    <img
+      src={stringsToIcons[props.icon]}
+      className={props.selected ? styles.SelectedColor : undefined}
+      alt={'Selected '.concat(props.icon)}
+    />
+  );
 };
 
 export default ListIcon;
