@@ -8,10 +8,6 @@ export const SAVE_MESSAGE_TEMPLATE_MUTATION = gql`
         body
         label
       }
-
-      errors {
-        message
-      }
     }
   }
 `;

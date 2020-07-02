@@ -127,7 +127,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               {props.body}
             </div>
           </Tooltip>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
+          <Popper
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+            data-testid="popup"
+          >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
@@ -145,7 +152,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     color="primary"
                     onClick={() => setShowSaveMessageDialog(true)}
                   >
-                    Save as Template
+                    Save as template
                   </Button>
                 </Paper>
               </Fade>

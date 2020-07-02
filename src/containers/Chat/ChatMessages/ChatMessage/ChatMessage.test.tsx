@@ -24,8 +24,12 @@ describe('<ChatMessage />', () => {
     body: 'Hello there!',
     contactId: 2,
     receiver: {
+      id: 1,
+    },
+    sender: {
       id: 2,
     },
+    showMessage: true,
     popup: 1,
     open: true,
     insertedAt,
