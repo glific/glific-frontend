@@ -26,7 +26,7 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  conversationIndex: number;
+  contactId: number;
 }
 
 interface ConversationMessage {
@@ -61,7 +61,7 @@ interface ConversationResult {
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
@@ -93,8 +93,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
 
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = [];
-  if (!conversationIndex) {
-    conversationIndex = 0;
+  let conversationIndex = 0;
+  if (contactId) {
+    //conversationIndex = 0;
   }
 
   conversationInfo = allConversations.conversations[conversationIndex];
