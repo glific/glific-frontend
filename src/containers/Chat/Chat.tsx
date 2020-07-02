@@ -39,13 +39,30 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
         const newMessage = subscriptionData.data.receivedMessage;
-        console.log('calling subscription', prev);
+        const senderId = subscriptionData.data.receivedMessage.sender.id;
 
-        return Object.assign({}, prev, {
-          conversations: {
-            messages: [newMessage, ...prev.conversation.messages],
-          },
+        //loop through the cached conversations and find if contact exists
+        let conversationIndex;
+        prev.conversations.map((conversation: any, index: any) => {
+          if (conversation.contact.id === senderId) {
+            conversationIndex = index;
+          }
         });
+
+        // this means contact is not cached, so we need to fetch the conversations and add
+        // it to the cached conversations
+        if (!conversationIndex) {
+          //TODO
+        }
+
+        if (conversationIndex) {
+          const messagesCopy = JSON.parse(JSON.stringify(prev));
+          messagesCopy.conversations[conversationIndex].messages.push(newMessage);
+
+          return Object.assign({}, prev, {
+            conversations: messagesCopy,
+          });
+        }
       },
     });
   }, [subscribeToMore, queryVariables, contactId]);
