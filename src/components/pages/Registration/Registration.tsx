@@ -11,6 +11,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Button } from '../../UI/Form/Button/Button';
 import clsx from 'clsx';
+import axios from 'axios';
 
 export interface RegistrationProps {}
 
@@ -27,8 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const axios = require('axios');
 
 interface State {
   password: string;
@@ -74,10 +73,12 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const handleSubmit = async () => {
     axios
       .post('http://localhost:4000/api/v1/registration', {
-        'user[name]': values.userName,
-        'user[phone]': values.phoneNumber,
-        'user[password]': values.password,
-        'user[password_confirmation]': values.confirmPassword,
+        user: {
+          name: values.userName,
+          phone: values.phoneNumber,
+          password: values.password,
+          password_confirmation: values.confirmPassword,
+        },
       })
       .then(function (response: any) {
         console.log(response);
