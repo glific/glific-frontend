@@ -1,50 +1,44 @@
-.HideSearch {
-  width: 0px;
+.SearchField {
   height: 100%;
-  border: 0px;
+  width: 100%;
+  padding: 0 0 0 10px;
   border-radius: 10px;
-  outline: none;
-  background: #acacac;
-  transition: all 0.35s ease;
 }
 
-.ShowSearch {
-  /* width: 318px; */
-  height: 100%;
-  padding: 0 10px;
-  background: #acacac;
-  transition: all 0.35s ease;
-  border-radius: 10px;
+.IconAndText {
+  width: 100%;
+  display: flex;
 }
 
 .SearchBar {
-  background-color: #acacac;
   border-radius: 10px;
+  border-color: #93a29b;
+  border-width: 2px;
+  border-style: solid;
   display: flex;
-  /* width: 350px; */
+  width: 93%;
   padding: 0px;
-  transition: all 0.35s ease;
+  margin: auto;
+  margin-top: 10.5px;
+  margin-bottom: 12px;
+  height: 48px;
 }
 
 .SearchIcon {
-  border-color: #e0e0e0;
+  margin-left: 8px;
   vertical-align: middle;
-}
-
-.HideSearchBar {
-  width: 0px;
-  transition: all 0.35s ease;
 }
 
 .CloseIcon {
   vertical-align: middle;
-  color: #ffffff;
+  color: #93a29b;
   margin-left: 3px;
   margin-right: 3px;
 }
 
 .ResetSearch {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
+  /* margin-right: 3px !important; */
+  height: 80%;
+  align-self: center;
+  padding: 3px !important;
 }
