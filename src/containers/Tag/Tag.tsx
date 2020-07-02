@@ -160,7 +160,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
           const errors: Partial<any> = {};
           if (!values.label) {
             errors.label = 'Required';
-          } else if (values.label.length > 10) {
+          } else if (values.label.length > 50) {
             errors.label = 'Too Long';
           }
           if (!values.description) {

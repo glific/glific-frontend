@@ -31,7 +31,9 @@ export const Pager: React.SFC<PagerProps> = (props) => {
       return Object.keys(entry).map((item: any, i: number) => {
         return (
           <TableCell key={i}>
-            {typeof entry[item] === 'string' ? entry[item].slice(0, 50) : entry[item]}
+            {typeof entry[item] === 'string' && entry[item].length > 50
+              ? entry[item].slice(0, 50) + '...'
+              : entry[item]}
           </TableCell>
         );
       });
