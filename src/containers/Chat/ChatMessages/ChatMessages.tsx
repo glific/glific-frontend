@@ -165,8 +165,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         },
         update: (cache, { data }) => {
           const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-
-          if (data.createAndSendMessage.message) {
+          if (data.createAndSendMessage) {
             // add new message to messages array
             messagesCopy.conversations[conversationIndex].messages.push(
               data.createAndSendMessage.message

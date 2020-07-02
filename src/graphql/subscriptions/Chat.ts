@@ -18,3 +18,22 @@ subscription {
   }
 }
 `;
+
+export const MESSAGE_SENT_SUBSCRIPTION = gql`
+subscription {
+  sentMessage {
+    id
+    body
+    flow
+    type
+    receiver {
+      id
+      phone
+    }
+    sender {
+      id
+      phone
+    }
+  }
+}
+`;
