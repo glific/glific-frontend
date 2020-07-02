@@ -95,7 +95,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let conversationInfo: any = [];
   let conversationIndex = 0;
   if (contactId) {
-    //conversationIndex = 0;
+    //loop through the cached conversations and find if contact exists
+    allConversations.conversations.map((conversation: any, index: any) => {
+      if (conversation.contact.id === contactId) {
+        conversationIndex = index;
+      }
+    });
+
+    // this means we didn't find the contact in the cached converation,
+    // time to get the conversation for this contact from server and then
+    // store it in the cached object too
+    if (!conversationIndex) {
+      //TODO
+    }
   }
 
   conversationInfo = allConversations.conversations[conversationIndex];
