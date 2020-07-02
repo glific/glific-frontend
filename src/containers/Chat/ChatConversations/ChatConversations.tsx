@@ -7,7 +7,6 @@ import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
 import { useApolloClient, useQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 export interface ChatConversationsProps {}
 
@@ -85,7 +84,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       return (
         <ChatConversation
           key={conversation.contact.id}
-          conversationIndex={index}
           selected={selectedIndex === index}
           onClick={(i: number) => setSelectedIndex(i)}
           contactId={conversation.contact.id}
