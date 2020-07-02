@@ -15,3 +15,18 @@
 .StyledList {
   padding: 0 !important;
 }
+
+.IconBackground {
+  background-color: #eaedec;
+  border-radius: 50%;
+  display: flex;
+}
+
+.Icon {
+  margin: 10px 8px 8px 8px;
+}
+
+.Title {
+  margin-left: 12px;
+  font-family: 'Heebo', sans-serif;
+}

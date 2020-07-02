@@ -10,12 +10,11 @@ export interface SearchBarProps {
   onReset: () => void;
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.
-  searchVal?: string;
+  searchVal?: string; // Calvin update-- all use-cases will use searchVal?
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [localSearchVal, setLocalSearchVal] = useState('');
-
   return (
     <form onSubmit={props.handleSubmit}>
       <div className={styles.SearchBar}>
@@ -25,12 +24,14 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
             <InputBase
               className={styles.SearchField}
               name="searchInput" // This is important for extracting the search value in parent component.
+              placeholder="Search"
               defaultValue={props.searchVal}
             />
           ) : (
             <InputBase
               className={styles.SearchField}
               name="searchInput" // This is important for extracting the search value in parent component.
+              placeholder="Search"
               onChange={(e) => setLocalSearchVal(e.target.value)}
               value={localSearchVal}
             />
