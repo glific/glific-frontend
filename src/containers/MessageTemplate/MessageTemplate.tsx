@@ -103,14 +103,14 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
           input: payload,
         },
       });
-      notificationMessage = 'Template edited successfully!';
+      notificationMessage = 'Speed send edited successfully!';
     } else {
       createTemplate({
         variables: {
           input: payload,
         },
       });
-      notificationMessage = 'Template added successfully!';
+      notificationMessage = 'Speed send added successfully!';
     }
     setNotification(client, notificationMessage);
   };
@@ -197,7 +197,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
 
   return (
     <div className={styles.TemplateAdd}>
-      <h3>{templateId ? 'Edit template information' : 'Enter template information'}</h3>
+      <h3>{templateId ? 'Edit speed send information' : 'Enter speed send information'}</h3>
       {form}
     </div>
   );

@@ -10,7 +10,7 @@ export const sideDrawerMenus = [
     icon: 'tag',
   },
   {
-    title: 'Collections',
+    title: 'Speed sends',
     path: '/template',
     icon: 'collection',
   },
