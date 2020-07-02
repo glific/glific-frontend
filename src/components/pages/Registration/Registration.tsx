@@ -33,7 +33,7 @@ const axios = require('axios');
 interface State {
   password: string;
   showPassword: boolean;
-  phoneNumber: string;
+  phoneNumber: number;
   userName: string;
   confirmPassword: string;
   showConfirmPassword: boolean;
@@ -45,7 +45,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [values, setValues] = React.useState<State>({
     password: '',
     showPassword: false,
-    phoneNumber: '',
+    phoneNumber: 0,
     userName: '',
     confirmPassword: '',
     showConfirmPassword: false,
@@ -74,6 +74,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const handleSubmit = async () => {
     axios
       .post('http://localhost:4000/api/v1/registration', {
+        'user[name]': values.userName,
         'user[phone]': values.phoneNumber,
         'user[password]': values.password,
         'user[password_confirmation]': values.confirmPassword,
