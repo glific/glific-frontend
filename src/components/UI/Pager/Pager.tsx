@@ -29,7 +29,13 @@ export const Pager: React.SFC<PagerProps> = (props) => {
   const createRows = () => {
     const createRow = (entry: any) => {
       return Object.keys(entry).map((item: any, i: number) => {
-        return <TableCell key={i}>{entry[item]}</TableCell>;
+        return (
+          <TableCell key={i}>
+            {typeof entry[item] === 'string' && entry[item].length > 50
+              ? entry[item].slice(0, 50) + '...'
+              : entry[item]}
+          </TableCell>
+        );
       });
     };
     return props.data.map((entry: any, i: number) => {

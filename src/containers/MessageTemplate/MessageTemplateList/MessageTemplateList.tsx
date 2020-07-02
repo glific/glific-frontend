@@ -7,17 +7,19 @@ import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
+import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
-import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { DELETE_TAG } from '../../../graphql/mutations/Tag';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import styles from './TagList.module.css';
+import styles from './MessageTemplateList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 
-export interface TagListProps {}
+export interface TemplateListProps {}
 
 interface TableVals {
   pageNum: number;
@@ -26,18 +28,19 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const TagList: React.SFC<TagListProps> = (props) => {
+export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   const client = useApolloClient();
 
   // DialogBox states
-  const [deleteTagID, setDeleteTagID] = useState<number | null>(null);
-  const [deleteTagName, setDeleteTagName] = useState<string>('');
+  const [deleteTemplateID, setDeleteTemplateID] = useState<number | null>(null);
+  const [deleteTemplateName, setDeleteTemplateName] = useState<string>('');
 
-  const [newTag, setNewTag] = useState(false);
+  const [newTemplate, setNewTemplate] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
-  const columnNames = ['Name', 'Description', 'Actions'];
+  const columnNames = ['Label', 'Body', 'Actions'];
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -47,7 +50,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
     // To handle sorting by columns that are not Name (currently don't support this functionality)
-    if (attribute === 'sortCol' && newVal !== 'Name') {
+    if (attribute === 'sortCol' && newVal !== 'Label') {
       return;
     }
     // Otherwise, set all values like normal
@@ -62,13 +65,21 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       filter: {
         label: searchVal,
       },
-      opts: {
-        limit: tableVals.pageRows,
-        offset: tableVals.pageNum * tableVals.pageRows,
-        order: tableVals.sortDirection.toUpperCase(),
-      },
+      order: tableVals.sortDirection.toUpperCase(),
     };
   };
+
+  // Get the total number of Templates here
+  const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
+    GET_TEMPLATES_COUNT,
+    {
+      variables: {
+        filter: {
+          label: '',
+        },
+      },
+    }
+  );
 
   useEffect(() => {
     refetch(filterPayload());
@@ -83,20 +94,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     });
   }, [searchVal]);
 
-  // Get the total number of tags here
-  const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
-    GET_TAGS_COUNT,
-    {
-      variables: {
-        filter: {
-          label: '',
-        },
-      },
-    }
-  );
-
-  // Get tag data here
-  const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {
+  // Get TEMPLATE data here
+  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
     variables: filterPayload(),
   });
 
@@ -104,39 +103,41 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   let deleteId: number = 0;
 
-  const [deleteTag] = useMutation(DELETE_TAG, {
+  const [deleteTemplate] = useMutation(DELETE_TEMPLATE, {
     update(cache) {
-      const tags: any = cache.readQuery({
-        query: FILTER_TAGS,
+      const templates: any = cache.readQuery({
+        query: FILTER_TEMPLATES,
         variables: filterPayload(),
       });
-      const tagsCopy = JSON.parse(JSON.stringify(tags));
-      tagsCopy.tags = tags.tags.filter((val: any) => val.id !== deleteId);
+      const templatesCopy = JSON.parse(JSON.stringify(templates));
+      templatesCopy.sessionTemplates = templates.sessionTemplates.filter(
+        (val: any) => val.id !== deleteId
+      );
       cache.writeQuery({
-        query: FILTER_TAGS,
+        query: FILTER_TEMPLATES,
         variables: filterPayload(),
-        data: tagsCopy,
+        data: templatesCopy,
       });
     },
   });
 
   const showDialogHandler = (id: any, label: string) => {
-    setDeleteTagName(label);
-    setDeleteTagID(id);
+    setDeleteTemplateName(label);
+    setDeleteTemplateID(id);
   };
   const closeToastMessage = () => {
     setNotification(client, null);
   };
 
   const closeDialogBox = () => {
-    setDeleteTagID(null);
+    setDeleteTemplateID(null);
   };
 
-  const handleDeleteTag = () => {
-    if (deleteTagID !== null) {
-      deleteHandler(deleteTagID);
+  const handleDeleteTemplate = () => {
+    if (deleteTemplateID !== null) {
+      deleteHandler(deleteTemplateID);
     }
-    setDeleteTagID(null);
+    setDeleteTemplateID(null);
   };
 
   let toastMessage;
@@ -145,29 +146,31 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   }
 
   let dialogBox;
-  if (deleteTagID) {
+  if (deleteTemplateID) {
     dialogBox = (
       <DialogBox
-        title={`Delete Tag: ${deleteTagName}`}
+        title={`Delete speed send: ${deleteTemplateName}`}
         handleCancel={closeDialogBox}
-        handleOk={handleDeleteTag}
+        handleOk={handleDeleteTemplate}
       >
-        Are you sure you want to delete the tag?
+        Are you sure you want to delete the speed send?
       </DialogBox>
     );
   }
 
-  if (newTag) {
-    return <Redirect to="/tag/add" />;
+  if (newTemplate) {
+    return <Redirect to="/speed-send/add" />;
   }
 
   if (loading || l) return <Loading />;
-  if (error || e) return <p>Error :(</p>;
+  if (error || e) {
+    return <p>Error :(</p>;
+  }
 
   const deleteHandler = (id: number) => {
     deleteId = id;
-    deleteTag({ variables: { id } });
-    setNotification(client, 'Tag deleted Successfully');
+    deleteTemplate({ variables: { id } });
+    setNotification(client, 'Speed send deleted successfully');
   };
 
   // Reformat all tags to be entered in table
@@ -175,7 +178,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     if (id) {
       return (
         <>
-          <Link to={'/tag/' + id + '/edit'}>
+          <Link to={'/speed-send/' + id + '/edit'}>
             <IconButton aria-label="Edit" color="default">
               <EditIcon />
             </IconButton>
@@ -192,12 +195,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     }
   }
 
-  function formatTags(tags: Array<any>) {
-    // Should be type tag, but can't import Tag type into file
-    return tags.map((t: any) => {
+  function formatTemplates(templates: Array<any>) {
+    // Should be type template, but can't import template type into file
+    return templates.map((t: any) => {
       return {
         label: t.label,
-        description: t.description,
+        description: t.body,
         operations: getIcons(t.id, t.label),
       };
     });
@@ -219,22 +222,22 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     resetTableVals();
   };
 
-  // Get tag data and total number of tags.
-  let tagList: any;
+  // Get template data and total number of templates.
+  let templateList: any;
   if (data) {
-    tagList = formatTags(data.tags);
+    templateList = formatTemplates(data.sessionTemplates);
   }
 
-  let tagCount: number = tableVals.pageRows;
+  let templateCount: number = tableVals.pageRows;
   if (countData) {
-    tagCount = countData.countTags;
+    templateCount = countData.countSessionTemplates;
   }
 
   return (
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
-          Tags
+          Speed sends
         </Typography>
         <div className={styles.Buttons}>
           <SearchBar
@@ -245,11 +248,32 @@ export const TagList: React.SFC<TagListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
+          <form onSubmit={handleSearch}>
+            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
+              <InputBase
+                defaultValue={searchVal}
+                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
+                name="nameSearch"
+              />
+              {searchOpen ? (
+                <div
+                  className={styles.ResetSearch}
+                  onClick={() => {
+                    setSearchVal('');
+                    resetTableVals();
+                  }}
+                >
+                  <Divider orientation="vertical" />
+                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
+                </div>
+              ) : null}
+            </div>
+          </form>
           <div>
             {toastMessage}
             {dialogBox}
             <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
+              <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
                 Add New
               </Button>
             </div>
@@ -257,17 +281,17 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         </div>
       </div>
 
-      {/* Rendering list of tags */}
-      {tagList ? (
+      {/* Rendering list of templates */}
+      {templateList ? (
         <Pager
           columnNames={columnNames}
-          data={tagList}
-          totalRows={tagCount}
+          data={templateList}
+          totalRows={templateCount}
           handleTableChange={handleTableChange}
           tableVals={tableVals}
         />
       ) : (
-        <div>There are no tags.</div>
+        <div>There are no templates.</div>
       )}
     </>
   );

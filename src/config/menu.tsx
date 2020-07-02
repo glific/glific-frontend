@@ -9,4 +9,9 @@ export const sideDrawerMenus = [
     path: '/tag',
     icon: 'tag',
   },
+  {
+    title: 'Speed sends',
+    path: '/speed-send',
+    icon: 'collection',
+  },
 ];
