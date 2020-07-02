@@ -100,6 +100,8 @@
 .Popper {
   padding: 10px 30px 10px 10px !important;
   font-weight: bolder !important;
+  width: 100% !important;
+  justify-content: left !important;
   text-transform: none !important;
 }
 
