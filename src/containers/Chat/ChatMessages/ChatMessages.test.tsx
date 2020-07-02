@@ -244,10 +244,11 @@ const mocks = [
 ];
 
 describe('<ChatMessages />', () => {
-  it("do nothing", () => {
+  it('do nothing', () => {
     expect(1 === 1);
-  })
-}
+  });
+});
+
 //   // let wrapper: any;
 
 //   // beforeAll(() => {
