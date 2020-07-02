@@ -28,11 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const axios = require('axios');
+
 interface State {
   password: string;
   showPassword: boolean;
   phoneNumber: string;
   userName: string;
+  confirmPassword: string;
+  showConfirmPassword: boolean;
 }
 
 export const Registration: React.SFC<RegistrationProps> = () => {
@@ -43,6 +47,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     showPassword: false,
     phoneNumber: '',
     userName: '',
+    confirmPassword: '',
+    showConfirmPassword: false,
   });
 
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +59,32 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
+  const handleClickShowConfirmPassword = () => {
+    setValues({ ...values, showConfirmPassword: !values.showConfirmPassword });
+  };
+
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleSubmit = () => {
-    console.log('hello');
+  const handleMouseDownConfirmPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const handleSubmit = async () => {
+    axios
+      .post('http://localhost:4000/api/v1/registration', {
+        'user[phone]': values.phoneNumber,
+        'user[password]': values.password,
+        'user[password_confirmation]': values.confirmPassword,
+      })
+      .then(function (response: any) {
+        console.log(response);
+        console.log(response);
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   };
 
   return (
@@ -105,6 +131,31 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                   edge="end"
                 >
                   {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+        <FormControl
+          className={clsx(classes.margin, classes.textField, classes.bottomMargin)}
+          variant="outlined"
+        >
+          <InputLabel>Confirm Password</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-confirm-password"
+            type={values.showConfirmPassword ? 'text' : 'password'}
+            label="Confirm Password"
+            value={values.confirmPassword}
+            onChange={handleChange('confirmPassword')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowConfirmPassword}
+                  onMouseDown={handleMouseDownConfirmPassword}
+                  edge="end"
+                >
+                  {values.showConfirmPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
