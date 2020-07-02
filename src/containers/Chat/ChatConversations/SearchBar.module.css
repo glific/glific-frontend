@@ -1,0 +1,59 @@
+.SearchField {
+  height: 100%;
+  width: 100%;
+  padding: 0 0 0 10px;
+  border-radius: 10px;
+}
+
+.IconAndText {
+  width: 100%;
+  display: flex;
+}
+
+.SearchBar {
+  border-radius: 10px;
+  border-color: #93a29b;
+  border-width: 2px;
+  border-style: solid;
+  display: flex;
+  width: 93%;
+  padding: 0px;
+  margin: auto;
+  margin-top: 10.5px;
+  margin-bottom: 12px;
+  height: 48px;
+}
+
+.SearchIcon {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.CloseIcon {
+  vertical-align: middle;
+  color: #93a29b;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.ResetSearch {
+  /* margin-right: 3px !important; */
+  height: 80%;
+  align-self: center;
+  padding: 3px !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border-radius: 5px;
+  margin-right: 5px;
+  -webkit-box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}

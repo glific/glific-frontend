@@ -8,3 +8,9 @@
 .ContactName {
   line-height: 56px;
 }
+
+.Title {
+  font-family: 'Heebo', sans-serif !important;
+  font-size: 20px !important;
+  color: #073f24;
+}
