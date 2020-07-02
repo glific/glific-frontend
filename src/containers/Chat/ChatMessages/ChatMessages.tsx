@@ -1,22 +1,24 @@
 import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { Container, FormGroup } from '@material-ui/core';
+import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
+
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../common/notification';
-import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
+import moment from 'moment';
+import { TIME_FORMAT } from '../../../common/constants';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
+
+import { NOTIFICATION } from '../../../graphql/queries/Notification';
+import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
 import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  contactId: string;
+  conversationIndex: number;
 }
 
 interface ConversationMessage {
@@ -51,8 +53,10 @@ interface ConversationResult {
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }) => {
+  // create an instance of apolloclient
   const client = useApolloClient();
+
   const message = useQuery(NOTIFICATION);
   const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
@@ -60,6 +64,35 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
 
+  // create message mutation
+  const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+
+  // get the conversations stored from the cache
+  const queryVariables = {
+    contactOpts: {
+      limit: 50,
+    },
+    filter: {},
+    messageOpts: {
+      limit: 100,
+    },
+  };
+
+  const allConversations: any = client.readQuery({
+    query: GET_CONVERSATION_QUERY,
+    variables: queryVariables,
+  });
+
+  // use contact id to filter if it is passed via url, else use the first conversation
+  let conversationInfo: any = [];
+  if (!conversationIndex) {
+    conversationIndex = 0;
+  }
+
+  conversationInfo = allConversations.conversations[conversationIndex];
+  const receiverId = allConversations.conversations[conversationIndex].contact.id;
+
+  // tagging message mutation
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
     onCompleted: (data) => {
       setEditTagsMessageId(null);
@@ -69,50 +102,26 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
-      const messages: any = cache.readQuery({
-        query: GET_CONVERSATION_MESSAGE_QUERY,
-        variables: queryVariables,
-      });
-
-      const messagesCopy = JSON.parse(JSON.stringify(messages));
+      const messagesCopy = JSON.parse(JSON.stringify(allConversations));
       if (data.createMessageTag.messageTag.tag) {
         const tag = data.createMessageTag.messageTag.tag;
-        messagesCopy.conversation.messages = messagesCopy.conversation.messages.map(
-          (message: any) => {
-            if (message.id === data.createMessageTag.messageTag.message.id) {
-              message.tags.push(tag);
-              return message;
-            } else return message;
-          }
-        );
+        messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
+          conversationIndex
+        ].messages.map((message: any) => {
+          if (message.id === data.createMessageTag.messageTag.message.id) {
+            message.tags.push(tag);
+            return message;
+          } else return message;
+        });
 
         cache.writeQuery({
-          query: GET_CONVERSATION_MESSAGE_QUERY,
+          query: GET_CONVERSATION_QUERY,
           variables: queryVariables,
           data: messagesCopy,
         });
       }
     },
   });
-  // let's get the conversation for last contacted contact.
-  // TODO Temporary fix
-  if (!contactId) {
-    contactId = '2';
-  }
-
-  const queryVariables = {
-    contactId: contactId,
-    filter: {},
-    messageOpts: {
-      limit: 25,
-    },
-  };
-  const { loading, error, data } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-    variables: queryVariables,
-    fetchPolicy: 'cache-first',
-  });
-
-  const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
@@ -120,7 +129,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       const payload = {
         body: body,
         senderId: 1,
-        receiverId: contactId,
+        receiverId: receiverId,
         type: 'TEXT',
         flow: 'OUTBOUND',
       };
@@ -134,24 +143,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             id: Math.random().toString(36).substr(2, 9),
             body: body,
             senderId: 1,
-            receiverId: contactId,
+            receiverId: receiverId,
             flow: 'OUTBOUND',
             type: 'TEXT',
           },
         },
         update: (cache, { data }) => {
-          const messages: any = cache.readQuery({
-            query: GET_CONVERSATION_MESSAGE_QUERY,
-            variables: queryVariables,
-          });
-
-          const messagesCopy = JSON.parse(JSON.stringify(messages));
+          const messagesCopy = JSON.parse(JSON.stringify(allConversations));
 
           if (data.createMessage.message) {
             const message = data.createMessage.message;
-            messagesCopy.conversation.messages = [message, ...messagesCopy.conversation.messages];
+            messagesCopy.conversations[conversationIndex].messages = [
+              message,
+              ...messagesCopy.conversations[conversationIndex].messages,
+            ];
             cache.writeQuery({
-              query: GET_CONVERSATION_MESSAGE_QUERY,
+              query: GET_CONVERSATION_QUERY,
               variables: queryVariables,
               data: messagesCopy,
             });
@@ -159,13 +166,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         },
       });
     },
-    [contactId, createMessage, queryVariables]
+    [createMessage, queryVariables, receiverId, conversationIndex, allConversations]
   );
-
-  if (loading) {
-    return <Loading />;
-  }
-  if (error) return <p>Error :(</p>;
 
   //toast
   const closeToastMessage = () => {
@@ -207,7 +209,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   };
 
-  const conversations = data?.conversation;
+  //const conversations = conversationMessages;
 
   let dialogBox;
 
@@ -228,7 +230,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                       if (selectedMessageTags?.includes(event?.target.name.toString())) {
                         setSelectedMessageTags(
                           selectedMessageTags?.filter(
-                            (messageTag: any) => messageTag != event?.target.name
+                            (messageTag: any) => messageTag !== event?.target.name
                           )
                         );
                       } else {
@@ -281,42 +283,39 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   };
 
-  // we are always loading first conversation, hence incase chatid is not passed set it
-  if (contactId === undefined) {
-    contactId = conversations.contact.id;
-  }
-
   let messageList: any;
-  if (conversations.messages.length > 0) {
-    let reverseConversation = [...conversations.messages];
+  if (conversationInfo.messages.length > 0) {
+    let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
         <ChatMessage
           {...message}
-          contactId={contactId}
+          contactId={receiverId}
           key={index}
           popup={message.id === editTagsMessageId}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
 
-            let messageTags = conversations.messages.filter(
+            let messageTags = conversationInfo.messages.filter(
               (message: any) => message.id === editTagsMessageId
             );
-
             if (messageTags.length > 0) {
               messageTags = messageTags[0].tags;
             }
-
             const messageTagId = messageTags.map((tag: any) => {
               return tag.id;
             });
-
             setSelectedMessageTags(messageTagId);
-
             setDialogbox(!dialog);
           }}
           focus={index === 0}
+          showMessage={
+            index !== 0
+              ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
+                moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
+              : true
+          }
         />
       );
     });
@@ -328,7 +327,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversations.contact.name} />
+      <ContactBar contactName={conversationInfo.contact.name} />
       <Container className={styles.MessageList} data-testid="messageContainer">
         {messageList}
       </Container>

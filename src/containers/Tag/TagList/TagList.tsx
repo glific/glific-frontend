@@ -7,9 +7,7 @@ import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -17,6 +15,7 @@ import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './TagList.module.css';
+import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 
 export interface TagListProps {}
 
@@ -36,7 +35,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const [newTag, setNewTag] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
   const columnNames = ['Name', 'Description', 'Actions'];
@@ -71,6 +69,19 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     };
   };
+
+  useEffect(() => {
+    refetch(filterPayload());
+  }, [searchVal, tableVals]);
+
+  // Make a new count request for a new count of the # of rows from this query in the back-end.
+  useEffect(() => {
+    refetchCount({
+      filter: {
+        label: searchVal,
+      },
+    });
+  }, [searchVal]);
 
   // Get the total number of tags here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
@@ -213,7 +224,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.nameSearch.value.trim();
+    let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
@@ -236,30 +247,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
           Tags
         </Typography>
         <div className={styles.Buttons}>
-          <IconButton className={styles.IconButton} onClick={() => setSearchOpen(!searchOpen)}>
-            <SearchIcon className={styles.SearchIcon}></SearchIcon>
-          </IconButton>
-          <form onSubmit={handleSearch}>
-            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={searchVal}
-                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
-                name="nameSearch"
-              />
-              {searchOpen ? (
-                <div
-                  className={styles.ResetSearch}
-                  onClick={() => {
-                    setSearchVal('');
-                    resetTableVals();
-                  }}
-                >
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
-            </div>
-          </form>
+          <SearchBar
+            handleSubmit={handleSearch}
+            onReset={() => {
+              setSearchVal('');
+              resetTableVals();
+            }}
+            searchVal={searchVal}
+          />
           <div>
             {toastMessage}
             {dialogBox}

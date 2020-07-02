@@ -24,11 +24,15 @@ describe('<ChatMessage />', () => {
     body: 'Hello there!',
     contactId: 2,
     receiver: {
+      id: 1,
+    },
+    sender: {
       id: 2,
     },
     popup: 1,
     open: true,
     insertedAt,
+    showMessage: true,
 
     tags: [
       {
@@ -43,7 +47,7 @@ describe('<ChatMessage />', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
 
-  test('it should render the message date  correctly', () => {
+  test('it should render the message date correctly', () => {
     expect(wrapper.find('[data-testid="date"]').text()).toEqual(
       moment(insertedAt).format(TIME_FORMAT)
     );
@@ -60,8 +64,8 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the down arrow icon', () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
-    expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
+    const { getByTestId } = render(<ChatMessage {...defaultProps} />);
+    expect(getByTestId('messageOptions')).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
