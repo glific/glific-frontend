@@ -15,11 +15,6 @@ export interface ChatProps {
 }
 
 const Chat: React.SFC<ChatProps> = ({ contactId }) => {
-  useEffect(() => {
-    console.log('useeffect called');
-    getMessageResponse();
-  }, [contactId]);
-
   // fetch the default conversations
   // default queryvariables
   const queryVariables = {
@@ -54,6 +49,11 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       },
     });
   }, [subscribeToMore, queryVariables, contactId]);
+
+  useEffect(() => {
+    console.log('useeffect called');
+    getMessageResponse();
+  }, [getMessageResponse]);
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;

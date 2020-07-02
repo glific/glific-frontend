@@ -1,11 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import {
-  useQuery,
-  useMutation,
-  useLazyQuery,
-  useApolloClient,
-  InMemoryCache,
-} from '@apollo/client';
+import React, { useCallback, useState } from 'react';
+import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import moment from 'moment';
 
