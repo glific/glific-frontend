@@ -153,7 +153,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         handleCancel={closeDialogBox}
         handleOk={handleDeleteTemplate}
       >
-        Are you sure you want to delete the Template?
+        Are you sure you want to delete the template?
       </DialogBox>
     );
   }
@@ -170,7 +170,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   const deleteHandler = (id: number) => {
     deleteId = id;
     deleteTemplate({ variables: { id } });
-    setNotification(client, 'Template deleted Successfully');
+    setNotification(client, 'Template deleted successfully');
   };
 
   // Reformat all tags to be entered in table
