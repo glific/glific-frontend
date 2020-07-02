@@ -78,8 +78,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
-  console.log('these are convos', conversations);
-
   // build the conversation list only if there are conversations
   let conversationList;
   if (conversations.length > 0) {
