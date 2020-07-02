@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const DELETE_MESSAGE = gql`
+export const DELETE_TEMPLATE = gql`
   mutation deleteSessionTemplate($id: ID!) {
     deleteSessionTemplate(id: $id) {
       errors {
@@ -11,7 +11,7 @@ export const DELETE_MESSAGE = gql`
   }
 `;
 
-export const CREATE_MESSAGE = gql`
+export const CREATE_TEMPLATE = gql`
   mutation createSessionTemplate($input: SessionTemplateInput!) {
     createSessionTemplate(input: $input) {
       sessionTemplate {
@@ -23,7 +23,7 @@ export const CREATE_MESSAGE = gql`
   }
 `;
 
-export const UPDATE_MESSAGE = gql`
+export const UPDATE_TEMPLATE = gql`
   mutation updateSessionTemplate($id: ID!, $input: SessionTemplateInput!) {
     updateSessionTemplate(id: $id, input: $input) {
       sessionTemplate {

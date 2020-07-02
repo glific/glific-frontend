@@ -11,14 +11,15 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
-import { GET_MESSAGES_COUNT, FILTER_MESSAGES } from '../../../graphql/queries/Message';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { DELETE_MESSAGE } from '../../../graphql/mutations/Message';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './MessageTemplateList.module.css';
+import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 
-export interface MessageListProps {}
+export interface TemplateListProps {}
 
 interface TableVals {
   pageNum: number;
@@ -27,14 +28,14 @@ interface TableVals {
   sortDirection: 'asc' | 'desc';
 }
 
-export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
+export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   const client = useApolloClient();
 
   // DialogBox states
-  const [deleteMessageID, setDeleteMessageID] = useState<number | null>(null);
-  const [deleteMessageName, setDeleteMessageName] = useState<string>('');
+  const [deleteTemplateID, setDeleteTemplateID] = useState<number | null>(null);
+  const [deleteTemplateName, setDeleteTemplateName] = useState<string>('');
 
-  const [newMessage, setNewMessage] = useState(false);
+  const [newTemplate, setNewTemplate] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -48,8 +49,9 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
   });
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
+    console.log(attribute, newVal);
     // To handle sorting by columns that are not Name (currently don't support this functionality)
-    if (attribute === 'sortCol' && newVal !== 'Name') {
+    if (attribute === 'sortCol' && newVal !== 'Label') {
       return;
     }
     // Otherwise, set all values like normal
@@ -64,13 +66,13 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
       filter: {
         label: searchVal,
       },
-      order: 'ASC',
+      order: tableVals.sortDirection.toUpperCase(),
     };
   };
 
-  // Get the total number of messages here
+  // Get the total number of Templates here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
-    GET_MESSAGES_COUNT,
+    GET_TEMPLATES_COUNT,
     {
       variables: {
         filter: {
@@ -79,6 +81,12 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
       },
     }
   );
+
+  useEffect(() => {
+    refetch(filterPayload());
+  }, [searchVal, tableVals]);
+
+  // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
     refetchCount({
       filter: {
@@ -87,8 +95,8 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
     });
   }, [searchVal]);
 
-  // Get message data here
-  const { loading, error, data } = useQuery(FILTER_MESSAGES, {
+  // Get TEMPLATE data here
+  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
     variables: filterPayload(),
   });
 
@@ -96,45 +104,41 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
 
   let deleteId: number = 0;
 
-  const [deleteMessage] = useMutation(DELETE_MESSAGE, {
+  const [deleteTemplate] = useMutation(DELETE_TEMPLATE, {
     update(cache) {
-      const messages: any = cache.readQuery({
-        query: FILTER_MESSAGES,
+      const templates: any = cache.readQuery({
+        query: FILTER_TEMPLATES,
         variables: filterPayload(),
       });
-      const messagesCopy = JSON.parse(JSON.stringify(messages));
-      messagesCopy.sessionTemplates = messages.sessionTemplates.filter(
+      const templatesCopy = JSON.parse(JSON.stringify(templates));
+      templatesCopy.sessionTemplates = templates.sessionTemplates.filter(
         (val: any) => val.id !== deleteId
       );
       cache.writeQuery({
-        query: FILTER_MESSAGES,
+        query: FILTER_TEMPLATES,
         variables: filterPayload(),
-        data: messagesCopy,
+        data: templatesCopy,
       });
-    },
-
-    onCompleted: () => {
-      refetchCount();
     },
   });
 
   const showDialogHandler = (id: any, label: string) => {
-    setDeleteMessageName(label);
-    setDeleteMessageID(id);
+    setDeleteTemplateName(label);
+    setDeleteTemplateID(id);
   };
   const closeToastMessage = () => {
     setNotification(client, null);
   };
 
   const closeDialogBox = () => {
-    setDeleteMessageID(null);
+    setDeleteTemplateID(null);
   };
 
-  const handleDeleteMessage = () => {
-    if (deleteMessageID !== null) {
-      deleteHandler(deleteMessageID);
+  const handleDeleteTemplate = () => {
+    if (deleteTemplateID !== null) {
+      deleteHandler(deleteTemplateID);
     }
-    setDeleteMessageID(null);
+    setDeleteTemplateID(null);
   };
 
   let toastMessage;
@@ -143,19 +147,19 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
   }
 
   let dialogBox;
-  if (deleteMessageID) {
+  if (deleteTemplateID) {
     dialogBox = (
       <DialogBox
-        title={`Delete Message: ${deleteMessageName}`}
+        title={`Delete Template: ${deleteTemplateName}`}
         handleCancel={closeDialogBox}
-        handleOk={handleDeleteMessage}
+        handleOk={handleDeleteTemplate}
       >
-        Are you sure you want to delete the message?
+        Are you sure you want to delete the Template?
       </DialogBox>
     );
   }
 
-  if (newMessage) {
+  if (newTemplate) {
     return <Redirect to="/template/add" />;
   }
 
@@ -167,8 +171,8 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
 
   const deleteHandler = (id: number) => {
     deleteId = id;
-    deleteMessage({ variables: { id } });
-    setNotification(client, 'Message deleted Successfully');
+    deleteTemplate({ variables: { id } });
+    setNotification(client, 'Template deleted Successfully');
   };
 
   // Reformat all tags to be entered in table
@@ -193,9 +197,9 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
     }
   }
 
-  function formatMessages(messages: Array<any>) {
-    // Should be type message, but can't import Message type into file
-    return messages.map((t: any) => {
+  function formatTemplates(templates: Array<any>) {
+    // Should be type template, but can't import template type into file
+    return templates.map((t: any) => {
       return {
         label: t.label,
         description: t.body,
@@ -215,32 +219,37 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.nameSearch.value.trim();
+    let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
 
-  // Get message data and total number of messages.
-  let messageList: any;
+  // Get template data and total number of templates.
+  let templateList: any;
   if (data) {
-    messageList = formatMessages(data.sessionTemplates);
+    templateList = formatTemplates(data.sessionTemplates);
   }
 
-  let messageCount: number = tableVals.pageRows;
+  let templateCount: number = tableVals.pageRows;
   if (countData) {
-    messageCount = countData.countSessionTemplates;
+    templateCount = countData.countSessionTemplates;
   }
 
   return (
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
-          Templates
+          Speed sends
         </Typography>
         <div className={styles.Buttons}>
-          <IconButton className={styles.IconButton} onClick={() => setSearchOpen(!searchOpen)}>
-            <SearchIcon className={styles.SearchIcon}></SearchIcon>
-          </IconButton>
+          <SearchBar
+            handleSubmit={handleSearch}
+            onReset={() => {
+              setSearchVal('');
+              resetTableVals();
+            }}
+            searchVal={searchVal}
+          />
           <form onSubmit={handleSearch}>
             <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
               <InputBase
@@ -266,7 +275,7 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
             {toastMessage}
             {dialogBox}
             <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewMessage(true)}>
+              <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
                 Add New
               </Button>
             </div>
@@ -274,17 +283,17 @@ export const MessageTemplateList: React.SFC<MessageListProps> = (props) => {
         </div>
       </div>
 
-      {/* Rendering list of messages */}
-      {messageList ? (
+      {/* Rendering list of templates */}
+      {templateList ? (
         <Pager
           columnNames={columnNames}
-          data={messageList}
-          totalRows={messageCount}
+          data={templateList}
+          totalRows={templateCount}
           handleTableChange={handleTableChange}
           tableVals={tableVals}
         />
       ) : (
-        <div>There are no messages.</div>
+        <div>There are no templates.</div>
       )}
     </>
   );

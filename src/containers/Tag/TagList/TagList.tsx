@@ -46,6 +46,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
+    console.log(attribute, newVal);
     // To handle sorting by columns that are not Name (currently don't support this functionality)
     if (attribute === 'sortCol' && newVal !== 'Name') {
       return;
@@ -94,16 +95,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     }
   );
-  useEffect(() => {
-    if (searchVal !== '') {
-      refetch(filterPayload());
-      refetchCount({
-        filter: {
-          label: searchVal,
-        },
-      });
-    }
-  }, [searchVal]);
 
   // Get tag data here
   const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {

@@ -10,16 +10,16 @@ import { useApolloClient } from '@apollo/client';
 import styles from './MessageTemplate.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import Paper from '@material-ui/core/Paper';
-import { GET_MESSAGE, FILTER_MESSAGES } from '../../graphql/queries/Message';
+import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../graphql/queries/Template';
 import { GET_LANGUAGES } from '../../graphql/queries/Tag';
 import { setNotification } from '../../common/notification';
-import { UPDATE_MESSAGE, CREATE_MESSAGE } from '../../graphql/mutations/Message';
+import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 
-export interface MessageProps {
+export interface TemplateProps {
   match: any;
 }
 
-export const MessageTemplate: React.SFC<MessageProps> = (props) => {
+export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
   const queryVariables = {
     filter: {
       label: '',
@@ -32,21 +32,21 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
     },
   });
 
-  const messageId = props.match.params.id ? props.match.params.id : false;
-  const { loading, error } = useQuery(GET_MESSAGE, {
-    variables: { id: messageId },
-    skip: !messageId,
+  const templateId = props.match.params.id ? props.match.params.id : false;
+  const { loading, error } = useQuery(GET_TEMPLATE, {
+    variables: { id: templateId },
+    skip: !templateId,
     onCompleted: (data) => {
-      if (messageId && data) {
-        message = data.sessionTemplate.sessionTemplate;
-        setLabel(message.label);
-        setBody(message.body);
-        setIsActive(message.isActive);
-        setLanguageId(message.language.id);
+      if (templateId && data) {
+        template = data.sessionTemplate.sessionTemplate;
+        setLabel(template.label);
+        setBody(template.body);
+        setIsActive(template.isActive);
+        setLanguageId(template.language.id);
       }
     },
   });
-  const [updateMessage] = useMutation(UPDATE_MESSAGE, {
+  const [updateTemplate] = useMutation(UPDATE_TEMPLATE, {
     onCompleted: () => {
       setFormSubmitted(true);
     },
@@ -58,21 +58,23 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
   const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const [createMessage] = useMutation(CREATE_MESSAGE, {
+  const [createTemplate] = useMutation(CREATE_TEMPLATE, {
     update(cache, { data: { createSessionTemplate } }) {
-      const messages: any = cache.readQuery({
-        query: FILTER_MESSAGES,
+      const templates: any = cache.readQuery({
+        query: FILTER_TEMPLATES,
         variables: queryVariables,
       });
       console.log(
-        messages,
-        messages.sessionTemplates.concat(createSessionTemplate.sessionTemplate)
+        templates,
+        templates.sessionTemplates.concat(createSessionTemplate.sessionTemplate)
       );
       cache.writeQuery({
-        query: FILTER_MESSAGES,
+        query: FILTER_TEMPLATES,
         variables: queryVariables,
         data: {
-          sessionTemplates: messages.sessionTemplates.concat(createSessionTemplate.sessionTemplate),
+          sessionTemplates: templates.sessionTemplates.concat(
+            createSessionTemplate.sessionTemplate
+          ),
         },
       });
     },
@@ -83,38 +85,38 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
 
   const client = useApolloClient();
 
-  let message: any = null;
+  let template: any = null;
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  const saveHandler = (message: any) => {
+  const saveHandler = (template: any) => {
     const payload = {
-      label: message.label,
-      body: message.body,
-      isActive: message.isActive,
-      languageId: Number(message.languageId),
+      label: template.label,
+      body: template.body,
+      isActive: template.isActive,
+      languageId: Number(template.languageId),
       type: 'TEXT',
     };
 
     console.log(payload);
     let notificationMessage;
 
-    if (messageId) {
-      updateMessage({
+    if (templateId) {
+      updateTemplate({
         variables: {
-          id: messageId,
+          id: templateId,
           input: payload,
         },
       });
-      notificationMessage = 'Message edited successfully!';
+      notificationMessage = 'Template edited successfully!';
     } else {
-      createMessage({
+      createTemplate({
         variables: {
           input: payload,
         },
       });
-      notificationMessage = 'Message added successfully!';
+      notificationMessage = 'Template added successfully!';
     }
     setNotification(client, notificationMessage);
   };
@@ -164,8 +166,8 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
           }
           return errors;
         }}
-        onSubmit={(message) => {
-          saveHandler(message);
+        onSubmit={(template) => {
+          saveHandler(template);
         }}
       >
         {({ submitForm }) => (
@@ -200,8 +202,8 @@ export const MessageTemplate: React.SFC<MessageProps> = (props) => {
   );
 
   return (
-    <div className={styles.MessageAdd}>
-      <h3>{messageId ? 'Edit template information' : 'Enter template information'}</h3>
+    <div className={styles.TemplateAdd}>
+      <h3>{templateId ? 'Edit template information' : 'Enter template information'}</h3>
       {form}
     </div>
   );
