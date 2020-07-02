@@ -11,7 +11,7 @@ export const sideDrawerMenus = [
   },
   {
     title: 'Speed sends',
-    path: '/template',
+    path: '/speed-send',
     icon: 'collection',
   },
 ];

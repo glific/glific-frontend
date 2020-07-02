@@ -159,7 +159,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   }
 
   if (newTemplate) {
-    return <Redirect to="/template/add" />;
+    return <Redirect to="/speed-send/add" />;
   }
 
   if (loading || l) return <Loading />;
@@ -178,7 +178,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     if (id) {
       return (
         <>
-          <Link to={'/template/' + id + '/edit'}>
+          <Link to={'/speed-send/' + id + '/edit'}>
             <IconButton aria-label="Edit" color="default">
               <EditIcon />
             </IconButton>

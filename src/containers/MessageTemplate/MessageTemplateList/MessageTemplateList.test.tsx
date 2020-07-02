@@ -164,7 +164,7 @@ describe('<MessageTemplateList />', () => {
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Switch>
-            <Route path="/template/add" exact component={MessageTemplate} />
+            <Route path="/speed-send/add" exact component={MessageTemplate} />
           </Switch>
           <MessageTemplateList />
         </Router>
@@ -182,14 +182,14 @@ describe('<MessageTemplateList />', () => {
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Switch>
-            <Route path="/template/add" exact component={MessageTemplate} />
+            <Route path="/speed-send/add" exact component={MessageTemplate} />
           </Switch>
           <MessageTemplateList />
         </Router>
       </MockedProvider>
     );
     await wait();
-    expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/template/87/edit');
+    expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/speed-send/87/edit');
   });
 });
 

@@ -120,7 +120,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
   };
 
   if (formSubmitted) {
-    return <Redirect to="/template" />;
+    return <Redirect to="/speed-send" />;
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;

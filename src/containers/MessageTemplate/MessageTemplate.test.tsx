@@ -177,7 +177,7 @@ describe('<MessageTemplate />', () => {
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Switch>
-            <Route path="/template" exact component={MessageTemplateList} />
+            <Route path="/speed-send" exact component={MessageTemplateList} />
           </Switch>
           <MessageTemplate match={{ params: { id: 1 } }} />
         </Router>
@@ -201,7 +201,7 @@ describe('Save Button', () => {
         <Router>
           <MessageTemplate match={{ params: { id: null } }} />
           <Switch>
-            <Route path="/template" exact component={MessageTemplateList} />
+            <Route path="/speed-send" exact component={MessageTemplateList} />
           </Switch>
         </Router>
       </MockedProvider>
