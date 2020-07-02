@@ -7,7 +7,8 @@ import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/D
 import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-
+import { IconButton } from '@material-ui/core';
+import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
@@ -32,6 +33,7 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+  const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -75,6 +77,21 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     messageDetails = styles.MessageDetailsSender;
   }
 
+  const saveMessageTemplate = (display: boolean) => {
+    setShowSaveMessageDialog(display);
+    setAnchorEl(anchorEl ? null : Ref.current);
+  };
+
+  let saveTemplateMessage;
+  if (showSaveMessageDialog) {
+    saveTemplateMessage = (
+      <AddToMessageTemplate
+        id={props.id}
+        message={props.body}
+        changeDisplay={saveMessageTemplate}
+      />
+    );
+  }
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
@@ -110,7 +127,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               {props.body}
             </div>
           </Tooltip>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement={placement} transition>
+          <Popper
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+            data-testid="popup"
+          >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
@@ -122,6 +146,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     Assign tag
                   </Button>
+                  <br />
+                  <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={() => setShowSaveMessageDialog(true)}
+                  >
+                    Save as template
+                  </Button>
                 </Paper>
               </Fade>
             )}
@@ -129,6 +161,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         </div>
         {iconLeft ? null : icon}
       </div>
+
+      {saveTemplateMessage}
 
       <div className={messageDetails}>
         {date}
