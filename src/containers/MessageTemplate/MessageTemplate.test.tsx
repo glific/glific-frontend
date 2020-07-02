@@ -24,6 +24,7 @@ const mocks = [
           isActive: true,
           label: 'new Template',
           languageId: 1,
+          type: 'TEXT',
         },
       },
     },
