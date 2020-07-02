@@ -85,7 +85,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       return (
         <ChatConversation
           key={conversation.contact.id}
-          conversationIndex={index}
           selected={selectedIndex === index}
           onClick={(i: number) => setSelectedIndex(i)}
           contactId={conversation.contact.id}

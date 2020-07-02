@@ -21,9 +21,9 @@ const App = () => {
           {/* This part isn't working properly */}
           <Route
             exact
-            path="/chat/:conversationIndex"
-            component={({ match }: RouteComponentProps<{ conversationIndex: any }>) => (
-              <Chat conversationIndex={match.params.conversationIndex} />
+            path="/chat/:contactId"
+            component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+              <Chat contactId={match.params.contactId} />
             )}
           />
         </Switch>

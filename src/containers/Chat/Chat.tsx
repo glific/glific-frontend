@@ -11,14 +11,14 @@ import { GET_CONVERSATION_QUERY } from '../../graphql/queries/Chat';
 import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../graphql/subscriptions/Chat';
 
 export interface ChatProps {
-  conversationIndex: number;
+  contactId: number;
 }
 
-const Chat: React.SFC<ChatProps> = ({ conversationIndex }) => {
+const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   useEffect(() => {
     console.log('useeffect called');
     getMessageResponse();
-  }, [conversationIndex]);
+  }, [contactId]);
 
   // fetch the default conversations
   // default queryvariables
@@ -53,7 +53,7 @@ const Chat: React.SFC<ChatProps> = ({ conversationIndex }) => {
         });
       },
     });
-  }, [subscribeToMore, queryVariables, conversationIndex]);
+  }, [subscribeToMore, queryVariables, contactId]);
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
@@ -66,7 +66,7 @@ const Chat: React.SFC<ChatProps> = ({ conversationIndex }) => {
     <Paper>
       <div className={styles.Chat}>
         <div className={styles.ChatMessages}>
-          <ChatMessages conversationIndex={conversationIndex} />
+          <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations />
