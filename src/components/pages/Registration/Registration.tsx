@@ -81,7 +81,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       })
       .then(function (response: any) {
         console.log(response);
-        console.log(response);
       })
       .catch(function (error: any) {
         console.log(error);
