@@ -49,7 +49,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   });
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
-    console.log(attribute, newVal);
     // To handle sorting by columns that are not Name (currently don't support this functionality)
     if (attribute === 'sortCol' && newVal !== 'Label') {
       return;
@@ -165,7 +164,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
 
   if (loading || l) return <Loading />;
   if (error || e) {
-    console.log(error);
     return <p>Error :(</p>;
   }
 

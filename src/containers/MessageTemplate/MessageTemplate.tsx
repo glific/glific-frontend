@@ -64,10 +64,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         query: FILTER_TEMPLATES,
         variables: queryVariables,
       });
-      console.log(
-        templates,
-        templates.sessionTemplates.concat(createSessionTemplate.sessionTemplate)
-      );
       cache.writeQuery({
         query: FILTER_TEMPLATES,
         variables: queryVariables,
@@ -98,8 +94,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
       languageId: Number(template.languageId),
       type: 'TEXT',
     };
-
-    console.log(payload);
     let notificationMessage;
 
     if (templateId) {

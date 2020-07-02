@@ -6,7 +6,6 @@ import automationIcon from '../../../assets/images/icons/Automations/Unselected.
 import collectionsIcon from '../../../assets/images/icons/Collections/Unselected.svg';
 import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
 import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
