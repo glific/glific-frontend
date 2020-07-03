@@ -5,7 +5,7 @@ import styles from './ChatConversations.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 
 export interface ChatConversationsProps {}
@@ -44,38 +44,25 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     variables: queryVariables,
   });
 
-  // Initial render will search on '', but after will behave properly
-  // TODO: change to useLazyQuery
-  const { loading, error, data: searchData, refetch } = useQuery<any>(FILTER_CONVERSATIONS_QUERY, {
-    variables: filterVariables(),
-  });
-
-  useEffect(() => {
-    // Could this work with cached searches for conversations?
-    // try {
-    //   const otherData: any = client.readQuery({
-    //     query: FILTER_CONVERSATIONS_QUERY,
-    //     variables: filterVariables(),
-    //   });
-    // } catch (e) {
-    //   refetch({ variables: filterVariables() });
-    // }
-    refetch({ variables: filterVariables() });
-    setSelectedIndex(-1); // Don't highlight any of them on a search, let the user click one
-  }, [searchVal]);
+  const [queryFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    FILTER_CONVERSATIONS_QUERY,
+    {
+      variables: filterVariables(),
+    }
+  );
 
   // Other cases
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  if (data === undefined || searchData === undefined) {
+  if (data === undefined) {
     return <p>Error :(</p>;
   }
 
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (searchVal) {
+  if (searchVal && called) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
@@ -120,6 +107,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     e.preventDefault();
     let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
+    if (!called) {
+      queryFilterConvos();
+      return <Loading />;
+    }
+    setSelectedIndex(-1);
   };
 
   return (
