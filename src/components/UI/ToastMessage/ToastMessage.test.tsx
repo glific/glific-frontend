@@ -47,9 +47,7 @@ describe('<ToastMessage />', () => {
         hideDuration={1000}
       />
     );
-
     jest.runAllTimers();
-
     expect(mockCallback).toHaveBeenCalled();
   });
 });
