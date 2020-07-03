@@ -18,7 +18,7 @@ import {
 } from '../../../graphql/queries/Chat';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
-  CREATE_MESSAGE_TAG,
+  CREATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
@@ -69,6 +69,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
+  const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
 
   // Instantiate these to be used later.
   let receiverId: number = 0;
@@ -107,13 +108,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   );
 
   // tagging message mutation
-  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
+  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
       setEditTagsMessageId(null);
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
-      setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
       const allConversations: any = client.readQuery({
@@ -121,15 +121,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: queryVariables,
       });
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-      if (data.createMessageTag.messageTag.tag) {
-        const tag = data.createMessageTag.messageTag.tag;
+
+      if (data.createMessageTags.messageTags) {
+        const tags = data.createMessageTags.messageTags.map((tags: any) => tags.tag);
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
           conversationIndex
         ].messages.map((message: any) => {
-          if (message.id === data.createMessageTag.messageTag.message.id) {
-            if (message.tags.filter((messageTag: any) => messageTag.id === tag.id).length === 0) {
-              message.tags.push(tag);
-            }
+          if (message.id === data.createMessageTags.messageTags[0].message.id) {
+            message.tags = [...message.tags, ...tags];
           }
           return message;
         });
@@ -247,31 +246,32 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const closeDialogBox = () => {
-    setSelectedMessageTags(null);
     setDialogbox(false);
     setEditTagsMessageId(null);
     setSearch('');
   };
 
   const handleSubmit = () => {
-    const tagsForm = document.getElementById('tagsForm');
-    let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
-    messageTags = [].slice.call(messageTags);
-    const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
+    // const tagsForm = document.getElementById('tagsForm');
+    // let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
+    // messageTags = [].slice.call(messageTags);
+    // const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
-    if (selectedTags.size === 0) {
+    const selectedTags = selectedMessageTags.filter(
+      (tag: any) => !previousMessageTags.includes(tag)
+    );
+
+    if (selectedTags.length === 0) {
       setDialogbox(false);
       setEditTagsMessageId(null);
     } else {
-      selectedTags.forEach((tagId: number) => {
-        createMessageTag({
-          variables: {
-            input: {
-              messageId: editTagsMessageId,
-              tagId: tagId,
-            },
+      createMessageTag({
+        variables: {
+          input: {
+            messageId: editTagsMessageId,
+            tagsId: selectedTags,
           },
-        });
+        },
       });
     }
   };
@@ -372,6 +372,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               return tag.id;
             });
             setSelectedMessageTags(messageTagId);
+            setPreviousMessageTags(messageTagId);
             setDialogbox(!dialog);
           }}
           focus={index === 0}
