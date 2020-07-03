@@ -24,11 +24,12 @@ export const ToastMessage: React.SFC<Props> = ({
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
+        vertical: 'top',
+        horizontal: 'center',
       }}
       open={open}
-      autoHideDuration={4000}
+      onClose={handleCloseButton}
+      autoHideDuration={5000}
     >
       <Alert severity={severity} onClose={handleCloseButton}>
         {message}
