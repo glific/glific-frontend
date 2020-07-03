@@ -65,7 +65,11 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
       filter: {
         label: searchVal,
       },
-      order: tableVals.sortDirection.toUpperCase(),
+      opts: {
+        limit: tableVals.pageRows,
+        offset: tableVals.pageNum * tableVals.pageRows,
+        order: tableVals.sortDirection.toUpperCase(),
+      },
     };
   };
 
