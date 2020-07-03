@@ -62,7 +62,11 @@ const mocks = [
         filter: {
           label: '',
         },
-        order: 'ASC',
+        opts: {
+          limit: 10,
+          offset: 0,
+          order: 'ASC',
+        },
       },
     },
     result: {

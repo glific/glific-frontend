@@ -7,8 +7,8 @@ export const GET_TEMPLATES_COUNT = gql`
 `;
 
 export const FILTER_TEMPLATES = gql`
-  query sessionTemplates($filter: SessionTemplateFilter!, $order: SortOrder!) {
-    sessionTemplates(filter: $filter, order: $order) {
+  query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
+    sessionTemplates(filter: $filter, opts: $opts) {
       id
       body
       label

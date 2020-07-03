@@ -64,7 +64,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
         },
       });
       changeDisplay(false);
-      setNotification(client, 'Message has been successfully saved as template.');
+      setNotification(client, 'Message has been successfully added to speed sends.');
       setMessageTemplate(null);
     }
   };
@@ -74,7 +74,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
       <DialogBox
         handleCancel={handleCloseButton}
         handleOk={handleOKButton}
-        title={'Save message as template?'}
+        title={'Add message to speed sends'}
         children={textField}
       />
     </div>

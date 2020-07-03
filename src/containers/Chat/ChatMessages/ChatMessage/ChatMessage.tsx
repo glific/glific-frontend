@@ -152,7 +152,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     color="primary"
                     onClick={() => setShowSaveMessageDialog(true)}
                   >
-                    Save as template
+                    Add to speed sends
                   </Button>
                 </Paper>
               </Fade>

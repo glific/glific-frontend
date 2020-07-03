@@ -24,7 +24,11 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
     filter: {
       label: '',
     },
-    order: 'ASC',
+    opts: {
+      limit: 10,
+      offset: 0,
+      order: 'ASC',
+    },
   };
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -64,15 +68,18 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         query: FILTER_TEMPLATES,
         variables: queryVariables,
       });
-      cache.writeQuery({
-        query: FILTER_TEMPLATES,
-        variables: queryVariables,
-        data: {
-          sessionTemplates: templates.sessionTemplates.concat(
-            createSessionTemplate.sessionTemplate
-          ),
-        },
-      });
+
+      if (createSessionTemplate) {
+        cache.writeQuery({
+          query: FILTER_TEMPLATES,
+          variables: queryVariables,
+          data: {
+            sessionTemplates: templates.sessionTemplates.concat(
+              createSessionTemplate.sessionTemplate
+            ),
+          },
+        });
+      }
     },
     onCompleted: () => {
       setFormSubmitted(true);
