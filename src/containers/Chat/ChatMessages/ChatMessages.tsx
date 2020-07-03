@@ -93,17 +93,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     variables: queryVariables,
   });
 
-  // Always called on render? Cannot conditionally use `useQuery`.
-  // TODO: Change to useLazyQuery
-  const { data, loading, error } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
-    variables: {
-      contactId: contactId ? contactId.toString() : '0',
-      filter: {},
-      messageOpts: {
-        limit: 100,
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(
+    GET_CONVERSATION_MESSAGE_QUERY,
+    {
+      variables: {
+        contactId: contactId ? contactId.toString() : '0',
+        filter: {},
+        messageOpts: {
+          limit: 100,
+        },
       },
-    },
-  });
+    }
+  );
 
   // tagging message mutation
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
@@ -184,9 +185,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // HOOKS ESTABLISHED ABOVE
 
-  // Run through these cases to ensure data always exists (either as a dummy initial search or a valid search).
-  if (loading) return <Loading />;
-  if (error) return <p>Error :(</p>;
+  // Run through these cases to ensure data always exists
+  if (called && loading) {
+    return <Loading />;
+  }
+  if (called && error) {
+    return <p>Error :(</p>;
+  }
 
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = [];
@@ -204,6 +209,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // time to get the conversation for this contact from server and then
     // store it in the cached object too.
     if (conversationIndex < 0) {
+      if (!called) {
+        getSearchQuery();
+        return <Loading />;
+      }
       conversationIndex = 0;
       conversationInfo = data.conversation;
 
