@@ -74,7 +74,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
       <DialogBox
         handleCancel={handleCloseButton}
         handleOk={handleOKButton}
-        title={'Save message as template?'}
+        title={'Add message to speed sends'}
         children={textField}
       />
     </div>
