@@ -45,6 +45,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   });
 
   // Initial render will search on '', but after will behave properly
+  // TODO: change to useLazyQuery
   const { loading, error, data: searchData, refetch } = useQuery<any>(FILTER_CONVERSATIONS_QUERY, {
     variables: filterVariables(),
   });
