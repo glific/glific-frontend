@@ -93,10 +93,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     variables: queryVariables,
   });
 
-  // Always called on render? Cannot conditionally use `useQuery`
+  // Always called on render? Cannot conditionally use `useQuery`.
+  // TODO: Change to useLazyQuery
   const { data, loading, error } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
     variables: {
-      contactId: contactId.toString(),
+      contactId: contactId ? contactId.toString() : '0',
       filter: {},
       messageOpts: {
         limit: 100,
@@ -211,6 +212,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       // allConversations.conversations.unshift(data.conversation);
     }
   }
+
+  // By default, have conversatoinInfo be the first thing if there is no contactId;
+  if (!conversationInfo) {
+    conversationInfo = allConversations.conversations[conversationIndex];
+  }
+
+  // console.log(conversationInfo);
 
   receiverId = conversationInfo.contact.id;
 
