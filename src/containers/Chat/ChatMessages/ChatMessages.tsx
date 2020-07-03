@@ -12,12 +12,16 @@ import styles from './ChatMessages.module.css';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { TIME_FORMAT } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
+import {
+  GET_CONVERSATION_QUERY,
+  GET_CONVERSATION_MESSAGE_QUERY,
+} from '../../../graphql/queries/Chat';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_MESSAGE_TAG,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatMessagesProps {
   contactId: number;
@@ -66,6 +70,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
 
+  // Instantiate these to be used later.
+  let receiverId: number = 0;
+  let conversationIndex: number = -1;
+
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
 
@@ -85,27 +93,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     variables: queryVariables,
   });
 
-  // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = [];
-  let conversationIndex = 0;
-  if (contactId) {
-    //loop through the cached conversations and find if contact exists
-    allConversations.conversations.map((conversation: any, index: any) => {
-      if (conversation.contact.id === contactId) {
-        conversationIndex = index;
-      }
-    });
-
-    // this means we didn't find the contact in the cached converation,
-    // time to get the conversation for this contact from server and then
-    // store it in the cached object too
-    if (!conversationIndex) {
-      //TODO
-    }
-  }
-
-  conversationInfo = allConversations.conversations[conversationIndex];
-  const receiverId = allConversations.conversations[conversationIndex].contact.id;
+  // Always called on render? Cannot conditionally use `useQuery`
+  const { data, loading, error } = useQuery<any>(GET_CONVERSATION_MESSAGE_QUERY, {
+    variables: {
+      contactId: contactId.toString(),
+      filter: {},
+      messageOpts: {
+        limit: 100,
+      },
+    },
+  });
 
   // tagging message mutation
   const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
@@ -184,6 +181,39 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     [createAndSendMessage, queryVariables, receiverId, allConversations, conversationIndex]
   );
 
+  // HOOKS ESTABLISHED ABOVE
+
+  // Run through these cases to ensure data always exists (either as a dummy initial search or a valid search).
+  if (loading) return <Loading />;
+  if (error) return <p>Error :(</p>;
+
+  // use contact id to filter if it is passed via url, else use the first conversation
+  let conversationInfo: any = [];
+
+  if (contactId) {
+    // loop through the cached conversations and find if contact exists
+    allConversations.conversations.map((conversation: any, index: any) => {
+      if (conversation.contact.id === contactId) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+    });
+
+    // this means we didn't find the contact in the cached converation,
+    // time to get the conversation for this contact from server and then
+    // store it in the cached object too.
+    if (conversationIndex < 0) {
+      conversationIndex = 0;
+      conversationInfo = data.conversation;
+
+      // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
+      // allConversations.conversations.splice(0, 0, data.conversation);
+      // allConversations.conversations.unshift(data.conversation);
+    }
+  }
+
+  receiverId = conversationInfo.contact.id;
+
   //toast
   const closeToastMessage = () => {
     setNotification(client, null);
@@ -223,8 +253,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       });
     }
   };
-
-  //const conversations = conversationMessages;
 
   let dialogBox;
 
