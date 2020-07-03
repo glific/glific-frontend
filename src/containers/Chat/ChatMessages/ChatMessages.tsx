@@ -116,6 +116,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
+      const allConversations: any = client.readQuery({
+        query: GET_CONVERSATION_QUERY,
+        variables: queryVariables,
+      });
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
       if (data.createMessageTag.messageTag.tag) {
         const tag = data.createMessageTag.messageTag.tag;
@@ -123,9 +127,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           conversationIndex
         ].messages.map((message: any) => {
           if (message.id === data.createMessageTag.messageTag.message.id) {
-            message.tags.push(tag);
-            return message;
-          } else return message;
+            if (message.tags.filter((messageTag: any) => messageTag.id === tag.id).length === 0) {
+              message.tags.push(tag);
+            }
+          }
+          return message;
         });
 
         cache.writeQuery({
