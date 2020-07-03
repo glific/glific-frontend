@@ -12,6 +12,7 @@ export interface ChatConversationProps {
   contactName: string;
   selected: boolean;
   onClick: (i: any) => void;
+  index: number;
   lastMessage: {
     body: string;
     insertedAt: string;
@@ -34,7 +35,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       // })}
       component={Link}
       selected={props.selected}
-      onClick={() => props.onClick(props.contactId)}
+      onClick={() => props.onClick(props.index)}
       to={'/chat/' + props.contactId} // Index doesn't equal ID
     >
       <div className={styles.CircleBox}>

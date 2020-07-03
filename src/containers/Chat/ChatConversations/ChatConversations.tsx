@@ -60,6 +60,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     //   refetch({ variables: filterVariables() });
     // }
     refetch({ variables: filterVariables() });
+    setSelectedIndex(-1); // Don't highlight any of them on a search, let the user click one
   }, [searchVal]);
 
   // Other cases
@@ -86,6 +87,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
           key={conversation.contact.id}
           selected={selectedIndex === index}
           onClick={(i: number) => setSelectedIndex(i)}
+          index={index}
           contactId={conversation.contact.id}
           contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
