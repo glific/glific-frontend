@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import styles from './Registration.module.css';
@@ -39,6 +39,8 @@ interface State {
   showConfirmPassword: boolean;
   authRedirect: boolean;
   authToken: any;
+  authCode: any;
+  errors: any;
 }
 
 export const Registration: React.SFC<RegistrationProps> = () => {
@@ -52,7 +54,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     confirmPassword: '',
     showConfirmPassword: false,
     authRedirect: false,
-    authToken: '',
+    authToken: null,
+    authCode: null,
+    errors: null,
   });
 
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +79,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     event.preventDefault();
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     axios
       .post('http://localhost:4000/api/v1/registration', {
         user: {
@@ -87,24 +91,45 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       })
       .then(function (response: any) {
         console.log(response);
-        setValues({ ...values, authRedirect: true });
-        setValues({ ...values, authToken: response });
+        const responseString = JSON.stringify(response);
+        setValues((values) => ({ ...values, authToken: responseString }));
+        axios
+          .post('http://localhost:4000/api/v1/registration/send_otp', {
+            user: {
+              phone: values.phoneNumber,
+            },
+          })
+          .then(function (response: any) {
+            console.log(response);
+            setValues((values) => ({ ...values, authCode: response }));
+          });
       })
       .catch(function (error: any) {
-        console.log(error);
+        console.log(error.response.data.error.errors);
+        setValues((values) => ({ ...values, errors: error.response.data.error.errors }));
       });
   };
 
-  if (values.authRedirect) {
+  if (values.authCode && values.authToken) {
     return (
       <Redirect
         to={{
           pathname: '/registrationauth',
-          state: { phoneNumber: values.phoneNumber },
+          state: {
+            authCode: values.authCode.data.data.otp,
+            phoneNumber: values.phoneNumber,
+            tokens: values.authToken,
+          },
         }}
       />
     );
   }
+
+  // const errorList = values.errors
+  //   ? Object.values(values.errors).map((error: any) => (
+  //       <Typography variant="h6">{error}</Typography>
+  //     ))
+  //   : null;
 
   return (
     <div className={styles.Container}>
@@ -180,6 +205,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             }
           />
         </FormControl>
+        {values.errors ? <Typography variant="h6">Error!</Typography> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>

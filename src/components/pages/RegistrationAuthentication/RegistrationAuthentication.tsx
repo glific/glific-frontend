@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './RegistrationAuthentication.module.css';
 import { Typography } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -7,11 +7,16 @@ import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { Button } from '../../UI/Form/Button/Button';
 import clsx from 'clsx';
+import axios from 'axios';
 
-export interface RegistrationAuthProps {}
+export interface RegistrationAuthProps {
+  location: any;
+}
 
 interface State {
   authCode: string;
+  authResponse: string;
+  sentAuth: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,11 +33,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const RegistrationAuthentication: React.SFC<RegistrationAuthProps> = () => {
+export const RegistrationAuthentication: React.SFC<RegistrationAuthProps> = (props) => {
   const classes = useStyles();
 
   const [values, setValues] = React.useState<State>({
     authCode: '',
+    authResponse: '',
+    sentAuth: false,
   });
 
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
