@@ -213,12 +213,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   }
 
-  // By default, have conversatoinInfo be the first thing if there is no contactId;
-  if (!conversationInfo) {
+  // By default, have conversationInfo be the first thing if there is no contactId;
+  if (conversationInfo.length === 0) {
+    conversationIndex = 0;
     conversationInfo = allConversations.conversations[conversationIndex];
   }
-
-  // console.log(conversationInfo);
 
   receiverId = conversationInfo.contact.id;
 
