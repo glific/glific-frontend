@@ -37,7 +37,7 @@ describe('<ToastMessage />', () => {
     expect(mockCallback).toHaveBeenCalled();
   });
 
-  it('should check if the callback method is called after 1 seconds', async () => {
+  it('should check if the callback method is called after 1 second', async () => {
     const wrapper = mount(
       <ToastMessage
         open
