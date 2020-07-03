@@ -9,7 +9,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../UI/Form/Button/Button';
+import Button from '@material-ui/core/Button';
+import { Redirect } from 'react-router-dom';
 import clsx from 'clsx';
 import axios from 'axios';
 
@@ -36,6 +37,8 @@ interface State {
   userName: string;
   confirmPassword: string;
   showConfirmPassword: boolean;
+  authRedirect: boolean;
+  authToken: any;
 }
 
 export const Registration: React.SFC<RegistrationProps> = () => {
@@ -48,6 +51,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     userName: '',
     confirmPassword: '',
     showConfirmPassword: false,
+    authRedirect: false,
+    authToken: '',
   });
 
   const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,11 +87,24 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       })
       .then(function (response: any) {
         console.log(response);
+        setValues({ ...values, authRedirect: true });
+        setValues({ ...values, authToken: response });
       })
       .catch(function (error: any) {
         console.log(error);
       });
   };
+
+  if (values.authRedirect) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/registrationauth',
+          state: { phoneNumber: values.phoneNumber },
+        }}
+      />
+    );
+  }
 
   return (
     <div className={styles.Container}>

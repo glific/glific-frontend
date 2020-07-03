@@ -6,6 +6,7 @@ import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
 import ChatPage from './components/pages/ChatPage/ChatPage';
 import { Registration } from './components/pages/Registration/Registration';
+import { RegistrationAuthentication } from './components/pages/RegistrationAuthentication/RegistrationAuthentication';
 import styles from './App.module.css';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
       <Layout>
         <Switch>
           <Route path="/registration" exact component={Registration} />
+          <Route path="/registrationauth" exact component={RegistrationAuthentication} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
