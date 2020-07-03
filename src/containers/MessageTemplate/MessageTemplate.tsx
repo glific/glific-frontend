@@ -69,7 +69,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         variables: queryVariables,
       });
 
-      if (createSessionTemplate)
+      if (createSessionTemplate) {
         cache.writeQuery({
           query: FILTER_TEMPLATES,
           variables: queryVariables,
@@ -79,6 +79,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
             ),
           },
         });
+      }
     },
     onCompleted: () => {
       setFormSubmitted(true);
