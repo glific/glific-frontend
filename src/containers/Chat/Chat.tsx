@@ -37,6 +37,58 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     variables: queryVariables,
   });
 
+  const updateConversations = (cachedConversations: any, subscriptionData: any, action: string) => {
+    //TODO: cachedConversations is empty sometimes, so just return, come back and investigate later
+    if (!cachedConversations) {
+      return;
+    }
+
+    // if there is no message data then return previous conversations
+    if (!subscriptionData.data) {
+      return cachedConversations;
+    }
+
+    let newMessage: any;
+    let contactId: number;
+    if (action === 'SENT') {
+      // set the receiver contact id
+      newMessage = subscriptionData.data.sentMessage;
+      contactId = subscriptionData.data.sentMessage.receiver.id;
+    } else {
+      // set the sender contact id
+      newMessage = subscriptionData.data.receivedMessage;
+      contactId = subscriptionData.data.sentMessage.sender.id;
+    }
+
+    //loop through the cached conversations and find if contact exists
+    let conversationIndex = 0;
+    let conversationFound = false;
+    cachedConversations.conversations.map((conversation: any, index: any) => {
+      if (conversation.contact.id === contactId) {
+        conversationIndex = index;
+        conversationFound = true;
+      }
+    });
+
+    // this means contact is not cached, so we need to fetch the conversations and add
+    // it to the cached conversations
+    if (!conversationFound) {
+      //TODO
+      console.log('Error: Conversation not found! ', conversationIndex);
+    }
+
+    // We need to add new message to existing messages array
+    const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
+    updatedConversations.conversations[conversationIndex].messages.push(newMessage);
+
+    // return the updated object
+    const returnConversations = Object.assign({}, cachedConversations, {
+      ...updatedConversations,
+    });
+
+    return returnConversations;
+  };
+
   // handle subscription for message received and sent
   const getMessageResponse = useCallback(() => {
     // message received subscription
@@ -45,33 +97,34 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
         console.log('calling message received sub');
-        console.log('prev', prev);
-        if (!subscriptionData.data) return prev;
-        const newMessage = subscriptionData.data.receivedMessage;
-        const senderId = subscriptionData.data.receivedMessage.sender.id;
+        return updateConversations(prev, subscriptionData, 'RECEIVED');
+        // console.log('prev', prev);
+        // if (!subscriptionData.data) return prev;
+        // const newMessage = subscriptionData.data.receivedMessage;
+        // const senderId = subscriptionData.data.receivedMessage.sender.id;
 
-        //loop through the cached conversations and find if contact exists
-        let conversationIndex;
-        prev.conversations.map((conversation: any, index: any) => {
-          if (conversation.contact.id === senderId) {
-            conversationIndex = index;
-          }
-        });
+        // //loop through the cached conversations and find if contact exists
+        // let conversationIndex;
+        // prev.conversations.map((conversation: any, index: any) => {
+        //   if (conversation.contact.id === senderId) {
+        //     conversationIndex = index;
+        //   }
+        // });
 
-        // this means contact is not cached, so we need to fetch the conversations and add
-        // it to the cached conversations
-        if (!conversationIndex) {
-          //TODO
-        }
+        // // this means contact is not cached, so we need to fetch the conversations and add
+        // // it to the cached conversations
+        // if (!conversationIndex) {
+        //   //TODO
+        // }
 
-        if (conversationIndex) {
-          const messagesCopy = JSON.parse(JSON.stringify(prev));
-          messagesCopy.conversations[conversationIndex].messages.push(newMessage);
+        // if (conversationIndex) {
+        //   const messagesCopy = JSON.parse(JSON.stringify(prev));
+        //   messagesCopy.conversations[conversationIndex].messages.push(newMessage);
 
-          return Object.assign({}, prev, {
-            ...messagesCopy,
-          });
-        }
+        //   return Object.assign({}, prev, {
+        //     ...messagesCopy,
+        //   });
+        // }
       },
     });
 
@@ -81,49 +134,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
         console.log('calling message sent sub');
-
-        //TODO: prev is empty sometimes, so just return, come back and investigate later
-        if (!prev) {
-          return;
-        }
-
-        // if there is no message data then return previous conversations
-        if (!subscriptionData.data) {
-          return prev;
-        }
-
-        // set the receiver contact id
-        const receiverId = subscriptionData.data.sentMessage.receiver.id;
-
-        //loop through the cached conversations and find if contact exists
-        let conversationIndex = 0;
-        let conversationFound = false;
-        prev.conversations.map((conversation: any, index: any) => {
-          if (conversation.contact.id === receiverId) {
-            conversationIndex = index;
-            conversationFound = true;
-          }
-        });
-
-        // this means contact is not cached, so we need to fetch the conversations and add
-        // it to the cached conversations
-        if (!conversationFound) {
-          //TODO
-          console.log('Error: Conversation not found! ', conversationIndex);
-        }
-
-        // We need to add new message to existing messages array
-        const updatedConversations = JSON.parse(JSON.stringify(prev));
-        updatedConversations.conversations[conversationIndex].messages.push(
-          subscriptionData.data.sentMessage
-        );
-
-        // return the updated object
-        const returnConversations = Object.assign({}, prev, {
-          ...updatedConversations,
-        });
-
-        return returnConversations;
+        return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
   }, [subscribeToMore, queryVariables, contactId]);
