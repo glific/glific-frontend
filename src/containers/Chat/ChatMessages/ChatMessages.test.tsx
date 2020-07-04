@@ -10,7 +10,10 @@ import {
   GET_CONVERSATION_MESSAGE_QUERY,
   GET_CONVERSATION_QUERY,
 } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
+import {
+  CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_MESSAGE_TAG,
+} from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../../graphql/subscriptions/Chat';
 import { Switch, Route } from 'react-router-dom';
