@@ -18,9 +18,6 @@ export interface ChatProps {
 }
 
 const Chat: React.SFC<ChatProps> = ({ contactId }) => {
-  // create an instance of apolloclient
-  const client = useApolloClient();
-
   // fetch the default conversations
   // default queryvariables
   const queryVariables = {
@@ -110,7 +107,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
-  }, [subscribeToMore, queryVariables, contactId]);
+  }, [subscribeToMore, queryVariables, updateConversations]);
 
   useEffect(() => {
     getMessageResponse();
