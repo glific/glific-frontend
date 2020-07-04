@@ -7,6 +7,7 @@ interface Props {
   severity?: Severity;
   message: String;
   handleClose: Function;
+  hideDuration?: number;
 }
 
 // Since attribute severity can only have 5 values,
@@ -17,6 +18,7 @@ export const ToastMessage: React.SFC<Props> = ({
   severity = 'success',
   message,
   handleClose,
+  hideDuration = 5000,
 }) => {
   const handleCloseButton = (event?: React.SyntheticEvent) => {
     handleClose(false);
@@ -24,11 +26,12 @@ export const ToastMessage: React.SFC<Props> = ({
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
+        vertical: 'top',
+        horizontal: 'center',
       }}
       open={open}
-      autoHideDuration={4000}
+      onClose={handleCloseButton}
+      autoHideDuration={hideDuration}
     >
       <Alert severity={severity} onClose={handleCloseButton}>
         {message}
