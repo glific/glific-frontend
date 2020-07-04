@@ -167,22 +167,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             type: 'TEXT',
           },
         },
-        update: (cache, { data }) => {
-          const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-          if (data.createAndSendMessage) {
-            // add new message to messages array
-            messagesCopy.conversations[conversationIndex].messages.unshift(
-              data.createAndSendMessage.message
-            );
+        // update: (cache, { data }) => {
+        //   const messagesCopy = JSON.parse(JSON.stringify(allConversations));
+        //   if (data.createAndSendMessage) {
+        //     // add new message to messages array
+        //     messagesCopy.conversations[conversationIndex].messages.unshift(
+        //       data.createAndSendMessage.message
+        //     );
 
-            // update the cache
-            cache.writeQuery({
-              query: GET_CONVERSATION_QUERY,
-              variables: queryVariables,
-              data: messagesCopy,
-            });
-          }
-        },
+        //     // update the cache
+        //     cache.writeQuery({
+        //       query: GET_CONVERSATION_QUERY,
+        //       variables: queryVariables,
+        //       data: messagesCopy,
+        //     });
+        //   }
+        // },
       });
     },
     [createAndSendMessage, queryVariables, receiverId, allConversations, conversationIndex]
