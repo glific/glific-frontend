@@ -155,34 +155,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
       createAndSendMessage({
         variables: { input: payload },
-        // optimisticResponse: {
-        //   __typename: 'Mutation',
-        //   createMessage: {
-        //     __typename: 'Message',
-        //     id: Math.random().toString(36).substr(2, 9),
-        //     body: body,
-        //     senderId: 1,
-        //     receiverId: receiverId,
-        //     flow: 'OUTBOUND',
-        //     type: 'TEXT',
-        //   },
-        // },
-        // update: (cache, { data }) => {
-        //   const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-        //   if (data.createAndSendMessage) {
-        //     // add new message to messages array
-        //     messagesCopy.conversations[conversationIndex].messages.unshift(
-        //       data.createAndSendMessage.message
-        //     );
-
-        //     // update the cache
-        //     cache.writeQuery({
-        //       query: GET_CONVERSATION_QUERY,
-        //       variables: queryVariables,
-        //       data: messagesCopy,
-        //     });
-        //   }
-        // },
       });
     },
     [createAndSendMessage, queryVariables, receiverId, allConversations, conversationIndex]
