@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
-import { IconButton } from '@material-ui/core';
+import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Selected.svg';
 import Popper from '@material-ui/core/Popper';
-import { Button, Chip } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-
+import { IconButton } from '@material-ui/core';
+import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
@@ -18,28 +20,26 @@ export interface ChatMessageProps {
   receiver: {
     id: number;
   };
+  sender: {
+    id: number;
+  };
   insertedAt: string;
   onClick: any;
   tags: any;
   popup: any;
   setDialog: any;
   focus: boolean;
+  showMessage: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+  const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
-
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
   let tag;
-  if (props.tags && props.tags.length > 0)
-    tag = props.tags.map((tag: any) => {
-      return (
-        <Chip size="small" key={tag.id} label={tag.label} color="primary" className={styles.Chip} />
-      );
-    });
 
   useEffect(() => {
     if (props.popup) {
@@ -53,34 +53,69 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     if (props.focus) {
       messageRef.current?.scrollIntoView();
     }
-  }, [props]);
-
-  const icon = (
-    <IconButton
-      size="small"
-      onClick={props.onClick}
-      ref={Ref}
-      className={styles.button}
-      data-testid="messageOptions"
-    >
-      <ExpandMoreRoundedIcon />
-    </IconButton>
-  );
+  }, [props.id]);
 
   let iconLeft = false;
-  let tags: string | undefined = undefined;
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
   let mineColor: string | null = styles.MineColor;
+  let iconPlacement = styles.ButtonLeft;
+  let datePlacement: string | null = styles.DateLeft;
+  let tagContainer: string | null = styles.TagContainerSender;
+  let tagMargin: string | null = styles.TagMargin;
+  let messageDetails = styles.MessageDetails;
 
-  if (props.receiver.id === props.contactId) {
+  if (props.sender.id === props.contactId) {
     additionalClass = styles.Other;
     mineColor = styles.OtherColor;
     iconLeft = true;
-    tags = styles.TagsReceiver;
-
     placement = 'bottom-start';
+    iconPlacement = styles.ButtonRight;
+    datePlacement = null;
+    tagContainer = null;
+    tagMargin = null;
+    messageDetails = styles.MessageDetailsSender;
   }
+
+  const saveMessageTemplate = (display: boolean) => {
+    setShowSaveMessageDialog(display);
+    setAnchorEl(anchorEl ? null : Ref.current);
+  };
+
+  let saveTemplateMessage;
+  if (showSaveMessageDialog) {
+    saveTemplateMessage = (
+      <AddToMessageTemplate
+        id={props.id}
+        message={props.body}
+        changeDisplay={saveMessageTemplate}
+      />
+    );
+  }
+  if (props.tags && props.tags.length > 0)
+    tag = props.tags.map((tag: any) => {
+      return (
+        <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
+          <TagIcon className={styles.TagIcon} />
+          {tag.label}
+        </div>
+      );
+    });
+
+  const date = props.showMessage ? (
+    <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
+      {moment(props.insertedAt).format(TIME_FORMAT)}
+    </div>
+  ) : null;
+
+  const icon = (
+    <MessageIcon
+      onClick={props.onClick}
+      ref={Ref}
+      className={`${styles.Button} ${iconPlacement}`}
+      data-testid="messageOptions"
+    />
+  );
 
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
@@ -92,9 +127,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               {props.body}
             </div>
           </Tooltip>
-          <div className={styles.Date} data-testid="date">
-            {moment(props.insertedAt).format(TIME_FORMAT)}
-          </div>
           <Popper
             id={id}
             open={open}
@@ -114,6 +146,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     Assign tag
                   </Button>
+                  <br />
+                  <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={() => setShowSaveMessageDialog(true)}
+                  >
+                    Add to speed sends
+                  </Button>
                 </Paper>
               </Fade>
             )}
@@ -121,8 +161,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         </div>
         {iconLeft ? null : icon}
       </div>
-      <div className={tags} data-testid="tags">
-        {tag}
+
+      {saveTemplateMessage}
+
+      <div className={messageDetails}>
+        {date}
+        {tag ? <div className={`${styles.TagContainer} ${tagContainer}`}>{tag}</div> : null}
       </div>
     </div>
   );

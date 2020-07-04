@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 import App from './App';
-import ChatPage from './components/pages/ChatPage/ChatPage';
+import Chat from './containers/Chat/Chat';
 
 describe('<App /> ', () => {
   test('it should render <App /> component correctly', () => {
@@ -13,7 +13,7 @@ describe('<App /> ', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('it should render <ChatPage /> component by default', () => {
+  test('it should render <Chat /> component by default', () => {
     const wrapper = mount(
       <MockedProvider>
         <MemoryRouter initialEntries={['/']}>
@@ -22,10 +22,10 @@ describe('<App /> ', () => {
       </MockedProvider>
     );
 
-    expect(wrapper.find(ChatPage)).toHaveLength(1);
+    expect(wrapper.find(Chat)).toHaveLength(1);
   });
 
-  test('it should render <ChatPage /> component correctly if params are passed', () => {
+  test('it should render <Chat /> component correctly if params are passed', () => {
     const wrapper = mount(
       <MockedProvider>
         <MemoryRouter initialEntries={['/chat/1']}>
@@ -34,6 +34,6 @@ describe('<App /> ', () => {
       </MockedProvider>
     );
 
-    expect(wrapper.find(ChatPage)).toHaveLength(1);
+    expect(wrapper.find(Chat)).toHaveLength(1);
   });
 });
