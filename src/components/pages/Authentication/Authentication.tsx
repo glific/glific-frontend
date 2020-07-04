@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from './RegistrationAuthentication.module.css';
+import styles from './Authentication.module.css';
 import { Typography } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -7,9 +7,8 @@ import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { Button } from '../../UI/Form/Button/Button';
 import clsx from 'clsx';
-import axios from 'axios';
 
-export interface RegistrationAuthProps {
+export interface AuthenticationProps {
   location: any;
 }
 
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const RegistrationAuthentication: React.SFC<RegistrationAuthProps> = (props) => {
+export const Authentication: React.SFC<AuthenticationProps> = (props) => {
   const classes = useStyles();
 
   const [values, setValues] = React.useState<State>({
@@ -74,4 +73,4 @@ export const RegistrationAuthentication: React.SFC<RegistrationAuthProps> = (pro
   );
 };
 
-export default RegistrationAuthentication;
+export default Authentication;

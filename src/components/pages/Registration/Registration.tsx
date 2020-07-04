@@ -125,11 +125,17 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     );
   }
 
-  // const errorList = values.errors
-  //   ? Object.values(values.errors).map((error: any) => (
-  //       <Typography variant="h6">{error}</Typography>
-  //     ))
-  //   : null;
+  const errorList = values.errors
+    ? Object.values(values.errors).map((error: any) =>
+        error[0] == 'does not match confirmation' ? (
+          <Typography variant="h6">Password {error[0]}</Typography>
+        ) : (
+          <Typography variant="h6">Field {error[0]}</Typography>
+        )
+      )
+    : null;
+
+  console.log(values.errors ? Object.values(values.errors).map((error: any) => error[0]) : 'helo');
 
   return (
     <div className={styles.Container}>
@@ -205,7 +211,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             }
           />
         </FormControl>
-        {values.errors ? <Typography variant="h6">Error!</Typography> : null}
+        {values.errors ? <div className={styles.Errors}>{errorList}</div> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>

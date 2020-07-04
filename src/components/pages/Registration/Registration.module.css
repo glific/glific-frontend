@@ -13,3 +13,12 @@
 .RegistrationTitle {
   margin-bottom: 10px;
 }
+
+.Errors {
+  color: red;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 15px;
+  font-size: small;
+}
