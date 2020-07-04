@@ -7,6 +7,7 @@ subscription {
     body
     flow
     type
+    insertedAt
     receiver {
       id
       phone
@@ -26,6 +27,7 @@ subscription {
     body
     flow
     type
+    insertedAt
     receiver {
       id
       phone
