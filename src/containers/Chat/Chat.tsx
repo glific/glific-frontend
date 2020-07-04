@@ -69,7 +69,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           messagesCopy.conversations[conversationIndex].messages.push(newMessage);
 
           return Object.assign({}, prev, {
-            conversations: messagesCopy,
+            ...messagesCopy,
           });
         }
       },
@@ -81,16 +81,19 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
         console.log('calling message sent sub');
-        console.log('prev', prev);
+
+        //TODO: prev is empty sometimes, so just return, come back and investigate later
         if (!prev) {
           return;
         }
 
-        if (!subscriptionData.data) return prev;
-        const newMessage = subscriptionData.data.sentMessage;
-        const receiverId = subscriptionData.data.sentMessage.receiver.id;
+        // if there is no message data then return previous conversations
+        if (!subscriptionData.data) {
+          return prev;
+        }
 
-        //console.log('message', newMessage);
+        // set the receiver contact id
+        const receiverId = subscriptionData.data.sentMessage.receiver.id;
 
         //loop through the cached conversations and find if contact exists
         let conversationIndex = 0;
@@ -109,35 +112,18 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           console.log('Error: Conversation not found! ', conversationIndex);
         }
 
-        //console.log('conversationIndex', conversationIndex);
-        if (conversationFound) {
-          //const messagesCopy = JSON.parse(JSON.stringify(prev));
-          // make a copy of current conversations
-          const updatedConversations = {
-            ...prev,
-            conversations: {
-              ...prev.conversations,
-              [conversationIndex]: {
-                ...prev.conversations[conversationIndex],
-                messages: [...prev.conversations[conversationIndex].messages, { ...newMessage }],
-              },
-            },
-          };
+        // We need to add new message to existing messages array
+        const updatedConversations = JSON.parse(JSON.stringify(prev));
+        updatedConversations.conversations[conversationIndex].messages.push(
+          subscriptionData.data.sentMessage
+        );
 
-          //updatedConversations.conversations[conversationIndex].messages.push(newMessage);
+        // return the updated object
+        const returnConversations = Object.assign({}, prev, {
+          ...updatedConversations,
+        });
 
-          console.log('updatedConversations', updatedConversations);
-
-          // const returnObj = Object.assign({}, prev, {
-          //   conversations: messagesCopy,
-          // });
-
-          // return Object.assign({}, prev, {
-          //   conversations: messagesCopy,
-          // });
-
-          return prev;
-        }
+        return returnConversations;
       },
     });
   }, [subscribeToMore, queryVariables, contactId]);
