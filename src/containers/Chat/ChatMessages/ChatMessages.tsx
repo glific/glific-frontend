@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
+import moment from 'moment';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../common/notification';
@@ -8,17 +9,22 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
-import moment from 'moment';
-import { TIME_FORMAT } from '../../../common/constants';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-
+import { TIME_FORMAT } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
-import { GET_CONVERSATION_QUERY } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
+import {
+  GET_CONVERSATION_QUERY,
+  GET_CONVERSATION_MESSAGE_QUERY,
+} from '../../../graphql/queries/Chat';
+import {
+  CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_MESSAGE_TAGS,
+} from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatMessagesProps {
-  conversationIndex: number;
+  contactId: number;
 }
 
 interface ConversationMessage {
@@ -53,7 +59,7 @@ interface ConversationResult {
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
@@ -63,9 +69,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
   const [dialog, setDialogbox] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
+  const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
+
+  // Instantiate these to be used later.
+  let receiverId: number = 0;
+  let conversationIndex: number = -1;
 
   // create message mutation
-  const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
 
   // get the conversations stored from the cache
   const queryVariables = {
@@ -83,35 +94,43 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
     variables: queryVariables,
   });
 
-  // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = [];
-  if (!conversationIndex) {
-    conversationIndex = 0;
-  }
-
-  conversationInfo = allConversations.conversations[conversationIndex];
-  const receiverId = allConversations.conversations[conversationIndex].contact.id;
+  const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(
+    GET_CONVERSATION_MESSAGE_QUERY,
+    {
+      variables: {
+        contactId: contactId ? contactId.toString() : '0',
+        filter: {},
+        messageOpts: {
+          limit: 100,
+        },
+      },
+    }
+  );
 
   // tagging message mutation
-  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAG, {
+  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
       setEditTagsMessageId(null);
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
-      setSelectedMessageTags(null);
     },
     update: (cache, { data }) => {
+      const allConversations: any = client.readQuery({
+        query: GET_CONVERSATION_QUERY,
+        variables: queryVariables,
+      });
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-      if (data.createMessageTag.messageTag.tag) {
-        const tag = data.createMessageTag.messageTag.tag;
+
+      if (data.createMessageTags.messageTags) {
+        const tags = data.createMessageTags.messageTags.map((tags: any) => tags.tag);
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
           conversationIndex
         ].messages.map((message: any) => {
-          if (message.id === data.createMessageTag.messageTag.message.id) {
-            message.tags.push(tag);
-            return message;
-          } else return message;
+          if (message.id === data.createMessageTags.messageTags[0].message.id) {
+            message.tags = [...message.tags, ...tags];
+          }
+          return message;
         });
 
         cache.writeQuery({
@@ -134,40 +153,60 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
         flow: 'OUTBOUND',
       };
 
-      createMessage({
+      createAndSendMessage({
         variables: { input: payload },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          createMessage: {
-            __typename: 'Message',
-            id: Math.random().toString(36).substr(2, 9),
-            body: body,
-            senderId: 1,
-            receiverId: receiverId,
-            flow: 'OUTBOUND',
-            type: 'TEXT',
-          },
-        },
-        update: (cache, { data }) => {
-          const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-
-          if (data.createMessage.message) {
-            const message = data.createMessage.message;
-            messagesCopy.conversations[conversationIndex].messages = [
-              message,
-              ...messagesCopy.conversations[conversationIndex].messages,
-            ];
-            cache.writeQuery({
-              query: GET_CONVERSATION_QUERY,
-              variables: queryVariables,
-              data: messagesCopy,
-            });
-          }
-        },
       });
     },
-    [createMessage, queryVariables, receiverId, conversationIndex, allConversations]
+    [createAndSendMessage, receiverId]
   );
+
+  // HOOKS ESTABLISHED ABOVE
+
+  // Run through these cases to ensure data always exists
+  if (called && loading) {
+    return <Loading />;
+  }
+  if (called && error) {
+    return <p>Error :(</p>;
+  }
+
+  // use contact id to filter if it is passed via url, else use the first conversation
+  let conversationInfo: any = [];
+
+  if (contactId) {
+    // loop through the cached conversations and find if contact exists
+    allConversations.conversations.map((conversation: any, index: any) => {
+      if (conversation.contact.id === contactId) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+      return null;
+    });
+
+    // this means we didn't find the contact in the cached converation,
+    // time to get the conversation for this contact from server and then
+    // store it in the cached object too.
+    if (conversationIndex < 0) {
+      if (!called) {
+        getSearchQuery();
+        return <Loading />;
+      }
+      conversationIndex = 0;
+      conversationInfo = data.conversation;
+
+      // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
+      // allConversations.conversations.splice(0, 0, data.conversation);
+      // allConversations.conversations.unshift(data.conversation);
+    }
+  }
+
+  // By default, have conversationInfo be the first thing if there is no contactId;
+  if (conversationInfo.length === 0) {
+    conversationIndex = 0;
+    conversationInfo = allConversations.conversations[conversationIndex];
+  }
+
+  receiverId = conversationInfo.contact.id;
 
   //toast
   const closeToastMessage = () => {
@@ -180,36 +219,35 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
   }
 
   const closeDialogBox = () => {
-    setSelectedMessageTags(null);
     setDialogbox(false);
     setEditTagsMessageId(null);
     setSearch('');
   };
 
   const handleSubmit = () => {
-    const tagsForm = document.getElementById('tagsForm');
-    let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
-    messageTags = [].slice.call(messageTags);
-    const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
+    // const tagsForm = document.getElementById('tagsForm');
+    // let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
+    // messageTags = [].slice.call(messageTags);
+    // const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
 
-    if (selectedTags.size === 0) {
+    const selectedTags = selectedMessageTags.filter(
+      (tag: any) => !previousMessageTags.includes(tag)
+    );
+
+    if (selectedTags.length === 0) {
       setDialogbox(false);
       setEditTagsMessageId(null);
     } else {
-      selectedTags.forEach((tagId: number) => {
-        createMessageTag({
-          variables: {
-            input: {
-              messageId: editTagsMessageId,
-              tagId: tagId,
-            },
+      createMessageTag({
+        variables: {
+          input: {
+            messageId: editTagsMessageId,
+            tagsId: selectedTags,
           },
-        });
+        },
       });
     }
   };
-
-  //const conversations = conversationMessages;
 
   let dialogBox;
 
@@ -307,6 +345,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ conversationIndex }
               return tag.id;
             });
             setSelectedMessageTags(messageTagId);
+            setPreviousMessageTags(messageTagId);
             setDialogbox(!dialog);
           }}
           focus={index === 0}

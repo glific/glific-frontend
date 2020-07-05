@@ -8,11 +8,11 @@ import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
 
 export interface ChatConversationProps {
-  conversationIndex: number;
   contactId: number;
   contactName: string;
   selected: boolean;
   onClick: (i: any) => void;
+  index: number;
   lastMessage: {
     body: string;
     insertedAt: string;
@@ -35,8 +35,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       // })}
       component={Link}
       selected={props.selected}
-      onClick={() => props.onClick(props.conversationIndex)}
-      to={'/chat/' + props.conversationIndex} // Index doesn't equal ID
+      onClick={() => props.onClick(props.index)}
+      to={'/chat/' + props.contactId} // Index doesn't equal ID
     >
       <div className={styles.CircleBox}>
         <div className={styles.Status} />

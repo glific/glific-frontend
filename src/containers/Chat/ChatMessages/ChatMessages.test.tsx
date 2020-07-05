@@ -10,8 +10,12 @@ import {
   GET_CONVERSATION_MESSAGE_QUERY,
   GET_CONVERSATION_QUERY,
 } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
+import {
+  CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_MESSAGE_TAG,
+} from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../../graphql/subscriptions/Chat';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent, waitForDomChange } from '@testing-library/dom';
 import initialCacheState from './ChatMessages.test.json';
@@ -139,7 +143,7 @@ const mocks = [
   },
   {
     request: {
-      query: CREATE_MESSAGE_MUTATION,
+      query: CREATE_AND_SEND_MESSAGE_MUTATION,
       variables: {
         input: {
           body: 'Hey There Wow',
@@ -152,7 +156,7 @@ const mocks = [
     },
     result: {
       data: {
-        createMessage: {
+        createAndSendMessage: {
           message: {
             body: 'Hey There Wow',
             insertedAt: '2020-06-25T13:36:43Z',
@@ -254,7 +258,7 @@ describe('<ChatMessages />', () => {
 //   // beforeAll(() => {
 //   //   wrapper = render(
 //   //     <ApolloProvider client={gqlClient}>
-//   //       <ChatMessages conversationIndex={0} />
+//   //       <ChatMessages contactId={0} />
 //   //     </ApolloProvider>
 //   //   );
 //   // });
@@ -264,7 +268,7 @@ describe('<ChatMessages />', () => {
 //   it('testing if this will work', async () => {
 //     const wrapper = render(
 //       <MockedProvider cache={cache} mocks={mocks}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     expect(wrapper.exists()).toBe(true);
@@ -273,7 +277,7 @@ describe('<ChatMessages />', () => {
 //   it('should have loading state', async () => {
 //     const { getByText } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     expect(getByText('Loading...')).toBeInTheDocument();
@@ -283,7 +287,7 @@ describe('<ChatMessages />', () => {
 //   it('should have title as contact name', async () => {
 //     const { getByTestId } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -293,7 +297,7 @@ describe('<ChatMessages />', () => {
 //   test('input should function properly', async () => {
 //     const { getByTestId } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -306,7 +310,7 @@ describe('<ChatMessages />', () => {
 //   it('should have an emoji picker', async () => {
 //     const { getByTestId } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -316,7 +320,7 @@ describe('<ChatMessages />', () => {
 //   it('should contain the mock message', async () => {
 //     const { getByTestId } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -326,7 +330,7 @@ describe('<ChatMessages />', () => {
 //   test('click on assign tag should open a dialog box with mock messages', async () => {
 //     const { getByTestId } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -340,7 +344,7 @@ describe('<ChatMessages />', () => {
 //   test('add a new message on submit to input box', async () => {
 //     const { getAllByTestId, getByTestId, rerender } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -356,7 +360,7 @@ describe('<ChatMessages />', () => {
 //   test('assign a tag to message', async () => {
 //     const { container, getAllByTestId, getByTestId, getByText, queryByText } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();
@@ -375,7 +379,7 @@ describe('<ChatMessages />', () => {
 //   test('focus on the latest message', async () => {
 //     const { container, getByTestId, getByText } = render(
 //       <MockedProvider mocks={mocks} addTypename={false}>
-//         <ChatMessages conversationIndex={0} />
+//         <ChatMessages contactId={0} />
 //       </MockedProvider>
 //     );
 //     await wait();

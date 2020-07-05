@@ -55,7 +55,7 @@ const mocks = [
 
 describe('<Chat />', () => {
   const defaultProps = {
-    conversationIndex: 1,
+    contactId: 1,
   };
 
   const wrapper = shallow(
