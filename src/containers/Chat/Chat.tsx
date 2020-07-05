@@ -67,8 +67,9 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       if (!conversationFound) {
-        //TODO
+        //TODO: Need to fix this when new contact is received.
         console.log('Error: Conversation not found! ', conversationIndex);
+        return cachedConversations;
       }
 
       // We need to add new message to existing messages array
