@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
-import { useQuery, useApolloClient } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';

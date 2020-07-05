@@ -157,7 +157,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: { input: payload },
       });
     },
-    [createAndSendMessage, queryVariables, receiverId, allConversations, conversationIndex]
+    [createAndSendMessage, receiverId]
   );
 
   // HOOKS ESTABLISHED ABOVE
@@ -180,6 +180,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         conversationIndex = index;
         conversationInfo = conversation;
       }
+      return null;
     });
 
     // this means we didn't find the contact in the cached converation,

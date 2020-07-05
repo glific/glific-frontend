@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
-import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 
 export interface ChatConversationsProps {}
