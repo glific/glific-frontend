@@ -9,7 +9,6 @@ import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
