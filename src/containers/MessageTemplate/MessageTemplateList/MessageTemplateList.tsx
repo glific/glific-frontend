@@ -36,7 +36,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
 
   const [newTemplate, setNewTemplate] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
   const columnNames = ['Label', 'Body', 'Actions'];
@@ -252,24 +251,18 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             searchVal={searchVal}
           />
           <form onSubmit={handleSearch}>
-            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={searchVal}
-                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
-                name="nameSearch"
-              />
-              {searchOpen ? (
-                <div
-                  className={styles.ResetSearch}
-                  onClick={() => {
-                    setSearchVal('');
-                    resetTableVals();
-                  }}
-                >
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
+            <div className={styles.SearchBar}>
+              <InputBase defaultValue={searchVal} className={styles.ShowSearch} name="nameSearch" />
+              <div
+                className={styles.ResetSearch}
+                onClick={() => {
+                  setSearchVal('');
+                  resetTableVals();
+                }}
+              >
+                <Divider orientation="vertical" />
+                <CloseIcon className={styles.CloseIcon}></CloseIcon>
+              </div>
             </div>
           </form>
           <div>
