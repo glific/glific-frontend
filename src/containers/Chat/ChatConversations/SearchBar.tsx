@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { InputBase, Divider, IconButton } from '@material-ui/core';
+import { InputBase, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import SearchIcon from '@material-ui/icons/Search';
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 
@@ -19,7 +18,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     <form onSubmit={props.handleSubmit}>
       <div className={styles.SearchBar}>
         <div className={styles.IconAndText}>
-          <img src={searchIcon} className={styles.SearchIcon} />
+          <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
           {props.searchVal ? (
             <InputBase
               className={styles.SearchField}

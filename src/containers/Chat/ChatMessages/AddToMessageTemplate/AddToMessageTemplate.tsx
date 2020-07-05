@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { FormControl, Input, InputLabel, FormHelperText } from '@material-ui/core';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -50,7 +50,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   };
 
   const handleOKButton = () => {
-    if (messageTemplate == '') {
+    if (messageTemplate === '') {
       setRequired(true);
     } else {
       saveTemplate({
