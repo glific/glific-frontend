@@ -16,6 +16,10 @@ subscription {
       id
       phone
     }
+    tags {
+      id
+      label
+    }
   }
 }
 `;
@@ -35,6 +39,10 @@ subscription {
     sender {
       id
       phone
+    }
+    tags {
+      id
+      label
     }
   }
 }
