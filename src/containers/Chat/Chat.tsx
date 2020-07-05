@@ -34,57 +34,61 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     variables: queryVariables,
   });
 
-  const updateConversations = (cachedConversations: any, subscriptionData: any, action: string) => {
-    //TODO: cachedConversations is empty sometimes, so just return, come back and investigate later
-    if (!cachedConversations) {
-      return;
-    }
-
-    // if there is no message data then return previous conversations
-    if (!subscriptionData.data) {
-      return cachedConversations;
-    }
-
-    let newMessage: any;
-    let contactId: number;
-    if (action === 'SENT') {
-      // set the receiver contact id
-      newMessage = subscriptionData.data.sentMessage;
-      contactId = subscriptionData.data.sentMessage.receiver.id;
-    } else {
-      // set the sender contact id
-      newMessage = subscriptionData.data.receivedMessage;
-      contactId = subscriptionData.data.receivedMessage.sender.id;
-    }
-
-    //loop through the cached conversations and find if contact exists
-    let conversationIndex = 0;
-    let conversationFound = false;
-    cachedConversations.conversations.map((conversation: any, index: any) => {
-      if (conversation.contact.id === contactId) {
-        conversationIndex = index;
-        conversationFound = true;
+  const updateConversations = useCallback(
+    (cachedConversations: any, subscriptionData: any, action: string) => {
+      //TODO: cachedConversations is empty sometimes, so just return, come back and investigate later
+      if (!cachedConversations) {
+        return;
       }
-    });
 
-    // this means contact is not cached, so we need to fetch the conversations and add
-    // it to the cached conversations
-    if (!conversationFound) {
-      //TODO
-      console.log('Error: Conversation not found! ', conversationIndex);
-    }
+      // if there is no message data then return previous conversations
+      if (!subscriptionData.data) {
+        return cachedConversations;
+      }
 
-    // We need to add new message to existing messages array
-    const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-    updatedConversations.conversations[conversationIndex].messages.push(newMessage);
+      let newMessage: any;
+      let contactId: number;
+      if (action === 'SENT') {
+        // set the receiver contact id
+        newMessage = subscriptionData.data.sentMessage;
+        contactId = subscriptionData.data.sentMessage.receiver.id;
+      } else {
+        // set the sender contact id
+        newMessage = subscriptionData.data.receivedMessage;
+        contactId = subscriptionData.data.receivedMessage.sender.id;
+      }
 
-    // return the updated object
-    const returnConversations = Object.assign({}, cachedConversations, {
-      ...updatedConversations,
-    });
+      //loop through the cached conversations and find if contact exists
+      let conversationIndex = 0;
+      let conversationFound = false;
+      cachedConversations.conversations.map((conversation: any, index: any) => {
+        if (conversation.contact.id === contactId) {
+          conversationIndex = index;
+          conversationFound = true;
+        }
+        return null;
+      });
 
-    return returnConversations;
-  };
+      // this means contact is not cached, so we need to fetch the conversations and add
+      // it to the cached conversations
+      if (!conversationFound) {
+        //TODO
+        console.log('Error: Conversation not found! ', conversationIndex);
+      }
+
+      // We need to add new message to existing messages array
+      const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
+      updatedConversations.conversations[conversationIndex].messages.push(newMessage);
+
+      // return the updated object
+      const returnConversations = Object.assign({}, cachedConversations, {
+        ...updatedConversations,
+      });
+
+      return returnConversations;
+    },
+    []
+  );
 
   // handle subscription for message received and sent
   const getMessageResponse = useCallback(() => {
