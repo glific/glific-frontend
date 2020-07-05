@@ -78,7 +78,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       // We need to add new message to existing messages array
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-      updatedConversations.conversations[conversationIndex].messages.push(newMessage);
+      updatedConversations.conversations[conversationIndex].messages.unshift(newMessage);
 
       // return the updated object
       const returnConversations = Object.assign({}, cachedConversations, {
