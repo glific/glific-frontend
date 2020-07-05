@@ -83,9 +83,16 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     }
   );
 
+  // Get TEMPLATE data here
+  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
+    variables: filterPayload(),
+  });
+
+  const message = useQuery(NOTIFICATION);
+
   useEffect(() => {
     refetch(filterPayload());
-  }, [searchVal, tableVals]);
+  }, [refetch]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -94,14 +101,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         label: searchVal,
       },
     });
-  }, [searchVal]);
-
-  // Get TEMPLATE data here
-  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
-    variables: filterPayload(),
-  });
-
-  const message = useQuery(NOTIFICATION);
+  }, [searchVal, refetchCount]);
 
   let deleteId: number = 0;
 
@@ -250,21 +250,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <form onSubmit={handleSearch}>
-            <div className={styles.SearchBar}>
-              <InputBase defaultValue={searchVal} className={styles.ShowSearch} name="nameSearch" />
-              <div
-                className={styles.ResetSearch}
-                onClick={() => {
-                  setSearchVal('');
-                  resetTableVals();
-                }}
-              >
-                <Divider orientation="vertical" />
-                <CloseIcon className={styles.CloseIcon}></CloseIcon>
-              </div>
-            </div>
-          </form>
           <div>
             {toastMessage}
             {dialogBox}
