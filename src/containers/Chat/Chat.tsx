@@ -36,11 +36,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
-      //TODO: cachedConversations is empty sometimes, so just return, come back and investigate later
-      if (!cachedConversations) {
-        return;
-      }
-
       // if there is no message data then return previous conversations
       if (!subscriptionData.data) {
         return cachedConversations;
