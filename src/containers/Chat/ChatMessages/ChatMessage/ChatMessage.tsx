@@ -36,22 +36,24 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popper' : undefined;
+  const popperId = open ? 'simple-popper' : undefined;
   let tag;
 
+  const { popup, focus, id } = props;
+
   useEffect(() => {
-    if (props.popup) {
+    if (popup) {
       setAnchorEl(Ref.current);
     } else {
       setAnchorEl(null);
     }
-  }, [props.popup]);
+  }, [popup]);
 
   useEffect(() => {
-    if (props.focus) {
+    if (focus) {
       messageRef.current?.scrollIntoView();
     }
-  }, [props.id]);
+  }, [focus, id]);
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -126,7 +128,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             </div>
           </Tooltip>
           <Popper
-            id={id}
+            id={popperId}
             open={open}
             anchorEl={anchorEl}
             placement={placement}
