@@ -7,7 +7,6 @@ import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
 import { useApolloClient, useQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 export interface ChatConversationsProps {}
 
@@ -126,7 +125,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       {/* Styling toolbar for design */}
       <Toolbar style={{ padding: '0 24px 0 12px' }}>
         <div className={styles.IconBackground}>
-          <img src={selectedChatIcon} height="24" className={styles.Icon} />
+          <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
         </div>
         <div className={styles.Title}>
           <Typography

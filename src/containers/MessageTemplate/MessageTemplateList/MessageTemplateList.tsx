@@ -3,13 +3,11 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -37,7 +35,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
 
   const [newTemplate, setNewTemplate] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
   const columnNames = ['Label', 'Body', 'Actions'];
@@ -85,9 +82,16 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     }
   );
 
+  // Get TEMPLATE data here
+  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
+    variables: filterPayload(),
+  });
+
+  const message = useQuery(NOTIFICATION);
+
   useEffect(() => {
     refetch(filterPayload());
-  }, [searchVal, tableVals]);
+  }, [refetch]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -96,14 +100,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         label: searchVal,
       },
     });
-  }, [searchVal]);
-
-  // Get TEMPLATE data here
-  const { loading, error, data, refetch } = useQuery(FILTER_TEMPLATES, {
-    variables: filterPayload(),
-  });
-
-  const message = useQuery(NOTIFICATION);
+  }, [searchVal, refetchCount]);
 
   let deleteId: number = 0;
 
@@ -252,27 +249,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <form onSubmit={handleSearch}>
-            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={searchVal}
-                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
-                name="nameSearch"
-              />
-              {searchOpen ? (
-                <div
-                  className={styles.ResetSearch}
-                  onClick={() => {
-                    setSearchVal('');
-                    resetTableVals();
-                  }}
-                >
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
-            </div>
-          </form>
           <div>
             {toastMessage}
             {dialogBox}
