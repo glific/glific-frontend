@@ -22,9 +22,9 @@ export const CREATE_AND_SEND_MESSAGE_MUTATION = gql`
   }
 `;
 
-export const CREATE_MESSAGE_TAGS = gql`
-  mutation createMessageTag($input: MessageTagsInput!) {
-    createMessageTags(input: $input) {
+export const UPDATE_MESSAGE_TAGS = gql`
+  mutation updateMessageTags($input: MessageTagsInput!) {
+    updateMessageTags(input: $input) {
       messageTags {
         message {
           id
