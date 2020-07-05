@@ -111,7 +111,8 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   useEffect(() => {
     getMessageResponse();
-  }, [getMessageResponse]);
+    // we should call useEffect only once hence []
+  }, []);
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
