@@ -1,7 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
+import {
+  Container,
+  InputLabel,
+  OutlinedInput,
+  Chip,
+  SvgIcon,
+  FormControl,
+  InputAdornment,
+} from '@material-ui/core';
 import moment from 'moment';
+
+import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
+import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../common/notification';
@@ -260,31 +271,33 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       ? AllTags.data.tags.map((tag: any) => {
           if (tag.label.toLowerCase().includes(search)) {
             return (
-              <FormControlLabel
-                key={tag.id}
-                control={
-                  <Checkbox
-                    data-testid="dialogCheckbox"
-                    name={tag.id}
-                    color="primary"
-                    checked={selectedMessageTags?.includes(tag.id.toString())}
-                    onChange={(event: any) => {
-                      if (selectedMessageTags?.includes(event?.target.name.toString())) {
-                        setSelectedMessageTags(
-                          selectedMessageTags?.filter(
-                            (messageTag: any) => messageTag !== event?.target.name
-                          )
-                        );
-                      } else {
-                        setSelectedMessageTags([
-                          ...selectedMessageTags,
-                          event.target.name.toString(),
-                        ]);
-                      }
-                    }}
-                  />
-                }
+              <Chip
                 label={tag.label}
+                className={styles.Chip}
+                key={tag.id}
+                data-tagid={tag.id}
+                clickable={true}
+                icon={
+                  selectedMessageTags?.includes(tag.id.toString()) ? (
+                    <SvgIcon
+                      component={SelectIcon}
+                      viewBox="0 0 12 12"
+                      className={styles.SelectIcon}
+                    />
+                  ) : undefined
+                }
+                onClick={(event: any) => {
+                  const tagId = event.currentTarget.getAttribute('data-tagid');
+                  if (selectedMessageTags?.includes(tagId.toString())) {
+                    setSelectedMessageTags(
+                      selectedMessageTags?.filter(
+                        (messageTag: any) => messageTag !== tagId.toString()
+                      )
+                    );
+                  } else {
+                    setSelectedMessageTags([...selectedMessageTags, tagId.toString()]);
+                  }
+                }}
               />
             );
           } else {
@@ -297,19 +310,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         title="Assign tag to message"
         handleCancel={closeDialogBox}
         handleOk={handleSubmit}
+        buttonOk="Save"
       >
         <div className={styles.DialogBox}>
-          <TextField
-            className={styles.SearchInput}
-            id="outlined-basic"
-            label="Search"
-            variant="outlined"
-            onChange={(event) => setSearch(event.target.value)}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel variant="outlined">Search</InputLabel>
+            <OutlinedInput
+              classes={{
+                notchedOutline: styles.InputBorder,
+              }}
+              className={styles.Label}
+              label="Search"
+              fullWidth
+              onChange={(event) => setSearch(event.target.value)}
+              startAdornment={
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              }
+            />
+          </FormControl>
           <div>
             <form id="tagsForm" className={styles.Form}>
-              <FormGroup>{tagList}</FormGroup>
+              {tagList}
             </form>
           </div>
         </div>

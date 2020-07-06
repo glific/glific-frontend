@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApolloClient, useMutation } from '@apollo/client';
 import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
-import { FormControl, Input, InputLabel, FormHelperText } from '@material-ui/core';
+import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@material-ui/core';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
 import styles from './AddToMessageTemplate.module.css';
@@ -26,21 +26,29 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
 
   const onChange = (event: any = {}) => {
     setMessageTemplate(event.target.value);
+    if (setRequired) {
+      setRequired(false);
+    }
   };
 
   let textField = (
     <div className={styles.DialogContainer} data-testid="templateContainer">
       <FormControl fullWidth error={required}>
-        <InputLabel htmlFor="component-error">Label</InputLabel>
-        <Input
-          id="label"
-          onChange={onChange}
-          aria-describedby="component-error-text"
-          required
+        <InputLabel variant="outlined">Enter title</InputLabel>
+        <OutlinedInput
+          error={required}
+          classes={{
+            notchedOutline: styles.InputBorder,
+          }}
+          className={styles.Label}
+          label="Enter title"
+          fullWidth
           data-testid="templateInput"
-        />
-        {required ? <FormHelperText id="component-error-text">Required</FormHelperText> : null}
+          onChange={onChange}
+        ></OutlinedInput>
+        {required ? <FormHelperText>Required</FormHelperText> : null}
       </FormControl>
+      <div className={styles.Message}>{message}</div>
     </div>
   );
 
@@ -76,6 +84,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
         handleOk={handleOKButton}
         title={'Add message to speed sends'}
         children={textField}
+        buttonOk="Save"
       />
     </div>
   );

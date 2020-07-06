@@ -46,7 +46,7 @@ describe('<DialogBox', () => {
     expect(mockCallbackCancel).toHaveBeenCalled();
   });
 
-  it('should check if callback method is called when cancel button is clicked', () => {
+  it('should check if callback method is called when confirm button is clicked', () => {
     const wrapper = mount(
       <DialogBox
         open
