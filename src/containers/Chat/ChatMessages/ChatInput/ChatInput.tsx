@@ -27,6 +27,9 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   };
 
   const submitMessage = () => {
+    // close emoji picker
+    setShowEmojiPicker(false);
+
     if (!message) return;
 
     setMessage('');

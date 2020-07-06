@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
-import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 export interface ChatConversationsProps {}
 
@@ -45,36 +44,25 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     variables: queryVariables,
   });
 
-  // Initial render will search on '', but after will behave properly
-  const { loading, error, data: searchData, refetch } = useQuery<any>(FILTER_CONVERSATIONS_QUERY, {
-    variables: filterVariables(),
-  });
-
-  useEffect(() => {
-    // Could this work with cached searches for conversations?
-    // try {
-    //   const otherData: any = client.readQuery({
-    //     query: FILTER_CONVERSATIONS_QUERY,
-    //     variables: filterVariables(),
-    //   });
-    // } catch (e) {
-    //   refetch({ variables: filterVariables() });
-    // }
-    refetch({ variables: filterVariables() });
-  }, [searchVal]);
+  const [queryFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    FILTER_CONVERSATIONS_QUERY,
+    {
+      variables: filterVariables(),
+    }
+  );
 
   // Other cases
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  if (data === undefined || searchData === undefined) {
+  if (data === undefined) {
     return <p>Error :(</p>;
   }
 
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (searchVal) {
+  if (searchVal && called) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
@@ -85,9 +73,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       return (
         <ChatConversation
           key={conversation.contact.id}
-          conversationIndex={index}
           selected={selectedIndex === index}
           onClick={(i: number) => setSelectedIndex(i)}
+          index={index}
           contactId={conversation.contact.id}
           contactName={conversation.contact.name}
           lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
@@ -119,6 +107,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     e.preventDefault();
     let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
+    if (!called) {
+      queryFilterConvos();
+      return <Loading />;
+    }
+    setSelectedIndex(-1);
   };
 
   return (
@@ -126,7 +119,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       {/* Styling toolbar for design */}
       <Toolbar style={{ padding: '0 24px 0 12px' }}>
         <div className={styles.IconBackground}>
-          <img src={selectedChatIcon} height="24" className={styles.Icon} />
+          <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
         </div>
         <div className={styles.Title}>
           <Typography

@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -70,19 +70,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     };
   };
 
-  useEffect(() => {
-    refetch(filterPayload());
-  }, [searchVal, tableVals]);
-
-  // Make a new count request for a new count of the # of rows from this query in the back-end.
-  useEffect(() => {
-    refetchCount({
-      filter: {
-        label: searchVal,
-      },
-    });
-  }, [searchVal]);
-
   // Get the total number of tags here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
     GET_TAGS_COUNT,
@@ -101,6 +88,19 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const message = useQuery(NOTIFICATION);
+
+  useEffect(() => {
+    refetch(filterPayload());
+  }, [refetch]);
+
+  // Make a new count request for a new count of the # of rows from this query in the back-end.
+  useEffect(() => {
+    refetchCount({
+      filter: {
+        label: searchVal,
+      },
+    });
+  }, [searchVal, refetchCount]);
 
   let deleteId: number = 0;
 
