@@ -1,5 +1,10 @@
-.DialogBox {
+.DialogboxPaper {
   border-radius: 24px !important;
+}
+
+.Dialogbox {
+  bottom: unset !important;
+  top: 34px !important;
 }
 
 .DialogActions {
