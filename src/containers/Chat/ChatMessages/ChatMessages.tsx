@@ -61,7 +61,6 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // create an instance of apolloclient
-  const messageListRef = React.useRef<HTMLDivElement | null>(null);
   const client = useApolloClient();
 
   const message = useQuery(NOTIFICATION);
@@ -82,7 +81,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   useEffect(() => {
     if (editTagsMessageId) {
       window.addEventListener('click', () => setEditTagsMessageId(null), true);
-      messageListRef.current?.addEventListener('scroll', () => setEditTagsMessageId(null));
     }
   }, [editTagsMessageId]);
 
@@ -375,7 +373,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       {dialogBox}
       {toastMessage}
       <ContactBar contactName={conversationInfo.contact.name} />
-      <Container className={styles.MessageList} data-testid="messageContainer" ref={messageListRef}>
+      <Container className={styles.MessageList} data-testid="messageContainer">
         {messageList}
       </Container>
       <ChatInput onSendMessage={sendMessageHandler} />
