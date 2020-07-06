@@ -42,7 +42,7 @@ describe('<DialogBox', () => {
       />
     );
 
-    wrapper.find('[data-testid="cancelButton"]').simulate('click');
+    wrapper.find('[data-testid="cancel-button"]').simulate('click');
     expect(mockCallbackCancel).toHaveBeenCalled();
   });
 
