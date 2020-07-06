@@ -41,6 +41,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
           className={styles.Label}
           label="Enter title"
           fullWidth
+          data-testid="templateInput"
           onChange={onChange}
         ></OutlinedInput>
         {required ? <FormHelperText>Required</FormHelperText> : null}
