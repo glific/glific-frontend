@@ -49,10 +49,20 @@ export const DialogBox: React.SFC<DialogProps> = ({
         <DialogContent>{children}</DialogContent>
 
         <DialogActions>
-          <Button onClick={handleOKButton} color={colorOk} variant={'contained'}>
+          <Button
+            onClick={handleOKButton}
+            color={colorOk}
+            variant={'contained'}
+            data-testid="ok-button"
+          >
             {buttonOk}
           </Button>
-          <Button variant={'contained'} onClick={handleCancelButton} color={colorCancel}>
+          <Button
+            variant={'contained'}
+            onClick={handleCancelButton}
+            color={colorCancel}
+            data-testid="cancel-button"
+          >
             {buttonCancel}
           </Button>
         </DialogActions>
