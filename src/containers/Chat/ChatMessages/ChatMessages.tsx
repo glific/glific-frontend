@@ -28,7 +28,7 @@ import {
 } from '../../../graphql/queries/Chat';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
-  CREATE_MESSAGE_TAGS,
+  UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
@@ -117,8 +117,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   );
 
+  let unselectedTags: Array<any> = [];
+
   // tagging message mutation
-  const [createMessageTag] = useMutation(CREATE_MESSAGE_TAGS, {
+  const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
       setEditTagsMessageId(null);
       setSearch('');
@@ -131,14 +133,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: queryVariables,
       });
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-
-      if (data.createMessageTags.messageTags) {
-        const tags = data.createMessageTags.messageTags.map((tags: any) => tags.tag);
+      if (data.updateMessageTags.messageTags) {
+        const addedTags = data.updateMessageTags.messageTags.map((tags: any) => tags.tag);
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
           conversationIndex
         ].messages.map((message: any) => {
-          if (message.id === data.createMessageTags.messageTags[0].message.id) {
-            message.tags = [...message.tags, ...tags];
+          if (message.id == editTagsMessageId) {
+            message.tags = message.tags.filter((tag: any) => !unselectedTags.includes(tag.id));
+            message.tags = [...message.tags, ...addedTags];
           }
           return message;
         });
@@ -243,8 +245,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     const selectedTags = selectedMessageTags.filter(
       (tag: any) => !previousMessageTags.includes(tag)
     );
+    unselectedTags = previousMessageTags.filter((tag: any) => !selectedMessageTags.includes(tag));
 
-    if (selectedTags.length === 0) {
+    if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
       setEditTagsMessageId(null);
     } else {
@@ -252,7 +255,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: {
           input: {
             messageId: editTagsMessageId,
-            tagsId: selectedTags,
+            addTagIds: selectedTags,
+            deleteTagIds: unselectedTags,
           },
         },
       });
