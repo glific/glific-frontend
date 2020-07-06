@@ -42,7 +42,7 @@ describe('<DialogBox', () => {
       />
     );
 
-    wrapper.find('button.MuiButton-containedSecondary').simulate('click');
+    wrapper.find('[data-testid="cancelButton"]').simulate('click');
     expect(mockCallbackCancel).toHaveBeenCalled();
   });
 
