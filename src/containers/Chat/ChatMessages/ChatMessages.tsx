@@ -121,8 +121,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: queryVariables,
       });
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-
-      console.log(data);
       if (data.updateMessageTags.messageTags) {
         const addedTags = data.updateMessageTags.messageTags.map((tags: any) => tags.tag);
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
