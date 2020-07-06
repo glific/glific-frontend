@@ -15,6 +15,13 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: ['heebo', 'sans-serif'].join(','),
   },
+  overrides: {
+    MuiBackdrop: {
+      root: {
+        backgroundColor: 'rgba(147,162,155,0.48)',
+      },
+    },
+  },
 });
 
 export default theme;

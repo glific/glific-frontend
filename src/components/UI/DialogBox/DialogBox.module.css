@@ -1,10 +1,13 @@
 .DialogboxPaper {
   border-radius: 24px !important;
+  margin-top: 66px !important;
 }
 
+.ScrollPaper {
+  align-items: unset !important;
+}
 .Dialogbox {
-  bottom: unset !important;
-  top: 34px !important;
+  height: unset !important;
 }
 
 .DialogActions {
@@ -14,5 +17,7 @@
 }
 
 .DialogTitle {
+  color: #073f24;
+  padding-top: 24px !important;
   padding-bottom: 8px !important;
 }
