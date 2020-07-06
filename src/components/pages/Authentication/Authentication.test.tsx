@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Authentication } from './Authentication';
 
 describe('Authentication test', () => {
-  const createAuthentication = () => <Authentication location={null} />;
+  const createAuthentication = () => <Authentication location={undefined} />;
 
   it('renders component properly', () => {
     const wrapper = shallow(createAuthentication());

@@ -14,7 +14,9 @@ export interface AuthenticationProps {
 
 export const Authentication: React.SFC<AuthenticationProps> = (props) => {
   const [userAuthCode, setuserAuthCode] = useState('');
-  const [correctAuthCode, setCorrectAuthCode] = useState(props.location.state.authCode);
+  const [correctAuthCode, setCorrectAuthCode] = useState(
+    props.location ? props.location.state.authCode : undefined
+  );
 
   const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setuserAuthCode(event.target.value);
