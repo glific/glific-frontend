@@ -13,3 +13,15 @@
 .RegistrationAuthTitle {
   margin-bottom: 10px;
 }
+
+.Margin {
+  margin: 8px;
+}
+
+.TextField {
+  width: 40ch;
+}
+
+.BottomMargin {
+  margin-bottom: 25px;
+}

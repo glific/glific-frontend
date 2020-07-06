@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import styles from './Registration.module.css';
@@ -11,64 +11,48 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom';
+import {
+  REACT_APP_GLIFIC_REGISTRATION_API,
+  REACT_APP_GLIFIC_AUTHENTICATION_API,
+} from '../../../config/axios';
 import clsx from 'clsx';
 import axios from 'axios';
 
 export interface RegistrationProps {}
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    margin: {
-      margin: theme.spacing(1),
-    },
-    textField: {
-      width: '40ch',
-    },
-    bottomMargin: {
-      marginBottom: '25px',
-    },
-  })
-);
-
-interface State {
-  password: string;
-  showPassword: boolean;
-  phoneNumber: number;
-  userName: string;
-  confirmPassword: string;
-  showConfirmPassword: boolean;
-  authRedirect: boolean;
-  authToken: any;
-  authCode: any;
-  errors: any;
-}
-
 export const Registration: React.SFC<RegistrationProps> = () => {
-  const classes = useStyles();
+  const [password, setPassword] = useState('');
+  const [userName, setuserName] = useState('');
+  const [phoneNumber, setphoneNumber] = useState('');
+  const [confirmPassword, setconfirmPassword] = useState('');
+  const [showPassword, setshowPassword] = useState(false);
+  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+  const [authToken, setauthToken] = useState('');
+  const [authCode, setauthCode] = useState();
+  const [errors, setErrors] = useState();
 
-  const [values, setValues] = React.useState<State>({
-    password: '',
-    showPassword: false,
-    phoneNumber: 0,
-    userName: '',
-    confirmPassword: '',
-    showConfirmPassword: false,
-    authRedirect: false,
-    authToken: null,
-    authCode: null,
-    errors: null,
-  });
+  const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
 
-  const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value });
+  const handleuserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setuserName(event.target.value);
+  };
+
+  const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setphoneNumber(event.target.value);
+  };
+
+  const handleconfirmPasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setconfirmPassword(event.target.value);
   };
 
   const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
+    setshowPassword(!showPassword);
   };
 
   const handleClickShowConfirmPassword = () => {
-    setValues({ ...values, showConfirmPassword: !values.showConfirmPassword });
+    setshowConfirmPassword(!showConfirmPassword);
   };
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,61 +65,56 @@ export const Registration: React.SFC<RegistrationProps> = () => {
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:4000/api/v1/registration', {
+      .post(REACT_APP_GLIFIC_REGISTRATION_API, {
         user: {
-          name: values.userName,
-          phone: values.phoneNumber,
-          password: values.password,
-          password_confirmation: values.confirmPassword,
+          name: userName,
+          phone: phoneNumber,
+          password: password,
+          password_confirmation: confirmPassword,
         },
       })
       .then(function (response: any) {
-        console.log(response);
         const responseString = JSON.stringify(response);
-        setValues((values) => ({ ...values, authToken: responseString }));
+        setauthToken(responseString);
         axios
-          .post('http://localhost:4000/api/v1/registration/send_otp', {
+          .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
             user: {
-              phone: values.phoneNumber,
+              phone: phoneNumber,
             },
           })
           .then(function (response: any) {
-            console.log(response);
-            setValues((values) => ({ ...values, authCode: response }));
+            setauthCode(response);
           });
       })
       .catch(function (error: any) {
-        console.log(error.response.data.error.errors);
-        setValues((values) => ({ ...values, errors: error.response.data.error.errors }));
+        setErrors(error.response.data.error.errors);
       });
   };
 
-  if (values.authCode && values.authToken) {
+  if (authCode && authToken) {
     return (
       <Redirect
         to={{
           pathname: '/registrationauth',
           state: {
-            authCode: values.authCode.data.data.otp,
-            phoneNumber: values.phoneNumber,
-            tokens: values.authToken,
+            authCode: authCode.data.data.otp,
+            phoneNumber: phoneNumber,
+            tokens: authToken,
           },
         }}
       />
     );
   }
 
-  const errorList = values.errors
-    ? Object.values(values.errors).map((error: any) =>
+  const errorList = errors
+    ? Object.values(errors).map((error: any) =>
         error[0] == 'does not match confirmation' ? (
-          <Typography variant="h6">Password {error[0]}</Typography>
+          <h5 className={styles.ErrorText}>Password {error[0]} </h5>
         ) : (
-          <Typography variant="h6">Field {error[0]}</Typography>
+          <h5 className={styles.ErrorText}>Fields {error[0]}</h5>
         )
       )
     : null;
-
-  console.log(values.errors ? Object.values(values.errors).map((error: any) => error[0]) : 'helo');
 
   return (
     <div className={styles.Container}>
@@ -143,75 +122,78 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         <div className={styles.RegistrationTitle}>
           <Typography variant="h5">Create a New Account</Typography>
         </div>
-        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-          <InputLabel>Username</InputLabel>
-          <OutlinedInput
-            id="username"
-            label="Username"
-            type="text"
-            onChange={handleChange('userName')}
-          />
-        </FormControl>
-        <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-          <InputLabel>Phone Number</InputLabel>
-          <OutlinedInput
-            id="phone-number"
-            label="Phone Number"
-            type="integer"
-            onChange={handleChange('phoneNumber')}
-          />
-        </FormControl>
-        <FormControl
-          className={clsx(classes.margin, classes.textField, classes.bottomMargin)}
-          variant="outlined"
-        >
-          <InputLabel>Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={values.showPassword ? 'text' : 'password'}
-            label="Password"
-            value={values.password}
-            onChange={handleChange('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        <FormControl
-          className={clsx(classes.margin, classes.textField, classes.bottomMargin)}
-          variant="outlined"
-        >
-          <InputLabel>Confirm Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-confirm-password"
-            type={values.showConfirmPassword ? 'text' : 'password'}
-            label="Confirm Password"
-            value={values.confirmPassword}
-            onChange={handleChange('confirmPassword')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowConfirmPassword}
-                  onMouseDown={handleMouseDownConfirmPassword}
-                  edge="end"
-                >
-                  {values.showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-        {values.errors ? <div className={styles.Errors}>{errorList}</div> : null}
+        <div className={styles.Margin}>
+          <FormControl className={styles.TextField} variant="outlined">
+            <InputLabel>Username</InputLabel>
+            <OutlinedInput
+              id="username"
+              label="Username"
+              type="text"
+              value={userName}
+              onChange={handleuserNameChange()}
+            />
+          </FormControl>
+        </div>
+        <div className={styles.Margin}>
+          <FormControl className={styles.TextField} variant="outlined">
+            <InputLabel>Phone Number</InputLabel>
+            <OutlinedInput
+              id="phone-number"
+              label="Phone Number"
+              type="integer"
+              onChange={handlephoneNumberChange()}
+            />
+          </FormControl>
+        </div>
+        <div className={clsx(styles.Margin)}>
+          <FormControl className={styles.TextField} variant="outlined">
+            <InputLabel>Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              label="Password"
+              value={password}
+              onChange={handlePasswordChange()}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </div>
+        <div className={clsx(styles.Margin, styles.BottomMargin)}>
+          <FormControl className={styles.TextField} variant="outlined">
+            <InputLabel>Confirm Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-confirm-password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              label="Confirm Password"
+              value={confirmPassword}
+              onChange={handleconfirmPasswordChange()}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowConfirmPassword}
+                    onMouseDown={handleMouseDownConfirmPassword}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </div>
+        {errors ? <div className={styles.Errors}>{errorList}</div> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Authentication } from './Authentication';
 
-describe('Tooltip test', () => {
+describe('Authentication test', () => {
   const createAuthentication = () => <Authentication location={null} />;
 
   it('renders component properly', () => {

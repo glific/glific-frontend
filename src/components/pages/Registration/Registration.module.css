@@ -20,5 +20,23 @@
   align-items: center;
   flex-direction: column;
   margin-bottom: 15px;
-  font-size: small;
+  margin-top: 0px;
+  font-size: 1px;
+}
+
+.Margin {
+  margin: 8px;
+}
+
+.TextField {
+  width: 40ch;
+}
+
+.BottomMargin {
+  margin-bottom: 20px;
+}
+
+.ErrorText {
+  font-size: 15px;
+  margin: 0px;
 }

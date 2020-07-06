@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Registration } from './Registration';
 
-describe('Tooltip test', () => {
+describe('Registration test', () => {
   const createRegistration = () => <Registration />;
 
   it('renders component properly', () => {
