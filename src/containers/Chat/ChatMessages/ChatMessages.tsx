@@ -107,6 +107,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   );
 
+  let unselectedTags: Array<any> = [];
+
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
@@ -126,7 +128,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
           conversationIndex
         ].messages.map((message: any) => {
-          if (message.id == data.updateMessageTags.messageTags[0].message.id) {
+          if (message.id == editTagsMessageId) {
+            message.tags = message.tags.filter((tag: any) => !unselectedTags.includes(tag.id));
             message.tags = [...message.tags, ...addedTags];
           }
           return message;
@@ -232,9 +235,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     const selectedTags = selectedMessageTags.filter(
       (tag: any) => !previousMessageTags.includes(tag)
     );
-    const unselectedTags = previousMessageTags.filter(
-      (tag: any) => !selectedMessageTags.includes(tag)
-    );
+    unselectedTags = previousMessageTags.filter((tag: any) => !selectedMessageTags.includes(tag));
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
