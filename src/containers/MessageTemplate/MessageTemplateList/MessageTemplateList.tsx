@@ -151,8 +151,9 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     dialogBox = (
       <DialogBox
         title={`Delete speed send: ${deleteTemplateName}`}
-        handleCancel={closeDialogBox}
         handleOk={handleDeleteTemplate}
+        handleCancel={closeDialogBox}
+        colorOk="secondary"
       >
         Are you sure you want to delete the speed send?
       </DialogBox>

@@ -149,8 +149,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     dialogBox = (
       <DialogBox
         title={`Delete Tag: ${deleteTagName}`}
-        handleCancel={closeDialogBox}
         handleOk={handleDeleteTag}
+        handleCancel={closeDialogBox}
+        colorOk="secondary"
       >
         Are you sure you want to delete the tag?
       </DialogBox>
