@@ -1,0 +1,13 @@
+.DialogBox {
+  border-radius: 24px !important;
+}
+
+.DialogActions {
+  padding-left: 24px !important;
+  padding-bottom: 24px !important;
+  justify-content: flex-start !important;
+}
+
+.DialogTitle {
+  padding-bottom: 8px !important;
+}

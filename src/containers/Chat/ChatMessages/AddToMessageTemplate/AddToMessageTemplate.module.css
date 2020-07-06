@@ -1,4 +1,16 @@
 .DialogContainer {
-  height: 90px;
+  height: fit-content;
   width: 400px;
+}
+
+.Message {
+  margin-top: 16px;
+  font-size: 16px;
+  color: #93a29b;
+  margin-bottom: 8px;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
 }
