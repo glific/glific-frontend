@@ -2,16 +2,17 @@ import React, { useCallback, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import {
   Container,
-  FormGroup,
-  TextField,
-  FormControlLabel,
-  Checkbox,
+  InputLabel,
+  OutlinedInput,
   Chip,
   SvgIcon,
+  FormControl,
+  InputAdornment,
 } from '@material-ui/core';
 import moment from 'moment';
 
 import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
+import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../common/notification';
@@ -312,14 +313,24 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         buttonOk="Save"
       >
         <div className={styles.DialogBox}>
-          <TextField
-            className={styles.SearchInput}
-            id="outlined-basic"
-            label="Search"
-            variant="outlined"
-            onChange={(event) => setSearch(event.target.value)}
-            fullWidth
-          />
+          <FormControl fullWidth>
+            <InputLabel variant="outlined">Search</InputLabel>
+
+            <OutlinedInput
+              classes={{
+                notchedOutline: styles.InputBorder,
+              }}
+              className={styles.Label}
+              label="Search"
+              fullWidth
+              onChange={(event) => setSearch(event.target.value)}
+              startAdornment={
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              }
+            ></OutlinedInput>
+          </FormControl>
           <div>
             <form id="tagsForm" className={styles.Form}>
               {tagList}

@@ -8,6 +8,7 @@
 
 .DialogBox {
   width: 395px;
+  padding-bottom: 16px;
 }
 
 .MessageList {
@@ -42,17 +43,24 @@
   margin-right: 8px !important;
   margin-bottom: 8px !important;
   background-color: #e7f9f1 !important;
+  padding-right: 6px !important;
 }
 .Form {
   height: 18vh !important;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 16px;
   position: relative !important;
   overflow: auto !important;
 }
 
 .SelectIcon {
+  margin-left: 12px !important;
   width: 12px !important;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
 }
