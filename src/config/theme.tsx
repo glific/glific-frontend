@@ -9,6 +9,24 @@ const theme = createMuiTheme({
       // contrastText: will be calculated to contrast with palette.primary.main
     },
   },
+  typography: {
+    fontFamily: ['heebo', 'sans-serif'].join(','),
+  },
+  overrides: {
+    MuiBackdrop: {
+      root: {
+        backgroundColor: 'rgba(147,162,155,0.48)',
+      },
+    },
+    MuiButton: {
+      contained: {
+        backgroundColor: '#CACACA',
+        '&:hover': {
+          backgroundColor: '#b5b5b5',
+        },
+      },
+    },
+  },
 });
 
 export default theme;

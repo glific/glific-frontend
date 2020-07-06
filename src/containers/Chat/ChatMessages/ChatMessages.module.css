@@ -7,7 +7,8 @@
 }
 
 .DialogBox {
-  width: 500px;
+  width: 395px;
+  padding-bottom: 16px;
 }
 
 .MessageList {
@@ -38,16 +39,28 @@
   transition: all 0.35s ease;
 }
 
-.SearchInput {
-  position: absolute !important;
-  top: 60px;
-  width: 500px !important;
+.Chip {
+  margin-right: 8px !important;
+  margin-bottom: 8px !important;
+  background-color: #e7f9f1 !important;
+  padding-right: 6px !important;
 }
-
 .Form {
-  height: 40vh !important;
+  height: 18vh !important;
   width: 100%;
-  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 16px;
   position: relative !important;
   overflow: auto !important;
+}
+
+.SelectIcon {
+  margin-left: 12px !important;
+  width: 12px !important;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
 }

@@ -4,6 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import styles from './DialogBox.module.css';
 
 interface DialogProps {
   open?: boolean;
@@ -37,19 +38,31 @@ export const DialogBox: React.SFC<DialogProps> = ({
       <Dialog
         data-testid="dialogBox"
         open={open}
+        classes={{
+          container: styles.Dialogbox,
+          paper: styles.DialogboxPaper,
+          scrollPaper: styles.ScrollPaper,
+        }}
         onClose={handleCancelButton}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title" className={styles.DialogTitle}>
+          {title}
+        </DialogTitle>
         <DialogContent>{children}</DialogContent>
 
-        <DialogActions>
-          <Button variant={'contained'} onClick={handleCancelButton} color="default">
-            {buttonCancel}
-          </Button>
+        <DialogActions className={styles.DialogActions}>
           <Button onClick={handleOKButton} color="primary" variant={'contained'}>
             {buttonOk}
+          </Button>
+          <Button
+            variant={'contained'}
+            onClick={handleCancelButton}
+            color="default"
+            data-testid="cancelButton"
+          >
+            {buttonCancel}
           </Button>
         </DialogActions>
       </Dialog>
