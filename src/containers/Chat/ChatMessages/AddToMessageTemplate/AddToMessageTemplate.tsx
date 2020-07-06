@@ -26,7 +26,9 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
 
   const onChange = (event: any = {}) => {
     setMessageTemplate(event.target.value);
-    if (setRequired) setRequired(false);
+    if (setRequired) {
+      setRequired(false);
+    }
   };
 
   let textField = (
