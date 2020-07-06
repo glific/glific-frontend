@@ -8,21 +8,25 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 interface DialogProps {
   open?: boolean;
   title: string;
-  handleCancel: Function;
   handleOk: Function;
+  handleCancel: Function;
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
+  colorOk?: string;
+  colorCancel?: string;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   title,
-  handleCancel,
   handleOk,
+  handleCancel,
   children,
   buttonOk = 'Confirm',
   buttonCancel = 'Cancel',
+  colorOk = 'primary',
+  colorCancel = 'default',
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -45,11 +49,11 @@ export const DialogBox: React.SFC<DialogProps> = ({
         <DialogContent>{children}</DialogContent>
 
         <DialogActions>
-          <Button variant={'contained'} onClick={handleCancelButton} color="default">
-            {buttonCancel}
-          </Button>
-          <Button onClick={handleOKButton} color="primary" variant={'contained'}>
+          <Button onClick={handleOKButton} color={colorOk} variant={'contained'}>
             {buttonOk}
+          </Button>
+          <Button variant={'contained'} onClick={handleCancelButton} color={colorCancel}>
+            {buttonCancel}
           </Button>
         </DialogActions>
       </Dialog>
