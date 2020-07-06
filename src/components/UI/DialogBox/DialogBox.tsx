@@ -41,7 +41,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         classes={{
           container: styles.Dialogbox,
           paper: styles.DialogboxPaper,
-          scrollPaper: styles.ScrollPaper, // class name, e.g. `classes-nesting-label-x`
+          scrollPaper: styles.ScrollPaper,
         }}
         onClose={handleCancelButton}
         aria-labelledby="alert-dialog-title"

@@ -315,7 +315,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         <div className={styles.DialogBox}>
           <FormControl fullWidth>
             <InputLabel variant="outlined">Search</InputLabel>
-
             <OutlinedInput
               classes={{
                 notchedOutline: styles.InputBorder,
@@ -329,7 +328,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                   <SearchIcon />
                 </InputAdornment>
               }
-            ></OutlinedInput>
+            />
           </FormControl>
           <div>
             <form id="tagsForm" className={styles.Form}>
