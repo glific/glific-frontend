@@ -20,7 +20,7 @@ const App = () => {
       <Layout>
         <Switch>
           <Route path="/registration" exact component={Registration} />
-          <Route path="/registrationauth" exact component={Authentication} />
+          <Route path="/authentication" exact component={Authentication} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />

@@ -95,7 +95,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     return (
       <Redirect
         to={{
-          pathname: '/registrationauth',
+          pathname: '/authentication',
           state: {
             authCode: authCode.data.data.otp,
             phoneNumber: phoneNumber,
