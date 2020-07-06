@@ -13,8 +13,10 @@
 .MessageList {
   display: block;
   flex: 2;
-  overflow-y: overlay;
+  padding-top: 11.5px !important;
+  overflow-y: auto;
   padding-left: 0px !important;
+  padding-right: 16px !important;
   height: calc(100% - 175px);
 }
 
