@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { Container, FormGroup, TextField, FormControlLabel, Checkbox } from '@material-ui/core';
 import moment from 'moment';
@@ -61,6 +61,7 @@ type OptionalChatQueryResult = ChatMessagesInterface | null;
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // create an instance of apolloclient
+  const messageListRef = React.useRef<HTMLDivElement | null>(null);
   const client = useApolloClient();
 
   const message = useQuery(NOTIFICATION);
@@ -77,6 +78,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+
+  useEffect(() => {
+    if (editTagsMessageId) {
+      window.addEventListener('click', () => setEditTagsMessageId(null), true);
+      messageListRef.current?.addEventListener('scroll', () => setEditTagsMessageId(null));
+    }
+  }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
   const queryVariables = {
@@ -367,7 +375,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       {dialogBox}
       {toastMessage}
       <ContactBar contactName={conversationInfo.contact.name} />
-      <Container className={styles.MessageList} data-testid="messageContainer">
+      <Container className={styles.MessageList} data-testid="messageContainer" ref={messageListRef}>
         {messageList}
       </Container>
       <ChatInput onSendMessage={sendMessageHandler} />
