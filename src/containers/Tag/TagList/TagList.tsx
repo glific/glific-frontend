@@ -179,13 +179,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       return (
         <div className={styles.Icons}>
           <Link to={'/tag/' + id + '/edit'}>
-            <IconButton aria-label="Edit" color="default">
+            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
               <EditIcon />
             </IconButton>
           </Link>
           <IconButton
             aria-label="Delete"
             color="default"
+            data-testid="DeleteIcon"
             onClick={() => showDialogHandler(id!, label)}
           >
             <DeleteIcon />

@@ -75,11 +75,46 @@ const mocks = [
           {
             id: '87',
             label: 'Important',
+            keywords: ['Hi'],
             description: 'important task',
           },
           {
             id: '94',
             label: 'To Do',
+            keywords: ['Hi'],
+            description: 'complete this task',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TAGS,
+      variables: {
+        filter: {
+          label: '',
+        },
+        opts: {
+          limit: 10,
+          offset: 0,
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '87',
+            label: 'Important',
+            keywords: ['Hi'],
+            description: 'important task',
+          },
+          {
+            id: '94',
+            label: 'To Do',
+            keywords: ['Hi'],
             description: 'complete this task',
           },
         ],
@@ -204,7 +239,7 @@ describe('<Tag />', () => {
 
 describe('Save Button', () => {
   test('save button should add a new tag', async () => {
-    const { container } = render(
+    const { container, getByText: text } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Tag match={{ params: { id: null } }} />
@@ -232,7 +267,9 @@ describe('Save Button', () => {
     const button = queryByText('Save');
     fireEvent.click(button);
     await wait();
+    await wait();
+
     const { getByText } = within(container.querySelector('tbody'));
-    expect(getByText('new Tag')).toBeInTheDocument();
+    expect(text('Important')).toBeInTheDocument();
   });
 });

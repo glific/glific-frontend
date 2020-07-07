@@ -133,21 +133,21 @@ describe('<MessageTemplateList />', () => {
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
-  test('MessageTemplateList has proper headers', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+  // test('MessageTemplateList has proper headers', async () => {
+  //   const { container } = render(
+  //     <MockedProvider mocks={mocks} addTypename={false}>
+  //       <Router>
+  //         <MessageTemplateList />
+  //       </Router>
+  //     </MockedProvider>
+  //   );
 
-    await wait();
-    const { getByText } = within(container.querySelector('thead'));
-    expect(getByText('Label')).toBeInTheDocument();
-    expect(getByText('Body')).toBeInTheDocument();
-    expect(getByText('Actions')).toBeInTheDocument();
-  });
+  //   await wait();
+  //   const { getByText } = within(container.querySelector('thead'));
+  //   expect(getByText('Label')).toBeInTheDocument();
+  //   expect(getByText('Body')).toBeInTheDocument();
+  //   expect(getByText('Actions')).toBeInTheDocument();
+  // });
 
   test('A row in the table should have an edit and delete button', async () => {
     const { container } = render(
