@@ -74,7 +74,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         },
       })
       .then(function (response: any) {
-        const responseString = JSON.stringify(response);
+        const responseString = JSON.stringify(response.data.data);
         setauthToken(responseString);
         axios
           .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
@@ -83,7 +83,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             },
           })
           .then(function (response: any) {
-            setauthCode(response);
+            setauthCode(response.data.data.otp);
           });
       })
       .catch(function (error: any) {
@@ -97,7 +97,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         to={{
           pathname: '/authentication',
           state: {
-            authCode: authCode.data.data.otp,
+            authCode: authCode,
             phoneNumber: phoneNumber,
             tokens: authToken,
           },

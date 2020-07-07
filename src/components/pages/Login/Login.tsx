@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,7 +10,12 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Button } from '../../UI/Form/Button/Button';
 import styles from './Login.module.css';
+import {
+  REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER,
+  REACT_APP_GLIFIC_AUTHENTICATION_API,
+} from '../../../config/axios';
 import clsx from 'clsx';
+import axios from 'axios';
 
 export interface LoginProps {}
 
@@ -17,6 +23,8 @@ export const Login: React.SFC<LoginProps> = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
   const [showPassword, setshowPassword] = useState(false);
+  const [sessionToken, setsessionToken] = useState('');
+  const [authCode, setauthCode] = useState();
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -35,8 +43,45 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleSubmit = () => {
-    console.log('hello');
+    axios
+      .post(REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER, {
+        user: {
+          phone: phoneNumber,
+          password: password,
+        },
+      })
+      .then(function (response: any) {
+        const responseString = JSON.stringify(response.data.data);
+        setsessionToken(responseString);
+        axios
+          .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+            user: {
+              phone: phoneNumber,
+            },
+          })
+          .then(function (response: any) {
+            setauthCode(response.data.data.otp);
+          })
+          .catch(function (error: any) {
+            console.log(error);
+          });
+      });
   };
+
+  if (authCode && sessionToken) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/authentication',
+          state: {
+            authCode: authCode,
+            phoneNumber: phoneNumber,
+            tokens: sessionToken,
+          },
+        }}
+      />
+    );
+  }
 
   return (
     <div className={styles.Container}>
