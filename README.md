@@ -38,7 +38,7 @@ Launches the test runner in the interactive watch mode.<br />
 
 ### `yarn test:coverage`
 
-Launches the test runner in the interactive watch mode and code converage stats.<br />
+Launches the test runner in the interactive watch mode and code coverage stats.<br />
 
 ### `yarn build`
 
