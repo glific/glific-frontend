@@ -202,17 +202,17 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     return <div className={styles.Label}>{label}</div>;
   };
 
-  const getText = (text: string) => {
+  const getBody = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
   function formatTemplates(templates: Array<any>) {
     // Should be type template, but can't import template type into file
-    return templates.map((t: any) => {
+    return templates.map((tag: any) => {
       return {
-        label: getLabel(t.label),
-        description: getText(t.body),
-        operations: getIcons(t.id, t.label),
+        label: getLabel(tag.label),
+        body: getBody(tag.body),
+        operations: getIcons(tag.id, tag.label),
       };
     });
   }

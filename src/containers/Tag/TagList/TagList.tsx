@@ -204,7 +204,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     );
   };
 
-  const getText = (text: string) => {
+  const getDescription = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
@@ -214,12 +214,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   function formatTags(tags: Array<any>) {
     // Should be type tag, but can't import Tag type into file
-    return tags.map((t: any) => {
+    return tags.map((tag: any) => {
       return {
-        label: getLabel(t.label),
-        description: getText(t.description),
-        keywords: getKeywords(t.keywords),
-        operations: getIcons(t.id, t.label),
+        label: getLabel(tag.label),
+        description: getDescription(tag.description),
+        keywords: getKeywords(tag.keywords),
+        operations: getIcons(tag.id, tag.label),
       };
     });
   }
