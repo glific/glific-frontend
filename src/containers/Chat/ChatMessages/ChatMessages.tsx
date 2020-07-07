@@ -81,7 +81,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
-  const [dropdown, setDropdown] = useState<any>(null);
+  const [showDropdown, setShowDropdown] = useState<any>(null);
 
   // Instantiate these to be used later.
   let receiverId: number = 0;
@@ -92,7 +92,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   useEffect(() => {
     if (editTagsMessageId != null) {
-      window.addEventListener('click', () => setDropdown(null), true);
+      window.addEventListener('click', () => setShowDropdown(null), true);
     }
   }, [editTagsMessageId]);
 
@@ -239,7 +239,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const closeDialogBox = () => {
     setDialogbox(false);
-    setDropdown(null);
+    setShowDropdown(null);
     setSearch('');
   };
 
@@ -256,7 +256,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
-      setDropdown(null);
+      setShowDropdown(null);
     } else {
       createMessageTag({
         variables: {
@@ -348,7 +348,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const showEditTagsDialog = (id: number) => {
     setEditTagsMessageId(id);
-    setDropdown(id);
+    setShowDropdown(id);
   };
 
   let messageList: any;
@@ -360,7 +360,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           {...message}
           contactId={receiverId}
           key={index}
-          popup={message.id === dropdown}
+          popup={message.id === showDropdown}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
