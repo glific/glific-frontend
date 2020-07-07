@@ -81,6 +81,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
+  const [dropdown, setDropdown] = useState<any>(null);
 
   // Instantiate these to be used later.
   let receiverId: number = 0;
@@ -90,8 +91,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
 
   useEffect(() => {
-    if (editTagsMessageId) {
-      window.addEventListener('click', () => setEditTagsMessageId(null), true);
+    if (editTagsMessageId != null) {
+      window.addEventListener('click', () => setDropdown(null), true);
     }
   }, [editTagsMessageId]);
 
@@ -129,7 +130,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
-      setEditTagsMessageId(null);
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
@@ -239,7 +239,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const closeDialogBox = () => {
     setDialogbox(false);
-    setEditTagsMessageId(null);
+    setDropdown(null);
     setSearch('');
   };
 
@@ -256,7 +256,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
-      setEditTagsMessageId(null);
+      setDropdown(null);
     } else {
       createMessageTag({
         variables: {
@@ -347,11 +347,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const showEditTagsDialog = (id: number) => {
-    if (id === editTagsMessageId) {
-      setEditTagsMessageId(null);
-    } else {
-      setEditTagsMessageId(id);
-    }
+    setEditTagsMessageId(id);
+    setDropdown(id);
   };
 
   let messageList: any;
@@ -363,7 +360,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           {...message}
           contactId={receiverId}
           key={index}
-          popup={message.id === editTagsMessageId}
+          popup={message.id === dropdown}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();
