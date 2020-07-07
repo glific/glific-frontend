@@ -1,91 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 
 import { sideDrawerMenus } from '../../../../../config/menu';
 import ListIcon from '../../../ListIcon/ListIcon';
+import styles from './SideMenus.module.css';
 
 export interface SideMenusProps {
   opened: boolean;
 }
 
-const useStyles = makeStyles({
-  listStyle: {
-    display: 'inline-block',
-    width: '100%',
-  },
-  itemRoot: {
-    disableRipple: true,
-    borderRadius: '12px',
-    padding: '7px 0px 7px 9px',
-    width: '90%',
-    margin: '0 5px 0 5px',
-    '&$selected': {
-      background: '#E2F1EA',
-    },
-    '&:hover': {
-      background: '#ededed',
-    },
-    '&$selected:hover': {
-      background: '#c3ebd8',
-    },
-  },
-  selected: {},
-  // Current doesn't totally work-- selected + hover do not changed colors.
-  closedRoot: {
-    disabledRipple: true,
-    borderRadius: '12px',
-    padding: '12px 9px 12px 9px',
-    width: '60%',
-    margin: '0 0 0 5px',
-    '&$selected': {
-      background: '#E2F1EA',
-    },
-    '&:hover': {
-      background: '#ededed',
-    },
-    '&$selected:hover': {
-      background: '#429e65',
-    },
-  },
-  closedSelected: {},
-  SelectedText: {
-    color: '#119656',
-    fontFamily: 'Heebo, sans-serif',
-  },
-  UnselectedText: {
-    color: '#93A29B',
-    fontFamily: 'Heebo, sans-serif',
-  },
-});
-
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
-  const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedItem, setSelectedItem] = useState('');
+
+  // This may not be the best way to implement this functionality (especially if the endpoints change in the URL),
+  // but I couldn't find a better way to do this atm.
+  const getCurrMenuItem = () => {
+    let currUrl = window.location.pathname;
+    let pathName = currUrl.split('/')[1]; // Gets the first part of the pathname.
+    return '/'.concat(pathName);
+  };
+
+  useEffect(() => {
+    setSelectedItem(getCurrMenuItem());
+  }, []);
+
   const menuList = sideDrawerMenus.map((menu, i) => {
+    let isSelected = menu.path === selectedItem;
     return (
       <ListItem
         button
         disableRipple={true}
-        selected={selectedIndex === i}
-        classes={
-          props.opened
-            ? { root: classes.itemRoot, selected: classes.selected }
-            : { root: classes.closedRoot, selected: classes.closedSelected }
-        }
+        selected={isSelected}
+        className={clsx({
+          [styles.OpenItem]: props.opened,
+          [styles.ClosedItem]: !props.opened,
+        })}
+        classes={{
+          root: styles.IconItem,
+          selected: styles.SelectedItem,
+        }}
         key={menu.icon}
         component={NavLink}
         to={menu.path}
-        onClick={() => setSelectedIndex(i)}
+        onClick={() => setSelectedItem(menu.path)}
       >
-        <ListItemIcon>
-          <ListIcon icon={menu.icon} selected={selectedIndex === i} />
+        <ListItemIcon className={styles.ListItemIcon}>
+          <ListIcon icon={menu.icon} selected={isSelected} />
         </ListItemIcon>
         {props.opened ? (
           <ListItemText
             disableTypography
-            className={selectedIndex === i ? classes.SelectedText : classes.UnselectedText}
+            className={clsx(styles.Text, {
+              [styles.SelectedText]: isSelected,
+              [styles.UnselectedText]: !isSelected,
+            })}
             primary={menu.title}
           />
         ) : null}
@@ -93,7 +63,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     );
   });
 
-  return <List className={classes.listStyle}>{menuList}</List>;
+  return <List className={styles.List}>{menuList}</List>;
 };
 
 export default SideMenus;

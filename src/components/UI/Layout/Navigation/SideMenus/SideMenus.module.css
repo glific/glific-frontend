@@ -1,0 +1,44 @@
+.List {
+  display: inline-block;
+  width: 100%;
+}
+
+.ListItemIcon {
+  min-width: 32px !important;
+}
+
+.IconItem {
+  border-radius: 12px !important;
+  /* padding: 7px !important; */
+  margin: auto !important;
+}
+
+.SelectedItem {
+  background: #e2f1ea !important;
+}
+
+.SelectedItem:hover {
+  background: #c3ebd8 !important;
+}
+
+.OpenItem {
+  width: 90% !important;
+  padding: 7px !important;
+}
+
+.ClosedItem {
+  width: 60% !important;
+  padding: 12px !important;
+}
+
+.Text {
+  font-family: 'Heebo', sans-serif;
+}
+
+.SelectedText {
+  color: #119656;
+}
+
+.UnselectedText {
+  color: #93a29b;
+}

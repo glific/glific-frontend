@@ -1,0 +1,23 @@
+.DialogboxPaper {
+  border-radius: 24px !important;
+  margin-top: 66px !important;
+}
+
+.ScrollPaper {
+  align-items: unset !important;
+}
+.Dialogbox {
+  height: unset !important;
+}
+
+.DialogActions {
+  padding-left: 24px !important;
+  padding-bottom: 24px !important;
+  justify-content: flex-start !important;
+}
+
+.DialogTitle {
+  color: #073f24;
+  padding-top: 24px !important;
+  padding-bottom: 8px !important;
+}
