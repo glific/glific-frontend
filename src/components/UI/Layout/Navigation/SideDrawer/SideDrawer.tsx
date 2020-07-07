@@ -89,7 +89,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
-  // const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
 
@@ -108,7 +107,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
             </IconButton>
           </div>
         ) : (
-          <IconButton color="inherit" aria-label="open drawer" onClick={() => setFullOpen(true)}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            style={{ margin: 'auto' }}
+            onClick={() => setFullOpen(true)}
+          >
             <MenuIcon />
           </IconButton>
         )}
