@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import { sideDrawerMenus } from '../../../../../config/menu';
 import ListIcon from '../../../ListIcon/ListIcon';
 import styles from './SideMenus.module.css';
-import { StylesProvider } from '@material-ui/core/styles';
 
 export interface SideMenusProps {
   opened: boolean;
