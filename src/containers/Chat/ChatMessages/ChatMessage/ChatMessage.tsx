@@ -10,6 +10,7 @@ import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
+import Markdown from 'markdown-to-jsx';
 
 export interface ChatMessageProps {
   id: number;
@@ -124,7 +125,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              {props.body}
+              <Markdown className={styles.MarkdownText}>{props.body}</Markdown>
             </div>
           </Tooltip>
           <Popper

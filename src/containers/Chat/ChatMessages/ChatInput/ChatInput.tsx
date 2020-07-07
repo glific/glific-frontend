@@ -5,7 +5,9 @@ import styles from './ChatInput.module.css';
 
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
+import { stateToMarkdown } from 'draft-js-export-markdown';
+import { draftToMarkdown } from 'markdown-draft-js';
 import 'draft-js/dist/Draft.css';
 
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -55,6 +57,14 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
+  const handleChange = (editorState: any) => {
+    // Get the markdown equivalent for this text.
+    // BUG: When highlighting over text and bolding, the cursor must move at least once in order for the changes to take effect.
+    let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
+    setEditorState(editorState);
+    setMessage(markdownString);
+  };
+
   const handleKeyCommand = (command: string, editorState: any) => {
     // On enter, submit. Otherwise, deal with commands like normal.
     if (command === 'enter') {
@@ -98,10 +108,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
               data-testid="message-input"
               editorState={editorState}
               placeholder="Start typing..."
-              onChange={(editorState: any) => {
-                console.log(editorState.getCurrentContent().getPlainText()); //.getText());
-                setEditorState(editorState);
-              }}
+              onChange={handleChange}
               handleKeyCommand={handleKeyCommand}
               keyBindingFn={keyBindingFn}
             />
