@@ -25,6 +25,7 @@ export const Login: React.SFC<LoginProps> = () => {
   const [showPassword, setshowPassword] = useState(false);
   const [sessionToken, setsessionToken] = useState('');
   const [authCode, setauthCode] = useState();
+  const [errors, setErrors] = useState();
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -61,10 +62,11 @@ export const Login: React.SFC<LoginProps> = () => {
           })
           .then(function (response: any) {
             setauthCode(response.data.data.otp);
-          })
-          .catch(function (error: any) {
-            console.log(error);
           });
+      })
+      .catch(function (error: any) {
+        console.log(error.response.data.error.message);
+        setErrors(error.response.data.error.message);
       });
   };
 
@@ -125,6 +127,7 @@ export const Login: React.SFC<LoginProps> = () => {
             />
           </FormControl>
         </div>
+        {errors ? <div className={styles.Errors}>{errors}</div> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Login
         </Button>
