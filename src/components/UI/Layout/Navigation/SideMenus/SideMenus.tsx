@@ -46,7 +46,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         to={menu.path}
         onClick={() => setSelectedItem(menu.path)}
       >
-        <ListItemIcon>
+        <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon icon={menu.icon} selected={isSelected} />
         </ListItemIcon>
         {props.opened ? (
