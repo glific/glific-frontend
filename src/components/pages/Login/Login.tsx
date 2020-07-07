@@ -13,7 +13,7 @@ import styles from './Login.module.css';
 import {
   REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER,
   REACT_APP_GLIFIC_AUTHENTICATION_API,
-} from '../../../config/axios';
+} from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 
@@ -74,7 +74,7 @@ export const Login: React.SFC<LoginProps> = () => {
     return (
       <Redirect
         to={{
-          pathname: '/authentication',
+          pathname: '/confirmotp',
           state: {
             authCode: authCode,
             phoneNumber: phoneNumber,

@@ -5,7 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { Button } from '../../UI/Form/Button/Button';
-import { REACT_APP_GLIFIC_CHAT_REDIRECT } from '../../../config/axios';
+import { REACT_APP_GLIFIC_CHAT_REDIRECT } from '../../../common/constants';
 import clsx from 'clsx';
 
 export interface ConfirmOTPProps {

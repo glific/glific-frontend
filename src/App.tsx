@@ -21,7 +21,7 @@ const App = () => {
       <Layout>
         <Switch>
           <Route path="/registration" exact component={Registration} />
-          <Route path="/authentication" exact component={ConfirmOTP} />
+          <Route path="/confirmotp" exact component={ConfirmOTP} />
           <Route path="/login" exact component={Login} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />

@@ -14,7 +14,7 @@ import { Redirect } from 'react-router-dom';
 import {
   REACT_APP_GLIFIC_REGISTRATION_API,
   REACT_APP_GLIFIC_AUTHENTICATION_API,
-} from '../../../config/axios';
+} from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 
@@ -95,7 +95,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     return (
       <Redirect
         to={{
-          pathname: '/authentication',
+          pathname: '/confirmotp',
           state: {
             authCode: authCode,
             phoneNumber: phoneNumber,
