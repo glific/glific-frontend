@@ -262,17 +262,17 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <div>
-            {toastMessage}
-            {dialogBox}
-            <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
-                Add New
-              </Button>
-              <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
-                :
-              </MaterialButton>
-            </div>
+        </div>
+        <div>
+          {toastMessage}
+          {dialogBox}
+          <div className={styles.AddButton}>
+            <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
+              Add New
+            </Button>
+            <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+              :
+            </MaterialButton>
           </div>
         </div>
       </div>

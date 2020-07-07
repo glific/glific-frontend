@@ -197,9 +197,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const getLabel = (label: string) => {
     return (
-      <div className={styles.Label}>
+      <div className={styles.LabelContainer}>
         <FilledTagIcon className={styles.FilledTagIcon} />
-        {label}
+        <p className={styles.Label}>{label}</p>
       </div>
     );
   };
@@ -269,17 +269,17 @@ export const TagList: React.SFC<TagListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <div>
-            {toastMessage}
-            {dialogBox}
-            <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
-                Add New
-              </Button>
-              <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
-                :
-              </MaterialButton>
-            </div>
+        </div>
+        <div>
+          {toastMessage}
+          {dialogBox}
+          <div className={styles.AddButton}>
+            <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
+              Add New
+            </Button>
+            <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+              :
+            </MaterialButton>
           </div>
         </div>
       </div>

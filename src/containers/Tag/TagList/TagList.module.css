@@ -1,8 +1,8 @@
 .Buttons {
+  width: 315px;
   border-color: #e0e0e0;
   vertical-align: middle;
-  display: flex;
-  align-items: center;
+  margin-left: auto;
 }
 
 .Table {
@@ -28,7 +28,7 @@
   margin-right: 14px !important;
 }
 .AddButton {
-  margin-right: 32px !important;
+  height: 80%;
   text-transform: capitalize;
   border-radius: 20px;
   margin-left: 24px;
@@ -56,6 +56,7 @@
 
 .FilledTagIcon {
   margin-right: 7px;
+  align-self: center;
 }
 
 .Label {
@@ -83,4 +84,11 @@
 
 .Icons {
   margin-left: auto;
+}
+
+.LabelContainer {
+  display: flex;
+  height: fit-content;
+  align-items: baseline;
+  align-content: center;
 }
