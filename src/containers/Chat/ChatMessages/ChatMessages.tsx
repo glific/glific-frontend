@@ -91,7 +91,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
 
   useEffect(() => {
-    if (editTagsMessageId != null) {
+    if (editTagsMessageId) {
       window.addEventListener('click', () => setShowDropdown(null), true);
     }
   }, [editTagsMessageId]);
