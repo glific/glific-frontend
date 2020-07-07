@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, Button as MaterialButton } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../../components/UI/Pager/Pager';
@@ -15,6 +15,7 @@ import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './TagList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
 
@@ -197,7 +198,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const getLabel = (label: string) => {
     return (
       <div className={styles.Label}>
-        <TagIcon className={styles.FilledTagIcon} />
+        <FilledTagIcon className={styles.FilledTagIcon} />
         {label}
       </div>
     );
@@ -275,6 +276,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
               <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
                 Add New
               </Button>
+              <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+                :
+              </MaterialButton>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, Button as MaterialButton } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../../components/UI/Pager/Pager';
@@ -16,6 +16,7 @@ import styles from './MessageTemplateList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
+import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
 
 export interface TemplateListProps {}
 
@@ -247,6 +248,9 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
+          <IconButton disabled={true} className={styles.Icon}>
+            <SpeedSendIcon className={styles.SpeedSendIcon} />
+          </IconButton>
           Speed sends
         </Typography>
         <div className={styles.Buttons}>
@@ -265,6 +269,9 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
               <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
                 Add New
               </Button>
+              <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+                :
+              </MaterialButton>
             </div>
           </div>
         </div>

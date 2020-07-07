@@ -10,8 +10,10 @@
 }
 
 .Title {
+  margin-left: 14px !important;
   vertical-align: middle;
-  height: 75%;
+
+  font-weight: 500 !important;
   color: #073f24;
 }
 
@@ -19,11 +21,17 @@
   background-color: '#e0e0e0';
 }
 
+.DropdownButton {
+  margin-left: 24px !important;
+  border-radius: 50% !important;
+  min-width: 25px !important;
+  margin-right: 14px !important;
+}
 .AddButton {
-  height: 80%;
+  margin-right: 32px !important;
   text-transform: capitalize;
   border-radius: 20px;
-  margin-left: 10px;
+  margin-left: 24px;
 }
 
 .Header {
@@ -32,6 +40,7 @@
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
+  margin-top: 6px;
   height: 70px;
 }
 
@@ -55,7 +64,8 @@
   display: flex;
   font-weight: 500;
   font-size: 20px;
-  align-items: center;
+  margin-top: 12px;
+  margin-bottom: 12px;
   color: #073f24;
   line-height: 1;
 }

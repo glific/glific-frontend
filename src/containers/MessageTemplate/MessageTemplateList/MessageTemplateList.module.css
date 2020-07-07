@@ -11,7 +11,9 @@
 
 .Title {
   vertical-align: middle;
-  height: 75%;
+  margin-left: 12px !important;
+  font-weight: 500 !important;
+  color: #073f24;
 }
 
 .IconButton {
@@ -31,6 +33,7 @@
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
+  margin-top: 6px;
   height: 70px;
 }
 
@@ -95,8 +98,9 @@
   display: flex;
   font-weight: 500;
   font-size: 20px;
-  align-items: center;
   color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
   line-height: 1;
 }
 
@@ -109,4 +113,20 @@
   color: #93a29b;
   line-height: 1.25;
   margin: 0;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.SpeedSendIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.DropdownButton {
+  border-radius: 50% !important;
+  min-width: 25px !important;
+  margin-right: 14px !important;
 }
