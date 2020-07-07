@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import {
   Container,
@@ -88,6 +88,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+
+  useEffect(() => {
+    if (editTagsMessageId) {
+      window.addEventListener('click', () => setEditTagsMessageId(null), true);
+    }
+  }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
   const queryVariables = {
