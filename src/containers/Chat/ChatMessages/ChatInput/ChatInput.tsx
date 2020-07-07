@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
+import styles from './ChatInput.module.css';
+
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-
-import styles from './ChatInput.module.css';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 
@@ -15,6 +17,7 @@ export interface ChatInputProps {
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -52,11 +55,34 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
+  const handleKeyCommand = (command: string, editorState: any) => {
+    // On enter, submit. Otherwise, deal with commands like normal.
+    if (command === 'enter') {
+      submitMessage();
+      return 'handled';
+    }
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      console.log(newState);
+      setEditorState(newState);
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
+  const keyBindingFn = (e: any) => {
+    // Shift-enter is by default supported. Only 'enter' needs to be changed.
+    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
+      return 'enter';
+    }
+    return getDefaultKeyBinding(e);
+  };
+
   return (
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
-          <input
+          {/* <input
             className={styles.InputBox}
             data-testid="message-input"
             type="text"
@@ -65,7 +91,21 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             onKeyPress={keyPressHandler}
             onChange={changeHandler}
             onClick={() => setShowEmojiPicker(false)}
-          />
+          /> */}
+          {/* Making new chatInput */}
+          <div onClick={() => setShowEmojiPicker(false)}>
+            <Editor
+              data-testid="message-input"
+              editorState={editorState}
+              placeholder="Start typing..."
+              onChange={(editorState: any) => {
+                console.log(editorState.getCurrentContent().getPlainText()); //.getText());
+                setEditorState(editorState);
+              }}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={keyBindingFn}
+            />
+          </div>
         </div>
         <div className={styles.EmojiContainer}>
           <IconButton
