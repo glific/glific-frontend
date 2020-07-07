@@ -22,7 +22,7 @@ export interface RegistrationProps {}
 
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
-  const [userName, setuserName] = useState('');
+  const [userName, setUserName] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
   const [showPassword, setshowPassword] = useState(false);
@@ -36,7 +36,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handleuserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setuserName(event.target.value);
+    setUserName(event.target.value);
   };
 
   const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {

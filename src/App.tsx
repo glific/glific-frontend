@@ -6,7 +6,7 @@ import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
 // import ChatPage from './components/pages/ChatPage/ChatPage';
 import { Registration } from './components/pages/Registration/Registration';
-import { Authentication } from './components/pages/Authentication/Authentication';
+import { ConfirmOTP } from './components/pages/ConfirmOTP/ConfirmOTP';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import Chat from './containers/Chat/Chat';
@@ -20,7 +20,7 @@ const App = () => {
       <Layout>
         <Switch>
           <Route path="/registration" exact component={Registration} />
-          <Route path="/authentication" exact component={Authentication} />
+          <Route path="/authentication" exact component={ConfirmOTP} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />

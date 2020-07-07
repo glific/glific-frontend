@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Authentication } from './Authentication';
+import { ConfirmOTP } from './ConfirmOTP';
 
 describe('Authentication test', () => {
-  const createAuthentication = () => <Authentication location={undefined} />;
+  const createAuthentication = () => <ConfirmOTP location={undefined} />;
 
   it('renders component properly', () => {
     const wrapper = shallow(createAuthentication());

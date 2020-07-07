@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Authentication.module.css';
+import styles from './ConfirmOTP.module.css';
 import { Typography } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -8,11 +8,11 @@ import { Button } from '../../UI/Form/Button/Button';
 import { REACT_APP_GLIFIC_CHAT_REDIRECT } from '../../../config/axios';
 import clsx from 'clsx';
 
-export interface AuthenticationProps {
+export interface ConfirmOTPProps {
   location: any;
 }
 
-export const Authentication: React.SFC<AuthenticationProps> = (props) => {
+export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [userAuthCode, setuserAuthCode] = useState('');
   const [correctAuthCode, setCorrectAuthCode] = useState(
     props.location ? props.location.state.authCode : undefined
@@ -54,4 +54,4 @@ export const Authentication: React.SFC<AuthenticationProps> = (props) => {
   );
 };
 
-export default Authentication;
+export default ConfirmOTP;
