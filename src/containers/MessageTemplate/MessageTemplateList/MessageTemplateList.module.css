@@ -84,3 +84,29 @@
   cursor: pointer;
   align-items: center;
 }
+
+.Icons {
+  margin-left: auto;
+}
+
+.Label {
+  width: 142px;
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  align-items: center;
+  color: #073f24;
+  line-height: 1;
+}
+
+.TableText {
+  width: 667px;
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}

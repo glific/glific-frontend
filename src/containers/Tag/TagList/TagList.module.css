@@ -12,6 +12,7 @@
 .Title {
   vertical-align: middle;
   height: 75%;
+  color: #073f24;
 }
 
 .IconButton {
@@ -32,4 +33,44 @@
   align-items: center;
   border-radius: 10px;
   height: 70px;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.TagIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.FilledTagIcon {
+  margin-right: 7px;
+}
+
+.Label {
+  width: 142px;
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  align-items: center;
+  color: #073f24;
+  line-height: 1;
+}
+
+.TableText {
+  width: 330px;
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.Icons {
+  margin-left: auto;
 }

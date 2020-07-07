@@ -10,6 +10,7 @@ import {
   Paper,
   TableSortLabel,
 } from '@material-ui/core';
+import styles from './Pager.module.css';
 
 interface PagerProps {
   columnNames: Array<string>;
@@ -30,23 +31,25 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     const createRow = (entry: any) => {
       return Object.keys(entry).map((item: any, i: number) => {
         return (
-          <TableCell key={i}>
-            {typeof entry[item] === 'string' && entry[item].length > 50
-              ? entry[item].slice(0, 50) + '...'
-              : entry[item]}
+          <TableCell key={i} className={styles.TableCell}>
+            {entry[item]}
           </TableCell>
         );
       });
     };
     return props.data.map((entry: any, i: number) => {
-      return <TableRow key={i}>{createRow(entry)}</TableRow>;
+      return (
+        <TableRow key={i} className={styles.TableRow}>
+          {createRow(entry)}
+        </TableRow>
+      );
     });
   };
 
   return (
-    <Paper>
-      <Table>
-        <TableHead>
+    <div className={styles.TableContainer}>
+      <Table className={styles.Table}>
+        {/* <TableHead>
           <TableRow>
             {props.columnNames.map((name: string, i: number) => {
               return (
@@ -68,7 +71,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
               );
             })}
           </TableRow>
-        </TableHead>
+        </TableHead> */}
         <TableBody>{createRows()}</TableBody>
         <TableFooter>
           <TableRow>
@@ -88,6 +91,6 @@ export const Pager: React.SFC<PagerProps> = (props) => {
           </TableRow>
         </TableFooter>
       </Table>
-    </Paper>
+    </div>
   );
 };

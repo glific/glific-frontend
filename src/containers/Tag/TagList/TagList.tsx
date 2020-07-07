@@ -6,8 +6,6 @@ import { setNotification } from '../../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -16,6 +14,9 @@ import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './TagList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
 
 export interface TagListProps {}
 
@@ -174,7 +175,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   function getIcons(id: number | undefined, label: string) {
     if (id) {
       return (
-        <>
+        <div className={styles.Icons}>
           <Link to={'/tag/' + id + '/edit'}>
             <IconButton aria-label="Edit" color="default">
               <EditIcon />
@@ -187,17 +188,35 @@ export const TagList: React.SFC<TagListProps> = (props) => {
           >
             <DeleteIcon />
           </IconButton>
-        </>
+        </div>
       );
     }
   }
+
+  const getLabel = (label: string) => {
+    return (
+      <div className={styles.Label}>
+        <TagIcon className={styles.FilledTagIcon} />
+        {label}
+      </div>
+    );
+  };
+
+  const getText = (text: string) => {
+    return <p className={styles.TableText}>{text}</p>;
+  };
+
+  const getKeywords = (keyword: any) => {
+    return <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>;
+  };
 
   function formatTags(tags: Array<any>) {
     // Should be type tag, but can't import Tag type into file
     return tags.map((t: any) => {
       return {
-        label: t.label,
-        description: t.description,
+        label: getLabel(t.label),
+        description: getText(t.description),
+        keywords: getKeywords(t.keywords),
         operations: getIcons(t.id, t.label),
       };
     });
@@ -234,6 +253,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
+          <IconButton disabled={true} className={styles.Icon}>
+            <TagIcon className={styles.TagIcon} />
+          </IconButton>
           Tags
         </Typography>
         <div className={styles.Buttons}>
