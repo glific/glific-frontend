@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,14 +14,27 @@ export interface SideMenusProps {
 }
 
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  console.log(window.location.href);
+  const [selectedItem, setSelectedItem] = useState('');
+
+  // This may not be the best way to implement this functionality (especially if the endpoints change in the URL),
+  // but I couldn't find a better way to do this atm.
+  const getCurrMenuItem = () => {
+    let currUrl = window.location.pathname;
+    let pathName = currUrl.split('/')[1]; // Gets the first part of the pathname.
+    return '/'.concat(pathName);
+  };
+
+  useEffect(() => {
+    setSelectedItem(getCurrMenuItem());
+  }, []);
+
   const menuList = sideDrawerMenus.map((menu, i) => {
+    let isSelected = menu.path === selectedItem;
     return (
       <ListItem
         button
         disableRipple={true}
-        selected={selectedIndex === i}
+        selected={isSelected}
         className={clsx({
           [styles.OpenItem]: props.opened,
           [styles.ClosedItem]: !props.opened,
@@ -33,17 +46,17 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         key={menu.icon}
         component={NavLink}
         to={menu.path}
-        onClick={() => setSelectedIndex(i)}
+        onClick={() => setSelectedItem(menu.path)}
       >
         <ListItemIcon>
-          <ListIcon icon={menu.icon} selected={selectedIndex === i} />
+          <ListIcon icon={menu.icon} selected={isSelected} />
         </ListItemIcon>
         {props.opened ? (
           <ListItemText
             disableTypography
             className={clsx(styles.Text, {
-              [styles.SelectedText]: selectedIndex === i,
-              [styles.UnselectedText]: selectedIndex !== i,
+              [styles.SelectedText]: isSelected,
+              [styles.UnselectedText]: !isSelected,
             })}
             primary={menu.title}
           />
