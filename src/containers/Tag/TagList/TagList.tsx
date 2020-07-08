@@ -3,13 +3,11 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { IconButton, InputBase, Typography, Divider } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -17,6 +15,7 @@ import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './TagList.module.css';
+import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
 
 export interface TagListProps {}
 
@@ -36,7 +35,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const [newTag, setNewTag] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // Table attributes
   const columnNames = ['Name', 'Description', 'Actions'];
@@ -83,16 +81,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     }
   );
-  useEffect(() => {
-    if (searchVal !== '') {
-      refetch(filterPayload());
-      refetchCount({
-        filter: {
-          label: searchVal,
-        },
-      });
-    }
-  }, [searchVal]);
 
   // Get tag data here
   const { loading, error, data, refetch } = useQuery(FILTER_TAGS, {
@@ -100,6 +88,19 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const message = useQuery(NOTIFICATION);
+
+  useEffect(() => {
+    refetch(filterPayload());
+  }, [refetch]);
+
+  // Make a new count request for a new count of the # of rows from this query in the back-end.
+  useEffect(() => {
+    refetchCount({
+      filter: {
+        label: searchVal,
+      },
+    });
+  }, [searchVal, refetchCount]);
 
   let deleteId: number = 0;
 
@@ -147,11 +148,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   if (deleteTagID) {
     dialogBox = (
       <DialogBox
-        title={`Delete Tag: ${deleteTagName}`}
-        handleCancel={closeDialogBox}
+        title={`Are you sure you want to delete the tag "${deleteTagName}"?`}
         handleOk={handleDeleteTag}
+        handleCancel={closeDialogBox}
+        colorOk="secondary"
       >
-        Are you sure you want to delete the tag?
+        You won't be able to use this for tagging messages.
       </DialogBox>
     );
   }
@@ -213,7 +215,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.nameSearch.value.trim();
+    let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
@@ -236,30 +238,14 @@ export const TagList: React.SFC<TagListProps> = (props) => {
           Tags
         </Typography>
         <div className={styles.Buttons}>
-          <IconButton className={styles.IconButton} onClick={() => setSearchOpen(!searchOpen)}>
-            <SearchIcon className={styles.SearchIcon}></SearchIcon>
-          </IconButton>
-          <form onSubmit={handleSearch}>
-            <div className={searchOpen ? styles.SearchBar : styles.HideSearchBar}>
-              <InputBase
-                defaultValue={searchVal}
-                className={searchOpen ? styles.ShowSearch : styles.HideSearch}
-                name="nameSearch"
-              />
-              {searchOpen ? (
-                <div
-                  className={styles.ResetSearch}
-                  onClick={() => {
-                    setSearchVal('');
-                    resetTableVals();
-                  }}
-                >
-                  <Divider orientation="vertical" />
-                  <CloseIcon className={styles.CloseIcon}></CloseIcon>
-                </div>
-              ) : null}
-            </div>
-          </form>
+          <SearchBar
+            handleSubmit={handleSearch}
+            onReset={() => {
+              setSearchVal('');
+              resetTableVals();
+            }}
+            searchVal={searchVal}
+          />
           <div>
             {toastMessage}
             {dialogBox}

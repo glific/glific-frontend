@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, wait, within, fireEvent, screen, cleanup } from '@testing-library/react';
 import moment from 'moment';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 import ChatMessage from './ChatMessage';
 import { TIME_FORMAT } from '../../../../common/constants';
@@ -24,8 +24,12 @@ describe('<ChatMessage />', () => {
     body: 'Hello there!',
     contactId: 2,
     receiver: {
+      id: 1,
+    },
+    sender: {
       id: 2,
     },
+    showMessage: true,
     popup: 1,
     open: true,
     insertedAt,
@@ -38,7 +42,7 @@ describe('<ChatMessage />', () => {
     ],
   };
 
-  const wrapper = shallow(<ChatMessage {...defaultProps} />);
+  const wrapper = mount(<ChatMessage {...defaultProps} />);
   test('it should render the message content correctly', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
   });
@@ -60,13 +64,13 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the down arrow icon', () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
-    expect(container.querySelector('.MuiIconButton-sizeSmall')).toBeInTheDocument();
+    const { getAllByTestId } = render(<ChatMessage {...defaultProps} />);
+    expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
-    const { container } = render(<ChatMessage {...defaultProps} />);
+    const { getAllByTestId } = render(<ChatMessage {...defaultProps} />);
 
-    expect(screen.getByText('Assign tag')).toBeInTheDocument();
+    expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 });

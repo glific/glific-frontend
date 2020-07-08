@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -9,6 +10,9 @@ import { DATE_FORMAT } from '../../../../common/constants';
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
+  selected: boolean;
+  onClick: (i: any) => void;
+  index: number;
   lastMessage: {
     body: string;
     insertedAt: string;
@@ -23,10 +27,20 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   return (
     <ListItem
       button
-      className={styles.StyledListItem}
+      disableRipple
+      className={clsx(styles.StyledListItem, { [styles.SelectedColor]: props.selected })}
+      // className={clsx(classes.drawer, {
+      //   [classes.drawerOpen]: fullOpen,
+      //   [classes.drawerClose]: !fullOpen,
+      // })}
       component={Link}
-      to={'/chat/' + props.contactId}
+      selected={props.selected}
+      onClick={() => props.onClick(props.index)}
+      to={'/chat/' + props.contactId} // Index doesn't equal ID
     >
+      <div className={styles.CircleBox}>
+        <div className={styles.Status} />
+      </div>
       <div className={styles.ChatInfo}>
         <div className={styles.ChatName} data-testid="name">
           {props.contactName}
