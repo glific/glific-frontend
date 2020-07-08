@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
+import { Typography, FormHelperText } from '@material-ui/core';
 import styles from './Registration.module.css';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -11,10 +10,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom';
-import {
-  REACT_APP_GLIFIC_REGISTRATION_API,
-  REACT_APP_GLIFIC_AUTHENTICATION_API,
-} from '../../../common/constants';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 
@@ -27,9 +23,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [confirmPassword, setconfirmPassword] = useState('');
   const [showPassword, setshowPassword] = useState(false);
   const [showConfirmPassword, setshowConfirmPassword] = useState(false);
-  const [authToken, setauthToken] = useState('');
-  const [authCode, setauthCode] = useState();
-  const [errors, setErrors] = useState();
+  const [userNameError, setUserNameError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [authMessage, setAuthMessage] = useState('');
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -63,58 +61,64 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     event.preventDefault();
   };
 
-  const handleSubmit = () => {
-    axios
-      .post(REACT_APP_GLIFIC_REGISTRATION_API, {
-        user: {
-          name: userName,
-          phone: phoneNumber,
-          password: password,
-          password_confirmation: confirmPassword,
-        },
-      })
-      .then(function (response: any) {
-        const responseString = JSON.stringify(response.data.data);
-        setauthToken(responseString);
-        axios
-          .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-            user: {
-              phone: phoneNumber,
-            },
-          })
-          .then(function (response: any) {
-            setauthCode(response.data.data.otp);
-          });
-      })
-      .catch(function (error: any) {
-        setErrors(error.response.data.error.errors);
-      });
+  const handleInputErrors = () => {
+    if (!userName) {
+      setUserNameError(true);
+    } else if (userName) {
+      setUserNameError(false);
+    }
+    if (!phoneNumber) {
+      setPhoneNumberError(true);
+    } else if (phoneNumber) {
+      setPhoneNumberError(false);
+    }
+    if (!password || password.length < 8) {
+      setPasswordError(true);
+    } else if (password) {
+      setPasswordError(false);
+    }
+    if (password != confirmPassword) {
+      setConfirmPasswordError(true);
+    } else if (confirmPassword) {
+      setConfirmPasswordError(false);
+    }
   };
 
-  if (authCode && authToken) {
+  const handleSubmit = () => {
+    handleInputErrors();
+    if (!userNameError && !phoneNumberError && !passwordError && !confirmPasswordError) {
+      console.log('hello');
+      axios
+        .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+          user: {
+            phone: phoneNumber,
+          },
+        })
+        .then(function (response: any) {
+          console.log(response);
+          setAuthMessage(response);
+        })
+        .catch(function (error: any) {
+          console.log(error);
+        });
+    }
+  };
+
+  if (authMessage) {
     return (
       <Redirect
         to={{
           pathname: '/confirmotp',
           state: {
-            authCode: authCode,
+            name: userName,
             phoneNumber: phoneNumber,
-            tokens: authToken,
+            password: password,
+            password_confirmation: confirmPassword,
           },
         }}
       />
     );
   }
-
-  const errorList = errors
-    ? Object.values(errors).map((error: any) =>
-        error[0] == 'does not match confirmation' ? (
-          <h5 className={styles.ErrorText}>Password {error[0]} </h5>
-        ) : (
-          <h5 className={styles.ErrorText}>Fields {error[0]}</h5>
-        )
-      )
-    : null;
 
   return (
     <div className={styles.Container}>
@@ -126,29 +130,34 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Username</InputLabel>
             <OutlinedInput
+              error={userNameError}
               id="username"
               label="Username"
               type="text"
               value={userName}
               onChange={handleuserNameChange()}
             />
+            {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
           </FormControl>
         </div>
         <div className={styles.Margin}>
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Phone Number</InputLabel>
             <OutlinedInput
+              error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
               type="integer"
               onChange={handlephoneNumberChange()}
             />
+            {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
           </FormControl>
         </div>
         <div className={clsx(styles.Margin)}>
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              error={passwordError}
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
               label="Password"
@@ -167,12 +176,16 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 </InputAdornment>
               }
             />
+            {passwordError ? (
+              <FormHelperText>Invalid password, must be at least 8 characters.</FormHelperText>
+            ) : null}
           </FormControl>
         </div>
         <div className={clsx(styles.Margin, styles.BottomMargin)}>
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Confirm Password</InputLabel>
             <OutlinedInput
+              error={confirmPasswordError}
               id="outlined-adornment-confirm-password"
               type={showConfirmPassword ? 'text' : 'password'}
               label="Confirm Password"
@@ -191,9 +204,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 </InputAdornment>
               }
             />
+            {confirmPasswordError ? <FormHelperText>Passwords do not match.</FormHelperText> : null}
           </FormControl>
         </div>
-        {errors ? <div className={styles.Errors}>{errorList}</div> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>
