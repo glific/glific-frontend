@@ -17,6 +17,7 @@ export const Button: React.SFC<ButtonProps> = (props) => {
       color={props.color}
       onClick={props.onClick}
       className={`${styles.Button} ${props.className}`}
+      data-testid="Button"
     >
       {props.children}
     </ButtonElement>

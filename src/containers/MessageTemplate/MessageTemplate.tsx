@@ -50,7 +50,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         template = data.sessionTemplate.sessionTemplate;
         setLabel(template.label);
         setBody(template.body);
-        setIsActive(template.isActive);
         setLanguageId(template.language.id);
       }
     },
@@ -63,7 +62,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
-  const [isActive, setIsActive] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -102,7 +100,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
     const payload = {
       label: template.label,
       body: template.body,
-      isActive: template.isActive,
       languageId: Number(template.languageId),
       type: 'TEXT',
     };

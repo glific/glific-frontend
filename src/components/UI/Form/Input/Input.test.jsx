@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { TextField } from '@material-ui/core';
+import { OutlinedInput, InputLabel } from '@material-ui/core';
 import { Input } from './Input';
 
 describe('<Input />', () => {
@@ -8,7 +8,7 @@ describe('<Input />', () => {
     <Input
       form={{ touched: false, errors: {} }}
       field={{ name: 'input', value: '' }}
-      label="My Input"
+      placeholder="Title"
     />
   );
   it('renders <Input /> component', () => {
@@ -16,10 +16,10 @@ describe('<Input />', () => {
   });
 
   it('should have correct label', () => {
-    expect(wrapper.find('label').text()).toEqual('My Input');
+    expect(wrapper.find(InputLabel).text()).toEqual('Title');
   });
 
   it('should have an initial value', () => {
-    expect(wrapper.find(TextField).props().value).toEqual('');
+    expect(wrapper.find(OutlinedInput).props().value).toEqual('');
   });
 });
