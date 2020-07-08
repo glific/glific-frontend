@@ -72,7 +72,6 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      console.log(newState);
       setEditorState(newState);
       return 'handled';
     }
