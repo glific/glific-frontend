@@ -33,3 +33,14 @@
   border-radius: 10px;
   height: 70px;
 }
+
+.ButtonsCenter {
+  justify-content: center !important;
+}
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
+}

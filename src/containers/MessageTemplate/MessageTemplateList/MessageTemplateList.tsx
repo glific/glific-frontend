@@ -102,6 +102,14 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   }, [searchVal, refetchCount]);
 
+  let toastMessage;
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage]);
+
   let deleteId: number = 0;
 
   const [deleteTemplate] = useMutation(DELETE_TEMPLATE, {
@@ -141,7 +149,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     setDeleteTemplateID(null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
@@ -154,8 +161,11 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         handleOk={handleDeleteTemplate}
         handleCancel={closeDialogBox}
         colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
       >
-        It will stop showing now when you are drafting a customized message.
+        <p className={styles.DialogText}>
+          It will stop showing when you are drafting a customized message
+        </p>
       </DialogBox>
     );
   }

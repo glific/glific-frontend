@@ -79,7 +79,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const saveMessageTemplate = (display: boolean) => {
     setShowSaveMessageDialog(display);
-    setAnchorEl(anchorEl ? null : Ref.current);
   };
 
   let saveTemplateMessage;

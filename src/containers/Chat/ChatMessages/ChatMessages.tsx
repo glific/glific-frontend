@@ -85,6 +85,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // Instantiate these to be used later.
   let receiverId: number = 0;
   let conversationIndex: number = -1;
+  let toastMessage;
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
@@ -94,6 +95,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       window.addEventListener('click', () => setEditTagsMessageId(null), true);
     }
   }, [editTagsMessageId]);
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage]);
 
   // get the conversations stored from the cache
   const queryVariables = {
@@ -232,7 +239,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setNotification(client, null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
