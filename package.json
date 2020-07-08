@@ -23,6 +23,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
+    "axios": "^0.19.2",
     "ajv-keywords": "^3.5.0",
     "emoji-mart": "^3.0.0",
     "enzyme-adapter-react-16.3": "^1.7.2",

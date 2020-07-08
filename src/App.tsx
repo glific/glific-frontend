@@ -4,6 +4,10 @@ import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
+// import ChatPage from './components/pages/ChatPage/ChatPage';
+import { Registration } from './components/pages/Registration/Registration';
+import { ConfirmOTP } from './components/pages/ConfirmOTP/ConfirmOTP';
+import { Login } from './components/pages/Login/Login';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import Chat from './containers/Chat/Chat';
@@ -16,6 +20,9 @@ const App = () => {
     <div className={styles.App}>
       <Layout>
         <Switch>
+          <Route path="/registration" exact component={Registration} />
+          <Route path="/confirmotp" exact component={ConfirmOTP} />
+          <Route path="/login" exact component={Login} />
           <Route path="/tag" exact component={TagPage} />
           <Route path="/tag/add" exact component={Tag} />
           <Route path="/tag/:id/edit" exact component={Tag} />
