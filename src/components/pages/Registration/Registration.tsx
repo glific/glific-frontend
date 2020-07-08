@@ -87,7 +87,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const handleSubmit = () => {
     handleInputErrors();
     if (!userNameError && !phoneNumberError && !passwordError && !confirmPasswordError) {
-      console.log('hello');
       axios
         .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
           user: {
@@ -95,7 +94,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           },
         })
         .then(function (response: any) {
-          console.log(response);
           setAuthMessage(response);
         })
         .catch(function (error: any) {
