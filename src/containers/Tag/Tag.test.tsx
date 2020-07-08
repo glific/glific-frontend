@@ -218,15 +218,11 @@ describe('Save Button', () => {
     fireEvent.change(container.querySelector('textarea[name="description"]'), {
       target: { innerHTML: 'new Tag description' },
     });
-
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },
     });
-
     const button = getByText('Save');
-    console.log(button);
     fireEvent.click(button);
-
     await wait(() => expect(getByText('Important')).toBeInTheDocument());
   });
 });

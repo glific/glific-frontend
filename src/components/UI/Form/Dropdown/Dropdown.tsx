@@ -25,7 +25,9 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
   return (
     <div className={styles.Dropdown}>
       <FormControl variant="outlined" fullWidth>
-        <InputLabel id="demo-simple-select-outlined-label">{props.placeholder}</InputLabel>
+        {props.placeholder ? (
+          <InputLabel id="simple-select-outlined-label">{props.placeholder}</InputLabel>
+        ) : null}
         <Select {...props.field} label={props.placeholder} fullWidth>
           {options}
         </Select>
