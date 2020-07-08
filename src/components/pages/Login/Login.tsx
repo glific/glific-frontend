@@ -29,7 +29,7 @@ export const Login: React.SFC<LoginProps> = () => {
     setPassword(event.target.value);
   };
 
-  const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
   };
 
@@ -102,7 +102,7 @@ export const Login: React.SFC<LoginProps> = () => {
               label="Phone Number"
               value={phoneNumber}
               type="integer"
-              onChange={handlephoneNumberChange()}
+              onChange={handlePhoneNumberChange()}
             />
             {phoneNumberError ? (
               <FormHelperText>Please enter a phone number.</FormHelperText>

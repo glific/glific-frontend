@@ -33,15 +33,15 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     setPassword(event.target.value);
   };
 
-  const handleuserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
   };
 
-  const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
   };
 
-  const handleconfirmPasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(event.target.value);
   };
 
@@ -135,7 +135,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               label="Username"
               type="text"
               value={userName}
-              onChange={handleuserNameChange()}
+              onChange={handleUserNameChange()}
             />
             {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
           </FormControl>
@@ -148,7 +148,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               id="phone-number"
               label="Phone Number"
               type="integer"
-              onChange={handlephoneNumberChange()}
+              onChange={handlePhoneNumberChange()}
             />
             {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
           </FormControl>
@@ -190,7 +190,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               type={showConfirmPassword ? 'text' : 'password'}
               label="Confirm Password"
               value={confirmPassword}
-              onChange={handleconfirmPasswordChange()}
+              onChange={handleConfirmPasswordChange()}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
