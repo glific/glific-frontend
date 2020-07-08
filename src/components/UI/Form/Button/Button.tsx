@@ -4,8 +4,8 @@ import styles from './Button.module.css';
 
 export interface ButtonProps {
   children: any;
-  variant: any;
-  color: any;
+  variant: 'text' | 'outlined' | 'contained' | undefined;
+  color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   onClick?: any;
   className?: any;
 }

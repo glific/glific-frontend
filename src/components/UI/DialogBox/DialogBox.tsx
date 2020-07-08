@@ -14,8 +14,8 @@ interface DialogProps {
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
-  colorOk?: string;
-  colorCancel?: string;
+  colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   alignButtons?: string;
 }
 
