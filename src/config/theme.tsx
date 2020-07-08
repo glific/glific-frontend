@@ -29,6 +29,17 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiOutlinedInput: {
+      notchedOutline: {
+        borderRadius: '12px',
+        borderWidth: '2px',
+      },
+    },
+    MuiDialogActions: {
+      root: {
+        justifyContent: 'flex-start',
+      },
+    },
   },
 });
 

@@ -11,6 +11,7 @@ export interface InputProps {
   form: any;
   placeholder: any;
   rows: number;
+  helperText?: string;
 }
 
 export const Input: React.SFC<InputProps> = (props) => {
@@ -26,9 +27,6 @@ export const Input: React.SFC<InputProps> = (props) => {
         </InputLabel>
         <OutlinedInput
           error={error[name] && touched[name] ? true : false}
-          classes={{
-            notchedOutline: styles.InputBorder,
-          }}
           multiline={true}
           rows={props.rows}
           label={props.placeholder}
@@ -36,6 +34,9 @@ export const Input: React.SFC<InputProps> = (props) => {
           {...props.field}
         ></OutlinedInput>
         {error[name] && touched[name] ? <FormHelperText>Required</FormHelperText> : null}
+        {props.helperText ? (
+          <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+        ) : null}
       </FormControl>
     </div>
   );

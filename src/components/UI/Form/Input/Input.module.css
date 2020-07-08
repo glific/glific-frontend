@@ -13,3 +13,7 @@
   font-weight: 500;
   color: #93a29b !important;
 }
+
+.HelperText {
+  margin-left: 16px !important;
+}

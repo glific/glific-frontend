@@ -1,6 +1,6 @@
 .DialogContainer {
   height: fit-content;
-  width: 395px;
+  min-width: 300px;
 }
 
 .Message {

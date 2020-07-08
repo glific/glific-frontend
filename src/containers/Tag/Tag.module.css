@@ -14,6 +14,10 @@
   }
 }
 
+.ButtonsCenter {
+  justify-content: center !important;
+}
+
 .Input {
   display: flex;
   padding: 8px;
@@ -30,10 +34,50 @@
 }
 
 .Form {
-  padding: 20px 50px;
+  padding: 16px 16px;
   width: 470px;
 }
 
 .Buttons {
+  margin-top: 24px;
+  margin-left: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.Title {
+  margin-left: 24px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.TagIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Button {
+  margin-right: 24px !important;
+}
+
+.DeleteIcon {
+  margin-right: 9px !important;
+}
+.DialogText {
+  margin-top: 0px;
   text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
+}
+
+.DeleteButton {
+  margin-left: auto !important;
 }

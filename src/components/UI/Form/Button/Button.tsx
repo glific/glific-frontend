@@ -3,10 +3,11 @@ import { Button as ButtonElement } from '@material-ui/core';
 import styles from './Button.module.css';
 
 export interface ButtonProps {
-  children: string;
+  children: any;
   variant: any;
   color: any;
-  onClick: any;
+  onClick?: any;
+  className?: any;
 }
 
 export const Button: React.SFC<ButtonProps> = (props) => {
@@ -15,7 +16,7 @@ export const Button: React.SFC<ButtonProps> = (props) => {
       variant={props.variant}
       color={props.color}
       onClick={props.onClick}
-      className={styles.Button}
+      className={`${styles.Button} ${props.className}`}
     >
       {props.children}
     </ButtonElement>

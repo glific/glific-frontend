@@ -3,22 +3,27 @@ import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { useApolloClient } from '@apollo/client';
 import styles from './Tag.module.css';
 import { useQuery, useMutation } from '@apollo/client';
-import Paper from '@material-ui/core/Paper';
 import { GET_LANGUAGES, GET_TAG, FILTER_TAGS } from '../../graphql/queries/Tag';
 import { setNotification } from '../../common/notification';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
+import { Typography, IconButton } from '@material-ui/core';
+import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import { DELETE_TAG } from '../../graphql/mutations/Tag';
 
 export interface TagProps {
   match: any;
 }
 
 export const Tag: React.SFC<TagProps> = (props) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [deleteTag] = useMutation(DELETE_TAG);
   const queryVariables = {
     filter: {
       label: '',
@@ -43,8 +48,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
         tag = data.tag.tag;
         setLabel(tag.label);
         setDescription(tag.description);
-        setIsActive(tag.isActive);
-        setIsReserved(tag.isReserved);
+        setKeywords(tag.keywords);
         setLanguageId(tag.language.id);
       }
     },
@@ -57,8 +61,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
-  const [isActive, setIsActive] = useState(false);
-  const [isReserved, setIsReserved] = useState(false);
+  const [keywords, setKeywords] = useState('');
   const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -91,8 +94,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
     const payload = {
       label: tag.label,
       description: tag.description,
-      isActive: tag.isActive,
-      isReserved: tag.isReserved,
+      keywords: tag.keywords,
       languageId: Number(tag.languageId),
     };
     let message;
@@ -132,7 +134,8 @@ export const Tag: React.SFC<TagProps> = (props) => {
       type: 'text',
       placeholder: 'Tag title',
       options: null,
-      rows: 1,
+      rows: null,
+      helperText: null,
     },
     {
       component: Input,
@@ -141,6 +144,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       placeholder: 'Description',
       options: null,
       rows: 3,
+      helperText: null,
     },
     {
       component: Input,
@@ -149,6 +153,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
       placeholder: 'Keywords',
       options: null,
       rows: 3,
+      helperText: 'Use commas to separate the keywords',
     },
     {
       component: Dropdown,
@@ -157,8 +162,21 @@ export const Tag: React.SFC<TagProps> = (props) => {
       placeholder: 'Language',
       options: languageOptions,
       rows: null,
+      helperText: null,
     },
   ];
+
+  const deleteButton = tagId ? (
+    <Button
+      variant="contained"
+      color="secondary"
+      className={styles.DeleteButton}
+      onClick={() => setShowDialog(true)}
+    >
+      <DeleteIcon className={styles.DeleteIcon} />
+      Remove
+    </Button>
+  ) : null;
 
   let form = (
     <>
@@ -167,8 +185,7 @@ export const Tag: React.SFC<TagProps> = (props) => {
         initialValues={{
           label: label,
           description: description,
-          isActive: isActive,
-          isReserved: isReserved,
+          keywords: keywords,
           languageId: languageId,
         }}
         validate={(values) => {
@@ -199,17 +216,23 @@ export const Tag: React.SFC<TagProps> = (props) => {
                   type={field.type}
                   options={field.options}
                   rows={field.rows}
+                  helperText={field.helperText}
                 ></Field>
               );
             })}
             <div className={styles.Buttons}>
-              <Button variant="contained" color="primary" onClick={submitForm}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={submitForm}
+                className={styles.Button}
+              >
                 Save
               </Button>
-              &nbsp;&nbsp;
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel
               </Button>
+              {deleteButton}
             </div>
           </Form>
         )}
@@ -217,9 +240,40 @@ export const Tag: React.SFC<TagProps> = (props) => {
     </>
   );
 
+  const handleDeleteTag = () => {
+    deleteTag({ variables: { id: tagId } });
+    setNotification(client, 'Tag deleted Successfully');
+    setFormSubmitted(true);
+  };
+  let dialogBox;
+
+  if (showDialog) {
+    dialogBox = (
+      <DialogBox
+        title={`Are you sure you want to delete the tag?`}
+        handleOk={handleDeleteTag}
+        handleCancel={() => setShowDialog(false)}
+        colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
+      >
+        <p className={styles.DialogText}>You won't be able to use this for tagging messages.</p>
+      </DialogBox>
+    );
+  }
+
+  const heading = (
+    <Typography variant="h5" className={styles.Title}>
+      <IconButton disabled={true} className={styles.Icon}>
+        <TagIcon className={styles.TagIcon} />
+      </IconButton>
+      {tagId ? 'Edit tag ' : 'Add a new tag'}
+    </Typography>
+  );
+
   return (
     <div className={styles.TagAdd}>
-      <h3>{tagId ? 'Edit tag information' : 'Enter tag information'}</h3>
+      {dialogBox}
+      {heading}
       {form}
     </div>
   );
