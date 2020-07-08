@@ -1,3 +1,7 @@
+.ActionsContainer {
+  display: flex;
+}
+
 .ChatInput {
   padding-top: 15px;
 }
@@ -9,10 +13,16 @@
   padding: 10px;
   border-radius: 12px !important;
   background-color: #ffffff;
+  justify-content: space-between;
+  height: fit-content;
+  max-height: 64px;
+  overflow-y: auto;
 }
 
 .InputContainer {
-  width: 80%;
+  width: 72%;
+  font-size: 16px;
+  align-self: center;
 }
 
 .EmojiContainer {

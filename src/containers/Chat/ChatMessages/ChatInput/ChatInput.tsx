@@ -6,7 +6,6 @@ import styles from './ChatInput.module.css';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
-import { stateToMarkdown } from 'draft-js-export-markdown';
 import { draftToMarkdown } from 'markdown-draft-js';
 import 'draft-js/dist/Draft.css';
 
@@ -91,54 +90,43 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   return (
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
-        <div className={styles.InputContainer}>
-          {/* <input
-            className={styles.InputBox}
+        <div className={styles.InputContainer} onClick={() => setShowEmojiPicker(false)}>
+          <Editor
             data-testid="message-input"
-            type="text"
+            editorState={editorState}
             placeholder="Start typing..."
-            value={message}
-            onKeyPress={keyPressHandler}
-            onChange={changeHandler}
-            onClick={() => setShowEmojiPicker(false)}
-          /> */}
-          {/* Making new chatInput */}
-          <div onClick={() => setShowEmojiPicker(false)}>
-            <Editor
-              data-testid="message-input"
-              editorState={editorState}
-              placeholder="Start typing..."
-              onChange={handleChange}
-              handleKeyCommand={handleKeyCommand}
-              keyBindingFn={keyBindingFn}
-            />
+            onChange={handleChange}
+            handleKeyCommand={handleKeyCommand}
+            keyBindingFn={keyBindingFn}
+          />
+        </div>
+        <div className={styles.ActionsContainer}>
+          <div className={styles.EmojiContainer}>
+            <IconButton
+              data-testid="emoji-picker"
+              color="primary"
+              aria-label="pick emoji"
+              component="span"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              <span role="img" aria-label="pick emoji">
+                😀
+              </span>
+            </IconButton>
           </div>
-        </div>
-        <div className={styles.EmojiContainer}>
-          <IconButton
-            data-testid="emoji-picker"
-            color="primary"
-            aria-label="pick emoji"
-            component="span"
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <span role="img" aria-label="pick emoji">
-              😀
-            </span>
-          </IconButton>
-        </div>
-        <div className={styles.SendButtonContainer}>
-          <Button
-            className={styles.SendButton}
-            data-testid="send-button"
-            variant="contained"
-            color="primary"
-            onClick={submitMessage}
-            disabled={message.length === 0}
-          >
-            Send
-            <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
-          </Button>
+          <div className={styles.SendButtonContainer}>
+            <Button
+              className={styles.SendButton}
+              data-testid="send-button"
+              variant="contained"
+              color="primary"
+              onClick={submitMessage}
+              disabled={message.length === 0}
+            >
+              Send
+              <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
+            </Button>
+          </div>
         </div>
       </div>
       {emojiPicker}

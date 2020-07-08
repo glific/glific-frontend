@@ -15,5 +15,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src", "decs.d.ts"]
+  "include": ["src"]
 }
