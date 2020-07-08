@@ -19,10 +19,10 @@ export interface RegistrationProps {}
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
-  const [phoneNumber, setphoneNumber] = useState('');
-  const [confirmPassword, setconfirmPassword] = useState('');
-  const [showPassword, setshowPassword] = useState(false);
-  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -38,19 +38,19 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setphoneNumber(event.target.value);
+    setPhoneNumber(event.target.value);
   };
 
   const handleconfirmPasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setconfirmPassword(event.target.value);
+    setConfirmPassword(event.target.value);
   };
 
   const handleClickShowPassword = () => {
-    setshowPassword(!showPassword);
+    setShowPassword(!showPassword);
   };
 
   const handleClickShowConfirmPassword = () => {
-    setshowConfirmPassword(!showConfirmPassword);
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {

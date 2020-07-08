@@ -18,9 +18,9 @@ export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
   const [password, setPassword] = useState('');
-  const [phoneNumber, setphoneNumber] = useState('');
-  const [showPassword, setshowPassword] = useState(false);
-  const [sessionToken, setsessionToken] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [sessionToken, setSessionToken] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
@@ -30,11 +30,11 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handlephoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setphoneNumber(event.target.value);
+    setPhoneNumber(event.target.value);
   };
 
   const handleClickShowPassword = () => {
-    setshowPassword(!showPassword);
+    setShowPassword(!showPassword);
   };
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -66,7 +66,7 @@ export const Login: React.SFC<LoginProps> = () => {
         })
         .then(function (response: any) {
           const responseString = JSON.stringify(response.data.data);
-          setsessionToken(responseString);
+          setSessionToken(responseString);
         })
         .catch(function (error: any) {
           setInvalidLogin(true);
@@ -104,7 +104,9 @@ export const Login: React.SFC<LoginProps> = () => {
               type="integer"
               onChange={handlephoneNumberChange()}
             />
-            {phoneNumberError ? <FormHelperText>Invalid username.</FormHelperText> : null}
+            {phoneNumberError ? (
+              <FormHelperText>Please enter a phone number.</FormHelperText>
+            ) : null}
           </FormControl>
         </div>
         <div className={clsx(styles.Margin, styles.BottomMargin)}>
@@ -129,7 +131,7 @@ export const Login: React.SFC<LoginProps> = () => {
                 </InputAdornment>
               }
             />
-            {passwordError ? <FormHelperText>Invalid password.</FormHelperText> : null}
+            {passwordError ? <FormHelperText>Please enter a password.</FormHelperText> : null}
           </FormControl>
         </div>
         {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
