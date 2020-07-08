@@ -16,7 +16,7 @@ export interface ConfirmOTPProps {
 
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [userAuthCode, setUserAuthCode] = useState('');
-  const [tokenResponse, setTokenResponse] = useState();
+  const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState(false);
 
   const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           },
         })
         .then(function (response: any) {
-          setTokenResponse(response.data.data);
+          const responseString = JSON.stringify(response.data.data);
+          setTokenResponse(responseString);
         })
         .catch(function (error: any) {
           console.log(error);
