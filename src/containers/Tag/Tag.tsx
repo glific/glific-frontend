@@ -126,22 +126,37 @@ export const Tag: React.SFC<TagProps> = (props) => {
 
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFields = [
-    { component: Input, name: 'label', type: 'text', label: 'label', options: null },
-    { component: Input, name: 'description', type: 'text', label: 'Description', options: null },
-    { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
     {
-      component: Checkbox,
-      name: 'isReserved',
-      type: 'checkbox',
-      label: 'Is Reserved',
+      component: Input,
+      name: 'label',
+      type: 'text',
+      placeholder: 'Tag title',
       options: null,
+      rows: 1,
+    },
+    {
+      component: Input,
+      name: 'description',
+      type: 'text',
+      placeholder: 'Description',
+      options: null,
+      rows: 3,
+    },
+    {
+      component: Input,
+      name: 'keywords',
+      type: 'text',
+      placeholder: 'Keywords',
+      options: null,
+      rows: 3,
     },
     {
       component: Dropdown,
       name: 'languageId',
       type: null,
-      label: 'Language',
+      placeholder: 'Language',
       options: languageOptions,
+      rows: null,
     },
   ];
 
@@ -173,31 +188,30 @@ export const Tag: React.SFC<TagProps> = (props) => {
         }}
       >
         {({ submitForm }) => (
-          <Paper elevation={3}>
-            <Form className={styles.Form}>
-              {formFields.map((field, index) => {
-                return (
-                  <Field
-                    key={index}
-                    component={field.component}
-                    name={field.name}
-                    type={field.type}
-                    label={field.label}
-                    options={field.options}
-                  ></Field>
-                );
-              })}
-              <div className={styles.Buttons}>
-                <Button variant="contained" color="primary" onClick={submitForm}>
-                  Save
-                </Button>
-                &nbsp;&nbsp;
-                <Button variant="contained" color="default" onClick={cancelHandler}>
-                  Cancel
-                </Button>
-              </div>
-            </Form>
-          </Paper>
+          <Form className={styles.Form}>
+            {formFields.map((field, index) => {
+              return (
+                <Field
+                  key={index}
+                  component={field.component}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  type={field.type}
+                  options={field.options}
+                  rows={field.rows}
+                ></Field>
+              );
+            })}
+            <div className={styles.Buttons}>
+              <Button variant="contained" color="primary" onClick={submitForm}>
+                Save
+              </Button>
+              &nbsp;&nbsp;
+              <Button variant="contained" color="default" onClick={cancelHandler}>
+                Cancel
+              </Button>
+            </div>
+          </Form>
         )}
       </Formik>
     </>

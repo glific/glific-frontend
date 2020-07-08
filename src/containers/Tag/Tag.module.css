@@ -16,7 +16,7 @@
 
 .Input {
   display: flex;
-  padding: 20px;
+  padding: 8px;
 }
 
 .Label {
@@ -27,11 +27,11 @@
 
 .TagAdd {
   width: fit-content;
-  margin: 0 auto;
 }
 
 .Form {
   padding: 20px 50px;
+  width: 470px;
 }
 
 .Buttons {
