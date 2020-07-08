@@ -35,7 +35,6 @@
     "graphql": "^15.0.0",
     "markdown-draft-js": "^2.2.1",
     "markdown-to-jsx": "^6.11.4",
-    "marked": "^1.1.0",
     "moment": "^2.27.0",
     "phoenix": "^1.5.3",
     "react": "^16.13.1",
