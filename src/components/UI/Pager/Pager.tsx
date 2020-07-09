@@ -7,7 +7,6 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-  Paper,
   TableSortLabel,
 } from '@material-ui/core';
 import styles from './Pager.module.css';
