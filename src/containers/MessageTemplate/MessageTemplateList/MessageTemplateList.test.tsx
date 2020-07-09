@@ -144,9 +144,9 @@ describe('<MessageTemplateList />', () => {
 
     await wait();
     const { getByText } = within(container.querySelector('thead'));
-    expect(getByText('Label')).toBeInTheDocument();
-    expect(getByText('Body')).toBeInTheDocument();
-    expect(getByText('Actions')).toBeInTheDocument();
+    expect(getByText('LABEL')).toBeInTheDocument();
+    expect(getByText('BODY')).toBeInTheDocument();
+    expect(getByText('ACTIONS')).toBeInTheDocument();
   });
 
   test('A row in the table should have an edit and delete button', async () => {

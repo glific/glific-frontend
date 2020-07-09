@@ -103,8 +103,8 @@ describe('Server Table test', () => {
 
   it('renders column names correctly', () => {
     const wrapper = shallow(createTable());
-    expect(wrapper.find(TableSortLabel).length).toEqual(3);
-    for (let i = 0; i < columnNames.length; i++) {
+    expect(wrapper.find(TableSortLabel).length).toEqual(2);
+    for (let i = 0; i < columnNames.length - 1; i++) {
       expect(wrapper.find(TableSortLabel).at(i).text() === columnNames[i]);
     }
   });
@@ -171,7 +171,7 @@ describe('Server Table test', () => {
 
   it('changing sort by column', () => {
     const wrapper = mount(createTable());
-    for (let i = 0; i < columnNames.length; i++) {
+    for (let i = 0; i < columnNames.length - 1; i++) {
       wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
       expect(tableVals.sortCol).toEqual(columnNames[i]);
       expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');

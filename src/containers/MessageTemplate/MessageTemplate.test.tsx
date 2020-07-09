@@ -21,7 +21,6 @@ const mocks = [
       variables: {
         input: {
           body: 'new Template body',
-          isActive: true,
           label: 'new Template',
           languageId: 1,
           type: 'TEXT',
@@ -30,7 +29,7 @@ const mocks = [
     },
     result: {
       data: {
-        creatcreateSessionTemplateeTag: {
+        createSessionTemplate: {
           sessionTemplate: {
             body: 'new Template body',
             id: '121',
@@ -153,9 +152,8 @@ describe('<MessageTemplate />', () => {
       </MockedProvider>
     );
     await wait();
-    expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="body"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="isActive"]')).toBeInTheDocument();
+    expect(container.querySelector('textarea[name="label"]')).toBeInTheDocument();
+    expect(container.querySelector('textarea[name="body"]')).toBeInTheDocument();
     expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
   });
 
@@ -169,12 +167,11 @@ describe('<MessageTemplate />', () => {
     );
 
     await wait();
-    expect(container.querySelector('input[name="label"]').getAttribute('value')).toBe('important');
-    expect(container.querySelector('input[name="body"]').getAttribute('value')).toBe(
+    expect(container.querySelector('textarea[name="label"]')?.textContent).toBe('important');
+    expect(container.querySelector('textarea[name="body"]')?.textContent).toBe(
       'important template'
     );
-    expect(container.querySelector('input[name="isActive"]').getAttribute('value')).toBe('true');
-    expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
+    expect(container.querySelector('input[name="languageId"]')?.getAttribute('value')).toBe('1');
   });
 
   test('cancel button should redirect to MessageTemplatelist page', async () => {
@@ -213,14 +210,12 @@ describe('Save Button', () => {
     );
 
     await wait();
-    fireEvent.change(container.querySelector('input[name="label"]'), {
-      target: { value: 'new Template' },
+    fireEvent.change(container.querySelector('textarea[name="label"]'), {
+      target: { innerHTML: 'new Template' },
     });
-    fireEvent.change(container.querySelector('input[name="body"]'), {
+    fireEvent.change(container.querySelector('textarea[name="body"]'), {
       target: { value: 'new Template body' },
     });
-
-    fireEvent.click(container.querySelector('input[name="isActive"]'));
 
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },

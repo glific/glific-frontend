@@ -10,10 +10,12 @@ import {
   Paper,
   TableSortLabel,
 } from '@material-ui/core';
+import styles from './Pager.module.css';
 
 interface PagerProps {
-  columnNames: Array<string>;
+  columnNames: Array<any>;
   data: any;
+  columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
   tableVals: {
@@ -30,49 +32,64 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     const createRow = (entry: any) => {
       return Object.keys(entry).map((item: any, i: number) => {
         return (
-          <TableCell key={i}>
-            {typeof entry[item] === 'string' && entry[item].length > 50
-              ? entry[item].slice(0, 50) + '...'
-              : entry[item]}
+          <TableCell
+            key={i}
+            className={`${styles.TableCell} ${props.columnStyles ? props.columnStyles[i] : null}`}
+          >
+            {entry[item]}
           </TableCell>
         );
       });
     };
     return props.data.map((entry: any, i: number) => {
-      return <TableRow key={i}>{createRow(entry)}</TableRow>;
+      return (
+        <TableRow key={i} className={styles.TableRow}>
+          {createRow(entry)}
+        </TableRow>
+      );
     });
   };
 
   return (
-    <Paper>
-      <Table>
-        <TableHead>
-          <TableRow>
+    <div className={styles.TableContainer}>
+      <Table className={styles.Table}>
+        <TableHead className={styles.TagListHeader}>
+          <TableRow className={styles.TableHeadRow}>
             {props.columnNames.map((name: string, i: number) => {
               return (
-                <TableCell key={i}>
-                  <TableSortLabel
-                    active={name === props.tableVals.sortCol}
-                    direction={props.tableVals.sortDirection}
-                    onClick={() => {
-                      props.handleTableChange('sortCol', name);
-                      props.handleTableChange(
-                        'sortDirection',
-                        props.tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                      );
-                    }}
-                  >
-                    {name}
-                  </TableSortLabel>
+                <TableCell
+                  key={i}
+                  className={`${styles.TableCell} ${
+                    props.columnStyles ? props.columnStyles[i] : null
+                  }`}
+                >
+                  {i !== props.columnNames.length - 1 ? (
+                    <TableSortLabel
+                      active={name === props.tableVals.sortCol}
+                      direction={props.tableVals.sortDirection}
+                      onClick={() => {
+                        props.handleTableChange('sortCol', name);
+                        props.handleTableChange(
+                          'sortDirection',
+                          props.tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                        );
+                      }}
+                    >
+                      {name}
+                    </TableSortLabel>
+                  ) : (
+                    name
+                  )}
                 </TableCell>
               );
             })}
           </TableRow>
         </TableHead>
         <TableBody>{createRows()}</TableBody>
-        <TableFooter>
+        <TableFooter className={styles.TableFooter}>
           <TableRow>
             <TablePagination
+              className={styles.FooterRow}
               colSpan={props.columnNames.length}
               count={props.totalRows}
               onChangePage={(e, newPage) => {
@@ -88,6 +105,6 @@ export const Pager: React.SFC<PagerProps> = (props) => {
           </TableRow>
         </TableFooter>
       </Table>
-    </Paper>
+    </div>
   );
 };

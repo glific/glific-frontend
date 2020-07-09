@@ -7,8 +7,8 @@
 }
 
 .DialogBox {
-  width: 395px;
   padding-bottom: 16px;
+  min-width: 300px;
 }
 
 .MessageList {

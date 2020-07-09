@@ -3,23 +3,28 @@ import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { useApolloClient } from '@apollo/client';
 import styles from './MessageTemplate.module.css';
 import { useQuery, useMutation } from '@apollo/client';
-import Paper from '@material-ui/core/Paper';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../graphql/queries/Template';
 import { GET_LANGUAGES } from '../../graphql/queries/Tag';
 import { setNotification } from '../../common/notification';
 import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
+import { Typography, IconButton } from '@material-ui/core';
+import { ReactComponent as SpeedSendIcon } from '../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import { DELETE_TEMPLATE } from '../../graphql/mutations/Template';
 
 export interface TemplateProps {
   match: any;
 }
 
 export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [deleteTemplate] = useMutation(DELETE_TEMPLATE);
   const queryVariables = {
     filter: {
       label: '',
@@ -45,7 +50,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         template = data.sessionTemplate.sessionTemplate;
         setLabel(template.label);
         setBody(template.body);
-        setIsActive(template.isActive);
         setLanguageId(template.language.id);
       }
     },
@@ -58,7 +62,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
-  const [isActive, setIsActive] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -97,7 +100,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
     const payload = {
       label: template.label,
       body: template.body,
-      isActive: template.isActive,
       languageId: Number(template.languageId),
       type: 'TEXT',
     };
@@ -132,18 +134,28 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
 
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFields = [
-    { component: Input, name: 'label', type: 'text', label: 'Label', options: null },
-    { component: Input, name: 'body', type: 'text', label: 'Body', options: null },
-    { component: Checkbox, name: 'isActive', type: 'checkbox', label: 'Is Active', options: null },
-
+    { component: Input, name: 'label', placeholder: 'Title', options: null, row: null },
+    { component: Input, name: 'body', placeholder: 'Message', options: null, row: 3 },
     {
       component: Dropdown,
       name: 'languageId',
-      type: null,
-      label: 'Language',
+      placeholder: 'Language',
       options: languageOptions,
+      row: null,
     },
   ];
+
+  const deleteButton = templateId ? (
+    <Button
+      variant="contained"
+      color="secondary"
+      className={styles.DeleteButton}
+      onClick={() => setShowDialog(true)}
+    >
+      <DeleteIcon className={styles.DeleteIcon} />
+      Remove
+    </Button>
+  ) : null;
 
   let form = (
     <>
@@ -152,7 +164,6 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         initialValues={{
           label: label,
           body: body,
-          isActive: isActive,
           languageId: languageId,
         }}
         validate={(values) => {
@@ -172,39 +183,75 @@ export const MessageTemplate: React.SFC<TemplateProps> = (props) => {
         }}
       >
         {({ submitForm }) => (
-          <Paper elevation={3}>
-            <Form className={styles.Form}>
-              {formFields.map((field, index) => {
-                return (
-                  <Field
-                    key={index}
-                    component={field.component}
-                    name={field.name}
-                    type={field.type}
-                    label={field.label}
-                    options={field.options}
-                  ></Field>
-                );
-              })}
-              <div className={styles.Buttons}>
-                <Button variant="contained" color="primary" onClick={submitForm}>
-                  Save
-                </Button>
-                &nbsp;&nbsp;
-                <Button variant="contained" color="default" onClick={cancelHandler}>
-                  Cancel
-                </Button>
-              </div>
-            </Form>
-          </Paper>
+          <Form className={styles.Form}>
+            {formFields.map((field, index) => {
+              return (
+                <Field
+                  key={index}
+                  component={field.component}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  options={field.options}
+                  rows={field.row}
+                ></Field>
+              );
+            })}
+            <div className={styles.Buttons}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={submitForm}
+                className={styles.Button}
+              >
+                Save
+              </Button>
+              <Button variant="contained" color="default" onClick={cancelHandler}>
+                Cancel
+              </Button>
+              {deleteButton}
+            </div>
+          </Form>
         )}
       </Formik>
     </>
   );
 
+  const handleDeleteTemplate = () => {
+    deleteTemplate({ variables: { id: templateId } });
+    setNotification(client, 'Speed send deleted successfully');
+    setFormSubmitted(true);
+  };
+
+  let dialogBox;
+  if (showDialog) {
+    dialogBox = (
+      <DialogBox
+        title={`Are you sure you want to remove speed send?`}
+        handleOk={handleDeleteTemplate}
+        handleCancel={() => setShowDialog(false)}
+        colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
+      >
+        <p className={styles.DialogText}>
+          It will stop showing when you are drafting a customized message
+        </p>
+      </DialogBox>
+    );
+  }
+
+  const heading = (
+    <Typography variant="h5" className={styles.Title}>
+      <IconButton disabled={true} className={styles.Icon}>
+        <SpeedSendIcon className={styles.SpeedSendIcon} />
+      </IconButton>
+      {templateId ? 'Edit speed send message' : 'Add a new speed send message'}
+    </Typography>
+  );
+
   return (
     <div className={styles.TemplateAdd}>
-      <h3>{templateId ? 'Edit speed send information' : 'Enter speed send information'}</h3>
+      {dialogBox}
+      {heading}
       {form}
     </div>
   );
