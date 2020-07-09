@@ -79,7 +79,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const saveMessageTemplate = (display: boolean) => {
     setShowSaveMessageDialog(display);
-    setAnchorEl(anchorEl ? null : Ref.current);
   };
 
   let saveTemplateMessage;
@@ -130,6 +129,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           <Popper
             id={popperId}
             open={open}
+            modifiers={{
+              preventOverflow: {
+                enabled: true,
+                boundariesElement: 'scrollParent',
+              },
+            }}
             anchorEl={anchorEl}
             placement={placement}
             transition

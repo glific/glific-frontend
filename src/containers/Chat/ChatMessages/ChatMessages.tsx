@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import {
   Container,
@@ -81,13 +81,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
+  const [showDropdown, setShowDropdown] = useState<any>(null);
 
   // Instantiate these to be used later.
   let receiverId: number = 0;
   let conversationIndex: number = -1;
+  let toastMessage;
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+
+  useEffect(() => {
+    if (editTagsMessageId) {
+      window.addEventListener('click', () => setShowDropdown(null), true);
+    }
+  }, [editTagsMessageId]);
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage]);
 
   // get the conversations stored from the cache
   const queryVariables = {
@@ -123,7 +137,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
-      setEditTagsMessageId(null);
       setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
@@ -226,14 +239,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setNotification(client, null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
 
   const closeDialogBox = () => {
     setDialogbox(false);
-    setEditTagsMessageId(null);
+    setShowDropdown(null);
     setSearch('');
   };
 
@@ -250,7 +262,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
-      setEditTagsMessageId(null);
+      setShowDropdown(null);
     } else {
       createMessageTag({
         variables: {
@@ -341,11 +353,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const showEditTagsDialog = (id: number) => {
-    if (id === editTagsMessageId) {
-      setEditTagsMessageId(null);
-    } else {
-      setEditTagsMessageId(id);
-    }
+    setEditTagsMessageId(id);
+    setShowDropdown(id);
   };
 
   let messageList: any;
@@ -357,7 +366,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           {...message}
           contactId={receiverId}
           key={index}
-          popup={message.id === editTagsMessageId}
+          popup={message.id === showDropdown}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {
             loadAllTags();

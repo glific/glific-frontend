@@ -7,17 +7,20 @@
   align-items: unset !important;
 }
 .Dialogbox {
+  max-width: 459px;
+  min-width: 459px;
+  margin: 0 auto;
   height: unset !important;
 }
 
 .DialogActions {
   padding-left: 24px !important;
   padding-bottom: 24px !important;
-  justify-content: flex-start !important;
 }
 
 .DialogTitle {
   color: #073f24;
   padding-top: 24px !important;
+  text-align: center;
   padding-bottom: 8px !important;
 }

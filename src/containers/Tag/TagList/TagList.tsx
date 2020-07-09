@@ -91,6 +91,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const message = useQuery(NOTIFICATION);
+  let toastMessage;
 
   useEffect(() => {
     refetch(filterPayload());
@@ -104,6 +105,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     });
   }, [searchVal, refetchCount]);
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage]);
 
   let deleteId: number = 0;
 
@@ -142,7 +149,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     setDeleteTagID(null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
@@ -155,8 +161,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         handleOk={handleDeleteTag}
         handleCancel={closeDialogBox}
         colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
       >
-        You won't be able to use this for tagging messages.
+        <p className={styles.DialogText}>You won't be able to use this for tagging messages.</p>
       </DialogBox>
     );
   }
