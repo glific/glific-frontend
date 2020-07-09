@@ -201,7 +201,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     return (
       <div className={styles.LabelContainer}>
         <FilledTagIcon className={styles.FilledTagIcon} />
-        <p className={styles.Label}>{label}</p>
+        <p className={styles.LabelText}>{label}</p>
       </div>
     );
   };
@@ -253,12 +253,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     tagCount = countData.countTags;
   }
 
-  const columnStyles = [
-    styles.LabelHeader,
-    styles.DescriptionHeader,
-    styles.KeywordsHeader,
-    styles.ActionsHeader,
-  ];
+  const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
 
   return (
     <>

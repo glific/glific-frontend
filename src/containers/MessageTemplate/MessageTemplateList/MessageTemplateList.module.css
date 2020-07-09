@@ -93,7 +93,7 @@
   margin-left: auto;
 }
 
-.Label {
+.LabelText {
   font-family: 'heebo', sans-serif;
   display: flex;
   font-weight: 500;
@@ -131,15 +131,15 @@
   margin-right: 14px !important;
 }
 
-.LabelHeader {
+.Label {
   width: 172px;
 }
 
-.BodyHeader {
+.Body {
   width: 667px;
 }
 
-.ActionsHeader {
+.Actions {
   width: 100px;
   justify-content: flex-end;
   margin-left: auto;

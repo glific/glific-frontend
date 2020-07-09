@@ -59,7 +59,7 @@
   align-self: center;
 }
 
-.Label {
+.LabelText {
   font-family: 'heebo', sans-serif;
   display: flex;
   font-weight: 500;
@@ -87,19 +87,19 @@
   align-content: center;
 }
 
-.LabelHeader {
+.Label {
   width: 162px;
 }
 
-.DescriptionHeader {
+.Description {
   width: 291px;
 }
 
-.KeywordsHeader {
+.Keywords {
   width: 395px;
 }
 
-.ActionsHeader {
+.Actions {
   width: 100px;
   justify-content: flex-end;
   margin-left: auto;

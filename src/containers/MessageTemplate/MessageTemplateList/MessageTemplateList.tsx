@@ -199,7 +199,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   }
 
   const getLabel = (label: string) => {
-    return <div className={styles.Label}>{label}</div>;
+    return <div className={styles.LabelText}>{label}</div>;
   };
 
   const getBody = (text: string) => {
@@ -217,7 +217,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   }
 
-  const columnStyles = [styles.LabelHeader, styles.BodyHeader, styles.ActionsHeader];
+  const columnStyles = [styles.Label, styles.Body, styles.Actions];
 
   const resetTableVals = () => {
     setTableVals({
