@@ -133,21 +133,22 @@ describe('<TagList />', () => {
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
-  // test('taglist has proper headers', async () => {
-  //   const { container } = render(
-  //     <MockedProvider mocks={mocks} addTypename={false}>
-  //       <Router>
-  //         <TagList />
-  //       </Router>
-  //     </MockedProvider>
-  //   );
+  test('taglist has proper headers', async () => {
+    const { container } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <TagList />
+        </Router>
+      </MockedProvider>
+    );
 
-  //   await wait();
-  //   const { getByText } = within(container.querySelector('thead'));
-  //   expect(getByText('Name')).toBeInTheDocument();
-  //   expect(getByText('Description')).toBeInTheDocument();
-  //   expect(getByText('Actions')).toBeInTheDocument();
-  // });
+    await wait();
+    const { getByText } = within(container.querySelector('thead'));
+    expect(getByText('TITLE')).toBeInTheDocument();
+    expect(getByText('DESCRIPTION')).toBeInTheDocument();
+    expect(getByText('KEYWORDS')).toBeInTheDocument();
+    expect(getByText('ACTIONS')).toBeInTheDocument();
+  });
 
   test('A row in the table should have an edit and delete button', async () => {
     const { container } = render(

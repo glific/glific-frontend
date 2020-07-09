@@ -72,7 +72,7 @@ describe('Server Table test', () => {
   it('renders table', () => {
     const wrapper = mount(createTable());
     expect(wrapper.find(Table).length).toEqual(1);
-    // expect(wrapper.find(TableHead).length).toEqual(1);
+    expect(wrapper.find(TableHead).length).toEqual(1);
     expect(wrapper.find(TableBody).length).toEqual(1);
     expect(wrapper.find(TableFooter).length).toEqual(1);
   });
@@ -89,25 +89,25 @@ describe('Server Table test', () => {
     expect(pagProps.onChangeRowsPerPage).toBeInstanceOf(Function);
   });
 
-  // it('passes in tableVals correctly', () => {
-  //   const wrapper = shallow(createTable());
-  //   expect(wrapper.find(TablePagination).prop('page')).toEqual(tableVals.pageNum);
-  //   expect(wrapper.find(TablePagination).prop('rowsPerPage')).toEqual(tableVals.pageRows);
-  //   let sortLabel = wrapper
-  //     .find(TableSortLabel)
-  //     .findWhere((obj) => obj.text() === tableVals.sortCol)
-  //     .at(0);
-  //   expect(sortLabel.prop('active')).toEqual(true);
-  //   expect(sortLabel.prop('direction')).toEqual(tableVals.sortDirection);
-  // });
+  it('passes in tableVals correctly', () => {
+    const wrapper = shallow(createTable());
+    expect(wrapper.find(TablePagination).prop('page')).toEqual(tableVals.pageNum);
+    expect(wrapper.find(TablePagination).prop('rowsPerPage')).toEqual(tableVals.pageRows);
+    let sortLabel = wrapper
+      .find(TableSortLabel)
+      .findWhere((obj) => obj.text() === tableVals.sortCol)
+      .at(0);
+    expect(sortLabel.prop('active')).toEqual(true);
+    expect(sortLabel.prop('direction')).toEqual(tableVals.sortDirection);
+  });
 
-  // it('renders column names correctly', () => {
-  //   const wrapper = shallow(createTable());
-  //   expect(wrapper.find(TableSortLabel).length).toEqual(3);
-  //   for (let i = 0; i < columnNames.length; i++) {
-  //     expect(wrapper.find(TableSortLabel).at(i).text() === columnNames[i]);
-  //   }
-  // });
+  it('renders column names correctly', () => {
+    const wrapper = shallow(createTable());
+    expect(wrapper.find(TableSortLabel).length).toEqual(2);
+    for (let i = 0; i < columnNames.length - 1; i++) {
+      expect(wrapper.find(TableSortLabel).at(i).text() === columnNames[i]);
+    }
+  });
 
   it('data rendered properly', () => {
     const wrapper = shallow(createTable());
@@ -169,12 +169,12 @@ describe('Server Table test', () => {
     expect(tableVals.pageRows).toEqual(10);
   });
 
-  // it('changing sort by column', () => {
-  //   const wrapper = mount(createTable());
-  //   for (let i = 0; i < columnNames.length; i++) {
-  //     wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
-  //     expect(tableVals.sortCol).toEqual(columnNames[i]);
-  //     expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
-  //   }
-  // });
+  it('changing sort by column', () => {
+    const wrapper = mount(createTable());
+    for (let i = 0; i < columnNames.length - 1; i++) {
+      wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
+      expect(tableVals.sortCol).toEqual(columnNames[i]);
+      expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
+    }
+  });
 });
