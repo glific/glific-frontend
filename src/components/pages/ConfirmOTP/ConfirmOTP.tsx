@@ -76,6 +76,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
               id="authentication-code"
               label="Authentication Code"
               type="text"
+              value={userAuthCode}
               onChange={handleuserAuthCodeChange()}
             />
             {authError ? <FormHelperText>Invalid authentication code.</FormHelperText> : null}

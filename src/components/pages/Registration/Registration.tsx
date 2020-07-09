@@ -146,6 +146,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               id="phone-number"
               label="Phone Number"
               type="integer"
+              value={phoneNumber}
               onChange={handlePhoneNumberChange()}
             />
             {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
