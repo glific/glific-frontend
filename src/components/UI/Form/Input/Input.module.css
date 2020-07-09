@@ -1,10 +1,19 @@
 .Input {
   display: flex;
-  padding: 20px;
+  padding: 8px;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
 }
 
 .Label {
-  width: 50%;
-  align-self: center;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 500;
+  color: #93a29b !important;
+}
+
+.HelperText {
+  margin-left: 16px !important;
 }

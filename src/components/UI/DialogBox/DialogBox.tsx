@@ -14,8 +14,9 @@ interface DialogProps {
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
-  colorOk?: string;
-  colorCancel?: string;
+  colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
+  alignButtons?: string;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -28,6 +29,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   buttonCancel = 'Cancel',
   colorOk = 'primary',
   colorCancel = 'default',
+  alignButtons,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -55,7 +57,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
           {title}
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
-        <DialogActions>
+        <DialogActions className={`${styles.DialogActions} ${alignButtons}`}>
           <Button
             onClick={handleOKButton}
             color={colorOk}

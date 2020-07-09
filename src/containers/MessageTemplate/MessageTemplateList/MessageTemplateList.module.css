@@ -84,3 +84,15 @@
   cursor: pointer;
   align-items: center;
 }
+
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
+}
+
+.ButtonsCenter {
+  justify-content: center !important;
+}
