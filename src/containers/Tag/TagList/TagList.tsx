@@ -253,7 +253,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     tagCount = countData.countTags;
   }
 
-  const columnHead = [
+  const columnStyles = [
     styles.LabelHeader,
     styles.DescriptionHeader,
     styles.KeywordsHeader,
@@ -296,7 +296,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       {/* Rendering list of tags */}
       {tagList ? (
         <Pager
-          columnHead={columnHead}
+          columnStyles={columnStyles}
           columnNames={columnNames}
           data={tagList}
           totalRows={tagCount}

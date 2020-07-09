@@ -15,7 +15,7 @@ import styles from './Pager.module.css';
 interface PagerProps {
   columnNames: Array<any>;
   data: any;
-  columnHead?: Array<any>;
+  columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
   tableVals: {
@@ -34,7 +34,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
         return (
           <TableCell
             key={i}
-            className={`${styles.TableCell} ${props.columnHead ? props.columnHead[i] : null}`}
+            className={`${styles.TableCell} ${props.columnStyles ? props.columnStyles[i] : null}`}
           >
             {entry[item]}
           </TableCell>
@@ -59,7 +59,9 @@ export const Pager: React.SFC<PagerProps> = (props) => {
               return (
                 <TableCell
                   key={i}
-                  className={`${styles.TableCell} ${props.columnHead ? props.columnHead[i] : null}`}
+                  className={`${styles.TableCell} ${
+                    props.columnStyles ? props.columnStyles[i] : null
+                  }`}
                 >
                   {i !== props.columnNames.length - 1 ? (
                     <TableSortLabel

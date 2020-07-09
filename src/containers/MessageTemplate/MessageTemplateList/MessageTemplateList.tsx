@@ -217,7 +217,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   }
 
-  const columnHead = [styles.LabelHeader, styles.BodyHeader, styles.ActionsHeader];
+  const columnStyles = [styles.LabelHeader, styles.BodyHeader, styles.ActionsHeader];
 
   const resetTableVals = () => {
     setTableVals({
@@ -282,7 +282,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
       {/* Rendering list of templates */}
       {templateList ? (
         <Pager
-          columnHead={columnHead}
+          columnStyles={columnStyles}
           columnNames={columnNames}
           data={templateList}
           totalRows={templateCount}
