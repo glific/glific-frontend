@@ -30,6 +30,7 @@
 .Header {
   display: flex;
   padding: 10px;
+  padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
@@ -93,7 +94,6 @@
 }
 
 .Label {
-  width: 142px;
   font-family: 'heebo', sans-serif;
   display: flex;
   font-weight: 500;
@@ -105,7 +105,6 @@
 }
 
 .TableText {
-  width: 667px;
   margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
@@ -130,4 +129,18 @@
   border-radius: 50% !important;
   min-width: 25px !important;
   margin-right: 14px !important;
+}
+
+.LabelHeader {
+  width: 172px;
+}
+
+.BodyHeader {
+  width: 667px;
+}
+
+.ActionsHeader {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
 }

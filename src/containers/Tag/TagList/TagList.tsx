@@ -39,7 +39,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
 
   // Table attributes
-  const columnNames = ['Name', 'Description', 'Actions'];
+  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
+
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -252,6 +253,13 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     tagCount = countData.countTags;
   }
 
+  const columnHead = [
+    styles.LabelHeader,
+    styles.DescriptionHeader,
+    styles.KeywordsHeader,
+    styles.ActionsHeader,
+  ];
+
   return (
     <>
       <div className={styles.Header}>
@@ -278,9 +286,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
             <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
               Add New
             </Button>
-            <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+            {/* <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
               :
-            </MaterialButton>
+            </MaterialButton> */}
           </div>
         </div>
       </div>
@@ -288,6 +296,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       {/* Rendering list of tags */}
       {tagList ? (
         <Pager
+          columnHead={columnHead}
           columnNames={columnNames}
           data={tagList}
           totalRows={tagCount}

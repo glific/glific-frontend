@@ -38,7 +38,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
 
   // Table attributes
-  const columnNames = ['Label', 'Body', 'Actions'];
+  const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -217,6 +217,8 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   }
 
+  const columnHead = [styles.LabelHeader, styles.BodyHeader, styles.ActionsHeader];
+
   const resetTableVals = () => {
     setTableVals({
       pageNum: 0,
@@ -270,9 +272,9 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
               Add New
             </Button>
-            <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+            {/* <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
               :
-            </MaterialButton>
+            </MaterialButton> */}
           </div>
         </div>
       </div>
@@ -280,6 +282,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
       {/* Rendering list of templates */}
       {templateList ? (
         <Pager
+          columnHead={columnHead}
           columnNames={columnNames}
           data={templateList}
           totalRows={templateCount}

@@ -29,6 +29,12 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTablePagination: {
+      caption: {
+        fontSize: '16px',
+        color: '#073F24',
+      },
+    },
   },
 });
 

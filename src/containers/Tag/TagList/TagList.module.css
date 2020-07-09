@@ -12,7 +12,6 @@
 .Title {
   margin-left: 14px !important;
   vertical-align: middle;
-
   font-weight: 500 !important;
   color: #073f24;
 }
@@ -37,6 +36,7 @@
 .Header {
   display: flex;
   padding: 10px;
+  padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
@@ -60,7 +60,6 @@
 }
 
 .Label {
-  width: 142px;
   font-family: 'heebo', sans-serif;
   display: flex;
   font-weight: 500;
@@ -72,7 +71,6 @@
 }
 
 .TableText {
-  width: 330px;
   margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
@@ -82,13 +80,31 @@
   margin: 0;
 }
 
-.Icons {
-  margin-left: auto;
-}
-
 .LabelContainer {
   display: flex;
   height: fit-content;
   align-items: baseline;
   align-content: center;
+}
+
+.LabelHeader {
+  width: 162px;
+}
+
+.DescriptionHeader {
+  width: 291px;
+}
+
+.KeywordsHeader {
+  width: 395px;
+}
+
+.ActionsHeader {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.Icons {
+  margin-left: auto;
 }

@@ -13,8 +13,9 @@ import {
 import styles from './Pager.module.css';
 
 interface PagerProps {
-  columnNames: Array<string>;
+  columnNames: Array<any>;
   data: any;
+  columnHead?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
   tableVals: {
@@ -31,7 +32,10 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     const createRow = (entry: any) => {
       return Object.keys(entry).map((item: any, i: number) => {
         return (
-          <TableCell key={i} className={styles.TableCell}>
+          <TableCell
+            key={i}
+            className={`${styles.TableCell} ${props.columnHead ? props.columnHead[i] : null}`}
+          >
             {entry[item]}
           </TableCell>
         );
@@ -49,33 +53,41 @@ export const Pager: React.SFC<PagerProps> = (props) => {
   return (
     <div className={styles.TableContainer}>
       <Table className={styles.Table}>
-        {/* <TableHead>
-          <TableRow>
+        <TableHead className={styles.TagListHeader}>
+          <TableRow className={styles.TableHeadRow}>
             {props.columnNames.map((name: string, i: number) => {
               return (
-                <TableCell key={i}>
-                  <TableSortLabel
-                    active={name === props.tableVals.sortCol}
-                    direction={props.tableVals.sortDirection}
-                    onClick={() => {
-                      props.handleTableChange('sortCol', name);
-                      props.handleTableChange(
-                        'sortDirection',
-                        props.tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                      );
-                    }}
-                  >
-                    {name}
-                  </TableSortLabel>
+                <TableCell
+                  key={i}
+                  className={`${styles.TableCell} ${props.columnHead ? props.columnHead[i] : null}`}
+                >
+                  {i !== props.columnNames.length - 1 ? (
+                    <TableSortLabel
+                      active={name === props.tableVals.sortCol}
+                      direction={props.tableVals.sortDirection}
+                      onClick={() => {
+                        props.handleTableChange('sortCol', name);
+                        props.handleTableChange(
+                          'sortDirection',
+                          props.tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                        );
+                      }}
+                    >
+                      {name}
+                    </TableSortLabel>
+                  ) : (
+                    name
+                  )}
                 </TableCell>
               );
             })}
           </TableRow>
-        </TableHead> */}
+        </TableHead>
         <TableBody>{createRows()}</TableBody>
-        <TableFooter>
+        <TableFooter className={styles.TableFooter}>
           <TableRow>
             <TablePagination
+              className={styles.FooterRow}
               colSpan={props.columnNames.length}
               count={props.totalRows}
               onChangePage={(e, newPage) => {
