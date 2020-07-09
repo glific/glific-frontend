@@ -396,7 +396,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversationInfo.contact.name} />
+      <ContactBar
+        contactName={
+          conversationInfo.contact.name
+            ? conversationInfo.contact.name
+            : conversationInfo.contact.phone
+        }
+      />
       <Container className={styles.MessageList} data-testid="messageContainer">
         {messageList}
       </Container>

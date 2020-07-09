@@ -77,7 +77,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
           onClick={(i: number) => setSelectedIndex(i)}
           index={index}
           contactId={conversation.contact.id}
-          contactName={conversation.contact.name}
+          contactName={
+            conversation.contact.name ? conversation.contact.name : conversation.contact.phone
+          }
           lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
         />
       );
