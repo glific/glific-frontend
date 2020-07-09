@@ -102,7 +102,11 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                 Glific
               </Typography>
             </ThemeProvider>
-            <IconButton className={classes.iconButton} onClick={() => setFullOpen(false)}>
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => setFullOpen(false)}
+              data-testid="drawer-button"
+            >
               <MenuIcon />
             </IconButton>
           </div>

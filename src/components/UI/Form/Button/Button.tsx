@@ -7,6 +7,7 @@ export interface ButtonProps {
   variant: any;
   color: any;
   onClick: any;
+  'data-testid'?: string;
 }
 
 export const Button: React.SFC<ButtonProps> = (props) => {
@@ -16,6 +17,7 @@ export const Button: React.SFC<ButtonProps> = (props) => {
       color={props.color}
       onClick={props.onClick}
       className={styles.Button}
+      data-testid={props['data-testid']}
     >
       {props.children}
     </ButtonElement>
