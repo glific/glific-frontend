@@ -73,11 +73,46 @@ const mocks = [
           {
             id: '87',
             label: 'Important',
+            keywords: ['Hi'],
             description: 'important task',
           },
           {
             id: '94',
             label: 'To Do',
+            keywords: ['Hi'],
+            description: 'complete this task',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TAGS,
+      variables: {
+        filter: {
+          label: '',
+        },
+        opts: {
+          limit: 10,
+          offset: 0,
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '87',
+            label: 'Important',
+            keywords: ['Hi'],
+            description: 'important task',
+          },
+          {
+            id: '94',
+            label: 'To Do',
+            keywords: ['Hi'],
             description: 'complete this task',
           },
         ],

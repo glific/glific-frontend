@@ -38,6 +38,7 @@ export const FILTER_TAGS = gql`
       id
       label
       description
+      keywords
     }
   }
 `;
