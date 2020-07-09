@@ -152,7 +152,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         messagesCopy.conversations[conversationIndex].messages = messagesCopy.conversations[
           conversationIndex
         ].messages.map((message: any) => {
-          if (message.id == editTagsMessageId) {
+          if (message.id === editTagsMessageId) {
             message.tags = message.tags.filter((tag: any) => !unselectedTags.includes(tag.id));
             message.tags = [...message.tags, ...addedTags];
           }
