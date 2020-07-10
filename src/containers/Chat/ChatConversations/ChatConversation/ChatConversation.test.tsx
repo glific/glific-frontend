@@ -42,8 +42,16 @@ describe('<ChatConversation />', () => {
     );
   });
 
-  test('it should render the tags correctly', () => {
+  test('it should call the callback function on click action', () => {
     wrapper.find('[data-testid="list"]').simulate('click');
     expect(mockCallback).toHaveBeenCalled();
+  });
+
+  test('check the condition with empty tags', () => {
+    const newProps = { ...defaultProps };
+    newProps.lastMessage.tags = [];
+    const chatWrapper = shallow(<ChatConversation {...newProps} />);
+    console.log(chatWrapper);
+    expect(chatWrapper.find('.ChatInfoRead')).toHaveLength(1);
   });
 });
