@@ -11,15 +11,19 @@ describe('<ChatConversation />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
   const defaultProps = {
     contactId: 1,
-    onClick: mockCallback,
     contactName: 'Jane Doe',
+    selected: true,
+    index: 0,
+    onClick: mockCallback,
     lastMessage: {
       body: 'Hello there!',
       insertedAt,
-      tags: {
-        id: 1,
-        label: 'Unread',
-      },
+      tags: [
+        {
+          id: 1,
+          label: 'Unread',
+        },
+      ],
     },
   };
   const wrapper = shallow(<ChatConversation {...defaultProps} />);
