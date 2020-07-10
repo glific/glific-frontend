@@ -136,12 +136,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const handleLogout = () => {
     axios
-      .delete(constants.REMOVE_USER_SESSION, {
+      .delete(constants.USER_SESSION, {
         headers: {
           Authorization: cookie.session.data.data.access_token,
         },
       })
-      .then(function (response: any) {
+      .then((response: any) => {
         removeCookie('session');
       })
       .catch(function (error: any) {

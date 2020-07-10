@@ -95,13 +95,13 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             phone: phoneNumber,
           },
         })
-        .then(function (response: any) {
+        .then((response: any) => {
           setCookie('session', response, {
             expires: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
           });
           setAuthMessage(response);
         })
-        .catch(function (error: any) {
+        .catch((error: any) => {
           console.log(error);
         });
     }

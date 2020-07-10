@@ -10,7 +10,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Button } from '../../UI/Form/Button/Button';
 import styles from './Login.module.css';
-import { REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER } from '../../../common/constants';
+import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
@@ -60,21 +60,21 @@ export const Login: React.SFC<LoginProps> = () => {
     handleInputErrors();
     if (!passwordError && !phoneNumberError) {
       axios
-        .post(REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER, {
+        .post(USER_SESSION, {
           user: {
             phone: phoneNumber,
             password: password,
           },
         })
-        .then(function (response: any) {
+        .then((response: any) => {
+          console.log(response);
           const responseString = JSON.stringify(response.data.data);
-
           setCookie('session', response, {
             expires: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
           });
           setSessionToken(responseString);
         })
-        .catch(function (error: any) {
+        .catch((error: any) => {
           setInvalidLogin(true);
         });
     }
