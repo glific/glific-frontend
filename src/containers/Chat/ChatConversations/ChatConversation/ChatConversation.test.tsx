@@ -48,10 +48,16 @@ describe('<ChatConversation />', () => {
   });
 
   test('check the condition with empty tags', () => {
-    const newProps = { ...defaultProps };
-    newProps.lastMessage.tags = [];
-    const chatWrapper = shallow(<ChatConversation {...newProps} />);
-    console.log(chatWrapper);
+    const propswithEmptyTags = { ...defaultProps };
+    propswithEmptyTags.lastMessage.tags = [];
+    const chatWrapper = shallow(<ChatConversation {...propswithEmptyTags} />);
+    expect(chatWrapper.find('.ChatInfoRead')).toHaveLength(1);
+  });
+
+  test('check the condition with tag other than unread', () => {
+    const propswithOtherTagThanUnread = { ...defaultProps };
+    propswithOtherTagThanUnread.lastMessage.tags = [{ id: 2, lable: 'Urgent' }];
+    const chatWrapper = shallow(<ChatConversation {...propswithOtherTagThanUnread} />);
     expect(chatWrapper.find('.ChatInfoRead')).toHaveLength(1);
   });
 });
