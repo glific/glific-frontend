@@ -13,12 +13,14 @@ import styles from './Login.module.css';
 import { REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [, setCookie] = useCookies(['session']);
   const [showPassword, setShowPassword] = useState(false);
   const [sessionToken, setSessionToken] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState(false);
@@ -66,6 +68,10 @@ export const Login: React.SFC<LoginProps> = () => {
         })
         .then(function (response: any) {
           const responseString = JSON.stringify(response.data.data);
+
+          setCookie('session', response, {
+            expires: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
+          });
           setSessionToken(responseString);
         })
         .catch(function (error: any) {

@@ -13,6 +13,7 @@ import { Redirect } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 export interface RegistrationProps {}
 
@@ -20,6 +21,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [, setCookie] = useCookies(['session']);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -94,6 +96,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           },
         })
         .then(function (response: any) {
+          setCookie('session', response, {
+            expires: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
+          });
           setAuthMessage(response);
         })
         .catch(function (error: any) {

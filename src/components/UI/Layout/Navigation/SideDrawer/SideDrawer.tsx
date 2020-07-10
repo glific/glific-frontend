@@ -8,6 +8,7 @@ import {
   Divider,
   Toolbar,
   Typography,
+  Button,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -15,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
+import { useCookies } from 'react-cookie';
 
 export interface SideDrawerProps {}
 
@@ -84,11 +86,18 @@ const useStyles = makeStyles((theme: Theme) =>
     closedIcon: {
       margin: '12px 12px 12px 15px',
     },
+    LogoutButton: {
+      position: 'absolute',
+      bottom: '10px',
+      left: '20px',
+      width: 'fit-content',
+    },
   })
 );
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
+  const [, , removeCookie] = useCookies(['session']);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
 
@@ -123,6 +132,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   );
 
   const container = window !== undefined ? () => window.document.body : undefined;
+
+  const handleLogout = () => {
+    removeCookie('session');
+  };
 
   return (
     <nav
@@ -166,6 +179,14 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           // open
         >
           {drawer}
+          <Button
+            color="secondary"
+            variant="contained"
+            className={classes.LogoutButton}
+            onClick={handleLogout}
+          >
+            Log Out
+          </Button>
         </Drawer>
       </Hidden>
     </nav>
