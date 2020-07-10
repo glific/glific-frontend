@@ -226,13 +226,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   }
 
-  // By default, have conversationInfo be the first thing if there is no contactId;
+  // By default, have conversationInfo be the first thing if there is no contactId.
+  // If there is no first conversation (new user), then return that there are "No conversations".
   if (conversationInfo.length === 0) {
     conversationIndex = 0;
-    conversationInfo = allConversations.conversations[conversationIndex];
+    // No conversations case
+    if (allConversations.conversations.length === 0) {
+      conversationInfo = null;
+    } else {
+      conversationInfo = allConversations.conversations[conversationIndex];
+    }
   }
 
-  receiverId = conversationInfo.contact.id;
+  // In the case where there are no conversations, receiverId is not needed, so set to null.
+  receiverId = conversationInfo ? conversationInfo.contact.id : null;
 
   //toast
   const closeToastMessage = () => {
@@ -358,7 +365,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   let messageList: any;
-  if (conversationInfo.messages.length > 0) {
+  if (conversationInfo && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
@@ -402,10 +409,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversationInfo.contact.name} />
-      <Container className={styles.MessageList} data-testid="messageContainer">
-        {messageList}
-      </Container>
+      <ContactBar contactName={conversationInfo ? conversationInfo.contact.name : 'No contacts'} />
+      {messageList ? (
+        <Container className={styles.MessageList} data-testid="messageContainer">
+          {messageList}
+        </Container>
+      ) : (
+        <div className={styles.NoMessages} data-testid="messageContainer">
+          No messages.
+        </div>
+      )}
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );

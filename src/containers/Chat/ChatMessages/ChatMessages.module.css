@@ -21,6 +21,12 @@
   height: calc(100% - 175px);
 }
 
+.NoMessages {
+  padding-top: 11.5px !important;
+  padding-left: 24px !important;
+  height: calc(100% - 175px);
+}
+
 .Search {
   width: 318px;
   height: 100%;
