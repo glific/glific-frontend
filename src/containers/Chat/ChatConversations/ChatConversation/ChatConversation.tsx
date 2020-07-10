@@ -16,33 +16,44 @@ export interface ChatConversationProps {
   lastMessage: {
     body: string;
     insertedAt: string;
-    tags: {
-      id: number;
-      label: string;
-    };
+    tags: [
+      {
+        id: number;
+        label: string;
+      }
+    ];
   };
 }
 
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
+  // check if message is unread then style it differently
+  // TODO: Need check with the backend on unique identifier for this.
+  let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
+  let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
+
+  if (props.lastMessage.tags.length > 0) {
+    console.log('label', props);
+    if (props.lastMessage.tags.filter((tag) => tag.label === 'Unread')) {
+      chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
+      chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
+    }
+  }
+
   return (
     <ListItem
       data-testid="list"
       button
       disableRipple
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: props.selected })}
-      // className={clsx(classes.drawer, {
-      //   [classes.drawerOpen]: fullOpen,
-      //   [classes.drawerClose]: !fullOpen,
-      // })}
       component={Link}
       selected={props.selected}
       onClick={() => props.onClick(props.index)}
       to={'/chat/' + props.contactId} // Index doesn't equal ID
     >
-      <div className={styles.CircleBox}>
-        <div className={styles.Status} />
+      <div>
+        <div className={chatBubble.join(' ')} />
       </div>
-      <div className={styles.ChatInfo}>
+      <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">
           {props.contactName}
         </div>
