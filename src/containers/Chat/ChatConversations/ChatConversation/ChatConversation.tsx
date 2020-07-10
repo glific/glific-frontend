@@ -26,14 +26,14 @@ export interface ChatConversationProps {
 }
 
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
-  // check if message is unread then style it differently
-  // TODO: Need check with the backend on unique identifier for this.
+  // check if message is unread and style it differently
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
 
+  // check only if there are tags
   if (props.lastMessage.tags.length > 0) {
-    console.log('label', props);
-    if (props.lastMessage.tags.filter((tag) => tag.label === 'Unread')) {
+    // TODO: Need check with the backend on unique identifier for this.
+    if (props.lastMessage.tags.filter((tag) => tag.label === 'Unread').length > 0) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
     }
@@ -48,7 +48,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={props.selected}
       onClick={() => props.onClick(props.index)}
-      to={'/chat/' + props.contactId} // Index doesn't equal ID
+      to={'/chat/' + props.contactId}
     >
       <div>
         <div className={chatBubble.join(' ')} />
