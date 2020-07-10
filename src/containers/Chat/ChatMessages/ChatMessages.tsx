@@ -189,7 +189,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     return <p>Error :(</p>;
   }
 
-  console.log('these are all convos', allConversations);
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = [];
 
@@ -360,7 +359,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   let messageList: any;
-  // This line was changed before
   if (conversationInfo && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
