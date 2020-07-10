@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -58,7 +58,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   };
 
-  const filterPayload = () => {
+  const filterPayload = useCallback(() => {
     return {
       filter: {
         label: searchVal,
@@ -69,7 +69,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         order: tableVals.sortDirection.toUpperCase(),
       },
     };
-  };
+  }, [searchVal, tableVals]);
 
   // Get the total number of Templates here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
@@ -92,7 +92,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
 
   useEffect(() => {
     refetch(filterPayload());
-  }, [refetch]);
+  }, [refetch, filterPayload]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -109,7 +109,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     return () => {
       setNotification(client, null);
     };
-  }, [toastMessage]);
+  }, [toastMessage, client]);
 
   let deleteId: number = 0;
 

@@ -102,7 +102,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     return () => {
       setNotification(client, null);
     };
-  }, [toastMessage]);
+  }, [toastMessage, client]);
 
   // get the conversations stored from the cache
   const queryVariables = {
@@ -226,16 +226,23 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       // allConversations.conversations.unshift(data.conversation);
     }
   } else {
-    // By default, have conversationInfo be the first thing if there is no contactId;
+    // Have contactId be first conversation contact id if there are conversations.
+    // If there are no conversations (new user), then return that there are "No conversations".
 
-    // TRYING: If no contactId, redirect to URL with contactId.
-    // This could be on a higher component (App/Chat) instead of here. However, this is where we first know the contactId.
-    return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
-    // conversationIndex = 0;
-    // conversationInfo = allConversations.conversations[conversationIndex];
+    if (allConversations.conversations.length === 0) {
+      conversationInfo = null;
+    } else {
+      // POTENTIAL FIX: If no contactId, redirect to URL with contactId.
+      // This could be on a higher component (App/Chat) instead of here. However, this is where we first know the contactId.
+      return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
+
+      // conversationIndex = 0;
+      // conversationInfo = allConversations.conversations[conversationIndex];
+    }
   }
 
-  receiverId = conversationInfo.contact.id;
+  // In the case where there are no conversations, receiverId is not needed, so set to null.
+  receiverId = conversationInfo ? conversationInfo.contact.id : null;
 
   //toast
   const closeToastMessage = () => {
@@ -361,7 +368,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   let messageList: any;
-  if (conversationInfo.messages.length > 0) {
+  if (conversationInfo && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
@@ -405,10 +412,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={conversationInfo.contact.name} />
-      <Container className={styles.MessageList} data-testid="messageContainer">
-        {messageList}
-      </Container>
+      <ContactBar contactName={conversationInfo ? conversationInfo.contact.name : 'No contacts'} />
+      {messageList ? (
+        <Container className={styles.MessageList} data-testid="messageContainer">
+          {messageList}
+        </Container>
+      ) : (
+        <div className={styles.NoMessages} data-testid="messageContainer">
+          No messages.
+        </div>
+      )}
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );
