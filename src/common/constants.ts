@@ -7,3 +7,4 @@ export const REACT_APP_GLIFIC_AUTHENTICATION_API =
   process.env.REACT_APP_GLIFIC_API + '/v1/registration/send_otp';
 export const REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER =
   process.env.REACT_APP_GLIFIC_API + '/v1/session';
+export const REMOVE_USER_SESSION = process.env.REACT_APP_GLIFIC_API + '/v1/session';

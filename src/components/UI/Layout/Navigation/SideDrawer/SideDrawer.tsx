@@ -11,6 +11,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import axios from 'axios';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -97,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
-  const [, , removeCookie] = useCookies(['session']);
+  const [cookie, , removeCookie] = useCookies(['session']);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
 
@@ -134,7 +135,18 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const container = window !== undefined ? () => window.document.body : undefined;
 
   const handleLogout = () => {
-    removeCookie('session');
+    axios
+      .delete(constants.REMOVE_USER_SESSION, {
+        headers: {
+          Authorization: cookie.session.data.data.access_token,
+        },
+      })
+      .then(function (response: any) {
+        removeCookie('session');
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   };
 
   return (
