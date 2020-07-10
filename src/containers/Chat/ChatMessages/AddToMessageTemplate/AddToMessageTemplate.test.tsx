@@ -113,14 +113,14 @@ describe('<AddToMessageTemplate />', () => {
         <AddToMessageTemplate {...defaultProps} />
       </MockedProvider>
     );
+
+    const input = getByTestId('templateInput').querySelector('input');
     fireEvent.click(getByTestId('ok-button'));
-    fireEvent.change(getByTestId('templateInput').querySelector('input'), {
+    fireEvent.change(input, {
       target: {
         value: 'important',
       },
     });
-    expect(getByTestId('templateInput').querySelector('input')?.getAttribute('aria-invalid')).toBe(
-      'false'
-    );
+    expect(input?.getAttribute('aria-invalid')).toBe('false');
   });
 });

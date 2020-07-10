@@ -44,14 +44,4 @@ describe('side drawer testing', () => {
       expect(menuItems.at(i).text()).toEqual(sideDrawerMenus[i].title);
     }
   });
-
-  it('correct menu items rendered', () => {
-    const wrapper = mount(component);
-    // Find drawer that has the onClose prop
-    let correctDrawer = wrapper.find(Drawer).filterWhere((n) => !!n.props().onClose);
-    let menuItems = correctDrawer.find(ListItem);
-    for (let i = 0; i < menuItems.length; i++) {
-      expect(menuItems.at(i).text()).toEqual(sideDrawerMenus[i].title);
-    }
-  });
 });
