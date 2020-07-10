@@ -114,6 +114,19 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     setSelectedIndex(-1);
   };
 
+  const handleChange = (e: any) => {
+    console.log(e.target.value);
+    setSearchVal(e.target.value);
+    queryFilterConvos();
+    // return <Loading />;
+    setSelectedIndex(-1);
+  };
+
+  const resetSearch = () => {
+    setSearchVal('');
+    setSelectedIndex(-1);
+  };
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       {/* Styling toolbar for design */}
@@ -137,7 +150,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       </Toolbar>
       <SearchBar
         handleSubmit={handleSearch}
-        onReset={() => setSearchVal('')}
+        // handleChange={handleChange}
+        onReset={resetSearch}
         searchVal={searchVal}
       />
       <Container className={styles.ListingContainer} disableGutters>
