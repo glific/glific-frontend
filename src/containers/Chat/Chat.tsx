@@ -121,6 +121,9 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     return null;
   }
 
+  // Other location.
+  // Move code for allConversations in ChatMessages here and pass `allConversations` into ChatMesages.
+
   return (
     <Paper>
       <div className={styles.Chat}>

@@ -10,6 +10,7 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 
 import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
 import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
@@ -224,12 +225,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       // allConversations.conversations.splice(0, 0, data.conversation);
       // allConversations.conversations.unshift(data.conversation);
     }
-  }
+  } else {
+    // By default, have conversationInfo be the first thing if there is no contactId;
 
-  // By default, have conversationInfo be the first thing if there is no contactId;
-  if (conversationInfo.length === 0) {
-    conversationIndex = 0;
-    conversationInfo = allConversations.conversations[conversationIndex];
+    // TRYING: If no contactId, redirect to URL with contactId.
+    // This could be on a higher component (App/Chat) instead of here. However, this is where we first know the contactId.
+    return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
+    // conversationIndex = 0;
+    // conversationInfo = allConversations.conversations[conversationIndex];
   }
 
   receiverId = conversationInfo.contact.id;

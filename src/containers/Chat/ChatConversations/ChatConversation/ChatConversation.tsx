@@ -29,14 +29,10 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       button
       disableRipple
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: props.selected })}
-      // className={clsx(classes.drawer, {
-      //   [classes.drawerOpen]: fullOpen,
-      //   [classes.drawerClose]: !fullOpen,
-      // })}
       component={Link}
       selected={props.selected}
       onClick={() => props.onClick(props.index)}
-      to={'/chat/' + props.contactId} // Index doesn't equal ID
+      to={'/chat/' + props.contactId}
     >
       <div className={styles.CircleBox}>
         <div className={styles.Status} />
