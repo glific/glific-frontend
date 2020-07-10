@@ -26,6 +26,7 @@ export interface ChatConversationProps {
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   return (
     <ListItem
+      data-testid="list"
       button
       disableRipple
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: props.selected })}

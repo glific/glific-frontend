@@ -101,7 +101,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     return () => {
       setNotification(client, null);
     };
-  }, [toastMessage]);
+  }, [toastMessage, client]);
 
   // get the conversations stored from the cache
   const queryVariables = {
