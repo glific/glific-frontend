@@ -70,6 +70,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   let conversationList;
   if (conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
+      let lastMeessage = [];
+      if (conversation.messages.length > 0) {
+        lastMeessage = conversation.messages[0];
+      }
       return (
         <ChatConversation
           key={conversation.contact.id}
@@ -80,7 +84,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
           contactName={
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
-          lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
+          lastMessage={lastMeessage}
         />
       );
     });
