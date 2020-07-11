@@ -1,11 +1,18 @@
-.Status {
-  background-color: #bbb;
+.ChatBubble {
   border-radius: 50%;
   height: 10px;
   width: 10px;
   margin-bottom: 10px;
   margin-right: 6px;
   margin-left: 10px;
+}
+
+.ChatBubbleRead {
+  background-color: #bbb;
+}
+
+.ChatBubbleUnread {
+  background-color: #12e88e;
 }
 
 .LastMessage {
@@ -33,6 +40,13 @@
   padding-left: 10px;
   position: relative;
   font-family: 'Heebo', sans-serif;
+}
+
+.ChatInfoRead {
+  color: #93a29b;
+}
+
+.ChatInfoUnread {
   color: #073f24;
 }
 

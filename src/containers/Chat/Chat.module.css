@@ -9,6 +9,7 @@
 }
 
 .ChatConversations {
-  width: 30%;
+  max-width: 339px !important;
+  min-width: 235px !important;
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }

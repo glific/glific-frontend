@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
+import { render, wait, within, fireEvent, cleanup, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_LANGUAGES, GET_TAG, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
@@ -16,8 +16,7 @@ const mocks = [
       variables: {
         input: {
           description: 'new Tag description',
-          isActive: true,
-          isReserved: false,
+          keywords: '',
           label: 'new Tag',
           languageId: 1,
         },
@@ -29,8 +28,7 @@ const mocks = [
           tag: {
             description: 'new Tag description',
             id: '121',
-            isActive: true,
-            isReserved: false,
+            keywords: [],
             label: 'new Tag',
             language: {
               id: '1',
@@ -75,11 +73,46 @@ const mocks = [
           {
             id: '87',
             label: 'Important',
+            keywords: ['Hi'],
             description: 'important task',
           },
           {
             id: '94',
             label: 'To Do',
+            keywords: ['Hi'],
+            description: 'complete this task',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TAGS,
+      variables: {
+        filter: {
+          label: '',
+        },
+        opts: {
+          limit: 10,
+          offset: 0,
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '87',
+            label: 'Important',
+            keywords: ['Hi'],
+            description: 'important task',
+          },
+          {
+            id: '94',
+            label: 'To Do',
+            keywords: ['Hi'],
             description: 'complete this task',
           },
         ],
@@ -120,8 +153,7 @@ const mocks = [
             id: 1,
             label: 'important',
             description: 'important label',
-            isActive: true,
-            isReserved: false,
+            keywords: ['hi'],
             language: {
               id: 1,
             },
@@ -154,15 +186,14 @@ describe('<Tag />', () => {
       </MockedProvider>
     );
     await wait();
-    expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="description"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="isReserved"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="isActive"]')).toBeInTheDocument();
+    expect(container.querySelector('textarea[name="label"]')).toBeInTheDocument();
+    expect(container.querySelector('textarea[name="description"]')).toBeInTheDocument();
+    expect(container.querySelector('textarea[name="keywords"]')).toBeInTheDocument();
     expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
   });
 
   test('inputs should have mock values', async () => {
-    const { container } = render(
+    const { container, unmount } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Tag match={{ params: { id: 1 } }} />
@@ -171,12 +202,10 @@ describe('<Tag />', () => {
     );
 
     await wait();
-    expect(container.querySelector('input[name="label"]').getAttribute('value')).toBe('important');
-    expect(container.querySelector('input[name="description"]').getAttribute('value')).toBe(
+    expect(container.querySelector('textarea[name="label"]')?.textContent).toBe('important');
+    expect(container.querySelector('textarea[name="description"]')?.textContent).toBe(
       'important label'
     );
-    expect(container.querySelector('input[name="isReserved"]').getAttribute('value')).toBe('false');
-    expect(container.querySelector('input[name="isActive"]').getAttribute('value')).toBe('true');
     expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
   });
 
@@ -184,16 +213,17 @@ describe('<Tag />', () => {
     const { container, getByText, unmount } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
+          <Tag match={{ params: { id: 1 } }} />
           <Switch>
             <Route path="/tag" exact component={TagList} />
           </Switch>
-          <Tag match={{ params: { id: 1 } }} />
         </Router>
       </MockedProvider>
     );
     await wait();
     const { queryByText } = within(container.querySelector('form'));
     const button = queryByText('Cancel');
+
     fireEvent.click(button);
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
@@ -204,35 +234,30 @@ describe('<Tag />', () => {
 
 describe('Save Button', () => {
   test('save button should add a new tag', async () => {
-    const { container } = render(
+    const { container, getByText, getAllByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <Tag match={{ params: { id: null } }} />
           <Switch>
             <Route path="/tag" exact component={TagList} />
           </Switch>
+          <Tag match={{ params: { id: null } }} />
         </Router>
       </MockedProvider>
     );
 
     await wait();
-    fireEvent.change(container.querySelector('input[name="label"]'), {
-      target: { value: 'new Tag' },
-    });
-    fireEvent.change(container.querySelector('input[name="description"]'), {
-      target: { value: 'new Tag description' },
-    });
 
-    fireEvent.click(container.querySelector('input[name="isActive"]'));
-
+    fireEvent.change(container.querySelector('textarea[name="label"]'), {
+      target: { innerHTML: 'new Tag' },
+    });
+    fireEvent.change(container.querySelector('textarea[name="description"]'), {
+      target: { innerHTML: 'new Tag description' },
+    });
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },
     });
-    const { queryByText } = within(container.querySelector('form'));
-    const button = queryByText('Save');
+    const button = getByText('Save');
     fireEvent.click(button);
-    await wait();
-    const { getByText } = within(container.querySelector('tbody'));
-    expect(getByText('new Tag')).toBeInTheDocument();
+    await wait(() => expect(getByText('Important')).toBeInTheDocument());
   });
 });

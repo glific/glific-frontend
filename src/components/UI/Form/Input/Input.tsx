@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
+import { FormControl, OutlinedInput, FormHelperText, InputLabel } from '@material-ui/core';
 
 import styles from './Input.module.css';
 
@@ -9,6 +9,9 @@ export interface InputProps {
 
   label: string;
   form: any;
+  placeholder: any;
+  rows: number;
+  helperText?: string;
 }
 
 export const Input: React.SFC<InputProps> = (props) => {
@@ -18,12 +21,23 @@ export const Input: React.SFC<InputProps> = (props) => {
 
   return (
     <div className={styles.Input}>
-      <label className={styles.Label}>{props.label}</label>
-      <TextField
-        error={error[name] && touched[name] ? true : false}
-        helperText={touched[name] ? error[name] : null}
-        {...props.field}
-      />
+      <FormControl fullWidth error={error[name] && touched[name] ? true : false}>
+        <InputLabel variant="outlined" className={styles.Label}>
+          {props.placeholder}
+        </InputLabel>
+        <OutlinedInput
+          error={error[name] && touched[name] ? true : false}
+          multiline={true}
+          rows={props.rows}
+          label={props.placeholder}
+          fullWidth
+          {...props.field}
+        ></OutlinedInput>
+        {error[name] && touched[name] ? <FormHelperText>Required</FormHelperText> : null}
+        {props.helperText ? (
+          <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+        ) : null}
+      </FormControl>
     </div>
   );
 };
