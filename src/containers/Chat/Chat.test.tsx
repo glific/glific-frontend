@@ -1,64 +1,18 @@
 import React from 'react';
-
-import { shallow } from 'enzyme';
-import Chat from './Chat';
-import { GET_CONVERSATION_QUERY } from '../../graphql/queries/Chat';
+import { shallow, mount } from 'enzyme';
 import { MockedProvider } from '@apollo/client/testing';
 
-const mocks = [
-  {
-    request: {
-      query: GET_CONVERSATION_QUERY,
-      variables: {
-        contactOpts: {
-          limit: 50,
-        },
-        filter: {},
-        messageOpts: {
-          limit: 100,
-        },
-      },
-    },
-    result: {
-      data: {
-        conversations: [
-          {
-            contact: {
-              id: '2',
-              name: 'Vaibhav',
-            },
-            messages: [
-              {
-                id: '1',
-                body: 'Hey there whats up?',
-                insertedAt: '2020-06-25T13:36:43Z',
-                receiver: {
-                  id: '2',
-                },
-                sender: {
-                  id: '1',
-                },
-                tags: [
-                  {
-                    id: '1',
-                    label: 'important',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    },
-  },
-];
+import Chat from './Chat';
+import { CONVERSATION_QUERY_MOCKS } from './Chat.test.helper';
+
+const mocks = CONVERSATION_QUERY_MOCKS;
 
 describe('<Chat />', () => {
   const defaultProps = {
-    contactId: 1,
+    contactId: 2,
   };
 
-  const wrapper = shallow(
+  const wrapper = mount(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Chat {...defaultProps} />
     </MockedProvider>
