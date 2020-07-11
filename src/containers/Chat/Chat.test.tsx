@@ -21,4 +21,12 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', () => {
     expect(wrapper.exists()).toBe(true);
   });
+
+  it('should display loading component', () => {
+    expect(wrapper.find('[data-testid="loader"]')).toHaveLength(1);
+  });
+
+  test('it should render <ChatMessages /> component correctly', () => {
+    expect(wrapper.find('.ChatMessages')).toHaveLength(1);
+  });
 });
