@@ -1,11 +1,11 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/client/testing';
 
 import Chat from './Chat';
-import { CONVERSATION_QUERY_MOCKS } from './Chat.test.helper';
+import { CONVERSATION_MOCKS } from './Chat.test.helper';
 
-const mocks = CONVERSATION_QUERY_MOCKS;
+const mocks = CONVERSATION_MOCKS;
 
 describe('<Chat />', () => {
   const defaultProps = {
