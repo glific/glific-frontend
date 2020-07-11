@@ -1,9 +1,10 @@
 import React from 'react';
-import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/client/testing';
 
 import Chat from './Chat';
 import { CONVERSATION_MOCKS } from './Chat.test.helper';
+import { cleanup, render } from '@testing-library/react';
+import { Router } from 'react-router-dom';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -12,21 +13,19 @@ describe('<Chat />', () => {
     contactId: 2,
   };
 
-  const wrapper = mount(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Chat {...defaultProps} />
-    </MockedProvider>
-  );
+  afterEach(cleanup);
 
-  test('it should render <Chat /> component correctly', () => {
-    expect(wrapper.exists()).toBe(true);
-  });
+  test('it should render <Chat /> component correctly', async () => {
+    const { findByText, getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <Chat {...defaultProps} />
+        </Router>
+      </MockedProvider>
+    );
+    expect(getByText('Loading...')).toBeInTheDocument();
 
-  it('should display loading component', () => {
-    expect(wrapper.find('[data-testid="loader"]')).toHaveLength(1);
-  });
-
-  test('it should render <ChatMessages /> component correctly', () => {
-    expect(wrapper.find('.ChatMessages')).toHaveLength(1);
+    const ChatConversation = await findByText('Jane Doe');
+    expect(ChatConversation).toBeInTheDocument();
   });
 });
