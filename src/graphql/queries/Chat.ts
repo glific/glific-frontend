@@ -6,6 +6,7 @@ export const GET_CONVERSATION_QUERY = gql`
       contact {
         id
         name
+        phone
       }
       messages {
         id
