@@ -405,6 +405,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     messageList = reverseConversation.reverse();
   }
 
+  let messageListContainer;
+  // Check if there are conversation messages else display no messages
+  if (messageList) {
+    messageListContainer = (
+      <Container className={styles.MessageList} data-testid="messageContainer">
+        {messageList}
+      </Container>
+    );
+  } else {
+    messageListContainer = (
+      <div className={styles.NoMessages} data-testid="messageContainer">
+        No messages.
+      </div>
+    );
+  }
+
   return (
     <Container className={styles.ChatMessages} disableGutters>
       {dialogBox}
@@ -416,15 +432,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             : conversationInfo.contact.phone
         }
       />
-      {messageList ? (
-        <Container className={styles.MessageList} data-testid="messageContainer">
-          {messageList}
-        </Container>
-      ) : (
-        <div className={styles.NoMessages} data-testid="messageContainer">
-          No messages.
-        </div>
-      )}
+      {messageListContainer}
       <ChatInput onSendMessage={sendMessageHandler} />
     </Container>
   );
