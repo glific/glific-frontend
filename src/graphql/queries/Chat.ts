@@ -64,8 +64,17 @@ export const FILTER_CONVERSATIONS_QUERY = gql`
       messages {
         id
         body
-        flow
-        type
+        insertedAt
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+        }
       }
     }
   }
