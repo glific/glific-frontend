@@ -21,7 +21,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [, setCookie] = useCookies(['session']);
+  const setCookie = useCookies(['session'])[1];
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

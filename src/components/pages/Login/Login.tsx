@@ -20,7 +20,7 @@ export interface LoginProps {}
 export const Login: React.SFC<LoginProps> = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [, setCookie] = useCookies(['session']);
+  const setCookie = useCookies(['session'])[1];
   const [showPassword, setShowPassword] = useState(false);
   const [sessionToken, setSessionToken] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState(false);
