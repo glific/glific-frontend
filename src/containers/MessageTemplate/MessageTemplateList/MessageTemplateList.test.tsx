@@ -80,14 +80,9 @@ const mocks = [
       data: {
         sessionTemplates: [
           {
+            body: 'Hey There',
             id: '87',
             label: 'Good message',
-            body: 'Hey There',
-          },
-          {
-            id: '94',
-            label: 'Message',
-            body: 'some description',
           },
         ],
       },
@@ -95,52 +90,36 @@ const mocks = [
   },
 ];
 
+const messageTemplate = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <MessageTemplateList />
+    </Router>
+  </MockedProvider>
+);
+
 describe('<MessageTemplateList />', () => {
   it('should have loading', async () => {
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { getByText } = render(messageTemplate);
 
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
   });
 
   it('should have add new button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
     await wait();
     expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
   });
 
   it('should have a table', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
     await wait();
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
   test('MessageTemplateList has proper headers', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
 
     await wait();
     const { getByText } = within(container.querySelector('thead'));
@@ -150,30 +129,28 @@ describe('<MessageTemplateList />', () => {
   });
 
   test('A row in the table should have an edit and delete button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { getByLabelText } = within(container.querySelector('tbody tr'));
     expect(getByLabelText('Edit')).toBeInTheDocument();
     expect(getByLabelText('Delete')).toBeInTheDocument();
   });
 
+  const messageTemplateButtons = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <Switch>
+          <Route path="/speed-send/add" exact component={MessageTemplate} />
+        </Switch>
+        <MessageTemplateList />
+      </Router>
+    </MockedProvider>
+  );
+
   test('add new Button contains a route to add new page', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Switch>
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-          </Switch>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplateButtons);
+
     await wait();
     const button = container.querySelector('button.MuiButton-containedPrimary');
     fireEvent.click(button);
@@ -182,16 +159,8 @@ describe('<MessageTemplateList />', () => {
   });
 
   test('edit Button contains a route to edit page', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Switch>
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-          </Switch>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplateButtons);
+
     await wait();
     expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/speed-send/87/edit');
   });
@@ -199,13 +168,8 @@ describe('<MessageTemplateList />', () => {
 
 describe('<Dialogbox />', () => {
   test('click on delete button opens dialog box', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { queryByLabelText } = within(container.querySelector('tbody tr'));
     const button = queryByLabelText('Delete');
@@ -215,13 +179,8 @@ describe('<Dialogbox />', () => {
   });
 
   test('click on agree button shows alert', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { queryByLabelText } = within(container.querySelector('tbody tr'));
     const button = queryByLabelText('Delete');
