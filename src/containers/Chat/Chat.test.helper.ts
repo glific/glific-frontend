@@ -39,12 +39,25 @@ export const CONVERSATION_MOCKS = [
                 },
                 tags: [
                   {
-                    id: '1',
-                    label: 'Unread',
-                  },
-                  {
                     id: '2',
                     label: 'Important',
+                  },
+                ],
+              },
+              {
+                id: '2',
+                body: 'How can we help?',
+                insertedAt: '2020-06-25T13:36:43Z',
+                receiver: {
+                  id: '2',
+                },
+                sender: {
+                  id: '1',
+                },
+                tags: [
+                  {
+                    id: '1',
+                    label: 'Unread',
                   },
                 ],
               },
@@ -135,8 +148,8 @@ export const CONVERSATION_MOCKS = [
               },
               tags: [
                 {
-                  id: '2',
-                  label: 'Important',
+                  id: '1',
+                  label: 'Unread',
                 },
               ],
             },

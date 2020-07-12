@@ -25,9 +25,16 @@ describe('<Chat />', () => {
         </MemoryRouter>
       </MockedProvider>
     );
+
+    // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
+    // check if chat conversations are displayed
     const ChatConversation = await findByText('Jane Doe');
     expect(ChatConversation).toBeInTheDocument();
+
+    // check if tags are displayed in the ChatMessages
+    const ConversationTag = await findByText('Unread');
+    expect(ConversationTag).toBeInTheDocument();
   });
 });
