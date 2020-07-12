@@ -93,7 +93,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_RECEIVED_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message received sub');
         return updateConversations(prev, subscriptionData, 'RECEIVED');
       },
     });
@@ -103,7 +102,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_SENT_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message sent sub');
         return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
