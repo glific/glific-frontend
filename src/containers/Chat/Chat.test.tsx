@@ -1,10 +1,10 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
+import { MemoryRouter } from 'react-router-dom';
+import { cleanup, render } from '@testing-library/react';
 
 import Chat from './Chat';
 import { CONVERSATION_MOCKS } from './Chat.test.helper';
-import { cleanup, render } from '@testing-library/react';
-import { Router } from 'react-router-dom';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -18,9 +18,9 @@ describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
     const { findByText, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
+        <MemoryRouter>
           <Chat {...defaultProps} />
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
     expect(getByText('Loading...')).toBeInTheDocument();
