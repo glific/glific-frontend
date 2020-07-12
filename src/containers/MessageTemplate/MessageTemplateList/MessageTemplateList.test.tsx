@@ -95,52 +95,36 @@ const mocks = [
   },
 ];
 
+const messageTemplate = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <MessageTemplateList />
+    </Router>
+  </MockedProvider>
+);
+
 describe('<MessageTemplateList />', () => {
   it('should have loading', async () => {
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { getByText } = render(messageTemplate);
 
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
   });
 
   it('should have add new button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
     await wait();
     expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
   });
 
   it('should have a table', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
     await wait();
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
   test('MessageTemplateList has proper headers', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
 
     await wait();
     const { getByText } = within(container.querySelector('thead'));
@@ -150,13 +134,8 @@ describe('<MessageTemplateList />', () => {
   });
 
   test('A row in the table should have an edit and delete button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { getByLabelText } = within(container.querySelector('tbody tr'));
     expect(getByLabelText('Edit')).toBeInTheDocument();
