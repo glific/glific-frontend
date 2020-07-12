@@ -117,10 +117,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  if (data === undefined || data.conversations === undefined) {
-    return null;
-  }
-
   return (
     <Paper>
       <div className={styles.Chat}>

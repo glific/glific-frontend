@@ -13,6 +13,8 @@ describe('<Chat />', () => {
     contactId: 2,
   };
 
+  window.HTMLElement.prototype.scrollIntoView = function () {};
+
   afterEach(cleanup);
 
   test('it should render <Chat /> component correctly', async () => {
