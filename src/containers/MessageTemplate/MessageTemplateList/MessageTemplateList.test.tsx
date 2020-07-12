@@ -178,13 +178,8 @@ describe('<MessageTemplateList />', () => {
 
 describe('<Dialogbox />', () => {
   test('click on delete button opens dialog box', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { queryByLabelText } = within(container.querySelector('tbody tr'));
     const button = queryByLabelText('Delete');
@@ -194,13 +189,8 @@ describe('<Dialogbox />', () => {
   });
 
   test('click on agree button shows alert', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplateList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(messageTemplate);
+
     await wait();
     const { queryByLabelText } = within(container.querySelector('tbody tr'));
     const button = queryByLabelText('Delete');
