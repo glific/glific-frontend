@@ -8,7 +8,6 @@ import { SENTRY_DSN } from './config/';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { CookiesProvider } from 'react-cookie';
 
 // setup data source for sentry
 if (SENTRY_DSN) {

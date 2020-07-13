@@ -17,8 +17,8 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './common/session';
 
 const App = () => {
-  const sessionObject = localStorage.getItem('session');
-  const [authenticated, setAuthenticated] = useState(sessionObject ? true : false);
+  const session = localStorage.getItem('session');
+  const [authenticated, setAuthenticated] = useState(session ? true : false);
 
   const values = {
     authenticated: authenticated,
@@ -27,53 +27,54 @@ const App = () => {
     },
   };
 
-  const accessToken = sessionObject ? JSON.parse(sessionObject).access_token : null;
+  const accessToken = session ? JSON.parse(session).access_token : null;
   const defaultRedirect = () => <Redirect to="/chat" />;
   const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
+  let routes;
 
-  const routes = (
-    <>
-      <Route path="/login" exact component={Login} />
-      <Route path="/registration" exact component={Registration} />
-      <Route path="/confirmotp" exact component={ConfirmOTP} />
-      <Route path="/" render={() => <Redirect to="/login" />} />
-    </>
-  );
+  if (authenticated) {
+    routes = (
+      <Route path="/">
+        <div className={styles.App}>
+          <Layout>
+            <Switch>
+              <Route path="/tag" exact component={TagPage} />
+              <Route path="/tag/add" exact component={Tag} />
+              <Route path="/tag/:id/edit" exact component={Tag} />
+              {/* Doesn't this error without a passed in `contactId`? */}
 
-  const authenticatedRoutes = (
-    <Route path="/">
-      <div className={styles.App}>
-        <Layout>
-          <Switch>
-            <Route path="/tag" exact component={TagPage} />
-            <Route path="/tag/add" exact component={Tag} />
-            <Route path="/tag/:id/edit" exact component={Tag} />
-            {/* Doesn't this error without a passed in `contactId`? */}
-
-            <Route path="/speed-send" exact component={MessageTemplatePage} />
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-            <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
-            <Route path="/chat" exact component={Chat} />
-            {/* This part isn't working properly */}
-            <Route
-              exact
-              path="/chat/:contactId"
-              component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-                <Chat contactId={match.params.contactId} />
-              )}
-            />
-            <Route path="/" render={defaultRedirect} />
-          </Switch>
-        </Layout>
-      </div>
-    </Route>
-  );
+              <Route path="/speed-send" exact component={MessageTemplatePage} />
+              <Route path="/speed-send/add" exact component={MessageTemplate} />
+              <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+              <Route path="/chat" exact component={Chat} />
+              {/* This part isn't working properly */}
+              <Route
+                exact
+                path="/chat/:contactId"
+                component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+                  <Chat contactId={match.params.contactId} />
+                )}
+              />
+              <Route path="/" render={defaultRedirect} />
+            </Switch>
+          </Layout>
+        </div>
+      </Route>
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/login" exact component={Login} />
+        <Route path="/registration" exact component={Registration} />
+        <Route path="/confirmotp" exact component={ConfirmOTP} />
+        <Route path="/" render={() => <Redirect to="/login" />} />
+      </Switch>
+    );
+  }
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>
-        <Switch>{authenticated ? authenticatedRoutes : routes}</Switch>
-      </ApolloProvider>
+      <ApolloProvider client={client}>{routes}</ApolloProvider>
     </SessionContext.Provider>
   );
 };

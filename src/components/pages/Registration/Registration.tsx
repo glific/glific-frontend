@@ -13,12 +13,10 @@ import { Redirect } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
-import { SessionContext } from '../../../common/session';
 
 export interface RegistrationProps {}
 
 export const Registration: React.SFC<RegistrationProps> = () => {
-  const { setAuthenticated } = useContext(SessionContext);
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -96,8 +94,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           },
         })
         .then((response: any) => {
-          localStorage.setItem('session', response.data.data);
-          setAuthenticated(true);
           setAuthMessage(response);
         })
         .catch((error: any) => {

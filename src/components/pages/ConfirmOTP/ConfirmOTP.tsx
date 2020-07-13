@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styles from './ConfirmOTP.module.css';
 import { Typography, FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,12 +9,14 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
 import { Redirect } from 'react-router-dom';
+import { SessionContext } from '../../../common/session';
 
 export interface ConfirmOTPProps {
   location: any;
 }
 
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
+  const { setAuthenticated } = useContext(SessionContext);
   const [userAuthCode, setUserAuthCode] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState(false);
@@ -39,6 +41,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         })
         .then(function (response: any) {
           const responseString = JSON.stringify(response.data.data);
+          localStorage.setItem('session', responseString);
+          setAuthenticated(true);
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
