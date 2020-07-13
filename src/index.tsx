@@ -18,13 +18,11 @@ if (SENTRY_DSN) {
 ReactDOM.render(
   <React.StrictMode>
     <CssBaseline />
-    <CookiesProvider>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeProvider>
-    </CookiesProvider>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

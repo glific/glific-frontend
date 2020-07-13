@@ -18,6 +18,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { useCookies } from 'react-cookie';
+import { Redirect } from 'react-router';
 
 export interface SideDrawerProps {}
 
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
-  const [cookie, , removeCookie] = useCookies(['session']);
+  const [logout] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
 
@@ -134,15 +135,18 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
+  let authorizationHeader = localStorage.getItem('session');
+  authorizationHeader = authorizationHeader ? JSON.parse(authorizationHeader) : null;
+
   const handleLogout = () => {
     axios
       .delete(constants.USER_SESSION, {
         headers: {
-          Authorization: cookie.session.data.data.access_token,
+          Authorization: authorizationHeader,
         },
       })
       .then((response: any) => {
-        removeCookie('session');
+        localStorage.removeItem('session');
       })
       .catch(function (error: any) {
         console.log(error);
