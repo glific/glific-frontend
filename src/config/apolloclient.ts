@@ -32,7 +32,7 @@ const gqlClient = (auth_token: string | null) => {
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    authLink.concat(httpLink)
+    errorLink.concat(authLink.concat(httpLink))
   );
 
   return new ApolloClient({
