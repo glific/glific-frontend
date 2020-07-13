@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Typography, FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,10 +13,12 @@ import styles from './Login.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { SessionContext } from '../../../common/session';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
+  const { setAuthenticated } = useContext(SessionContext);
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -65,10 +67,9 @@ export const Login: React.SFC<LoginProps> = () => {
           },
         })
         .then((response: any) => {
-          console.log(response);
           const responseString = JSON.stringify(response.data.data);
           localStorage.setItem('session', responseString);
-
+          setAuthenticated(true);
           setSessionToken(responseString);
         })
         .catch((error: any) => {

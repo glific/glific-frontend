@@ -13,23 +13,27 @@ import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
-
 import { ApolloProvider } from '@apollo/client';
+import { SessionContext } from './common/session';
+
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(localStorage.getItem('session'));
+  const sessionObject = localStorage.getItem('session');
+  const [authenticated, setAuthenticated] = useState(sessionObject ? true : false);
 
+  const values = {
+    authenticated: authenticated,
+    setAuthenticated: (value: any) => {
+      setAuthenticated(value);
+    },
+  };
+
+  const accessToken = sessionObject ? JSON.parse(sessionObject).access_token : null;
   const defaultRedirect = () => <Redirect to="/chat" />;
-
-  useEffect(() => {
-    console.log('ff');
-    setAuthenticated(localStorage.getItem('session'));
-  });
-
-  const client = authenticated ? gqlClient(null) : gqlClient(null);
+  const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
 
   const routes = (
     <>
-      <Route path="/login" exact component={Login} setAuthenticated={setAuthenticated} />
+      <Route path="/login" exact component={Login} />
       <Route path="/registration" exact component={Registration} />
       <Route path="/confirmotp" exact component={ConfirmOTP} />
       <Route path="/" render={() => <Redirect to="/login" />} />
@@ -66,9 +70,11 @@ const App = () => {
   );
 
   return (
-    <ApolloProvider client={client}>
-      <Switch>{authenticated ? authenticatedRoutes : routes}</Switch>
-    </ApolloProvider>
+    <SessionContext.Provider value={values}>
+      <ApolloProvider client={client}>
+        <Switch>{authenticated ? authenticatedRoutes : routes}</Switch>
+      </ApolloProvider>
+    </SessionContext.Provider>
   );
 };
 
