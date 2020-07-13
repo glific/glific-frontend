@@ -31,7 +31,7 @@ describe('<App /> ', () => {
     localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
     const wrapper = mount(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <MemoryRouter initialEntries={['/chat/1']}>
+        <MemoryRouter initialEntries={['/chat']}>
           <App />
         </MemoryRouter>
       </MockedProvider>
