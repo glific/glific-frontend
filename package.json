@@ -34,7 +34,6 @@
     "moment": "^2.27.0",
     "phoenix": "^1.5.3",
     "react": "^16.13.1",
-    "react-cookie": "^4.0.3",
     "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
