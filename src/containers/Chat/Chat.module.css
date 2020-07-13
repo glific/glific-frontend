@@ -5,11 +5,11 @@
 }
 
 .ChatMessages {
-  width: 70%;
+  width: 100%;
 }
 
 .ChatConversations {
-  max-width: 339px !important;
-  min-width: 235px !important;
+  width: 339px !important;
+  min-width: 339px !important;
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }

@@ -3,6 +3,7 @@ import { Button as ButtonElement } from '@material-ui/core';
 import styles from './Button.module.css';
 
 export interface ButtonProps {
+  'data-testid'?: string;
   children: any;
   variant: 'text' | 'outlined' | 'contained' | undefined;
   color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
@@ -16,8 +17,8 @@ export const Button: React.SFC<ButtonProps> = (props) => {
       variant={props.variant}
       color={props.color}
       onClick={props.onClick}
+      data-testid={props['data-testid']}
       className={`${styles.Button} ${props.className}`}
-      data-testid="Button"
     >
       {props.children}
     </ButtonElement>

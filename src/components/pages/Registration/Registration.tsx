@@ -77,7 +77,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     } else if (password) {
       setPasswordError(false);
     }
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       setConfirmPasswordError(true);
     } else if (confirmPassword) {
       setConfirmPasswordError(false);
