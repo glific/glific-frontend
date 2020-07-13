@@ -1,9 +1,5 @@
 import React from 'react';
-<<<<<<< HEAD
 import { shallow, mount } from 'enzyme';
-=======
-import { mount } from 'enzyme';
->>>>>>> 766abc7fd7d998dfb1e0de2b4042955d68a3cf99
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Login } from './components/pages/Login/Login';
@@ -31,15 +27,16 @@ describe('<App /> ', () => {
     expect(wrapper.find(Login)).toHaveLength(1);
   });
 
-  // test('it should render <Chat /> component correctly if params are passed', () => {
-  //   const wrapper = mount(
-  //     <MockedProvider mocks={mocks} addTypename={false}>
-  //       <MemoryRouter initialEntries={['/chat/1']}>
-  //         <App />
-  //       </MemoryRouter>
-  //     </MockedProvider>
-  //   );
+  test('it should render <Chat /> component if session is active', () => {
+    localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
+    const wrapper = mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter initialEntries={['/chat/1']}>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
 
-  //   expect(wrapper.find(Chat)).toHaveLength(1);
-  // });
+    expect(wrapper.find(Chat)).toHaveLength(1);
+  });
 });
