@@ -34,32 +34,30 @@ const App = () => {
 
   if (authenticated) {
     routes = (
-      <Route path="/">
-        <div className={styles.App}>
-          <Layout>
-            <Switch>
-              <Route path="/tag" exact component={TagPage} />
-              <Route path="/tag/add" exact component={Tag} />
-              <Route path="/tag/:id/edit" exact component={Tag} />
-              {/* Doesn't this error without a passed in `contactId`? */}
+      <div className={styles.App}>
+        <Layout>
+          <Switch>
+            <Route path="/tag" exact component={TagPage} />
+            <Route path="/tag/add" exact component={Tag} />
+            <Route path="/tag/:id/edit" exact component={Tag} />
+            {/* Doesn't this error without a passed in `contactId`? */}
 
-              <Route path="/speed-send" exact component={MessageTemplatePage} />
-              <Route path="/speed-send/add" exact component={MessageTemplate} />
-              <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
-              <Route path="/chat" exact component={Chat} />
-              {/* This part isn't working properly */}
-              <Route
-                exact
-                path="/chat/:contactId"
-                component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-                  <Chat contactId={match.params.contactId} />
-                )}
-              />
-              <Route path="/" render={defaultRedirect} />
-            </Switch>
-          </Layout>
-        </div>
-      </Route>
+            <Route path="/speed-send" exact component={MessageTemplatePage} />
+            <Route path="/speed-send/add" exact component={MessageTemplate} />
+            <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+            <Route path="/chat" exact component={Chat} />
+            {/* This part isn't working properly */}
+            <Route
+              exact
+              path="/chat/:contactId"
+              component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+                <Chat contactId={match.params.contactId} />
+              )}
+            />
+            <Route path="/" render={defaultRedirect} />
+          </Switch>
+        </Layout>
+      </div>
     );
   } else {
     routes = (
