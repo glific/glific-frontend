@@ -3,6 +3,7 @@ import { onError } from "@apollo/link-error";
 import absinthe from './absinthe';
 import { URI } from '.';
 import { setContext } from '@apollo/link-context';
+import { setErrorMessage } from '../common/notification';
 
 const subscribe = require('@jumpn/utils-graphql');
 
