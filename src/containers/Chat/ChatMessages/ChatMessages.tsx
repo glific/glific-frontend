@@ -224,18 +224,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       // allConversations.conversations.splice(0, 0, data.conversation);
       // allConversations.conversations.unshift(data.conversation);
     }
-  }
 
-  // By default, have conversationInfo be the first thing if there is no contactId.
-  // If there is no first conversation (new user), then return that there are "No conversations".
-  if (conversationInfo.length === 0) {
-    conversationIndex = 0;
-    // No conversations case
-    if (allConversations.conversations.length === 0) {
-      conversationInfo = null;
-    } else {
-      conversationInfo = allConversations.conversations[conversationIndex];
-    }
+    // If there is no first conversation (new user), then return that there are "No conversations".
+  } else if (!contactId && allConversations.conversations.length === 0) {
+    // Case where !contactId and length !== addressed in Chat.tsx
+    conversationInfo = null;
   }
 
   // In the case where there are no conversations, receiverId is not needed, so set to null.

@@ -12,6 +12,7 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
+import { Redirect } from 'react-router-dom';
 
 export interface ChatProps {
   contactId: number;
@@ -30,7 +31,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
   };
 
-  const { loading, error, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { data, loading, error, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
   });
 
@@ -115,11 +116,18 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  let newContactId: number;
+  if (!contactId && data.conversations.length !== 0) {
+    return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
+  } else {
+    newContactId = contactId;
+  }
+
   return (
     <Paper>
       <div className={styles.Chat}>
         <div className={styles.ChatMessages}>
-          <ChatMessages contactId={contactId} />
+          <ChatMessages contactId={newContactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations />

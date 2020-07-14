@@ -6,6 +6,7 @@ import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 
 export interface SearchBarProps {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  // handleChange?: (event: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.
@@ -31,7 +32,9 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
               className={styles.SearchField}
               name="searchInput" // This is important for extracting the search value in parent component.
               placeholder="Search"
-              onChange={(e) => setLocalSearchVal(e.target.value)}
+              onChange={(e: any) => {
+                setLocalSearchVal(e.target.value);
+              }}
               value={localSearchVal}
             />
           )}
