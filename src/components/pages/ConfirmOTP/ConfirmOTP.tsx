@@ -80,6 +80,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
               id="authentication-code"
               label="Authentication Code"
               type="text"
+              value={userAuthCode}
               onChange={handleuserAuthCodeChange()}
             />
             {authError || alreadyExists ? (
@@ -91,9 +92,11 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
             ) : null}
           </FormControl>
         </div>
-        <Button onClick={handleSubmit} color="primary" variant={'contained'}>
-          Submit
-        </Button>
+        <div className="button">
+          <Button onClick={handleSubmit} color="primary" variant={'contained'}>
+            Submit
+          </Button>
+        </div>
       </div>
     </div>
   );
