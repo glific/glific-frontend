@@ -8,16 +8,16 @@ import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../gra
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import { ConversationList } from './ConversationList';
+import { debounce } from 'ts-debounce';
 
 export interface ChatConversationsProps {}
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const [searchVal, setSearchVal] = useState('');
-  const handleChange = (event: any) => {
-    setSearchVal(event.target.value);
-  };
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  const handleSearch = (event: any) => {
+  const handleChange = (event: any) => {
+    // debounce(() => setSearchVal(event.target.value), 250);
     setSearchVal(event.target.value);
   };
 
@@ -28,31 +28,30 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   return (
     <Container className={styles.ChatConversations} disableGutters>
       {/* Styling toolbar for design */}
-      <Toolbar style={{ padding: '0 24px 0 12px' }}>
+      <Toolbar className={styles.ToolBar}>
         <div className={styles.IconBackground}>
           <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
         </div>
         <div className={styles.Title}>
-          <Typography
-            style={{
-              fontFamily: 'Heebo, Sans-Serif',
-              fontSize: '24px',
-              color: '#073F24',
-              marginTop: '3px',
-            }}
-            variant="h6"
-          >
+          <Typography className={styles.TitleText} variant="h6">
             Chats
           </Typography>
         </div>
       </Toolbar>
       <SearchBar
-        handleSubmit={handleSearch}
+        // handleSubmit={handleSearch}
         handleChange={handleChange}
         onReset={resetSearch}
         searchVal={searchVal}
       />
-      <ConversationList searchVal={searchVal} />
+      <ConversationList
+        searchVal={searchVal}
+        selectedIndex={selectedIndex}
+        setSelectedIndex={(i: number) => {
+          // console.log(i);
+          setSelectedIndex(i);
+        }}
+      />
     </Container>
   );
 };

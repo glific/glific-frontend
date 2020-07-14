@@ -5,7 +5,7 @@ import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 
 export interface SearchBarProps {
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
   handleChange?: (event: React.FormEvent<HTMLFormElement>) => void;
   onReset: () => void;
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
@@ -16,50 +16,50 @@ export interface SearchBarProps {
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [localSearchVal, setLocalSearchVal] = useState('');
   return (
-    <form onSubmit={props.handleSubmit}>
-      <div className={styles.SearchBar}>
-        <div className={styles.IconAndText}>
-          <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
-          {props.searchVal ? (
-            <InputBase
-              className={styles.SearchField}
-              name="searchInput" // This is important for extracting the search value in parent component.
-              placeholder="Search"
-              defaultValue={props.searchVal}
-              onChange={(e: any) => {
-                setLocalSearchVal(e.target.value);
-                if (props.handleChange) {
-                  props.handleChange(e);
-                }
-              }}
-            />
-          ) : (
-            <InputBase
-              className={styles.SearchField}
-              name="searchInput" // This is important for extracting the search value in parent component.
-              placeholder="Search"
-              onChange={(e: any) => {
-                setLocalSearchVal(e.target.value);
-                if (props.handleChange) {
-                  props.handleChange(e);
-                }
-              }}
-              value={localSearchVal}
-            />
-          )}
-        </div>
-        {props.searchVal || localSearchVal ? (
-          <IconButton
-            className={styles.ResetSearch}
-            onClick={() => {
-              setLocalSearchVal('');
-              props.onReset();
+    // <form onSubmit={props.handleSubmit}>
+    <div className={styles.SearchBar}>
+      <div className={styles.IconAndText}>
+        <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
+        {props.searchVal ? (
+          <InputBase
+            className={styles.SearchField}
+            name="searchInput" // This is important for extracting the search value in parent component.
+            placeholder="Search"
+            defaultValue={props.searchVal}
+            onChange={(e: any) => {
+              setLocalSearchVal(e.target.value);
+              if (props.handleChange) {
+                props.handleChange(e);
+              }
             }}
-          >
-            <CloseIcon className={styles.CloseIcon}></CloseIcon>
-          </IconButton>
-        ) : null}
+          />
+        ) : (
+          <InputBase
+            className={styles.SearchField}
+            name="searchInput" // This is important for extracting the search value in parent component.
+            placeholder="Search"
+            onChange={(e: any) => {
+              setLocalSearchVal(e.target.value);
+              if (props.handleChange) {
+                props.handleChange(e);
+              }
+            }}
+            value={localSearchVal}
+          />
+        )}
       </div>
-    </form>
+      {props.searchVal || localSearchVal ? (
+        <IconButton
+          className={styles.ResetSearch}
+          onClick={() => {
+            setLocalSearchVal('');
+            props.onReset();
+          }}
+        >
+          <CloseIcon className={styles.CloseIcon}></CloseIcon>
+        </IconButton>
+      ) : null}
+    </div>
+    // </form>
   );
 };
