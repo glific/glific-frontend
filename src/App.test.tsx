@@ -8,6 +8,7 @@ import Chat from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';
 
 const mocks = CONVERSATION_MOCKS;
+process.env.REACT_APP_WEB_SOCKET = 'ws://localhost:4000/socket';
 
 describe('<App /> ', () => {
   test('it should render <App /> component correctly', () => {
@@ -27,16 +28,16 @@ describe('<App /> ', () => {
     expect(wrapper.find(Login)).toHaveLength(1);
   });
 
-  // test('it should render <Chat /> component if session is active', () => {
-  //   localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
-  //   const wrapper = mount(
-  //     <MockedProvider mocks={mocks} addTypename={false}>
-  //       <MemoryRouter initialEntries={['/chat']}>
-  //         <App />
-  //       </MemoryRouter>
-  //     </MockedProvider>
-  //   );
+  test('it should render <Chat /> component if session is active', () => {
+    localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
+    const wrapper = mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
 
-  //   expect(wrapper.find(Chat)).toHaveLength(1);
-  // });
+    expect(wrapper.find(Chat)).toHaveLength(1);
+  });
 });
