@@ -67,7 +67,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         id: `Message:${props.id}`,
         fragment: MESSAGE_FRAGMENT,
       });
-
       if (tags) {
         const tagsCopy = JSON.parse(JSON.stringify(tags));
         tagsCopy.tags = tagsCopy.tags.filter((tag: any) => tag.id !== deleteId);
@@ -140,7 +139,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
           <TagIcon className={styles.TagIcon} />
           {tag.label}
-          <CloseIcon className={styles.CloseIcon} onClick={deleteTagHandler} data-id={tag.id} />
+          <CloseIcon
+            className={styles.CloseIcon}
+            onClick={deleteTagHandler}
+            data-id={tag.id}
+            data-testid="deleteIcon"
+          />
         </div>
       );
     });
