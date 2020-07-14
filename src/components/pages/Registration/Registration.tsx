@@ -93,10 +93,10 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             phone: phoneNumber,
           },
         })
-        .then((response: any) => {
+        .then(function (response: any) {
           setAuthMessage(response);
         })
-        .catch((error: any) => {
+        .catch(function (error: any) {
           console.log(error);
         });
     }
