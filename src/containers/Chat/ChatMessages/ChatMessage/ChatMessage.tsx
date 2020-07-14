@@ -118,14 +118,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   }
 
   const deleteTagHandler = (event: any) => {
-    const tagId = event.currentTarget.getAttribute('data-id');
-    deleteId = tagId;
+    deleteId = event.currentTarget.getAttribute('data-id');
     deleteTag({
       variables: {
         input: {
           messageId: props.id,
           addTagIds: [],
-          deleteTagIds: [tagId],
+          deleteTagIds: [deleteId],
         },
       },
     });
