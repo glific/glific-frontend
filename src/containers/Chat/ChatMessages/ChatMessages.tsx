@@ -121,11 +121,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     },
   };
 
-  // const allConversations: any = client.readQuery({
-  //   query: GET_CONVERSATION_QUERY,
-  //   variables: queryVariables,
-  // });
-
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(
     GET_CONVERSATION_MESSAGE_QUERY,
     {
