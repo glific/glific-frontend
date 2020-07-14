@@ -43,7 +43,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
   let tag: any;
-  let deleteId: any;
+  let deleteId: string | number;
 
   const { popup, focus, id } = props;
 
@@ -76,7 +76,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           data: tagsCopy,
         });
       }
-
       setNotification(client, 'Tag deleted successfully');
     },
   });
@@ -120,7 +119,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const deleteTagHandler = (event: any) => {
     const tagId = event.currentTarget.getAttribute('data-id');
-
     deleteId = tagId;
     deleteTag({
       variables: {
