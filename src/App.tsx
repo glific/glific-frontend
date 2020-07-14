@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Switch, RouteComponentProps, Redirect, Route } from 'react-router-dom';
 import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Typography, FormHelperText } from '@material-ui/core';
 import styles from './Registration.module.css';
 import FormControl from '@material-ui/core/FormControl';

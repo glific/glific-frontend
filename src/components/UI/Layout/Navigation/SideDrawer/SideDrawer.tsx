@@ -18,7 +18,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../common/session';
-import { Redirect } from 'react-router';
 
 export interface SideDrawerProps {}
 
@@ -100,7 +99,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const classes = useStyles();
-  const [logout] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
 
