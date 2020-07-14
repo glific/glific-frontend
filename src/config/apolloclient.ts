@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
+import { ApolloClient, InMemoryCache, createHttpLink, split, from } from '@apollo/client';
 import absinthe from './absinthe';
 import { URI } from '.';
 import { setContext } from '@apollo/link-context';
@@ -18,7 +18,7 @@ const gqlClient = (auth_token: string | null) => {
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    authLink.concat(createHttpLink({ uri: URI }))
+    from([authLink, createHttpLink({ uri: URI })])
   );
   return new ApolloClient({
     link,
