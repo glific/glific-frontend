@@ -83,13 +83,15 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
               value={userAuthCode}
               onChange={handleuserAuthCodeChange()}
             />
-            {authError || alreadyExists ? (
-              <FormHelperText>
-                {alreadyExists
-                  ? 'An account already exists with this phone number.'
-                  : 'Invalid authentication code.'}
-              </FormHelperText>
-            ) : null}
+            <div className="HelperText">
+              {authError || alreadyExists ? (
+                <FormHelperText>
+                  {alreadyExists
+                    ? 'An account already exists with this phone number.'
+                    : 'Invalid authentication code.'}
+                </FormHelperText>
+              ) : null}
+            </div>
           </FormControl>
         </div>
         <div className="button">
