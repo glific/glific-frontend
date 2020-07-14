@@ -15,11 +15,14 @@ const gqlClient = (auth_token: string | null) => {
     };
   });
 
+  const httpLink = createHttpLink({ uri: URI });
+
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    from([authLink, createHttpLink({ uri: URI })])
+    authLink.concat(httpLink)
   );
+
   return new ApolloClient({
     link,
     cache: new InMemoryCache(),
