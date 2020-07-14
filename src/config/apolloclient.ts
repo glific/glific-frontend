@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, createHttpLink, split, from } from '@apollo/client';
+import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
 import { onError } from "@apollo/link-error";
 import absinthe from './absinthe';
 import { URI } from '.';
