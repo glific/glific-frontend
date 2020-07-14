@@ -8,7 +8,6 @@ import Chat from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';
 
 const mocks = CONVERSATION_MOCKS;
-process.env.REACT_APP_WEB_SOCKET = 'ws://localhost:4000/socket';
 
 describe('<App /> ', () => {
   test('it should render <App /> component correctly', () => {
