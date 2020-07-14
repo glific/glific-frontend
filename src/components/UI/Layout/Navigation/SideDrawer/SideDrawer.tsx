@@ -138,14 +138,14 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
-  let authorizationHeader = localStorage.getItem('session');
-  authorizationHeader = authorizationHeader ? JSON.parse(authorizationHeader) : null;
+  const session = localStorage.getItem('session');
+  const accessToken = session ? JSON.parse(session).access_token : null;
 
   const handleLogout = () => {
     axios
       .delete(constants.USER_SESSION, {
         headers: {
-          Authorization: authorizationHeader,
+          Authorization: accessToken,
         },
       })
       .then((response: any) => {
