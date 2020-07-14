@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -6,8 +6,6 @@ import { setNotification } from '../../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -16,6 +14,10 @@ import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './TagList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
 
 export interface TagListProps {}
 
@@ -37,7 +39,8 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
 
   // Table attributes
-  const columnNames = ['Name', 'Description', 'Actions'];
+  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
+
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -57,7 +60,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     });
   };
 
-  const filterPayload = () => {
+  const filterPayload = useCallback(() => {
     return {
       filter: {
         label: searchVal,
@@ -68,7 +71,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         order: tableVals.sortDirection.toUpperCase(),
       },
     };
-  };
+  }, [searchVal, tableVals]);
 
   // Get the total number of tags here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
@@ -88,10 +91,11 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   });
 
   const message = useQuery(NOTIFICATION);
+  let toastMessage;
 
   useEffect(() => {
     refetch(filterPayload());
-  }, [refetch]);
+  }, [refetch, filterPayload]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -101,6 +105,12 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       },
     });
   }, [searchVal, refetchCount]);
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage, client]);
 
   let deleteId: number = 0;
 
@@ -139,7 +149,6 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     setDeleteTagID(null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
@@ -152,8 +161,9 @@ export const TagList: React.SFC<TagListProps> = (props) => {
         handleOk={handleDeleteTag}
         handleCancel={closeDialogBox}
         colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
       >
-        You won't be able to use this for tagging messages.
+        <p className={styles.DialogText}>You won't be able to use this for tagging messages.</p>
       </DialogBox>
     );
   }
@@ -175,31 +185,50 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   function getIcons(id: number | undefined, label: string) {
     if (id) {
       return (
-        <>
+        <div className={styles.Icons}>
           <Link to={'/tag/' + id + '/edit'}>
-            <IconButton aria-label="Edit" color="default">
+            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
               <EditIcon />
             </IconButton>
           </Link>
           <IconButton
             aria-label="Delete"
             color="default"
+            data-testid="DeleteIcon"
             onClick={() => showDialogHandler(id!, label)}
           >
             <DeleteIcon />
           </IconButton>
-        </>
+        </div>
       );
     }
   }
 
+  const getLabel = (label: string) => {
+    return (
+      <div className={styles.LabelContainer}>
+        <FilledTagIcon className={styles.FilledTagIcon} />
+        <p className={styles.LabelText}>{label}</p>
+      </div>
+    );
+  };
+
+  const getDescription = (text: string) => {
+    return <p className={styles.TableText}>{text}</p>;
+  };
+
+  const getKeywords = (keyword: any) => {
+    return <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>;
+  };
+
   function formatTags(tags: Array<any>) {
     // Should be type tag, but can't import Tag type into file
-    return tags.map((t: any) => {
+    return tags.map((tag: any) => {
       return {
-        label: t.label,
-        description: t.description,
-        operations: getIcons(t.id, t.label),
+        label: getLabel(tag.label),
+        description: getDescription(tag.description),
+        keywords: getKeywords(tag.keywords),
+        operations: getIcons(tag.id, tag.label),
       };
     });
   }
@@ -231,10 +260,15 @@ export const TagList: React.SFC<TagListProps> = (props) => {
     tagCount = countData.countTags;
   }
 
+  const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
+
   return (
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
+          <IconButton disabled={true} className={styles.Icon}>
+            <TagIcon className={styles.TagIcon} />
+          </IconButton>
           Tags
         </Typography>
         <div className={styles.Buttons}>
@@ -246,14 +280,17 @@ export const TagList: React.SFC<TagListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <div>
-            {toastMessage}
-            {dialogBox}
-            <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
-                Add New
-              </Button>
-            </div>
+        </div>
+        <div>
+          {toastMessage}
+          {dialogBox}
+          <div className={styles.AddButton}>
+            <Button color="primary" variant="contained" onClick={() => setNewTag(true)}>
+              Add New
+            </Button>
+            {/* <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+              :
+            </MaterialButton> */}
           </div>
         </div>
       </div>
@@ -261,6 +298,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
       {/* Rendering list of tags */}
       {tagList ? (
         <Pager
+          columnStyles={columnStyles}
           columnNames={columnNames}
           data={tagList}
           totalRows={tagCount}

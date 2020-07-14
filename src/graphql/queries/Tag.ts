@@ -17,8 +17,7 @@ export const GET_TAG = gql`
         id
         label
         description
-        isActive
-        isReserved
+        keywords
         language {
           id
         }
@@ -39,6 +38,7 @@ export const FILTER_TAGS = gql`
       id
       label
       description
+      keywords
     }
   }
 `;

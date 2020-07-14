@@ -81,11 +81,7 @@ const mocks = [
             id: '87',
             label: 'Good message',
             description: 'Hey There',
-          },
-          {
-            id: '94',
-            label: 'Message',
-            description: 'some description',
+            keywords: ['Hi'],
           },
         ],
       },
@@ -93,85 +89,69 @@ const mocks = [
   },
 ];
 
+const tagList = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <TagList />
+    </Router>
+  </MockedProvider>
+);
+
 describe('<TagList />', () => {
   it('should have loading', async () => {
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
-
+    const { getByText } = render(tagList);
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
   });
 
   it('should have add new button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(tagList);
+
     await wait();
     expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
   });
 
   it('should have a table', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(tagList);
+
     await wait();
     expect(container.querySelector('table')).toBeInTheDocument();
   });
 
   test('taglist has proper headers', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(tagList);
 
     await wait();
     const { getByText } = within(container.querySelector('thead'));
-    expect(getByText('Name')).toBeInTheDocument();
-    expect(getByText('Description')).toBeInTheDocument();
-    expect(getByText('Actions')).toBeInTheDocument();
+    expect(getByText('TITLE')).toBeInTheDocument();
+    expect(getByText('DESCRIPTION')).toBeInTheDocument();
+    expect(getByText('KEYWORDS')).toBeInTheDocument();
+    expect(getByText('ACTIONS')).toBeInTheDocument();
   });
 
   test('A row in the table should have an edit and delete button', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(tagList);
+
     await wait();
     const { getByLabelText } = within(container.querySelector('tbody tr'));
     expect(getByLabelText('Edit')).toBeInTheDocument();
     expect(getByLabelText('Delete')).toBeInTheDocument();
   });
 
+  const TagListButtons = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <Switch>
+          <Route path="/tag/add" exact component={Tag} />
+        </Switch>
+        <TagList />
+      </Router>
+    </MockedProvider>
+  );
+
   test('add new Button contains a route to add new page', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Switch>
-            <Route path="/tag/add" exact component={Tag} />
-          </Switch>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(TagListButtons);
+
     await wait();
     const button = container.querySelector('button.MuiButton-containedPrimary');
     fireEvent.click(button);
@@ -180,16 +160,8 @@ describe('<TagList />', () => {
   });
 
   test('edit Button contains a route to edit page', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Switch>
-            <Route path="/tag/add" exact component={Tag} />
-          </Switch>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(TagListButtons);
+
     await wait();
     expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
   });
@@ -197,13 +169,8 @@ describe('<TagList />', () => {
 
 describe('<Dialogbox />', () => {
   test('click on delete button opens dialog box', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { container } = render(tagList);
+
     await wait();
     const { queryByLabelText } = within(container.querySelector('tbody tr'));
     const button = queryByLabelText('Delete');
@@ -213,16 +180,10 @@ describe('<Dialogbox />', () => {
   });
 
   test('click on agree button shows alert', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <TagList />
-        </Router>
-      </MockedProvider>
-    );
+    const { getAllByTestId } = render(tagList);
+
     await wait();
-    const { queryByLabelText } = within(container.querySelector('tbody tr'));
-    const button = queryByLabelText('Delete');
+    const button = getAllByTestId('DeleteIcon')[0];
     fireEvent.click(button);
     await wait();
     const agreeButton = screen

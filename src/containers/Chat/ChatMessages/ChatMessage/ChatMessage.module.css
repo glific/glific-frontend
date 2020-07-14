@@ -130,7 +130,9 @@
   font-size: 12px;
   font-weight: 500;
   color: #073f24;
-  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  margin-right: 13px;
 }
 
 .TagIcon {
@@ -150,6 +152,13 @@
   margin-right: 32px;
 }
 
+<<<<<<< HEAD
 .MarkdownText {
   margin: 0px;
+=======
+.CloseIcon {
+  width: 7px;
+  margin-left: 4px;
+  cursor: pointer;
+>>>>>>> master
 }

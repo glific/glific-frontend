@@ -7,7 +7,7 @@ export interface LoadingProps {}
 
 export const Loading: React.SFC<LoadingProps> = () => {
   return (
-    <div className={styles.CenterItems}>
+    <div className={styles.CenterItems} data-testid="loader">
       <div className={styles.LoadingPadding}>
         <CircularProgress />
       </div>

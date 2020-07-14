@@ -70,6 +70,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   let conversationList;
   if (conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
+      let lastMeessage = [];
+      if (conversation.messages.length > 0) {
+        lastMeessage = conversation.messages[0];
+      }
       return (
         <ChatConversation
           key={conversation.contact.id}
@@ -77,31 +81,16 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
           onClick={(i: number) => setSelectedIndex(i)}
           index={index}
           contactId={conversation.contact.id}
-          contactName={conversation.contact.name}
-          lastMessage={conversation.messages[0]} // What if they have no messages? Is this even possible?
+          contactName={
+            conversation.contact.name ? conversation.contact.name : conversation.contact.phone
+          }
+          lastMessage={lastMeessage}
         />
       );
     });
   } else {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
-
-  // // Constructing ChatConversation objects for conversations with at least one message.
-  // let conversationList;
-  // if (data.search.length > 0) {
-  //   conversationList = data.search.reduce((filtered: Array<any>, conversation: any) => {
-  //     if (conversation.messages.length > 0) {
-  //       return filtered.concat(
-  //         <ChatConversation
-  //           key={conversation.contact.id}
-  //           contactId={conversation.contact.id}
-  //           contactName={conversation.contact.name}
-  //           lastMessage={conversation.messages[0]}
-  //         />
-  //       );
-  //     }
-  //     return filtered;
-  //   }, []);
 
   const handleSearch = (e: any) => {
     e.preventDefault();

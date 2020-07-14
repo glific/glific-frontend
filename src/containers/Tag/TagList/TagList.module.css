@@ -1,8 +1,8 @@
 .Buttons {
+  width: 315px;
   border-color: #e0e0e0;
   vertical-align: middle;
-  display: flex;
-  align-items: center;
+  margin-left: auto;
 }
 
 .Table {
@@ -10,26 +10,112 @@
 }
 
 .Title {
+  margin-left: 14px !important;
   vertical-align: middle;
-  height: 75%;
+  font-weight: 500 !important;
+  color: #073f24;
 }
 
 .IconButton {
   background-color: '#e0e0e0';
 }
 
+.DropdownButton {
+  margin-left: 24px !important;
+  border-radius: 50% !important;
+  min-width: 25px !important;
+  margin-right: 14px !important;
+}
 .AddButton {
   height: 80%;
   text-transform: capitalize;
   border-radius: 20px;
-  margin-left: 10px;
+  margin-left: 24px;
 }
 
 .Header {
   display: flex;
   padding: 10px;
+  padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
+  margin-top: 6px;
   height: 70px;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.TagIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.FilledTagIcon {
+  margin-right: 7px;
+  align-self: center;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: #073f24;
+  line-height: 1;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.LabelContainer {
+  display: flex;
+  height: fit-content;
+  align-items: baseline;
+  align-content: center;
+}
+
+.Label {
+  width: 162px;
+}
+
+.Description {
+  width: 291px;
+}
+
+.Keywords {
+  width: 395px;
+}
+
+.Actions {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.Icons {
+  margin-left: auto;
+}
+
+.ButtonsCenter {
+  justify-content: center !important;
+}
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
 }

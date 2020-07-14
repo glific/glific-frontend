@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Select } from '@material-ui/core';
+import { Select, InputLabel } from '@material-ui/core';
 import { Dropdown } from './Dropdown';
 
 describe('<Dropdown />', () => {
@@ -10,8 +10,8 @@ describe('<Dropdown />', () => {
   });
 
   it('should have correct label', () => {
-    const wrapper = shallow(<Dropdown label="Dropdown" />);
-    expect(wrapper.find('label').text()).toEqual('Dropdown');
+    const wrapper = shallow(<Dropdown placeholder="Dropdown" />);
+    expect(wrapper.find(InputLabel).text()).toEqual('Dropdown');
   });
 
   it('should have an initial value', () => {

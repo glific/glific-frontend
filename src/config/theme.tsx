@@ -29,6 +29,23 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTablePagination: {
+      caption: {
+        fontSize: '16px',
+        color: '#073F24',
+      },
+    },
+    MuiOutlinedInput: {
+      notchedOutline: {
+        borderRadius: '12px',
+        borderWidth: '2px',
+      },
+    },
+    MuiDialogActions: {
+      root: {
+        justifyContent: 'flex-start',
+      },
+    },
   },
 });
 

@@ -14,9 +14,33 @@
   }
 }
 
+.DeleteIcon {
+  margin-right: 9px !important;
+}
+
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
+}
+
+.DeleteButton {
+  margin-left: auto !important;
+}
+
+.Title {
+  margin-left: 24px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+}
+
 .Input {
   display: flex;
-  padding: 20px;
+  padding: 8px;
 }
 
 .Label {
@@ -27,13 +51,34 @@
 
 .TemplateAdd {
   width: fit-content;
-  margin: 0 auto;
 }
 
 .Form {
-  padding: 20px 50px;
+  padding: 16px 16px;
+  width: 470px;
 }
 
 .Buttons {
-  text-align: center;
+  margin-top: 24px;
+  margin-left: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.ButtonsCenter {
+  justify-content: center !important;
+}
+
+.SpeedSendIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Button {
+  margin-right: 24px !important;
 }

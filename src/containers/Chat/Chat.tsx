@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { Redirect } from 'react-router-dom';
 
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
@@ -93,7 +94,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_RECEIVED_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message received sub');
         return updateConversations(prev, subscriptionData, 'RECEIVED');
       },
     });
@@ -103,7 +103,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_SENT_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message sent sub');
         return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
@@ -117,8 +116,8 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  if (data === undefined || data.conversations === undefined) {
-    return null;
+  if (!contactId && data.conversations.length !== 0) {
+    return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
   }
 
   return (

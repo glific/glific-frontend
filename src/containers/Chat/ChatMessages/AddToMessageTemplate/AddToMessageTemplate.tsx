@@ -24,9 +24,9 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
 
   const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION);
 
-  const onChange = (event: any = {}) => {
+  const onChange = (event: any) => {
     setMessageTemplate(event.target.value);
-    if (setRequired) {
+    if (required) {
       setRequired(false);
     }
   };

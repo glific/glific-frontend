@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
@@ -6,8 +6,6 @@ import { setNotification } from '../../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import { Pager } from '../../../components/UI/Pager/Pager';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
@@ -16,6 +14,9 @@ import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import styles from './MessageTemplateList.module.css';
 import { SearchBar } from '../../Chat/ChatConversations/SearchBar';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
+import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
 
 export interface TemplateListProps {}
 
@@ -37,7 +38,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
 
   // Table attributes
-  const columnNames = ['Label', 'Body', 'Actions'];
+  const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -57,7 +58,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     });
   };
 
-  const filterPayload = () => {
+  const filterPayload = useCallback(() => {
     return {
       filter: {
         label: searchVal,
@@ -68,7 +69,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         order: tableVals.sortDirection.toUpperCase(),
       },
     };
-  };
+  }, [searchVal, tableVals]);
 
   // Get the total number of Templates here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(
@@ -91,7 +92,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
 
   useEffect(() => {
     refetch(filterPayload());
-  }, [refetch]);
+  }, [refetch, filterPayload]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
   useEffect(() => {
@@ -101,6 +102,14 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
       },
     });
   }, [searchVal, refetchCount]);
+
+  let toastMessage;
+
+  useEffect(() => {
+    return () => {
+      setNotification(client, null);
+    };
+  }, [toastMessage, client]);
 
   let deleteId: number = 0;
 
@@ -141,7 +150,6 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     setDeleteTemplateID(null);
   };
 
-  let toastMessage;
   if (message.data && message.data.message) {
     toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
   }
@@ -154,8 +162,11 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
         handleOk={handleDeleteTemplate}
         handleCancel={closeDialogBox}
         colorOk="secondary"
+        alignButtons={styles.ButtonsCenter}
       >
-        It will stop showing now when you are drafting a customized message.
+        <p className={styles.DialogText}>
+          It will stop showing when you are drafting a customized message
+        </p>
       </DialogBox>
     );
   }
@@ -179,7 +190,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
   function getIcons(id: number | undefined, label: string) {
     if (id) {
       return (
-        <>
+        <div className={styles.Icons}>
           <Link to={'/speed-send/' + id + '/edit'}>
             <IconButton aria-label="Edit" color="default">
               <EditIcon />
@@ -192,21 +203,31 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
           >
             <DeleteIcon />
           </IconButton>
-        </>
+        </div>
       );
     }
   }
 
+  const getLabel = (label: string) => {
+    return <div className={styles.LabelText}>{label}</div>;
+  };
+
+  const getBody = (text: string) => {
+    return <p className={styles.TableText}>{text}</p>;
+  };
+
   function formatTemplates(templates: Array<any>) {
     // Should be type template, but can't import template type into file
-    return templates.map((t: any) => {
+    return templates.map((tag: any) => {
       return {
-        label: t.label,
-        description: t.body,
-        operations: getIcons(t.id, t.label),
+        label: getLabel(tag.label),
+        body: getBody(tag.body),
+        operations: getIcons(tag.id, tag.label),
       };
     });
   }
+
+  const columnStyles = [styles.Label, styles.Body, styles.Actions];
 
   const resetTableVals = () => {
     setTableVals({
@@ -239,6 +260,9 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
     <>
       <div className={styles.Header}>
         <Typography variant="h5" className={styles.Title}>
+          <IconButton disabled={true} className={styles.Icon}>
+            <SpeedSendIcon className={styles.SpeedSendIcon} />
+          </IconButton>
           Speed sends
         </Typography>
         <div className={styles.Buttons}>
@@ -250,14 +274,17 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
             }}
             searchVal={searchVal}
           />
-          <div>
-            {toastMessage}
-            {dialogBox}
-            <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
-                Add New
-              </Button>
-            </div>
+        </div>
+        <div>
+          {toastMessage}
+          {dialogBox}
+          <div className={styles.AddButton}>
+            <Button color="primary" variant="contained" onClick={() => setNewTemplate(true)}>
+              Add New
+            </Button>
+            {/* <MaterialButton color="primary" variant="contained" className={styles.DropdownButton}>
+              :
+            </MaterialButton> */}
           </div>
         </div>
       </div>
@@ -265,6 +292,7 @@ export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => {
       {/* Rendering list of templates */}
       {templateList ? (
         <Pager
+          columnStyles={columnStyles}
           columnNames={columnNames}
           data={templateList}
           totalRows={templateCount}
