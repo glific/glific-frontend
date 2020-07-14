@@ -4,7 +4,6 @@ import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
 import { Tag } from './containers/Tag/Tag';
 import { TagPage } from './components/pages/TagPage/TagPage';
-// import ChatPage from './components/pages/ChatPage/ChatPage';
 import { Registration } from './components/pages/Registration/Registration';
 import { ConfirmOTP } from './components/pages/ConfirmOTP/ConfirmOTP';
 import { Login } from './components/pages/Login/Login';
