@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
+import { useQuery, useApolloClient } from '@apollo/client';
 
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
@@ -12,12 +12,16 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
+import { Redirect } from 'react-router-dom';
 
 export interface ChatProps {
   contactId: number;
 }
 
 const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+  // create an instance of apolloclient
+  const client = useApolloClient();
+
   // fetch the default conversations
   // default queryvariables
   const queryVariables = {
@@ -115,11 +119,32 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  const getConversations = () => {
+    const allConversations: any = client.readQuery({
+      query: GET_CONVERSATION_QUERY,
+      variables: queryVariables,
+    });
+    return allConversations;
+  };
+
+  let newContactId: number;
+  let allConversations = getConversations();
+  if (!contactId && allConversations.conversations.length !== 0) {
+    return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
+  } else {
+    // Either don't have contactId or no conversations. Either or, this will be null, and ChatMessages will render a messaging saying 'No messages'.
+    newContactId = contactId;
+  }
+
   return (
     <Paper>
       <div className={styles.Chat}>
         <div className={styles.ChatMessages}>
-          <ChatMessages contactId={contactId} />
+          <ChatMessages
+            contactId={newContactId}
+            getConversations={getConversations}
+            allConversations={allConversations}
+          />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations />

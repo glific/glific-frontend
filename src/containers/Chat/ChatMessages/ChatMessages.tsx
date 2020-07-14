@@ -35,10 +35,6 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 
-export interface ChatMessagesProps {
-  contactId: number;
-}
-
 interface ConversationMessage {
   id: string;
   body: string;
@@ -65,13 +61,23 @@ interface ChatMessagesInterface {
   };
 }
 
+export interface ChatMessagesProps {
+  contactId: number;
+  getConversations: () => any;
+  allConversations: any; //ChatMessagesInterface;
+}
+
 interface ConversationResult {
   chatMessages: any[];
 }
 
 type OptionalChatQueryResult = ChatMessagesInterface | null;
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  getConversations,
+  allConversations,
+}) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
@@ -115,10 +121,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
   };
 
-  const allConversations: any = client.readQuery({
-    query: GET_CONVERSATION_QUERY,
-    variables: queryVariables,
-  });
+  // const allConversations: any = client.readQuery({
+  //   query: GET_CONVERSATION_QUERY,
+  //   variables: queryVariables,
+  // });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(
     GET_CONVERSATION_MESSAGE_QUERY,
@@ -143,10 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       setDialogbox(false);
     },
     update: (cache, { data }) => {
-      const allConversations: any = client.readQuery({
-        query: GET_CONVERSATION_QUERY,
-        variables: queryVariables,
-      });
+      const allConversations = getConversations();
       const messagesCopy = JSON.parse(JSON.stringify(allConversations));
       if (data.updateMessageTags.messageTags) {
         const addedTags = data.updateMessageTags.messageTags.map((tags: any) => tags.tag);
@@ -225,20 +228,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       // allConversations.conversations.splice(0, 0, data.conversation);
       // allConversations.conversations.unshift(data.conversation);
     }
-  } else {
-    // Have contactId be first conversation contact id if there are conversations.
+  } else if (contactId && allConversations.conversations.length === 0) {
     // If there are no conversations (new user), then return that there are "No conversations".
-
-    if (allConversations.conversations.length === 0) {
-      conversationInfo = null;
-    } else {
-      // POTENTIAL FIX: If no contactId, redirect to URL with contactId.
-      // This could be on a higher component (App/Chat) instead of here. However, this is where we first know the contactId.
-      return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
-
-      // conversationIndex = 0;
-      // conversationInfo = allConversations.conversations[conversationIndex];
-    }
+    conversationInfo = null;
+    //   // conversationIndex = 0;
+    //   // conversationInfo = allConversations.conversations[conversationIndex];
+    // }
   }
 
   // In the case where there are no conversations, receiverId is not needed, so set to null.
@@ -412,7 +407,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // Check if there are conversation messages else display no messages
   if (messageList) {
     messageListContainer = (
-      <Container className={styles.MessageList} data-testid="messageContainer">
+      <Container className={styles.MessageList} maxWidth={false} data-testid="messageContainer">
         {messageList}
       </Container>
     );
@@ -425,7 +420,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   return (
-    <Container className={styles.ChatMessages} disableGutters>
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {toastMessage}
       <ContactBar
