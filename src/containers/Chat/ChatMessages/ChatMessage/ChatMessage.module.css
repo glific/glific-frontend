@@ -152,13 +152,12 @@
   margin-right: 32px;
 }
 
-<<<<<<< HEAD
 .MarkdownText {
   margin: 0px;
-=======
+}
+
 .CloseIcon {
   width: 7px;
   margin-left: 4px;
   cursor: pointer;
->>>>>>> master
 }

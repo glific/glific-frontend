@@ -12,12 +12,9 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
 import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
-<<<<<<< HEAD
 import Markdown from 'markdown-to-jsx';
-=======
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
->>>>>>> master
 
 export interface ChatMessageProps {
   id: number;
