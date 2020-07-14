@@ -31,7 +31,9 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
               className={styles.SearchField}
               name="searchInput" // This is important for extracting the search value in parent component.
               placeholder="Search"
-              onChange={(e) => setLocalSearchVal(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
+                setLocalSearchVal(e.target.value)
+              }
               value={localSearchVal}
             />
           )}
