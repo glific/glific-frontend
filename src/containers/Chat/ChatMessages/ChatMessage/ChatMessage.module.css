@@ -130,7 +130,9 @@
   font-size: 12px;
   font-weight: 500;
   color: #073f24;
-  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  margin-right: 13px;
 }
 
 .TagIcon {
@@ -148,4 +150,10 @@
 .MessageDetails {
   margin-top: 6px;
   margin-right: 32px;
+}
+
+.CloseIcon {
+  width: 7px;
+  margin-left: 4px;
+  cursor: pointer;
 }
