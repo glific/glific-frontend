@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Typography, List, Toolbar, Container } from '@material-ui/core';
 import ChatConversation from './ChatConversation/ChatConversation';
 import styles from './ChatConversations.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 
 export interface ChatConversationsProps {}
@@ -44,12 +44,16 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     variables: queryVariables,
   });
 
-  const [queryFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+  const { loading, error, data: searchData, refetch, fetchMore, updateQuery } = useQuery<any>(
     FILTER_CONVERSATIONS_QUERY,
     {
       variables: filterVariables(),
     }
   );
+
+  const getNewSearch = useCallback((prevResult: any, newData: any) => {
+    return newData.search;
+  }, []);
 
   // Other cases
   if (loading) return <Loading />;
@@ -62,7 +66,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (searchVal && called) {
+  if (searchVal) {
+    // && called) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
@@ -70,9 +75,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   let conversationList;
   if (conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
-      let lastMeessage = [];
+      let lastMessage = [];
       if (conversation.messages.length > 0) {
-        lastMeessage = conversation.messages[0];
+        lastMessage = conversation.messages[0];
       }
       return (
         <ChatConversation
@@ -84,7 +89,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
           contactName={
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
-          lastMessage={lastMeessage}
+          lastMessage={lastMessage}
         />
       );
     });
@@ -92,38 +97,42 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
-  // // Constructing ChatConversation objects for conversations with at least one message.
-  // let conversationList;
-  // if (data.search.length > 0) {
-  //   conversationList = data.search.reduce((filtered: Array<any>, conversation: any) => {
-  //     if (conversation.messages.length > 0) {
-  //       return filtered.concat(
-  //         <ChatConversation
-  //           key={conversation.contact.id}
-  //           contactId={conversation.contact.id}
-  //           contactName={conversation.contact.name}
-  //           lastMessage={conversation.messages[0]}
-  //         />
-  //       );
-  //     }
-  //     return filtered;
-  //   }, []);
-
   const handleSearch = (e: any) => {
+    return 'nothing';
     e.preventDefault();
     let searchVal = e.target.searchInput.value.trim();
     setSearchVal(searchVal);
-    if (!called) {
-      queryFilterConvos();
-      return <Loading />;
-    }
+    // if (!called) {
+    //   queryFilterConvos();
+    //   return <Loading />;
+    // }
     setSelectedIndex(-1);
   };
 
   const handleChange = (e: any) => {
     console.log(e.target.value);
     setSearchVal(e.target.value);
-    queryFilterConvos();
+    // queryFilterConvos();
+    // if (refetch) {
+    //   console.log('refetch exists');
+    // }
+    // if (updateQuery) {
+    //   console.log('updatequery exists');
+    // }
+    // refetch(filterVariables());
+    fetchMore({
+      query: FILTER_CONVERSATIONS_QUERY,
+      variables: filterVariables(),
+      updateQuery: (prev, { fetchMoreResult }) => {
+        console.log(prev);
+        console.log(fetchMoreResult);
+        return getNewSearch(prev, fetchMoreResult);
+        // return updateConversations(prev, subscriptionData, 'RECEIVED');
+      },
+    });
+    // } else {
+    //   console.log('cant find fetchmore');
+    // }
     // return <Loading />;
     setSelectedIndex(-1);
   };
@@ -132,6 +141,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     setSearchVal('');
     setSelectedIndex(-1);
   };
+
+  console.log('reset component');
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
@@ -156,7 +167,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
       </Toolbar>
       <SearchBar
         handleSubmit={handleSearch}
-        // handleChange={handleChange}
+        handleChange={handleChange}
         onReset={resetSearch}
         searchVal={searchVal}
       />
