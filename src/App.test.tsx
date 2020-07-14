@@ -27,16 +27,16 @@ describe('<App /> ', () => {
     expect(wrapper.find(Login)).toHaveLength(1);
   });
 
-  // test('it should render <Chat /> component if session is active', () => {
-  //   localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
-  //   const wrapper = mount(
-  //     <MockedProvider mocks={mocks} addTypename={false}>
-  //       <MemoryRouter initialEntries={['/chat']}>
-  //         <App />
-  //       </MemoryRouter>
-  //     </MockedProvider>
-  //   );
+  test('it should render <Chat /> component if session is active', () => {
+    localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
+    const wrapper = mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter initialEntries={['/chat']}>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
 
-  //   expect(wrapper.find(Chat)).toHaveLength(1);
-  // });
+    expect(wrapper.find(Chat)).toHaveLength(1);
+  });
 });
