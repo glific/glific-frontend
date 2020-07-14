@@ -92,23 +92,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
-  // // Constructing ChatConversation objects for conversations with at least one message.
-  // let conversationList;
-  // if (data.search.length > 0) {
-  //   conversationList = data.search.reduce((filtered: Array<any>, conversation: any) => {
-  //     if (conversation.messages.length > 0) {
-  //       return filtered.concat(
-  //         <ChatConversation
-  //           key={conversation.contact.id}
-  //           contactId={conversation.contact.id}
-  //           contactName={conversation.contact.name}
-  //           lastMessage={conversation.messages[0]}
-  //         />
-  //       );
-  //     }
-  //     return filtered;
-  //   }, []);
-
   const handleSearch = (e: any) => {
     e.preventDefault();
     let searchVal = e.target.searchInput.value.trim();
