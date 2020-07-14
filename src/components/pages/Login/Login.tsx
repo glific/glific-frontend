@@ -13,7 +13,7 @@ import styles from './Login.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
-import { SessionContext } from '../../../common/session';
+import { SessionContext } from '../../../context/session';
 
 export interface LoginProps {}
 

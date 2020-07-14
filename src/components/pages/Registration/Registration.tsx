@@ -97,7 +97,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           setAuthMessage(response);
         })
         .catch((error: any) => {
-          console.log(error);
+          console.log(phoneNumber);
         });
     }
   };

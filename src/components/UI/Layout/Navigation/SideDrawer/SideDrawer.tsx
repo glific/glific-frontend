@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
-import { SessionContext } from '../../../../../common/session';
+import { SessionContext } from '../../../../../context/session';
 
 export interface SideDrawerProps {}
 

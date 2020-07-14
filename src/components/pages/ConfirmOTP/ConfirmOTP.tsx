@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
 import { Redirect } from 'react-router-dom';
-import { SessionContext } from '../../../common/session';
+import { SessionContext } from '../../../context/session';
 
 export interface ConfirmOTPProps {
   location: any;

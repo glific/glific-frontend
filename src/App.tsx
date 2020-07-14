@@ -13,7 +13,7 @@ import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
 import { ApolloProvider } from '@apollo/client';
-import { SessionContext } from './common/session';
+import { SessionContext } from './context/session';
 
 const App = () => {
   const session = localStorage.getItem('session');
