@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Typography, FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
@@ -10,13 +10,15 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Button } from '../../UI/Form/Button/Button';
 import styles from './Login.module.css';
-import { REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER } from '../../../common/constants';
+import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { SessionContext } from '../../../context/session';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
+  const { setAuthenticated } = useContext(SessionContext);
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -58,17 +60,19 @@ export const Login: React.SFC<LoginProps> = () => {
     handleInputErrors();
     if (!passwordError && !phoneNumberError) {
       axios
-        .post(REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER, {
+        .post(USER_SESSION, {
           user: {
             phone: phoneNumber,
             password: password,
           },
         })
-        .then(function (response: any) {
+        .then((response: any) => {
           const responseString = JSON.stringify(response.data.data);
+          localStorage.setItem('session', responseString);
+          setAuthenticated(true);
           setSessionToken(responseString);
         })
-        .catch(function (error: any) {
+        .catch((error: any) => {
           setInvalidLogin(true);
         });
     }

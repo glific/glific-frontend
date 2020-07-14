@@ -2,13 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
-import { ApolloProvider } from '@apollo/client';
 import * as Sentry from '@sentry/browser';
-
 import theme from './config/theme';
-import gqlClient from './config/apolloclient';
 import { SENTRY_DSN } from './config/';
-
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -21,13 +17,11 @@ if (SENTRY_DSN) {
 ReactDOM.render(
   <React.StrictMode>
     <CssBaseline />
-    <ApolloProvider client={gqlClient}>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeProvider>
-    </ApolloProvider>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
