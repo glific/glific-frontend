@@ -13,42 +13,48 @@ export interface SearchBarProps {
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
-  const [localSearchVal, setLocalSearchVal] = useState('');
+  const [localSearchValue, setLocalSearchValue] = useState('');
+
+  // use local state value so that we can set the defaults correctly
+  let inputValue: string = '';
+  if (localSearchValue) {
+    inputValue = localSearchValue;
+  } else {
+    inputValue = props.searchVal || '';
+  }
+
+  // display reset button only if value is entered
+  let resetButton = null;
+  if (inputValue) {
+    resetButton = (
+      <IconButton
+        className={styles.ResetSearch}
+        onClick={() => {
+          setLocalSearchValue('');
+          props.onReset();
+        }}
+      >
+        <CloseIcon className={styles.CloseIcon}></CloseIcon>
+      </IconButton>
+    );
+  }
+
   return (
     <form onSubmit={props.handleSubmit}>
       <div className={styles.SearchBar}>
         <div className={styles.IconAndText}>
           <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
-          {props.searchVal ? (
-            <InputBase
-              className={styles.SearchField}
-              name="searchInput" // This is important for extracting the search value in parent component.
-              placeholder="Search"
-              defaultValue={props.searchVal}
-            />
-          ) : (
-            <InputBase
-              className={styles.SearchField}
-              name="searchInput" // This is important for extracting the search value in parent component.
-              placeholder="Search"
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
-                setLocalSearchVal(e.target.value)
-              }
-              value={localSearchVal}
-            />
-          )}
+          <InputBase
+            className={styles.SearchField}
+            name="searchInput" // This is important for extracting the search value in parent component.
+            placeholder="Search"
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
+              setLocalSearchValue(e.target.value)
+            }
+            value={inputValue}
+          />
         </div>
-        {props.searchVal || localSearchVal ? (
-          <IconButton
-            className={styles.ResetSearch}
-            onClick={() => {
-              setLocalSearchVal('');
-              props.onReset();
-            }}
-          >
-            <CloseIcon className={styles.CloseIcon}></CloseIcon>
-          </IconButton>
-        ) : null}
+        {resetButton}
       </div>
     </form>
   );
