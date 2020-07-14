@@ -39,7 +39,7 @@ export const UPDATE_MESSAGE_TAGS = gql`
 `;
 
 export const MESSAGE_FRAGMENT = gql`
-  fragment myTodo on Message {
+  fragment tags on Message {
     tags {
       id
       label
