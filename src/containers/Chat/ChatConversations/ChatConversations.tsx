@@ -25,6 +25,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     setSearchVal('');
   };
 
+  console.log(selectedIndex);
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       {/* Styling toolbar for design */}

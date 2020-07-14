@@ -40,23 +40,29 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     variables: queryVariables,
   });
 
-  const { loading, error, data: searchData, refetch, fetchMore, updateQuery } = useQuery<any>(
-    FILTER_CONVERSATIONS_QUERY,
-    {
-      variables: filterVariables(),
-    }
-  );
+  const [
+    getFilterConvos,
+    { called, loading, error, data: searchData, refetch, fetchMore, updateQuery },
+  ] = useLazyQuery<any>(FILTER_CONVERSATIONS_QUERY, {
+    variables: filterVariables(),
+  });
 
   useEffect(() => {
     props.setSelectedIndex(-1);
-    fetchMore({
-      query: FILTER_CONVERSATIONS_QUERY,
-      variables: filterVariables(),
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return fetchMoreResult;
-        // return getNewSearch(prev, fetchMoreResult);
-      },
-    });
+    // if (refetch) {
+    //   console.log('i found refetch');
+    // }
+    // if (fetchMore) {
+    //   console.log('i found fetchmore');
+    //   fetchMore({
+    //     query: FILTER_CONVERSATIONS_QUERY,
+    //     variables: filterVariables(),
+    //     updateQuery: (prev, { fetchMoreResult }) => {
+    //       return fetchMoreResult;
+    //       // return getNewSearch(prev, fetchMoreResult);
+    //     },
+    //   });
+    // }
   });
 
   // const getNewSearch = useCallback((prevResult: any, newData: any) => {
@@ -66,8 +72,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // }, []);
 
   // Other cases
-  if (loading) return <Loading />;
-  if (error) return <p>Error :(</p>;
+  if (called && loading) return <Loading />;
+  if (called && error) return <p>Error :(</p>;
 
   if (data === undefined) {
     return <p>Error :(</p>;
@@ -76,7 +82,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (props.searchVal) {
+  if (props.searchVal && !called) {
+    getFilterConvos();
+  }
+
+  if (called && props.searchVal !== '') {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
