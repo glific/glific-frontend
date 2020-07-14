@@ -30,7 +30,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
   };
 
-  const { loading, error, data, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { loading, error, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
   });
 
@@ -93,7 +93,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_RECEIVED_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message received sub');
         return updateConversations(prev, subscriptionData, 'RECEIVED');
       },
     });
@@ -103,7 +102,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       document: MESSAGE_SENT_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('calling message sent sub');
         return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
@@ -116,13 +114,6 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
-
-  if (data === undefined || data.conversations === undefined) {
-    return null;
-  }
-
-  // Other location.
-  // Move code for allConversations in ChatMessages here and pass `allConversations` into ChatMesages.
 
   return (
     <Paper>

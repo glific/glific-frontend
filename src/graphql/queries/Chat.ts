@@ -6,6 +6,7 @@ export const GET_CONVERSATION_QUERY = gql`
       contact {
         id
         name
+        phone
       }
       messages {
         id
@@ -63,8 +64,17 @@ export const FILTER_CONVERSATIONS_QUERY = gql`
       messages {
         id
         body
-        flow
-        type
+        insertedAt
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+        }
       }
     }
   }
