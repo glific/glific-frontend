@@ -71,6 +71,15 @@ const listButtons = (
   </MockedProvider>
 );
 
+test('add new Button contains a route to add new page', async () => {
+  const { container } = render(listButtons);
+  await wait();
+  const button = container.querySelector('button.MuiButton-containedPrimary');
+  fireEvent.click(button);
+  await wait();
+  expect(container.querySelector('div.ItemAdd')).toBeInTheDocument();
+});
+
 test('click on delete button opens dialog box', async () => {
   const { container } = render(list);
 

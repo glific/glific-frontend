@@ -40,16 +40,6 @@ const messageTemplateButtons = (
   </MockedProvider>
 );
 
-test('add new Button contains a route to add new page', async () => {
-  const { container } = render(messageTemplateButtons);
-
-  await wait();
-  const button = container.querySelector('button.MuiButton-containedPrimary');
-  fireEvent.click(button);
-  await wait();
-  expect(container.querySelector('div.TemplateAdd')).toBeInTheDocument();
-});
-
 test('edit Button contains a route to edit page', async () => {
   const { container } = render(messageTemplateButtons);
   await wait();
