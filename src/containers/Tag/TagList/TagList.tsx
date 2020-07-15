@@ -18,7 +18,6 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
-import { ErrorHandler } from '../../ErrorHandler/ErrorHandler';
 
 export interface TagListProps {}
 
