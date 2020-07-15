@@ -41,9 +41,9 @@ it('should have a table', async () => {
 
 test('list has proper headers', async () => {
   const { container } = render(list);
-
   await wait();
-  const { getByText } = within(container.querySelector('thead'));
+  const tableHead = container.querySelector('thead');
+  const { getByText } = within(tableHead);
   expect(getByText('label')).toBeInTheDocument();
   expect(getByText('description')).toBeInTheDocument();
   expect(getByText('keywords')).toBeInTheDocument();
@@ -54,7 +54,8 @@ test('A row in the table should have an edit and delete button', async () => {
   const { container } = render(list);
 
   await wait();
-  const { getByLabelText } = within(container.querySelector('tbody tr'));
+  const tableRow = container.querySelector('tbody tr');
+  const { getByLabelText } = within(tableRow);
   expect(getByLabelText('Edit')).toBeInTheDocument();
   expect(getByLabelText('Delete')).toBeInTheDocument();
 });
@@ -69,23 +70,6 @@ const listButtons = (
     </Router>
   </MockedProvider>
 );
-
-test('add new Button contains a route to add new page', async () => {
-  const { container } = render(listButtons);
-
-  await wait();
-  const button = container.querySelector('button.MuiButton-containedPrimary');
-  fireEvent.click(button);
-  await wait();
-  expect(container.querySelector('div.TagAdd')).toBeInTheDocument();
-});
-
-test('edit Button contains a route to edit page', async () => {
-  const { container } = render(listButtons);
-
-  await wait();
-  expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
-});
 
 test('click on delete button opens dialog box', async () => {
   const { container } = render(list);

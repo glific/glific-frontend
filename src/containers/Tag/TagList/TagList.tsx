@@ -8,52 +8,43 @@ import { List } from '../../List/List';
 
 export interface TagListProps {}
 
-export const TagList: React.SFC<TagListProps> = (props) => {
-  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
-  const dialogMessage = "You won't be able to use this for tagging messages.";
-  const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
+const getColumns = ({ label, description, keywords }: any) => ({
+  label: getLabel(label),
+  description: getDescription(description),
+  keywords: getKeywords(keywords),
+});
 
-  const getColumns = ({ label, description, keywords }: any) => {
-    return {
-      label: getLabel(label),
-      description: getDescription(description),
-      keywords: getKeywords(keywords),
-    };
-  };
+const getLabel = (label: string) => (
+  <div className={styles.LabelContainer}>
+    <FilledTagIcon className={styles.FilledTagIcon} />
+    <p className={styles.LabelText}>{label}</p>
+  </div>
+);
 
-  const getLabel = (label: string) => {
-    return (
-      <div className={styles.LabelContainer}>
-        <FilledTagIcon className={styles.FilledTagIcon} />
-        <p className={styles.LabelText}>{label}</p>
-      </div>
-    );
-  };
+const getDescription = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-  const getDescription = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
-  };
+const getKeywords = (keyword: any) => (
+  <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>
+);
 
-  const getKeywords = (keyword: any) => {
-    console.log(keyword);
-    return <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>;
-  };
-  const tagIcon = <TagIcon className={styles.TagIcon} />;
+const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
+const dialogMessage = "You won't be able to use this for tagging messages.";
+const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
+const tagIcon = <TagIcon className={styles.TagIcon} />;
 
-  return (
-    <List
-      columnNames={columnNames}
-      countQuery={GET_TAGS_COUNT}
-      title="Tags"
-      listItem="tags"
-      listItemName="tag"
-      pageLink="tag"
-      listIcon={tagIcon}
-      dialogMessage={dialogMessage}
-      filterItemsQuery={FILTER_TAGS}
-      deleteItemQuery={DELETE_TAG}
-      columns={getColumns}
-      columnStyles={columnStyles}
-    />
-  );
-};
+export const TagList: React.SFC<TagListProps> = (props) => (
+  <List
+    columnNames={columnNames}
+    countQuery={GET_TAGS_COUNT}
+    title="Tags"
+    listItem="tags"
+    listItemName="tag"
+    pageLink="tag"
+    listIcon={tagIcon}
+    dialogMessage={dialogMessage}
+    filterItemsQuery={FILTER_TAGS}
+    deleteItemQuery={DELETE_TAG}
+    columns={getColumns}
+    columnStyles={columnStyles}
+  />
+);
