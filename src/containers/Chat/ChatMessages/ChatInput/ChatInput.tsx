@@ -56,12 +56,34 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
+  // const markdownStr = (rawObject) =>
+  //   draftToMarkdown(rawObject, {
+  //     styleItems: {
+  //       '*': {
+  //         open: function () {
+  //           return '<strong>';
+  //         },
+  //         close: function () {
+  //           return '</strong>';
+  //         },
+  //       },
+  //     },
+  //   });
+
   const handleChange = (editorState: any) => {
     // Get the markdown equivalent for this text.
     // BUG: When highlighting over text and bolding, the cursor must move at least once in order for the changes to take effect.
+    // console.log(convertToRaw(editorState.getCurrentContent()));
+    // console.log(editorState.getCurrentContent().getPlainText());
+    // let markdownString = 'hi';
     let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
+
+    // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
+    let findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
+    let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
+    console.log(messageText);
     setEditorState(editorState);
-    setMessage(markdownString);
+    setMessage(messageText);
   };
 
   const handleKeyCommand = (command: string, editorState: any) => {

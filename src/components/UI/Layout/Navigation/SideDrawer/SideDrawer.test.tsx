@@ -12,6 +12,7 @@ describe('side drawer testing', () => {
   let isToggled = false;
   const mockCallBack = jest.fn();
   const changeToggle = () => {
+    console.log('being called');
     isToggled = !isToggled;
   };
   const component = (

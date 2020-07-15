@@ -45,6 +45,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   let tag: any;
   let deleteId: string | number;
+  let domParser = new DOMParser();
 
   const { popup, focus, id } = props;
 
@@ -162,6 +163,56 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  const textConverter = (text: any) => {
+    // Convert stored text (which is not in Markdown format) into HTML.
+    // Currently supporting bold, italics, strikethroughs, and code blocks.
+    let replacements: any = [
+      {
+        bold: {
+          char: '*',
+          replace: '<strong>$1</strong>',
+        },
+      },
+      {
+        italics: {
+          char: '_',
+          replace: '<i>$1</i>',
+        },
+      },
+      {
+        strikethrough: {
+          char: '~',
+          replace: '<s>$1</s>',
+        },
+      },
+      {
+        codeBlock: {
+          char: '```',
+          replace: '<code>$1</code>',
+        },
+      },
+    ];
+    for (let i = 0; i < replacements.length; i++) {
+      let type = Object.keys(replacements[i])[0];
+      let character: any = replacements[i][type].char;
+      let replacement: any = replacements[i][type].replace;
+      // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
+      let regexStr =
+        '\\' +
+        character +
+        '{' +
+        character.length +
+        '}(.+?)\\' +
+        character +
+        '{' +
+        character.length +
+        '}';
+      text = text.replace(new RegExp(regexStr, 'g'), replacement);
+    }
+    console.log(domParser.parseFromString(text, 'text/html').body);
+    return text;
+  };
+
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
@@ -169,7 +220,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              <Markdown className={styles.MarkdownText}>{props.body}</Markdown>
+              {/* <Markdown className={styles.MarkdownText}>{props.body}</Markdown> */}
+              <div>{textConverter(props.body)}</div>
             </div>
           </Tooltip>
           <Popper
