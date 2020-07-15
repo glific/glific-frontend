@@ -30,5 +30,9 @@ describe('<ErrorHandler />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
+
+    // check if error message is displayed
+    const errorMessageText = await findByText('An error has occured.');
+    expect(errorMessageText).toBeInTheDocument();
   });
 });
