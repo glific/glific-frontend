@@ -58,27 +58,6 @@ describe('ConfirmOTP test', () => {
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
 
-  it('shows error if code too short', () => {
-    jest.mock('axios');
-    const wrapper = mount(
-      <ConfirmOTP
-        location={{
-          state: {
-            phoneNumber: '1231231234',
-            password: 'pass12345',
-            password_confirmation: 'pass12345',
-          },
-        }}
-      />
-    );
-    wrapper
-      .find(OutlinedInput)
-      .at(0)
-      .simulate('change', { target: { value: '12345' } });
-    wrapper.find('Button').simulate('click');
-    expect(wrapper.find(FormHelperText).prop('children')).toEqual('Invalid authentication code.');
-  });
-
   it('shows error that says phone number already exists', () => {
     jest.mock('axios');
     const wrapper = mount(
@@ -93,14 +72,16 @@ describe('ConfirmOTP test', () => {
       />
     );
     const response = {
-      data: { renewal_token: '123213123', access_token: '456456456' },
+      error: {
+        errors: { phone: ['has already been taken'] },
+        message: "Couldn't create user",
+        status: 500,
+      },
     };
-    wrapper
-      .find(OutlinedInput)
-      .at(0)
-      .simulate('change', { target: { value: '12345' } });
-    mockedAxios.post.mockResolvedValueOnce(response);
+    mockedAxios.post.mockRejectedValue(response);
     wrapper.find('Button').simulate('click');
-    expect(wrapper.find(Redirect)).toBeTruthy();
+    expect(wrapper.find(FormHelperText).prop('children')).toEqual(
+      'An account already exists with this phone number.'
+    );
   });
 });

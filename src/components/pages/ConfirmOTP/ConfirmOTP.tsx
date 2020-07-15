@@ -43,10 +43,10 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
-          if (error.response.data.error.errors == 'does_not_exist') {
-            setAuthError(true);
-          } else if (error.response.data.error.errors.phone == 'has already been taken') {
+          if (error.response.data.error.errors.phone == 'has already been taken') {
             setAlreadyExists(true);
+          } else if (error.response.data.error.errors == 'does_not_exist') {
+            setAuthError(true);
           }
         });
     }
