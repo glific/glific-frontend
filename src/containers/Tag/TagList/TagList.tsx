@@ -35,6 +35,7 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   };
 
   const getKeywords = (keyword: any) => {
+    console.log(keyword);
     return <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>;
   };
   const tagIcon = <TagIcon className={styles.TagIcon} />;
