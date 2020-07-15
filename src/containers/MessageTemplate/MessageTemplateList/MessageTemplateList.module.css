@@ -1,98 +1,3 @@
-.Buttons {
-  width: 315px;
-  border-color: #e0e0e0;
-  vertical-align: middle;
-  margin-left: auto;
-}
-
-.Table {
-  border-radius: 10px;
-}
-
-.Title {
-  vertical-align: middle;
-  margin-left: 12px !important;
-  font-weight: 500 !important;
-  color: #073f24;
-}
-
-.IconButton {
-  background-color: '#e0e0e0';
-}
-
-.AddButton {
-  height: 80%;
-  text-transform: capitalize;
-  border-radius: 20px;
-  margin-left: 24px;
-}
-
-.Header {
-  display: flex;
-  padding: 10px;
-  padding-right: 24px;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 10px;
-  margin-top: 6px;
-  height: 70px;
-}
-
-.HideSearch {
-  width: 0px;
-  height: 100%;
-  border: 0px;
-  border-radius: 10px;
-  outline: none;
-  background: #fcfcfc;
-  transition: all 0.35s ease;
-}
-
-.ShowSearch {
-  width: 318px;
-  height: 100%;
-  padding: 0 10px;
-  background: #ffffff;
-  transition: all 0.35s ease;
-  border-radius: 10px;
-}
-
-.SearchBar {
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: flex;
-  width: 350px;
-  padding: 0px;
-  transition: all 0.35s ease;
-}
-
-.SearchIcon {
-  border-color: #e0e0e0;
-  vertical-align: middle;
-}
-
-.HideSearchBar {
-  width: 0px;
-  transition: all 0.35s ease;
-}
-
-.CloseIcon {
-  vertical-align: middle;
-  color: #a8a8a8;
-  margin-left: 3px;
-  margin-right: 3px;
-}
-
-.ResetSearch {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-}
-
-.Icons {
-  margin-left: auto;
-}
-
 .LabelText {
   font-family: 'heebo', sans-serif;
   display: flex;
@@ -114,21 +19,9 @@
   margin: 0;
 }
 
-.Icon {
-  background-color: #eaedec !important;
-  margin-right: 10px !important;
-}
-
 .SpeedSendIcon {
   width: 29px;
   height: 29px;
-}
-
-.DropdownButton {
-  margin-left: 24px !important;
-  border-radius: 50% !important;
-  min-width: 25px !important;
-  margin-right: 14px !important;
 }
 
 .Label {
@@ -143,16 +36,4 @@
   width: 100px;
   justify-content: flex-end;
   margin-left: auto;
-}
-
-.DialogText {
-  margin-top: 0px;
-  text-align: center;
-  color: #073f24;
-  font-weight: 400;
-  font-family: 'heebo', sans-serif;
-}
-
-.ButtonsCenter {
-  justify-content: center !important;
 }
