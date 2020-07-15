@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import ChatInput from './ChatInput';
+import { Picker } from 'emoji-mart';
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
@@ -17,7 +18,7 @@ describe('<ChatInput />', () => {
     onSendMessage: onSendMessageHandler,
   };
 
-  const wrapper = shallow(<ChatInput {...defaultProps} />);
+  const wrapper = mount(<ChatInput {...defaultProps} />);
 
   test('it should render the input element', () => {
     expect(wrapper.find('[data-testid="message-input"]')).toHaveLength(1);
@@ -30,6 +31,7 @@ describe('<ChatInput />', () => {
 
   test('it should check if the enter is hit by user', () => {
     const input = wrapper.find('[data-testid="message-input"]');
+
     input.simulate('change', { target: { value: 'Hello' } });
     input.simulate('keypress', { key: 'Enter' });
 
@@ -40,13 +42,12 @@ describe('<ChatInput />', () => {
     const input = wrapper.find('[data-testid="message-input"]');
 
     // open the emoji popup
-    wrapper.find('[data-testid="emoji-picker"]').simulate('click');
+    wrapper.find('span[data-testid="emoji-picker"]').simulate('click');
 
-    expect(wrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
+    expect(wrapper.find(Picker)).toHaveLength(1);
 
     // TODO: select an emoji
-    //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
-
+    //wrapper.find('[data-testid="emoji-popup"] button').simulate('click')
     // close the emoji popup
     input.simulate('click');
   });
