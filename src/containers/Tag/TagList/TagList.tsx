@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { setNotification } from '../../../common/notification';
+import { setNotification, setErrorMessage } from '../../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
@@ -18,6 +18,7 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../../assets/images/icons/Edit.svg';
+import { ErrorHandler } from '../../ErrorHandler/ErrorHandler';
 
 export interface TagListProps {}
 
@@ -173,7 +174,18 @@ export const TagList: React.SFC<TagListProps> = (props) => {
   }
 
   if (loading || l) return <Loading />;
-  if (error || e) return <p>Error :(</p>;
+  if (error || e) {
+    // TODO: fix setting of actual error message
+    let errorMessage: any;
+    // if (error) {
+    //   errorMessage = error;
+    // } else {
+    //   errorMessage = e;
+    // }
+    errorMessage = 'An error has occured!';
+    setErrorMessage(client, errorMessage);
+    return null;
+  }
 
   const deleteHandler = (id: number) => {
     deleteId = id;

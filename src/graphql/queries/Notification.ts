@@ -6,8 +6,8 @@ export const NOTIFICATION = gql`
   }
 `;
 
-export const ERROR = gql`
+export const ERROR_MESSAGE = gql`
   {
-    message @client
+    errorMessage @client
   }
 `;

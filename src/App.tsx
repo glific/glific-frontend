@@ -14,6 +14,7 @@ import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
 import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
+import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -71,7 +72,10 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>{routes}</ApolloProvider>
+      <ApolloProvider client={client}>
+        <ErrorHandler />
+        {routes}
+      </ApolloProvider>
     </SessionContext.Provider>
   );
 };
