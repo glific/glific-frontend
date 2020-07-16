@@ -1,16 +1,19 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import {
   Hidden,
   Drawer,
   makeStyles,
   createStyles,
+  Fade,
+  Paper,
+  Button,
   Theme,
   Divider,
   Toolbar,
   Typography,
-  Button,
+  Popper,
 } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import axios from 'axios';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,6 +21,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../context/session';
+import UserIcon from '../../../../../assets/images/icons/User.png';
+import styles from './SideDrawer.module.css';
 
 export interface SideDrawerProps {}
 
@@ -90,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
     LogoutButton: {
       position: 'absolute',
       bottom: '10px',
-      left: '20px',
+      left: '8px',
       width: 'fit-content',
     },
   })
@@ -100,6 +105,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
   const [fullOpen, setFullOpen] = React.useState(true);
 
   const drawer = (
@@ -135,6 +142,32 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       <SideMenus opened={fullOpen} />
     </div>
   );
+
+  const popper = (
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      placement="right-end"
+      transition
+      className={styles.Popper}
+    >
+      {({ TransitionProps }) => (
+        <Fade {...TransitionProps} timeout={350}>
+          <Paper elevation={3}>
+            <Button color="primary">My Account</Button>
+            <br />
+            <Button className={styles.LogoutButton} color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Paper>
+        </Fade>
+      )}
+    </Popper>
+  );
+
+  const handleClick = (event: any) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
@@ -199,14 +232,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           // open
         >
           {drawer}
-          <Button
-            color="secondary"
-            variant="contained"
-            className={classes.LogoutButton}
-            onClick={handleLogout}
-          >
-            Log Out
-          </Button>
+          <IconButton className={classes.LogoutButton} onClick={handleClick}>
+            <img src={UserIcon} className={styles.UserIcon} />
+          </IconButton>
+          {popper}
         </Drawer>
       </Hidden>
     </nav>

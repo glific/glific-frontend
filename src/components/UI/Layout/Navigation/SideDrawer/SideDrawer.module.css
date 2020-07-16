@@ -1,0 +1,16 @@
+.UserIcon {
+  width: 32px;
+}
+
+.Popper {
+  z-index: 1500;
+}
+
+.Popper > div > button {
+  padding: 10px 30px 10px 10px !important;
+}
+
+.LogoutButton {
+  width: 100% !important;
+  justify-content: flex-start !important;
+}
