@@ -10,7 +10,6 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/Tag';
 import { setNotification } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 

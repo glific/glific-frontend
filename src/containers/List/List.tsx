@@ -206,9 +206,8 @@ export const List: React.SFC<ListProps> = ({
     }
   }
 
-  function formatList(tags: Array<any>) {
-    // Should be type tag, but can't import Tag type into file
-    return tags.map(({ ...listItem }) => {
+  function formatList(listItems: Array<any>) {
+    return listItems.map(({ ...listItem }) => {
       return {
         ...columns(listItem),
         operations: getIcons(listItem.id, listItem.label),
