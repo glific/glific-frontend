@@ -35,7 +35,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
             name: props.location.state.name,
             phone: props.location.state.phoneNumber,
             password: props.location.state.password,
-            password_confirmation: props.location.state.password_confirmation,
             otp: userAuthCode,
           },
         })
