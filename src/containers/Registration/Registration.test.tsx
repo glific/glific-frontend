@@ -1,17 +1,22 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
 import { Registration } from './Registration';
 import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import { MockedProvider } from '@apollo/client/testing';
 import { OutlinedInput, Button, IconButton } from '@material-ui/core';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../common/constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Registration test', () => {
-  const createRegistration = () => <Registration />;
+  const createRegistration = () => (
+    <MemoryRouter>
+      <Registration />
+    </MemoryRouter>
+  );
 
   it('renders component properly', () => {
     const wrapper = shallow(createRegistration());
@@ -19,7 +24,7 @@ describe('Registration test', () => {
   });
 
   it('updates state for username', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = mount(createRegistration());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -43,15 +48,6 @@ describe('Registration test', () => {
       .at(2)
       .simulate('change', { target: { value: 'pass12345' } });
     expect(wrapper.find(OutlinedInput).at(2).prop('value')).toEqual('pass12345');
-  });
-
-  it('adds state to confirmPassword', () => {
-    const wrapper = shallow(createRegistration());
-    wrapper
-      .find(OutlinedInput)
-      .at(3)
-      .simulate('change', { target: { value: 'pass12345' } });
-    expect(wrapper.find(OutlinedInput).at(3).prop('value')).toEqual('pass12345');
   });
 
   it('send an axios post request properly', () => {
@@ -79,24 +75,6 @@ describe('Registration test', () => {
     wrapper.find(Button).simulate('click');
   });
 
-  it('sets confirmPasswordError to be true if passwords dont match', () => {
-    const wrapper = shallow(createRegistration());
-    wrapper
-      .find(OutlinedInput)
-      .at(2)
-      .simulate('change', { target: { value: 'pass12345' } });
-    wrapper
-      .find(OutlinedInput)
-      .at(3)
-      .simulate('change', { target: { value: 'pass12346' } });
-    const response = {
-      data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
-    };
-    mockedAxios.post.mockResolvedValueOnce(response);
-    wrapper.find(Button).simulate('click');
-    expect(wrapper.find(OutlinedInput).at(3).prop('error')).toBeTruthy();
-  });
-
   it('sets userNameError to be true if field is blank', () => {
     const wrapper = shallow(createRegistration());
     const response = {
@@ -121,33 +99,9 @@ describe('Registration test', () => {
     expect(wrapper.find(OutlinedInput).at(0).prop('error')).toBeFalsy();
   });
 
-  it('sets confirmError to be false if there is a valid value', () => {
-    const wrapper = shallow(createRegistration());
-    wrapper
-      .find(OutlinedInput)
-      .at(2)
-      .simulate('change', { target: { value: 'pass12345' } });
-    wrapper
-      .find(OutlinedInput)
-      .at(3)
-      .simulate('change', { target: { value: 'pass12345' } });
-    const response = {
-      data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
-    };
-    mockedAxios.post.mockResolvedValueOnce(response);
-    wrapper.find(Button).simulate('click');
-    expect(wrapper.find(OutlinedInput).at(3).prop('error')).toBeFalsy();
-  });
-
   it('shows password if button is clicked', () => {
     const wrapper = mount(createRegistration());
     wrapper.find(IconButton).at(0).simulate('click');
-    wrapper.find(Visibility);
-  });
-
-  it('shows confirm password if button is clicked', () => {
-    const wrapper = mount(createRegistration());
-    wrapper.find(IconButton).at(1).simulate('click');
     wrapper.find(Visibility);
   });
 
@@ -156,14 +110,6 @@ describe('Registration test', () => {
     wrapper
       .find(IconButton)
       .at(0)
-      .simulate('mouseDown', { preventDefault: () => true });
-  });
-
-  it('preventDefault on onMouseDown for confirm password visibility', () => {
-    const wrapper = mount(createRegistration());
-    wrapper
-      .find(IconButton)
-      .at(1)
       .simulate('mouseDown', { preventDefault: () => true });
   });
 });

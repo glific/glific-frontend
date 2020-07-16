@@ -45,7 +45,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
-          console.log(error);
           setAuthError(true);
         });
     }
