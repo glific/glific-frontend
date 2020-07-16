@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Hidden,
   Drawer,
@@ -13,7 +13,7 @@ import {
   Typography,
   Popper,
 } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider, StylesProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import axios from 'axios';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
@@ -233,7 +233,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
         >
           {drawer}
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
-            <img src={UserIcon} className={styles.UserIcon} />
+            <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
           {popper}
         </Drawer>
