@@ -1,6 +1,9 @@
 .Container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
 .CenterLogin {
@@ -34,4 +37,13 @@
   margin-bottom: 15px;
   margin-top: 0px;
   font-size: 14px;
+}
+
+.Link {
+  font-family: 'heebo', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #119656;
+  margin-top: 10px;
 }
