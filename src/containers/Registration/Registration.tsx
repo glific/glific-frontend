@@ -10,7 +10,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 
