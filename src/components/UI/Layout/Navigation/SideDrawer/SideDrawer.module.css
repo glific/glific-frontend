@@ -8,6 +8,7 @@
 
 .Popper > div > button {
   padding: 10px 30px 10px 10px !important;
+  text-transform: none !important;
 }
 
 .LogoutButton {
