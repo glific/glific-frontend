@@ -65,10 +65,10 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const tagIcon = <TagIcon className={styles.TagIcon} />;
 
   const queries = {
-    listItemQuery: GET_TAG,
+    getItemQuery: GET_TAG,
     createItemQuery: CREATE_TAG,
     updateItemQuery: UPDATE_TAG,
-    deleteQuery: DELETE_TAG,
+    deleteItemQuery: DELETE_TAG,
   };
 
   return (

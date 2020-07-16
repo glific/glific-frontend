@@ -16,7 +16,7 @@ import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface ListItemProps {
   match: any;
-  deleteQuery: DocumentNode;
+  deleteItemQuery: DocumentNode;
   states: any;
   setStates: any;
   setValidation: any;
@@ -25,7 +25,7 @@ export interface ListItemProps {
   formFields: Array<any>;
   redirectionLink: string;
   listItem: string;
-  listItemQuery: DocumentNode;
+  getItemQuery: DocumentNode;
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
@@ -34,7 +34,7 @@ export interface ListItemProps {
 
 export const ListItem: React.SFC<ListItemProps> = ({
   match,
-  deleteQuery,
+  deleteItemQuery,
   states,
   setStates,
   setValidation,
@@ -43,14 +43,14 @@ export const ListItem: React.SFC<ListItemProps> = ({
   formFields,
   redirectionLink,
   listItem,
-  listItemQuery,
+  getItemQuery,
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
   icon,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
-  const [deleteItem] = useMutation(deleteQuery);
+  const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
 
@@ -60,7 +60,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
     },
   });
   const itemId = match.params.id ? match.params.id : false;
-  const { loading, error } = useQuery(listItemQuery, {
+  const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
     skip: !itemId,
     onCompleted: (data) => {

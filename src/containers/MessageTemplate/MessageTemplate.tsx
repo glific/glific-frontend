@@ -48,10 +48,10 @@ export const MessageTemplate: React.SFC<TemplateProps> = ({ match }) => {
   const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
   const queries = {
-    listItemQuery: GET_TEMPLATE,
+    getItemQuery: GET_TEMPLATE,
     createItemQuery: CREATE_TEMPLATE,
     updateItemQuery: UPDATE_TEMPLATE,
-    deleteQuery: DELETE_TEMPLATE,
+    deleteItemQuery: DELETE_TEMPLATE,
   };
 
   return (
