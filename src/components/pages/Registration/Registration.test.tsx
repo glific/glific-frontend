@@ -6,20 +6,26 @@ import Visibility from '@material-ui/icons/Visibility';
 import { MockedProvider } from '@apollo/client/testing';
 import { OutlinedInput, Button, IconButton } from '@material-ui/core';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Registration test', () => {
-  const createRegistration = () => <Registration />;
+  const createShallowRegistration = () => <Registration />;
+  const createRegistration = () => (
+    <Router>
+      <Registration />
+    </Router>
+  );
 
   it('renders component properly', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     expect(wrapper).toBeTruthy();
   });
 
   it('updates state for username', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -28,7 +34,7 @@ describe('Registration test', () => {
   });
 
   it('adds state to phoneNumber', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(1)
@@ -37,7 +43,7 @@ describe('Registration test', () => {
   });
 
   it('adds state to password', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(2)
@@ -46,7 +52,7 @@ describe('Registration test', () => {
   });
 
   it('adds state to confirmPassword', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(3)
@@ -56,7 +62,7 @@ describe('Registration test', () => {
 
   it('send an axios post request properly', () => {
     jest.mock('axios');
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(1)
@@ -71,7 +77,7 @@ describe('Registration test', () => {
 
   it('axios post request catchs error', () => {
     jest.mock('axios');
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     const response = {
       error: { message: 'Phone number not found', status: 400 },
     };
@@ -80,7 +86,7 @@ describe('Registration test', () => {
   });
 
   it('sets confirmPasswordError to be true if passwords dont match', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(2)
@@ -98,7 +104,7 @@ describe('Registration test', () => {
   });
 
   it('sets userNameError to be true if field is blank', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     const response = {
       data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
     };
@@ -108,7 +114,7 @@ describe('Registration test', () => {
   });
 
   it('sets userNameError to be false if there is a valid value', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -122,7 +128,7 @@ describe('Registration test', () => {
   });
 
   it('sets confirmError to be false if there is a valid value', () => {
-    const wrapper = shallow(createRegistration());
+    const wrapper = shallow(createShallowRegistration());
     wrapper
       .find(OutlinedInput)
       .at(2)

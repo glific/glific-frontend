@@ -5,21 +5,27 @@ import { OutlinedInput } from '@material-ui/core';
 import { Button } from '../../UI/Form/Button/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
+import { BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Login test', () => {
-  const createLogin = () => <Login />;
+  const createShallowLogin = () => <Login />;
+  const createLogin = () => (
+    <Router>
+      <Login />
+    </Router>
+  );
 
   it('renders component properly', () => {
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     expect(wrapper).toBeTruthy();
   });
 
   it('updates state for phone number', () => {
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -28,7 +34,7 @@ describe('Login test', () => {
   });
 
   it('updates state for password', () => {
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     wrapper
       .find(OutlinedInput)
       .at(1)
@@ -38,7 +44,7 @@ describe('Login test', () => {
 
   it('send an axios post request properly', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
@@ -60,7 +66,7 @@ describe('Login test', () => {
 
   it('sets phone number error and password error as true if field is blank', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
@@ -72,7 +78,7 @@ describe('Login test', () => {
 
   it('sets phone number error as false if field is valid', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -92,7 +98,7 @@ describe('Login test', () => {
 
   it('axios post request catchs error', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = shallow(createShallowLogin());
     const response = {
       error: { message: 'Incorrect password or phone', status: 400 },
     };
