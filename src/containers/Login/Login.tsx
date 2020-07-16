@@ -101,6 +101,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Phone Number</InputLabel>
             <OutlinedInput
+              data-testid="phoneNumber"
               error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
@@ -117,6 +118,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              data-testid="password"
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
               label="Password"

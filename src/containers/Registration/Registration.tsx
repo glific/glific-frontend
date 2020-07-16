@@ -76,9 +76,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         .then((response: any) => {
           setAuthMessage(response);
         })
-        .catch((error: any) => {
-          console.log(error);
-        });
+        .catch((error: any) => {});
     }
   };
 

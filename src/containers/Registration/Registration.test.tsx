@@ -12,7 +12,8 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Registration test', () => {
-  const createRegistration = () => (
+  const createRegistration = () => <Registration />;
+  const createRegistrationMount = () => (
     <MemoryRouter>
       <Registration />
     </MemoryRouter>
@@ -24,7 +25,7 @@ describe('Registration test', () => {
   });
 
   it('updates state for username', () => {
-    const wrapper = mount(createRegistration());
+    const wrapper = shallow(createRegistration());
     wrapper
       .find(OutlinedInput)
       .at(0)
@@ -100,13 +101,13 @@ describe('Registration test', () => {
   });
 
   it('shows password if button is clicked', () => {
-    const wrapper = mount(createRegistration());
+    const wrapper = mount(createRegistrationMount());
     wrapper.find(IconButton).at(0).simulate('click');
     wrapper.find(Visibility);
   });
 
   it('preventDefault on onMouseDown for password visibility', () => {
-    const wrapper = mount(createRegistration());
+    const wrapper = mount(createRegistrationMount());
     wrapper
       .find(IconButton)
       .at(0)

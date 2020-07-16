@@ -13,7 +13,8 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Login test', () => {
-  const createLogin = () => (
+  const createLogin = () => <Login />;
+  const createLoginMount = () => (
     <MemoryRouter>
       <Login />
     </MemoryRouter>
@@ -31,7 +32,6 @@ describe('Login test', () => {
       .at(0)
       .simulate('change', { target: { value: '1231231234' } });
 
-    console.log(wrapper);
     expect(wrapper.find(OutlinedInput).at(0).prop('value')).toEqual('1231231234');
   });
 
@@ -56,13 +56,13 @@ describe('Login test', () => {
   });
 
   it('shows password if button is clicked', () => {
-    const wrapper = mount(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper.find(IconButton).simulate('click');
     wrapper.find(Visibility);
   });
 
   it('preventDefault on onMouseDown for password visibility', () => {
-    const wrapper = mount(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper.find(IconButton).simulate('mouseDown', { preventDefault: () => true });
   });
 
