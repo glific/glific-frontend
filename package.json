@@ -5,6 +5,7 @@
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
     "@absinthe/socket-apollo-link": "^0.2.1",
+    "@apollo/link-context": "^2.0.0-beta.3",
     "@apollo/client": "^3.0.0-rc.12",
     "@apollo/link-ws": "^2.0.0-beta.3",
     "@jumpn/utils-graphql": "^0.6.0",
