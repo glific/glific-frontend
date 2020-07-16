@@ -3,7 +3,7 @@ import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../../graphql/mutations/T
 import { Input } from '../../../components/UI/Form/Input/Input';
 
 export const listItemProps = {
-  deleteQuery: DELETE_TAG,
+  deleteItemQuery: DELETE_TAG,
   states: {
     label: 'important',
     description: 'important label',
@@ -22,7 +22,7 @@ export const listItemProps = {
   ],
   redirectionLink: 'tag',
   listItem: 'tag',
-  listItemQuery: GET_TAG,
+  getItemQuery: GET_TAG,
   createItemQuery: CREATE_TAG,
   updateItemQuery: UPDATE_TAG,
   icon: null,
