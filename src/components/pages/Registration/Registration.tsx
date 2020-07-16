@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -209,11 +209,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>
-        <br />
-        OR
-        <Link to="/login" className={styles.Link}>
-          LOGIN TO GLIFIC
-        </Link>
       </div>
     </div>
   );
