@@ -1,0 +1,10 @@
+.EmojiPosition {
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  right: 8px;
+}
+
+.Emoji {
+  width: 24px;
+}

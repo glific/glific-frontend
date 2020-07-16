@@ -12,6 +12,7 @@ export interface InputProps {
   placeholder: any;
   rows: number;
   helperText?: string;
+  emojiPicker?: boolean | null;
 }
 
 export const Input: React.SFC<InputProps> = (props) => {
@@ -32,6 +33,7 @@ export const Input: React.SFC<InputProps> = (props) => {
           label={props.placeholder}
           fullWidth
           {...props.field}
+          endAdornment={props.emojiPicker ? props.emojiPicker : null}
         ></OutlinedInput>
         {error[name] && touched[name] ? <FormHelperText>Required</FormHelperText> : null}
         {props.helperText ? (
