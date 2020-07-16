@@ -4,7 +4,7 @@ import { Typography, FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { Button } from '../../UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import clsx from 'clsx';
 import axios from 'axios';
 import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
@@ -35,7 +35,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
             name: props.location.state.name,
             phone: props.location.state.phoneNumber,
             password: props.location.state.password,
-            password_confirmation: props.location.state.password_confirmation,
             otp: userAuthCode,
           },
         })
@@ -46,7 +45,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
-          console.log(error);
           setAuthError(true);
         });
     }
