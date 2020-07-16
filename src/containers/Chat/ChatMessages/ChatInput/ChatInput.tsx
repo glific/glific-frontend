@@ -8,6 +8,8 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
 import { draftToMarkdown } from 'markdown-draft-js';
 import 'draft-js/dist/Draft.css';
+import ContentEditable from 'react-contenteditable';
+import { TextReplacements } from '../../../../common/RichEditor';
 
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 
@@ -17,6 +19,7 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
+  const [renderMessage, setRenderMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
@@ -33,12 +36,12 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const submitMessage = () => {
     // close emoji picker
     setShowEmojiPicker(false);
-
+    console.log('called');
     if (!message) return;
-
+    console.log('no empty');
     setMessage('');
-
     if (typeof onSendMessage === 'function') {
+      console.log('func');
       onSendMessage(message);
     }
   };
@@ -56,26 +59,9 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
-  // const markdownStr = (rawObject) =>
-  //   draftToMarkdown(rawObject, {
-  //     styleItems: {
-  //       '*': {
-  //         open: function () {
-  //           return '<strong>';
-  //         },
-  //         close: function () {
-  //           return '</strong>';
-  //         },
-  //       },
-  //     },
-  //   });
-
   const handleChange = (editorState: any) => {
     // Get the markdown equivalent for this text.
     // BUG: When highlighting over text and bolding, the cursor must move at least once in order for the changes to take effect.
-    // console.log(convertToRaw(editorState.getCurrentContent()));
-    // console.log(editorState.getCurrentContent().getPlainText());
-    // let markdownString = 'hi';
     let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
     // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
@@ -108,10 +94,43 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     return getDefaultKeyBinding(e);
   };
 
+  // Converts tags to interpretable message format for WhatsApp
+  const parseInput = (text: string) => {
+    // For rendering ContentEditable correctly.
+    setRenderMessage(text);
+    let newText = text;
+    let replacements = TextReplacements;
+    for (let i = 0; i < replacements.length; i++) {
+      let type = Object.keys(replacements[i])[0];
+      let char: any = replacements[i][type].char;
+      let tag: any = replacements[i][type].tag;
+      let regexStr = '<' + tag + '>(.*?)</' + tag + '>';
+      text = text.replace(new RegExp(regexStr, 'g'), char + '$1' + char);
+    }
+    console.log(newText);
+    setMessage(newText);
+    console.log(message);
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
+      console.log(message);
+      submitMessage();
+    }
+  };
+
   return (
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer} onClick={() => setShowEmojiPicker(false)}>
+          {/* <div contentEditable={true} onInput={testingDivChange}></div> */}
+          <ContentEditable
+            html={renderMessage}
+            onKeyDown={handleKeyDown}
+            onChange={(e: any) => {
+              parseInput(e.target.value);
+            }}
+          />
           <Editor
             data-testid="message-input"
             editorState={editorState}

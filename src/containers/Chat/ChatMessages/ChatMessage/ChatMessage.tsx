@@ -12,9 +12,9 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
 import { useMutation, useApolloClient, gql } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
-import Markdown from 'markdown-to-jsx';
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
+import { TextReplacements } from '../../../../common/RichEditor';
 
 export interface ChatMessageProps {
   id: number;
@@ -45,7 +45,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   let tag: any;
   let deleteId: string | number;
-  let domParser = new DOMParser();
+  const reactStringReplace = require('react-string-replace');
 
   const { popup, focus, id } = props;
 
@@ -163,39 +163,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  // Converts WhatsApp message formatting into HTML elements.
   const textConverter = (text: any) => {
-    // Convert stored text (which is not in Markdown format) into HTML.
-    // Currently supporting bold, italics, strikethroughs, and code blocks.
-    let replacements: any = [
-      {
-        bold: {
-          char: '*',
-          replace: '<strong>$1</strong>',
-        },
-      },
-      {
-        italics: {
-          char: '_',
-          replace: '<i>$1</i>',
-        },
-      },
-      {
-        strikethrough: {
-          char: '~',
-          replace: '<s>$1</s>',
-        },
-      },
-      {
-        codeBlock: {
-          char: '```',
-          replace: '<code>$1</code>',
-        },
-      },
-    ];
+    let replacements = TextReplacements;
     for (let i = 0; i < replacements.length; i++) {
       let type = Object.keys(replacements[i])[0];
       let character: any = replacements[i][type].char;
-      let replacement: any = replacements[i][type].replace;
+      let replaceFunc: any = replacements[i][type].replace;
       // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
       let regexStr =
         '\\' +
@@ -207,9 +181,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         '{' +
         character.length +
         '}';
-      text = text.replace(new RegExp(regexStr, 'g'), replacement);
+      text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any, i: number) =>
+        replaceFunc(match)
+      );
     }
-    console.log(domParser.parseFromString(text, 'text/html').body);
     return text;
   };
 
@@ -220,7 +195,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              {/* <Markdown className={styles.MarkdownText}>{props.body}</Markdown> */}
               <div>{textConverter(props.body)}</div>
             </div>
           </Tooltip>
