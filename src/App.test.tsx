@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Login } from './containers/Login/Login';
+import { Login } from './containers/Auth/Login/Login';
 import App from './App';
 import Chat from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';

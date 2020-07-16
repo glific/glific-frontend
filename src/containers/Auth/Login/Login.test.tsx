@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import { Login } from './Login';
 import { OutlinedInput } from '@material-ui/core';
-import { Button } from '../../components/UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import axios from 'axios';

@@ -8,12 +8,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../components/UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import styles from './Login.module.css';
-import { USER_SESSION } from '../../common/constants';
+import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
-import { SessionContext } from '../../context/session';
+import { SessionContext } from '../../../context/session';
 
 export interface LoginProps {}
 

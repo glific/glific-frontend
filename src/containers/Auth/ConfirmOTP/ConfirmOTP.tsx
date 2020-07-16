@@ -4,12 +4,12 @@ import { Typography, FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { Button } from '../../components/UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import clsx from 'clsx';
 import axios from 'axios';
-import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../common/constants';
+import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
 import { Redirect } from 'react-router-dom';
-import { SessionContext } from '../../context/session';
+import { SessionContext } from '../../../context/session';
 
 export interface ConfirmOTPProps {
   location: any;

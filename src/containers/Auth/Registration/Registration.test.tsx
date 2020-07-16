@@ -6,7 +6,7 @@ import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import { MockedProvider } from '@apollo/client/testing';
 import { OutlinedInput, Button, IconButton } from '@material-ui/core';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../common/constants';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
