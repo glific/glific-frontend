@@ -64,10 +64,17 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
 
   const tagIcon = <TagIcon className={styles.TagIcon} />;
 
+  const queries = {
+    listItemQuery: GET_TAG,
+    createItemQuery: CREATE_TAG,
+    updateItemQuery: UPDATE_TAG,
+    deleteQuery: DELETE_TAG,
+  };
+
   return (
     <ListItem
+      {...queries}
       match={match}
-      deleteQuery={DELETE_TAG}
       states={states}
       setStates={setStates}
       setValidation={setValidation}
@@ -77,9 +84,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       redirectionLink="tag"
       listItem="tag"
       icon={tagIcon}
-      listItemQuery={GET_TAG}
-      createItemQuery={CREATE_TAG}
-      updateItemQuery={UPDATE_TAG}
     />
   );
 };

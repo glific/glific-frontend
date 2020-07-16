@@ -47,10 +47,17 @@ export const MessageTemplate: React.SFC<TemplateProps> = ({ match }) => {
 
   const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
+  const queries = {
+    listItemQuery: GET_TEMPLATE,
+    createItemQuery: CREATE_TEMPLATE,
+    updateItemQuery: UPDATE_TEMPLATE,
+    deleteQuery: DELETE_TEMPLATE,
+  };
+
   return (
     <ListItem
+      {...queries}
       match={match}
-      deleteQuery={DELETE_TEMPLATE}
       states={states}
       setStates={setStates}
       setValidation={setValidation}
@@ -59,10 +66,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="speed-send"
       listItem="sessionTemplate"
-      listItemQuery={GET_TEMPLATE}
       icon={speedSendIcon}
-      createItemQuery={CREATE_TEMPLATE}
-      updateItemQuery={UPDATE_TEMPLATE}
       defaultAttribute={defaultAttribute}
     />
   );

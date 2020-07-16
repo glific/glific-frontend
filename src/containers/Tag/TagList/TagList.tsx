@@ -32,19 +32,27 @@ const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
 const tagIcon = <TagIcon className={styles.TagIcon} />;
 
+const queries = {
+  countQuery: GET_TAGS_COUNT,
+  filterItemsQuery: FILTER_TAGS,
+  deleteItemQuery: DELETE_TAG,
+};
+
+const columnAttributes = {
+  columnNames: columnNames,
+  columns: getColumns,
+  columnStyles: columnStyles,
+};
+
 export const TagList: React.SFC<TagListProps> = (props) => (
   <List
-    columnNames={columnNames}
-    countQuery={GET_TAGS_COUNT}
     title="Tags"
     listItem="tags"
     listItemName="tag"
     pageLink="tag"
     listIcon={tagIcon}
     dialogMessage={dialogMessage}
-    filterItemsQuery={FILTER_TAGS}
-    deleteItemQuery={DELETE_TAG}
-    columns={getColumns}
-    columnStyles={columnStyles}
+    {...queries}
+    {...columnAttributes}
   />
 );

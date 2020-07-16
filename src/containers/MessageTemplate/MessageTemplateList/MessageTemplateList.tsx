@@ -21,19 +21,27 @@ const getLabel = (label: string) => <div className={styles.LabelText}>{label}</d
 
 const getBody = (text: string) => <p className={styles.TableText}>{text}</p>;
 
+const queries = {
+  countQuery: GET_TEMPLATES_COUNT,
+  filterItemsQuery: FILTER_TEMPLATES,
+  deleteItemQuery: DELETE_TEMPLATE,
+};
+
+const columnAttributes = {
+  columnNames: columnNames,
+  columns: getColumns,
+  columnStyles: columnStyles,
+};
+
 export const MessageTemplateList: React.SFC<TemplateListProps> = (props) => (
   <List
     title="Speed sends"
-    columnNames={columnNames}
-    countQuery={GET_TEMPLATES_COUNT}
     listItem="sessionTemplates"
     listItemName="speed send"
     pageLink="speed-send"
     listIcon={speedSendIcon}
     dialogMessage={dialogMessage}
-    filterItemsQuery={FILTER_TEMPLATES}
-    deleteItemQuery={DELETE_TEMPLATE}
-    columns={getColumns}
-    columnStyles={columnStyles}
+    {...columnAttributes}
+    {...queries}
   />
 );
