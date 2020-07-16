@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { Typography, FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
@@ -142,6 +142,11 @@ export const Login: React.SFC<LoginProps> = () => {
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Login
         </Button>
+        <br />
+        <div>OR</div>
+        <div>
+          <Link to="/registration">CREATE A NEW ACCOUNT</Link>
+        </div>
       </div>
     </div>
   );
