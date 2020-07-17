@@ -51,7 +51,7 @@ describe('ConfirmOTP test', () => {
       .at(0)
       .simulate('change', { target: { value: '123456' } });
     expect(wrapper.find(OutlinedInput).prop('value')).toEqual('123456');
-    mockedAxios.post.mockResolvedValueOnce(response);
+    mockedAxios.post = jest.fn().mockResolvedValueOnce(Promise.resolve(response));
     wrapper.find('Button').simulate('click');
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
