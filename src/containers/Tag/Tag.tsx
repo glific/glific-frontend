@@ -51,6 +51,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       type: 'text',
       placeholder: 'Description',
       rows: 3,
+      textArea: true,
     },
     {
       component: Input,
@@ -59,6 +60,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       placeholder: 'Keywords',
       rows: 3,
       helperText: 'Use commas to separate the keywords',
+      textArea: true,
     },
   ];
 

@@ -39,7 +39,7 @@ export const MessageTemplate: React.SFC<TemplateProps> = ({ match }) => {
 
   const formFields = [
     { component: Input, name: 'label', placeholder: 'Title' },
-    { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3 },
+    { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
   ];
 
   const defaultAttribute = {
