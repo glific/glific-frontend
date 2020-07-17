@@ -18,9 +18,15 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSearchVal(event.target.value);
   };
 
-  // const resetSearch = () => {
-  //   setSearchVal('');
-  // };
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    let searchVal = event.target.searchInput.value.trim();
+    setSearchVal(searchVal);
+  };
+
+  const resetSearch = () => {
+    setSearchVal('');
+  };
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
@@ -35,9 +41,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         </div>
       </Toolbar>
       <SearchBar
-        // handleSubmit={handleSearch}
         handleChange={handleChange}
-        onReset={() => setSearchVal('')}
+        handleSubmit={handleSubmit}
+        onReset={() => resetSearch()}
         searchVal={searchVal}
       />
       <ConversationList
@@ -46,10 +52,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         setSelectedContactId={(i: number) => {
           setSelectedContactId(i);
         }}
-        // selectedContact={selectedIndex}
-        // setSelectedIndex={(i: number) => {
-        // setSelectedIndex(i);
-        // }}
       />
     </Container>
   );

@@ -57,27 +57,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       return;
     }
     props.setSelectedContactId(-1);
-    // if (refetch) {
-    //   console.log('i found refetch');
-    // }
-    // if (fetchMore) {
-    //   console.log('i found fetchmore');
-    //   fetchMore({
-    //     query: FILTER_CONVERSATIONS_QUERY,
-    //     variables: filterVariables(),
-    //     updateQuery: (prev, { fetchMoreResult }) => {
-    //       return fetchMoreResult;
-    //       // return getNewSearch(prev, fetchMoreResult);
-    //     },
-    //   });
-    // }
   }, [props.searchVal]);
-
-  // const getNewSearch = useCallback((prevResult: any, newData: any) => {
-  //   console.log(prevResult);
-  //   console.log(newData);
-  //   return newData.search;
-  // }, []);
 
   // Other cases
   if (called && loading) return <Loading />;

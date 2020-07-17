@@ -2,12 +2,10 @@
   height: calc(100% - 70px);
   overflow-y: auto;
   padding: 0px !important;
-  /* border-top: 1px solid rgba(0, 0, 0, 0.12); */
 }
 
 .StyledList {
   padding: 0 !important;
   width: 93%;
   margin: auto !important;
-  /* border-radius: 10px; */
 }
