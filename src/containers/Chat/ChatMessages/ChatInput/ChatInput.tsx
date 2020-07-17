@@ -58,9 +58,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     setShowEmojiPicker(false);
 
     if (!message) return;
-
     setMessage('');
-    setEditorState(() => EditorState.createEmpty());
+
+    const newState = EditorState.createEmpty();
+    setEditorState(EditorState.moveFocusToEnd(newState));
 
     if (typeof onSendMessage === 'function') {
       onSendMessage(message);
