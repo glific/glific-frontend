@@ -26,11 +26,11 @@ export interface ChatMessageProps {
     id: number;
   };
   insertedAt: string;
-  onClick: any;
-  tags: any;
+  onClick?: any;
+  tags: Array<any>;
   popup: any;
-  setDialog: any;
-  focus: boolean;
+  setDialog?: any;
+  focus?: boolean;
   showMessage: boolean;
 }
 

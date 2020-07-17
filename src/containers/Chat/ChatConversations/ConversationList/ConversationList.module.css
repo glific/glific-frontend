@@ -1,0 +1,11 @@
+.ListingContainer {
+  height: calc(100% - 70px);
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
+.StyledList {
+  padding: 0 !important;
+  width: 93%;
+  margin: auto !important;
+}
