@@ -3,6 +3,9 @@ import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
+import { draftToMarkdown } from 'markdown-draft-js';
+import 'draft-js/dist/Draft.css';
 
 import styles from './ChatInput.module.css';
 
@@ -15,15 +18,39 @@ export interface ChatInputProps {
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
-  const keyPressHandler = (e: any) => {
-    if (e.key === 'Enter') {
-      submitMessage();
-    }
+  const handleChange = (editorState: any) => {
+    // Gets markdown equivalent for Draft.js content
+    let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
+
+    // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
+    let findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
+    let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
+    setEditorState(editorState);
+    setMessage(messageText);
   };
 
-  const changeHandler = ({ target }: any) => {
-    setMessage(target.value);
+  const handleKeyCommand = (command: string, editorState: any) => {
+    // On enter, submit. Otherwise, deal with commands like normal.
+    if (command === 'enter') {
+      submitMessage();
+      return 'handled';
+    }
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
+  const keyBindingFn = (e: any) => {
+    // Shift-enter is by default supported. Only 'enter' needs to be changed.
+    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
+      return 'enter';
+    }
+    return getDefaultKeyBinding(e);
   };
 
   const submitMessage = () => {
@@ -33,6 +60,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     if (!message) return;
 
     setMessage('');
+    setEditorState(() => EditorState.createEmpty());
 
     if (typeof onSendMessage === 'function') {
       onSendMessage(message);
@@ -56,15 +84,13 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
-          <input
-            className={styles.InputBox}
+          <Editor
             data-testid="message-input"
-            type="text"
+            editorState={editorState}
             placeholder="Start typing..."
-            value={message}
-            onKeyPress={keyPressHandler}
-            onChange={changeHandler}
-            onClick={() => setShowEmojiPicker(false)}
+            onChange={handleChange}
+            handleKeyCommand={handleKeyCommand}
+            keyBindingFn={keyBindingFn}
           />
         </div>
         <div className={styles.EmojiContainer}>
