@@ -38,6 +38,12 @@ export const UPDATE_MESSAGE_TAGS = gql`
   }
 `;
 
+export const MARK_AS_READ = gql`
+  mutation markContactMessagesAsRead($contactId: Gid!) {
+    markContactMessagesAsRead(contactId: $contactId)
+  }
+`;
+
 export const MESSAGE_FRAGMENT = gql`
   fragment tags on Message {
     tags {

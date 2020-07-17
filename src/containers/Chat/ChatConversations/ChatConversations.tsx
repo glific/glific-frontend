@@ -5,7 +5,8 @@ import styles from './ChatConversations.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchBar } from './SearchBar';
 import { GET_CONVERSATION_QUERY, FILTER_CONVERSATIONS_QUERY } from '../../../graphql/queries/Chat';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../graphql/mutations/Chat';
+import { useApolloClient, useLazyQuery, useMutation, gql } from '@apollo/client';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 
 export interface ChatConversationsProps {}
@@ -16,6 +17,23 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
   const client = useApolloClient();
   const [searchVal, setSearchVal] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0); // This won't work all the time, if the default chat opened is not at index 0. (see ChatMessage for similar behavior).
+  const [markAsRead] = useMutation(MARK_AS_READ, {
+    onCompleted: (mydata) => {
+      mydata.markContactMessagesAsRead.map((messageId: any) => {
+        const message = client.readFragment({
+          id: `Message:${messageId}`,
+          fragment: MESSAGE_FRAGMENT,
+        });
+        const messageCopy = JSON.parse(JSON.stringify(message));
+        messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
+        client.writeFragment({
+          id: `Message:${messageId}`,
+          fragment: MESSAGE_FRAGMENT,
+          data: messageCopy,
+        });
+      });
+    },
+  });
 
   const queryVariables = {
     contactOpts: {
@@ -66,6 +84,13 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
+  const handleContactConversation = (index: number, contactId: number) => {
+    markAsRead({
+      variables: { contactId: contactId.toString() },
+    });
+    setSelectedIndex(index);
+  };
+
   // build the conversation list only if there are conversations
   let conversationList;
   if (conversations.length > 0) {
@@ -78,7 +103,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = () => {
         <ChatConversation
           key={conversation.contact.id}
           selected={selectedIndex === index}
-          onClick={(i: number) => setSelectedIndex(i)}
+          onClick={handleContactConversation}
           index={index}
           contactId={conversation.contact.id}
           contactName={
