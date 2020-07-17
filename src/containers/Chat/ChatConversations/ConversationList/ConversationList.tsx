@@ -68,6 +68,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   // Retrieving all convos or the ones searched by.
+  console.log(data);
   let conversations = data.conversations;
 
   if (props.searchVal && !called) {

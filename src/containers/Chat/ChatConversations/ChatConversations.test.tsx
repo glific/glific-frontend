@@ -1,58 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import { mount, shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import ChatConversations from './ChatConversations';
-import { MockedProvider } from '@apollo/client/testing';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
-
-const mocks = [
-  {
-    request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
-    },
-    result: {
-      data: {
-        conversation: {
-          contact: {
-            id: '2',
-            name: 'Jane Doe',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '2',
-              },
-              sender: {
-                id: '1',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  },
-];
+import { SearchBar } from '../../../components/UI/SearchBar/SearchBar';
+import ConversationList from './ConversationList/ConversationList';
 
 describe('<ChatConversations />', () => {
+  const wrapper = shallow(<ChatConversations contactId={0} />);
+
   test('it should render <ChatConversations /> component correctly', () => {
-    const wrapper = shallow(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatConversations />
-      </MockedProvider>
-    );
     expect(wrapper.exists()).toBe(true);
   });
 
-  // TODO: Need to implement comprehensive test cases for this component
+  test('it should render a SearchBar component properly', () => {
+    expect(wrapper.find(SearchBar)).toBeTruthy();
+  });
+
+  test('it should render a list component for conversations', () => {
+    expect(wrapper.find(ConversationList)).toBeTruthy();
+  });
 });
