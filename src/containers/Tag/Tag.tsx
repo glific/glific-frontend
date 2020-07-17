@@ -11,6 +11,54 @@ export interface TagProps {
   match: any;
 }
 
+const setValidation = (values: any) => {
+  const errors: Partial<any> = {};
+  if (!values.label) {
+    errors.label = 'Tag title is required';
+  } else if (values.label.length > 50) {
+    errors.label = 'Title length too long';
+  }
+  if (!values.description) {
+    errors.description = 'Tag description is required';
+  }
+  return errors;
+};
+
+const dialogMessage = "You won't be able to use this for tagging messages.";
+
+const formFields = [
+  {
+    component: Input,
+    name: 'label',
+    type: 'text',
+    placeholder: 'Title',
+  },
+  {
+    component: Input,
+    name: 'description',
+    type: 'text',
+    placeholder: 'Description',
+    rows: 3,
+  },
+  {
+    component: Input,
+    name: 'keywords',
+    type: 'text',
+    placeholder: 'Keywords',
+    rows: 3,
+    helperText: 'Use commas to separate the keywords',
+  },
+];
+
+const tagIcon = <TagIcon className={styles.TagIcon} />;
+
+const queries = {
+  getItemQuery: GET_TAG,
+  createItemQuery: CREATE_TAG,
+  updateItemQuery: UPDATE_TAG,
+  deleteItemQuery: DELETE_TAG,
+};
+
 export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
@@ -21,54 +69,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     setLabel(label);
     setDescription(description);
     setKeywords(keywords);
-  };
-
-  const setValidation = (values: any) => {
-    const errors: Partial<any> = {};
-    if (!values.label) {
-      errors.label = 'Required';
-    } else if (values.label.length > 50) {
-      errors.label = 'Too Long';
-    }
-    if (!values.description) {
-      errors.description = 'Required';
-    }
-    return errors;
-  };
-
-  const dialogMessage = "You won't be able to use this for tagging messages.";
-
-  const formFields = [
-    {
-      component: Input,
-      name: 'label',
-      type: 'text',
-      placeholder: 'Item title',
-    },
-    {
-      component: Input,
-      name: 'description',
-      type: 'text',
-      placeholder: 'Description',
-      rows: 3,
-    },
-    {
-      component: Input,
-      name: 'keywords',
-      type: 'text',
-      placeholder: 'Keywords',
-      rows: 3,
-      helperText: 'Use commas to separate the keywords',
-    },
-  ];
-
-  const tagIcon = <TagIcon className={styles.TagIcon} />;
-
-  const queries = {
-    getItemQuery: GET_TAG,
-    createItemQuery: CREATE_TAG,
-    updateItemQuery: UPDATE_TAG,
-    deleteItemQuery: DELETE_TAG,
   };
 
   return (
