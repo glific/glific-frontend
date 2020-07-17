@@ -14,4 +14,9 @@ export const sideDrawerMenus = [
     path: '/speed-send',
     icon: 'speedSend',
   },
+  {
+    title: 'HSM Messages',
+    path: '/hsm-messages',
+    icon: 'speedSend',
+  },
 ];
