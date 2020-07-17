@@ -1,31 +1,27 @@
-import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_USERS_QUERY } from '../../../graphql/queries/StaffManagement';
-import { Pager } from '../../../components/UI/Pager/Pager';
+import React from 'react';
+import { USER_COUNT, DELETE_USER, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
 import styles from './StaffManagement.module.css';
 import { Typography } from '@material-ui/core';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { List } from '../../../containers/List/List';
 
 export interface StaffManagementProps {}
 
-interface TableVals {
-  pageNum: number;
-  pageRows: number;
-  sortCol: string;
-  sortDirection: 'asc' | 'desc';
-}
-
 export const StaffManagement: React.SFC<StaffManagementProps> = () => {
-  const users = useQuery<any>(GET_USERS_QUERY).data;
   const columnNames = ['ID', 'NAME', 'PHONE', 'ROLE'];
-  const [tableVals, setTableVals] = useState<TableVals>({
-    pageNum: 0,
-    pageRows: 10,
-    sortCol: columnNames[0],
-    sortDirection: 'asc',
-  });
   const columnStyles = [styles.Id, styles.Name, styles.Phone, styles.Role];
-  const handleTableChange = () => {
-    console.log('hi');
+
+  const getColumns = ({ id, name, phone, role }: any) => ({
+    id: getID(id),
+    name: getName(name),
+    phone: getPhone(phone),
+    roles: getRoles(role),
+  });
+
+  const queries = {
+    countQuery: USER_COUNT,
+    filterItemsQuery: FILTER_USERS,
+    deleteItemQuery: DELETE_USER,
   };
 
   const getID = (text: string) => {
@@ -44,45 +40,29 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  function formatUsers(users: Array<any>) {
-    console.log(users);
-    console.log(Object.keys(users));
-    console.log(Object.values(users));
-    let userObject = users[0];
-    return userObject.map((user: any) => {
-      console.log(user);
-      console.log(Object.keys(user));
-      return {
-        id: getID(user.id),
-        name: getName(user.name),
-        phone: getPhone(user.phone),
-        role: getRoles(user.roles),
-      };
-    });
-  }
+  const dialogMessage = 'hello';
 
-  let userList: any;
-  if (users) {
-    let usersArray = Object.values(users);
-    console.log(usersArray);
-    userList = formatUsers(usersArray);
-  }
-  console.log(userList);
+  const columnAttributes = {
+    columnNames: columnNames,
+    columns: getColumns,
+    columnStyles: columnStyles,
+  };
+
   return (
     <div>
       <div className={styles.Header}>
         <Typography variant="h5">Staff Management</Typography>
       </div>
-      {userList ? (
-        <Pager
-          columnStyles={columnStyles}
-          data={userList}
-          columnNames={columnNames}
-          totalRows={userList.length}
-          tableVals={tableVals}
-          handleTableChange={handleTableChange}
-        />
-      ) : null}
+      <List
+        title="Staff Management"
+        listItem="users"
+        listItemName="user"
+        pageLink="staff-management"
+        listIcon={TagIcon}
+        dialogMessage={dialogMessage}
+        {...queries}
+        {...columnAttributes}
+      />
     </div>
   );
 };
