@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-
 import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
+import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
+import { useApolloClient, useMutation } from '@apollo/client';
 
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
   selected: boolean;
-  onClick: (index: number, contactId: number) => void;
+  onClick: (index: number) => void;
   index: number;
   lastMessage: {
     body: string;
@@ -27,8 +28,27 @@ export interface ChatConversationProps {
 
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   // check if message is unread and style it differently
+  const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
+  let unread = false;
+  const [markAsRead] = useMutation(MARK_AS_READ, {
+    onCompleted: (mydata) => {
+      mydata.markContactMessagesAsRead.map((messageId: any) => {
+        const message = client.readFragment({
+          id: `Message:${messageId}`,
+          fragment: MESSAGE_FRAGMENT,
+        });
+        const messageCopy = JSON.parse(JSON.stringify(message));
+        messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
+        client.writeFragment({
+          id: `Message:${messageId}`,
+          fragment: MESSAGE_FRAGMENT,
+          data: messageCopy,
+        });
+      });
+    },
+  });
 
   // check only if there are tags
   if (props.lastMessage.tags.length > 0) {
@@ -36,8 +56,18 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     if (props.lastMessage.tags.filter((tag) => tag.label === 'Unread').length > 0) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
+      unread = true;
     }
   }
+
+  const handleContactConversation = () => {
+    if (unread) {
+      markAsRead({
+        variables: { contactId: props.contactId.toString() },
+      });
+    }
+    props.onClick(props.index);
+  };
 
   return (
     <ListItem
@@ -47,7 +77,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: props.selected })}
       component={Link}
       selected={props.selected}
-      onClick={() => props.onClick(props.index, props.contactId)}
+      onClick={handleContactConversation}
       to={'/chat/' + props.contactId}
     >
       <div>
