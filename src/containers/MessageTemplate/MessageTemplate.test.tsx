@@ -130,70 +130,25 @@ const mocks = [
   },
 ];
 
-describe('<MessageTemplate />', () => {
-  it('should have a form', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplate match={{ params: { id: null } }} />
-        </Router>
-      </MockedProvider>
-    );
-    await wait();
-    expect(container.querySelector('form')).toBeInTheDocument();
-  });
-
-  it('should have a form with inputs', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplate match={{ params: { id: null } }} />
-        </Router>
-      </MockedProvider>
-    );
-    await wait();
-    expect(container.querySelector('textarea[name="label"]')).toBeInTheDocument();
-    expect(container.querySelector('textarea[name="body"]')).toBeInTheDocument();
-    expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
-  });
-
-  test('inputs should have mock values', async () => {
-    const { container } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <MessageTemplate match={{ params: { id: 1 } }} />
-        </Router>
-      </MockedProvider>
-    );
-
-    await wait();
-    expect(container.querySelector('textarea[name="label"]')?.textContent).toBe('important');
-    expect(container.querySelector('textarea[name="body"]')?.textContent).toBe(
-      'important template'
-    );
-    expect(container.querySelector('input[name="languageId"]')?.getAttribute('value')).toBe('1');
-  });
-
-  test('cancel button should redirect to MessageTemplatelist page', async () => {
-    const { container, getByText, unmount } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Switch>
-            <Route path="/speed-send" exact component={MessageTemplateList} />
-          </Switch>
-          <MessageTemplate match={{ params: { id: 1 } }} />
-        </Router>
-      </MockedProvider>
-    );
-    await wait();
-    const { queryByText } = within(container.querySelector('form'));
-    const button = queryByText('Cancel');
-    fireEvent.click(button);
-    expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    expect(getByText('Speed sends')).toBeInTheDocument();
-    unmount();
-  });
+test('cancel button should redirect to MessageTemplatelist page', async () => {
+  const { container, getByText, unmount } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <Switch>
+          <Route path="/speed-send" exact component={MessageTemplateList} />
+        </Switch>
+        <MessageTemplate match={{ params: { id: 1 } }} />
+      </Router>
+    </MockedProvider>
+  );
+  await wait();
+  const { queryByText } = within(container.querySelector('form'));
+  const button = queryByText('Cancel');
+  fireEvent.click(button);
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await wait();
+  expect(getByText('Speed sends')).toBeInTheDocument();
+  unmount();
 });
 
 describe('Save Button', () => {
@@ -210,8 +165,8 @@ describe('Save Button', () => {
     );
 
     await wait();
-    fireEvent.change(container.querySelector('textarea[name="label"]'), {
-      target: { innerHTML: 'new Template' },
+    fireEvent.change(container.querySelector('input[name="label"]'), {
+      target: { value: 'new Template' },
     });
     fireEvent.change(container.querySelector('textarea[name="body"]'), {
       target: { value: 'new Template body' },

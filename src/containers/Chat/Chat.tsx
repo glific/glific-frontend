@@ -149,7 +149,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           />
         </div>
         <div className={styles.ChatConversations}>
-          <ChatConversations />
+          <ChatConversations contactId={contactId} />
         </div>
       </div>
     </Paper>

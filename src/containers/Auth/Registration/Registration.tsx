@@ -1,34 +1,37 @@
-import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Typography, FormHelperText } from '@material-ui/core';
+import styles from './Registration.module.css';
 import FormControl from '@material-ui/core/FormControl';
-import IconButton from '@material-ui/core/IconButton';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../UI/Form/Button/Button';
-import styles from './Login.module.css';
-import { USER_SESSION } from '../../../common/constants';
+import Button from '@material-ui/core/Button';
+import { Redirect, Link } from 'react-router-dom';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
-import { SessionContext } from '../../../context/session';
 
-export interface LoginProps {}
+export interface RegistrationProps {}
 
-export const Login: React.SFC<LoginProps> = () => {
-  const { setAuthenticated } = useContext(SessionContext);
+export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [sessionToken, setSessionToken] = useState('');
+  const [userNameError, setUserNameError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [authMessage, setAuthMessage] = useState('');
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+  };
+
+  const handleUserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
   };
 
   const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,12 +47,17 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleInputErrors = () => {
+    if (!userName) {
+      setUserNameError(true);
+    } else if (userName) {
+      setUserNameError(false);
+    }
     if (!phoneNumber) {
       setPhoneNumberError(true);
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
-    if (!password) {
+    if (!password || password.length < 8) {
       setPasswordError(true);
     } else if (password) {
       setPasswordError(false);
@@ -58,33 +66,29 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const handleSubmit = () => {
     handleInputErrors();
-    if (!passwordError && !phoneNumberError) {
+    if (!userNameError && !phoneNumberError && !passwordError) {
       axios
-        .post(USER_SESSION, {
+        .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
           user: {
             phone: phoneNumber,
-            password: password,
           },
         })
         .then((response: any) => {
-          const responseString = JSON.stringify(response.data.data);
-          localStorage.setItem('session', responseString);
-          setAuthenticated(true);
-          setSessionToken(responseString);
+          setAuthMessage(response);
         })
-        .catch((error: any) => {
-          setInvalidLogin(true);
-        });
+        .catch((error: any) => {});
     }
   };
 
-  if (sessionToken) {
+  if (authMessage) {
     return (
       <Redirect
         to={{
-          pathname: '/chat',
+          pathname: '/confirmotp',
           state: {
-            tokens: sessionToken,
+            name: userName,
+            phoneNumber: phoneNumber,
+            password: password,
           },
         }}
       />
@@ -93,9 +97,23 @@ export const Login: React.SFC<LoginProps> = () => {
 
   return (
     <div className={styles.Container}>
-      <div className={styles.CenterLogin}>
-        <div className={styles.LoginTitle}>
-          <Typography variant="h5">Login</Typography>
+      <div className={styles.CenterRegistration}>
+        <div className={styles.RegistrationTitle}>
+          <Typography variant="h5">Create a New Account</Typography>
+        </div>
+        <div className={styles.Margin}>
+          <FormControl className={styles.TextField} variant="outlined">
+            <InputLabel>Username</InputLabel>
+            <OutlinedInput
+              error={userNameError}
+              id="username"
+              label="Username"
+              type="text"
+              value={userName}
+              onChange={handleUserNameChange()}
+            />
+            {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
+          </FormControl>
         </div>
         <div className={styles.Margin}>
           <FormControl className={styles.TextField} variant="outlined">
@@ -104,19 +122,18 @@ export const Login: React.SFC<LoginProps> = () => {
               error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
-              value={phoneNumber}
               type="integer"
+              value={phoneNumber}
               onChange={handlePhoneNumberChange()}
             />
-            {phoneNumberError ? (
-              <FormHelperText>Please enter a phone number.</FormHelperText>
-            ) : null}
+            {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
           </FormControl>
         </div>
-        <div className={clsx(styles.Margin, styles.BottomMargin)}>
+        <div className={clsx(styles.Margin)}>
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              error={passwordError}
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
               label="Password"
@@ -135,16 +152,22 @@ export const Login: React.SFC<LoginProps> = () => {
                 </InputAdornment>
               }
             />
-            {passwordError ? <FormHelperText>Please enter a password.</FormHelperText> : null}
+            {passwordError ? (
+              <FormHelperText>Invalid password, must be at least 8 characters.</FormHelperText>
+            ) : null}
           </FormControl>
         </div>
-        {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
-          Login
+          Submit
         </Button>
+        <br />
+        <div>OR</div>
+        <div>
+          <Link to="/login">LOGIN TO GLIFIC</Link>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Registration;
