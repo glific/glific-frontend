@@ -26,7 +26,7 @@ describe('<ConversationList />', () => {
     </MockedProvider>
   );
 
-  console.log(wrapper);
+  // Need caching testing to work in order for these tests to work properly.
 
   // test('it should render <ConversationList /> component correctly', () => {
   //   expect(wrapper.exists()).toBe(true);
