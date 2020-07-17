@@ -21,7 +21,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-  // const message = useRef('');
+  // const editableMessage = useRef('');
 
   // Converts tags to interpretable message format for WhatsApp
   const parseText = (text: string) => {

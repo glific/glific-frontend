@@ -119,34 +119,15 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
-  // const getConversations = () => {
-  //   const allConversations: any = client.readQuery({
-  //     query: GET_CONVERSATION_QUERY,
-  //     variables: queryVariables,
-  //   });
-  //   return allConversations;
-  // };
-
-  // let newContactId: number;
-  // let allConversations = getConversations();
-  // if (!contactId && allConversations.conversations.length !== 0) {
-  //   return <Redirect to={'/chat/'.concat(allConversations.conversations[0].contact.id)} />;
-  // } else {
-  //   // Either don't have contactId or no conversations. Either or, this will be null, and ChatMessages will render a messaging saying 'No messages'.
-  //   newContactId = contactId;
-  // if (!contactId && data.conversations.length !== 0) {
-  //   return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
-  // }
+  if (!contactId && data.conversations.length !== 0) {
+    return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
+  }
 
   return (
     <Paper>
       <div className={styles.Chat}>
         <div className={styles.ChatMessages}>
-          <ChatMessages
-            contactId={newContactId}
-            getConversations={getConversations}
-            allConversations={allConversations}
-          />
+          <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations contactId={contactId} />
