@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, List, Toolbar, Container } from '@material-ui/core';
+import { Typography, Toolbar, Container } from '@material-ui/core';
 import styles from './ChatConversations.module.css';
 import { SearchBar } from './SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
@@ -7,7 +7,7 @@ import {
   GET_CONVERSATION_QUERY,
   FILTER_CONVERSATIONS_QUERY,
 } from '../../../../graphql/queries/Chat';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 interface ConversationListProps {
   searchVal: string;
@@ -44,12 +44,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     variables: queryVariables,
   });
 
-  const [
-    getFilterConvos,
-    { called, loading, error, data: searchData, refetch, fetchMore, updateQuery },
-  ] = useLazyQuery<any>(FILTER_CONVERSATIONS_QUERY, {
-    variables: filterVariables(),
-  });
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    FILTER_CONVERSATIONS_QUERY,
+    {
+      variables: filterVariables(),
+    }
+  );
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
