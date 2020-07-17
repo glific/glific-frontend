@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Input } from '../../components/UI/Form/Input/Input';
+import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_TEMPLATE } from '../../graphql/queries/Template';
 import styles from './MessageTemplate.module.css';
 import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
@@ -28,7 +29,7 @@ const dialogMessage = ' It will stop showing when you are drafting a customized 
 
 const formFields = [
   { component: Input, name: 'label', placeholder: 'Title' },
-  { component: Input, name: 'body', placeholder: 'Message', row: 3 },
+  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
 ];
 
 const defaultAttribute = {

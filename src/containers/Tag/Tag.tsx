@@ -39,6 +39,7 @@ const formFields = [
     type: 'text',
     placeholder: 'Description',
     rows: 3,
+    textArea: true,
   },
   {
     component: Input,
@@ -47,6 +48,7 @@ const formFields = [
     placeholder: 'Keywords',
     rows: 3,
     helperText: 'Use commas to separate the keywords',
+    textArea: true,
   },
 ];
 
