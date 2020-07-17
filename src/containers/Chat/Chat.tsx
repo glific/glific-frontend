@@ -13,7 +13,6 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
-import { Redirect } from 'react-router-dom';
 
 export interface ChatProps {
   contactId: number;

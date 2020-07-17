@@ -8,7 +8,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
 import { draftToMarkdown } from 'markdown-draft-js';
 import 'draft-js/dist/Draft.css';
-import ContentEditable from 'react-contenteditable';
+// import ContentEditable from 'react-contenteditable';
 import { TextReplacements } from '../../../../common/RichEditor';
 
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -18,10 +18,10 @@ export interface ChatInputProps {
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
-  // const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-  const message = useRef('');
+  // const message = useRef('');
 
   // Converts tags to interpretable message format for WhatsApp
   const parseText = (text: string) => {
@@ -42,8 +42,9 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     setShowEmojiPicker(false);
     if (!message) return;
     if (typeof onSendMessage === 'function') {
-      onSendMessage(parseText(message.current));
-      message.current = '';
+      onSendMessage(message);
+      // onSendMessage(parseText(message.current));
+      // message.current = '';
     }
   };
 
@@ -55,61 +56,61 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
         title="Pick your emoji…"
         emoji="point_up"
         style={{ position: 'absolute', bottom: '190px', right: '444px' }}
-        onSelect={(emoji: any) => (message.current = message + emoji.native)}
+        onSelect={(emoji: any) => setMessage(message + emoji.native)}
       />
     );
   }
 
-  // const handleChange = (editorState: any) => {
-  //   // Get the markdown equivalent for this text.
-  //   // BUG: When highlighting over text and bolding, the cursor must move at least once in order for the changes to take effect.
-  //   let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
+  const handleChange = (editorState: any) => {
+    // Get the markdown equivalent for this text.
+    // BUG: When highlighting over text and bolding, the cursor must move at least once in order for the changes to take effect.
+    let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
-  //   // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
-  //   let findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
-  //   let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
-  //   console.log(messageText);
-  //   setEditorState(editorState);
-  //   setMessage(messageText);
-  // };
+    // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
+    let findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
+    let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
+    console.log(messageText);
+    setEditorState(editorState);
+    setMessage(messageText);
+  };
 
-  // const handleKeyCommand = (command: string, editorState: any) => {
-  //   // On enter, submit. Otherwise, deal with commands like normal.
-  //   if (command === 'enter') {
-  //     submitMessage();
-  //     return 'handled';
-  //   }
-  //   const newState = RichUtils.handleKeyCommand(editorState, command);
-  //   if (newState) {
-  //     setEditorState(newState);
-  //     return 'handled';
-  //   }
-  //   return 'not-handled';
-  // };
+  const handleKeyCommand = (command: string, editorState: any) => {
+    // On enter, submit. Otherwise, deal with commands like normal.
+    if (command === 'enter') {
+      submitMessage();
+      return 'handled';
+    }
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      return 'handled';
+    }
+    return 'not-handled';
+  };
 
-  // const keyBindingFn = (e: any) => {
-  //   // Shift-enter is by default supported. Only 'enter' needs to be changed.
-  //   if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
-  //     return 'enter';
-  //   }
-  //   return getDefaultKeyBinding(e);
-  // };
+  const keyBindingFn = (e: any) => {
+    // Shift-enter is by default supported. Only 'enter' needs to be changed.
+    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
+      return 'enter';
+    }
+    return getDefaultKeyBinding(e);
+  };
 
   const handleKeyDown = (e: any) => {
     // console.log(e.target.value);
-    console.log(message.current);
+    // console.log(message.current);
     if (e.key === 'Enter' && !e.nativeEvent.shiftKey) {
       submitMessage();
       return;
     }
   };
 
-  const handleChange = (e: any) => {
-    message.current = e.target.value;
-  };
+  // const handleChange = (e: any) => {
+  //   message.current = e.target.value;
+  // };
 
-  console.log(message.current);
-  console.log(message.current.length);
+  // console.log(message.current);
+  // console.log(message.current.length);
 
   // Try using both message and message.current. IDK WHY THE FUCK THIS DOESNT WORK.
 
@@ -118,20 +119,20 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer} onClick={() => setShowEmojiPicker(false)}>
           {/* <div contentEditable={true} onInput={testingDivChange}></div> */}
-          <ContentEditable
+          {/* <ContentEditable
             html={message.current}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             // onBlur={handleBlur}Also
-          />
-          {/* <Editor
+          /> */}
+          <Editor
             data-testid="message-input"
             editorState={editorState}
             placeholder="Start typing..."
             onChange={handleChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
-          /> */}
+          />
         </div>
         <div className={styles.ActionsContainer}>
           <div className={styles.EmojiContainer}>
@@ -154,7 +155,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
               variant="contained"
               color="primary"
               onClick={submitMessage}
-              disabled={message.current.length === 0}
+              disabled={message.length === 0}
             >
               Send
               <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
