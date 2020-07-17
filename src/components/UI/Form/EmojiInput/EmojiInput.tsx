@@ -27,14 +27,13 @@ export const EmojiInput = (props: any) => {
   const picker = (
     <InputAdornment position="end" className={Styles.EmojiPosition}>
       <IconButton
-        data-testid="emoji-picker"
         color="primary"
         aria-label="pick emoji"
         component="span"
         className={Styles.Emoji}
         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
       >
-        <span role="img" aria-label="pick emoji">
+        <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
           😀
         </span>
       </IconButton>
