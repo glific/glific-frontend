@@ -17,6 +17,6 @@ export const sideDrawerMenus = [
   {
     title: 'Staff Management',
     path: '/staff-management',
-    icon: 'staffManagement',
+    icon: 'speedSend',
   },
 ];
