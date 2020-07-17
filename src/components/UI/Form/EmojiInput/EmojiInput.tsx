@@ -15,6 +15,7 @@ export const EmojiInput = (props: any) => {
 
   const emojiPicker = showEmojiPicker ? (
     <Picker
+      data-testid="emoji-container"
       title="Pick your emoji…"
       emoji="point_up"
       style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
@@ -26,6 +27,7 @@ export const EmojiInput = (props: any) => {
     <InputAdornment position="end" className={Styles.EmojiPosition}>
       <img
         src={Smiley}
+        data-testid="emoji-picker"
         alt="emoji picker"
         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         className={Styles.Emoji}
