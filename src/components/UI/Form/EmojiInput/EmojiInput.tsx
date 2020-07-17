@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
-import Smiley from '../../../../assets/images/icons/Smiley.png';
+import { InputAdornment, IconButton } from '@material-ui/core';
+
 import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
 
@@ -25,13 +26,19 @@ export const EmojiInput = (props: any) => {
 
   const picker = (
     <InputAdornment position="end" className={Styles.EmojiPosition}>
-      <img
-        src={Smiley}
+      <IconButton
         data-testid="emoji-picker"
-        alt="emoji picker"
-        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        color="primary"
+        aria-label="pick emoji"
+        component="span"
         className={Styles.Emoji}
-      />
+        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+      >
+        <span role="img" aria-label="pick emoji">
+          😀
+        </span>
+      </IconButton>
+
       {emojiPicker}
     </InputAdornment>
   );
