@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
-import { useMutation, useApolloClient, gql } from '@apollo/client';
+import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';

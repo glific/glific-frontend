@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, createHttpLink, split, from } from '@apollo/client';
+import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
 import absinthe from './absinthe';
 import { URI } from '.';
 import { setContext } from '@apollo/link-context';
