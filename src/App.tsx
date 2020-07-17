@@ -7,6 +7,7 @@ import { TagPage } from './components/pages/TagPage/TagPage';
 import { Registration } from './components/pages/Registration/Registration';
 import { ConfirmOTP } from './components/pages/ConfirmOTP/ConfirmOTP';
 import { Login } from './components/pages/Login/Login';
+import { StaffManagement } from './components/pages/StaffManagement/StaffManagement';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import Chat from './containers/Chat/Chat';
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
+            <Route path="/staff-management" exact component={StaffManagement} />
             {/* This part isn't working properly */}
             <Route
               exact
