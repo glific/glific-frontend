@@ -1,8 +1,10 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
+import { MemoryRouter } from 'react-router-dom';
+
 import { Login } from './Login';
 import { OutlinedInput } from '@material-ui/core';
-import { Button } from '../../UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import axios from 'axios';
@@ -12,6 +14,11 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('Login test', () => {
   const createLogin = () => <Login />;
+  const createLoginMount = () => (
+    <MemoryRouter>
+      <Login />
+    </MemoryRouter>
+  );
 
   it('renders component properly', () => {
     const wrapper = shallow(createLogin());
@@ -24,6 +31,7 @@ describe('Login test', () => {
       .find(OutlinedInput)
       .at(0)
       .simulate('change', { target: { value: '1231231234' } });
+
     expect(wrapper.find(OutlinedInput).at(0).prop('value')).toEqual('1231231234');
   });
 
@@ -48,13 +56,13 @@ describe('Login test', () => {
   });
 
   it('shows password if button is clicked', () => {
-    const wrapper = mount(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper.find(IconButton).simulate('click');
     wrapper.find(Visibility);
   });
 
   it('preventDefault on onMouseDown for password visibility', () => {
-    const wrapper = mount(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper.find(IconButton).simulate('mouseDown', { preventDefault: () => true });
   });
 

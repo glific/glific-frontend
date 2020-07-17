@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { Redirect } from 'react-router-dom';
 
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
@@ -30,7 +31,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
   };
 
-  const { loading, error, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { loading, error, data, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
   });
 
@@ -115,6 +116,10 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
+  if (!contactId && data.conversations.length !== 0) {
+    return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
+  }
+
   return (
     <Paper>
       <div className={styles.Chat}>
@@ -122,7 +127,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
-          <ChatConversations />
+          <ChatConversations contactId={contactId} />
         </div>
       </div>
     </Paper>

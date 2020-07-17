@@ -4,12 +4,16 @@ import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
+import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
+import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
+import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
+import { setNotification } from '../../../../common/notification';
 
 export interface ChatMessageProps {
   id: number;
@@ -22,22 +26,24 @@ export interface ChatMessageProps {
     id: number;
   };
   insertedAt: string;
-  onClick: any;
-  tags: any;
+  onClick?: any;
+  tags: Array<any>;
   popup: any;
-  setDialog: any;
-  focus: boolean;
+  setDialog?: any;
+  focus?: boolean;
   showMessage: boolean;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+  const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
-  let tag;
+  let tag: any;
+  let deleteId: string | number;
 
   const { popup, focus, id } = props;
 
@@ -54,6 +60,25 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       messageRef.current?.scrollIntoView();
     }
   }, [focus, id]);
+
+  const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
+    update: (cache) => {
+      const tags = client.readFragment({
+        id: `Message:${props.id}`,
+        fragment: MESSAGE_FRAGMENT,
+      });
+      if (tags) {
+        const tagsCopy = JSON.parse(JSON.stringify(tags));
+        tagsCopy.tags = tagsCopy.tags.filter((tag: any) => tag.id !== deleteId);
+        cache.writeFragment({
+          id: `Message:${props.id}`,
+          fragment: MESSAGE_FRAGMENT,
+          data: tagsCopy,
+        });
+      }
+      setNotification(client, 'Tag deleted successfully');
+    },
+  });
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -91,12 +116,32 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       />
     );
   }
+
+  const deleteTagHandler = (event: any) => {
+    deleteId = event.currentTarget.getAttribute('data-id');
+    deleteTag({
+      variables: {
+        input: {
+          messageId: props.id,
+          addTagIds: [],
+          deleteTagIds: [deleteId],
+        },
+      },
+    });
+  };
+
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
         <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
           <TagIcon className={styles.TagIcon} />
           {tag.label}
+          <CloseIcon
+            className={styles.CloseIcon}
+            onClick={deleteTagHandler}
+            data-id={tag.id}
+            data-testid="deleteIcon"
+          />
         </div>
       );
     });

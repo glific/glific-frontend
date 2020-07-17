@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Redirect, Link } from 'react-router-dom';
 import { Typography, FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,15 +8,17 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import styles from './Login.module.css';
-import { REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER } from '../../../common/constants';
+import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { SessionContext } from '../../../context/session';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
+  const { setAuthenticated } = useContext(SessionContext);
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -58,17 +60,19 @@ export const Login: React.SFC<LoginProps> = () => {
     handleInputErrors();
     if (!passwordError && !phoneNumberError) {
       axios
-        .post(REACT_APP_GLIFIC_NEW_SESSION_EXISTING_USER, {
+        .post(USER_SESSION, {
           user: {
             phone: phoneNumber,
             password: password,
           },
         })
-        .then(function (response: any) {
+        .then((response: any) => {
           const responseString = JSON.stringify(response.data.data);
+          localStorage.setItem('session', responseString);
+          setAuthenticated(true);
           setSessionToken(responseString);
         })
-        .catch(function (error: any) {
+        .catch((error: any) => {
           setInvalidLogin(true);
         });
     }
@@ -97,6 +101,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Phone Number</InputLabel>
             <OutlinedInput
+              data-testid="phoneNumber"
               error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
@@ -113,6 +118,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              data-testid="password"
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
               label="Password"
@@ -138,6 +144,11 @@ export const Login: React.SFC<LoginProps> = () => {
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Login
         </Button>
+        <br />
+        <div>OR</div>
+        <div>
+          <Link to="/registration">CREATE A NEW ACCOUNT</Link>
+        </div>
       </div>
     </div>
   );

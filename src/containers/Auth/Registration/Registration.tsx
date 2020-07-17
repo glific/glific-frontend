@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -20,13 +20,10 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,23 +38,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     setPhoneNumber(event.target.value);
   };
 
-  const handleConfirmPasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(event.target.value);
-  };
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleClickShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  const handleMouseDownConfirmPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -77,28 +62,21 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     } else if (password) {
       setPasswordError(false);
     }
-    if (password !== confirmPassword) {
-      setConfirmPasswordError(true);
-    } else if (confirmPassword) {
-      setConfirmPasswordError(false);
-    }
   };
 
   const handleSubmit = () => {
     handleInputErrors();
-    if (!userNameError && !phoneNumberError && !passwordError && !confirmPasswordError) {
+    if (!userNameError && !phoneNumberError && !passwordError) {
       axios
         .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
           user: {
             phone: phoneNumber,
           },
         })
-        .then(function (response: any) {
+        .then((response: any) => {
           setAuthMessage(response);
         })
-        .catch(function (error: any) {
-          console.log(error);
-        });
+        .catch((error: any) => {});
     }
   };
 
@@ -111,7 +89,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             name: userName,
             phoneNumber: phoneNumber,
             password: password,
-            password_confirmation: confirmPassword,
           },
         }}
       />
@@ -180,35 +157,14 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             ) : null}
           </FormControl>
         </div>
-        <div className={clsx(styles.Margin, styles.BottomMargin)}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Confirm Password</InputLabel>
-            <OutlinedInput
-              error={confirmPasswordError}
-              id="outlined-adornment-confirm-password"
-              type={showConfirmPassword ? 'text' : 'password'}
-              label="Confirm Password"
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange()}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowConfirmPassword}
-                    onMouseDown={handleMouseDownConfirmPassword}
-                    edge="end"
-                  >
-                    {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {confirmPasswordError ? <FormHelperText>Passwords do not match.</FormHelperText> : null}
-          </FormControl>
-        </div>
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Submit
         </Button>
+        <br />
+        <div>OR</div>
+        <div>
+          <Link to="/login">LOGIN TO GLIFIC</Link>
+        </div>
       </div>
     </div>
   );

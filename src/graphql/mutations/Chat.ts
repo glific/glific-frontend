@@ -37,3 +37,12 @@ export const UPDATE_MESSAGE_TAGS = gql`
     }
   }
 `;
+
+export const MESSAGE_FRAGMENT = gql`
+  fragment tags on Message {
+    tags {
+      id
+      label
+    }
+  }
+`;
