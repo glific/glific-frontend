@@ -22,7 +22,7 @@ const useStyles = makeStyles(() =>
     continueButton: {
       width: '310px',
       borderRadius: '27px',
-      marginTop: '32px',
+      marginTop: '20px',
     },
     inputField: {
       lineHeight: '32px',
@@ -83,6 +83,13 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       MuiInputLabel: {
         root: {
           color: '#93A29B',
+        },
+      },
+      MuiFormHelperText: {
+        root: {
+          color: '#93A29B',
+          marginTop: '0px',
+          lineHeight: '1.2',
         },
       },
     },
@@ -180,7 +187,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                     onChange={handleUserNameChange()}
                   />
                 </ThemeProvider>
-                {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
+                {userNameError ? (
+                  <ThemeProvider theme={theme}>
+                    <FormHelperText>Invalid username.</FormHelperText>
+                  </ThemeProvider>
+                ) : null}
               </FormControl>
             </div>
             <div className={styles.Margin}>
@@ -196,7 +207,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                     onChange={handlePhoneNumberChange()}
                   />
                 </ThemeProvider>
-                {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
+                {phoneNumberError ? (
+                  <ThemeProvider theme={theme}>
+                    <FormHelperText>Invalid phone number.</FormHelperText>
+                  </ThemeProvider>
+                ) : null}
               </FormControl>
             </div>
             <div className={clsx(styles.Margin)}>
@@ -227,7 +242,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                   />
                 </ThemeProvider>
                 {passwordError ? (
-                  <FormHelperText>Invalid password, must be at least 8 characters.</FormHelperText>
+                  <ThemeProvider theme={theme}>
+                    <FormHelperText>
+                      Invalid password, must be at least 8 characters.
+                    </FormHelperText>
+                  </ThemeProvider>
                 ) : null}
               </FormControl>
             </div>

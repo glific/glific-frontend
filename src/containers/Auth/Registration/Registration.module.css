@@ -31,12 +31,13 @@
 
 .Box {
   width: 400px;
-  height: 415px;
+  height: 440px;
   background-color: #073f24;
   border-radius: 12px;
   margin-top: 25vh;
   align-content: center;
   justify-content: center;
+  flex-grow: 1;
 }
 
 .BoxTitle {
