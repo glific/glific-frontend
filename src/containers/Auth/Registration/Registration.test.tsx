@@ -42,6 +42,7 @@ it('adds state to password', () => {
     .simulate('change', { target: { value: 'randompassword' } });
   expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('randompassword');
 });
+
 it('send an axios post request properly', () => {
   jest.mock('axios');
   const wrapper = shallow(createRegistration());
@@ -66,11 +67,9 @@ it('axios post request catchs error', () => {
   wrapper.find(Button).simulate('click');
 });
 
-it('sets userNameError to be true if field is blank', () => {
+it('set errors if the form fields are blank', () => {
   const wrapper = shallow(createRegistration());
-  const response = {
-    data: {},
-  };
+  const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
   wrapper.find(Button).simulate('click');
   expect(wrapper.find('[data-testid="username"]').prop('error')).toBeTruthy();
@@ -78,41 +77,20 @@ it('sets userNameError to be true if field is blank', () => {
   expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy();
 });
 
-it('sets userNameError to be false if there is a valid value', () => {
+it('no errors are set when if there are valid values', () => {
   const wrapper = shallow(createRegistration());
   wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
-  const response = {
-    data: { username: 'JaneDoe' },
-  };
-  mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
-  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeFalsy();
-});
-
-it('sets phonenumberError to be false if there is a valid value', () => {
-  const wrapper = shallow(createRegistration());
   wrapper
     .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
-  const response = {
-    data: { phone: '1231231234' },
-  };
-  mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
-  expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeFalsy();
-});
-
-it('sets passwordError to be false if there is a valid value', () => {
-  const wrapper = shallow(createRegistration());
   wrapper
     .find('[data-testid="password"]')
     .simulate('change', { target: { value: 'randompassword' } });
-  const response = {
-    data: { password: 'randompassword' },
-  };
+
+  const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
   wrapper.find(Button).simulate('click');
-  expect(wrapper.find('[data-testid="password"]').prop('error')).toBeFalsy();
+  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeFalsy();
 });
 
 it('shows password if button is clicked', () => {
