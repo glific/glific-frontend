@@ -31,3 +31,13 @@ export const GET_TEMPLATE = gql`
     }
   }
 `;
+
+export const GET_HSM_TEMPLATES = gql`
+  query sessionTemplates($filter: SessionTemplateFilter!, $opts: Opts!) {
+    sessionTemplates(filter: $filter, opts: $opts) {
+      id
+      body
+      label
+    }
+  }
+`;
