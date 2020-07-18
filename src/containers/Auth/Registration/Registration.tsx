@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, FormHelperText } from '@material-ui/core';
+import { Typography, FormHelperText, makeStyles, createStyles } from '@material-ui/core';
 import styles from './Registration.module.css';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,8 +13,25 @@ import { Redirect, Link } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 
 export interface RegistrationProps {}
+const useStyles = makeStyles(() =>
+  createStyles({
+    continueButton: {
+      width: '310px',
+      borderRadius: '27px',
+      marginTop: '32px',
+    },
+    inputField: {
+      lineHeight: '32px',
+    },
+    titleText: {
+      fontWeight: 'bold',
+    },
+  })
+);
 
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
@@ -25,6 +42,51 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const classes = useStyles();
+
+  const theme = createMuiTheme({
+    overrides: {
+      MuiOutlinedInput: {
+        root: {
+          '& $notchedOutline': {
+            borderColor: '#93A29B',
+            borderRadius: '12px',
+            borderWidth: '2px',
+          },
+          '&$focused $notchedOutline': {
+            borderColor: '#93A29B',
+          },
+          '&:hover $notchedOutline': {
+            borderColor: '#93A29B',
+          },
+        },
+      },
+      MuiFormLabel: {
+        root: {
+          color: '#93A29B',
+          '&$focused': {
+            color: '#93A29B',
+          },
+        },
+      },
+      MuiInputBase: {
+        root: {
+          lineHeight: '32px',
+          width: '340px',
+        },
+      },
+      MuiIconButton: {
+        root: {
+          color: '#93A29B',
+        },
+      },
+      MuiInputLabel: {
+        root: {
+          color: '#93A29B',
+        },
+      },
+    },
+  });
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -98,71 +160,93 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   return (
     <div className={styles.Container}>
       <div className={styles.CenterRegistration}>
-        <div className={styles.RegistrationTitle}>
-          <Typography variant="h5">Create a New Account</Typography>
+        <div className={styles.Box}>
+          <div className={styles.BoxTitle}>
+            <Typography variant="h4" className={classes.titleText}>
+              Create your new <br /> account
+            </Typography>
+          </div>
+          <div className={styles.CenterBox}>
+            <div className={styles.Margin}>
+              <FormControl className={styles.TextField} variant="outlined">
+                <ThemeProvider theme={theme}>
+                  <InputLabel>Your full name</InputLabel>
+                  <OutlinedInput
+                    error={userNameError}
+                    id="username"
+                    label="Your full name"
+                    type="text"
+                    value={userName}
+                    onChange={handleUserNameChange()}
+                  />
+                </ThemeProvider>
+                {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
+              </FormControl>
+            </div>
+            <div className={styles.Margin}>
+              <FormControl className={styles.TextField} variant="outlined">
+                <ThemeProvider theme={theme}>
+                  <InputLabel>Your phone number</InputLabel>
+                  <OutlinedInput
+                    error={phoneNumberError}
+                    id="phone-number"
+                    label="Your phone number"
+                    type="integer"
+                    value={phoneNumber}
+                    onChange={handlePhoneNumberChange()}
+                  />
+                </ThemeProvider>
+                {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
+              </FormControl>
+            </div>
+            <div className={clsx(styles.Margin)}>
+              <FormControl className={styles.TextField} variant="outlined">
+                <ThemeProvider theme={theme}>
+                  <InputLabel>Password</InputLabel>
+                  <OutlinedInput
+                    error={passwordError}
+                    id="outlined-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    label="Password"
+                    value={password}
+                    onChange={handlePasswordChange()}
+                    endAdornment={
+                      <ThemeProvider theme={theme}>
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      </ThemeProvider>
+                    }
+                  />
+                </ThemeProvider>
+                {passwordError ? (
+                  <FormHelperText>Invalid password, must be at least 8 characters.</FormHelperText>
+                ) : null}
+              </FormControl>
+            </div>
+            <Button
+              onClick={handleSubmit}
+              color="primary"
+              variant={'contained'}
+              className={classes.continueButton}
+            >
+              CONTINUE
+            </Button>
+          </div>
         </div>
-        <div className={styles.Margin}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Username</InputLabel>
-            <OutlinedInput
-              error={userNameError}
-              id="username"
-              label="Username"
-              type="text"
-              value={userName}
-              onChange={handleUserNameChange()}
-            />
-            {userNameError ? <FormHelperText>Invalid username.</FormHelperText> : null}
-          </FormControl>
+        <div className={styles.Or}>
+          <hr />
+          <div className={styles.OrText}>OR</div>
+          <hr />
         </div>
-        <div className={styles.Margin}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Phone Number</InputLabel>
-            <OutlinedInput
-              error={phoneNumberError}
-              id="phone-number"
-              label="Phone Number"
-              type="integer"
-              value={phoneNumber}
-              onChange={handlePhoneNumberChange()}
-            />
-            {phoneNumberError ? <FormHelperText>Invalid phone number.</FormHelperText> : null}
-          </FormControl>
-        </div>
-        <div className={clsx(styles.Margin)}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Password</InputLabel>
-            <OutlinedInput
-              error={passwordError}
-              id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              label="Password"
-              value={password}
-              onChange={handlePasswordChange()}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {passwordError ? (
-              <FormHelperText>Invalid password, must be at least 8 characters.</FormHelperText>
-            ) : null}
-          </FormControl>
-        </div>
-        <Button onClick={handleSubmit} color="primary" variant={'contained'}>
-          Submit
-        </Button>
-        <br />
-        <div>OR</div>
-        <div>
+        <div className={styles.Link}>
           <Link to="/login">LOGIN TO GLIFIC</Link>
         </div>
       </div>
