@@ -23,29 +23,24 @@ it('renders component properly', () => {
 
 it('updates state for username', () => {
   const wrapper = shallow(createRegistration());
-  wrapper
-    .find(OutlinedInput)
-    .at(0)
-    .simulate('change', { target: { value: 'username' } });
-  expect(wrapper.find(OutlinedInput).at(0).prop('value')).toEqual('username');
+  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
+  expect(wrapper.find('[data-testid="username"]').prop('value')).toEqual('JaneDoe');
 });
 
 it('adds state to phoneNumber', () => {
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(1)
+    .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
-  expect(wrapper.find(OutlinedInput).at(1).prop('value')).toEqual('1231231234');
+  expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
 });
 
 it('adds state to password', () => {
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(2)
-    .simulate('change', { target: { value: 'pass12345' } });
-  expect(wrapper.find(OutlinedInput).at(2).prop('value')).toEqual('pass12345');
+    .find('[data-testid="password"]')
+    .simulate('change', { target: { value: 'randompassword' } });
+  expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('randompassword');
 });
 
 it('send an axios post request properly', () => {

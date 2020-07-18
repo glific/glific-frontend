@@ -105,6 +105,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Username</InputLabel>
             <OutlinedInput
+              data-testid="username"
               error={userNameError}
               id="username"
               label="Username"
@@ -119,6 +120,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Phone Number</InputLabel>
             <OutlinedInput
+              data-testid="phoneNumber"
               error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
@@ -133,6 +135,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              data-testid="password"
               error={passwordError}
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
