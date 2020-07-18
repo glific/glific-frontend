@@ -165,8 +165,8 @@ describe('Save Button', () => {
     );
 
     await wait();
-    fireEvent.change(container.querySelector('textarea[name="label"]'), {
-      target: { innerHTML: 'new Template' },
+    fireEvent.change(container.querySelector('input[name="label"]'), {
+      target: { value: 'new Template' },
     });
     fireEvent.change(container.querySelector('textarea[name="body"]'), {
       target: { value: 'new Template body' },
