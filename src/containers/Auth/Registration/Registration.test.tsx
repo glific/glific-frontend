@@ -47,8 +47,7 @@ it('send an axios post request properly', () => {
   jest.mock('axios');
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(1)
+    .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
   const response = {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
@@ -80,10 +79,7 @@ it('sets userNameError to be true if field is blank', () => {
 
 it('sets userNameError to be false if there is a valid value', () => {
   const wrapper = shallow(createRegistration());
-  wrapper
-    .find(OutlinedInput)
-    .at(0)
-    .simulate('change', { target: { value: 'username' } });
+  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
   const response = {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
   };
