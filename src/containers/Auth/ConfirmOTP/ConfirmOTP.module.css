@@ -1,6 +1,6 @@
 .Container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
 .CenterRegistrationAuth {
@@ -12,16 +12,25 @@
 
 .RegistrationAuthTitle {
   margin-bottom: 10px;
-}
-
-.Margin {
-  margin: 8px;
-}
-
-.TextField {
-  width: 40ch;
+  margin-left: 32px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-self: start;
 }
 
 .BottomMargin {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
+}
+
+.Box {
+  margin-top: 25vh;
+  height: 300px;
+  width: 400px;
+  background-color: #073f24;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }

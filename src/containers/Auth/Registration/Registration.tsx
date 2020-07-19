@@ -73,6 +73,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         root: {
           lineHeight: '32px',
           width: '340px',
+          color: '#93A29B',
         },
       },
       MuiIconButton: {
