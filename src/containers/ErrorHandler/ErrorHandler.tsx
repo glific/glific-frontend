@@ -20,23 +20,31 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   const handleErrorClose = () => {
-    setErrorMessage(client, null);
+    setErrorMessage(client, '');
   };
 
   if (!data.errorMessage) {
     return null;
   }
 
+  // Handle type of error message
+  console.log(data.errorMessage);
+  let title = 'An error has occured!';
+  let colorOk = 'colorOk = "primary"';
+  if (data.errorMessage.type === 'Error') {
+    colorOk = 'colorOk = "secondary"';
+  }
+
   return (
     <Container>
       <DialogBox
-        title={'An error has occured'}
-        colorOk="secondary"
+        title={title}
+        {...colorOk}
         handleOk={handleErrorClose}
         handleCancel={handleErrorClose}
         buttonOk="Ok"
       >
-        <p>{data.errorMessage}</p>
+        <p>{data.errorMessage.message}</p>
       </DialogBox>
     </Container>
   );

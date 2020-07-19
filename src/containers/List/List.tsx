@@ -177,10 +177,12 @@ export const List: React.SFC<ListProps> = ({
 
   if (loading || l) return <Loading />;
   if (error || e) {
-    let errorMessage = 'An error has occured!';
-    setErrorMessage(client, errorMessage);
+    if (error) {
+      setErrorMessage(client, error);
+    } else if (e) {
+      setErrorMessage(client, e);
+    }
     return null;
-    //return <p>Error :(</p>;
   }
 
   const deleteHandler = (id: number) => {
