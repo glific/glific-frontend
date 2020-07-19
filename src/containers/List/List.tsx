@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { setNotification } from '../../common/notification';
+import { setNotification, setErrorMessage } from '../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
@@ -176,7 +176,12 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (loading || l) return <Loading />;
-  if (error || e) return <p>Error :(</p>;
+  if (error || e) {
+    let errorMessage = 'An error has occured!';
+    setErrorMessage(client, errorMessage);
+    return null;
+    //return <p>Error :(</p>;
+  }
 
   const deleteHandler = (id: number) => {
     deleteItem({ variables: { id } });
