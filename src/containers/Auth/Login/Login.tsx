@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { Typography, FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,7 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../UI/Form/Button/Button';
+import { Button } from '../../../components/UI/Form/Button/Button';
 import styles from './Login.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
@@ -101,6 +101,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Phone Number</InputLabel>
             <OutlinedInput
+              data-testid="phoneNumber"
               error={phoneNumberError}
               id="phone-number"
               label="Phone Number"
@@ -117,6 +118,7 @@ export const Login: React.SFC<LoginProps> = () => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Password</InputLabel>
             <OutlinedInput
+              data-testid="password"
               id="outlined-adornment-password"
               type={showPassword ? 'text' : 'password'}
               label="Password"
@@ -142,6 +144,11 @@ export const Login: React.SFC<LoginProps> = () => {
         <Button onClick={handleSubmit} color="primary" variant={'contained'}>
           Login
         </Button>
+        <br />
+        <div>OR</div>
+        <div>
+          <Link to="/registration">CREATE A NEW ACCOUNT</Link>
+        </div>
       </div>
     </div>
   );

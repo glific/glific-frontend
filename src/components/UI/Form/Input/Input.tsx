@@ -12,9 +12,11 @@ export interface InputProps {
   placeholder: any;
   rows: number;
   helperText?: string;
+  emojiPicker?: boolean | null;
+  textArea?: boolean;
 }
 
-export const Input: React.SFC<InputProps> = (props) => {
+export const Input: React.SFC<InputProps> = ({ textArea = false, ...props }) => {
   const touched = props.form.touched;
   const error = props.form.errors;
   const name = props.field.name;
@@ -27,11 +29,12 @@ export const Input: React.SFC<InputProps> = (props) => {
         </InputLabel>
         <OutlinedInput
           error={error[name] && touched[name] ? true : false}
-          multiline={true}
+          multiline={textArea}
           rows={props.rows}
           label={props.placeholder}
           fullWidth
           {...props.field}
+          endAdornment={props.emojiPicker ? props.emojiPicker : null}
         ></OutlinedInput>
         {error[name] && touched[name] ? <FormHelperText>Required</FormHelperText> : null}
         {props.helperText ? (

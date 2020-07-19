@@ -31,221 +31,221 @@ global.document.createRange = () => ({
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
-const mocks = [
-  {
-    request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
-    },
-    result: {
-      data: {
-        conversation: {
-          contact: {
-            id: '2',
-            name: 'Vaibhav',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '2',
-              },
-              sender: {
-                id: '1',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  },
+// const mocks = [
+//   {
+//     request: {
+//       query: GET_CONVERSATION_MESSAGE_QUERY,
+//       variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
+//     },
+//     result: {
+//       data: {
+//         conversation: {
+//           contact: {
+//             id: '2',
+//             name: 'Vaibhav',
+//           },
+//           messages: [
+//             {
+//               id: '1',
+//               body: 'Hey there whats up?',
+//               insertedAt: '2020-06-25T13:36:43Z',
+//               receiver: {
+//                 id: '2',
+//               },
+//               sender: {
+//                 id: '1',
+//               },
+//               tags: [
+//                 {
+//                   id: '1',
+//                   label: 'important',
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       },
+//     },
+//   },
 
-  {
-    request: {
-      query: GET_TAGS,
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            id: '87',
-            label: 'Good message',
-            description: 'Hey There',
-          },
-          {
-            id: '1',
-            label: 'important',
-            description: 'some description',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_MESSAGE_TAG,
-      variables: {
-        input: {
-          messageId: '1',
-          tagId: '87',
-        },
-      },
-    },
-    result: {
-      data: {
-        createMessageTag: {
-          messageTag: {
-            message: {
-              id: '1',
-            },
-            tag: {
-              id: '87',
-              label: 'Good message',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_MESSAGE_TAG,
-      variables: {
-        input: {
-          messageId: '1',
-          tagId: '1',
-        },
-      },
-    },
-    result: {
-      data: {
-        createMessageTag: {
-          messageTag: {
-            message: {
-              id: '1',
-            },
-            tag: {
-              id: '1',
-              label: 'important',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_AND_SEND_MESSAGE_MUTATION,
-      variables: {
-        input: {
-          body: 'Hey There Wow',
-          senderId: 1,
-          receiverId: '2',
-          type: 'TEXT',
-          flow: 'OUTBOUND',
-        },
-      },
-    },
-    result: {
-      data: {
-        createAndSendMessage: {
-          message: {
-            body: 'Hey There Wow',
-            insertedAt: '2020-06-25T13:36:43Z',
-            id: '10388',
-            receiver: {
-              id: '2',
-            },
-            sender: {
-              id: '1',
-            },
+//   {
+//     request: {
+//       query: GET_TAGS,
+//     },
+//     result: {
+//       data: {
+//         tags: [
+//           {
+//             id: '87',
+//             label: 'Good message',
+//             description: 'Hey There',
+//           },
+//           {
+//             id: '1',
+//             label: 'important',
+//             description: 'some description',
+//           },
+//         ],
+//       },
+//     },
+//   },
+//   {
+//     request: {
+//       query: CREATE_MESSAGE_TAG,
+//       variables: {
+//         input: {
+//           messageId: '1',
+//           tagId: '87',
+//         },
+//       },
+//     },
+//     result: {
+//       data: {
+//         createMessageTag: {
+//           messageTag: {
+//             message: {
+//               id: '1',
+//             },
+//             tag: {
+//               id: '87',
+//               label: 'Good message',
+//             },
+//           },
+//         },
+//       },
+//     },
+//   },
+//   {
+//     request: {
+//       query: CREATE_MESSAGE_TAG,
+//       variables: {
+//         input: {
+//           messageId: '1',
+//           tagId: '1',
+//         },
+//       },
+//     },
+//     result: {
+//       data: {
+//         createMessageTag: {
+//           messageTag: {
+//             message: {
+//               id: '1',
+//             },
+//             tag: {
+//               id: '1',
+//               label: 'important',
+//             },
+//           },
+//         },
+//       },
+//     },
+//   },
+//   {
+//     request: {
+//       query: CREATE_AND_SEND_MESSAGE_MUTATION,
+//       variables: {
+//         input: {
+//           body: 'Hey There Wow',
+//           senderId: 1,
+//           receiverId: '2',
+//           type: 'TEXT',
+//           flow: 'OUTBOUND',
+//         },
+//       },
+//     },
+//     result: {
+//       data: {
+//         createAndSendMessage: {
+//           message: {
+//             body: 'Hey There Wow',
+//             insertedAt: '2020-06-25T13:36:43Z',
+//             id: '10388',
+//             receiver: {
+//               id: '2',
+//             },
+//             sender: {
+//               id: '1',
+//             },
 
-            tags: [
-              {
-                id: 1,
-                label: 'critical',
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_CONVERSATION_QUERY,
-      variables: {
-        contactOpts: {
-          limit: 50,
-        },
-        filter: {},
-        messageOpts: {
-          limit: 100,
-        },
-      },
-    },
-    result: {
-      data: {
-        conversations: [
-          {
-            contact: {
-              id: '290',
-              name: 'Effie Cormier',
-            },
-            messages: [
-              {
-                body:
-                  'Conscience is but a word that cowards use, devised at first to keep the strong in awe.',
-                id: '7218',
-                insertedAt: '2020-06-30T21:48:42Z',
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '290',
-                },
-                tags: [],
-              },
-              {
-                body: "How bitter a thing it is to look into happiness through another man's eyes!",
-                id: '7217',
-                insertedAt: '2020-06-29T09:31:47Z',
-                receiver: {
-                  id: '1',
-                },
-                sender: {
-                  id: '290',
-                },
-                tags: [
-                  {
-                    id: '18',
-                    label: 'Child',
-                  },
-                  {
-                    id: '5',
-                    label: 'Greeting',
-                  },
-                  {
-                    id: '15',
-                    label: 'Help',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    },
-  },
-];
+//             tags: [
+//               {
+//                 id: 1,
+//                 label: 'critical',
+//               },
+//             ],
+//           },
+//         },
+//       },
+//     },
+//   },
+//   {
+//     request: {
+//       query: GET_CONVERSATION_QUERY,
+//       variables: {
+//         contactOpts: {
+//           limit: 50,
+//         },
+//         filter: {},
+//         messageOpts: {
+//           limit: 100,
+//         },
+//       },
+//     },
+//     result: {
+//       data: {
+//         conversations: [
+//           {
+//             contact: {
+//               id: '290',
+//               name: 'Effie Cormier',
+//             },
+//             messages: [
+//               {
+//                 body:
+//                   'Conscience is but a word that cowards use, devised at first to keep the strong in awe.',
+//                 id: '7218',
+//                 insertedAt: '2020-06-30T21:48:42Z',
+//                 receiver: {
+//                   id: '1',
+//                 },
+//                 sender: {
+//                   id: '290',
+//                 },
+//                 tags: [],
+//               },
+//               {
+//                 body: "How bitter a thing it is to look into happiness through another man's eyes!",
+//                 id: '7217',
+//                 insertedAt: '2020-06-29T09:31:47Z',
+//                 receiver: {
+//                   id: '1',
+//                 },
+//                 sender: {
+//                   id: '290',
+//                 },
+//                 tags: [
+//                   {
+//                     id: '18',
+//                     label: 'Child',
+//                   },
+//                   {
+//                     id: '5',
+//                     label: 'Greeting',
+//                   },
+//                   {
+//                     id: '15',
+//                     label: 'Help',
+//                   },
+//                 ],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     },
+//   },
+// ];
 
 describe('<ChatMessages />', () => {
   it('do nothing', () => {
