@@ -24,7 +24,7 @@
 }
 
 .Box {
-  margin-top: 25vh;
+  margin-top: 10vh;
   height: 300px;
   width: 400px;
   background-color: #073f24;
@@ -33,4 +33,11 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.GlificLogo {
+  font-family: 'Tenor Sans';
+  color: #0d6b3d;
+  font-size: 36px;
+  margin-top: 5vh;
 }

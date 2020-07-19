@@ -168,6 +168,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   return (
     <div className={styles.Container}>
       <div className={styles.CenterRegistration}>
+        <div className={styles.GlificLogo}>Glific</div>
         <div className={styles.Box}>
           <div className={styles.BoxTitle}>
             <Typography variant="h4" className={classes.titleText}>

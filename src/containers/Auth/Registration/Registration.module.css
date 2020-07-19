@@ -34,7 +34,7 @@
   height: 440px;
   background-color: #073f24;
   border-radius: 12px;
-  margin-top: 25vh;
+  margin-top: 10vh;
   align-content: center;
   justify-content: center;
   flex-grow: 1;
@@ -89,4 +89,11 @@ hr {
 .Or {
   display: flex;
   flex-direction: row;
+}
+
+.GlificLogo {
+  font-family: 'Tenor Sans';
+  color: #0d6b3d;
+  font-size: 36px;
+  margin-top: 5vh;
 }

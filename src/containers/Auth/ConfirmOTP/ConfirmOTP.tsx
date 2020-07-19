@@ -93,9 +93,12 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       MuiFormHelperText: {
         root: {
           color: '#93A29B',
-          marginTop: '0px',
+          marginTop: '1px',
           lineHeight: '1.5',
           maginLeft: '0px',
+          '&$contained': {
+            marginLeft: '0px',
+          },
         },
       },
     },
@@ -165,6 +168,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   return (
     <div className={styles.Container}>
       <div className={styles.CenterRegistrationAuth}>
+        <div className={styles.GlificLogo}>Glific</div>
         <div className={styles.Box}>
           <div className={styles.RegistrationAuthTitle}>
             <Typography variant="h4" className={classes.titleText}>
