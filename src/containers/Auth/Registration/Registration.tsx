@@ -181,6 +181,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 <ThemeProvider theme={theme}>
                   <InputLabel>Your full name</InputLabel>
                   <OutlinedInput
+                    data-testid="username"
                     error={userNameError}
                     id="username"
                     label="Your full name"
@@ -201,6 +202,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 <ThemeProvider theme={theme}>
                   <InputLabel>Your phone number</InputLabel>
                   <OutlinedInput
+                    data-testid="phoneNumber"
                     error={phoneNumberError}
                     id="phone-number"
                     label="Your phone number"
@@ -221,6 +223,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 <ThemeProvider theme={theme}>
                   <InputLabel>Password</InputLabel>
                   <OutlinedInput
+                    data-testid="password"
                     error={passwordError}
                     id="outlined-adornment-password"
                     type={showPassword ? 'text' : 'password'}
