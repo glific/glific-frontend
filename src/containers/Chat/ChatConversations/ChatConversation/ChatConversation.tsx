@@ -17,12 +17,10 @@ export interface ChatConversationProps {
   lastMessage: {
     body: string;
     insertedAt: string;
-    tags: [
-      {
-        id: number;
-        label: string;
-      }
-    ];
+    tags: Array<{
+      id: number;
+      label: string;
+    }>;
   };
 }
 
