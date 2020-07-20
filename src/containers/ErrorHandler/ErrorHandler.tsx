@@ -23,30 +23,33 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
     setErrorMessage(client, '');
   };
 
-  if (!data.errorMessage) {
+  // return if error is cleared or not set
+  if (data.errorMessage === '') {
     return null;
   }
 
   // Handle type of error message
   console.log(data.errorMessage);
   let title = 'An error has occured!';
-  let colorOk = 'colorOk = "primary"';
-  if (data.errorMessage.type === 'Error') {
-    colorOk = 'colorOk = "secondary"';
+  // set specific message
+  if (data.errorMessage.networkError) {
+    title = 'A network error has occured!';
   }
 
   return (
     <Container>
-      <DialogBox
-        title={title}
-        {...colorOk}
-        handleOk={handleErrorClose}
-        handleCancel={handleErrorClose}
-        buttonOk="Ok"
-        skipCancel
-      >
-        <p>{data.errorMessage.message}</p>
-      </DialogBox>
+      <div data-testid="errorMessage">
+        <DialogBox
+          title={title}
+          colorOk="secondary"
+          handleOk={handleErrorClose}
+          handleCancel={handleErrorClose}
+          buttonOk="Ok"
+          skipCancel
+        >
+          <p>{data.errorMessage.message}</p>
+        </DialogBox>
+      </div>
     </Container>
   );
 };
