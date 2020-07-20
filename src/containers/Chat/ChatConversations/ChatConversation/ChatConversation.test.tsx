@@ -94,4 +94,6 @@ test('check the condition with tag unread', () => {
       </MemoryRouter>
     </MockedProvider>
   );
+
+  expect(chatWrapper.find('.ChatInfoUnread')).toHaveLength(1);
 });
