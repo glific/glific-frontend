@@ -44,13 +44,15 @@ const defaultProps = {
   },
 };
 
-const wrapper = mount(
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <MemoryRouter>
-      <ChatConversation {...defaultProps} />
-    </MemoryRouter>
-  </MockedProvider>
-);
+const wrapperContainer = (props: any) =>
+  mount(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter>
+        <ChatConversation {...props} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+const wrapper = wrapperContainer(defaultProps);
 
 test('it should render the name correctly', () => {
   expect(wrapper.find('[data-testid="name"]').text()).toEqual('Jane Doe');
@@ -74,26 +76,13 @@ test('it should call the callback function on click action', () => {
 test('check the condition with empty tags', () => {
   const propswithEmptyTags = { ...defaultProps };
   propswithEmptyTags.lastMessage.tags = [];
-  const chatWrapper = mount(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <ChatConversation {...propswithEmptyTags} />
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  const chatWrapper = wrapperContainer(propswithEmptyTags);
   expect(chatWrapper.find('.ChatInfoRead')).toHaveLength(1);
 });
 
 test('check the condition with tag unread', () => {
   const propsWithTagUnread = defaultProps;
   propsWithTagUnread.lastMessage.tags = [{ id: 2, label: 'Unread' }];
-  const chatWrapper = mount(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <ChatConversation {...propsWithTagUnread} />
-      </MemoryRouter>
-    </MockedProvider>
-  );
-
+  const chatWrapper = wrapperContainer(propsWithTagUnread);
   expect(chatWrapper.find('.ChatInfoUnread')).toHaveLength(1);
 });

@@ -24,6 +24,22 @@ export interface ChatConversationProps {
   };
 }
 
+const updateMessageCache = (client: any, data: any) => {
+  data.map((messageId: any) => {
+    const message = client.readFragment({
+      id: `Message:${messageId}`,
+      fragment: MESSAGE_FRAGMENT,
+    });
+    const messageCopy = JSON.parse(JSON.stringify(message));
+    messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
+    client.writeFragment({
+      id: `Message:${messageId}`,
+      fragment: MESSAGE_FRAGMENT,
+      data: messageCopy,
+    });
+  });
+};
+
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
@@ -33,19 +49,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (mydata) => {
-      mydata.markContactMessagesAsRead.map((messageId: any) => {
-        const message = client.readFragment({
-          id: `Message:${messageId}`,
-          fragment: MESSAGE_FRAGMENT,
-        });
-        const messageCopy = JSON.parse(JSON.stringify(message));
-        messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
-        client.writeFragment({
-          id: `Message:${messageId}`,
-          fragment: MESSAGE_FRAGMENT,
-          data: messageCopy,
-        });
-      });
+      updateMessageCache(client, mydata.markContactMessagesAsRead);
     },
   });
 
