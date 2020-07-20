@@ -43,6 +43,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
         handleOk={handleErrorClose}
         handleCancel={handleErrorClose}
         buttonOk="Ok"
+        skipCancel
       >
         <p>{data.errorMessage.message}</p>
       </DialogBox>

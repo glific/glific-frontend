@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ErrorHandler } from './ErrorHandler';
@@ -25,19 +25,23 @@ const mocks = [
 
 describe('<ErrorHandler />', () => {
   afterEach(cleanup);
+  const handleErrorClose = () => {};
 
   test('it should render <ErrorHandler /> component correctly', async () => {
-    const { findByText, getByText } = render(
+    const { findByText, getByText, container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ErrorHandler />
       </MockedProvider>
     );
 
-    // loading is show initially
+    // loading is shown initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
+    await wait();
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+
     // check if error message is displayed
-    const errorMessageText = await findByText('An error has occured!');
-    expect(errorMessageText).toBeInTheDocument();
+    // const errorMessageText = await findByText('An error has occured!');
+    // expect(errorMessageText).toBeInTheDocument();
   });
 });
