@@ -1,5 +1,7 @@
 import React from 'react';
+import reactStringReplace from 'react-string-replace';
 
+// Indicates how to replace different parts of the text from WhatsApp to HTML.
 export const TextReplacements: any = [
   {
     bold: {
@@ -38,3 +40,31 @@ export const TextReplacements: any = [
     },
   },
 ];
+
+// Finds double asterisks in text with a regular expression.
+export const findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
+
+// Converts WhatsApp message formatting into HTML elements.
+export const textConverter = (text: any) => {
+  let replacements = TextReplacements;
+  for (let i = 0; i < replacements.length; i++) {
+    let type = Object.keys(replacements[i])[0];
+    let character: any = replacements[i][type].char;
+    let replaceFunc: any = replacements[i][type].replace;
+    // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
+    let regexStr =
+      '\\' +
+      character +
+      '{' +
+      character.length +
+      '}(.+?)\\' +
+      character +
+      '{' +
+      character.length +
+      '}';
+    text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any, i: number) =>
+      replaceFunc(match)
+    );
+  }
+  return text;
+};

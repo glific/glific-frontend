@@ -6,6 +6,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
 import { draftToMarkdown } from 'markdown-draft-js';
 import 'draft-js/dist/Draft.css';
+import { findDoubleAsterisks } from '../../../../common/RichEditor';
 
 import styles from './ChatInput.module.css';
 
@@ -25,7 +26,6 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
 
     // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
-    let findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
     let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
     setEditorState(editorState);
     setMessage(messageText);

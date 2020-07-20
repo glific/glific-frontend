@@ -14,7 +14,7 @@ import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { TextReplacements } from '../../../../common/RichEditor';
+import { textConverter } from '../../../../common/RichEditor';
 
 export interface ChatMessageProps {
   id: number;
@@ -45,7 +45,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   let tag: any;
   let deleteId: string | number;
-  const reactStringReplace = require('react-string-replace');
 
   const { popup, focus, id } = props;
 
@@ -162,31 +161,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       data-testid="messageOptions"
     />
   );
-
-  // Converts WhatsApp message formatting into HTML elements.
-  const textConverter = (text: any) => {
-    let replacements = TextReplacements;
-    for (let i = 0; i < replacements.length; i++) {
-      let type = Object.keys(replacements[i])[0];
-      let character: any = replacements[i][type].char;
-      let replaceFunc: any = replacements[i][type].replace;
-      // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
-      let regexStr =
-        '\\' +
-        character +
-        '{' +
-        character.length +
-        '}(.+?)\\' +
-        character +
-        '{' +
-        character.length +
-        '}';
-      text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any, i: number) =>
-        replaceFunc(match)
-      );
-    }
-    return text;
-  };
 
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
