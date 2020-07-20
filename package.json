@@ -46,8 +46,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "test:coverage": "react-scripts test --env=jest-environment-jsdom-sixteen --coverage --watchAll",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write"
   },
