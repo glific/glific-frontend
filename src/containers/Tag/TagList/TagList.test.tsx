@@ -20,16 +20,6 @@ const tagList = (
   </MockedProvider>
 );
 
-test('taglist has proper headers', async () => {
-  const { container } = render(tagList);
-  await wait();
-  const { getByText } = within(container.querySelector('thead'));
-  expect(getByText('TITLE')).toBeInTheDocument();
-  expect(getByText('DESCRIPTION')).toBeInTheDocument();
-  expect(getByText('KEYWORDS')).toBeInTheDocument();
-  expect(getByText('ACTIONS')).toBeInTheDocument();
-});
-
 const TagListButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
@@ -41,7 +31,7 @@ const TagListButtons = (
   </MockedProvider>
 );
 
-test('edit Button contains a route to edit page', async () => {
+test('edit button for a tag should redirect to edit tag page', async () => {
   const { container } = render(TagListButtons);
   await wait();
   expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');

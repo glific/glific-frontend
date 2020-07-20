@@ -28,20 +28,16 @@ describe('Login test', () => {
   it('updates state for phone number', () => {
     const wrapper = shallow(createLogin());
     wrapper
-      .find(OutlinedInput)
-      .at(0)
+      .find('[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
 
-    expect(wrapper.find(OutlinedInput).at(0).prop('value')).toEqual('1231231234');
+    expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
   });
 
   it('updates state for password', () => {
     const wrapper = shallow(createLogin());
-    wrapper
-      .find(OutlinedInput)
-      .at(1)
-      .simulate('change', { target: { value: 'pass12345' } });
-    expect(wrapper.find(OutlinedInput).at(1).prop('value')).toEqual('pass12345');
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
+    expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('pass12345');
   });
 
   it('send an axios post request properly', () => {
@@ -74,28 +70,24 @@ describe('Login test', () => {
     };
     mockedAxios.post.mockResolvedValueOnce(response);
     wrapper.find(Button).simulate('click');
-    expect(wrapper.find(OutlinedInput).at(0).prop('error')).toBeTruthy;
-    expect(wrapper.find(OutlinedInput).at(1).prop('error')).toBeTruthy;
+    expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy;
+    expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy;
   });
 
   it('sets phone number error as false if field is valid', () => {
     jest.mock('axios');
     const wrapper = shallow(createLogin());
     wrapper
-      .find(OutlinedInput)
-      .at(0)
+      .find('[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
-    wrapper
-      .find(OutlinedInput)
-      .at(1)
-      .simulate('change', { target: { value: 'pass12345' } });
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
     mockedAxios.post.mockResolvedValueOnce(response);
     wrapper.find(Button).simulate('click');
-    expect(wrapper.find(OutlinedInput).at(0).prop('error')).toBeFalsy();
-    expect(wrapper.find(OutlinedInput).at(1).prop('error')).toBeFalsy();
+    expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeFalsy();
+    expect(wrapper.find('[data-testid="password"]').prop('error')).toBeFalsy();
   });
 
   it('axios post request catchs error', () => {

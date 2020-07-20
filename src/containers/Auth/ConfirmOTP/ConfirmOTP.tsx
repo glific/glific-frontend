@@ -20,13 +20,14 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [userAuthCode, setUserAuthCode] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState(false);
+  const [alreadyExists, setAlreadyExists] = useState(false);
 
   const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserAuthCode(event.target.value);
   };
 
   const handleSubmit = () => {
-    if (!userAuthCode) {
+    if (userAuthCode.length < 6) {
       setAuthError(true);
     } else {
       axios
@@ -45,7 +46,11 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
-          setAuthError(true);
+          if (error.response.data.error.errors.phone === 'has already been taken') {
+            setAlreadyExists(true);
+          } else if (error.response.data.error.errors === 'does_not_exist') {
+            setAuthError(true);
+          }
         });
     }
   };
@@ -74,14 +79,22 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           <FormControl className={styles.TextField} variant="outlined">
             <InputLabel>Authentication Code</InputLabel>
             <OutlinedInput
-              error={authError}
+              error={alreadyExists || authError}
               id="authentication-code"
               label="Authentication Code"
               type="text"
               value={userAuthCode}
               onChange={handleuserAuthCodeChange()}
             />
-            {authError ? <FormHelperText>Invalid authentication code.</FormHelperText> : null}
+            <div className="HelperText">
+              {authError || alreadyExists ? (
+                <FormHelperText>
+                  {alreadyExists
+                    ? 'An account already exists with this phone number.'
+                    : 'Invalid authentication code.'}
+                </FormHelperText>
+              ) : null}
+            </div>
           </FormControl>
         </div>
         <div className="button">
