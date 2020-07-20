@@ -12,7 +12,12 @@ const mocks = [
     },
     result: {
       data: {
-        errorMessage: 'An error has occured.',
+        errorMessage: {
+          message: 'An error has occured!',
+          type: 'Error',
+          networkError: 'Unable to fetch',
+          graphqlError: '',
+        },
       },
     },
   },
@@ -32,7 +37,7 @@ describe('<ErrorHandler />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     // check if error message is displayed
-    const errorMessageText = await findByText('An error has occured.');
+    const errorMessageText = await findByText('An error has occured!');
     expect(errorMessageText).toBeInTheDocument();
   });
 });
