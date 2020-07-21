@@ -2,6 +2,8 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+import { wait } from '@testing-library/react';
+
 import { Login } from './containers/Auth/Login/Login';
 import App from './App';
 import Chat from './containers/Chat/Chat';
@@ -15,7 +17,7 @@ describe('<App /> ', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('it should render <Login /> component by default', () => {
+  test('it should render <Login /> component by default', async () => {
     const wrapper = mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter initialEntries={['/']}>
@@ -24,10 +26,11 @@ describe('<App /> ', () => {
       </MockedProvider>
     );
 
+    await wait();
     expect(wrapper.find(Login)).toHaveLength(1);
   });
 
-  test('it should render <Chat /> component if session is active', () => {
+  test('it should render <Chat /> component if session is active', async () => {
     localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
     const wrapper = mount(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -37,6 +40,7 @@ describe('<App /> ', () => {
       </MockedProvider>
     );
 
+    await wait();
     expect(wrapper.find(Chat)).toHaveLength(1);
   });
 });
