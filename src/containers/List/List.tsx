@@ -50,6 +50,7 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  searchKey,
 }) => {
   const client = useApolloClient();
 
@@ -84,7 +85,7 @@ export const List: React.SFC<ListProps> = ({
   const filterPayload = useCallback(() => {
     return {
       filter: {
-        label: searchVal,
+        name: searchVal,
       },
       opts: {
         limit: tableVals.pageRows,
@@ -98,7 +99,7 @@ export const List: React.SFC<ListProps> = ({
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
     variables: {
       filter: {
-        label: searchVal,
+        name: searchVal,
       },
     },
   });

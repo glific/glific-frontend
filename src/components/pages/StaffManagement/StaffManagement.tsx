@@ -10,6 +10,7 @@ export interface StaffManagementProps {}
 export const StaffManagement: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['ID', 'NAME', 'PHONE', 'ROLE'];
   const columnStyles = [styles.Id, styles.Name, styles.Phone, styles.Role];
+  const tagIcon = <TagIcon className={styles.TagIcon} />;
 
   const getColumns = ({ id, name, phone, role }: any) => ({
     id: getID(id),
@@ -58,7 +59,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
         listItem="users"
         listItemName="user"
         pageLink="staff-management"
-        listIcon={TagIcon}
+        listIcon={tagIcon}
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}

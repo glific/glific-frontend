@@ -11,7 +11,6 @@ const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 const dialogMessage = ' It will stop showing when you are drafting a customized message';
 const columnStyles = [styles.Label, styles.Body, styles.Actions];
-
 const getColumns = ({ label, body }: any) => ({
   label: getLabel(label),
   body: getBody(body),
