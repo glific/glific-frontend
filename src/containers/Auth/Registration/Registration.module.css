@@ -97,3 +97,35 @@ hr {
   font-size: 36px;
   margin-top: 5vh;
 }
+
+.InputField {
+  border-color: #93a29b !important;
+  border-radius: 12px !important;
+  border-width: 2px !important;
+  line-height: 32px;
+  width: 340px;
+}
+
+.FormLabel {
+  color: #93a29b !important;
+}
+
+.IconButton {
+  color: #93a29b;
+}
+
+.FormHelperText {
+  color: #93a29b !important;
+  margin-top: 0px !important;
+  line-height: 1.2 !important;
+}
+
+.ContinueButton {
+  width: 310px !important;
+  border-radius: 27px !important;
+  margin-top: 20px !important;
+}
+
+.TitleText {
+  font-weight: bold !important;
+}
