@@ -28,6 +28,7 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  searchKey: any;
 }
 
 interface TableVals {
