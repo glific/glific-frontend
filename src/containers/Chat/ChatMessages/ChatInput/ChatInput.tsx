@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import clsx from 'clsx';
 
 import styles from './ChatInput.module.css';
 
@@ -14,7 +15,10 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
+  const [selectedTab, setSelectedTab] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const speedSends = 'Speed sends';
+  const templates = 'Templates';
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -54,6 +58,24 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <Container className={styles.ChatInput}>
+      <div className={styles.SendsContainer}>
+        <div
+          onClick={() => setSelectedTab(speedSends)}
+          className={clsx(styles.QuickSend, {
+            [styles.QuickSendSelected]: selectedTab === speedSends,
+          })}
+        >
+          {speedSends}
+        </div>
+        <div
+          onClick={() => setSelectedTab(templates)}
+          className={clsx(styles.QuickSend, {
+            [styles.QuickSendSelected]: selectedTab === templates,
+          })}
+        >
+          {templates}
+        </div>
+      </div>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
           <input
