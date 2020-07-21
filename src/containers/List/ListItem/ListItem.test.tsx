@@ -27,7 +27,7 @@ it('should have a form', async () => {
 it('should have a form with inputs', async () => {
   const { container } = render(addItem);
   await wait();
-  expect(container.querySelector('textarea[name="label"]')).toBeInTheDocument();
+  expect(container.querySelector('input[name="label"]')).toBeInTheDocument();
   expect(container.querySelector('input[name="languageId"]')).toBeInTheDocument();
 });
 
@@ -43,7 +43,7 @@ test('inputs should have mock values', async () => {
   const { container, unmount } = render(editItem);
 
   await wait();
-  expect(container.querySelector('textarea[name="label"]')?.textContent).toBe('important');
+  expect(container.querySelector('input[name="label"]')?.value).toBe('important');
   expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
 });
 

@@ -43,8 +43,8 @@ test('save button should add a new tag', async () => {
 
   await wait();
 
-  fireEvent.change(container.querySelector('textarea[name="label"]'), {
-    target: { innerHTML: 'new Tag' },
+  fireEvent.change(container.querySelector('input[name="label"]'), {
+    target: { value: 'new Tag' },
   });
   fireEvent.change(container.querySelector('textarea[name="description"]'), {
     target: { innerHTML: 'new Tag description' },

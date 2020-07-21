@@ -40,14 +40,18 @@ const App = () => {
             <Route path="/tag" exact component={TagPage} />
             <Route path="/tag/add" exact component={Tag} />
             <Route path="/tag/:id/edit" exact component={Tag} />
-            {/* Doesn't this error without a passed in `contactId`? */}
-
             <Route path="/speed-send" exact component={MessageTemplatePage} />
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
+<<<<<<< HEAD
             <Route path="/templates" exact component={HSMPage} />
+=======
+
+            <Route path="/hsm-messages" exact component={HSMPage} />
+>>>>>>> 8d111bcce6125c692c028e60f4e4fe986701274e
             {/* This part isn't working properly */}
+
             <Route
               exact
               path="/chat/:contactId"
