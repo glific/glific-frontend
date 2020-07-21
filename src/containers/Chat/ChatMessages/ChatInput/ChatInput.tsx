@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container, Button, List, ListItem } from '@material-ui/core';
+import {
+  Container,
+  Button,
+  List,
+  ListItem,
+  Typography,
+  Grid,
+  Fade,
+  Paper,
+} from '@material-ui/core';
 import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -19,6 +28,9 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState<PopperPlacementType>();
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -67,48 +79,47 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     },
   ];
 
-  // const constructList = dummy.map((obj: any) => {});
-
-  const speedSendList = (
-    // <div className={styles.menuItem}>
-    //   <ul>
-    //     <li>Photos</li>
-    //     <li>Drawings</li>
-    //     <li>Videos</li>
-    //     <List className={styles.SendList}>
-    //       <ListItem button>Hi there</ListItem>
-    //     </List>
-    //   </ul>
-    //   Stuff
-    // </div>
-    // <div className={styles.menuItem}>
-    <List className={styles.SendList}>
-      <ListItem className={styles.SendListItem}>Thank you</ListItem>
-      <ListItem className={styles.SendListItem}>You're welcome</ListItem>
-    </List>
-  );
+  const handleClick = (event: any, newPlacement: PopperPlacementType, title: string) => {
+    if (selectedTab === title) {
+      setSelectedTab('');
+    } else {
+      setSelectedTab(title);
+    }
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
 
   return (
     <Container className={styles.ChatInput}>
+      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={150}>
+            <Paper>
+              <List>
+                <ListItem>Hi there!</ListItem>
+              </List>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
       {/* <SearchBar onReset={() => console.log('reset')} /> */}
       <div className={styles.SendsContainer}>
         <div
-          onClick={() => setSelectedTab(selectedTab !== speedSends ? speedSends : '')}
+          onClick={(e: any) => handleClick(e, 'top', speedSends)}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === speedSends,
           })}
         >
-          {speedSendList}
           {speedSends}
         </div>
         <div
-          onClick={() => setSelectedTab(selectedTab !== templates ? templates : '')}
+          onClick={(e: any) => handleClick(e, 'top', templates)}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === templates,
           })}
         >
           {templates}
-          {/* {templateList} */}
         </div>
       </div>
       <div className={styles.ChatInputElements}>
