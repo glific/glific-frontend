@@ -1,23 +1,22 @@
 import { gql } from '@apollo/client';
 
-export const GET_TAGS = gql`
+export const GET_FLOWS = gql`
   {
-    tags {
+    flows {
       id
-      label
-      description
+      name
+      shortcode
     }
   }
 `;
 
-export const GET_TAG = gql`
-  query getTag($id: ID!) {
-    tag(id: $id) {
-      tag {
+export const GET_FLOW = gql`
+  query getFlow($id: ID!) {
+    flow(id: $id) {
+      flow {
         id
-        label
-        description
-        keywords
+        name
+        shortcode
         language {
           id
         }
@@ -26,13 +25,13 @@ export const GET_TAG = gql`
   }
 `;
 
-export const GET_TAGS_COUNT = gql`
+export const GET_FLOW_COUNT = gql`
   query countTags($filter: TagFilter!) {
     countTags(filter: $filter)
   }
 `;
 
-export const FILTER_TAGS = gql`
+export const FILTER_FLOW = gql`
   query tags($filter: TagFilter!, $opts: Opts!) {
     tags(filter: $filter, opts: $opts) {
       id

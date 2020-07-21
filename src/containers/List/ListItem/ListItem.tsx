@@ -7,7 +7,7 @@ import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { useApolloClient, DocumentNode } from '@apollo/client';
 import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_LANGUAGES } from '../../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { setNotification } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
