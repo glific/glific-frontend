@@ -78,6 +78,8 @@
   color: #073f24;
   padding: 8px 16px;
   word-wrap: break-word;
+  /* Supports breaklines without need for text conversions. */
+  white-space: pre-line;
 }
 
 .Content::after {
