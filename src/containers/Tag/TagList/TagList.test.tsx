@@ -20,16 +20,6 @@ const tagList = (
   </MockedProvider>
 );
 
-test('taglist has proper headers', async () => {
-  const { container } = render(tagList);
-  await wait();
-  const { getByText } = within(container.querySelector('thead'));
-  expect(getByText('TITLE')).toBeInTheDocument();
-  expect(getByText('DESCRIPTION')).toBeInTheDocument();
-  expect(getByText('KEYWORDS')).toBeInTheDocument();
-  expect(getByText('ACTIONS')).toBeInTheDocument();
-});
-
 const TagListButtons = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
