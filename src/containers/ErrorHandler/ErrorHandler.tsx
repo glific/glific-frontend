@@ -10,10 +10,9 @@ import { setErrorMessage } from '../../common/notification';
 export interface ErrorHandlerProps {}
 
 export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
-  const { data, loading, error, client } = useQuery(ERROR_MESSAGE);
+  const { data, loading, client } = useQuery(ERROR_MESSAGE);
 
   if (loading) return <Loading />;
-  if (error) return <p>ERROR: {error.message}</p>;
 
   if (!data) {
     return null;
@@ -29,7 +28,6 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   // Handle type of error message
-  console.log(data.errorMessage);
   let title = 'An error has occured!';
   // set specific message
   if (data.errorMessage.networkError) {
