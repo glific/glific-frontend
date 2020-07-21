@@ -1,13 +1,16 @@
 import React from 'react';
-import { ReactComponent as TemplateIcon } from '../../../assets/images/icons/Template/UnselectedDark.svg';
-import styles from '../HSMPage/HSMPage.module.css';
-import { List } from '../../../containers/List/List';
-import { GET_HSM_TEMPLATES_COUNT, FILTER_HSM_TEMPLATES } from '../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
+import styles from './HSMTemplateList.module.css';
+import { List } from '../../../List/List';
+import {
+  GET_HSM_TEMPLATES_COUNT,
+  FILTER_HSM_TEMPLATES,
+} from '../../../../graphql/queries/Template';
+import { DELETE_TEMPLATE } from '../../../../graphql/mutations/Template';
 
 export interface HSMPageProps {}
 
-export const HSMPage: React.SFC<HSMPageProps> = () => {
+export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
   const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
   const dialogMessage = 'It will stop showing when you are drafting a customized message';
   const columnStyles = [styles.Label, styles.Body, styles.Actions];
@@ -36,10 +39,10 @@ export const HSMPage: React.SFC<HSMPageProps> = () => {
 
   return (
     <List
-      title="HSM Messages"
+      title="Template"
       listItem="sessionTemplates"
-      listItemName="speed send"
-      pageLink="speed-send"
+      listItemName="HSM Templ"
+      pageLink="template"
       listIcon={templateIcon}
       dialogMessage={dialogMessage}
       {...columnAttributes}

@@ -9,7 +9,8 @@ import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
-import { HSMPage } from '../src/components/pages/HSMPage/HSMPage';
+import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
+import { HSMTemplate } from './containers/HSMTemplate/HSMTemplate';
 import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
@@ -44,8 +45,9 @@ const App = () => {
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
-            <Route path="/templates" exact component={HSMPage} />
-            {/* This part isn't working properly */}
+            <Route path="/template" exact component={HSMTemplatePage} />
+            <Route path="/template/add" exact component={HSMTemplate} />
+            <Route path="/template/:id/edit" exact component={HSMTemplate} />
 
             <Route
               exact

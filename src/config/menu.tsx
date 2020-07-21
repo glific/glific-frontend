@@ -16,7 +16,7 @@ export const sideDrawerMenus = [
   },
   {
     title: 'Templates',
-    path: '/templates',
+    path: '/template',
     icon: 'template',
   },
 ];

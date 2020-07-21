@@ -32,34 +32,6 @@ export const GET_TEMPLATE = gql`
   }
 `;
 
-export const GET_HSM_TEMPLATES = gql`
-  query sessionTemplates($opts: Opts) {
-    sessionTemplates(filter: { isHsm: true }, opts: $opts) {
-      id
-      body
-      label
-      shortcode
-      type
-      isActive
-      isHsm
-      isReserved
-      isSource
-      parent {
-        id
-        label
-      }
-      language {
-        id
-        label
-      }
-      messageMedia {
-        id
-        caption
-      }
-    }
-  }
-`;
-
 export const FILTER_HSM_TEMPLATES = gql`
   query sessionTemplates($opts: Opts!) {
     sessionTemplates(filter: { isHsm: true }, opts: $opts) {
