@@ -60,13 +60,53 @@
 .QuickSend {
   margin-left: 15px;
   background-color: #93a29b;
-  color: #edf6f2;
+  color: #26c27c;
   padding: 5px 12px 5px 12px;
   border-radius: 15px 15px 0px 0px;
   font-family: 'Heebo', sans-serif;
   cursor: pointer;
+  /* position: relative; */
+}
+
+.QuickSend:hover {
+  height: 50px;
+  width: 200px;
+  bottom: 100%;
 }
 
 .QuickSendSelected {
   background-color: #119656;
+}
+
+.SendList {
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+}
+
+.menuItem ul {
+  /* margin-top: 5px; */
+  /* list-style-type: none; */
+  height: 0px;
+  overflow: hidden;
+  position: absolute; /* <-- added declarations */
+  left: 0;
+  bottom: 100%;
+}
+
+.menuItem:hover ul {
+  height: 70px;
+  width: 200px;
+  bottom: 100%;
+}
+
+.SendList:hover {
+  height: 50px;
+  width: 200px;
+  bottom: 100%;
+}
+
+.SendListItem {
 }

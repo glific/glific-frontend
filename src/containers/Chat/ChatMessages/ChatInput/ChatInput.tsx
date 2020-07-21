@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container, Button } from '@material-ui/core';
+import { Container, Button, List, ListItem } from '@material-ui/core';
+import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-
 import styles from './ChatInput.module.css';
-
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
+import { SearchBar } from '../../ChatConversations/SearchBar';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -56,24 +56,59 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
+  const dummy = [
+    {
+      title: 'Thank you',
+      message: 'Thank you for messaging chief.',
+    },
+    {
+      title: 'Help',
+      message: 'Help pls thank you!',
+    },
+  ];
+
+  // const constructList = dummy.map((obj: any) => {});
+
+  const speedSendList = (
+    // <div className={styles.menuItem}>
+    //   <ul>
+    //     <li>Photos</li>
+    //     <li>Drawings</li>
+    //     <li>Videos</li>
+    //     <List className={styles.SendList}>
+    //       <ListItem button>Hi there</ListItem>
+    //     </List>
+    //   </ul>
+    //   Stuff
+    // </div>
+    // <div className={styles.menuItem}>
+    <List className={styles.SendList}>
+      <ListItem className={styles.SendListItem}>Thank you</ListItem>
+      <ListItem className={styles.SendListItem}>You're welcome</ListItem>
+    </List>
+  );
+
   return (
     <Container className={styles.ChatInput}>
+      {/* <SearchBar onReset={() => console.log('reset')} /> */}
       <div className={styles.SendsContainer}>
         <div
-          onClick={() => setSelectedTab(speedSends)}
+          onClick={() => setSelectedTab(selectedTab !== speedSends ? speedSends : '')}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === speedSends,
           })}
         >
+          {speedSendList}
           {speedSends}
         </div>
         <div
-          onClick={() => setSelectedTab(templates)}
+          onClick={() => setSelectedTab(selectedTab !== templates ? templates : '')}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === templates,
           })}
         >
           {templates}
+          {/* {templateList} */}
         </div>
       </div>
       <div className={styles.ChatInputElements}>
