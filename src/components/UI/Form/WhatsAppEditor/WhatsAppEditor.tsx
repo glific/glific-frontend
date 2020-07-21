@@ -43,7 +43,6 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
 
   return (
     <Editor
-      data-testid="message-input"
       editorState={editorState}
       placeholder="Start typing..."
       onChange={handleChange}
