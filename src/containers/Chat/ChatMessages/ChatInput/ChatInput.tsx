@@ -3,10 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js';
-import { draftToMarkdown } from 'markdown-draft-js';
-import 'draft-js/dist/Draft.css';
-import { findDoubleAsterisks } from '../../../../common/RichEditor';
+import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 import styles from './ChatInput.module.css';
 
@@ -19,39 +16,6 @@ export interface ChatInputProps {
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
-  const handleChange = (editorState: any) => {
-    // Gets markdown equivalent for Draft.js content
-    let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
-
-    // Markdown does bold in double asterisks. WhatApp displays bold in single asterisks. Regex replaces ** with *.
-    let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
-    setEditorState(editorState);
-    setMessage(messageText);
-  };
-
-  const handleKeyCommand = (command: string, editorState: any) => {
-    // On enter, submit. Otherwise, deal with commands like normal.
-    if (command === 'enter') {
-      submitMessage();
-      return 'handled';
-    }
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      setEditorState(newState);
-      return 'handled';
-    }
-    return 'not-handled';
-  };
-
-  const keyBindingFn = (e: any) => {
-    // Shift-enter is by default supported. Only 'enter' needs to be changed.
-    if (e.keyCode === 13 && !e.nativeEvent.shiftKey) {
-      return 'enter';
-    }
-    return getDefaultKeyBinding(e);
-  };
 
   const submitMessage = () => {
     // close emoji picker
@@ -59,9 +23,6 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
     if (!message) return;
     setMessage('');
-
-    const newState = EditorState.createEmpty();
-    setEditorState(EditorState.moveFocusToEnd(newState));
 
     if (typeof onSendMessage === 'function') {
       onSendMessage(message);
@@ -85,13 +46,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
-          <Editor
+          <WhatsAppEditor
             data-testid="message-input"
-            editorState={editorState}
-            placeholder="Start typing..."
-            onChange={handleChange}
-            handleKeyCommand={handleKeyCommand}
-            keyBindingFn={keyBindingFn}
+            setMessage={(message: string) => setMessage(message)} // Primarily for message length
+            sendMessage={() => submitMessage()}
           />
         </div>
         <div className={styles.EmojiContainer}>
