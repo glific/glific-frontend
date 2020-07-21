@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
+import { WhatsAppToJsx } from '../../../../common/RichEditor';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -58,7 +59,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {props.contactName}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {props.lastMessage.body}
+          {WhatsAppToJsx(props.lastMessage.body)}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(props.lastMessage.insertedAt).format(DATE_FORMAT)}

@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import ChatInput from './ChatInput';
+import sampleEditorState from './ChatInput.test.json';
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
@@ -17,7 +17,7 @@ describe('<ChatInput />', () => {
     onSendMessage: onSendMessageHandler,
   };
 
-  const wrapper = shallow(<ChatInput {...defaultProps} />);
+  const wrapper = mount(<ChatInput {...defaultProps} />);
 
   test('it should render the input element', () => {
     expect(wrapper.find('[data-testid="message-input"]')).toHaveLength(1);
@@ -37,12 +37,13 @@ describe('<ChatInput />', () => {
   });
 
   test('it should select and set emoji', () => {
-    const input = wrapper.find('[data-testid="message-input"]');
+    const shallowWrapper = shallow(<ChatInput {...defaultProps} />);
+    const input = shallowWrapper.find('[data-testid="message-input"]');
 
     // open the emoji popup
-    wrapper.find('[data-testid="emoji-picker"]').simulate('click');
+    shallowWrapper.find('[data-testid="emoji-picker"]').simulate('click');
 
-    expect(wrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
+    expect(shallowWrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
 
     // TODO: select an emoji
     //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
