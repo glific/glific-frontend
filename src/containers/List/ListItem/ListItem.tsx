@@ -164,18 +164,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
-              return (
-                <Field
-                  key={index}
-                  component={field.component}
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  type={field.type}
-                  options={field.options}
-                  rows={field.rows}
-                  helperText={field.helperText}
-                ></Field>
-              );
+              return <Field key={index} {...field}></Field>;
             })}
             <div className={styles.Buttons}>
               <Button
