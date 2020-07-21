@@ -46,7 +46,7 @@ const App = () => {
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
-            <Route path="/hsm-messages" exact component={HSMPage} />
+            <Route path="/templates" exact component={HSMPage} />
             {/* This part isn't working properly */}
             <Route
               exact

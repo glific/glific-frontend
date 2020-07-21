@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as TemplateIcon } from '../../../assets/images/icons/Template/UnselectedDark.svg';
 import styles from '../HSMPage/HSMPage.module.css';
 import { List } from '../../../containers/List/List';
 import { GET_HSM_TEMPLATES_COUNT, FILTER_HSM_TEMPLATES } from '../../../graphql/queries/Template';
@@ -9,9 +9,9 @@ export interface HSMPageProps {}
 
 export const HSMPage: React.SFC<HSMPageProps> = () => {
   const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
-  const dialogMessage = ' It will stop showing when you are drafting a customized message';
+  const dialogMessage = 'It will stop showing when you are drafting a customized message';
   const columnStyles = [styles.Label, styles.Body, styles.Actions];
-  const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
+  const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
   const getColumns = ({ label, body }: any) => ({
     label: getLabel(label),
@@ -40,7 +40,7 @@ export const HSMPage: React.SFC<HSMPageProps> = () => {
       listItem="sessionTemplates"
       listItemName="speed send"
       pageLink="speed-send"
-      listIcon={speedSendIcon}
+      listIcon={templateIcon}
       dialogMessage={dialogMessage}
       {...columnAttributes}
       {...queries}
