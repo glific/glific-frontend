@@ -49,6 +49,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
     columnStyles: columnStyles,
   };
 
+  const searchKey = {
+    filter: {
+      name: null,
+    },
+  };
+
   return (
     <div>
       <div className={styles.Header}>
@@ -63,6 +69,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
+        // searchKey={searchKey}
       />
     </div>
   );
