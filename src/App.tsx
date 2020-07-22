@@ -46,6 +46,7 @@ const App = () => {
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
+            <Route path="/automation/:id/edit" exact component={Automation} />
 
             <Route path="/chat" exact component={Chat} />
             <Route
