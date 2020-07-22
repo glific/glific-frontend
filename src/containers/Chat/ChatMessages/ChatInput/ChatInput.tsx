@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import {
   Container,
@@ -9,6 +9,7 @@ import {
   Grid,
   Fade,
   Paper,
+  Popover,
 } from '@material-ui/core';
 import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
 import { Picker } from 'emoji-mart';
@@ -31,6 +32,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
+  const quickSend = useRef(null);
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -85,24 +87,13 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     } else {
       setSelectedTab(title);
     }
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
+    setAnchorEl(quickSend.current);
+    setOpen(selectedTab !== title);
     setPlacement(newPlacement);
   };
 
   return (
     <Container className={styles.ChatInput}>
-      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={150}>
-            <Paper>
-              <List>
-                <ListItem>Hi there!</ListItem>
-              </List>
-            </Paper>
-          </Fade>
-        )}
-      </Popper>
       {/* <SearchBar onReset={() => console.log('reset')} /> */}
       <div className={styles.SendsContainer}>
         <div
@@ -122,7 +113,28 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
           {templates}
         </div>
       </div>
-      <div className={styles.ChatInputElements}>
+      <div ref={quickSend} className={styles.ChatInputElements}>
+        <Popper
+          className={styles.Popper}
+          open={true}
+          disablePortal
+          anchorEl={anchorEl}
+          placement={placement}
+          transition
+        >
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={150}>
+              <Paper elevation={0} className={styles.ShortcutPaper}>
+                <List className={styles.ShortcutList}>
+                  <ListItem button>Hi there!</ListItem>
+                  <ListItem>
+                    <b>Help:</b> Lorem!!
+                  </ListItem>
+                </List>
+              </Paper>
+            </Fade>
+          )}
+        </Popper>
         <div className={styles.InputContainer}>
           <input
             className={styles.InputBox}

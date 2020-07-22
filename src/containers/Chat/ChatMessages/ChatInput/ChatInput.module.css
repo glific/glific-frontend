@@ -55,6 +55,7 @@
 
 .SendsContainer {
   display: flex;
+  margin-top: -10px;
 }
 
 .QuickSend {
@@ -65,9 +66,27 @@
   border-radius: 15px 15px 0px 0px;
   font-family: 'Heebo', sans-serif;
   cursor: pointer;
-  /* position: relative; */
+  position: relative;
+  z-index: 100;
 }
 
 .QuickSendSelected {
   background-color: #119656;
+}
+
+.ShortcutList {
+}
+
+.ShortcutPaper {
+  /* width: 100%; */
+  width: 1200px;
+  z-index: -1;
+  /* position: relative; */
+  padding: 0px 0px 30px 0px;
+}
+
+.Popper {
+  /* width: 64%; */
+  position: relative;
+  z-index: -1;
 }
