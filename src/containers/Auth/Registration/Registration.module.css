@@ -21,7 +21,7 @@
 }
 
 .Margin {
-  margin: 3.5px;
+  margin: 4px;
 }
 
 .ErrorText {
@@ -115,17 +115,21 @@ hr {
 }
 
 .FormHelperText {
-  color: #93a29b !important;
-  margin-top: 0px !important;
+  color: red !important;
+  margin-top: 2px !important;
   line-height: 1.2 !important;
 }
 
 .ContinueButton {
-  width: 310px;
+  width: 335px;
   border-radius: 27px !important;
   margin-top: 20px !important;
 }
 
 .TitleText {
   font-weight: bold !important;
+}
+
+.Input {
+  color: #93a29b !important;
 }

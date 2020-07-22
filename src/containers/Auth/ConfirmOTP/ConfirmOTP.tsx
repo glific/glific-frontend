@@ -13,8 +13,6 @@ import {
 } from '../../../common/constants';
 import { Redirect } from 'react-router-dom';
 import { SessionContext } from '../../../context/session';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -23,86 +21,12 @@ export interface ConfirmOTPProps {
   location: any;
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    continueButton: {
-      width: '330px',
-      borderRadius: '27px',
-      marginTop: '0px',
-    },
-    inputField: {
-      lineHeight: '32px',
-    },
-    titleText: {
-      fontWeight: 'bold',
-      marginBottom: '10px',
-    },
-  })
-);
-
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [userAuthCode, setUserAuthCode] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState(false);
   const [alreadyExists, setAlreadyExists] = useState(false);
-  const classes = useStyles();
-
-  const theme = createMuiTheme({
-    overrides: {
-      MuiOutlinedInput: {
-        root: {
-          '& $notchedOutline': {
-            borderColor: '#93A29B',
-            borderRadius: '12px',
-            borderWidth: '2px',
-          },
-          '&$focused $notchedOutline': {
-            borderColor: '#93A29B',
-          },
-          '&:hover $notchedOutline': {
-            borderColor: '#93A29B',
-          },
-        },
-      },
-      MuiFormLabel: {
-        root: {
-          color: '#93A29B',
-          '&$focused': {
-            color: '#93A29B',
-          },
-        },
-      },
-      MuiInputBase: {
-        root: {
-          lineHeight: '32px',
-          width: '340px',
-          color: '#93A29B',
-        },
-      },
-      MuiIconButton: {
-        root: {
-          color: '#93A29B',
-        },
-      },
-      MuiInputLabel: {
-        root: {
-          color: '#93A29B',
-        },
-      },
-      MuiFormHelperText: {
-        root: {
-          color: '#93A29B',
-          marginTop: '1px',
-          lineHeight: '1.5',
-          maginLeft: '0px',
-          '&$contained': {
-            marginLeft: '0px',
-          },
-        },
-      },
-    },
-  });
 
   const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserAuthCode(event.target.value);
@@ -171,55 +95,57 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         <div className={styles.GlificLogo}>Glific</div>
         <div className={styles.Box}>
           <div className={styles.RegistrationAuthTitle}>
-            <Typography variant="h4" className={classes.titleText}>
+            <Typography variant="h4" className={styles.TitleText}>
               Create your new <br />
               account
             </Typography>
           </div>
           <div className={clsx(styles.Margin, styles.BottomMargin)}>
-            <ThemeProvider theme={theme}>
-              <FormControl className={styles.TextField} variant="outlined">
-                <InputLabel>OTP</InputLabel>
-                <OutlinedInput
-                  error={alreadyExists || authError}
-                  id="authentication-code"
-                  label="OTP"
-                  type="text"
-                  value={userAuthCode}
-                  onChange={handleuserAuthCodeChange()}
-                  endAdornment={
-                    <ThemeProvider theme={theme}>
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleResend}
-                          edge="end"
-                        >
-                          <RefreshIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    </ThemeProvider>
-                  }
-                />
-                <div>
-                  <FormHelperText>
-                    Please confirm the OTP received by your WhatsApp <br />
-                    number.
+            <FormControl className={styles.TextField} variant="outlined">
+              <InputLabel classes={{ root: styles.FormLabel }}>OTP</InputLabel>
+              <OutlinedInput
+                classes={{
+                  root: styles.InputField,
+                  notchedOutline: styles.InputField,
+                  input: styles.Input,
+                }}
+                error={alreadyExists || authError}
+                id="authentication-code"
+                label="OTP"
+                type="text"
+                value={userAuthCode}
+                onChange={handleuserAuthCodeChange()}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleResend}
+                      edge="end"
+                    >
+                      <p className={styles.Resend}>resend</p>{' '}
+                      <RefreshIcon classes={{ root: styles.IconButton }} />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              <div>
+                <FormHelperText classes={{ root: styles.FormHelperText }}>
+                  Please confirm the OTP received by your WhatsApp <br />
+                  number.
+                </FormHelperText>
+                {authError || alreadyExists ? (
+                  <FormHelperText classes={{ root: styles.InvalidFormHelperText }}>
+                    {alreadyExists
+                      ? 'An account already exists with this phone number.'
+                      : 'Invalid authentication code.'}
                   </FormHelperText>
-                  {authError || alreadyExists ? (
-                    <FormHelperText>
-                      {alreadyExists
-                        ? 'An account already exists with this phone number.'
-                        : 'Invalid authentication code.'}
-                    </FormHelperText>
-                  ) : null}
-                </div>
-              </FormControl>
-            </ThemeProvider>
+                ) : null}
+              </div>
+            </FormControl>
           </div>
           <div className="button">
             <Button
-              className={classes.continueButton}
+              className={styles.ContinueButton}
               onClick={handleSubmit}
               color="primary"
               variant={'contained'}

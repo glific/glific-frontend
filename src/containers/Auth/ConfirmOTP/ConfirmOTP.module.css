@@ -25,7 +25,7 @@
 
 .Box {
   margin-top: 10vh;
-  height: 300px;
+  height: 320px;
   width: 400px;
   background-color: #073f24;
   border-radius: 12px;
@@ -40,4 +40,64 @@
   color: #0d6b3d;
   font-size: 36px;
   margin-top: 5vh;
+}
+
+.InputField {
+  border-color: #93a29b !important;
+  border-radius: 12px !important;
+  border-width: 2px !important;
+  line-height: 32px;
+  width: 340px;
+}
+
+.Input {
+  color: #93a29b !important;
+}
+
+.FormLabel {
+  color: #93a29b !important;
+}
+
+.IconButton {
+  color: #119656;
+}
+
+.FormHelperText {
+  color: #93a29b !important;
+  margin-top: 4px !important;
+  line-height: 1.5;
+  margin-left: 1px !important;
+}
+
+.InvalidFormHelperText {
+  color: red !important;
+  margin-top: 4px !important;
+  line-height: 1.5;
+  margin-left: 1px !important;
+}
+
+.ContinueButton {
+  width: 330px;
+  border-radius: 27px;
+  margin-top: 0px;
+}
+
+.TitleText {
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+}
+
+.BoxTitle {
+  color: white;
+  justify-content: start;
+  margin-bottom: 10px;
+  margin-top: 32px;
+  margin-left: 32px;
+  font-weight: bold;
+}
+
+.Resend {
+  color: #119656;
+  font-weight: bold;
+  font-size: 14px;
 }
