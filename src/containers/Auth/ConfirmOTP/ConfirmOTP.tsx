@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styles from './ConfirmOTP.module.css';
-import { Typography, FormHelperText, makeStyles, createStyles } from '@material-ui/core';
+import { Typography, FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
