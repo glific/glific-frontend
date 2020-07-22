@@ -234,7 +234,6 @@ export const List: React.SFC<ListProps> = ({
   // Get item data and total number of items.
   let itemList: any;
   if (data) {
-    console.log(data);
     itemList = formatList(data[listItem]);
   }
 
