@@ -29,6 +29,7 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
+  configureButton?: any;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -46,6 +47,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
+  configureButton = null,
   icon,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -77,7 +79,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   });
 
   const [createItem] = useMutation(createItemQuery, {
-    onCompleted: () => {
+    onCompleted: (data) => {
       setFormSubmitted(true);
     },
   });
@@ -175,6 +177,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
+              {configureButton}
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel
               </Button>

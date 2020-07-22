@@ -16,6 +16,7 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
 import { Automation } from './containers/Automation/Automation';
+import { FlowEditor } from './components/floweditor/FlowEditor';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -47,6 +48,7 @@ const App = () => {
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
+            <Route path="/flow/:uuid" exact component={FlowEditor} />
 
             <Route path="/chat" exact component={Chat} />
             <Route

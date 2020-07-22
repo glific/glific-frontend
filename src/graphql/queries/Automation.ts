@@ -20,6 +20,7 @@ export const GET_FLOW = gql`
         language {
           id
         }
+        uuid
       }
     }
   }
