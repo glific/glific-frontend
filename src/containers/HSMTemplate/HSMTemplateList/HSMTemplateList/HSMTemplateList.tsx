@@ -39,7 +39,7 @@ export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
 
   return (
     <List
-      title="Template"
+      title="Templates"
       listItem="sessionTemplates"
       listItemName="HSM Templ"
       pageLink="template"
