@@ -13,7 +13,7 @@
 .LoginTitle {
   color: white;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   width: 400px;
   margin-left: 60px;
 }
@@ -37,7 +37,7 @@
 }
 
 .Box {
-  margin-top: 10vh;
+  margin-top: 5vh;
   height: 380px;
   width: 400px;
   border-radius: 12px;

@@ -107,7 +107,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <div className={styles.CenterBox}>
             <div className={styles.Margin}>
               <FormControl variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Your full name</InputLabel>
+                <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
                 <OutlinedInput
                   classes={{
                     root: styles.InputField,
@@ -117,7 +117,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                   data-testid="username"
                   error={userNameError}
                   id="username"
-                  label="Your full name"
+                  label="Username"
                   type="text"
                   value={userName}
                   onChange={handleUserNameChange()}
