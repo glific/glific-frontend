@@ -17,7 +17,7 @@ const getShortcode = (label: string) => <p className={styles.LabelText}>{label}<
 const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const columnNames = ['SHORTCODE', 'NAME', 'ACTIONS'];
-const dialogMessage = "You won't be able to use this for tagging messages.";
+const dialogMessage = "You won't be able to use this flow again.";
 const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 

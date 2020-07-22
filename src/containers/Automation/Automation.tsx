@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
-import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
 import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW } from '../../graphql/mutations/Automation';
 import { GET_FLOW } from '../../graphql/queries/Automation';
@@ -12,18 +12,14 @@ export interface AutomationProps {
 
 const setValidation = (values: any) => {
   const errors: Partial<any> = {};
-  if (!values.label) {
-    errors.label = 'Tag title is required';
-  } else if (values.label.length > 50) {
-    errors.label = 'Title length too long';
+  if (!values.shortcode) {
+    errors.shortcode = 'shortcode is required';
   }
-  if (!values.description) {
-    errors.description = 'Tag description is required';
-  }
+
   return errors;
 };
 
-const dialogMessage = "You won't be able to use this for tagging messages.";
+const dialogMessage = "You won't be able to use this flow again.";
 
 const formFields = [
   {
@@ -40,7 +36,7 @@ const formFields = [
   },
 ];
 
-const tagIcon = <TagIcon className={styles.TagIcon} />;
+const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
   getItemQuery: GET_FLOW,
@@ -71,7 +67,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="automation"
       listItem="flow"
-      icon={tagIcon}
+      icon={automationIcon}
     />
   );
 };
