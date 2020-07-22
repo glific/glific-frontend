@@ -195,6 +195,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               </FormControl>
             </div>
             <Button
+              data-testid="registrationButton"
               onClick={handleSubmit}
               color="primary"
               variant={'contained'}
