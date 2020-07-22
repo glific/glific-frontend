@@ -121,7 +121,7 @@ hr {
 }
 
 .ContinueButton {
-  width: 310px !important;
+  width: 310px;
   border-radius: 27px !important;
   margin-top: 20px !important;
 }

@@ -10,11 +10,33 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import { Redirect, Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
 
 export interface RegistrationProps {}
+
+const useStyles = makeStyles({
+  inputField: {
+    borderColor: '#93a29b',
+    borderRadius: '12px',
+    borderWidth: '2px',
+    lineHeight: '32px',
+    width: '340px',
+    '&$focused $notchedOutline': {
+      borderColor: '#93a29b !important',
+      borderRadius: '12px !important',
+      borderWidth: '2px',
+      lineHeight: '32px',
+      width: '340px',
+    },
+  },
+  formLabel: {
+    color: '#93a29b !important',
+  },
+  focused: {},
+});
 
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
@@ -25,6 +47,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const classes = useStyles();
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -108,9 +131,13 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           <div className={styles.CenterBox}>
             <div className={styles.Margin}>
               <FormControl className={styles.TextField} variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Your full name</InputLabel>
+                <InputLabel classes={{ root: classes.formLabel }}>Your full name</InputLabel>
                 <OutlinedInput
-                  classes={{ root: styles.InputField, notchedOutline: styles.InputField }}
+                  classes={{
+                    root: classes.inputField,
+                    notchedOutline: classes.inputField,
+                    focused: classes.inputField,
+                  }}
                   data-testid="username"
                   error={userNameError}
                   id="username"
@@ -128,9 +155,12 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             </div>
             <div className={styles.Margin}>
               <FormControl className={styles.TextField} variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
+                <InputLabel classes={{ root: classes.formLabel }}>Your phone number</InputLabel>
                 <OutlinedInput
-                  classes={{ root: styles.InputField, notchedOutline: styles.InputField }}
+                  classes={{
+                    root: styles.InputField,
+                    notchedOutline: styles.InputField,
+                  }}
                   data-testid="phoneNumber"
                   error={phoneNumberError}
                   id="phone-number"
@@ -150,7 +180,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               <FormControl className={styles.TextField} variant="outlined">
                 <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
                 <OutlinedInput
-                  classes={{ root: styles.InputField, notchedOutline: styles.InputField }}
+                  classes={{
+                    root: styles.InputField,
+                    notchedOutline: styles.InputField,
+                    focused: styles.InputField,
+                  }}
                   data-testid="password"
                   error={passwordError}
                   id="outlined-adornment-password"
