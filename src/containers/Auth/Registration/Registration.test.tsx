@@ -46,9 +46,13 @@ it('adds state to password', () => {
 it('send an axios post request properly', () => {
   jest.mock('axios');
   const wrapper = shallow(createRegistration());
+  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
   wrapper
     .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
+  wrapper
+    .find('[data-testid="password"]')
+    .simulate('change', { target: { value: 'randompassword' } });
   const response = {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
   };
