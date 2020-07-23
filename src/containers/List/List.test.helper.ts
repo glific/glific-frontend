@@ -1,4 +1,5 @@
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
 
 export const defaultProps = {

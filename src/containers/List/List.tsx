@@ -215,9 +215,10 @@ export const List: React.SFC<ListProps> = ({
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItem }) => {
+      const label = listItem.label ? listItem.label : listItem.name;
       return {
         ...columns(listItem),
-        operations: getIcons(listItem.id, listItem.label),
+        operations: getIcons(listItem.id, label),
       };
     });
   }
