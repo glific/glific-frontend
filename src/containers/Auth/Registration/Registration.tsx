@@ -90,7 +90,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           setAuthMessage(response);
         })
         .catch((error: any) => {
-          setErrorMessage(error.response.data.error.message);
+          // For now let's set an error message manually till the backend give us nicer messages
+          //setErrorMessage(error.response.data.error.message);
+          setErrorMessage('We are unable to register, kindly contact your technical team.');
         });
     }
   };
