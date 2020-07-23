@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const DELETE_FLOW = gql`
+export const DELETE_AUTOMATION = gql`
   mutation deleteFlow($id: ID!) {
     deleteFlow(id: $id) {
       errors {
@@ -11,7 +11,7 @@ export const DELETE_FLOW = gql`
   }
 `;
 
-export const CREATE_FLOW = gql`
+export const CREATE_AUTOMATION = gql`
   mutation createFlow($input: FlowInput!) {
     createFlow(input: $input) {
       flow {
@@ -23,7 +23,7 @@ export const CREATE_FLOW = gql`
   }
 `;
 
-export const UPDATE_FLOW = gql`
+export const UPDATE_AUTOMATION = gql`
   mutation updateFlow($id: ID!, $input: FlowInput!) {
     updateFlow(id: $id, input: $input) {
       flow {
