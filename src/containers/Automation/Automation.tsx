@@ -68,7 +68,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const configureButton = (clickHandler: any) =>
     match.params.id ? (
       <Tooltip title="Your changes will be saved">
-        <Link to={`/automation/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
+        <Link to={`/automation/configure/${uuid}`} className={styles.Link} onClick={clickHandler}>
           <Button variant="outlined" color="primary">
             Configure
           </Button>
@@ -76,7 +76,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       </Tooltip>
     ) : null;
 
-  const redirectionLink = match.params.id ? 'automation' : 'automation/flow';
+  const redirectionLink = match.params.id ? 'automation' : 'automation/configure';
 
   return (
     <ListItem
