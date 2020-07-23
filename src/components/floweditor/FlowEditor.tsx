@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 declare function showFlowEditor(node: any, config: any): void;
 
 const loadscripts = () => {
+  const scripts: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const scriptsToLoad = [
     '2.b44c90d1.chunk.js',
     '3.1cea8884.chunk.js',
@@ -15,13 +16,19 @@ const loadscripts = () => {
   scriptsToLoad.map((scriptName) => {
     const script = document.createElement('script');
     script.src = '/js/' + scriptName;
+    script.id = scriptName.slice(0, 3);
+    script.async = false;
     document.body.appendChild(script);
+    scripts.push(script);
   });
 
   const link = document.createElement('link');
   link.href = '/css/' + styleToLoad;
   link.rel = 'stylesheet';
   document.body.appendChild(link);
+  scripts.push(link);
+
+  return scripts;
 };
 
 var base_glific = 'http://localhost:4000/flow-editor/';
@@ -66,19 +73,25 @@ const setConfig = (uuid: any) => {
 };
 
 export const FlowEditor = (props: any) => {
-  const [, updateState] = React.useState();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
   const config = setConfig(props.match.params.uuid);
 
   useEffect(() => {
-    loadscripts();
+    const scripts = loadscripts();
+    return () => {
+      scripts.map((node: any) => {
+        document.body.removeChild(node);
+      });
+    };
   }, []);
 
   useEffect(() => {
-    if (typeof showFlowEditor !== 'undefined')
-      showFlowEditor(document.getElementById('flow'), config);
-    else forceUpdate();
-  });
+    const lastScript: HTMLScriptElement | null = document.body.querySelector('#run');
+    if (lastScript) {
+      lastScript.onload = () => {
+        showFlowEditor(document.getElementById('flow'), config);
+      };
+    }
+  }, []);
 
   return <div id="flow"></div>;
 };
