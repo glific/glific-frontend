@@ -51,10 +51,12 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setPasswordError(false);
   };
 
   const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
+    setPhoneNumberError(false);
   };
 
   const handleClickShowPassword = () => {
@@ -66,20 +68,31 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleInputErrors = () => {
+    let errorFlag = true;
     if (!phoneNumber) {
       setPhoneNumberError(true);
+      errorFlag = false;
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
     if (!password) {
       setPasswordError(true);
+      errorFlag = false;
     } else if (password) {
       setPasswordError(false);
     }
+    return errorFlag;
   };
 
   const handleSubmit = () => {
-    handleInputErrors();
+    // set invalid login false as it should be set only on server response
+    // errors are handled separately for the client side
+    setInvalidLogin(false);
+
+    // if errors just return
+    if (!handleInputErrors()) {
+      return;
+    }
     console.log('passwordError', passwordError);
     console.log('phoneNumberError', phoneNumberError);
 
