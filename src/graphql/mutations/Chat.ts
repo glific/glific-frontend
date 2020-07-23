@@ -46,3 +46,9 @@ export const MESSAGE_FRAGMENT = gql`
     }
   }
 `;
+
+export const MARK_AS_READ = gql`
+  mutation markContactMessagesAsRead($contactId: Gid!) {
+    markContactMessagesAsRead(contactId: $contactId)
+  }
+`;

@@ -11,19 +11,19 @@
 }
 
 .LoginTitle {
-  margin-bottom: 10px;
+  color: white;
+  display: flex;
+  justify-content: flex-start;
+  width: 400px;
+  margin-left: 60px;
 }
 
 .Margin {
-  margin: 8px;
-}
-
-.TextField {
-  width: 40ch;
+  margin: 4px;
 }
 
 .BottomMargin {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .Errors {
@@ -31,7 +31,68 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   margin-top: 0px;
   font-size: 14px;
+}
+
+.Box {
+  margin-top: 5vh;
+  height: 380px;
+  width: 400px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-color: #eaedec;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.InputField {
+  border-color: #93a29b !important;
+  border-radius: 12px !important;
+  border-width: 2px !important;
+  line-height: 32px;
+  width: 340px;
+}
+
+.FormLabel {
+  color: #93a29b !important;
+}
+
+.ContinueButton {
+  background-color: white !important;
+  border: solid 2px #119656 !important;
+  width: 335px;
+  border-radius: 27px;
+  margin-top: 0px;
+  color: #119656 !important;
+}
+
+.GlificLogo {
+  font-family: 'Tenor Sans';
+  color: #0d6b3d;
+  font-size: 36px;
+  margin-top: 5vh;
+}
+
+.OrText {
+  color: #93a29b;
+  font-weight: bolder;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.Or {
+  display: flex;
+  flex-direction: row;
+}
+
+.FormHelperText {
+  color: red !important;
+  margin-top: 2px !important;
+  line-height: 1.2 !important;
 }

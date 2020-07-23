@@ -10,6 +10,8 @@ import { Login } from './containers/Auth/Login/Login';
 import { StaffManagement } from './components/pages/StaffManagement/StaffManagement';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
+import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
+import { HSMTemplate } from './containers/HSMTemplate/HSMTemplate';
 import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
@@ -45,6 +47,9 @@ const App = () => {
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagement} />
+            <Route path="/template" exact component={HSMTemplatePage} />
+            <Route path="/template/add" exact component={HSMTemplate} />
+            <Route path="/template/:id/edit" exact component={HSMTemplate} />
             <Route
               exact
               path="/chat/:contactId"

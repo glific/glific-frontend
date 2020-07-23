@@ -8,7 +8,7 @@ import { List } from '../../../containers/List/List';
 export interface StaffManagementProps {}
 
 export const StaffManagement: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['ID', 'NAME', 'PHONE', 'ROLE'];
+  const columnNames = ['ID', 'NAME', 'PHONE', 'ROLE', 'EDIT'];
   const columnStyles = [styles.Id, styles.Name, styles.Phone, styles.Role];
   const tagIcon = <TagIcon className={styles.TagIcon} />;
 

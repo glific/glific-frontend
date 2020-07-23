@@ -23,43 +23,37 @@ it('renders component properly', () => {
 
 it('updates state for username', () => {
   const wrapper = shallow(createRegistration());
-  wrapper
-    .find(OutlinedInput)
-    .at(0)
-    .simulate('change', { target: { value: 'username' } });
-  expect(wrapper.find(OutlinedInput).at(0).prop('value')).toEqual('username');
+  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
+  expect(wrapper.find('[data-testid="username"]').prop('value')).toEqual('JaneDoe');
 });
 
 it('adds state to phoneNumber', () => {
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(1)
+    .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
-  expect(wrapper.find(OutlinedInput).at(1).prop('value')).toEqual('1231231234');
+  expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
 });
 
 it('adds state to password', () => {
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(2)
-    .simulate('change', { target: { value: 'pass12345' } });
-  expect(wrapper.find(OutlinedInput).at(2).prop('value')).toEqual('pass12345');
+    .find('[data-testid="password"]')
+    .simulate('change', { target: { value: 'randompassword' } });
+  expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('randompassword');
 });
 
 it('send an axios post request properly', () => {
   jest.mock('axios');
   const wrapper = shallow(createRegistration());
   wrapper
-    .find(OutlinedInput)
-    .at(1)
+    .find('[data-testid="phoneNumber"]')
     .simulate('change', { target: { value: '1231231234' } });
   const response = {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
   };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
   expect(mockedAxios.post).toHaveBeenCalledTimes(1);
 });
 
@@ -70,31 +64,33 @@ it('axios post request catchs error', () => {
     error: { message: 'Phone number not found', status: 400 },
   };
   mockedAxios.post.mockRejectedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
 });
 
-it('sets userNameError to be true if field is blank', () => {
+it('set errors if the form fields are blank', () => {
   const wrapper = shallow(createRegistration());
-  const response = {
-    data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
-  };
+  const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
-  expect(wrapper.find(OutlinedInput).at(0).prop('error')).toBeTruthy();
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
+  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeTruthy();
+  expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy();
+  expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy();
 });
 
-it('sets userNameError to be false if there is a valid value', () => {
+it('no errors are set when if there are valid values', () => {
   const wrapper = shallow(createRegistration());
+  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
   wrapper
-    .find(OutlinedInput)
-    .at(0)
-    .simulate('change', { target: { value: 'username' } });
-  const response = {
-    data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
-  };
+    .find('[data-testid="phoneNumber"]')
+    .simulate('change', { target: { value: '1231231234' } });
+  wrapper
+    .find('[data-testid="password"]')
+    .simulate('change', { target: { value: 'randompassword' } });
+
+  const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
-  expect(wrapper.find(OutlinedInput).at(0).prop('error')).toBeFalsy();
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
+  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeFalsy();
 });
 
 it('shows password if button is clicked', () => {
