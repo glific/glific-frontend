@@ -51,10 +51,12 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setPasswordError(false);
   };
 
   const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
+    setPhoneNumberError(false);
   };
 
   const handleClickShowPassword = () => {
@@ -66,20 +68,33 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleInputErrors = () => {
+    let foundErrors = false;
     if (!phoneNumber) {
       setPhoneNumberError(true);
+      foundErrors = true;
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
     if (!password) {
       setPasswordError(true);
+      foundErrors = true;
     } else if (password) {
       setPasswordError(false);
     }
+    return foundErrors;
   };
 
   const handleSubmit = () => {
-    handleInputErrors();
+    // set invalid login false as it should be set only on server response
+    // errors are handled separately for the client side
+    setInvalidLogin(false);
+
+    // if errors just return
+    if (handleInputErrors()) {
+      return;
+    }
+
+    // we should call the backend only if frontend has valid input
     if (!passwordError && !phoneNumberError) {
       axios
         .post(USER_SESSION, {
@@ -137,7 +152,8 @@ export const Login: React.SFC<LoginProps> = () => {
                 id="phone-number"
                 label="Your phone number"
                 value={phoneNumber}
-                type="integer"
+                type="tel"
+                required
                 onChange={handlePhoneNumberChange()}
               />
               {phoneNumberError ? (
@@ -161,6 +177,7 @@ export const Login: React.SFC<LoginProps> = () => {
                 type={showPassword ? 'text' : 'password'}
                 label="Password"
                 value={password}
+                required
                 onChange={handlePasswordChange()}
                 endAdornment={
                   <InputAdornment position="end">
