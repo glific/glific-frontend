@@ -7,8 +7,11 @@
   height: 64px;
   width: 100%;
   padding: 10px;
-  border-radius: 12px !important;
+  border-radius: 0px 0px 12px 12px !important;
   background-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-width: 2px;
+  border-style: solid;
 }
 
 .InputContainer {
@@ -74,19 +77,27 @@
   background-color: #119656;
 }
 
-.ShortcutList {
-}
-
 .ShortcutPaper {
-  /* width: 100%; */
-  width: 1200px;
+  width: 100%;
+  /* width: 1200px; */
+  /* height: 300px; */
   z-index: -1;
-  /* position: relative; */
+  position: relative;
   padding: 0px 0px 30px 0px;
 }
 
 .Popper {
-  /* width: 64%; */
+  width: 64.2%;
   position: relative;
-  z-index: -1;
+  z-index: 50;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-width: 1px 2px 1px 2px;
+  border-style: solid;
+  /* border-radius: 25px 25px 0px 0px; */
+}
+
+.ChatSearchBar {
+  border-color: #eaedec;
+  width: 95%;
+  height: 40px;
 }

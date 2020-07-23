@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useQuery } from '@apollo/client';
 import IconButton from '@material-ui/core/IconButton';
 import {
   Container,
@@ -10,6 +11,8 @@ import {
   Fade,
   Paper,
   Popover,
+  ClickAwayListener,
+  Divider,
 } from '@material-ui/core';
 import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
 import { Picker } from 'emoji-mart';
@@ -18,6 +21,10 @@ import clsx from 'clsx';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import { SearchBar } from '../../ChatConversations/SearchBar';
+import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
+import Loading from '../../../../components/UI/Layout/Loading/Loading';
+import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import styled from 'styled-components';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -33,6 +40,25 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const quickSend = useRef(null);
+  const [searchVal, setSearchVal] = useState('template');
+
+  const queryVariables = {
+    filter: {
+      body: 'template',
+    },
+    opts: {
+      order: 'ASC',
+    },
+  };
+
+  const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
+    variables: queryVariables,
+  });
+
+  if (loading) return <Loading />;
+  if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
+
+  console.log(data);
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -70,17 +96,6 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
-  const dummy = [
-    {
-      title: 'Thank you',
-      message: 'Thank you for messaging chief.',
-    },
-    {
-      title: 'Help',
-      message: 'Help pls thank you!',
-    },
-  ];
-
   const handleClick = (event: any, newPlacement: PopperPlacementType, title: string) => {
     if (selectedTab === title) {
       setSelectedTab('');
@@ -92,9 +107,46 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     setPlacement(newPlacement);
   };
 
+  const handleClickAway = () => {
+    setOpen(false);
+  };
+
+  const handleSelectText = (obj: any) => {
+    setMessage(obj.body);
+  };
+
+  const handleSearch = (e: any) => {
+    setSearchVal(e.target.value);
+  };
+
+  const shortcutPopper = (
+    <Popper
+      className={styles.Popper}
+      open={open}
+      disablePortal
+      anchorEl={anchorEl}
+      placement={placement}
+      transition
+    >
+      {({ TransitionProps }) => (
+        <Fade {...TransitionProps} timeout={150}>
+          <Paper elevation={0} className={styles.ShortcutPaper}>
+            <ChatTemplates searchVal={searchVal} handleSelectText={handleSelectText} />
+            <SearchBar
+              className={styles.ChatSearchBar}
+              handleChange={handleSearch}
+              onReset={() => console.log('reset')}
+            />
+          </Paper>
+        </Fade>
+      )}
+    </Popper>
+  );
+
   return (
     <Container className={styles.ChatInput}>
-      {/* <SearchBar onReset={() => console.log('reset')} /> */}
+      {/* <ClickAwayListener onClickAway={handleClickAway}> */}
+      {shortcutPopper}
       <div className={styles.SendsContainer}>
         <div
           onClick={(e: any) => handleClick(e, 'top', speedSends)}
@@ -113,28 +165,8 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
           {templates}
         </div>
       </div>
+      {/* </ClickAwayListener> */}
       <div ref={quickSend} className={styles.ChatInputElements}>
-        <Popper
-          className={styles.Popper}
-          open={true}
-          disablePortal
-          anchorEl={anchorEl}
-          placement={placement}
-          transition
-        >
-          {({ TransitionProps }) => (
-            <Fade {...TransitionProps} timeout={150}>
-              <Paper elevation={0} className={styles.ShortcutPaper}>
-                <List className={styles.ShortcutList}>
-                  <ListItem button>Hi there!</ListItem>
-                  <ListItem>
-                    <b>Help:</b> Lorem!!
-                  </ListItem>
-                </List>
-              </Paper>
-            </Fade>
-          )}
-        </Popper>
         <div className={styles.InputContainer}>
           <input
             className={styles.InputBox}

@@ -11,6 +11,7 @@ export interface SearchBarProps {
   // This is for whether or not the parent gets re-rendered on search. To checkout comparison of
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.
   searchVal?: string; // Calvin update-- all use-cases will use searchVal?
+  className?: any;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
@@ -42,7 +43,8 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
 
   return (
     <form onSubmit={props.handleSubmit} autoComplete="off">
-      <div className={styles.SearchBar}>
+      {/* <div className={props.className ? props.className : styles.SearchBar}> */}
+      <div className={`${styles.SearchBar} ${props.className}`}>
         <div className={styles.IconAndText}>
           <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
           <InputBase
