@@ -31,3 +31,19 @@ export const GET_TEMPLATE = gql`
     }
   }
 `;
+
+export const FILTER_HSM_TEMPLATES = gql`
+  query sessionTemplates($opts: Opts!) {
+    sessionTemplates(filter: { isHsm: true }, opts: $opts) {
+      id
+      body
+      label
+    }
+  }
+`;
+
+export const GET_HSM_TEMPLATES_COUNT = gql`
+  query countSessionTemplates {
+    countSessionTemplates(filter: { isHsm: true })
+  }
+`;

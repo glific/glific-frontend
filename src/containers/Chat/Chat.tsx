@@ -13,6 +13,7 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
+import { setErrorMessage } from '../../common/notification';
 
 export interface ChatProps {
   contactId: number;
@@ -31,7 +32,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
   };
 
-  const { loading, error, data, subscribeToMore } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { loading, error, data, subscribeToMore, client } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
   });
 
@@ -114,7 +115,10 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   }, []);
 
   if (loading) return <Loading />;
-  if (error) return <p>Error :(</p>;
+  if (error) {
+    setErrorMessage(client, error);
+    return null;
+  }
 
   if (!contactId && data.conversations.length !== 0) {
     return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;

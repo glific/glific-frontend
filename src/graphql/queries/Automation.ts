@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_FLOWS = gql`
+export const GET_AUTOMATIONS = gql`
   {
     flows {
       id
@@ -10,7 +10,7 @@ export const GET_FLOWS = gql`
   }
 `;
 
-export const GET_FLOW = gql`
+export const GET_AUTOMATION = gql`
   query getFlow($id: ID!) {
     flow(id: $id) {
       flow {
@@ -26,13 +26,13 @@ export const GET_FLOW = gql`
   }
 `;
 
-export const GET_FLOW_COUNT = gql`
+export const GET_AUTOMATION_COUNT = gql`
   query countTags($filter: TagFilter!) {
     countTags(filter: $filter)
   }
 `;
 
-export const FILTER_FLOW = gql`
+export const FILTER_AUTOMATION = gql`
   query tags($filter: TagFilter!, $opts: Opts!) {
     tags(filter: $filter, opts: $opts) {
       id

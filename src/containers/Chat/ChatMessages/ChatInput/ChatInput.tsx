@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 import styles from './ChatInput.module.css';
 
@@ -16,22 +17,11 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const keyPressHandler = (e: any) => {
-    if (e.key === 'Enter') {
-      submitMessage();
-    }
-  };
-
-  const changeHandler = ({ target }: any) => {
-    setMessage(target.value);
-  };
-
   const submitMessage = () => {
     // close emoji picker
     setShowEmojiPicker(false);
 
     if (!message) return;
-
     setMessage('');
 
     if (typeof onSendMessage === 'function') {
@@ -56,15 +46,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
-          <input
-            className={styles.InputBox}
+          <WhatsAppEditor
             data-testid="message-input"
-            type="text"
-            placeholder="Start typing..."
-            value={message}
-            onKeyPress={keyPressHandler}
-            onChange={changeHandler}
-            onClick={() => setShowEmojiPicker(false)}
+            setMessage={(message: string) => setMessage(message)} // Primarily for message length
+            sendMessage={() => submitMessage()}
           />
         </div>
         <div className={styles.EmojiContainer}>

@@ -3,10 +3,14 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
-import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW } from '../../graphql/mutations/Automation';
-import { GET_FLOW } from '../../graphql/queries/Automation';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Link } from 'react-router-dom';
+import {
+  CREATE_AUTOMATION,
+  UPDATE_AUTOMATION,
+  DELETE_AUTOMATION,
+} from '../../graphql/mutations/Automation';
+import { GET_AUTOMATION } from '../../graphql/queries/Automation';
 
 export interface AutomationProps {
   match: any;
@@ -21,7 +25,7 @@ const setValidation = (values: any) => {
   return errors;
 };
 
-const dialogMessage = "You won't be able to use this flow again.";
+const dialogMessage = "You won't be able to use this automation again.";
 
 const formFields = [
   {
@@ -41,10 +45,10 @@ const formFields = [
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
-  getItemQuery: GET_FLOW,
-  createItemQuery: CREATE_FLOW,
-  updateItemQuery: UPDATE_FLOW,
-  deleteItemQuery: DELETE_FLOW,
+  getItemQuery: GET_AUTOMATION,
+  createItemQuery: CREATE_AUTOMATION,
+  updateItemQuery: UPDATE_AUTOMATION,
+  deleteItemQuery: DELETE_AUTOMATION,
 };
 
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
@@ -78,7 +82,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       states={states}
       setStates={setStates}
       setValidation={setValidation}
-      listItemName="flow"
+      listItemName="automation"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink={redirectionLink}
