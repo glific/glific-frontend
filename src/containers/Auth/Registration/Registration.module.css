@@ -133,3 +133,7 @@ hr {
 .Input {
   color: #93a29b !important;
 }
+
+.ErrorMessage {
+  color: red;
+}
