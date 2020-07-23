@@ -30,6 +30,8 @@ export interface ListItemProps {
   defaultAttribute?: any;
   icon: any;
   configureButton?: any;
+  linkParameter?: any;
+  cancelLink?: any;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -47,13 +49,18 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
-  configureButton = null,
+  configureButton = () => null,
   icon,
+  linkParameter = null,
+  cancelLink = null,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
+  const [formCancelled, setFormCancelled] = useState(false);
+
+  const [link, setLink] = useState('');
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -80,6 +87,8 @@ export const ListItem: React.SFC<ListItemProps> = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
+      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+      setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
     },
   });
@@ -120,11 +129,17 @@ export const ListItem: React.SFC<ListItemProps> = ({
   };
 
   const cancelHandler = () => {
-    setFormSubmitted(true);
+    setFormCancelled(true);
   };
 
   if (formSubmitted) {
-    return <Redirect to={`/${redirectionLink}`} />;
+    return (
+      <Redirect to={link !== undefined ? `/${redirectionLink}/${link}` : `/${redirectionLink}`} />
+    );
+  }
+
+  if (formCancelled) {
+    return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;
@@ -177,7 +192,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
-              {configureButton}
+              {configureButton(submitForm)}
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel
               </Button>

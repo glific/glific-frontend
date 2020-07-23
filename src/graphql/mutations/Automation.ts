@@ -18,6 +18,7 @@ export const CREATE_FLOW = gql`
         id
         name
         shortcode
+        uuid
       }
     }
   }
