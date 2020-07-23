@@ -1,4 +1,8 @@
 import React, { useEffect } from 'react';
+import { Button } from '../UI/Form/Button/Button';
+import styles from './FlowEditor.module.css';
+import { Link } from 'react-router-dom';
+import { FLOW_EDITOR_API } from '../../config/index';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -31,7 +35,7 @@ const loadscripts = () => {
   return scripts;
 };
 
-var base_glific = 'http://localhost:4000/flow-editor/';
+const base_glific = FLOW_EDITOR_API;
 
 const setConfig = (uuid: any) => {
   return {
@@ -48,8 +52,6 @@ const setConfig = (uuid: any) => {
     endpoints: {
       simulateStart: false,
       simulateResume: false,
-      // simulateStart: '/flow/simulate/{{object.id}}/',
-      // simulateResume: '/flow/simulate/{{object.id}}/',
       globals: base_glific + 'globals',
       groups: base_glific + 'groups',
       fields: base_glific + 'fields',
@@ -93,5 +95,14 @@ export const FlowEditor = (props: any) => {
     }
   }, []);
 
-  return <div id="flow"></div>;
+  return (
+    <>
+      <Link to="/automation" className={styles.Link}>
+        <Button variant="contained" color="primary" className={styles.Button}>
+          Complete
+        </Button>
+      </Link>
+      <div id="flow"></div>
+    </>
+  );
 };

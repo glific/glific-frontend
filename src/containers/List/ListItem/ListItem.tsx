@@ -54,7 +54,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   icon,
   linkParameter = null,
   cancelLink = null,
-}) => {
+}: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);

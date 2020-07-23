@@ -66,14 +66,14 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const configureButton = (clickHandler: any) =>
     match.params.id ? (
-      <Link to={`/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
+      <Link to={`/automation/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
         <Button variant="outlined" color="primary">
           Configure
         </Button>
       </Link>
     ) : null;
 
-  const redirectionLink = match.params.id ? 'automation' : 'flow';
+  const redirectionLink = match.params.id ? 'automation' : 'automation/flow';
 
   return (
     <ListItem

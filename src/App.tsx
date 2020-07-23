@@ -51,7 +51,7 @@ const App = () => {
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
-            <Route path="/flow/:uuid" exact component={FlowEditor} />
+            <Route path="/automation/flow/:uuid" exact component={FlowEditor} />
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/template" exact component={HSMTemplatePage} />
