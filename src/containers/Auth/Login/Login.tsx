@@ -93,8 +93,6 @@ export const Login: React.SFC<LoginProps> = () => {
     if (!handleInputErrors()) {
       return;
     }
-    console.log('passwordError', passwordError);
-    console.log('phoneNumberError', phoneNumberError);
 
     // we should call the backend only if frontend has valid input
     if (!passwordError && !phoneNumberError) {
