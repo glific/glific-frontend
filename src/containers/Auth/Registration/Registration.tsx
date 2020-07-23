@@ -28,14 +28,17 @@ export const Registration: React.SFC<RegistrationProps> = () => {
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setPasswordError(false);
   };
 
   const handleUserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
+    setUserNameError(false);
   };
 
   const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
+    setPhoneNumberError(false);
   };
 
   const handleClickShowPassword = () => {
@@ -47,25 +50,35 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handleInputErrors = () => {
+    let foundErrors = false;
     if (!userName) {
       setUserNameError(true);
+      foundErrors = true;
     } else if (userName) {
       setUserNameError(false);
     }
     if (!phoneNumber) {
       setPhoneNumberError(true);
+      foundErrors = true;
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
     if (!password || password.length < 8) {
       setPasswordError(true);
+      foundErrors = true;
     } else if (password) {
       setPasswordError(false);
     }
+
+    return foundErrors;
   };
 
   const handleSubmit = () => {
-    handleInputErrors();
+    // if errors just return
+    if (handleInputErrors()) {
+      return;
+    }
+
     if (!userNameError && !phoneNumberError && !passwordError) {
       axios
         .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
