@@ -24,6 +24,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -46,6 +47,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handleInputErrors = () => {
+    console.log(phoneNumber);
     if (!userName) {
       setUserNameError(true);
     } else if (userName) {
@@ -75,7 +77,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         .then((response: any) => {
           setAuthMessage(response);
         })
-        .catch((error: any) => {});
+        .catch((error: any) => {
+          setErrorMessage(error.response.data.error.message);
+        });
     }
   };
 
@@ -194,6 +198,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
                 ) : null}
               </FormControl>
             </div>
+            {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
+              <div className={styles.ErrorMessage}>{errorMessage}</div>
+            ) : null}
             <Button
               data-testid="registrationButton"
               onClick={handleSubmit}
