@@ -21,10 +21,8 @@ import clsx from 'clsx';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import { SearchBar } from '../../ChatConversations/SearchBar';
-import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
-import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -40,25 +38,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const quickSend = useRef(null);
-  const [searchVal, setSearchVal] = useState('template');
-
-  const queryVariables = {
-    filter: {
-      body: 'template',
-    },
-    opts: {
-      order: 'ASC',
-    },
-  };
-
-  const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
-    variables: queryVariables,
-  });
-
-  if (loading) return <Loading />;
-  if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
-
-  console.log(data);
+  const [searchVal, setSearchVal] = useState('');
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -119,50 +99,65 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     setSearchVal(e.target.value);
   };
 
-  const shortcutPopper = (
-    <Popper
-      className={styles.Popper}
-      open={open}
-      disablePortal
-      anchorEl={anchorEl}
-      placement={placement}
-      transition
-    >
-      {({ TransitionProps }) => (
-        <Fade {...TransitionProps} timeout={150}>
-          <Paper elevation={0} className={styles.ShortcutPaper}>
-            <ChatTemplates searchVal={searchVal} handleSelectText={handleSelectText} />
-            <SearchBar
-              className={styles.ChatSearchBar}
-              handleChange={handleSearch}
-              onReset={() => console.log('reset')}
-            />
-          </Paper>
-        </Fade>
-      )}
-    </Popper>
-  );
+  // const shortcutPopper = (
+  //   <Popper
+  //     className={styles.Popper}
+  //     open={open}
+  //     disablePortal
+  //     anchorEl={anchorEl}
+  //     placement={placement}
+  //     transition
+  //   >
+  //     {({ TransitionProps }) => (
+  //       <Fade {...TransitionProps} timeout={150}>
+  //         <Paper elevation={0} className={styles.ShortcutPaper}>
+  //           <ChatTemplates searchVal={searchVal} handleSelectText={handleSelectText} />
+  //           <SearchBar
+  //             className={styles.ChatSearchBar}
+  //             handleChange={handleSearch}
+  //             onReset={() => console.log('reset')}
+  //           />
+  //         </Paper>
+  //       </Fade>
+  //     )}
+  //   </Popper>
+  // );
 
   return (
     <Container className={styles.ChatInput}>
       {/* <ClickAwayListener onClickAway={handleClickAway}> */}
-      {shortcutPopper}
+      {/* {shortcutPopper} */}
       <div className={styles.SendsContainer}>
-        <div
-          onClick={(e: any) => handleClick(e, 'top', speedSends)}
-          className={clsx(styles.QuickSend, {
-            [styles.QuickSendSelected]: selectedTab === speedSends,
-          })}
-        >
-          {speedSends}
+        {/* {shortcutPopper} */}
+        <div className={clsx(styles.Popup, { [styles.HidePopup]: !open })}>
+          <ChatTemplates
+            isTemplate={selectedTab === templates}
+            searchVal={searchVal}
+            handleSelectText={handleSelectText}
+          />
+          <SearchBar
+            className={styles.ChatSearchBar}
+            handleChange={handleSearch}
+            onReset={() => setSearchVal('')}
+          />
         </div>
-        <div
-          onClick={(e: any) => handleClick(e, 'top', templates)}
-          className={clsx(styles.QuickSend, {
-            [styles.QuickSendSelected]: selectedTab === templates,
-          })}
-        >
-          {templates}
+        <div className={styles.QuickSendButtons}>
+          <div
+            onClick={(e: any) => handleClick(e, 'top', speedSends)}
+            className={clsx(styles.QuickSend, {
+              [styles.QuickSendSelected]: selectedTab === speedSends,
+            })}
+          >
+            {speedSends}
+          </div>
+          <div
+            onClick={(e: any) => handleClick(e, 'top', templates)}
+            className={clsx(styles.QuickSend, {
+              [styles.QuickSendSelected]: selectedTab === templates,
+            })}
+          >
+            {templates}
+          </div>
         </div>
       </div>
       {/* </ClickAwayListener> */}
