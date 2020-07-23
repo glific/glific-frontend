@@ -19,4 +19,9 @@ export const sideDrawerMenus = [
     path: '/automation',
     icon: 'automation',
   },
+  {
+    title: 'Templates',
+    path: '/template',
+    icon: 'template',
+  },
 ];

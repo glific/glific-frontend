@@ -8,6 +8,7 @@ import {
   FILTER_CONVERSATIONS_QUERY,
 } from '../../../../graphql/queries/Chat';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { setErrorMessage } from '../../../../common/notification';
 
 interface ConversationListProps {
   searchVal: string;
@@ -61,7 +62,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // Other cases
   if (called && loading) return <Loading />;
-  if (called && error) return <p>Error :(</p>;
+  if (called && error) {
+    setErrorMessage(client, error);
+    return null;
+  }
 
   if (data === undefined) {
     return <p>Error :(</p>;

@@ -7,9 +7,15 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import clsx from 'clsx';
 import axios from 'axios';
-import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
+import {
+  REACT_APP_GLIFIC_REGISTRATION_API,
+  REACT_APP_GLIFIC_AUTHENTICATION_API,
+} from '../../../common/constants';
 import { Redirect } from 'react-router-dom';
 import { SessionContext } from '../../../context/session';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 export interface ConfirmOTPProps {
   location: any;
@@ -24,6 +30,21 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserAuthCode(event.target.value);
+  };
+
+  const handleResend = () => {
+    axios
+      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+        user: {
+          phone: props.location.state.phoneNumber,
+        },
+      })
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
   };
 
   const handleSubmit = () => {
@@ -71,36 +92,67 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   return (
     <div className={styles.Container}>
       <div className={styles.CenterRegistrationAuth}>
-        <div className={styles.RegistrationAuthTitle}>
-          <Typography variant="h5">Authenticate your account.</Typography>
-        </div>
-        <Typography variant="h6">A code has been sent to your WhatsApp account.</Typography>
-        <div className={clsx(styles.Margin, styles.BottomMargin)}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Authentication Code</InputLabel>
-            <OutlinedInput
-              error={alreadyExists || authError}
-              id="authentication-code"
-              label="Authentication Code"
-              type="text"
-              value={userAuthCode}
-              onChange={handleuserAuthCodeChange()}
-            />
-            <div className="HelperText">
-              {authError || alreadyExists ? (
-                <FormHelperText>
-                  {alreadyExists
-                    ? 'An account already exists with this phone number.'
-                    : 'Invalid authentication code.'}
+        <div className={styles.GlificLogo}>Glific</div>
+        <div className={styles.Box}>
+          <div className={styles.RegistrationAuthTitle}>
+            <Typography variant="h4" className={styles.TitleText}>
+              Create your new <br />
+              account
+            </Typography>
+          </div>
+          <div className={clsx(styles.Margin, styles.BottomMargin)}>
+            <FormControl className={styles.TextField} variant="outlined">
+              <InputLabel classes={{ root: styles.FormLabel }}>OTP</InputLabel>
+              <OutlinedInput
+                classes={{
+                  root: styles.InputField,
+                  notchedOutline: styles.InputField,
+                  input: styles.Input,
+                }}
+                error={alreadyExists || authError}
+                id="authentication-code"
+                label="OTP"
+                type="text"
+                value={userAuthCode}
+                onChange={handleuserAuthCodeChange()}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleResend}
+                      edge="end"
+                    >
+                      <p className={styles.Resend}>resend</p>{' '}
+                      <RefreshIcon classes={{ root: styles.IconButton }} />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              <div>
+                <FormHelperText classes={{ root: styles.FormHelperText }}>
+                  Please confirm the OTP received by your WhatsApp <br />
+                  number.
                 </FormHelperText>
-              ) : null}
-            </div>
-          </FormControl>
-        </div>
-        <div className="button">
-          <Button onClick={handleSubmit} color="primary" variant={'contained'}>
-            Submit
-          </Button>
+                {authError || alreadyExists ? (
+                  <FormHelperText classes={{ root: styles.InvalidFormHelperText }}>
+                    {alreadyExists
+                      ? 'An account already exists with this phone number.'
+                      : 'Invalid authentication code.'}
+                  </FormHelperText>
+                ) : null}
+              </div>
+            </FormControl>
+          </div>
+          <div className="button">
+            <Button
+              className={styles.ContinueButton}
+              onClick={handleSubmit}
+              color="primary"
+              variant={'contained'}
+            >
+              Continue
+            </Button>
+          </div>
         </div>
       </div>
     </div>

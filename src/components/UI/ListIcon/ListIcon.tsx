@@ -7,6 +7,7 @@ import collectionsIcon from '../../../assets/images/icons/Collections/Unselected
 import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
 import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
 import speedSendIcon from '../../../assets/images/icons/SpeedSend/Unselected.svg';
+import templateIcon from '../../../assets/images/icons/Template/Unselected.svg';
 import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
@@ -24,6 +25,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     goal: goalsIcon,
     analytics: analyticsIcon,
     speedSend: speedSendIcon,
+    template: templateIcon,
   };
 
   return (

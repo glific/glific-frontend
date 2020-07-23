@@ -53,7 +53,7 @@ it('send an axios post request properly', () => {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
   };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
   expect(mockedAxios.post).toHaveBeenCalledTimes(1);
 });
 
@@ -64,14 +64,14 @@ it('axios post request catchs error', () => {
     error: { message: 'Phone number not found', status: 400 },
   };
   mockedAxios.post.mockRejectedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
 });
 
 it('set errors if the form fields are blank', () => {
   const wrapper = shallow(createRegistration());
   const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
   expect(wrapper.find('[data-testid="username"]').prop('error')).toBeTruthy();
   expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy();
   expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy();
@@ -89,7 +89,7 @@ it('no errors are set when if there are valid values', () => {
 
   const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find(Button).simulate('click');
+  wrapper.find('[data-testid="registrationButton"]').simulate('click');
   expect(wrapper.find('[data-testid="username"]').prop('error')).toBeFalsy();
 });
 

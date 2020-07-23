@@ -48,7 +48,7 @@ describe('<ChatMessage />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
   const defaultProps = {
     id: 1,
-    body: 'Hello there!',
+    body: '*Hello there!*',
     contactId: 2,
     receiver: {
       id: 1,
@@ -78,6 +78,10 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message content correctly', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
+  });
+
+  test('it should apply the correct styling', () => {
+    expect(wrapper.find('[data-testid="content"]').contains(<b>Hello there!</b>)).toBe(true);
   });
 
   test('it should render the message date  correctly', () => {

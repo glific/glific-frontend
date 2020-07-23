@@ -8,7 +8,8 @@ import { useApolloClient, DocumentNode } from '@apollo/client';
 import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { setNotification } from '../../../common/notification';
+
+import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
@@ -87,7 +88,10 @@ export const ListItem: React.SFC<ListItemProps> = ({
   let item: any = null;
 
   if (loading) return <Loading />;
-  if (error) return <p>Error :(</p>;
+  if (error) {
+    setErrorMessage(client, error);
+    return null;
+  }
 
   const saveHandler = ({ languageId, ...item }: any) => {
     const payload = {
