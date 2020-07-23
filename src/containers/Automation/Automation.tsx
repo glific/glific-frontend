@@ -10,6 +10,7 @@ import {
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
+import { Tooltip } from '@material-ui/core';
 import { GET_AUTOMATION } from '../../graphql/queries/Automation';
 
 export interface AutomationProps {
@@ -66,11 +67,13 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const configureButton = (clickHandler: any) =>
     match.params.id ? (
-      <Link to={`/automation/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
-        <Button variant="outlined" color="primary">
-          Configure
-        </Button>
-      </Link>
+      <Tooltip title="Your changes will be saved">
+        <Link to={`/automation/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
+          <Button variant="outlined" color="primary">
+            Configure
+          </Button>
+        </Link>
+      </Tooltip>
     ) : null;
 
   const redirectionLink = match.params.id ? 'automation' : 'automation/flow';
