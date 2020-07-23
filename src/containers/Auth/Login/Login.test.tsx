@@ -43,6 +43,10 @@ describe('Login test', () => {
   it('send an axios post request properly', () => {
     jest.mock('axios');
     const wrapper = shallow(createLogin());
+    wrapper
+      .find('[data-testid="phoneNumber"]')
+      .simulate('change', { target: { value: '1231231234' } });
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
