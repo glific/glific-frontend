@@ -25,18 +25,14 @@ describe('Login test', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('updates state for phone number', () => {
+  it('updates state for phone number and password', () => {
     const wrapper = shallow(createLogin());
     wrapper
       .find('[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
 
     expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
-  });
-
-  it('updates state for password', () => {
-    const wrapper = shallow(createLogin());
-    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('pass12345');
   });
 
