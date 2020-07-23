@@ -1,22 +1,19 @@
 import React from 'react';
 import { USER_COUNT, DELETE_USER, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
-import styles from './StaffManagement.module.css';
-import { Typography } from '@material-ui/core';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-import { List } from '../../../containers/List/List';
+import styles from './StaffManagementList.module.css';
+import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
+import { List } from '../../List/List';
 
 export interface StaffManagementProps {}
 
-export const StaffManagement: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['ID', 'NAME', 'PHONE', 'ROLE', 'EDIT'];
-  const columnStyles = [styles.Id, styles.Name, styles.Phone, styles.Role];
-  const tagIcon = <TagIcon className={styles.TagIcon} />;
+export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
+  const columnNames = ['NAME', 'PHONE', 'ACTIONS'];
+  const columnStyles = [styles.Name, styles.Phone, styles.Role];
+  const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
   const getColumns = ({ id, name, phone, role }: any) => ({
-    id: getID(id),
     name: getName(name),
     phone: getPhone(phone),
-    roles: getRoles(role),
   });
 
   const queries = {
@@ -25,19 +22,11 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
     deleteItemQuery: DELETE_USER,
   };
 
-  const getID = (text: string) => {
-    return <p className={styles.Title}>{text}</p>;
-  };
-
   const getName = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
   const getPhone = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
-  };
-
-  const getRoles = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
@@ -57,15 +46,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
 
   return (
     <div>
-      <div className={styles.Header}>
-        <Typography variant="h5">Staff Management</Typography>
-      </div>
       <List
         title="Staff Management"
         listItem="users"
         listItemName="user"
         pageLink="staff-management"
-        listIcon={tagIcon}
+        listIcon={staffIcon}
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
@@ -75,4 +61,4 @@ export const StaffManagement: React.SFC<StaffManagementProps> = () => {
   );
 };
 
-export default StaffManagement;
+export default StaffManagementList;

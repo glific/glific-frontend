@@ -7,7 +7,8 @@ import { TagPage } from './components/pages/TagPage/TagPage';
 import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
-import { StaffManagement } from './components/pages/StaffManagement/StaffManagement';
+import { StaffManagementList } from './containers/StaffManagement/StaffManagementList/StaffManagementList';
+import { StaffManagementTemplate } from './containers/StaffManagement/StaffManagement';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
@@ -46,7 +47,8 @@ const App = () => {
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
             <Route path="/chat" exact component={Chat} />
-            <Route path="/staff-management" exact component={StaffManagement} />
+            <Route path="/staff-management" exact component={StaffManagementList} />
+            <Route path="/staff-management/:id/edit" exact component={StaffManagementTemplate} />
             <Route path="/template" exact component={HSMTemplatePage} />
             <Route path="/template/add" exact component={HSMTemplate} />
             <Route path="/template/:id/edit" exact component={HSMTemplate} />

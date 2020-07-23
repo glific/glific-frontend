@@ -21,8 +21,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../context/session';
+import StaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
+import { Redirect } from 'react-router-dom';
 
 export interface SideDrawerProps {}
 
@@ -108,6 +110,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [fullOpen, setFullOpen] = React.useState(true);
+  const [staffRedirect, setStaffRedirect] = React.useState(false);
 
   const drawer = (
     <div>
@@ -169,6 +172,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
+  const handleStaffClick = (event: any) => {
+    setStaffRedirect(true);
+  };
+
   const container = window !== undefined ? () => window.document.body : undefined;
 
   const session = localStorage.getItem('session');
@@ -189,6 +196,16 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
         console.log(error);
       });
   };
+
+  if (staffRedirect) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/staff-management',
+        }}
+      />
+    );
+  }
 
   return (
     <nav
@@ -236,6 +253,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
           {popper}
+          <IconButton className={classes.LogoutButton} onClick={handleStaffClick}>
+            <img src={StaffIcon} className={styles.StaffIcon} alt="stafficon" />
+          </IconButton>
         </Drawer>
       </Hidden>
     </nav>

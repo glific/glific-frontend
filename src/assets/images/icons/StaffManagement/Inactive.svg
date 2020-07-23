@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="38px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Staff/Inactive</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Staff/Inactive" stroke="#93A29B" stroke-width="2">
+            <circle id="Oval" cx="19" cy="19" r="18"></circle>
+            <circle id="Oval" cx="19" cy="13" r="4"></circle>
+            <path d="M19,21 C15.2933238,21 12.5944241,22.0565173 11,24.3181867 L11,27 L27,27 L27,24.3181867 C25.4055759,22.0565173 22.7066762,21 19,21 Z" id="Path-12" fill="#FFFFFF"></path>
+            <path d="M24.9621633,30 L31.9668805,30 L31.9668805,27.0092482 C30.4822258,25.0030827 27.9107972,24 24.2525948,24 C23.4493312,24 22.6984663,24.0483635 22,24.1450904" id="Path-12" fill="#FFFFFF" stroke-linecap="round" transform="translate(26.983440, 27.000000) scale(-1, 1) translate(-26.983440, -27.000000) "></path>
+            <path d="M8.96216333,30 L15.9668805,30 L15.9668805,27.0092482 C14.4822258,25.0030827 11.9107972,24 8.25259477,24 C7.44933123,24 6.69846631,24.0483635 6,24.1450904" id="Path-12" fill="#FFFFFF" stroke-linecap="round"></path>
+            <circle id="Oval-Copy" cx="29.5" cy="17.5" r="3.5"></circle>
+            <circle id="Oval-Copy-2" cx="8.5" cy="17.5" r="3.5"></circle>
+        </g>
+    </g>
+</svg>
