@@ -68,20 +68,20 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleInputErrors = () => {
-    let errorFlag = true;
+    let foundErrors = false;
     if (!phoneNumber) {
       setPhoneNumberError(true);
-      errorFlag = false;
+      foundErrors = true;
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
     if (!password) {
       setPasswordError(true);
-      errorFlag = false;
+      foundErrors = true;
     } else if (password) {
       setPasswordError(false);
     }
-    return errorFlag;
+    return foundErrors;
   };
 
   const handleSubmit = () => {
@@ -90,7 +90,7 @@ export const Login: React.SFC<LoginProps> = () => {
     setInvalidLogin(false);
 
     // if errors just return
-    if (!handleInputErrors()) {
+    if (handleInputErrors()) {
       return;
     }
 
