@@ -63,8 +63,8 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const configureButton = (clickHandler: any) =>
     match.params.id ? (
       <Link to={`/flow/${uuid}`} className={styles.Link} onClick={clickHandler}>
-        <Button variant="contained" color="default">
-          Save & Configure
+        <Button variant="outlined" color="primary">
+          Configure
         </Button>
       </Link>
     ) : null;

@@ -12,13 +12,15 @@ export interface ButtonProps {
 }
 
 export const Button: React.SFC<ButtonProps> = (props) => {
+  let buttonColor = null;
+  if (props.variant === 'outlined') buttonColor = styles.ButtonColor;
   return (
     <ButtonElement
       variant={props.variant}
       color={props.color}
       onClick={props.onClick}
       data-testid={props['data-testid']}
-      className={`${styles.Button} ${props.className}`}
+      className={`${styles.Button} ${props.className} ${buttonColor}`}
     >
       {props.children}
     </ButtonElement>
