@@ -80,6 +80,10 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const handleSubmit = () => {
     handleInputErrors();
+    console.log('passwordError', passwordError);
+    console.log('phoneNumberError', phoneNumberError);
+
+    // we should call the backend only if frontend has valid input
     if (!passwordError && !phoneNumberError) {
       axios
         .post(USER_SESSION, {
@@ -137,7 +141,8 @@ export const Login: React.SFC<LoginProps> = () => {
                 id="phone-number"
                 label="Your phone number"
                 value={phoneNumber}
-                type="integer"
+                type="tel"
+                required
                 onChange={handlePhoneNumberChange()}
               />
               {phoneNumberError ? (
@@ -161,6 +166,7 @@ export const Login: React.SFC<LoginProps> = () => {
                 type={showPassword ? 'text' : 'password'}
                 label="Password"
                 value={password}
+                required
                 onChange={handlePasswordChange()}
                 endAdornment={
                   <InputAdornment position="end">
