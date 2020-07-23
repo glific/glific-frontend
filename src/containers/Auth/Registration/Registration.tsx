@@ -47,7 +47,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handleInputErrors = () => {
-    console.log(phoneNumber);
     if (!userName) {
       setUserNameError(true);
     } else if (userName) {
