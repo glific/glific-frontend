@@ -1,10 +1,11 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import { Registration } from './Registration';
 import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
-import { OutlinedInput, Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
+
+import { Registration } from './Registration';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -73,8 +74,6 @@ it('axios post request catchs error', () => {
 
 it('set errors if the form fields are blank', () => {
   const wrapper = shallow(createRegistration());
-  const response = { data: {} };
-  mockedAxios.post.mockResolvedValueOnce(response);
   wrapper.find('[data-testid="registrationButton"]').simulate('click');
   expect(wrapper.find('[data-testid="username"]').prop('error')).toBeTruthy();
   expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy();
