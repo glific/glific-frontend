@@ -56,7 +56,7 @@
     "test:coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "flowEditor": "cd public && if not exist flow-editor mkdir flow-editor && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/flow-editor"
+    "floweditor": "cd public && ([ ! -d floweditor ] && mkdir floweditor || true ) && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/floweditor"
   },
   "eslintConfig": {
     "extends": "react-app"

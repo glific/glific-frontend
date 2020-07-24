@@ -22,4 +22,4 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-public/flow-editor
+public/floweditor
