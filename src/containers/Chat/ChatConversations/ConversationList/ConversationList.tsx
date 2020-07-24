@@ -3,12 +3,10 @@ import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import {
-  GET_CONVERSATION_QUERY,
-  FILTER_CONVERSATIONS_QUERY,
-} from '../../../../graphql/queries/Chat';
+import { GET_CONVERSATION_QUERY } from '../../../../graphql/queries/Chat';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
+import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 
 interface ConversationListProps {
   searchVal: string;
@@ -46,7 +44,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   });
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    FILTER_CONVERSATIONS_QUERY,
+    SEARCH_QUERY,
     {
       variables: filterVariables(),
     }
