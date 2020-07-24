@@ -22,13 +22,13 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     return null;
   }
 
-  const handlerSavedSearchCriteria = () => {
-    props.savedSearchCriteriaCallback('{"includeTags":["12"]}');
+  const handlerSavedSearchCriteria = (savedSearchCriteria: string) => {
+    props.savedSearchCriteriaCallback(savedSearchCriteria);
   };
 
   const savedSearchList = data.savedSearches.map((savedSearch: any) => {
     return (
-      <div key={savedSearch.id} onClick={() => handlerSavedSearchCriteria()}>
+      <div key={savedSearch.id} onClick={() => handlerSavedSearchCriteria(savedSearch.args)}>
         {savedSearch.label}
       </div>
     );
