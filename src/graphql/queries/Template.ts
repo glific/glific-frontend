@@ -12,6 +12,7 @@ export const FILTER_TEMPLATES = gql`
       id
       body
       label
+      isReserved
     }
   }
 `;
@@ -38,6 +39,7 @@ export const FILTER_HSM_TEMPLATES = gql`
       id
       body
       label
+      isReserved
     }
   }
 `;

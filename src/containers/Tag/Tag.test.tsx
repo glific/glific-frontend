@@ -1,12 +1,9 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup, screen } from '@testing-library/react';
+import { render, wait, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_TAG, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { CREATE_TAG } from '../../graphql/mutations/Tag';
 import { Tag } from './Tag';
-import { Switch, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { TagList } from './TagList/TagList';
 import { LIST_ITEM_MOCKS } from '../List/ListItem/ListItem.test.helper';
 
