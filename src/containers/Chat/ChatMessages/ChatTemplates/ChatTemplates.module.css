@@ -2,19 +2,20 @@
   position: absolute;
   width: 100%;
   bottom: 100px;
-  padding-top: 10px;
+  padding-top: 5px;
   background-color: white;
   border-radius: 15px 15px 0px 0px;
 }
 
 .ShortcutList {
   max-height: 500px;
-  /* position: fixed; */
   bottom: 0px;
   overflow-y: scroll;
-  /* margin-top: 50px !important; */
-  /* padding: 10px 0px 0px 0px !important; */
-  /* border-radius: 25px 25px 0px 0px !important; */
+}
+
+.Text {
+  align-items: flex-start;
+  margin: 0;
 }
 
 .PopperListItem {

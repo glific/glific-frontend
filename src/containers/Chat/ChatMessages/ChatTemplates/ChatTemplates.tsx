@@ -28,9 +28,6 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (loading) return <div />;
   if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
 
-  console.log(props.searchVal);
-  console.log(data);
-
   const popperItems = () => {
     let templateObjs = data.sessionTemplates;
     let text = props.isTemplate ? 'templates' : 'speed sends';
@@ -45,8 +42,10 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
               onClick={(e: any) => props.handleSelectText(obj)}
               className={styles.PopperListItem}
             >
-              <b>{obj.label}: &nbsp;</b>
-              {obj.body}
+              <p className={styles.Text}>
+                <b style={{ marginRight: '5px' }}>{obj.label}:</b>
+                {obj.body}
+              </p>
             </ListItem>
             <Divider light />
           </>

@@ -1,20 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import {
-  Container,
-  Button,
-  List,
-  ListItem,
-  Typography,
-  Grid,
-  Fade,
-  Paper,
-  Popover,
-  ClickAwayListener,
-  Divider,
-} from '@material-ui/core';
-import Popper, { PopperPlacementType } from '@material-ui/core/Popper';
+import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
@@ -22,7 +8,6 @@ import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import { SearchBar } from '../../ChatConversations/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
-// import styled from 'styled-components';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -32,13 +17,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [selectedTab, setSelectedTab] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [searchVal, setSearchVal] = useState('');
   const speedSends = 'Speed sends';
   const templates = 'Templates';
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState<PopperPlacementType>();
-  const quickSend = useRef(null);
-  const [searchVal, setSearchVal] = useState('');
 
   const keyPressHandler = (e: any) => {
     if (e.key === 'Enter') {
@@ -76,15 +58,13 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
-  const handleClick = (event: any, newPlacement: PopperPlacementType, title: string) => {
+  const handleClick = (title: string) => {
     if (selectedTab === title) {
       setSelectedTab('');
     } else {
       setSelectedTab(title);
     }
-    setAnchorEl(quickSend.current);
     setOpen(selectedTab !== title);
-    setPlacement(newPlacement);
   };
 
   const handleClickAway = () => {
@@ -99,36 +79,27 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     setSearchVal(e.target.value);
   };
 
-  // const shortcutPopper = (
-  //   <Popper
-  //     className={styles.Popper}
-  //     open={open}
-  //     disablePortal
-  //     anchorEl={anchorEl}
-  //     placement={placement}
-  //     transition
-  //   >
-  //     {({ TransitionProps }) => (
-  //       <Fade {...TransitionProps} timeout={150}>
-  //         <Paper elevation={0} className={styles.ShortcutPaper}>
-  //           <ChatTemplates searchVal={searchVal} handleSelectText={handleSelectText} />
-  //           <SearchBar
-  //             className={styles.ChatSearchBar}
-  //             handleChange={handleSearch}
-  //             onReset={() => console.log('reset')}
-  //           />
-  //         </Paper>
-  //       </Fade>
-  //     )}
-  //   </Popper>
-  // );
+  const quickSendButtons = () => {
+    let types = [speedSends, templates];
+    let buttons = types.map((type: string) => {
+      return (
+        <div
+          onClick={() => handleClick(type)}
+          className={clsx(styles.QuickSend, {
+            [styles.QuickSendSelected]: selectedTab === type,
+          })}
+        >
+          {type}
+        </div>
+      );
+    });
+    return <div className={styles.QuickSendButtons}>{buttons}</div>;
+  };
 
   return (
     <Container className={styles.ChatInput}>
-      {/* <ClickAwayListener onClickAway={handleClickAway}> */}
-      {/* {shortcutPopper} */}
       <div className={styles.SendsContainer}>
-        {/* {shortcutPopper} */}
+        {/* <ClickAwayListener onClickAway={handleClickAway}> */}
         <div className={clsx(styles.Popup, { [styles.HidePopup]: !open })}>
           <ChatTemplates
             isTemplate={selectedTab === templates}
@@ -141,27 +112,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             onReset={() => setSearchVal('')}
           />
         </div>
-        <div className={styles.QuickSendButtons}>
-          <div
-            onClick={(e: any) => handleClick(e, 'top', speedSends)}
-            className={clsx(styles.QuickSend, {
-              [styles.QuickSendSelected]: selectedTab === speedSends,
-            })}
-          >
-            {speedSends}
-          </div>
-          <div
-            onClick={(e: any) => handleClick(e, 'top', templates)}
-            className={clsx(styles.QuickSend, {
-              [styles.QuickSendSelected]: selectedTab === templates,
-            })}
-          >
-            {templates}
-          </div>
-        </div>
+        {quickSendButtons}
+        {/* </ClickAwayListener> */}
       </div>
-      {/* </ClickAwayListener> */}
-      <div ref={quickSend} className={styles.ChatInputElements}>
+      <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
           <input
             className={styles.InputBox}
