@@ -4,6 +4,7 @@ import styles from './ChatConversations.module.css';
 import { SearchBar } from './SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import ConversationList from './ConversationList/ConversationList';
+import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -40,6 +41,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           </Typography>
         </div>
       </Toolbar>
+      <SavedSearchToolbar />
       <SearchBar
         handleChange={handleChange}
         handleSubmit={handleSubmit}
