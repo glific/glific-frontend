@@ -53,18 +53,16 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       }
     });
 
-    return (
+    return listItems.length !== 0 ? (
       <List className={styles.ShortcutList}>
         <Paper elevation={0} className={styles.Paper}>
-          {listItems.length !== 0 ? (
-            listItems
-          ) : (
-            <Typography align="center" variant="h6">
-              No {text} for that search.
-            </Typography>
-          )}
+          {listItems}
         </Paper>
       </List>
+    ) : (
+      <Typography align="center" variant="h6">
+        No {text} for that search.
+      </Typography>
     );
   };
 

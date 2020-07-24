@@ -112,7 +112,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
             onReset={() => setSearchVal('')}
           />
         </div>
-        {quickSendButtons}
+        {quickSendButtons()}
         {/* </ClickAwayListener> */}
       </div>
       <div className={styles.ChatInputElements}>
