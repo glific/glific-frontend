@@ -30,7 +30,7 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
-  configureButton?: any;
+  configureButton?: boolean;
   linkParameter?: any;
   cancelLink?: any;
 }
@@ -61,7 +61,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
   const [configure, setConfigure] = useState(false);
-
   const [link, setLink] = useState(undefined);
 
   const languages = useQuery(GET_LANGUAGES, {
@@ -199,18 +198,16 @@ export const ListItem: React.SFC<ListItemProps> = ({
                 Save
               </Button>
               {configureButton ? (
-                <Tooltip title="Your changes will be saved">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => {
-                      submitForm();
-                      setConfigure(true);
-                    }}
-                  >
-                    Configure
-                  </Button>
-                </Tooltip>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    submitForm();
+                    setConfigure(true);
+                  }}
+                >
+                  Configure
+                </Button>
               ) : null}
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel

@@ -3,14 +3,13 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
-import { Button } from '../../components/UI/Form/Button/Button';
-import { Link } from 'react-router-dom';
+
 import {
   CREATE_AUTOMATION,
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
-import { Tooltip } from '@material-ui/core';
+
 import { GET_AUTOMATION } from '../../graphql/queries/Automation';
 
 export interface AutomationProps {
@@ -55,23 +54,13 @@ const queries = {
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const [shortcode, setShortcode] = useState('');
   const [name, setName] = useState('');
-  const [uuid, setUuid] = useState('');
 
   const states = { shortcode, name };
 
-  const setStates = ({ shortcode, name, uuid }: any) => {
+  const setStates = ({ shortcode, name }: any) => {
     setShortcode(shortcode);
-    setUuid(uuid);
     setName(name);
   };
-
-  const configureButton = (clickHandler: any) => (
-    <Tooltip title="Your changes will be saved">
-      <Button variant="outlined" color="primary" onClick={clickHandler}>
-        Configure
-      </Button>
-    </Tooltip>
-  );
 
   return (
     <ListItem
@@ -88,7 +77,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       linkParameter="uuid"
       listItem="flow"
       icon={automationIcon}
-      configureButton={configureButton}
+      configureButton={true}
     />
   );
 };
