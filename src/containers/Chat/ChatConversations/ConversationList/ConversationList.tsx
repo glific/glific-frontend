@@ -12,6 +12,7 @@ interface ConversationListProps {
   searchVal: string;
   selectedContactId: number;
   setSelectedContactId: (i: number) => void;
+  savedSearchCriteria: string | null;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -35,10 +36,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       contactOpts: {
         limit: 10,
       },
-      filter: {},
+      filter: props.savedSearchCriteria,
     };
   };
-
+  console.log(props.savedSearchCriteria);
   const data: any = client.readQuery({
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,

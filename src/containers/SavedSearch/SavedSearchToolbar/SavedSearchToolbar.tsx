@@ -4,9 +4,11 @@ import { useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 
-export interface SavedSearchToolbarProps {}
+export interface SavedSearchToolbarProps {
+  savedSearchCriteriaCallback: Function;
+}
 
-export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = () => {
+export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
   // default queryvariables
   const queryVariables = { filter: {} };
 
@@ -20,8 +22,16 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = () => {
     return null;
   }
 
+  const handlerSavedSearchCriteria = () => {
+    props.savedSearchCriteriaCallback('{"includeTags":["12"]}');
+  };
+
   const savedSearchList = data.savedSearches.map((savedSearch: any) => {
-    return <div>{savedSearch.label}</div>;
+    return (
+      <div key={savedSearch.id} onClick={() => handlerSavedSearchCriteria()}>
+        {savedSearch.label}
+      </div>
+    );
   });
 
   return <div>{savedSearchList}</div>;
