@@ -78,6 +78,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       listItem="flow"
       icon={automationIcon}
       configureButton={true}
+      languageSupport={false}
     />
   );
 };

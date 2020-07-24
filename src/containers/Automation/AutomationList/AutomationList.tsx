@@ -43,5 +43,6 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}
+    configureParameter="uuid"
   />
 );

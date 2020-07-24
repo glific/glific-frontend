@@ -33,6 +33,7 @@ export interface ListItemProps {
   configureButton?: boolean;
   linkParameter?: any;
   cancelLink?: any;
+  languageSupport?: boolean;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -54,6 +55,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   icon,
   linkParameter = null,
   cancelLink = null,
+  languageSupport = true,
 }: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -148,15 +150,16 @@ export const ListItem: React.SFC<ListItemProps> = ({
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;
-  const formFieldItems = [
-    ...formFields,
-    {
-      component: Dropdown,
-      name: 'languageId',
-      placeholder: 'Language',
-      options: languageOptions,
-    },
-  ];
+  const language = languageSupport
+    ? {
+        component: Dropdown,
+        name: 'languageId',
+        placeholder: 'Language',
+        options: languageOptions,
+      }
+    : null;
+
+  const formFieldItems = languageSupport ? [...formFields, language] : formFields;
 
   const deleteButton = itemId ? (
     <Button

@@ -6,6 +6,7 @@ export const GET_AUTOMATIONS = gql`
       id
       name
       shortcode
+      uuid
     }
   }
 `;

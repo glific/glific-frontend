@@ -94,7 +94,7 @@ export const FlowEditor = (props: any) => {
     <>
       <Link to="/automation" className={styles.Link}>
         <Button variant="contained" color="primary" className={styles.Button}>
-          Complete
+          Done
         </Button>
       </Link>
       <div id="flow"></div>
