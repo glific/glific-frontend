@@ -14,7 +14,6 @@ import styles from './List.module.css';
 import { SearchBar } from '../Chat/ChatConversations/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
-import { ListItemProps } from './ListItem/ListItem';
 
 export interface ListProps {
   columnNames: Array<string>;
