@@ -35,6 +35,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       contactOpts: {
         limit: 10,
       },
+      filter: {},
     };
   };
 

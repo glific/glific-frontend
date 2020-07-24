@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const SEARCH_QUERY = gql`
-  query search($term: String!, $messageOpts: Opts!, $contactOpts: Opts!) {
-    search(term: $term, messageOpts: $messageOpts, contactOpts: $contactOpts) {
+  query search($term: String!, $messageOpts: Opts!, $contactOpts: Opts!, $filter: SearchFilter) {
+    search(term: $term, messageOpts: $messageOpts, contactOpts: $contactOpts, filter: $filter) {
       contact {
         id
         name
