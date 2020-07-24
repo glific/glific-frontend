@@ -65,18 +65,13 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     setName(name);
   };
 
-  const configureButton = (clickHandler: any) =>
-    match.params.id ? (
-      <Tooltip title="Your changes will be saved">
-        <Link to={`/automation/configure/${uuid}`} className={styles.Link} onClick={clickHandler}>
-          <Button variant="outlined" color="primary">
-            Configure
-          </Button>
-        </Link>
-      </Tooltip>
-    ) : null;
-
-  const redirectionLink = match.params.id ? 'automation' : 'automation/configure';
+  const configureButton = (clickHandler: any) => (
+    <Tooltip title="Your changes will be saved">
+      <Button variant="outlined" color="primary" onClick={clickHandler}>
+        Configure
+      </Button>
+    </Tooltip>
+  );
 
   return (
     <ListItem
@@ -88,7 +83,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       listItemName="automation"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={redirectionLink}
+      redirectionLink="automation"
       cancelLink="automation"
       linkParameter="uuid"
       listItem="flow"

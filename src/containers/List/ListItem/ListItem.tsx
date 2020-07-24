@@ -8,7 +8,7 @@ import { useApolloClient, DocumentNode } from '@apollo/client';
 import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
-
+import { Tooltip } from '@material-ui/core';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
@@ -50,7 +50,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
-  configureButton = () => null,
+  configureButton = false,
   icon,
   linkParameter = null,
   cancelLink = null,
@@ -60,8 +60,9 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
+  const [configure, setConfigure] = useState(false);
 
-  const [link, setLink] = useState('');
+  const [link, setLink] = useState(undefined);
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -75,6 +76,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
     onCompleted: (data) => {
       if (itemId && data) {
         item = data[listItem][listItem];
+        setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(item.language.id);
       }
@@ -89,7 +91,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
-      setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
+      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
     },
   });
@@ -138,7 +140,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
 
   if (formSubmitted) {
     return (
-      <Redirect to={link !== undefined ? `/${redirectionLink}/${link}` : `/${redirectionLink}`} />
+      <Redirect to={configure ? `/${redirectionLink}/configure/${link}` : `/${redirectionLink}`} />
     );
   }
 
@@ -196,7 +198,20 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
-              {configureButton(submitForm)}
+              {configureButton ? (
+                <Tooltip title="Your changes will be saved">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      submitForm();
+                      setConfigure(true);
+                    }}
+                  >
+                    Configure
+                  </Button>
+                </Tooltip>
+              ) : null}
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel
               </Button>
