@@ -3,17 +3,19 @@ import { USER_COUNT, DELETE_USER, FILTER_USERS } from '../../../graphql/queries/
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { List } from '../../List/List';
+import { getgroups } from 'process';
 
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['NAME', 'PHONE', 'ACTIONS'];
+  const columnNames = ['NAME', 'PHONE NO.', 'GROUP', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Role];
   const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
-  const getColumns = ({ id, name, phone, role }: any) => ({
+  const getColumns = ({ name, phone, group }: any) => ({
     name: getName(name),
     phone: getPhone(phone),
+    group: getGroup(group),
   });
 
   const queries = {
@@ -27,6 +29,10 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   };
 
   const getPhone = (text: string) => {
+    return <p className={styles.TableText}>{text}</p>;
+  };
+
+  const getGroup = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
@@ -55,6 +61,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
+        buttonLabel="Groups"
         // searchKey={searchKey}
       />
     </div>

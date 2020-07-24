@@ -29,6 +29,7 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
+  showLanguage?: boolean;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -47,6 +48,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   updateItemQuery,
   defaultAttribute = null,
   icon,
+  showLanguage = true,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -55,10 +57,11 @@ export const ListItem: React.SFC<ListItemProps> = ({
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
-      setLanguageId(data.languages[0].id);
+      // setLanguageId(data.languages[0].id);
     },
   });
   const itemId = match.params.id ? match.params.id : false;
+  console.log(itemId);
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
     skip: !itemId,
@@ -66,7 +69,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
       if (itemId && data) {
         item = data[listItem][listItem];
         setStates(item);
-        setLanguageId(item.language.id);
+        // setLanguageId(item.language.id);
       }
     },
   });
@@ -93,7 +96,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
     const payload = {
       ...item,
       ...defaultAttribute,
-      languageId: Number(languageId),
+      // languageId: Number(languageId),
     };
 
     let message;
@@ -128,12 +131,14 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const languageOptions = languages.data ? languages.data.languages : null;
   const formFieldItems = [
     ...formFields,
-    {
-      component: Dropdown,
-      name: 'languageId',
-      placeholder: 'Language',
-      options: languageOptions,
-    },
+    showLanguage
+      ? {
+          component: Dropdown,
+          name: 'languageId',
+          placeholder: 'Language',
+          options: languageOptions,
+        }
+      : null,
   ];
 
   const deleteButton = itemId ? (

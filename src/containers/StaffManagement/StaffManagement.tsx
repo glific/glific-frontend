@@ -14,13 +14,13 @@ export interface TemplateProps {
 
 const setValidation = (values: any) => {
   const errors: Partial<any> = {};
-  if (!values.label) {
-    errors.label = 'User title required';
-  } else if (values.label.length > 50) {
-    errors.label = 'Length of the title is too long';
+  if (!values.name) {
+    errors.name = 'User title required';
+  } else if (values.name.length > 50) {
+    errors.name = 'Length of the title is too long';
   }
-  if (!values.body) {
-    errors.body = 'User body required';
+  if (!values.phone) {
+    errors.phone = 'User phone required';
   }
   return errors;
 };
@@ -28,14 +28,10 @@ const setValidation = (values: any) => {
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
 const formFields = [
-  { component: Input, name: 'name', placeholder: 'Title' },
-  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
+  { component: Input, name: 'name', placeholder: 'Full Name' },
+  { component: Input, name: 'phone', placeholder: 'Phone Number' },
+  { component: Input, name: 'roles', placeholder: 'Roles' },
 ];
-
-const defaultAttribute = {
-  type: 'TEXT',
-  isHsm: true,
-};
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
@@ -48,12 +44,14 @@ const queries = {
 
 export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => {
   const [name, setName] = useState('');
-  const [body, setBody] = useState('');
+  const [phone, setPhone] = useState('');
+  const [roles, setRoles] = useState('');
 
-  const states = { name, body };
-  const setStates = ({ name, body }: any) => {
+  const states = { name, phone, roles };
+  const setStates = ({ name, phone, roles }: any) => {
     setName(name);
-    setBody(body);
+    setPhone(phone);
+    setRoles(roles);
   };
 
   return (
@@ -63,13 +61,13 @@ export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => 
       states={states}
       setStates={setStates}
       setValidation={setValidation}
-      listItemName="HSM Template"
+      listItemName="User"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="staff-management"
-      listItem="users"
+      listItem="user"
       icon={speedSendIcon}
-      defaultAttribute={defaultAttribute}
+      showLanguage={false}
     />
   );
 };

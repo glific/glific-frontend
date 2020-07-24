@@ -28,6 +28,7 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  buttonLabel?: string;
   // searchKey: any;
 }
 
@@ -51,6 +52,7 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  buttonLabel = 'Add New',
   // searchKey = null,
 }) => {
   const client = useApolloClient();
@@ -268,7 +270,7 @@ export const List: React.SFC<ListProps> = ({
           {dialogBox}
           <div className={styles.AddButton}>
             <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
-              Add New
+              {buttonLabel}
             </Button>
           </div>
         </div>
