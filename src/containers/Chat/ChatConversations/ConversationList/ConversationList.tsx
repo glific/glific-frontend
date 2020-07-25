@@ -28,14 +28,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
   };
 
-  let savedSearchParams = {};
-  if (props.savedSearchCriteria) {
-    savedSearchParams = JSON.parse(props.savedSearchCriteria);
-  }
-
   const filterVariables = () => {
-    if (savedSearchParams) {
-      return savedSearchParams;
+    if (props.savedSearchCriteria) {
+      return JSON.parse(props.savedSearchCriteria);
     }
 
     return {
@@ -46,6 +41,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       contactOpts: {
         limit: 50,
       },
+      filter: {},
     };
   };
 

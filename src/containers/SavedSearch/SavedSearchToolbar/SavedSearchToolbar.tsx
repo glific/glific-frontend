@@ -50,12 +50,18 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       return null;
     }
 
+    // set the selected class if the button is clicked
+    let buttonClass = styles.Button;
+    if (savedSearch.id === selectedSavedSearch) {
+      buttonClass = styles.ButtonSelected;
+    }
+
     return (
       <Button
         key={savedSearch.id}
         variant="text"
         color="primary"
-        className={styles.Button}
+        className={buttonClass}
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
       >
         {SAVE_SEARCH_DISPLAY_NAMES[index]}
