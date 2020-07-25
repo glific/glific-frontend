@@ -27,6 +27,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       limit: 100,
     },
   };
+
+  let savedSearchParams = {};
+  if (props.savedSearchCriteria) {
+    savedSearchParams = JSON.parse(props.savedSearchCriteria);
+  }
+
   const filterVariables = () => {
     return {
       term: props.searchVal,
@@ -36,10 +42,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       contactOpts: {
         limit: 10,
       },
-      filter: props.savedSearchCriteria,
+      filter: savedSearchParams,
     };
   };
-  console.log(props.savedSearchCriteria);
+
   const data: any = client.readQuery({
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,
@@ -74,11 +80,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (props.searchVal && !called) {
+  if ((props.searchVal || props.savedSearchCriteria) && !called) {
     getFilterConvos();
   }
 
-  if (called && props.searchVal !== '') {
+  if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
