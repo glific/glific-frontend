@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { useQuery } from '@apollo/client';
+
+import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { Button } from '../../../components/UI/Form/Button/Button';
+import styles from './SavedSearchToolbar.module.css';
+
+// TODOS: temporary fix to define user friendly short names for the UI
+// This can be removed once the backend adds this feature
+const SAVE_SEARCH_DISPLAY_NAMES = ['Unread', 'Not replied', 'Opted Out'];
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
@@ -37,18 +44,21 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setSelectedSavedSearch(savedSearchId);
   };
 
-  const savedSearchList = data.savedSearches.map((savedSearch: any) => {
+  const savedSearchList = data.savedSearches.map((savedSearch: any, index: number) => {
     return (
-      <div
+      <Button
         key={savedSearch.id}
+        variant="text"
+        color="primary"
+        className={styles.Button}
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
       >
-        {savedSearch.label}
-      </div>
+        {SAVE_SEARCH_DISPLAY_NAMES[index]}
+      </Button>
     );
   });
 
-  return <div>{savedSearchList}</div>;
+  return <div className={styles.SavedSearchToolbar}>{savedSearchList}</div>;
 };
 
 export default SavedSearchToolbar;
