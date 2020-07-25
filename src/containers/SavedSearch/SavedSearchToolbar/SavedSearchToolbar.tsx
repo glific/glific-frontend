@@ -9,7 +9,7 @@ import styles from './SavedSearchToolbar.module.css';
 
 // TODOS: temporary fix to define user friendly short names for the UI
 // This can be removed once the backend adds this feature
-const SAVE_SEARCH_DISPLAY_NAMES = ['Unread', 'Not replied', 'Opted Out'];
+const SAVE_SEARCH_DISPLAY_NAMES = ['Unread', 'Not replied', 'Not responded', 'Opted Out'];
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
@@ -45,6 +45,11 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   const savedSearchList = data.savedSearches.map((savedSearch: any, index: number) => {
+    // TODOS: for now restrict to 3. Once new UI is decided we can figure out how to show the rest
+    if (index > 2) {
+      return null;
+    }
+
     return (
       <Button
         key={savedSearch.id}
