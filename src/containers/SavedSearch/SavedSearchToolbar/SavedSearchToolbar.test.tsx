@@ -31,7 +31,7 @@ describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = { savedSearchCriteriaCallback: jest.fn };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
-    const { findAllByText, getByText } = render(
+    const { findByText, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <SavedSearchToolbar {...defaultProps} />
       </MockedProvider>
@@ -41,9 +41,13 @@ describe('testing <SavedSearchToolbar />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     // check if Unread Saved search is rendered
-    const unreadButton = await findAllByText('Unread');
-    expect(unreadButton).toHaveLength(1);
+    const unreadButton = await findByText('Unread');
+    expect(unreadButton).toBeInTheDocument();
 
-    //fireEvent.click(unreadButton);
+    // simulate saves search is selected
+    fireEvent.click(unreadButton);
+
+    // simulate saves search is cleared
+    fireEvent.click(unreadButton);
   });
 });
