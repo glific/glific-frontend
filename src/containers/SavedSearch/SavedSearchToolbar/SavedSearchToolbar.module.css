@@ -1,7 +1,12 @@
 .SavedSearchToolbar {
 }
 
-.Button {
+.ButtonSelected {
   color: #119656 !important;
+  text-transform: none !important;
+}
+
+.Button {
+  color: #93a29b !important;
   text-transform: none !important;
 }

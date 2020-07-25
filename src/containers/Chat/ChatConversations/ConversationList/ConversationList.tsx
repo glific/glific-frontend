@@ -34,15 +34,18 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const filterVariables = () => {
+    if (savedSearchParams) {
+      return savedSearchParams;
+    }
+
     return {
       term: props.searchVal,
       messageOpts: {
-        limit: 10,
+        limit: 50,
       },
       contactOpts: {
-        limit: 10,
+        limit: 50,
       },
-      filter: savedSearchParams,
     };
   };
 
