@@ -1,5 +1,6 @@
 import { GET_CONVERSATION_QUERY, GET_CONVERSATION_MESSAGE_QUERY } from '../../graphql/queries/Chat';
 import { MESSAGE_RECEIVED_SUBSCRIPTION, MESSAGE_SENT_SUBSCRIPTION } from '../../graphql/subscriptions/Chat';
+import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 
 const queryVariables = {
   contactOpts: {
@@ -157,5 +158,22 @@ export const CONVERSATION_MOCKS = [
         },
       },
     },
+  },
+  {
+    request: {
+      query: SAVED_SEARCH_QUERY,
+      variables: { "filter": {} }
+    },
+    result: {
+      data: {
+        "savedSearches": [
+          {
+            "args": "{\"term\":\"\",\"messageOpts\":{\"limit\":5},\"filter\":{\"includeTags\":[\"12\"]},\"contactOpts\":{\"limit\":10}}",
+            "id": "1",
+            "label": "All unread conversations"
+          }
+        ]
+      }
+    }
   }
 ];
