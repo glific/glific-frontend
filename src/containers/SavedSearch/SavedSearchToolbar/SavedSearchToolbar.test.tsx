@@ -31,7 +31,7 @@ describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = { savedSearchCriteriaCallback: jest.fn };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
-    const { findByText, getByText } = render(
+    const { findByText, getByText, container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <SavedSearchToolbar {...defaultProps} />
       </MockedProvider>
@@ -46,8 +46,10 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // simulate saves search is selected
     fireEvent.click(unreadButton);
+    expect(container.querySelector('button.ButtonSelected')).toBeInTheDocument();
 
     // simulate saves search is cleared
     fireEvent.click(unreadButton);
+    expect(container.querySelector('button.ButtonSelected')).toBeFalsy();
   });
 });
