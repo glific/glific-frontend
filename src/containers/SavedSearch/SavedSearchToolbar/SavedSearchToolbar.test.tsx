@@ -16,10 +16,11 @@ const mocks = [
       data: {
         savedSearches: [
           {
+            id: '1',
             args:
               '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
-            id: '1',
             label: 'All unread conversations',
+            shortcode: 'Unread',
           },
         ],
       },

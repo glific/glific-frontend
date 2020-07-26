@@ -170,7 +170,8 @@ export const CONVERSATION_MOCKS = [
           {
             "args": "{\"term\":\"\",\"messageOpts\":{\"limit\":5},\"filter\":{\"includeTags\":[\"12\"]},\"contactOpts\":{\"limit\":10}}",
             "id": "1",
-            "label": "All unread conversations"
+            "label": "All unread conversations",
+            "shortcode": "Unread",
           }
         ]
       }
