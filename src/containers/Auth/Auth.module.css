@@ -37,10 +37,20 @@
   font-weight: bold;
 }
 
+.TitleText {
+  font-weight: bold !important;
+}
+
 .CenterBox {
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+.AuthButton {
+  width: 335px;
+  border-radius: 27px !important;
+  margin-top: 20px !important;
 }
 
 .OrText {

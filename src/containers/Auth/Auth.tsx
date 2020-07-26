@@ -5,7 +5,14 @@ import { Typography } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Link } from 'react-router-dom';
 
-export interface AuthProps {}
+export interface AuthProps {
+  children: any;
+  pageTitle: string;
+  buttonText: string;
+  alternateLink?: string;
+  alternateText?: string;
+  handlerSubmitCallback: Function;
+}
 
 const Auth: React.SFC<AuthProps> = (props) => {
   return (
@@ -15,19 +22,19 @@ const Auth: React.SFC<AuthProps> = (props) => {
         <div className={styles.Box}>
           <div className={styles.BoxTitle}>
             <Typography variant="h4" classes={{ root: styles.TitleText }}>
-              Create your new <br /> account
+              {props.pageTitle}
             </Typography>
           </div>
           <div className={styles.CenterBox}>
             {props.children}
             <Button
               data-testid="registrationButton"
-              //onClick={handleSubmit}
+              onClick={props.handlerSubmitCallback}
               color="primary"
               variant={'contained'}
-              className={styles.ContinueButton}
+              className={styles.AuthButton}
             >
-              CONTINUE
+              {props.buttonText}
             </Button>
           </div>
         </div>
@@ -36,9 +43,11 @@ const Auth: React.SFC<AuthProps> = (props) => {
           <div className={styles.OrText}>OR</div>
           <hr />
         </div>
-        <div className={styles.Link}>
-          <Link to="/login">LOGIN TO GLIFIC</Link>
-        </div>
+        {props.alternateText ? (
+          <div>
+            <Link to={'/' + props.alternateLink}>{props.alternateText}</Link>
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -74,7 +74,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     return foundErrors;
   };
 
-  const handleSubmit = () => {
+  const handlerSubmit = () => {
     // if errors just return
     if (handleInputErrors()) {
       return;
@@ -114,7 +114,13 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   }
 
   return (
-    <Auth>
+    <Auth
+      pageTitle={'Create your new account'}
+      buttonText={'CONTINUE'}
+      alternateLink={'login'}
+      alternateText={'LOGIN TO GLIFIC'}
+      handlerSubmitCallback={handlerSubmit}
+    >
       <div className={styles.Margin}>
         <FormControl variant="outlined">
           <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
