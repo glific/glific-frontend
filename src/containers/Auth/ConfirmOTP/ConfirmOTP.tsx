@@ -77,6 +77,11 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     }
   };
 
+  // Let's not allow direct navigation to this page
+  if (!props.location.state) {
+    return <Redirect to={'/registration'} />;
+  }
+
   if (tokenResponse) {
     return (
       <Redirect
