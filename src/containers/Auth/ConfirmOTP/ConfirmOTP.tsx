@@ -1,20 +1,21 @@
 import React, { useState, useContext } from 'react';
-import styles from './ConfirmOTP.module.css';
 import { FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import clsx from 'clsx';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+
 import {
   REACT_APP_GLIFIC_REGISTRATION_API,
   REACT_APP_GLIFIC_AUTHENTICATION_API,
 } from '../../../common/constants';
-import { Redirect } from 'react-router-dom';
 import { SessionContext } from '../../../context/session';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import styles from './ConfirmOTP.module.css';
 import Auth from '../Auth';
 
 export interface ConfirmOTPProps {
@@ -94,7 +95,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       pageTitle={'Create your new account'}
       buttonText={'CONTINUE'}
       handlerSubmitCallback={handleSubmit}
-      mode={'registration'}
+      mode={'confirmotp'}
     >
       <div className={clsx(styles.Margin, styles.BottomMargin)}>
         <FormControl className={styles.TextField} variant="outlined">

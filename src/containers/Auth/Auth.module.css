@@ -31,6 +31,12 @@
   background-color: #073f24;
 }
 
+.OTPBox {
+  width: 400px;
+  height: 360px;
+  background-color: #073f24;
+}
+
 .LoginBox {
   height: 390px;
   width: 395px;

@@ -29,6 +29,10 @@ const Auth: React.SFC<AuthProps> = (props) => {
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
       break;
+    case 'confirmotp':
+      boxClass.push(styles.OTPBox);
+      boxTitleClass.push(styles.RegistrationBoxTitle);
+      break;
   }
 
   return (
