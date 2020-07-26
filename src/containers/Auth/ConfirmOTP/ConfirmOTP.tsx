@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react';
 import styles from './ConfirmOTP.module.css';
-import { Typography, FormHelperText } from '@material-ui/core';
+import { FormHelperText } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { Button } from '../../../components/UI/Form/Button/Button';
 import clsx from 'clsx';
 import axios from 'axios';
 import {

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Redirect, Link } from 'react-router-dom';
-import { Typography, FormHelperText, makeStyles, createStyles } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
+import { FormHelperText, makeStyles, createStyles } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -8,36 +8,15 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import styles from './Login.module.css';
-import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+
+import styles from './Login.module.css';
+import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import Auth from '../Auth';
 
 export interface LoginProps {}
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    continueButton: {
-      width: '340px',
-      borderRadius: '27px',
-      marginTop: '0px',
-      color: 'white',
-    },
-    inputField: {
-      lineHeight: '32px',
-    },
-    titleText: {
-      fontWeight: 'bold',
-      marginBottom: '10px',
-      color: '#073F24',
-      display: 'flex',
-      alignItems: 'start',
-    },
-  })
-);
 
 export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
@@ -48,7 +27,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
-  const classes = useStyles();
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
