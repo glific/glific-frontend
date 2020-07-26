@@ -130,7 +130,7 @@ export const Login: React.SFC<LoginProps> = () => {
 
   return (
     <div className={styles.Container}>
-      <div className={styles.CenterLogin}>
+      <div className={styles.Login}>
         <div className={styles.GlificLogo}>Glific</div>
         <div className={styles.Box}>
           <div className={styles.LoginTitle}>
