@@ -16,6 +16,7 @@ import { SessionContext } from '../../../context/session';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import Auth from '../Auth';
 
 export interface ConfirmOTPProps {
   location: any;
@@ -90,72 +91,56 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   }
 
   return (
-    <div className={styles.Container}>
-      <div className={styles.CenterRegistrationAuth}>
-        <div className={styles.GlificLogo}>Glific</div>
-        <div className={styles.Box}>
-          <div className={styles.RegistrationAuthTitle}>
-            <Typography variant="h4" className={styles.TitleText}>
-              Create your new <br />
-              account
-            </Typography>
+    <Auth
+      pageTitle={'Create your new account'}
+      buttonText={'CONTINUE'}
+      handlerSubmitCallback={handleSubmit}
+      mode={'registration'}
+    >
+      <div className={clsx(styles.Margin, styles.BottomMargin)}>
+        <FormControl className={styles.TextField} variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>OTP</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              input: styles.Input,
+            }}
+            error={alreadyExists || authError}
+            id="authentication-code"
+            label="OTP"
+            type="text"
+            value={userAuthCode}
+            onChange={handleuserAuthCodeChange()}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleResend}
+                  edge="end"
+                >
+                  <p className={styles.Resend}>resend</p>{' '}
+                  <RefreshIcon classes={{ root: styles.IconButton }} />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          <div>
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Please confirm the OTP received by your WhatsApp <br />
+              number.
+            </FormHelperText>
+            {authError || alreadyExists ? (
+              <FormHelperText classes={{ root: styles.InvalidFormHelperText }}>
+                {alreadyExists
+                  ? 'An account already exists with this phone number.'
+                  : 'Invalid authentication code.'}
+              </FormHelperText>
+            ) : null}
           </div>
-          <div className={clsx(styles.Margin, styles.BottomMargin)}>
-            <FormControl className={styles.TextField} variant="outlined">
-              <InputLabel classes={{ root: styles.FormLabel }}>OTP</InputLabel>
-              <OutlinedInput
-                classes={{
-                  root: styles.InputField,
-                  notchedOutline: styles.InputField,
-                  input: styles.Input,
-                }}
-                error={alreadyExists || authError}
-                id="authentication-code"
-                label="OTP"
-                type="text"
-                value={userAuthCode}
-                onChange={handleuserAuthCodeChange()}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleResend}
-                      edge="end"
-                    >
-                      <p className={styles.Resend}>resend</p>{' '}
-                      <RefreshIcon classes={{ root: styles.IconButton }} />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-              <div>
-                <FormHelperText classes={{ root: styles.FormHelperText }}>
-                  Please confirm the OTP received by your WhatsApp <br />
-                  number.
-                </FormHelperText>
-                {authError || alreadyExists ? (
-                  <FormHelperText classes={{ root: styles.InvalidFormHelperText }}>
-                    {alreadyExists
-                      ? 'An account already exists with this phone number.'
-                      : 'Invalid authentication code.'}
-                  </FormHelperText>
-                ) : null}
-              </div>
-            </FormControl>
-          </div>
-          <div className="button">
-            <Button
-              className={styles.ContinueButton}
-              onClick={handleSubmit}
-              color="primary"
-              variant={'contained'}
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
+        </FormControl>
       </div>
-    </div>
+    </Auth>
   );
 };
 

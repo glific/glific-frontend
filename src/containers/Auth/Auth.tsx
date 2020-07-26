@@ -54,15 +54,17 @@ const Auth: React.SFC<AuthProps> = (props) => {
             </Button>
           </div>
         </div>
-        <div className={styles.Or}>
-          <hr />
-          <div className={styles.OrText}>OR</div>
-          <hr />
-        </div>
         {props.alternateText ? (
-          <div>
-            <Link to={'/' + props.alternateLink}>{props.alternateText}</Link>
-          </div>
+          <>
+            <div className={styles.Or}>
+              <hr />
+              <div className={styles.OrText}>OR</div>
+              <hr />
+            </div>
+            <div>
+              <Link to={'/' + props.alternateLink}>{props.alternateText}</Link>
+            </div>
+          </>
         ) : null}
       </div>
     </div>
