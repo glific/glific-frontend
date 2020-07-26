@@ -48,7 +48,7 @@ const Auth: React.SFC<AuthProps> = (props) => {
           <div className={styles.CenterBox}>
             {props.children}
             <Button
-              data-testid="registrationButton"
+              data-testid="AuthButton"
               onClick={props.handlerSubmitCallback}
               color="primary"
               variant={'contained'}

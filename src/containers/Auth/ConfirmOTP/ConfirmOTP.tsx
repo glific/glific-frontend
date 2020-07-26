@@ -112,7 +112,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
               input: styles.Input,
             }}
             error={alreadyExists || authError}
-            id="authentication-code"
+            data-testid="AuthenticationCode"
             label="OTP"
             type="text"
             value={userAuthCode}

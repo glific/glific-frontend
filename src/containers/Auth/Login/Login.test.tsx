@@ -37,16 +37,16 @@ describe('Login test', () => {
 
   it('send an axios post request properly', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper
-      .find('[data-testid="phoneNumber"]')
+      .find('input[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
     wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
     mockedAxios.post.mockResolvedValueOnce(response);
-    wrapper.find(Button).simulate('click');
+    wrapper.find('[data-testid="AuthButton"]').simulate('click');
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
 
@@ -63,19 +63,19 @@ describe('Login test', () => {
 
   it('sets phone number error and password error as true if field is blank', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = mount(createLoginMount());
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
     mockedAxios.post.mockResolvedValueOnce(response);
-    wrapper.find(Button).simulate('click');
+    wrapper.find('button[data-testid="AuthButton"]').simulate('click');
     expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy;
     expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy;
   });
 
   it('sets phone number error as false if field is valid', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = mount(createLoginMount());
     wrapper
       .find('[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
@@ -84,18 +84,18 @@ describe('Login test', () => {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };
     mockedAxios.post.mockResolvedValueOnce(response);
-    wrapper.find(Button).simulate('click');
+    wrapper.find('button[data-testid="AuthButton"]').simulate('click');
     expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeFalsy();
     expect(wrapper.find('[data-testid="password"]').prop('error')).toBeFalsy();
   });
 
   it('axios post request catchs error', () => {
     jest.mock('axios');
-    const wrapper = shallow(createLogin());
+    const wrapper = mount(createLoginMount());
     const response = {
       error: { message: 'Incorrect password or phone', status: 400 },
     };
     mockedAxios.post.mockRejectedValueOnce(response);
-    wrapper.find(Button).simulate('click');
+    wrapper.find('button[data-testid="AuthButton"]').simulate('click');
   });
 });

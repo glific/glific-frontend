@@ -127,7 +127,6 @@ export const Login: React.SFC<LoginProps> = () => {
             }}
             data-testid="phoneNumber"
             error={phoneNumberError}
-            id="phone-number"
             label="Your phone number"
             value={phoneNumber}
             type="tel"
@@ -151,7 +150,6 @@ export const Login: React.SFC<LoginProps> = () => {
               focused: styles.InputField,
             }}
             data-testid="password"
-            id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             label="Password"
             value={password}

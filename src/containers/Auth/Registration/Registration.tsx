@@ -133,7 +133,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             }}
             data-testid="username"
             error={userNameError}
-            id="username"
             label="Username"
             type="text"
             value={userName}
@@ -157,7 +156,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             }}
             data-testid="phoneNumber"
             error={phoneNumberError}
-            id="phone-number"
             label="Your phone number"
             type="integer"
             value={phoneNumber}
@@ -181,7 +179,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             }}
             data-testid="password"
             error={passwordError}
-            id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             label="Password"
             value={password}

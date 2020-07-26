@@ -33,7 +33,7 @@ describe('ConfirmOTP test', () => {
 
   it('sends post request', () => {
     jest.mock('axios');
-    const wrapper = shallow(
+    const wrapper = mount(
       <ConfirmOTP
         location={{
           state: {
@@ -47,12 +47,13 @@ describe('ConfirmOTP test', () => {
       data: { renewal_token: '123213123', access_token: '456456456' },
     };
     wrapper
-      .find(OutlinedInput)
-      .at(0)
+      .find('input[data-testid="AuthenticationCode"]')
       .simulate('change', { target: { value: '123456' } });
-    expect(wrapper.find(OutlinedInput).prop('value')).toEqual('123456');
+    expect(wrapper.find('button[data-testid="AuthenticationCode"]').prop('value')).toEqual(
+      '123456'
+    );
     mockedAxios.post = jest.fn().mockResolvedValueOnce(Promise.resolve(response));
-    wrapper.find('Button').simulate('click');
+    wrapper.find('[data-testid="AuthButton"]').simulate('click');
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
 
