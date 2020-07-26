@@ -12,6 +12,7 @@ import { Button } from '../../../components/UI/Form/Button/Button';
 import { Redirect, Link } from 'react-router-dom';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
+import Auth from '../Auth';
 
 export interface RegistrationProps {}
 
@@ -113,129 +114,100 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   }
 
   return (
-    <div className={styles.Container}>
-      <div className={styles.Registration}>
-        <div className={styles.GlificLogo}>Glific</div>
-        <div className={styles.Box}>
-          <div className={styles.BoxTitle}>
-            <Typography variant="h4" classes={{ root: styles.TitleText }}>
-              Create your new <br /> account
-            </Typography>
-          </div>
-          <div className={styles.CenterBox}>
-            <div className={styles.Margin}>
-              <FormControl variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
-                <OutlinedInput
-                  classes={{
-                    root: styles.InputField,
-                    notchedOutline: styles.InputField,
-                    input: styles.Input,
-                  }}
-                  data-testid="username"
-                  error={userNameError}
-                  id="username"
-                  label="Username"
-                  type="text"
-                  value={userName}
-                  onChange={handleUserNameChange()}
-                />
-                {userNameError ? (
-                  <FormHelperText classes={{ root: styles.FormHelperText }}>
-                    Invalid username.
-                  </FormHelperText>
-                ) : null}
-              </FormControl>
-            </div>
-            <div className={styles.Margin}>
-              <FormControl variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
-                <OutlinedInput
-                  classes={{
-                    root: styles.InputField,
-                    notchedOutline: styles.InputField,
-                    input: styles.Input,
-                  }}
-                  data-testid="phoneNumber"
-                  error={phoneNumberError}
-                  id="phone-number"
-                  label="Your phone number"
-                  type="integer"
-                  value={phoneNumber}
-                  onChange={handlePhoneNumberChange()}
-                />
-                {phoneNumberError ? (
-                  <FormHelperText classes={{ root: styles.FormHelperText }}>
-                    Invalid phone number.
-                  </FormHelperText>
-                ) : null}
-              </FormControl>
-            </div>
-            <div className={styles.Margin}>
-              <FormControl variant="outlined">
-                <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
-                <OutlinedInput
-                  classes={{
-                    root: styles.InputField,
-                    notchedOutline: styles.InputField,
-                    input: styles.Input,
-                  }}
-                  data-testid="password"
-                  error={passwordError}
-                  id="outlined-adornment-password"
-                  type={showPassword ? 'text' : 'password'}
-                  label="Password"
-                  value={password}
-                  onChange={handlePasswordChange()}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <Visibility classes={{ root: styles.IconButton }} />
-                        ) : (
-                          <VisibilityOff classes={{ root: styles.IconButton }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-
-                {passwordError ? (
-                  <FormHelperText classes={{ root: styles.FormHelperText }}>
-                    Invalid password, must be at least 8 characters.
-                  </FormHelperText>
-                ) : null}
-              </FormControl>
-            </div>
-            {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
-              <div className={styles.ErrorMessage}>{errorMessage}</div>
-            ) : null}
-            <Button
-              data-testid="registrationButton"
-              onClick={handleSubmit}
-              color="primary"
-              variant={'contained'}
-              className={styles.ContinueButton}
-            >
-              CONTINUE
-            </Button>
-          </div>
-        </div>
-        <div className={styles.Or}>
-          <hr />
-          <div className={styles.OrText}>OR</div>
-          <hr />
-        </div>
-        <div className={styles.Link}>
-          <Link to="/login">LOGIN TO GLIFIC</Link>
-        </div>
+    <Auth>
+      <div className={styles.Margin}>
+        <FormControl variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              input: styles.Input,
+            }}
+            data-testid="username"
+            error={userNameError}
+            id="username"
+            label="Username"
+            type="text"
+            value={userName}
+            onChange={handleUserNameChange()}
+          />
+          {userNameError ? (
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Invalid username.
+            </FormHelperText>
+          ) : null}
+        </FormControl>
       </div>
-    </div>
+      <div className={styles.Margin}>
+        <FormControl variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              input: styles.Input,
+            }}
+            data-testid="phoneNumber"
+            error={phoneNumberError}
+            id="phone-number"
+            label="Your phone number"
+            type="integer"
+            value={phoneNumber}
+            onChange={handlePhoneNumberChange()}
+          />
+          {phoneNumberError ? (
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Invalid phone number.
+            </FormHelperText>
+          ) : null}
+        </FormControl>
+      </div>
+      <div className={styles.Margin}>
+        <FormControl variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              input: styles.Input,
+            }}
+            data-testid="password"
+            error={passwordError}
+            id="outlined-adornment-password"
+            type={showPassword ? 'text' : 'password'}
+            label="Password"
+            value={password}
+            onChange={handlePasswordChange()}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? (
+                    <Visibility classes={{ root: styles.IconButton }} />
+                  ) : (
+                    <VisibilityOff classes={{ root: styles.IconButton }} />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+
+          {passwordError ? (
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Invalid password, must be at least 8 characters.
+            </FormHelperText>
+          ) : null}
+        </FormControl>
+      </div>
+      {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
+        <div className={styles.ErrorMessage}>{errorMessage}</div>
+      ) : null}
+    </Auth>
   );
 };
 
