@@ -18,7 +18,7 @@ describe('<Chat />', () => {
   afterEach(cleanup);
 
   test('it should render <Chat /> component correctly', async () => {
-    const { findAllByText, getByText } = render(
+    const { findAllByText, getByText, findByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
           <Chat {...defaultProps} />
@@ -30,8 +30,8 @@ describe('<Chat />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     // check if chat conversations are displayed
-    const ChatConversation = await findAllByText('Jane Doe');
-    expect(ChatConversation).toHaveLength(1);
+    const ChatConversation = await findByTestId('name');
+    expect(ChatConversation).toHaveTextContent('Jane Doe');
 
     // check if tags are displayed in the ChatMessages
     const ConversationTag = await findAllByText('Unread');
