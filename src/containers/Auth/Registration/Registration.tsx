@@ -120,6 +120,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       alternateLink={'login'}
       alternateText={'LOGIN TO GLIFIC'}
       handlerSubmitCallback={handlerSubmit}
+      mode={'registration'}
     >
       <div className={styles.Margin}>
         <FormControl variant="outlined">

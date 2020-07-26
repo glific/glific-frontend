@@ -12,15 +12,31 @@ export interface AuthProps {
   alternateLink?: string;
   alternateText?: string;
   handlerSubmitCallback: Function;
+  mode: string;
 }
 
 const Auth: React.SFC<AuthProps> = (props) => {
+  const boxClass = [styles.Box];
+  const boxTitleClass = [styles.BoxTitle];
+  const buttonClass = [styles.AuthButton];
+  switch (props.mode) {
+    case 'login':
+      boxClass.push(styles.LoginBox);
+      boxTitleClass.push(styles.LoginBoxTitle);
+      buttonClass.push(styles.LoginButton);
+      break;
+    case 'registration':
+      boxClass.push(styles.RegistrationBox);
+      boxTitleClass.push(styles.RegistrationBoxTitle);
+      break;
+  }
+
   return (
     <div className={styles.Container}>
       <div className={styles.Auth}>
         <div className={styles.GlificLogo}>Glific</div>
-        <div className={styles.Box}>
-          <div className={styles.BoxTitle}>
+        <div className={boxClass.join(' ')}>
+          <div className={boxTitleClass.join(' ')}>
             <Typography variant="h4" classes={{ root: styles.TitleText }}>
               {props.pageTitle}
             </Typography>
@@ -32,7 +48,7 @@ const Auth: React.SFC<AuthProps> = (props) => {
               onClick={props.handlerSubmitCallback}
               color="primary"
               variant={'contained'}
-              className={styles.AuthButton}
+              className={buttonClass.join(' ')}
             >
               {props.buttonText}
             </Button>
