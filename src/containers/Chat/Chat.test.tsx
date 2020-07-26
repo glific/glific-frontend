@@ -30,7 +30,7 @@ describe('<Chat />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     // check if chat conversations are displayed
-    const ChatConversation = await findByTestId('name');
+    const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Jane Doe');
 
     // check if tags are displayed in the ChatMessages

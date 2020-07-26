@@ -10,7 +10,7 @@ export interface ContactBarProps {
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <Typography className={styles.Title} variant="h6" noWrap data-testid="name">
+      <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
         {props.contactName}
       </Typography>
     </Toolbar>
