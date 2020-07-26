@@ -31,6 +31,7 @@ export const SAVED_SEARCH_QUERY = gql`
   query savedSearches($filter: SavedSearchFilters!) {
     savedSearches(filter: $filter) {
       id
+      shortcode
       label
       args
     }
