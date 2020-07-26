@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, FormHelperText } from '@material-ui/core';
-import styles from './Registration.module.css';
+import { FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -8,10 +7,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { Redirect, Link } from 'react-router-dom';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+
+import styles from './Registration.module.css';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import Auth from '../Auth';
 
 export interface RegistrationProps {}
