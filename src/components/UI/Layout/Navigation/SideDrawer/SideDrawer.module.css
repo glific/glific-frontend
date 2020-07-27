@@ -19,3 +19,11 @@
 .StaffIcon {
   width: 32px;
 }
+
+.DrawerIcons {
+  width: 100px;
+}
+
+.StaffButton {
+  width: 100% !important;
+}

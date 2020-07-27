@@ -61,7 +61,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
     },
   });
   const itemId = match.params.id ? match.params.id : false;
-  console.log(itemId);
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
     skip: !itemId,
@@ -102,6 +101,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
     let message;
 
     if (itemId) {
+      payload.phone ? delete payload.phone : console.log(payload);
       updateItem({
         variables: {
           id: itemId,
@@ -164,6 +164,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         validate={setValidation}
         onSubmit={(item) => {
           saveHandler(item);
+          console.log(item);
         }}
       >
         {({ submitForm }) => (

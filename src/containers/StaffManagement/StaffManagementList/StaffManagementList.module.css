@@ -41,3 +41,9 @@
 .Role {
   width: 100px;
 }
+
+.Actions {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
+}

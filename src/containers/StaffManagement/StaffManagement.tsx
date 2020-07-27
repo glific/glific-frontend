@@ -28,9 +28,9 @@ const setValidation = (values: any) => {
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
 const formFields = [
-  { component: Input, name: 'name', placeholder: 'Full Name' },
-  { component: Input, name: 'phone', placeholder: 'Phone Number' },
-  { component: Input, name: 'roles', placeholder: 'Roles' },
+  { component: Input, name: 'name', type: 'text', placeholder: 'Full Name', query: true },
+  { component: Input, name: 'phone', disabled: true, placeholder: 'Phone Number', query: false },
+  { component: Input, name: 'roles', type: 'text', placeholder: 'Roles', query: true },
 ];
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;

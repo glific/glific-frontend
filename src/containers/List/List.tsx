@@ -29,7 +29,7 @@ export interface ListProps {
   columnStyles: any;
   title: string;
   buttonLabel?: string;
-  // searchKey: any;
+  filterKey?: any;
 }
 
 interface TableVals {
@@ -53,7 +53,7 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   buttonLabel = 'Add New',
-  // searchKey = null,
+  filterKey = 'label',
 }) => {
   const client = useApolloClient();
 
@@ -85,38 +85,41 @@ export const List: React.SFC<ListProps> = ({
     });
   };
 
-  const filterPayload = useCallback(() => {
-    return {
-      filter: {
-        name: searchVal,
-      },
-      opts: {
-        limit: tableVals.pageRows,
-        offset: tableVals.pageNum * tableVals.pageRows,
-        order: tableVals.sortDirection.toUpperCase(),
-      },
-    };
-  }, [searchVal, tableVals]);
+  const filterPayload = useCallback(
+    (filterKey: string) => {
+      return {
+        filter: {
+          [filterKey]: searchVal,
+        },
+        opts: {
+          limit: tableVals.pageRows,
+          offset: tableVals.pageNum * tableVals.pageRows,
+          order: tableVals.sortDirection.toUpperCase(),
+        },
+      };
+    },
+    [searchVal, tableVals]
+  );
 
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
     variables: {
       filter: {
-        name: searchVal,
+        [filterKey]: searchVal,
       },
     },
   });
 
   // Get item data here
   const { loading, error, data, refetch } = useQuery(filterItemsQuery, {
-    variables: filterPayload(),
+    variables: filterPayload(filterKey),
   });
 
   const message = useQuery(NOTIFICATION);
   let toastMessage;
 
   useEffect(() => {
-    refetch();
+    refetch(filterKey);
   }, [refetch, filterPayload]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
@@ -132,7 +135,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      refetch();
+      refetch(filterKey);
       refetchCount();
     },
   });

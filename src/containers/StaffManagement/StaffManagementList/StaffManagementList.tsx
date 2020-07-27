@@ -9,7 +9,7 @@ export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['NAME', 'PHONE NO.', 'GROUP', 'ACTIONS'];
-  const columnStyles = [styles.Name, styles.Phone, styles.Role];
+  const columnStyles = [styles.Name, styles.Phone, styles.Role, styles.Actions];
   const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
   const getColumns = ({ name, phone, group }: any) => ({
@@ -62,7 +62,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...queries}
         {...columnAttributes}
         buttonLabel="Groups"
-        // searchKey={searchKey}
+        filterKey="name"
       />
     </div>
   );
