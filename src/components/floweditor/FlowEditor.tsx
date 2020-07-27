@@ -69,7 +69,15 @@ const setConfig = (uuid: any) => {
   };
 };
 
-export const FlowEditor = (props: any) => {
+export interface FlowEditorProps {
+  match: {
+    params: {
+      uuid: string;
+    };
+  };
+}
+
+export const FlowEditor = (props: FlowEditorProps) => {
   const config = setConfig(props.match.params.uuid);
 
   useEffect(() => {
@@ -93,7 +101,7 @@ export const FlowEditor = (props: any) => {
   return (
     <>
       <Link to="/automation" className={styles.Link}>
-        <Button variant="contained" color="primary" className={styles.Button}>
+        <Button variant="contained" color="primary" className={styles.Button} data-testid="button">
           Done
         </Button>
       </Link>
