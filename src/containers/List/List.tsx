@@ -28,6 +28,10 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  additionalAction?: {
+    parameter: string;
+    link: string;
+  } | null;
 }
 
 interface TableVals {
@@ -50,7 +54,8 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
-}) => {
+  additionalAction = null,
+}: ListProps) => {
   const client = useApolloClient();
 
   // DialogBox states
@@ -191,7 +196,12 @@ export const List: React.SFC<ListProps> = ({
   };
 
   // Reformat all items to be entered in table
-  function getIcons(id: number | undefined, label: string, isReserved: boolean | null) {
+  function getIcons(
+    id: number | undefined,
+    label: string,
+    isReserved: boolean | null,
+    additionalActionParameter: string
+  ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
     if (isReserved) {
@@ -201,6 +211,13 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
+          {additionalAction ? (
+            <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
+              <IconButton color="default" className={styles.additonalButton}>
+                {listIcon}
+              </IconButton>
+            </Link>
+          ) : null}
           <Link to={`/${pageLink}/` + id + '/edit'}>
             <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
               <EditIcon />
@@ -223,9 +240,10 @@ export const List: React.SFC<ListProps> = ({
     return listItems.map(({ ...listItem }) => {
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
+      const action = additionalAction ? listItem[additionalAction.parameter] : null;
       return {
         ...columns(listItem),
-        operations: getIcons(listItem.id, label, isReserved),
+        operations: getIcons(listItem.id, label, isReserved, action),
       };
     });
   }
