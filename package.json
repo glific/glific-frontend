@@ -15,6 +15,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
     "@nyaruka/flow-editor": "^1.9.8",
+    "@nyaruka/temba-components": "^0.2.0",
     "@sentry/browser": "^5.18.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^9.3.2",
@@ -33,6 +34,7 @@
     "draft-js": "^0.11.6",
     "emoji-mart": "^3.0.0",
     "enzyme-adapter-react-16.3": "^1.7.2",
+    "fa-icons": "^0.2.0",
     "formik": "^2.1.4",
     "formik-material-ui": "^2.0.0-beta.1",
     "graphql": "^15.3.0",
@@ -57,7 +59,7 @@
     "test:coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "cd public && ([ ! -d floweditor ] && mkdir floweditor || true ) && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/floweditor"
+    "floweditor": "cd public && ([ ! -d floweditor ] && mkdir floweditor || true ) && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/floweditor && ([ ! -d public/sitestatic ] && mkdir public/sitestatic || true ) && ([ ! -d public/sitestatic/@fortawesome ] && mkdir public/sitestatic/@fortawesome || true ) && cp -R node_modules/@nyaruka/flow-editor/build/sitestatic/@fortawesome/fontawesome-free public/sitestatic/@fortawesome/fontawesome-free"
   },
   "eslintConfig": {
     "extends": "react-app"
