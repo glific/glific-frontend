@@ -75,11 +75,13 @@ const mocks = [
             id: '87',
             label: 'Good message',
             body: 'Hey There',
+            isReserved: false,
           },
           {
             id: '94',
             label: 'Message',
             body: 'some description',
+            isReserved: false,
           },
         ],
       },
