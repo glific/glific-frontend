@@ -29,6 +29,7 @@ export interface ListProps {
   columnStyles: any;
   title: string;
   configureParameter?: string | null;
+  searchParameter?: string;
 }
 
 interface TableVals {
@@ -52,6 +53,7 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   configureParameter = null,
+  searchParameter = 'label',
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -82,12 +84,11 @@ export const List: React.SFC<ListProps> = ({
       [attribute]: newVal,
     });
   };
-
+  let filter: any = {};
+  filter[searchParameter] = searchVal;
   const filterPayload = useCallback(() => {
     return {
-      filter: {
-        label: searchVal,
-      },
+      filter,
       opts: {
         limit: tableVals.pageRows,
         offset: tableVals.pageNum * tableVals.pageRows,
@@ -99,9 +100,7 @@ export const List: React.SFC<ListProps> = ({
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
     variables: {
-      filter: {
-        label: searchVal,
-      },
+      filter,
     },
   });
 
