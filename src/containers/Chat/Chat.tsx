@@ -22,6 +22,7 @@ export interface ChatProps {
 const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
+
   const queryVariables = {
     contactOpts: {
       limit: 50,
@@ -74,9 +75,12 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return cachedConversations;
       }
 
-      // We need to add new message to existing messages array
+      // We need to add new message to existing messages array and moving conversation to the top
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-      updatedConversations.conversations[conversationIndex].messages.unshift(newMessage);
+      let updatedConvo = updatedConversations.conversations;
+      updatedConvo = updatedConvo.splice(conversationIndex, 1);
+      updatedConvo[0].messages.unshift(newMessage);
+      updatedConversations.conversations = [...updatedConvo, ...updatedConversations.conversations];
 
       // return the updated object
       const returnConversations = Object.assign({}, cachedConversations, {

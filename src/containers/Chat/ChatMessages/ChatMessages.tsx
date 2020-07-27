@@ -84,7 +84,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [showDropdown, setShowDropdown] = useState<any>(null);
 
   // Instantiate these to be used later.
-  let receiverId: number = 0;
+
   let conversationIndex: number = -1;
   let toastMessage;
 
@@ -174,7 +174,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       const payload = {
         body: body,
         senderId: 1,
-        receiverId: receiverId,
+        receiverId: contactId,
         type: 'TEXT',
         flow: 'OUTBOUND',
       };
@@ -183,7 +183,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         variables: { input: payload },
       });
     },
-    [createAndSendMessage, receiverId]
+    [createAndSendMessage, contactId]
   );
 
   // HOOKS ESTABLISHED ABOVE
@@ -230,9 +230,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // Case with !contactId and convos length == 0 taken care of in Chat.tsx
     conversationInfo = null;
   }
-
-  // In the case where there are no conversations, receiverId is not needed, so set to null.
-  receiverId = conversationInfo ? conversationInfo.contact.id : null;
 
   //toast
   const closeToastMessage = () => {
@@ -364,7 +361,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       return (
         <ChatMessage
           {...message}
-          contactId={receiverId}
+          contactId={contactId}
           key={index}
           popup={message.id === showDropdown}
           onClick={() => showEditTagsDialog(message.id)}
