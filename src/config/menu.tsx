@@ -15,11 +15,6 @@ export const sideDrawerMenus = [
     icon: 'speedSend',
   },
   {
-    title: 'Staff Management',
-    path: '/staff-management',
-    icon: 'staff',
-  },
-  {
     title: 'Templates',
     path: '/template',
     icon: 'template',
