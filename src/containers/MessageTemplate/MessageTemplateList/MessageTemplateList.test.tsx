@@ -1,11 +1,9 @@
 import React from 'react';
-import { render, wait, screen, cleanup } from '@testing-library/react';
+import { render, wait, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { MessageTemplateList } from './MessageTemplateList';
-import { Switch, Route } from 'react-router-dom';
-import { within, fireEvent } from '@testing-library/dom';
-import { MessageTemplate } from '../MessageTemplate';
+import { within } from '@testing-library/dom';
 import { TEMPLATE_MOCKS } from './MessageTemplateList.test.helper';
 
 afterEach(cleanup);
@@ -29,19 +27,8 @@ test('MessageTemplateList has proper headers', async () => {
   expect(getByText('ACTIONS')).toBeInTheDocument();
 });
 
-const messageTemplateButtons = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Router>
-      <Switch>
-        <Route path="/speed-send/add" exact component={MessageTemplate} />
-      </Switch>
-      <MessageTemplateList />
-    </Router>
-  </MockedProvider>
-);
-
 test('edit Button contains a route to edit page', async () => {
-  const { container } = render(messageTemplateButtons);
+  const { container } = render(messageTemplate);
   await wait();
   expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/speed-send/87/edit');
 });

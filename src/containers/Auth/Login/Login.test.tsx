@@ -1,13 +1,12 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-
-import { Login } from './Login';
-import { OutlinedInput } from '@material-ui/core';
-import { Button } from '../../../components/UI/Form/Button/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import axios from 'axios';
+
+import { Login } from './Login';
+import { Button } from '../../../components/UI/Form/Button/Button';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -25,24 +24,24 @@ describe('Login test', () => {
     expect(wrapper).toBeTruthy();
   });
 
-  it('updates state for phone number', () => {
+  it('updates state for phone number and password', () => {
     const wrapper = shallow(createLogin());
     wrapper
       .find('[data-testid="phoneNumber"]')
       .simulate('change', { target: { value: '1231231234' } });
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
 
     expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
-  });
-
-  it('updates state for password', () => {
-    const wrapper = shallow(createLogin());
-    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('pass12345');
   });
 
   it('send an axios post request properly', () => {
     jest.mock('axios');
     const wrapper = shallow(createLogin());
+    wrapper
+      .find('[data-testid="phoneNumber"]')
+      .simulate('change', { target: { value: '1231231234' } });
+    wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
     const response = {
       data: { data: { renewal_token: 'RENEW_TOKEN', access_token: 'AUTH_TOKEN' } },
     };

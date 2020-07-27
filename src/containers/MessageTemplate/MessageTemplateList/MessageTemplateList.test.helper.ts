@@ -1,4 +1,4 @@
-import { GET_LANGUAGES } from '../../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 
@@ -40,6 +40,7 @@ const filter = {
           body: 'Hey There',
           id: '87',
           label: 'Good message',
+          isReserved: false
         },
       ],
     },

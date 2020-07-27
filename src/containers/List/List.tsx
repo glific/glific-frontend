@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
-import { setNotification } from '../../common/notification';
+import { setNotification, setErrorMessage } from '../../common/notification';
 import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
@@ -183,7 +183,14 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (loading || l) return <Loading />;
-  if (error || e) return <p>Error :(</p>;
+  if (error || e) {
+    if (error) {
+      setErrorMessage(client, error);
+    } else if (e) {
+      setErrorMessage(client, e);
+    }
+    return null;
+  }
 
   const deleteHandler = (id: number) => {
     deleteItem({ variables: { id } });
@@ -191,7 +198,13 @@ export const List: React.SFC<ListProps> = ({
   };
 
   // Reformat all items to be entered in table
-  function getIcons(id: number | undefined, label: string) {
+  function getIcons(id: number | undefined, label: string, isReserved: boolean | null) {
+    // there might be a case when we might want to allow certain actions for reserved items
+    // currently we don't allow edit or delete for reserved items. hence return early
+    if (isReserved) {
+      return null;
+    }
+
     if (id) {
       return (
         <div className={styles.Icons}>
@@ -215,9 +228,11 @@ export const List: React.SFC<ListProps> = ({
 
   function formatList(listItems: Array<any>) {
     return listItems.map(({ ...listItem }) => {
+      const label = listItem.label ? listItem.label : listItem.name;
+      const isReserved = listItem.isReserved ? listItem.isReserved : null;
       return {
         ...columns(listItem),
-        operations: getIcons(listItem.id, listItem.label),
+        operations: getIcons(listItem.id, label, isReserved),
       };
     });
   }

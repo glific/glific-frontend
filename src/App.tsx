@@ -18,6 +18,9 @@ import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
 import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
+import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
+import { Automation } from './containers/Automation/Automation';
+import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -46,6 +49,10 @@ const App = () => {
             <Route path="/speed-send" exact component={MessageTemplatePage} />
             <Route path="/speed-send/add" exact component={MessageTemplate} />
             <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+            <Route path="/automation" exact component={AutomationList} />
+            <Route path="/automation/add" exact component={Automation} />
+            <Route path="/automation/:id/edit" exact component={Automation} />
+
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />
             <Route path="/staff-management/:id/edit" exact component={StaffManagementTemplate} />
@@ -77,7 +84,10 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>{routes}</ApolloProvider>
+      <ApolloProvider client={client}>
+        <ErrorHandler />
+        {routes}
+      </ApolloProvider>
     </SessionContext.Provider>
   );
 };
