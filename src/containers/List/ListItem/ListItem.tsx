@@ -30,7 +30,7 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
-  configureButton?: boolean;
+  additionalAction?: boolean;
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
@@ -51,7 +51,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
-  configureButton = false,
+  additionalAction = false,
   icon,
   linkParameter = null,
   cancelLink = null,
@@ -200,7 +200,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
-              {configureButton ? (
+              {additionalAction ? (
                 <Button
                   variant="outlined"
                   color="primary"
