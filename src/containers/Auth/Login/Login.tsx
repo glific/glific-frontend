@@ -153,6 +153,7 @@ export const Login: React.SFC<LoginProps> = () => {
             type={showPassword ? 'text' : 'password'}
             label="Password"
             value={password}
+            error={passwordError}
             required
             onChange={handlePasswordChange()}
             endAdornment={

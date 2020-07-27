@@ -80,9 +80,7 @@ it('set errors if the form fields are blank', async () => {
   const wrapper = mount(createRegistrationMount());
   wrapper.find('button[data-testid="AuthButton"]').simulate('click');
   await wait();
-  expect(wrapper.find('[data-testid="username"] input').prop('error')).toBeTruthy();
-  expect(wrapper.find('[data-testid="phoneNumber"] input').prop('error')).toBeTruthy();
-  expect(wrapper.find('[data-testid="password"] input').prop('error')).toBeTruthy();
+  expect(wrapper.find('.Mui-error')).toHaveLength(3);
 });
 
 it('no errors are set when if there are valid values', async () => {

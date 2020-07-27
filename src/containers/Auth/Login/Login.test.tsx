@@ -68,8 +68,7 @@ describe('Login test', () => {
     const wrapper = mount(createLoginMount());
     wrapper.find('button[data-testid="AuthButton"]').simulate('click');
     await wait();
-    expect(wrapper.find('[data-testid="phoneNumber"] input').prop('error')).toBeTruthy();
-    expect(wrapper.find('[data-testid="password"] input').prop('error')).toBeTruthy();
+    expect(wrapper.find('.Mui-error')).toHaveLength(2);
   });
 
   it('sets phone number error as false if field is valid', async () => {
@@ -88,7 +87,7 @@ describe('Login test', () => {
     wrapper.find('button[data-testid="AuthButton"]').simulate('click');
     await wait();
     expect(wrapper.find('[data-testid="phoneNumber"] input').prop('error')).toBeFalsy();
-    expect(wrapper.find('[data-testid="password"] input').prop('error')).toBeFalsy();
+    expect(wrapper.find('[data-testid="password"] input').prop('aria-invalid')).toBeFalsy();
   });
 
   it('axios post request catchs error', async () => {
