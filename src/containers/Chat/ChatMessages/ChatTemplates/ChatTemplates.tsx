@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ChatTemplates.module.css';
 import { useQuery } from '@apollo/client';
-import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
+import { List, ListItem, Divider, Paper, Typography, ClickAwayListener } from '@material-ui/core';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 
 interface ChatTemplatesProps {

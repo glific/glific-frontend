@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container, Button } from '@material-ui/core';
+import { Container, Button, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
@@ -69,6 +69,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   const handleClickAway = () => {
     setOpen(false);
+    setSelectedTab('');
   };
 
   const handleSelectText = (obj: any) => {
@@ -98,23 +99,25 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <Container className={styles.ChatInput}>
-      <div className={styles.SendsContainer}>
-        {/* <ClickAwayListener onClickAway={handleClickAway}> */}
-        <div className={clsx(styles.Popup, { [styles.HidePopup]: !open })}>
-          <ChatTemplates
-            isTemplate={selectedTab === templates}
-            searchVal={searchVal}
-            handleSelectText={handleSelectText}
-          />
-          <SearchBar
-            className={styles.ChatSearchBar}
-            handleChange={handleSearch}
-            onReset={() => setSearchVal('')}
-          />
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div className={styles.SendsContainer}>
+          {open ? (
+            <div className={clsx(styles.Popup)}>
+              <ChatTemplates
+                isTemplate={selectedTab === templates}
+                searchVal={searchVal}
+                handleSelectText={handleSelectText}
+              />
+              <SearchBar
+                className={styles.ChatSearchBar}
+                handleChange={handleSearch}
+                onReset={() => setSearchVal('')}
+              />
+            </div>
+          ) : null}
+          {quickSendButtons()}
         </div>
-        {quickSendButtons()}
-        {/* </ClickAwayListener> */}
-      </div>
+      </ClickAwayListener>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
           <input
