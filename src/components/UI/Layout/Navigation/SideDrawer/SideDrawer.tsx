@@ -25,7 +25,7 @@ import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagemen
 import ActiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Active.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export interface SideDrawerProps {}
 
@@ -103,8 +103,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     StaffButton: {
       position: 'absolute',
-      bottom: '10px',
-      left: '70px',
+      bottom: '17px',
+      left: '94px',
       width: 'fit-content',
     },
   })
@@ -204,16 +204,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       });
   };
 
-  if (staffRedirect) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/staff-management',
-        }}
-      />
-    );
-  }
-
   return (
     <nav
       className={clsx({
@@ -258,9 +248,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
-          <IconButton className={classes.StaffButton} onClick={handleStaffClick} edge="end">
+          <Link className={classes.StaffButton} to={`/staff-management`}>
             <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
-          </IconButton>
+          </Link>
           {drawer}
           {popper}
         </Drawer>

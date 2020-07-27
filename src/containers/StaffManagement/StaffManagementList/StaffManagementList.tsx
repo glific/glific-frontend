@@ -1,21 +1,21 @@
 import React from 'react';
-import { USER_COUNT, DELETE_USER, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
+import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
+import { DELETE_USER } from '../../../graphql/mutations/StaffManagement';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { List } from '../../List/List';
-import { getgroups } from 'process';
 
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['NAME', 'PHONE NO.', 'GROUP', 'ACTIONS'];
-  const columnStyles = [styles.Name, styles.Phone, styles.Role, styles.Actions];
+  const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
+  const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
-  const getColumns = ({ name, phone, group }: any) => ({
+  const getColumns = ({ name, phone, groups }: any) => ({
     name: getName(name),
     phone: getPhone(phone),
-    group: getGroup(group),
+    group: getGroups(groups),
   });
 
   const queries = {
@@ -32,7 +32,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  const getGroup = (text: string) => {
+  const getGroups = (text: string) => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
@@ -42,12 +42,6 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     columnNames: columnNames,
     columns: getColumns,
     columnStyles: columnStyles,
-  };
-
-  const searchKey = {
-    filter: {
-      name: null,
-    },
   };
 
   return (
