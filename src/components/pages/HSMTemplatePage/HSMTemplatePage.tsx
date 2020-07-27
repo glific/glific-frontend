@@ -1,5 +1,5 @@
 import React from 'react';
-import { HSMTemplateList } from '../../../containers/HSMTemplate/HSMTemplateList/HSMTemplateList/HSMTemplateList';
+import { HSMTemplateList } from '../../../containers/Template/HSMTemplate/HSMTemplateList/HSMTemplateList/HSMTemplateList';
 
 export interface HSMTemplatePageProps {}
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageTemplateList } from '../../../containers/MessageTemplate/MessageTemplateList/MessageTemplateList';
+import { MessageTemplateList } from '../../../containers/Template/MessageTemplate/MessageTemplateList/MessageTemplateList';
 
 export interface MessageTemplatePageProps {}
 
