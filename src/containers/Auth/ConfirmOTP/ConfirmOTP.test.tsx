@@ -1,8 +1,10 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { ConfirmOTP } from './ConfirmOTP';
-import { OutlinedInput, Button, FormHelperText } from '@material-ui/core';
+import { OutlinedInput, Button } from '@material-ui/core';
 import axios from 'axios';
+import { wait } from '@testing-library/react';
+
+import { ConfirmOTP } from './ConfirmOTP';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -21,7 +23,7 @@ describe('ConfirmOTP test', () => {
     expect(wrapper.find(OutlinedInput).prop('value')).toEqual('123456');
   });
 
-  it('axios post request catchs error', () => {
+  it('axios post request catchs error', async () => {
     jest.mock('axios');
     const wrapper = mount(createConfirmOTP());
     const response = {
@@ -31,9 +33,9 @@ describe('ConfirmOTP test', () => {
     wrapper.find(Button).simulate('click');
   });
 
-  it('sends post request', () => {
+  it('sends post request', async () => {
     jest.mock('axios');
-    const wrapper = shallow(
+    const wrapper = mount(
       <ConfirmOTP
         location={{
           state: {
@@ -46,13 +48,16 @@ describe('ConfirmOTP test', () => {
     const response = {
       data: { renewal_token: '123213123', access_token: '456456456' },
     };
+
     wrapper
-      .find(OutlinedInput)
-      .at(0)
+      .find('[data-testid="AuthenticationCode"] input')
       .simulate('change', { target: { value: '123456' } });
-    expect(wrapper.find(OutlinedInput).prop('value')).toEqual('123456');
+    expect(wrapper.find('[data-testid="AuthenticationCode"] input').prop('value')).toEqual(
+      '123456'
+    );
     mockedAxios.post = jest.fn().mockResolvedValueOnce(Promise.resolve(response));
-    wrapper.find('Button').simulate('click');
+    wrapper.find('button[data-testid="AuthButton"]').simulate('click');
+    await wait();
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
 

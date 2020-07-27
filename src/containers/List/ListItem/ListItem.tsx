@@ -8,7 +8,7 @@ import { useApolloClient, DocumentNode } from '@apollo/client';
 import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
-
+import { Tooltip } from '@material-ui/core';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
@@ -31,6 +31,10 @@ export interface ListItemProps {
   defaultAttribute?: any;
   icon: any;
   showLanguage?: boolean;
+  additionalAction?: any;
+  linkParameter?: any;
+  cancelLink?: any;
+  languageSupport?: boolean;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -48,13 +52,20 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
+  additionalAction = null,
   icon,
   showLanguage = true,
-}) => {
+  linkParameter = null,
+  cancelLink = null,
+  languageSupport = true,
+}: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
+  const [formCancelled, setFormCancelled] = useState(false);
+  const [action, setAction] = useState(false);
+  const [link, setLink] = useState(undefined);
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -68,8 +79,9 @@ export const ListItem: React.SFC<ListItemProps> = ({
     onCompleted: (data) => {
       if (itemId && data) {
         item = data[listItem][listItem];
+        setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
-        // setLanguageId(item.language.id);
+        setLanguageId(languageSupport ? item.language.id : null);
       }
     },
   });
@@ -80,7 +92,9 @@ export const ListItem: React.SFC<ListItemProps> = ({
   });
 
   const [createItem] = useMutation(createItemQuery, {
-    onCompleted: () => {
+    onCompleted: (data) => {
+      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
     },
   });
@@ -96,12 +110,12 @@ export const ListItem: React.SFC<ListItemProps> = ({
   }
 
   const saveHandler = ({ languageId, ...item }: any) => {
-    const payload = {
+    let payload = {
       ...item,
       ...defaultAttribute,
-      // languageId: Number(languageId),
     };
 
+    payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
     let message;
 
     if (itemId) {
@@ -125,25 +139,28 @@ export const ListItem: React.SFC<ListItemProps> = ({
   };
 
   const cancelHandler = () => {
-    setFormSubmitted(true);
+    setFormCancelled(true);
   };
 
   if (formSubmitted) {
-    return <Redirect to={`/${redirectionLink}`} />;
+    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+  }
+
+  if (formCancelled) {
+    return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
 
   const languageOptions = languages.data ? languages.data.languages : null;
-  const formFieldItems = [
-    ...formFields,
-    showLanguage
-      ? {
-          component: Dropdown,
-          name: 'languageId',
-          placeholder: 'Language',
-          options: languageOptions,
-        }
-      : null,
-  ];
+  const language = languageSupport
+    ? {
+        component: Dropdown,
+        name: 'languageId',
+        placeholder: 'Language',
+        options: languageOptions,
+      }
+    : null;
+
+  const formFieldItems = languageSupport ? [...formFields, language] : formFields;
 
   const deleteButton = itemId ? (
     <Button
@@ -185,6 +202,18 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
+              {additionalAction ? (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    submitForm();
+                    setAction(true);
+                  }}
+                >
+                  {additionalAction.label}
+                </Button>
+              ) : null}
               <Button variant="contained" color="default" onClick={cancelHandler}>
                 Cancel
               </Button>

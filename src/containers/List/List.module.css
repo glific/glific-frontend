@@ -16,6 +16,11 @@
   color: #073f24;
 }
 
+.additonalButton {
+  width: 42px;
+  height: 42px;
+}
+
 .IconButton {
   background-color: '#e0e0e0';
 }

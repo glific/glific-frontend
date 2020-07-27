@@ -33,6 +33,8 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
+const additionalAction = { parameter: 'uuid', link: '/automation/configure' };
+
 export const AutomationList: React.SFC<AutomationListProps> = (props) => (
   <List
     title="Automations"
@@ -43,5 +45,6 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}
+    additionalAction={additionalAction}
   />
 );

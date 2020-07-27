@@ -6,14 +6,15 @@
     "@absinthe/socket": "^0.2.1",
     "@absinthe/socket-apollo-link": "^0.2.1",
     "@apollo/client": "^3.0.0-rc.12",
-    "@apollo/link-error": "^2.0.0-beta.3",
     "@apollo/link-context": "^2.0.0-beta.3",
+    "@apollo/link-error": "^2.0.0-beta.3",
     "@apollo/link-ws": "^2.0.0-beta.3",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
+    "@nyaruka/flow-editor": "^1.9.8",
     "@sentry/browser": "^5.18.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^9.3.2",
@@ -49,12 +50,14 @@
     "typescript": "~3.7.2"
   },
   "scripts": {
+    "setup": "yarn install  && yarn run floweditor",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
-    "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write"
+    "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
+    "floweditor": "cd public && ([ ! -d floweditor ] && mkdir floweditor || true ) && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/floweditor"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -35,7 +35,7 @@
 
 .Form {
   padding: 16px 16px;
-  width: 470px;
+  width: 500px;
 }
 
 .Buttons {
@@ -43,6 +43,10 @@
   margin-left: 8px;
   display: flex;
   justify-content: flex-start;
+}
+
+.Buttons > :not(:last-child) {
+  margin-right: 16px !important;
 }
 
 .Title {
@@ -61,10 +65,6 @@
 .TagIcon {
   width: 29px;
   height: 29px;
-}
-
-.Button {
-  margin-right: 24px !important;
 }
 
 .DeleteIcon {
