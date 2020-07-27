@@ -25,7 +25,7 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   const queryVariables = {
     contactOpts: {
-      limit: 1,
+      limit: 50,
     },
     filter: {},
     messageOpts: {
