@@ -67,7 +67,7 @@ export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => 
       redirectionLink="staff-management"
       listItem="user"
       icon={speedSendIcon}
-      showLanguage={false}
+      languageSupport={false}
     />
   );
 };

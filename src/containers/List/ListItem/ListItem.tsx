@@ -30,7 +30,6 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
-  showLanguage?: boolean;
   additionalAction?: any;
   linkParameter?: any;
   cancelLink?: any;
@@ -54,7 +53,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
   defaultAttribute = null,
   additionalAction = null,
   icon,
-  showLanguage = true,
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
