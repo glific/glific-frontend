@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import { Container, Button, ClickAwayListener } from '@material-ui/core';
+import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
@@ -102,18 +102,20 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
-            <div className={clsx(styles.Popup)}>
-              <ChatTemplates
-                isTemplate={selectedTab === templates}
-                searchVal={searchVal}
-                handleSelectText={handleSelectText}
-              />
-              <SearchBar
-                className={styles.ChatSearchBar}
-                handleChange={handleSearch}
-                onReset={() => setSearchVal('')}
-              />
-            </div>
+            <Fade in={open} timeout={200}>
+              <div className={clsx(styles.Popup)}>
+                <ChatTemplates
+                  isTemplate={selectedTab === templates}
+                  searchVal={searchVal}
+                  handleSelectText={handleSelectText}
+                />
+                <SearchBar
+                  className={styles.ChatSearchBar}
+                  handleChange={handleSearch}
+                  onReset={() => setSearchVal('')}
+                />
+              </div>
+            </Fade>
           ) : null}
           {quickSendButtons()}
         </div>
