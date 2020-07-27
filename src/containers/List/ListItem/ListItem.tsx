@@ -79,7 +79,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         item = data[listItem][listItem];
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
-        setLanguageId(item.language.id);
+        setLanguageId(languageSupport ? item.language.id : null);
       }
     },
   });
@@ -108,12 +108,12 @@ export const ListItem: React.SFC<ListItemProps> = ({
   }
 
   const saveHandler = ({ languageId, ...item }: any) => {
-    const payload = {
+    let payload = {
       ...item,
       ...defaultAttribute,
-      languageId: Number(languageId),
     };
 
+    payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
     let message;
 
     if (itemId) {
