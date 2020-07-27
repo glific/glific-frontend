@@ -62,6 +62,8 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     setName(name);
   };
 
+  const additionalAction = { label: 'Configure', link: '/automation/configure' };
+
   return (
     <ListItem
       {...queries}
@@ -77,7 +79,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       linkParameter="uuid"
       listItem="flow"
       icon={automationIcon}
-      additionalAction={true}
+      additionalAction={additionalAction}
       languageSupport={false}
     />
   );
