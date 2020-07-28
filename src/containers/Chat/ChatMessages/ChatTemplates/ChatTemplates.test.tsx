@@ -2,7 +2,7 @@ import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { shallow } from 'enzyme';
 import ChatTemplates from './ChatTemplates';
-import { TEMPLATE_MOCKS } from './ChatTemplates.helper';
+import { TEMPLATE_MOCKS } from './ChatTemplates.test.helper';
 import { render, wait, fireEvent } from '@testing-library/react';
 
 const mocks = TEMPLATE_MOCKS;
