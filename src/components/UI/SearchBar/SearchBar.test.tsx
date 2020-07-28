@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { SearchBar } from './SearchBar';
+import SearchBar from './SearchBar';
 import { InputBase, IconButton } from '@material-ui/core';
 
 describe('<SearchBar/>', () => {

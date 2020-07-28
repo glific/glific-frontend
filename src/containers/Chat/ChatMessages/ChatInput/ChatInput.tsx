@@ -6,7 +6,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
-import { SearchBar } from '../../ChatConversations/SearchBar';
+import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 
 export interface ChatInputProps {

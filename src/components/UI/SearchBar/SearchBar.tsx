@@ -65,3 +65,5 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     </form>
   );
 };
+
+export default SearchBar;

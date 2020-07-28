@@ -11,7 +11,7 @@ import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './List.module.css';
-import { SearchBar } from '../Chat/ChatConversations/SearchBar';
+import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
