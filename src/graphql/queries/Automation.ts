@@ -6,6 +6,7 @@ export const GET_AUTOMATIONS = gql`
       id
       name
       shortcode
+      uuid
     }
   }
 `;
@@ -17,9 +18,7 @@ export const GET_AUTOMATION = gql`
         id
         name
         shortcode
-        language {
-          id
-        }
+        uuid
       }
     }
   }

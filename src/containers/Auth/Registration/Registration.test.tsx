@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import Visibility from '@material-ui/icons/Visibility';
 import { IconButton } from '@material-ui/core';
+import { wait } from '@testing-library/react';
 
 import { Registration } from './Registration';
 
@@ -44,56 +45,61 @@ it('adds state to password', () => {
   expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('randompassword');
 });
 
-it('send an axios post request properly', () => {
+it('send an axios post request properly', async () => {
   jest.mock('axios');
-  const wrapper = shallow(createRegistration());
-  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
+  const wrapper = mount(createRegistrationMount());
   wrapper
-    .find('[data-testid="phoneNumber"]')
+    .find('[data-testid="username"] input')
+    .simulate('change', { target: { value: 'JaneDoe' } });
+  wrapper
+    .find('[data-testid="phoneNumber"] input')
     .simulate('change', { target: { value: '1231231234' } });
   wrapper
-    .find('[data-testid="password"]')
+    .find('[data-testid="password"] input')
     .simulate('change', { target: { value: 'randompassword' } });
   const response = {
     data: { phone: '1231231234', message: 'OTP #{otp} sent successfully to #{phone}' },
   };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find('[data-testid="registrationButton"]').simulate('click');
+  wrapper.find('button[data-testid="AuthButton"]').simulate('click');
+  await wait();
   expect(mockedAxios.post).toHaveBeenCalledTimes(1);
 });
 
 it('axios post request catchs error', () => {
   jest.mock('axios');
-  const wrapper = shallow(createRegistration());
+  const wrapper = mount(createRegistrationMount());
   const response = {
     error: { message: 'Phone number not found', status: 400 },
   };
   mockedAxios.post.mockRejectedValueOnce(response);
-  wrapper.find('[data-testid="registrationButton"]').simulate('click');
+  wrapper.find('button[data-testid="AuthButton"]').simulate('click');
 });
 
-it('set errors if the form fields are blank', () => {
-  const wrapper = shallow(createRegistration());
-  wrapper.find('[data-testid="registrationButton"]').simulate('click');
-  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeTruthy();
-  expect(wrapper.find('[data-testid="phoneNumber"]').prop('error')).toBeTruthy();
-  expect(wrapper.find('[data-testid="password"]').prop('error')).toBeTruthy();
+it('set errors if the form fields are blank', async () => {
+  const wrapper = mount(createRegistrationMount());
+  wrapper.find('button[data-testid="AuthButton"]').simulate('click');
+  await wait();
+  expect(wrapper.find('.Mui-error')).toHaveLength(3);
 });
 
-it('no errors are set when if there are valid values', () => {
-  const wrapper = shallow(createRegistration());
-  wrapper.find('[data-testid="username"]').simulate('change', { target: { value: 'JaneDoe' } });
+it('no errors are set when if there are valid values', async () => {
+  const wrapper = mount(createRegistrationMount());
   wrapper
-    .find('[data-testid="phoneNumber"]')
+    .find('[data-testid="username"] input')
+    .simulate('change', { target: { value: 'JaneDoe' } });
+  wrapper
+    .find('[data-testid="phoneNumber"] input')
     .simulate('change', { target: { value: '1231231234' } });
   wrapper
-    .find('[data-testid="password"]')
+    .find('[data-testid="password"] input')
     .simulate('change', { target: { value: 'randompassword' } });
 
   const response = { data: {} };
   mockedAxios.post.mockResolvedValueOnce(response);
-  wrapper.find('[data-testid="registrationButton"]').simulate('click');
-  expect(wrapper.find('[data-testid="username"]').prop('error')).toBeFalsy();
+  wrapper.find('button[data-testid="AuthButton"]').simulate('click');
+  await wait();
+  expect(wrapper.find('[data-testid="username"] input').prop('error')).toBeFalsy();
 });
 
 it('shows password if button is clicked', () => {

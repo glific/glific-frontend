@@ -10,6 +10,6 @@ describe('<ContactBar />', () => {
   const wrapper = shallow(<ContactBar {...defaultProps} />);
 
   test('it should render the name correctly', () => {
-    expect(wrapper.find('[data-testid="name"]').text()).toEqual('Jane Doe');
+    expect(wrapper.find('[data-testid="beneficiaryName"]').text()).toEqual('Jane Doe');
   });
 });

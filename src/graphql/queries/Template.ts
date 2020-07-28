@@ -12,6 +12,7 @@ export const FILTER_TEMPLATES = gql`
       id
       body
       label
+      isReserved
     }
   }
 `;
