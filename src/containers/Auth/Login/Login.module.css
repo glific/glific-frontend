@@ -1,29 +1,9 @@
-.Container {
-  width: 100%;
-  height: 100%;
-}
-
-.CenterLogin {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  vertical-align: middle;
-}
-
-.LoginTitle {
-  margin-bottom: 10px;
-}
-
 .Margin {
-  margin: 8px;
-}
-
-.TextField {
-  width: 40ch;
+  margin: 4px;
 }
 
 .BottomMargin {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .Errors {
@@ -31,7 +11,25 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   margin-top: 0px;
   font-size: 14px;
+}
+
+.InputField {
+  border-color: #93a29b !important;
+  border-radius: 12px !important;
+  border-width: 2px !important;
+  line-height: 32px;
+  width: 340px;
+}
+
+.FormLabel {
+  color: #93a29b !important;
+}
+
+.FormHelperText {
+  color: red !important;
+  margin-top: 2px !important;
+  line-height: 1.2 !important;
 }

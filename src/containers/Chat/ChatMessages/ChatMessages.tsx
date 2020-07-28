@@ -15,7 +15,7 @@ import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Selec
 import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { setNotification } from '../../../common/notification';
+import { setNotification, setErrorMessage } from '../../../common/notification';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
@@ -193,7 +193,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     return <Loading />;
   }
   if (called && error) {
-    return <p>Error :(</p>;
+    setErrorMessage(client, error);
+    return null;
   }
 
   // use contact id to filter if it is passed via url, else use the first conversation

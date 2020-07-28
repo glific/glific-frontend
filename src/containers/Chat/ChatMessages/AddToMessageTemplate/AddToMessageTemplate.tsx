@@ -5,6 +5,7 @@ import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@materia
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
 import styles from './AddToMessageTemplate.module.css';
+import { WhatsAppToJsx } from '../../../../common/RichEditor';
 
 interface AddToMessageTemplateProps {
   id: any;
@@ -48,7 +49,7 @@ const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
         ></OutlinedInput>
         {required ? <FormHelperText>Required</FormHelperText> : null}
       </FormControl>
-      <div className={styles.Message}>{message}</div>
+      <div className={styles.Message}>{WhatsAppToJsx(message)}</div>
     </div>
   );
 

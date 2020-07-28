@@ -4,6 +4,7 @@ import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import ConversationList from './ConversationList/ConversationList';
+import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -13,6 +14,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
+  const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
 
   const handleChange = (event: any) => {
     setSearchVal(event.target.value);
@@ -28,6 +30,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSearchVal('');
   };
 
+  const handlerSavedSearchCriteria = (criteria: string) => {
+    setSavedSearchCriteria(criteria);
+  };
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       <Toolbar className={styles.ToolBar}>
@@ -40,6 +46,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           </Typography>
         </div>
       </Toolbar>
+      <SavedSearchToolbar savedSearchCriteriaCallback={handlerSavedSearchCriteria} />
       <SearchBar
         handleChange={handleChange}
         handleSubmit={handleSubmit}
@@ -52,6 +59,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         setSelectedContactId={(i: number) => {
           setSelectedContactId(i);
         }}
+        savedSearchCriteria={savedSearchCriteria}
       />
     </Container>
   );

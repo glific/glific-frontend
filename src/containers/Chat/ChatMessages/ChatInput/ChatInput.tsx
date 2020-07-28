@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
+import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
@@ -8,6 +7,7 @@ import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -22,22 +22,11 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const speedSends = 'Speed sends';
   const templates = 'Templates';
 
-  const keyPressHandler = (e: any) => {
-    if (e.key === 'Enter') {
-      submitMessage();
-    }
-  };
-
-  const changeHandler = ({ target }: any) => {
-    setMessage(target.value);
-  };
-
   const submitMessage = () => {
     // close emoji picker
     setShowEmojiPicker(false);
 
     if (!message) return;
-
     setMessage('');
 
     if (typeof onSendMessage === 'function') {
@@ -124,15 +113,10 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
       </ClickAwayListener>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
-          <input
-            className={styles.InputBox}
+          <WhatsAppEditor
             data-testid="message-input"
-            type="text"
-            placeholder="Start typing..."
-            value={message}
-            onKeyPress={keyPressHandler}
-            onChange={changeHandler}
-            onClick={() => setShowEmojiPicker(false)}
+            setMessage={(message: string) => setMessage(message)} // Primarily for message length
+            sendMessage={() => submitMessage()}
           />
         </div>
         <div className={styles.EmojiContainer}>

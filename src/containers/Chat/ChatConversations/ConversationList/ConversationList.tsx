@@ -3,16 +3,16 @@ import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import {
-  GET_CONVERSATION_QUERY,
-  FILTER_CONVERSATIONS_QUERY,
-} from '../../../../graphql/queries/Chat';
+import { GET_CONVERSATION_QUERY } from '../../../../graphql/queries/Chat';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { setErrorMessage } from '../../../../common/notification';
+import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 
 interface ConversationListProps {
   searchVal: string;
   selectedContactId: number;
   setSelectedContactId: (i: number) => void;
+  savedSearchCriteria: string | null;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -27,15 +27,21 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       limit: 100,
     },
   };
+
   const filterVariables = () => {
+    if (props.savedSearchCriteria) {
+      return JSON.parse(props.savedSearchCriteria);
+    }
+
     return {
       term: props.searchVal,
       messageOpts: {
-        limit: 10,
+        limit: 50,
       },
       contactOpts: {
-        limit: 10,
+        limit: 50,
       },
+      filter: {},
     };
   };
 
@@ -45,7 +51,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   });
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    FILTER_CONVERSATIONS_QUERY,
+    SEARCH_QUERY,
     {
       variables: filterVariables(),
     }
@@ -61,7 +67,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // Other cases
   if (called && loading) return <Loading />;
-  if (called && error) return <p>Error :(</p>;
+  if (called && error) {
+    setErrorMessage(client, error);
+    return null;
+  }
 
   if (data === undefined) {
     return <p>Error :(</p>;
@@ -70,11 +79,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // Retrieving all convos or the ones searched by.
   let conversations = data.conversations;
 
-  if (props.searchVal && !called) {
+  if ((props.searchVal || props.savedSearchCriteria) && !called) {
     getFilterConvos();
   }
 
-  if (called && props.searchVal !== '') {
+  if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 

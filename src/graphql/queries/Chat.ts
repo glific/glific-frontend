@@ -53,29 +53,3 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
   }
 `;
 
-export const FILTER_CONVERSATIONS_QUERY = gql`
-  query search($term: String!, $messageOpts: Opts!, $contactOpts: Opts!) {
-    search(term: $term, messageOpts: $messageOpts, contactOpts: $contactOpts) {
-      contact {
-        id
-        name
-        phone
-      }
-      messages {
-        id
-        body
-        insertedAt
-        receiver {
-          id
-        }
-        sender {
-          id
-        }
-        tags {
-          id
-          label
-        }
-      }
-    }
-  }
-`;

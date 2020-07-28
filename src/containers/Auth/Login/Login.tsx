@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { Redirect, Link } from 'react-router-dom';
-import { Typography, FormHelperText } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
+import { FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -8,12 +8,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import styles from './Login.module.css';
-import { USER_SESSION } from '../../../common/constants';
 import clsx from 'clsx';
 import axios from 'axios';
+
+import styles from './Login.module.css';
+import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
+import Auth from '../Auth';
 
 export interface LoginProps {}
 
@@ -29,10 +30,12 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setPasswordError(false);
   };
 
   const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(event.target.value);
+    setPhoneNumberError(false);
   };
 
   const handleClickShowPassword = () => {
@@ -44,20 +47,33 @@ export const Login: React.SFC<LoginProps> = () => {
   };
 
   const handleInputErrors = () => {
+    let foundErrors = false;
     if (!phoneNumber) {
       setPhoneNumberError(true);
+      foundErrors = true;
     } else if (phoneNumber) {
       setPhoneNumberError(false);
     }
     if (!password) {
       setPasswordError(true);
+      foundErrors = true;
     } else if (password) {
       setPasswordError(false);
     }
+    return foundErrors;
   };
 
-  const handleSubmit = () => {
-    handleInputErrors();
+  const handlerSubmit = () => {
+    // set invalid login false as it should be set only on server response
+    // errors are handled separately for the client side
+    setInvalidLogin(false);
+
+    // if errors just return
+    if (handleInputErrors()) {
+      return;
+    }
+
+    // we should call the backend only if frontend has valid input
     if (!passwordError && !phoneNumberError) {
       axios
         .post(USER_SESSION, {
@@ -92,65 +108,76 @@ export const Login: React.SFC<LoginProps> = () => {
   }
 
   return (
-    <div className={styles.Container}>
-      <div className={styles.CenterLogin}>
-        <div className={styles.LoginTitle}>
-          <Typography variant="h5">Login</Typography>
-        </div>
-        <div className={styles.Margin}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Phone Number</InputLabel>
-            <OutlinedInput
-              data-testid="phoneNumber"
-              error={phoneNumberError}
-              id="phone-number"
-              label="Phone Number"
-              value={phoneNumber}
-              type="integer"
-              onChange={handlePhoneNumberChange()}
-            />
-            {phoneNumberError ? (
-              <FormHelperText>Please enter a phone number.</FormHelperText>
-            ) : null}
-          </FormControl>
-        </div>
-        <div className={clsx(styles.Margin, styles.BottomMargin)}>
-          <FormControl className={styles.TextField} variant="outlined">
-            <InputLabel>Password</InputLabel>
-            <OutlinedInput
-              data-testid="password"
-              id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              label="Password"
-              value={password}
-              onChange={handlePasswordChange()}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {passwordError ? <FormHelperText>Please enter a password.</FormHelperText> : null}
-          </FormControl>
-        </div>
-        {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
-        <Button onClick={handleSubmit} color="primary" variant={'contained'}>
-          Login
-        </Button>
-        <br />
-        <div>OR</div>
-        <div>
-          <Link to="/registration">CREATE A NEW ACCOUNT</Link>
-        </div>
+    <Auth
+      pageTitle={'Login to your account'}
+      buttonText={'LOGIN'}
+      alternateLink={'registration'}
+      alternateText={'CREATE A NEW ACCOUNT'}
+      handlerSubmitCallback={handlerSubmit}
+      mode={'login'}
+    >
+      <div className={styles.Margin}>
+        <FormControl className={styles.TextField} variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              focused: styles.InputField,
+            }}
+            data-testid="phoneNumber"
+            error={phoneNumberError}
+            label="Your phone number"
+            value={phoneNumber}
+            type="tel"
+            required
+            onChange={handlePhoneNumberChange()}
+          />
+          {phoneNumberError ? (
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Please enter a phone number.
+            </FormHelperText>
+          ) : null}
+        </FormControl>
       </div>
-    </div>
+      <div className={clsx(styles.Margin, styles.BottomMargin)}>
+        <FormControl className={styles.TextField} variant="outlined">
+          <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
+          <OutlinedInput
+            classes={{
+              root: styles.InputField,
+              notchedOutline: styles.InputField,
+              focused: styles.InputField,
+            }}
+            data-testid="password"
+            type={showPassword ? 'text' : 'password'}
+            label="Password"
+            value={password}
+            error={passwordError}
+            required
+            onChange={handlePasswordChange()}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          {passwordError ? (
+            <FormHelperText classes={{ root: styles.FormHelperText }}>
+              Please enter a password.
+            </FormHelperText>
+          ) : null}
+        </FormControl>
+      </div>
+      {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
+    </Auth>
   );
 };
 

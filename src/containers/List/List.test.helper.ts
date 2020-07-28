@@ -1,4 +1,5 @@
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
 
 export const defaultProps = {
@@ -54,12 +55,14 @@ const filter = {
           label: 'Good message',
           description: 'Hey There',
           keywords: ['Hi'],
+          isReserved: false
         },
         {
           id: '88',
           label: 'Good morning',
           description: 'Hey There',
           keywords: null,
+          isReserved: false
         },
       ],
     },

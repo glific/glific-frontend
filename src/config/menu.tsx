@@ -14,4 +14,14 @@ export const sideDrawerMenus = [
     path: '/speed-send',
     icon: 'speedSend',
   },
+  {
+    title: 'Automations',
+    path: '/automation',
+    icon: 'automation',
+  },
+  {
+    title: 'Templates',
+    path: '/template',
+    icon: 'template',
+  },
 ];

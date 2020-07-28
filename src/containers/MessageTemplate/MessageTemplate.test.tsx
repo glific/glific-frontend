@@ -2,7 +2,7 @@ import React from 'react';
 import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_LANGUAGES } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
 import {
   GET_TEMPLATE,
   GET_TEMPLATES_COUNT,
@@ -75,11 +75,13 @@ const mocks = [
             id: '87',
             label: 'Good message',
             body: 'Hey There',
+            isReserved: false,
           },
           {
             id: '94',
             label: 'Message',
             body: 'some description',
+            isReserved: false,
           },
         ],
       },

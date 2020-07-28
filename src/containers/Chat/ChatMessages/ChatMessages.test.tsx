@@ -4,7 +4,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { ApolloProvider, InMemoryCache } from '@apollo/client';
 import gqlClient from '../../../config/apolloclient';
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
+
 import { ChatMessages } from './ChatMessages';
 import {
   GET_CONVERSATION_MESSAGE_QUERY,

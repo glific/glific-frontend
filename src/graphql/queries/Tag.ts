@@ -39,15 +39,7 @@ export const FILTER_TAGS = gql`
       label
       description
       keywords
-    }
-  }
-`;
-
-export const GET_LANGUAGES = gql`
-  {
-    languages {
-      id
-      label
+      isReserved
     }
   }
 `;
