@@ -25,10 +25,6 @@ In the project directory, you can run:
 
 Install the dependencies and required packages.<br />
 
-### `yarn run floweditor`
-
-Add floweditor dependencies<br />
-
 ### `yarn start`
 
 Runs the app in the development mode.<br />
