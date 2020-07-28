@@ -4,7 +4,7 @@ import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_TEMPLATE } from '../../../graphql/queries/Template';
 import styles from './MessageTemplate.module.css';
 import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../../graphql/mutations/Template';
-import { ReactComponent as SpeedSendIcon } from '../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ListItem } from '../../List/ListItem/ListItem';
 

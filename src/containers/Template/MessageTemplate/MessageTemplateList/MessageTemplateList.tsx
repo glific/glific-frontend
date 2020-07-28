@@ -2,7 +2,7 @@ import React from 'react';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../../graphql/mutations/Template';
 import styles from './MessageTemplateList.module.css';
-import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as SpeedSendIcon } from '../../../../assets/images/icons/SpeedSend/Selected.svg';
 import { List } from '../../../List/List';
 
 export interface TemplateListProps {}
