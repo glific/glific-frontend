@@ -6,10 +6,7 @@ import { Tag } from '../Tag/Tag';
 import { List } from './List';
 
 import { Switch, Route } from 'react-router-dom';
-import {
-  within,
-  fireEvent,
-} from '../Template/MessageTemplate/MessageTemplateList/node_modules/@testing-library/dom';
+import { within, fireEvent } from '@testing-library/dom';
 import { LIST_MOCKS, defaultProps } from './List.test.helper';
 
 const mocks = LIST_MOCKS;
