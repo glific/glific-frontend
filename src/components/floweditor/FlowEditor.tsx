@@ -19,7 +19,7 @@ const loadscripts = () => {
     if (scriptsToLoad[scriptName].endsWith('.js')) {
       index++;
       const script = document.createElement('script');
-      script.src = '/floweditor/' + scriptsToLoad[scriptName].slice(12);
+      script.src = scriptsToLoad[scriptName].slice(1);
       script.id = 'flowEditorScript' + index;
       script.async = false;
       document.body.appendChild(script);

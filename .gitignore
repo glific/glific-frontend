@@ -22,5 +22,5 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-public/floweditor
+public/static
 public/sitestatic

@@ -59,7 +59,7 @@
     "test:coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "cd public && ([ ! -d floweditor ] && mkdir floweditor || true ) && cd .. && cp -R node_modules/@nyaruka/flow-editor/build/static/js/*.js public/floweditor && ([ ! -d public/sitestatic ] && mkdir public/sitestatic || true ) && ([ ! -d public/sitestatic/@fortawesome ] && mkdir public/sitestatic/@fortawesome || true ) && cp -R node_modules/@nyaruka/flow-editor/build/sitestatic/@fortawesome/fontawesome-free public/sitestatic/@fortawesome/fontawesome-free"
+    "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
   },
   "eslintConfig": {
     "extends": "react-app"
