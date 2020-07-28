@@ -3,31 +3,38 @@ import { Button } from '../UI/Form/Button/Button';
 import styles from './FlowEditor.module.css';
 import { Link } from 'react-router-dom';
 import { FLOW_EDITOR_API } from '../../config/index';
-import Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
-require(`@nyaruka/flow-editor/build/static/css/${Manifest.files['main.css'].slice(13)}`);
+import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 declare function showFlowEditor(node: any, config: any): void;
 
-const loadscripts = () => {
-  const scripts: Array<HTMLScriptElement | HTMLLinkElement> = [];
-  const scriptsToLoad: any = Manifest.files;
+const loadfiles = () => {
+  const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
+  const filesToLoad: any = Manifest.files;
   let index = 0;
-  for (const scriptName in scriptsToLoad) {
-    if (!scriptsToLoad[scriptName].startsWith('./static')) {
+  for (const fileName in filesToLoad) {
+    if (!filesToLoad[fileName].startsWith('./static')) {
       continue;
     }
-    if (scriptsToLoad[scriptName].endsWith('.js')) {
+    if (filesToLoad[fileName].endsWith('.js')) {
       index++;
       const script = document.createElement('script');
-      script.src = scriptsToLoad[scriptName].slice(1);
+      script.src = filesToLoad[fileName].slice(1);
       script.id = 'flowEditorScript' + index;
       script.async = false;
       document.body.appendChild(script);
-      scripts.push(script);
+      files.push(script);
+    }
+
+    if (filesToLoad[fileName].endsWith('.css')) {
+      const link = document.createElement('link');
+      link.href = filesToLoad[fileName].slice(1);
+      link.id = 'flowEditorfile' + index;
+      link.rel = 'stylesheet';
+      document.body.appendChild(link);
     }
   }
 
-  return scripts;
+  return files;
 };
 
 const base_glific = FLOW_EDITOR_API;
@@ -81,18 +88,18 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const config = setConfig(props.match.params.uuid);
 
   useEffect(() => {
-    const scripts = loadscripts();
+    const files = loadfiles();
     return () => {
-      for (const node in scripts) {
-        document.body.removeChild(scripts[node]);
+      for (const node in files) {
+        document.body.removeChild(files[node]);
       }
     };
   }, []);
 
   useEffect(() => {
-    const lastScript: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript4');
-    if (lastScript) {
-      lastScript.onload = () => {
+    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript4');
+    if (lastFile) {
+      lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
       };
     }
