@@ -1,34 +1,3 @@
-.LabelText {
-  font-family: 'heebo', sans-serif;
-  display: flex;
-  font-weight: 500;
-  font-size: 20px;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  color: #073f24;
-  line-height: 1;
-}
-
-.TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
-  font-size: 16px;
-  color: #93a29b;
-  line-height: 1.25;
-  margin: 0;
-}
-
-.Label {
-  width: 162px;
-}
-
-.Actions {
-  width: 100px;
-  justify-content: flex-end;
-  margin-left: auto;
-}
-
 .TemplateIcon {
   width: 29px;
   height: 29px;

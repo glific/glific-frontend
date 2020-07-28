@@ -47,6 +47,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       pageLink={props.pageLink}
       listIcon={props.listIcon}
       dialogMessage={props.dialogMessage}
+      filters={props.filters}
       {...columnAttributes}
       {...queries}
     />
