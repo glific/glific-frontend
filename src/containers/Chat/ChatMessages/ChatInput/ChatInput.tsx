@@ -103,7 +103,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
         <div className={styles.SendsContainer}>
           {open ? (
             <Fade in={open} timeout={200}>
-              <div className={clsx(styles.Popup)}>
+              <div className={styles.Popup}>
                 <ChatTemplates
                   isTemplate={selectedTab === templates}
                   searchVal={searchVal}

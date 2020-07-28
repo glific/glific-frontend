@@ -16,6 +16,8 @@ describe('<SearchBar/>', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
+  // Searchbar take in className
+
   // Submit is called
   // Reset is called
   // Change in local search val?

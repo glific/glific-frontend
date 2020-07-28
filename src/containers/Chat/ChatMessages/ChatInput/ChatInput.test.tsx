@@ -50,4 +50,8 @@ describe('<ChatInput />', () => {
     // close the emoji popup
     input.simulate('click');
   });
+
+  // Shortcut buttons should exist
+
+  // Click on speed sends/template buttons should open up shortcuts
 });
