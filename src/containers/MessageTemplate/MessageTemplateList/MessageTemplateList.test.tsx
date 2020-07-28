@@ -1,11 +1,9 @@
 import React from 'react';
-import { render, wait, screen, cleanup } from '@testing-library/react';
+import { render, wait, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { MessageTemplateList } from './MessageTemplateList';
-import { Switch, Route } from 'react-router-dom';
-import { within, fireEvent } from '@testing-library/dom';
-import { MessageTemplate } from '../MessageTemplate';
+import { within } from '@testing-library/dom';
 import { TEMPLATE_MOCKS } from './MessageTemplateList.test.helper';
 
 afterEach(cleanup);

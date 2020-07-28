@@ -40,6 +40,7 @@ const filter = {
           body: 'Hey There',
           id: '87',
           label: 'Good message',
+          isReserved: false
         },
       ],
     },

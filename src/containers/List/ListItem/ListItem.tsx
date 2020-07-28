@@ -30,7 +30,7 @@ export interface ListItemProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
-  configureButton?: boolean;
+  additionalAction?: any;
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
@@ -51,7 +51,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   createItemQuery,
   updateItemQuery,
   defaultAttribute = null,
-  configureButton = false,
+  additionalAction = null,
   icon,
   linkParameter = null,
   cancelLink = null,
@@ -62,7 +62,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
-  const [configure, setConfigure] = useState(false);
+  const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
 
   const languages = useQuery(GET_LANGUAGES, {
@@ -140,9 +140,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   };
 
   if (formSubmitted) {
-    return (
-      <Redirect to={configure ? `/${redirectionLink}/configure/${link}` : `/${redirectionLink}`} />
-    );
+    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
   if (formCancelled) {
@@ -200,16 +198,16 @@ export const ListItem: React.SFC<ListItemProps> = ({
               >
                 Save
               </Button>
-              {configureButton ? (
+              {additionalAction ? (
                 <Button
                   variant="outlined"
                   color="primary"
                   onClick={() => {
                     submitForm();
-                    setConfigure(true);
+                    setAction(true);
                   }}
                 >
-                  Configure
+                  {additionalAction.label}
                 </Button>
               ) : null}
               <Button variant="contained" color="default" onClick={cancelHandler}>

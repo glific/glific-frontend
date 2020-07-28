@@ -39,6 +39,7 @@ export const FILTER_TAGS = gql`
       label
       description
       keywords
+      isReserved
     }
   }
 `;

@@ -1,15 +1,3 @@
-.Container {
-  width: 100%;
-  height: 100vh;
-}
-
-.CenterRegistration {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  vertical-align: middle;
-}
-
 .Errors {
   color: red;
   display: flex;
@@ -27,75 +15,6 @@
 .ErrorText {
   font-size: 15px;
   margin: 0px;
-}
-
-.Box {
-  width: 400px;
-  height: 440px;
-  background-color: #073f24;
-  border-radius: 12px;
-  margin-top: 5vh;
-  align-content: center;
-  justify-content: center;
-  flex-grow: 1;
-}
-
-.BoxTitle {
-  color: white;
-  justify-content: start;
-  margin-bottom: 10px;
-  margin-top: 32px;
-  margin-left: 32px;
-  font-weight: bold;
-}
-
-.CenterBox {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-.OrText {
-  color: #93a29b;
-  font-weight: bolder;
-  margin-top: 24px;
-  margin-bottom: 24px;
-  font-size: 16px;
-}
-
-a {
-  color: #119656;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: bolder;
-}
-
-a:visited {
-  color: #119656;
-}
-
-hr {
-  margin-top: 32px;
-  margin-left: 18px;
-  margin-right: 18px;
-  height: 1px;
-  width: 142px;
-  border-color: #eaedec;
-  background-color: #eaedec;
-  color: #eaedec;
-  border-style: solid;
-}
-
-.Or {
-  display: flex;
-  flex-direction: row;
-}
-
-.GlificLogo {
-  font-family: 'Tenor Sans';
-  color: #0d6b3d;
-  font-size: 36px;
-  margin-top: 5vh;
 }
 
 .InputField {
@@ -118,16 +37,6 @@ hr {
   color: red !important;
   margin-top: 2px !important;
   line-height: 1.2 !important;
-}
-
-.ContinueButton {
-  width: 335px;
-  border-radius: 27px !important;
-  margin-top: 20px !important;
-}
-
-.TitleText {
-  font-weight: bold !important;
 }
 
 .Input {
