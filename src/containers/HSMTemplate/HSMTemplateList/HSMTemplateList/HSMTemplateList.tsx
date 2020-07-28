@@ -2,10 +2,7 @@ import React from 'react';
 import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
 import styles from './HSMTemplateList.module.css';
 import { List } from '../../../List/List';
-import {
-  GET_HSM_TEMPLATES_COUNT,
-  FILTER_HSM_TEMPLATES,
-} from '../../../../graphql/queries/Template';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../../graphql/mutations/Template';
 
 export interface HSMPageProps {}
@@ -26,8 +23,8 @@ export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
   const getBody = (text: string) => <p className={styles.TableText}>{text}</p>;
 
   const queries = {
-    countQuery: GET_HSM_TEMPLATES_COUNT,
-    filterItemsQuery: FILTER_HSM_TEMPLATES,
+    countQuery: GET_TEMPLATES_COUNT,
+    filterItemsQuery: FILTER_TEMPLATES,
     deleteItemQuery: DELETE_TEMPLATE,
   };
 
@@ -47,6 +44,7 @@ export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
       dialogMessage={dialogMessage}
       {...columnAttributes}
       {...queries}
+      filters={{ isHsm: true }}
     />
   );
 };

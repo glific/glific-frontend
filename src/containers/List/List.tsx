@@ -28,6 +28,7 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  filters?: any;
   additionalAction?: {
     parameter: string;
     link: string;
@@ -54,6 +55,7 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  filters = null,
   additionalAction = null,
 }: ListProps) => {
   const client = useApolloClient();
@@ -90,6 +92,7 @@ export const List: React.SFC<ListProps> = ({
     return {
       filter: {
         label: searchVal,
+        ...filters,
       },
       opts: {
         limit: tableVals.pageRows,
@@ -104,6 +107,7 @@ export const List: React.SFC<ListProps> = ({
     variables: {
       filter: {
         label: searchVal,
+        ...filters,
       },
     },
   });
