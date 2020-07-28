@@ -1,9 +1,8 @@
 import React from 'react';
-import { GET_TAGS_COUNT } from '../../../graphql/queries/Tag';
 import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
 import { List } from '../../List/List';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
+import { FILTER_AUTOMATION, GET_AUTOMATION_COUNT } from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
 
 export interface AutomationListProps {}
@@ -22,8 +21,8 @@ const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
-  countQuery: GET_TAGS_COUNT,
-  filterItemsQuery: GET_AUTOMATIONS,
+  countQuery: GET_AUTOMATION_COUNT,
+  filterItemsQuery: FILTER_AUTOMATION,
   deleteItemQuery: DELETE_AUTOMATION,
 };
 
@@ -45,6 +44,7 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}
+    searchParameter="name"
     additionalAction={additionalAction}
   />
 );

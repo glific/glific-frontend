@@ -15,13 +15,13 @@ Frontend interface built using React.
 
 1. Create a new file `.env` in the projecct root directory and copy the contents from `.env.example`.
 2. Update the `.env` file with relevant configurations.
-3. Run `yarn install`
+3. Run `yarn setup`
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn install`
+### `yarn setup`
 
 Install the dependencies and required packages.<br />
 
