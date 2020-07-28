@@ -7,6 +7,8 @@ import { TagPage } from './components/pages/TagPage/TagPage';
 import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
+import { ResetPasswordPhone } from './containers/Auth/ResetPassword/ResetPasswordPhone';
+import { ResetPasswordConfirmOTP } from './containers/Auth/ResetPassword/ResetPasswordConfirmOTP';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
 import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
@@ -76,6 +78,8 @@ const App = () => {
         <Route path="/login" exact component={Login} />
         <Route path="/registration" exact component={Registration} />
         <Route path="/confirmotp" exact component={ConfirmOTP} />
+        <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
+        <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
         <Route path="/" render={() => <Redirect to="/login" />} />
       </Switch>
     );
