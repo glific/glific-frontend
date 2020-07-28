@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ChatTemplates.module.css';
 import { useQuery } from '@apollo/client';
-import { List, ListItem, Divider, Paper, Typography, ClickAwayListener } from '@material-ui/core';
+import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 
 interface ChatTemplatesProps {
@@ -31,12 +31,13 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const popperItems = () => {
     let templateObjs = data.sessionTemplates;
     let text = props.isTemplate ? 'templates' : 'speed sends';
-    let listItems = templateObjs.map((obj: any) => {
+    let listItems = templateObjs.map((obj: any, index: number) => {
       if (obj.isHsm === props.isTemplate) {
         // True HSM === Template, False HSM === Speed send
         return (
-          <>
+          <div key={index}>
             <ListItem
+              data-testid="list-item"
               button
               disableRipple
               onClick={(e: any) => props.handleSelectText(obj)}
@@ -48,7 +49,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
               </p>
             </ListItem>
             <Divider light />
-          </>
+          </div>
         );
       }
     });
@@ -60,7 +61,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
         </Paper>
       </List>
     ) : (
-      <Typography align="center" variant="h6">
+      <Typography data-testid="no-results" align="center" variant="h6">
         No {text} for that search.
       </Typography>
     );
