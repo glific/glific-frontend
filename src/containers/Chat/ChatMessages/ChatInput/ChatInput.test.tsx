@@ -98,7 +98,7 @@ describe('<ChatInput />', () => {
     const speedSends = getAllByTestId('shortcut-button')[0];
     fireEvent.click(speedSends);
     await wait();
-    const listItem = getAllByTestId('listItem')[0];
+    const listItem = getAllByTestId('list-item')[0];
     fireEvent.click(listItem);
   });
 });
