@@ -10,7 +10,7 @@ const mocks = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { filter: {}, opts: { limit: 1 } },
+      variables: { filter: {}, opts: { limit: 3 } },
     },
     result: {
       data: {
@@ -48,10 +48,10 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // simulate saves search is selected
     fireEvent.click(unreadButton);
-    expect(container.querySelector('button.ButtonSelected')).toBeInTheDocument();
+    expect(container.querySelector('.ButtonSelected')).toBeInTheDocument();
 
     // simulate saves search is cleared
     fireEvent.click(unreadButton);
-    expect(container.querySelector('button.ButtonSelected')).toBeFalsy();
+    expect(container.querySelector('.ButtonSelected')).toBeFalsy();
   });
 });

@@ -162,7 +162,7 @@ export const CONVERSATION_MOCKS = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { "filter": {}, "opts": { "limit": 1 } }
+      variables: { "filter": {}, "opts": { "limit": 3 } }
     },
     result: {
       data: {
