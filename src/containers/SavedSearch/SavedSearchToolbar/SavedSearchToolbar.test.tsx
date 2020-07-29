@@ -48,10 +48,10 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // simulate saves search is selected
     fireEvent.click(unreadButton);
-    expect(container.querySelector('.ButtonSelected')).toBeInTheDocument();
+    expect(container.querySelector('.SavedSearchItemSelected')).toBeInTheDocument();
 
     // simulate saves search is cleared
     fireEvent.click(unreadButton);
-    expect(container.querySelector('.ButtonSelected')).toBeFalsy();
+    expect(container.querySelector('.SavedSearchItemSelected')).toBeFalsy();
   });
 });
