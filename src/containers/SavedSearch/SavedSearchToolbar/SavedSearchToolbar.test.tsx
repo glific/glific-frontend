@@ -10,7 +10,7 @@ const mocks = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { filter: {} },
+      variables: { filter: {}, opts: { limit: 3 } },
     },
     result: {
       data: {
@@ -21,6 +21,7 @@ const mocks = [
               '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
             label: 'All unread conversations',
             shortcode: 'Unread',
+            count: 10,
           },
         ],
       },
@@ -47,10 +48,10 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // simulate saves search is selected
     fireEvent.click(unreadButton);
-    expect(container.querySelector('button.ButtonSelected')).toBeInTheDocument();
+    expect(container.querySelector('.SavedSearchItemSelected')).toBeInTheDocument();
 
     // simulate saves search is cleared
     fireEvent.click(unreadButton);
-    expect(container.querySelector('button.ButtonSelected')).toBeFalsy();
+    expect(container.querySelector('.SavedSearchItemSelected')).toBeFalsy();
   });
 });
