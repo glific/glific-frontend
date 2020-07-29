@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-// import 'draft-js/dist/Draft.css';
 import createEmojiPlugin from 'draft-js-emoji-plugin';
-import defaultTheme from 'draft-js-emoji-plugin';
-// import editorStyles from './editorStyles.css';
 import Editor from 'draft-js-plugins-editor';
 import { EditorState, ContentState, RichUtils, getDefaultKeyBinding } from 'draft-js';
-// import styles from './ChatInput.module.css';
-import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import 'draft-js-emoji-plugin/lib/plugin.css';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
-// import { StyledEmojiSelectWrapper, GlobalStyleForEmojiSelect } from './draftJsPluginBaseStyles';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
 
@@ -18,7 +12,7 @@ const emojiTheme = {
 };
 
 const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emojiTheme
-const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
+const { EmojiSelect } = emojiPlugin;
 const plugins = [emojiPlugin];
 
 export interface WhatsAppEditorProps {
@@ -28,15 +22,11 @@ export interface WhatsAppEditorProps {
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
-  const emojiPlugin = createEmojiPlugin();
-  const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
-  const plugins = [emojiPlugin];
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const handleChange = (editorState: any) => {
     setEditorState(editorState);
-    // props.setMessage(convertToWhatsApp(editorState));
-    // inputEl.current.focus();
+    props.setMessage(convertToWhatsApp(editorState));
   };
 
   const handleKeyCommand = (command: string, editorState: any) => {
@@ -45,8 +35,6 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       // Convert Draft.js to WhatsApp
       props.sendMessage();
       const newState = EditorState.createEmpty();
-      // setEditorState(newState);
-      // setEditorState(EditorState.moveFocusToEnd(newState));
       setEditorState(
         EditorState.moveFocusToEnd(
           EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
