@@ -3,6 +3,7 @@ import { shallow, mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
+import { render, wait, fireEvent, act } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../MessageTemplate/MessageTemplateList/MessageTemplateList.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
@@ -21,11 +22,12 @@ describe('<ChatInput />', () => {
     onSendMessage: onSendMessageHandler,
   };
 
-  const wrapper = mount(
+  const chatInput = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <ChatInput {...defaultProps} />
     </MockedProvider>
   );
+  const wrapper = mount(chatInput);
 
   test('it should render the input element', () => {
     expect(wrapper.find('[data-testid="message-input"]')).toHaveLength(1);
@@ -68,7 +70,6 @@ describe('<ChatInput />', () => {
     // Speed sends button
     const speedSends = wrapper.find('[data-testid="shortcut-button"]').first();
     speedSends.simulate('click');
-
     expect(speedSends.find(ChatTemplates)).toBeTruthy();
     speedSends.simulate('click');
     expect(speedSends.find(ChatTemplates).exists()).toBeFalsy();
@@ -76,7 +77,6 @@ describe('<ChatInput />', () => {
     // Templates button
     const templates = wrapper.find('[data-testid="shortcut-button"]').last();
     templates.simulate('click');
-
     expect(templates.find(ChatTemplates)).toBeTruthy();
     templates.simulate('click');
     expect(templates.find(ChatTemplates).exists()).toBeFalsy();
@@ -91,5 +91,14 @@ describe('<ChatInput />', () => {
 
     const resetButton = wrapper.find('button[data-testid="resetButton"]');
     resetButton.simulate('click');
+  });
+
+  test('click on a speed send from the list', async () => {
+    const { getAllByTestId } = render(chatInput);
+    const speedSends = getAllByTestId('shortcut-button')[0];
+    fireEvent.click(speedSends);
+    await wait();
+    const listItem = getAllByTestId('listItem')[0];
+    fireEvent.click(listItem);
   });
 });
