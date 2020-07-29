@@ -68,6 +68,7 @@ describe('<ChatInput />', () => {
     // Speed sends button
     const speedSends = wrapper.find('[data-testid="shortcut-button"]').first();
     speedSends.simulate('click');
+
     expect(speedSends.find(ChatTemplates)).toBeTruthy();
     speedSends.simulate('click');
     expect(speedSends.find(ChatTemplates).exists()).toBeFalsy();
@@ -75,8 +76,20 @@ describe('<ChatInput />', () => {
     // Templates button
     const templates = wrapper.find('[data-testid="shortcut-button"]').last();
     templates.simulate('click');
+
     expect(templates.find(ChatTemplates)).toBeTruthy();
     templates.simulate('click');
     expect(templates.find(ChatTemplates).exists()).toBeFalsy();
+  });
+
+  test('check if reset button works', () => {
+    const speedSends = wrapper.find('[data-testid="shortcut-button"]').first();
+    speedSends.simulate('click');
+
+    const searchInput = wrapper.find('[data-testid="searchInput"] input');
+    searchInput.simulate('change', { target: { value: 'hi' } });
+
+    const resetButton = wrapper.find('button[data-testid="resetButton"]');
+    resetButton.simulate('click');
   });
 });

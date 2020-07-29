@@ -47,6 +47,34 @@ const filter = {
     },
   },
 };
+
+const filterByBody = (body: string) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: {
+        body: body,
+      },
+
+      opts: {
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          body: 'Hi',
+          id: '87',
+          isHsm: false,
+          label: 'Hello',
+          isReserved: false,
+        },
+      ],
+    },
+  },
+});
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -86,4 +114,6 @@ export const TEMPLATE_MOCKS = [
   count,
   filter,
   filter,
+  filterByBody('hi'),
+  filterByBody(''),
 ];

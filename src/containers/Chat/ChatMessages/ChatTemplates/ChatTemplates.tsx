@@ -37,7 +37,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
         return (
           <div key={index}>
             <ListItem
-              data-testid="list-item"
+              data-testid="listItem"
               button
               disableRipple
               onClick={(e: any) => props.handleSelectText(obj)}

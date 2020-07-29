@@ -30,6 +30,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   if (inputValue) {
     resetButton = (
       <IconButton
+        data-testid="resetButton"
         className={styles.ResetSearch}
         onClick={() => {
           setLocalSearchValue('');
@@ -47,6 +48,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
         <div className={styles.IconAndText}>
           <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
           <InputBase
+            data-testid="searchInput"
             className={styles.SearchField}
             name="searchInput" // This is important for extracting the search value in parent component.
             placeholder="Search"
