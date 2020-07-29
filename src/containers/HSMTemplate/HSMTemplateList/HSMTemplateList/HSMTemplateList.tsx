@@ -9,7 +9,7 @@ export interface HSMPageProps {}
 
 export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
   const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
-  const dialogMessage = 'It will stop showing when you are drafting a customized message';
+  const dialogMessage = 'It will stop showing when you draft a customized message';
   const columnStyles = [styles.Label, styles.Body, styles.Actions];
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
@@ -38,7 +38,7 @@ export const HSMTemplateList: React.SFC<HSMPageProps> = () => {
     <List
       title="Templates"
       listItem="sessionTemplates"
-      listItemName="HSM Templ"
+      listItemName="HSM Template"
       pageLink="template"
       listIcon={templateIcon}
       dialogMessage={dialogMessage}

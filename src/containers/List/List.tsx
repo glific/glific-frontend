@@ -31,6 +31,7 @@ export interface ListProps {
   searchParameter?: string;
   filters?: any;
   additionalAction?: {
+    icon: any;
     parameter: string;
     link: string;
   } | null;
@@ -216,7 +217,7 @@ export const List: React.SFC<ListProps> = ({
           {additionalAction ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
-                {listIcon}
+                {additionalAction.icon}
               </IconButton>
             </Link>
           ) : null}
