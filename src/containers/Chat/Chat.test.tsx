@@ -16,14 +16,16 @@ window.HTMLElement.prototype.scrollIntoView = function () {};
 
 afterEach(cleanup);
 
+const wrapper = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <MemoryRouter>
+      <Chat {...defaultProps} />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
 test('it should render <Chat /> component correctly', async () => {
-  const { findAllByText, getByText, findByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <Chat {...defaultProps} />
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  const { findAllByText, getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -37,13 +39,7 @@ test('it should render <Chat /> component correctly', async () => {
 });
 
 test('check condition when no subscription data provided', async () => {
-  const { findAllByText, getByText, findByTestId } = render(
-    <MockedProvider mocks={CONVERSATION_MOCKS_WITH_NO_DATA} addTypename={false}>
-      <MemoryRouter>
-        <Chat {...defaultProps} />
-      </MemoryRouter>
-    </MockedProvider>
-  );
+  const { findByTestId } = render(wrapper);
 
   const ChatConversation = await findByTestId('beneficiaryName');
   expect(ChatConversation).toHaveTextContent('Jane Doe');
