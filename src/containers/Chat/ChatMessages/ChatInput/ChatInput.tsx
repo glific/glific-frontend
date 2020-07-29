@@ -14,9 +14,11 @@ import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import 'draft-js-emoji-plugin/lib/plugin.css';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import { StyledEmojiSelectWrapper, GlobalStyleForEmojiSelect } from './draftJsPluginBaseStyles';
+import ReactResizeDetector from 'react-resize-detector';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
+  handleHeightChange(newHeight: number): void;
 }
 
 // defaultTheme.emojiSelectPopover = defaultTheme.emojiSelectPopover + ' hi-there';
@@ -29,7 +31,7 @@ const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emoji
 const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 const plugins = [emojiPlugin];
 
-export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
+export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage, handleHeightChange }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -100,29 +102,34 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   return (
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
-        <div className={styles.Editor}>
-          {/* <WhatsAppEditor
+        <ReactResizeDetector
+          handleHeight
+          onResize={(width: any, height: any) => handleHeightChange(height - 40)} // 40 is the initial height
+        >
+          <div className={styles.Editor}>
+            {/* <WhatsAppEditor
             data-testid="message-input"
             setMessage={(message: string) => setMessage(message)} // Primarily for message length
             sendMessage={() => submitMessage()}
           /> */}
-          {/* <div className={styles.Editor}> */}
-          <Editor
-            editorState={editorState}
-            onChange={handleChange}
-            plugins={plugins}
-            handleKeyCommand={handleKeyCommand}
-            keyBindingFn={keyBindingFn}
-            // ref={inputEl}
-          />
-          {/* <EmojiSuggestions /> */}
-          {/* </div> */}
-          {/* <StyledEmojiSelectWrapper>
+            {/* <div className={styles.Editor}> */}
+            <Editor
+              editorState={editorState}
+              onChange={handleChange}
+              plugins={plugins}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={keyBindingFn}
+              // ref={inputEl}
+            />
+            {/* <EmojiSuggestions /> */}
+            {/* </div> */}
+            {/* <StyledEmojiSelectWrapper>
             <GlobalStyleForEmojiSelect />
             <EmojiSelect />
           </StyledEmojiSelectWrapper> */}
-          {/* </div> */}
-        </div>
+            {/* </div> */}
+          </div>
+        </ReactResizeDetector>
         {/* <div className={styles.EmojiContainer}>
           <IconButton
             data-testid="emoji-picker"
