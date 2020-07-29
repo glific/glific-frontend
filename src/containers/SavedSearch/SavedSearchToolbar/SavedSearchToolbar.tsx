@@ -48,21 +48,20 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   const savedSearchList = data.savedSearches.map((savedSearch: any) => {
     // set the selected class if the button is clicked
-    let buttonClass = [styles.Button];
-    let countClass = [styles.conversationCount];
+    let labelClass = [styles.SavedSearchItemLabel];
+    let countClass = [styles.SavedSearchCount];
     if (savedSearch.id === selectedSavedSearch) {
-      buttonClass.push(styles.ButtonSelected);
-      countClass.push(styles.conversationCountSelected);
+      labelClass.push(styles.SavedSearchItemSelected);
+      countClass.push(styles.SavedSearchSelectedCount);
     }
 
     return (
       <div
+        className={styles.SavedSearchItem}
         key={savedSearch.id}
-        color="primary"
-        className={buttonClass.join(' ')}
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
       >
-        {savedSearch.shortcode}
+        <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
         <div className={countClass.join(' ')}>{savedSearch.count}</div>
       </div>
     );

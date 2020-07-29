@@ -1,40 +1,45 @@
 .SavedSearchToolbar {
-  padding: 0px 15px;
+  padding: 0px 6px;
   display: flex;
 }
 
 .SaveSearchContainer {
-  display: flex;
   color: #93a29b !important;
   cursor: pointer;
   font-weight: 800;
+  display: flex;
 }
 
-.Button {
-  text-transform: none !important;
-  padding: 0px 4px;
+.SavedSearchItem {
   display: flex;
+  padding: 0px 2px;
+}
+
+.SavedSearchItemLabel {
+  padding: 4px 4px;
   text-align: center;
 }
 
-.ButtonSelected {
+.SavedSearchItemSelected {
   color: #119656 !important;
 }
 
-.conversationCount {
+.SavedSearchCount {
   width: 33px;
   height: 16px;
   border-radius: 8px;
   font-size: 10px;
-  margin-left: 5px;
   color: #edf6f2;
   background-color: #93a29b;
+  margin: auto;
+  text-align: center;
 }
 
-.conversationCountSelected {
+.SavedSearchSelectedCount {
   background-color: #119656;
 }
 
 .MoreLink {
   float: right;
+  padding-left: 5px;
 }
