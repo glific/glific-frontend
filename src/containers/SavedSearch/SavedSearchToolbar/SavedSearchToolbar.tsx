@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { Button } from '../../../components/UI/Form/Button/Button';
 import styles from './SavedSearchToolbar.module.css';
+import { IconButton } from '@material-ui/core';
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
@@ -70,7 +71,11 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   return (
     <div className={styles.SavedSearchToolbar}>
       <div className={styles.SaveSearchContainer}>{savedSearchList}</div>
-      <div className={styles.MoreLink}>.</div>
+      <div className={styles.MoreLink}>
+        <IconButton aria-label="more" aria-controls="long-menu" aria-haspopup="true" size="small">
+          <MoreVertIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };
