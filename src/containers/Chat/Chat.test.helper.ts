@@ -162,7 +162,7 @@ export const CONVERSATION_MOCKS = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { "filter": {} }
+      variables: { "filter": {}, "opts": { "limit": 1 } }
     },
     result: {
       data: {
@@ -172,6 +172,7 @@ export const CONVERSATION_MOCKS = [
             "id": "1",
             "label": "All unread conversations",
             "shortcode": "Unread",
+            "count": 10
           }
         ]
       }

@@ -10,7 +10,7 @@ const mocks = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { filter: {} },
+      variables: { filter: {}, opts: { limit: 1 } },
     },
     result: {
       data: {
@@ -21,6 +21,7 @@ const mocks = [
               '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
             label: 'All unread conversations',
             shortcode: 'Unread',
+            count: 10,
           },
         ],
       },
