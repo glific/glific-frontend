@@ -93,7 +93,7 @@ describe('<ChatInput />', () => {
     resetButton.simulate('click');
   });
 
-  test('click on a speed send from the list', async () => {
+  test('clicking on a speed send from the list should store the value as input', async () => {
     const { getAllByTestId } = render(chatInput);
     const speedSends = getAllByTestId('shortcut-button')[0];
     fireEvent.click(speedSends);
