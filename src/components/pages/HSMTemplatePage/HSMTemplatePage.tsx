@@ -1,12 +1,12 @@
 import React from 'react';
-import { HSMTemplateList } from '../../../containers/Template/HSMTemplate/HSMTemplateList/HSMTemplateList';
+import { HSMList } from '../../../containers/Template/HSM/HSMList/HSMList';
 
 export interface HSMTemplatePageProps {}
 
 const HSMTemplatePage: React.SFC<HSMTemplatePageProps> = () => {
   return (
     <div>
-      <HSMTemplateList />
+      <HSMList />
     </div>
   );
 };

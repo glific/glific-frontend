@@ -10,7 +10,7 @@ import { Login } from './containers/Auth/Login/Login';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
 import { MessageTemplate } from './containers/Template/MessageTemplate/MessageTemplate';
 import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
-import { HSMTemplate } from './containers/Template/HSMTemplate/HSMTemplate';
+import { HSMTemplate } from './containers/Template/HSM/HSM';
 import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
