@@ -117,12 +117,14 @@ export const LIST_ITEM_MOCKS = [
             label: 'Important',
             keywords: ['Hi'],
             description: 'important task',
+            isReserved: false
           },
           {
             id: '94',
             label: 'To Do',
             keywords: ['Hi'],
             description: 'complete this task',
+            isReserved: false
           },
         ],
       },

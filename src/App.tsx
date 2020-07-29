@@ -18,6 +18,7 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
 import { Automation } from './containers/Automation/Automation';
+import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 
 const App = () => {
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
+            <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/template" exact component={HSMTemplatePage} />

@@ -55,12 +55,14 @@ const filter = {
           label: 'Good message',
           description: 'Hey There',
           keywords: ['Hi'],
+          isReserved: false
         },
         {
           id: '88',
           label: 'Good morning',
           description: 'Hey There',
           keywords: null,
+          isReserved: false
         },
       ],
     },

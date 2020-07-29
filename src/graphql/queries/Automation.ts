@@ -6,6 +6,7 @@ export const GET_AUTOMATIONS = gql`
       id
       name
       shortcode
+      uuid
     }
   }
 `;
@@ -17,27 +18,25 @@ export const GET_AUTOMATION = gql`
         id
         name
         shortcode
-        language {
-          id
-        }
+        uuid
       }
     }
   }
 `;
 
 export const GET_AUTOMATION_COUNT = gql`
-  query countTags($filter: TagFilter!) {
-    countTags(filter: $filter)
+  query countFlows($filter: FlowFilter!) {
+    countFlows(filter: $filter)
   }
 `;
 
 export const FILTER_AUTOMATION = gql`
-  query tags($filter: TagFilter!, $opts: Opts!) {
-    tags(filter: $filter, opts: $opts) {
+  query tags($filter: FlowFilter!, $opts: Opts!) {
+    flows(filter: $filter, opts: $opts) {
       id
-      label
-      description
-      keywords
+      name
+      shortcode
+      uuid
     }
   }
 `;

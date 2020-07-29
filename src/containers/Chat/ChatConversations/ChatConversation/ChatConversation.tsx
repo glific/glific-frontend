@@ -54,8 +54,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     },
   });
 
-  // check only if there are tags
-  if (props.lastMessage.tags.length > 0) {
+  // there might be some cases when there are no conversations againist the contact. So need to handle that
+  // Also handle unread formatting only if tags array is set.
+  if (Object.keys(props.lastMessage).length > 0 && props.lastMessage.tags.length > 0) {
     // TODO: Need check with the backend on unique identifier for this.
     if (props.lastMessage.tags.filter((tag) => tag.label === 'Unread').length > 0) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];

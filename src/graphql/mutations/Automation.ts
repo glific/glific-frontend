@@ -18,6 +18,7 @@ export const CREATE_AUTOMATION = gql`
         id
         name
         shortcode
+        uuid
       }
     }
   }

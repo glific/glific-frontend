@@ -1,3 +1,64 @@
+/* flow editor css */
+html {
+  --curvature: 4px;
+  --curvature-widget: 4px;
+  --primary-rgb: 52, 152, 219;
+  --secondary-rgb: 0, 77, 129;
+  --focus-rgb: 82, 168, 236;
+  --error-rgb: 255, 99, 71;
+  --color-info: #c0d9eb;
+  --color-warning: #fff6c0;
+  --color-error: rgb(var(--error-rgb));
+  --color-text: #555;
+  --color-widget-text: #555;
+  --color-borders: rgba(0, 0, 0, 0.07);
+  --widget-box-shadow-focused: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(var(--focus-rgb), 0.6);
+  --widget-box-shadow-focused-error: inset 0 1px 1px rgba(var(--error-rgb), 0.075),
+    0 0 8px rgba(var(--error-rgb), 0.6);
+  --color-focus: rgba(var(--focus-rgb), 0.8);
+  --color-widget-bg: #fff;
+  --color-widget-bg-focused: #fff;
+  --color-widget-border: rgb(204, 204, 204);
+  --color-placeholder: var(--color-text-help);
+  --color-primary-light: #eee;
+  --color-secondary-light: #ccc;
+  --color-primary-dark: rgb(var(--primary-rgb));
+  --color-secondary-dark: rgb(var(--secondary-rgb));
+  --color-text-light: rgba(255, 255, 255, 0.92);
+  --color-text-dark: rgba(0, 0, 0, 0.5);
+  --color-text-dark-secondary: rgba(0, 0, 0, 0.25);
+  --color-text-help: rgba(0, 0, 0, 0.45);
+  --color-selection: rgb(var(--primary-rgb));
+  --color-overlay-dark: rgba(0, 0, 0, 0.2);
+  --color-overlay-dark-text: rgba(255, 255, 255, 0.9);
+  --color-overlay-light: rgba(0, 0, 0, 0.05);
+  --color-overlay-light-text: rgba(0, 0, 0, 0.6);
+  --color-link-primary: rgba(var(--primary-rgb), 0.8);
+  --color-link-primary-hover: rgba(var(--primary-rgb), 0.9);
+  --color-link-secondary: rgba(var(--secondary-rgb), 0.8);
+  --color-link-secondary-hover: rgba(var(--secondary-rgb), 0.9);
+  --color-button-primary: var(--color-primary-dark);
+  --color-button-primary-text: var(--color-text-light);
+  --color-button-secondary: var(--color-secondary-light);
+  --color-button-secondary-text: var(--color-text-dark);
+  --color-button-disabled: rgba(0, 0, 0, 0.03);
+  --color-label-primary: var(--color-primary-dark);
+  --color-label-primary-text: var(--color-text-light);
+  --color-label-secondary: rgba(0, 0, 0, 0.2);
+  --color-label-secondary-text: rgba(255, 255, 255, 0.9);
+
+  --arrow-icon-color: rgba(0, 0, 0, 0.25);
+  --temba-select-selected-padding: 9px;
+  --temba-select-selected-line-height: 16px;
+  --temba-select-selected-font-size: 14px;
+}
+
+#flow * {
+  box-sizing: initial !important;
+}
+/* flow editor css */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Heebo',

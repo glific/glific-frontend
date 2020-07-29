@@ -3,11 +3,13 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
+
 import {
   CREATE_AUTOMATION,
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
+
 import { GET_AUTOMATION } from '../../graphql/queries/Automation';
 
 export interface AutomationProps {
@@ -54,10 +56,13 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const [name, setName] = useState('');
 
   const states = { shortcode, name };
+
   const setStates = ({ shortcode, name }: any) => {
     setShortcode(shortcode);
     setName(name);
   };
+
+  const additionalAction = { label: 'Configure', link: '/automation/configure' };
 
   return (
     <ListItem
@@ -70,8 +75,12 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="automation"
+      cancelLink="automation"
+      linkParameter="uuid"
       listItem="flow"
       icon={automationIcon}
+      additionalAction={additionalAction}
+      languageSupport={false}
     />
   );
 };
