@@ -43,10 +43,6 @@
   margin-top: -6px;
 }
 
-.SendButtonContainer {
-  padding-left: 5px;
-}
-
 .InputBox {
   width: 100%;
   border: none;
@@ -87,12 +83,16 @@
 /* max-height: 100px; */
 /* } */
 
-.Buttons {
-  display: flex;
-  align-items: center;
+.SendButtonContainer {
   position: absolute;
   bottom: 10px;
   right: 50px;
+}
+
+.EmojiButton {
+  position: absolute;
+  bottom: 14px;
+  right: 160px;
 }
 
 .Editor {

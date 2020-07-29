@@ -421,7 +421,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   const handleHeightChange = (newHeight: number) => {
-    console.log(newHeight);
     setReducedHeight(newHeight);
   };
 
