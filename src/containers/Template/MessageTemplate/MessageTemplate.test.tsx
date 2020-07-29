@@ -45,6 +45,7 @@ const mocks = [
       variables: {
         filter: {
           label: '',
+          isHsm: false,
         },
       },
     },
@@ -60,6 +61,7 @@ const mocks = [
       variables: {
         filter: {
           label: '',
+          isHsm: false,
         },
         opts: {
           limit: 10,

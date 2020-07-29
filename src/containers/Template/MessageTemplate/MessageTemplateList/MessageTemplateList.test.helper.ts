@@ -8,6 +8,7 @@ const count = {
     variables: {
       filter: {
         label: '',
+        isHsm: false,
       },
     },
   },
@@ -24,6 +25,7 @@ const filter = {
     variables: {
       filter: {
         label: '',
+        isHsm: false,
       },
 
       opts: {
