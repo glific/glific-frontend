@@ -67,7 +67,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
-      // setLanguageId(data.languages[0].id);
+      setLanguageId(data.languages[0].id);
     },
   });
   const itemId = match.params.id ? match.params.id : false;
@@ -117,7 +117,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
     let message;
 
     if (itemId) {
-      payload.phone ? delete payload.phone : console.log(payload);
       updateItem({
         variables: {
           id: itemId,
@@ -183,7 +182,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
         validate={setValidation}
         onSubmit={(item) => {
           saveHandler(item);
-          console.log(item);
         }}
       >
         {({ submitForm }) => (
