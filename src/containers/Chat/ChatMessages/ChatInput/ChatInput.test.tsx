@@ -2,6 +2,10 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import { MockedProvider } from '@apollo/client/testing';
+import { TEMPLATE_MOCKS } from '../../../MessageTemplate/MessageTemplateList/MessageTemplateList.test.helper';
+
+const mocks = TEMPLATE_MOCKS;
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
@@ -17,7 +21,11 @@ describe('<ChatInput />', () => {
     onSendMessage: onSendMessageHandler,
   };
 
-  const wrapper = mount(<ChatInput {...defaultProps} />);
+  const wrapper = mount(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ChatInput {...defaultProps} />
+    </MockedProvider>
+  );
 
   test('it should render the input element', () => {
     expect(wrapper.find('[data-testid="message-input"]')).toHaveLength(1);

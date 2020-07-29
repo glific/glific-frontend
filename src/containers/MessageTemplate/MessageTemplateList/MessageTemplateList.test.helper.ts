@@ -39,8 +39,9 @@ const filter = {
         {
           body: 'Hey There',
           id: '87',
+          isHsm: false,
           label: 'Good message',
-          isReserved: false
+          isReserved: false,
         },
       ],
     },
