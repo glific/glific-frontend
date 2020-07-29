@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
-
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
