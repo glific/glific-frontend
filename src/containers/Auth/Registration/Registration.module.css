@@ -17,7 +17,7 @@
   margin: 0px;
 }
 
-.InputField {
+.Form {
   border-color: #93a29b !important;
   border-radius: 12px !important;
   border-width: 2px !important;
@@ -45,4 +45,9 @@
 
 .ErrorMessage {
   color: red;
+}
+
+.CenterForm {
+  display: flex;
+  flex-direction: column;
 }

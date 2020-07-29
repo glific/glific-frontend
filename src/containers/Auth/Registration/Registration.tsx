@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Redirect } from 'react-router-dom';
+import { Formik, Form, Field } from 'formik';
 import axios from 'axios';
 
 import styles from './Registration.module.css';
@@ -123,6 +124,26 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       mode={'registration'}
     >
       <div className={styles.Margin}>
+        <Formik
+          initialValues={{ userName: '', phoneNumber: '', password: '' }}
+          onSubmit={(item) => {
+            console.log(item);
+          }}
+        >
+          {({ submitForm }) => (
+            <Form>
+              <div className={styles.CenterForm}>
+                Username
+                <Field
+                  type="userName"
+                  name="userName"
+                  onChange={handleUserNameChange()}
+                  className={styles.Form}
+                ></Field>
+              </div>
+            </Form>
+          )}
+        </Formik>
         <FormControl variant="outlined">
           <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
           <OutlinedInput
