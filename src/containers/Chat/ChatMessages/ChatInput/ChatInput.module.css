@@ -1,5 +1,8 @@
 .ChatInput {
   padding-top: 15px;
+  /* position: absolute; */
+  /* bottom: 15; */
+  /* height: 500px; */
 }
 
 .ChatInputElements {
@@ -11,14 +14,18 @@
   background-color: #ffffff;
   justify-content: space-between;
   height: fit-content;
-  max-height: 64px;
+  /* max-height: 64px; */
+  /* position: relative; */
   overflow-y: auto;
 }
 
 .InputContainer {
-  width: 72%;
+  width: 85%;
   font-size: 16px;
   align-self: center;
+  display: flex;
+  justify-content: space-between;
+  /* position: absolute; */
 }
 
 .EmojiContainer {
@@ -58,3 +65,42 @@
 .SendIcon {
   padding-left: 8px;
 }
+
+.Editor {
+  width: 100%;
+  position: absolute;
+  bottom: 45px;
+  max-height: 150px;
+  overflow-y: scroll;
+  /* z-index: 1000; */
+  /* max-height: 100px; */
+}
+
+.Buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* .EmojiSelection > .draftJsEmojiPlugin__emojiSelectPopover {
+  margin-top: -460px !important;
+} */
+
+/* 
+.editor {
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  cursor: text;
+  padding: 16px;
+  border-radius: 2px;
+  margin-bottom: 2em;
+  box-shadow: inset 0px 1px 8px -3px #ababab;
+  background: #fefefe;
+}
+
+.editor :global(.public-DraftEditor-content) {
+  min-height: 140px;
+}
+
+.options {
+  margin-bottom: 20px;
+} */
