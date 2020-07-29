@@ -1,8 +1,7 @@
 .ChatInput {
   padding-top: 15px;
-  /* position: absolute; */
-  /* bottom: 15; */
-  /* height: 500px; */
+  position: absolute;
+  bottom: 15px;
 }
 
 .ChatInputElements {
@@ -14,9 +13,22 @@
   background-color: #ffffff;
   justify-content: space-between;
   height: fit-content;
-  /* max-height: 64px; */
-  /* position: relative; */
-  overflow-y: auto;
+  max-height: 200px;
+  overflow-y: scroll;
+  padding-right: 5px;
+}
+
+.ChatInputElements::-webkit-scrollbar {
+  width: 22px;
+}
+
+.ChatInputElements::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: lightgray;
+  height: 1em;
+  border: 0.5em solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  -webkit-border-radius: 1em;
 }
 
 .InputContainer {
@@ -25,7 +37,6 @@
   align-self: center;
   display: flex;
   justify-content: space-between;
-  /* position: absolute; */
 }
 
 .EmojiContainer {
@@ -66,20 +77,33 @@
   padding-left: 8px;
 }
 
-.Editor {
+/* .Editor {
   width: 100%;
   position: absolute;
   bottom: 45px;
   max-height: 150px;
   overflow-y: scroll;
   /* z-index: 1000; */
-  /* max-height: 100px; */
-}
+/* max-height: 100px; */
+/* } */
 
 .Buttons {
   display: flex;
   align-items: center;
+  position: absolute;
+  bottom: 10px;
+  right: 50px;
 }
+
+.Editor {
+  width: 75%;
+  min-height: 40px;
+}
+
+/* ::-webkit-scrollbar-track {
+  border-radius: 10px;
+  color: red;
+} */
 
 /* .EmojiSelection > .draftJsEmojiPlugin__emojiSelectPopover {
   margin-top: -460px !important;

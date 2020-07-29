@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { Container, Button } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
@@ -33,6 +33,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const inputEl = useRef('');
 
   const submitMessage = () => {
     // close emoji picker
@@ -62,6 +63,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const handleChange = (editorState: any) => {
     setEditorState(editorState);
     setMessage(convertToWhatsApp(editorState));
+    // inputEl.current.focus();
   };
 
   const handleKeyCommand = (command: string, editorState: any) => {
@@ -98,22 +100,23 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   return (
     <Container className={styles.ChatInput}>
       <div className={styles.ChatInputElements}>
-        <div className={styles.InputContainer}>
+        <div className={styles.Editor}>
           {/* <WhatsAppEditor
             data-testid="message-input"
             setMessage={(message: string) => setMessage(message)} // Primarily for message length
             sendMessage={() => submitMessage()}
           /> */}
-          <div className={styles.Editor}>
-            <Editor
-              editorState={editorState}
-              onChange={handleChange}
-              plugins={plugins}
-              handleKeyCommand={handleKeyCommand}
-              keyBindingFn={keyBindingFn}
-            />
-            {/* <EmojiSuggestions /> */}
-          </div>
+          {/* <div className={styles.Editor}> */}
+          <Editor
+            editorState={editorState}
+            onChange={handleChange}
+            plugins={plugins}
+            handleKeyCommand={handleKeyCommand}
+            keyBindingFn={keyBindingFn}
+            // ref={inputEl}
+          />
+          {/* <EmojiSuggestions /> */}
+          {/* </div> */}
           {/* <StyledEmojiSelectWrapper>
             <GlobalStyleForEmojiSelect />
             <EmojiSelect />
@@ -141,6 +144,7 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
               data-testid="send-button"
               variant="contained"
               color="primary"
+              disableElevation
               onClick={submitMessage}
               disabled={message.length === 0}
             >
