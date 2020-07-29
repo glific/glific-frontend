@@ -9,9 +9,9 @@ import {
   FILTER_TEMPLATES,
 } from '../../../graphql/queries/Template';
 import { CREATE_TEMPLATE } from '../../../graphql/mutations/Template';
-import { MessageTemplate } from './MessageTemplate';
+import { MessageTemplate } from './SpeedSend';
 import { Switch, Route } from 'react-router-dom';
-import { MessageTemplateList } from './MessageTemplateList/MessageTemplateList';
+import { MessageTemplateList } from './SpeedSendList/SpeedSendList';
 
 afterEach(cleanup);
 const mocks = [

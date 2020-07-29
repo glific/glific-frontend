@@ -8,7 +8,7 @@ import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
-import { MessageTemplate } from './containers/Template/MessageTemplate/MessageTemplate';
+import { MessageTemplate } from './containers/Template/SpeedSend/SpeedSend';
 import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
 import { HSMTemplate } from './containers/Template/HSM/HSM';
 import Chat from './containers/Chat/Chat';

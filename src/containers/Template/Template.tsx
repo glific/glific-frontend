@@ -28,13 +28,14 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
+const dialogMessage = ' It will stop showing when you are drafting a customized message';
+
 export interface TemplateProps {
   title: string;
   listItem: string;
   listItemName: string;
   pageLink: string;
   listIcon: any;
-  dialogMessage: string;
   filters: any;
 }
 
@@ -46,7 +47,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listItemName={props.listItemName}
       pageLink={props.pageLink}
       listIcon={props.listIcon}
-      dialogMessage={props.dialogMessage}
+      dialogMessage={dialogMessage}
       filters={props.filters}
       {...columnAttributes}
       {...queries}

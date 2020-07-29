@@ -19,11 +19,7 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 import { MESSAGE_RECEIVED_SUBSCRIPTION } from '../../../graphql/subscriptions/Chat';
 import { Switch, Route } from 'react-router-dom';
-import {
-  within,
-  fireEvent,
-  waitForDomChange,
-} from '../../Template/MessageTemplate/MessageTemplateList/node_modules/@testing-library/dom';
+import { within, fireEvent, waitForDomChange } from '@testing-library/dom';
 import initialCacheState from './ChatMessages.test.json';
 
 global.document.createRange = () => ({

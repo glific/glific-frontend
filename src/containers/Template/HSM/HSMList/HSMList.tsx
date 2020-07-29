@@ -8,7 +8,6 @@ export interface HSMPageProps {}
 
 export const HSMList: React.SFC<HSMPageProps> = () => {
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
-  const dialogMessage = 'It will stop showing when you are drafting a customized message';
 
   return (
     <Template
@@ -17,7 +16,6 @@ export const HSMList: React.SFC<HSMPageProps> = () => {
       listItemName="HSM Template"
       pageLink="template"
       listIcon={templateIcon}
-      dialogMessage={dialogMessage}
       filters={{ isHsm: true }}
     />
   );
