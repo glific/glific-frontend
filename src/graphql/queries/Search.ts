@@ -34,6 +34,7 @@ export const SAVED_SEARCH_QUERY = gql`
       shortcode
       label
       args
+      count
     }
   }
 `;

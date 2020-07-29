@@ -11,3 +11,17 @@
   color: #93a29b !important;
   text-transform: none !important;
 }
+
+.conversationCount {
+  width: 33px;
+  height: 16px;
+  border-radius: 8px;
+  font-size: 10px;
+  margin-left: 5px;
+  color: #edf6f2;
+  background-color: #93a29b;
+}
+
+.conversationCountSelected {
+  background-color: #119656;
+}

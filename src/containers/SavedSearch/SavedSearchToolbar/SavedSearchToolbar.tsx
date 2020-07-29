@@ -15,7 +15,12 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
 
   // default queryvariables
-  const queryVariables = { filter: {} };
+  const queryVariables = {
+    filter: {},
+    opts: {
+      limit: 3,
+    },
+  };
 
   const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
@@ -40,16 +45,13 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setSelectedSavedSearch(savedSearchId);
   };
 
-  const savedSearchList = data.savedSearches.map((savedSearch: any, index: number) => {
-    // TODOS: for now restrict to 3. Once new UI is decided we can figure out how to show the rest
-    if (index > 2) {
-      return null;
-    }
-
+  const savedSearchList = data.savedSearches.map((savedSearch: any) => {
     // set the selected class if the button is clicked
     let buttonClass = styles.Button;
+    let countClass = [styles.conversationCount];
     if (savedSearch.id === selectedSavedSearch) {
       buttonClass = styles.ButtonSelected;
+      countClass.push(styles.conversationCountSelected);
     }
 
     return (
@@ -61,6 +63,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
       >
         {savedSearch.shortcode}
+        <span className={countClass.join(' ')}>{savedSearch.count}</span>
       </Button>
     );
   });
