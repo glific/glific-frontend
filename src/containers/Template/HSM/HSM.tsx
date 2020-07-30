@@ -8,7 +8,7 @@ import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/Te
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ListItem } from '../../List/ListItem/ListItem';
 
-export interface TemplateProps {
+export interface HSMProps {
   match: any;
 }
 
@@ -46,7 +46,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-export const HSMTemplate: React.SFC<TemplateProps> = ({ match }) => {
+export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
 

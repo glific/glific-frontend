@@ -8,7 +8,7 @@ import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/Sp
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ListItem } from '../../List/ListItem/ListItem';
 
-export interface TemplateProps {
+export interface SpeedSendProps {
   match: any;
 }
 
@@ -45,7 +45,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-export const SpeedSend: React.SFC<TemplateProps> = ({ match }) => {
+export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
 
