@@ -118,6 +118,10 @@ export const ListItem: React.SFC<ListItemProps> = ({
     };
 
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
+    if (listItem == 'user') {
+      delete payload.phone;
+    }
+
     let message;
 
     if (itemId) {
