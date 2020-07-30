@@ -58,6 +58,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       >
         <div className={styles.Editor}>
           <Editor
+            data-testid="editor"
             editorState={props.editorState}
             onChange={handleChange}
             plugins={plugins}

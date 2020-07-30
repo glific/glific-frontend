@@ -23,10 +23,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
       )
     );
-
-    if (typeof props.onSendMessage === 'function') {
-      props.onSendMessage(message);
-    }
+    props.onSendMessage(message);
   };
 
   return (
