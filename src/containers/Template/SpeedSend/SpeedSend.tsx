@@ -45,7 +45,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-export const MessageTemplate: React.SFC<TemplateProps> = ({ match }) => {
+export const SpeedSend: React.SFC<TemplateProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
 

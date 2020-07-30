@@ -8,7 +8,7 @@ import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
 import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
-import { MessageTemplate } from './containers/Template/SpeedSend/SpeedSend';
+import { SpeedSend } from './containers/Template/SpeedSend/SpeedSend';
 import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
 import { HSMTemplate } from './containers/Template/HSM/HSM';
 import Chat from './containers/Chat/Chat';
@@ -46,8 +46,8 @@ const App = () => {
             <Route path="/tag/add" exact component={Tag} />
             <Route path="/tag/:id/edit" exact component={Tag} />
             <Route path="/speed-send" exact component={MessageTemplatePage} />
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-            <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+            <Route path="/speed-send/add" exact component={SpeedSend} />
+            <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
