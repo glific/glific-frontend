@@ -118,6 +118,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const open = Boolean(anchorEl);
   const [fullOpen, setFullOpen] = React.useState(true);
   const [staffRedirect, setStaffRedirect] = React.useState(false);
+  const [staffPage, setStaffPage] = React.useState(false);
 
   const drawer = (
     <div>
@@ -248,8 +249,16 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
-          <Link className={classes.StaffButton} to={`/staff-management`}>
-            <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+          <Link
+            className={classes.StaffButton}
+            to={`/staff-management`}
+            onClick={() => setStaffPage(!staffPage)}
+          >
+            <img
+              src={staffPage ? ActiveStaffIcon : InactiveStaffIcon}
+              className={styles.StaffIcon}
+              alt="stafficon"
+            />
           </Link>
           {drawer}
           {popper}
