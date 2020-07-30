@@ -30,7 +30,14 @@ const dialogMessage = ' It will stop showing when you are drafting a customized 
 const formFields = [
   { component: Input, name: 'name', type: 'text', placeholder: 'Full Name', query: true },
   { component: Input, name: 'phone', disabled: true, placeholder: 'Phone Number', query: false },
-  { component: Input, name: 'roles', type: 'text', placeholder: 'Roles', query: true },
+  {
+    component: Input,
+    name: 'roles',
+    disabled: true,
+    type: 'text',
+    placeholder: 'Roles',
+    query: true,
+  },
 ];
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
@@ -68,6 +75,7 @@ export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => 
       listItem="user"
       icon={speedSendIcon}
       languageSupport={false}
+      checkItemsHeader="Groups"
     />
   );
 };

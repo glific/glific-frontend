@@ -1,6 +1,6 @@
 import React from 'react';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
-import { DELETE_USER } from '../../../graphql/mutations/StaffManagement';
+import { DELETE_USER, ADD_USER_TO_GROUP } from '../../../graphql/mutations/StaffManagement';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { List } from '../../List/List';
@@ -8,8 +8,8 @@ import { List } from '../../List/List';
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
-  const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
+  const columnNames = ['', 'NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
+  const columnStyles = [styles.Check, styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
   const getColumns = ({ name, phone, groups }: any) => ({
@@ -22,6 +22,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     countQuery: USER_COUNT,
     filterItemsQuery: FILTER_USERS,
     deleteItemQuery: DELETE_USER,
+    secondButtonQuery: ADD_USER_TO_GROUP,
   };
 
   const getName = (text: string) => {
@@ -56,7 +57,9 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...queries}
         {...columnAttributes}
         buttonLabel="Groups"
+        secondButtonLabel="Add to a group"
         filterKey="name"
+        checkBox={true}
       />
     </div>
   );

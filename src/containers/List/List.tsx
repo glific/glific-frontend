@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, Checkbox } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
@@ -29,7 +29,10 @@ export interface ListProps {
   columnStyles: any;
   title: string;
   buttonLabel?: string;
+  secondButtonLabel?: string;
+  secondButtonQuery?: DocumentNode;
   filterKey?: any;
+  checkBox?: boolean;
   additionalAction?: {
     parameter: string;
     link: string;
@@ -57,6 +60,9 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   buttonLabel = 'Add New',
+  secondButtonLabel,
+  secondButtonQuery,
+  checkBox,
   filterKey = 'label',
 
   additionalAction = null,
@@ -69,6 +75,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [checkedItems, setCheckedItems] = useState([]);
 
   // Table attributes
 
@@ -249,7 +256,14 @@ export const List: React.SFC<ListProps> = ({
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
       const action = additionalAction ? listItem[additionalAction.parameter] : null;
+      const includeCheck = {
+        addCheck: <Checkbox onChange={() => console.log(listItem)} color="primary" />,
+      };
+      if (!checkBox) {
+        delete includeCheck.addCheck;
+      }
       return {
+        ...includeCheck,
         ...columns(listItem),
         operations: getIcons(listItem.id, label, isReserved, action),
       };
@@ -309,6 +323,11 @@ export const List: React.SFC<ListProps> = ({
             <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
               {buttonLabel}
             </Button>
+            {secondButtonLabel ? (
+              <Button color="primary" variant="outlined" onClick={() => setNewItem(true)}>
+                {secondButtonLabel}
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>

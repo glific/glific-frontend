@@ -27,3 +27,25 @@ export const UPDATE_USER = gql`
     }
   }
 `;
+
+export const ADD_USER_TO_GROUP = gql`
+  mutation createUserGroup($input: UserGroupInput!) {
+    createUserGroup(input: $input) {
+      userGroup {
+        id
+        user {
+          id
+          name
+        }
+        group {
+          id
+          label
+        }
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

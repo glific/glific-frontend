@@ -10,6 +10,7 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 import styles from './Pager.module.css';
+import Checkbox from '@material-ui/core/Checkbox';
 
 interface PagerProps {
   columnNames: Array<any>;
@@ -34,7 +35,7 @@ const createRows = (data: any, columnStyles: any) => {
           key={i}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {entry[item]}
+          <div>{entry[item]}</div>
         </TableCell>
       );
     });
