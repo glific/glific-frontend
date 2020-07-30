@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
@@ -53,7 +53,7 @@ describe('<ChatInput />', () => {
   });
 
   test('it should not be able to submit without any message', () => {
-    const submit = wrapper.find('[data-testid="send-button"]');
+    const submit = wrapper.find('button[data-testid="send-button"]');
     expect(submit.prop('disabled')).toBeTruthy();
     submit.simulate('click');
     expect(inputSubmitted).toBeFalsy();
