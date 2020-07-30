@@ -33,6 +33,7 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
       contact {
         id
         name
+        phone
       }
       messages {
         id
@@ -52,4 +53,3 @@ export const GET_CONVERSATION_MESSAGE_QUERY = gql`
     }
   }
 `;
-

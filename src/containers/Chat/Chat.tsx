@@ -1,14 +1,13 @@
 import React, { useEffect, useCallback } from 'react';
 import { Paper } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
-
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import styles from './Chat.module.css';
 
-import { GET_CONVERSATION_QUERY } from '../../graphql/queries/Chat';
+import { GET_CONVERSATION_QUERY, GET_CONVERSATION_MESSAGE_QUERY } from '../../graphql/queries/Chat';
 import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
@@ -22,6 +21,7 @@ export interface ChatProps {
 const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
+
   const queryVariables = {
     contactOpts: {
       limit: 50,
@@ -34,6 +34,25 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   const { loading, error, data, subscribeToMore, client } = useQuery<any>(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
+  });
+
+  const [getContactQuery] = useLazyQuery(GET_CONVERSATION_MESSAGE_QUERY, {
+    onCompleted: (data) => {
+      if (data) {
+        const conversations = client.readQuery({
+          query: GET_CONVERSATION_QUERY,
+          variables: queryVariables,
+        });
+
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.conversations.unshift(data.conversation);
+        client.writeQuery({
+          query: GET_CONVERSATION_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
+      }
+    },
   });
 
   const updateConversations = useCallback(
@@ -69,14 +88,28 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       if (!conversationFound) {
-        //TODO: Need to fix this when new contact is received.
-        console.log('Error: Conversation not found! ', conversationIndex);
+        getContactQuery({
+          variables: {
+            contactId: contactId,
+            filter: {},
+            messageOpts: {
+              limit: 100,
+            },
+          },
+        });
+
         return cachedConversations;
       }
 
-      // We need to add new message to existing messages array
+      // We need to add new message to existing messages array and moving conversation to the top
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-      updatedConversations.conversations[conversationIndex].messages.unshift(newMessage);
+      let updatedConversation = updatedConversations.conversations;
+      updatedConversation = updatedConversation.splice(conversationIndex, 1);
+      updatedConversation[0].messages.unshift(newMessage);
+      updatedConversations.conversations = [
+        ...updatedConversation,
+        ...updatedConversations.conversations,
+      ];
 
       // return the updated object
       const returnConversations = Object.assign({}, cachedConversations, {
