@@ -58,7 +58,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...columnAttributes}
         buttonLabel="Groups"
         secondButtonLabel="Add to a group"
-        filterKey="name"
+        searchParameter="name"
         checkBox={true}
       />
     </div>

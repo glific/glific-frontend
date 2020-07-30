@@ -8,7 +8,6 @@ import { useApolloClient, DocumentNode } from '@apollo/client';
 import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { Tooltip } from '@material-ui/core';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';

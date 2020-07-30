@@ -11,7 +11,7 @@ import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './List.module.css';
-import { SearchBar } from '../Chat/ChatConversations/SearchBar';
+import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
@@ -33,7 +33,10 @@ export interface ListProps {
   secondButtonQuery?: DocumentNode;
   filterKey?: any;
   checkBox?: boolean;
+  searchParameter?: string;
+  filters?: any;
   additionalAction?: {
+    icon: any;
     parameter: string;
     link: string;
   } | null;
@@ -64,7 +67,8 @@ export const List: React.SFC<ListProps> = ({
   secondButtonQuery,
   checkBox,
   filterKey = 'label',
-
+  searchParameter = 'label',
+  filters = null,
   additionalAction = null,
 }: ListProps) => {
   const client = useApolloClient();
@@ -97,35 +101,30 @@ export const List: React.SFC<ListProps> = ({
       [attribute]: newVal,
     });
   };
-
-  const filterPayload = useCallback(
-    (filterKey: string) => {
-      return {
-        filter: {
-          [filterKey]: searchVal,
-        },
-        opts: {
-          limit: tableVals.pageRows,
-          offset: tableVals.pageNum * tableVals.pageRows,
-          order: tableVals.sortDirection.toUpperCase(),
-        },
-      };
-    },
-    [searchVal, tableVals]
-  );
+  let filter: any = {};
+  filter[searchParameter] = searchVal;
+  filter = { ...filter, ...filters };
+  const filterPayload = useCallback(() => {
+    return {
+      filter,
+      opts: {
+        limit: tableVals.pageRows,
+        offset: tableVals.pageNum * tableVals.pageRows,
+        order: tableVals.sortDirection.toUpperCase(),
+      },
+    };
+  }, [searchVal, tableVals]);
 
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
     variables: {
-      filter: {
-        [filterKey]: searchVal,
-      },
+      filter,
     },
   });
 
   // Get item data here
   const { loading, error, data, refetch } = useQuery(filterItemsQuery, {
-    variables: filterPayload(filterKey),
+    variables: filterPayload(),
   });
 
   const message = useQuery(NOTIFICATION);
@@ -229,7 +228,7 @@ export const List: React.SFC<ListProps> = ({
           {additionalAction ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
-                {listIcon}
+                {additionalAction.icon}
               </IconButton>
             </Link>
           ) : null}
