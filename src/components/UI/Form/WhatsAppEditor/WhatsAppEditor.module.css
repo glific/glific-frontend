@@ -1,0 +1,10 @@
+.EmojiButton {
+  position: absolute;
+  bottom: 14px;
+  right: 160px;
+}
+
+.Editor {
+  width: 75%;
+  min-height: 40px;
+}

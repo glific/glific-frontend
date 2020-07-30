@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
@@ -10,9 +10,10 @@ const mocks = TEMPLATE_MOCKS;
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
-  const onSendMessageHandler = () => {
+  const onSendMessageHandler = (message: string) => {
     inputSubmitted = true;
   };
+  const handleHeightChange = jest.fn();
 
   beforeEach(() => {
     inputSubmitted = false;
@@ -20,6 +21,7 @@ describe('<ChatInput />', () => {
 
   const defaultProps = {
     onSendMessage: onSendMessageHandler,
+    handleHeightChange: handleHeightChange,
   };
 
   const chatInput = (
@@ -50,20 +52,23 @@ describe('<ChatInput />', () => {
     // TODO: both change and keypress are triggered correctly so wondering if we need any assertion here
   });
 
-  test('it should select and set emoji', () => {
-    const shallowWrapper = shallow(<ChatInput {...defaultProps} />);
-    const input = shallowWrapper.find('[data-testid="message-input"]');
+  test('it should not be able to submit without any message', () => {
+    const submit = wrapper.find('button[data-testid="send-button"]');
+    expect(submit.prop('disabled')).toBeTruthy();
+    submit.simulate('click');
+    expect(inputSubmitted).toBeFalsy();
+  });
 
-    // open the emoji popup
-    shallowWrapper.find('[data-testid="emoji-picker"]').simulate('click');
+  test('submit message callback working properly', () => {
+    const submit = wrapper.find('[data-testid="message-input"]');
+    submit.props().sendMessage('This is a test message.');
+    expect(inputSubmitted).toBeTruthy();
+  });
 
-    expect(shallowWrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
-
-    // TODO: select an emoji
-    //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
-
-    // close the emoji popup
-    input.simulate('click');
+  test('height change should get hit', () => {
+    const editor = wrapper.find('[data-testid="message-input"]');
+    editor.props().handleHeightChange(30);
+    expect(handleHeightChange).toHaveBeenCalled();
   });
 
   test('chat templates should open when either speed send or templates button is clicked', () => {

@@ -14,6 +14,32 @@
   padding: 10px;
   border-radius: 0px 0px 12px 12px !important;
   background-color: #ffffff;
+  justify-content: space-between;
+  height: fit-content;
+  max-height: 200px;
+  overflow-y: scroll;
+  padding-right: 5px;
+}
+
+.ChatInputElements::-webkit-scrollbar {
+  width: 22px;
+}
+
+.ChatInputElements::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: lightgray;
+  height: 1em;
+  border: 0.5em solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  -webkit-border-radius: 1em;
+}
+
+.InputContainer {
+  width: 85%;
+  font-size: 16px;
+  align-self: center;
+  display: flex;
+  justify-content: space-between;
   border-color: rgba(0, 0, 0, 0.08);
   border-width: 2px;
   border-style: solid;
@@ -27,10 +53,6 @@
 
 .EmojiContainer {
   margin-top: -6px;
-}
-
-.SendButtonContainer {
-  padding-left: 5px;
 }
 
 .InputBox {
@@ -61,6 +83,23 @@
 
 .SendIcon {
   padding-left: 8px;
+}
+
+.SendButtonContainer {
+  position: absolute;
+  bottom: 10px;
+  right: 50px;
+}
+
+.EmojiButton {
+  position: absolute;
+  bottom: 14px;
+  right: 160px;
+}
+
+.Editor {
+  width: 75%;
+  min-height: 40px;
 }
 
 .SendsContainer {
