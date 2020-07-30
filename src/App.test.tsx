@@ -6,7 +6,7 @@ import { wait } from '@testing-library/react';
 
 import { Login } from './containers/Auth/Login/Login';
 import App from './App';
-import Chat from './containers/Chat/Chat';
+import { Chat } from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';
 
 const mocks = CONVERSATION_MOCKS;
