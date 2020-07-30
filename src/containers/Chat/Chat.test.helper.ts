@@ -165,7 +165,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
 const savedSearchQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {} },
+    variables: { filter: {}, opts: { limit: 3 } },
   },
   result: {
     data: {
@@ -176,6 +176,7 @@ const savedSearchQuery = {
           id: '1',
           label: 'All unread conversations',
           shortcode: 'Unread',
+          count: 10,
         },
       ],
     },
