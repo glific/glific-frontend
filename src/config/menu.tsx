@@ -5,7 +5,7 @@ export const sideDrawerMenus = [
     icon: 'chat',
   },
   {
-    title: 'Tag',
+    title: 'Tags',
     path: '/tag',
     icon: 'tag',
   },
