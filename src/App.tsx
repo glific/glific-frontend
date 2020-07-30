@@ -7,10 +7,10 @@ import { TagPage } from './components/pages/TagPage/TagPage';
 import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
-import MessageTemplatePage from './components/pages/MessageTemplatePage/MessageTemplatePage';
-import { MessageTemplate } from './containers/MessageTemplate/MessageTemplate';
-import HSMTemplatePage from './components/pages/HSMTemplatePage/HSMTemplatePage';
-import { HSMTemplate } from './containers/HSMTemplate/HSMTemplate';
+import MessageTemplatePage from './components/pages/Template/SpeedSendPage/SpeedSendPage';
+import { SpeedSend } from './containers/Template/SpeedSend/SpeedSend';
+import HSMTemplatePage from './components/pages/Template/HSMPage/HSMPage';
+import { HSM } from './containers/Template/HSM/HSM';
 import Chat from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
@@ -46,8 +46,8 @@ const App = () => {
             <Route path="/tag/add" exact component={Tag} />
             <Route path="/tag/:id/edit" exact component={Tag} />
             <Route path="/speed-send" exact component={MessageTemplatePage} />
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-            <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+            <Route path="/speed-send/add" exact component={SpeedSend} />
+            <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
@@ -55,8 +55,8 @@ const App = () => {
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/template" exact component={HSMTemplatePage} />
-            <Route path="/template/add" exact component={HSMTemplate} />
-            <Route path="/template/:id/edit" exact component={HSMTemplate} />
+            <Route path="/template/add" exact component={HSM} />
+            <Route path="/template/:id/edit" exact component={HSM} />
 
             <Route
               exact

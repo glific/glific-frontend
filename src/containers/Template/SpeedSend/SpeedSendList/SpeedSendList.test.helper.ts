@@ -1,6 +1,6 @@
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { GET_LANGUAGES } from '../../../../graphql/queries/List';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
+import { DELETE_TEMPLATE } from '../../../../graphql/mutations/Template';
 
 const count = {
   request: {
@@ -8,6 +8,7 @@ const count = {
     variables: {
       filter: {
         label: '',
+        isHsm: false,
       },
     },
   },
@@ -24,6 +25,7 @@ const filter = {
     variables: {
       filter: {
         label: '',
+        isHsm: false,
       },
 
       opts: {
@@ -39,13 +41,42 @@ const filter = {
         {
           body: 'Hey There',
           id: '87',
+          isHsm: false,
           label: 'Good message',
-          isReserved: false
+          isReserved: false,
         },
       ],
     },
   },
 };
+
+const filterByBody = (body: string) => ({
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: {
+        body: body,
+      },
+
+      opts: {
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          body: 'Hi',
+          id: '87',
+          isHsm: false,
+          label: 'Hello',
+          isReserved: false,
+        },
+      ],
+    },
+  },
+});
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -85,4 +116,6 @@ export const TEMPLATE_MOCKS = [
   count,
   filter,
   filter,
+  filterByBody('hi'),
+  filterByBody(''),
 ];
