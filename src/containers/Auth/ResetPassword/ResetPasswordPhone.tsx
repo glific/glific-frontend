@@ -5,6 +5,8 @@ import { Formik, Form, Field } from 'formik';
 import styles from './ResetPasswordPhone.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
+import { Button } from '../../../components/UI/Form/Button/Button';
+import { ValuesOfCorrectTypeRule } from 'graphql';
 
 export interface ResetPasswordPhoneProps {}
 
@@ -53,27 +55,45 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       handlerSubmitCallback={handlerSubmit}
       mode={'login'}
     >
-      <div className={styles.Subtext}>Please create a new password for your account</div>
-      <Formik
-        initialValues={{ phoneNumber: '' }}
-        onSubmit={(item) => {
-          console.log(item);
-        }}
-      >
-        {({ submitForm }) => (
-          <Form>
-            <div className={styles.CenterForm}>
-              Phone
-              <Field
-                className={styles.Form}
-                type="phone number"
-                name="phone number"
-                onChange={handlePhoneChange()}
-              ></Field>
-            </div>
-          </Form>
-        )}
-      </Formik>
+      <div>
+        <div className={styles.SubText}>Please create a new password for your account</div>
+        <Formik
+          initialValues={{ phoneNumber: '' }}
+          onSubmit={(values, { setSubmitting }) => {
+            console.log(values.phoneNumber);
+            setPhoneNumber(values.phoneNumber);
+            setTimeout(() => {
+              setSubmitting(false);
+            }, 400);
+            axios
+              .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+                user: {
+                  phone: values.phoneNumber,
+                  registration: 'false',
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                setRedirect(true);
+              });
+          }}
+        >
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <div className={styles.CenterForm}>
+                <Field
+                  className={styles.Form}
+                  name="phoneNumber"
+                  placeholder="Your phone number"
+                ></Field>
+                <button className={styles.Button} type="submit">
+                  <div className={styles.ButtonText}>GENERATE OTP TO CONFIRM</div>
+                </button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </div>
     </Auth>
   );
 };

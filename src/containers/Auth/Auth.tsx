@@ -45,18 +45,7 @@ const Auth: React.SFC<AuthProps> = (props) => {
               {props.pageTitle}
             </Typography>
           </div>
-          <div className={styles.CenterBox}>
-            {props.children}
-            <Button
-              data-testid="AuthButton"
-              onClick={props.handlerSubmitCallback}
-              color="primary"
-              variant={'contained'}
-              className={buttonClass.join(' ')}
-            >
-              {props.buttonText}
-            </Button>
-          </div>
+          <div className={styles.CenterBox}>{props.children}</div>
         </div>
         {props.alternateText ? (
           <>

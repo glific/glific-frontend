@@ -11,37 +11,17 @@ export interface ResetPasswordConfirmOTPProps {
 }
 
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [OTP, setOTP] = useState('');
   const [newPass, setNewPass] = useState('');
   const [redirect, setRedirect] = useState(false);
 
-  const handlerSubmit = () => {
-    axios
-      .post(RESET_PASSWORD, {
-        user: {
-          phone: props.location.state.phoneNumber,
-          password: newPass,
-          otp: OTP,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setRedirect(true);
-      });
-  };
-
-  const handleOTPChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOTP(event.target.value);
-  };
-
-  const handleNewPassChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewPass(event.target.value);
-  };
-
   if (redirect) {
     return <Redirect to="/chat" />;
   }
+
+  const handlerSubmit = () => {
+    console.log('hi');
+  };
 
   return (
     <Auth
@@ -52,40 +32,53 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       handlerSubmitCallback={handlerSubmit}
       mode={'login'}
     >
-      <Formik
-        initialValues={{ phoneNumber: props.location.state.phoneNumber }}
-        onSubmit={(item) => {
-          console.log(item);
-        }}
-      >
-        {({ submitForm }) => (
-          <Form>
-            <div className={styles.CenterForm}>
-              Phone Number
-              <Field
-                disabled
-                className={styles.Form}
-                type="phone number"
-                name="phone number"
-              ></Field>
-              OTP
-              <Field
-                className={styles.Form}
-                type="OTP"
-                name="OTP"
-                onChange={handleOTPChange()}
-              ></Field>
-              New Password
-              <Field
-                className={styles.Form}
-                type="phone number"
-                name="phone number"
-                onChange={handleNewPassChange()}
-              ></Field>
-            </div>
-          </Form>
-        )}
-      </Formik>
+      <div>
+        <div className={styles.SubText}>Please create a new password for your account</div>
+        <Formik
+          initialValues={{ phoneNumber: props.location.state.phoneNumber, OTP: '', password: '' }}
+          onSubmit={(values, { setSubmitting }) => {
+            console.log(values.phoneNumber);
+            setTimeout(() => {
+              setSubmitting(false);
+            }, 400);
+            axios
+              .post(RESET_PASSWORD, {
+                user: {
+                  phone: props.location.state.phoneNumber,
+                  password: values.password,
+                  otp: values.OTP,
+                },
+              })
+              .then((response) => {
+                console.log(response);
+                setRedirect(true);
+              });
+          }}
+        >
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <div className={styles.CenterForm}>
+                <Field
+                  disabled
+                  className={styles.Form}
+                  placeholder={props.location.state.phoneNumber}
+                  name="phoneNumber"
+                ></Field>
+                <Field className={styles.Form} placeholder="OTP" name="OTP"></Field>
+                <Field
+                  className={styles.Form}
+                  type="phone number"
+                  name="password"
+                  placeholder="New Password"
+                ></Field>
+                <button className={styles.Button} type="submit">
+                  <div className={styles.ButtonText}>SAVE</div>
+                </button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </div>
     </Auth>
   );
 };
