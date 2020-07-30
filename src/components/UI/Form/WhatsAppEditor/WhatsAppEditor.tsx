@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import createEmojiPlugin from 'draft-js-emoji-plugin';
 import Editor from 'draft-js-plugins-editor';
-import { EditorState, ContentState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { RichUtils, getDefaultKeyBinding } from 'draft-js';
 import 'draft-js-emoji-plugin/lib/plugin.css';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
-
-const emojiTheme = {
-  emojiSelectPopover: styles.EmojiSelector,
-};
 
 const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emojiTheme
 const { EmojiSelect } = emojiPlugin;
@@ -53,6 +49,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
   return (
     <>
       <ReactResizeDetector
+        data-testid="resizer"
         handleHeight
         onResize={(width: any, height: any) => props.handleHeightChange(height - 40)} // 40 is the initial height
       >
