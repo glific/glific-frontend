@@ -1,5 +1,10 @@
 .ChatInput {
   padding-top: 15px;
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 .ChatInputElements {
@@ -7,18 +12,17 @@
   height: 64px;
   width: 100%;
   padding: 10px;
-  border-radius: 12px !important;
+  border-radius: 0px 0px 12px 12px !important;
   background-color: #ffffff;
-  justify-content: space-between;
-  height: fit-content;
-  max-height: 64px;
-  overflow-y: auto;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-width: 2px;
+  border-style: solid;
+  position: relative;
 }
 
 .InputContainer {
-  width: 72%;
-  font-size: 16px;
-  align-self: center;
+  width: 80%;
+  position: relative;
 }
 
 .EmojiContainer {
@@ -57,4 +61,89 @@
 
 .SendIcon {
   padding-left: 8px;
+}
+
+.SendsContainer {
+  display: flex;
+  /* margin-top: -20px; */
+  flex-flow: row nowrap;
+  position: relative;
+}
+
+.QuickSend {
+  margin-left: 10px;
+  background-color: #93a29b;
+  color: #edf6f2;
+  padding: 5px 12px 5px 12px;
+  border-radius: 15px 15px 0px 0px;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  position: relative;
+  z-index: 100;
+}
+
+.QuickSendSelected {
+  background-color: #119656;
+}
+
+.ShortcutPaper {
+  width: 100%;
+  /* width: 1200px; */
+  /* height: 300px; */
+  z-index: -1;
+  position: relative;
+  padding: 0px 0px 30px 0px;
+}
+
+.Popper {
+  width: 64.2%;
+  position: relative;
+  z-index: 50;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-width: 1px 2px 1px 2px;
+  border-style: solid;
+  /* border-radius: 25px 25px 0px 0px; */
+  box-sizing: border-box;
+  width: 100%;
+  /* height: 500px; */
+  flex: none;
+  bottom: 0;
+}
+
+.ChatSearchBar {
+  border-color: #eaedec;
+  width: 95%;
+  height: 40px;
+  position: absolute;
+  bottom: 40px;
+  width: 95%;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+.Popup {
+  width: 100%;
+  height: auto;
+  min-height: 160px;
+  max-height: 600px;
+  background-color: white;
+  position: relative;
+  border-color: rgba(0, 0, 0, 0.08);
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 15px 15px 0px 0px;
+  padding-top: 10px;
+}
+
+.HidePopup {
+  visibility: hidden;
+}
+
+.QuickSendButtons {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  height: 30px;
+  display: flex;
 }

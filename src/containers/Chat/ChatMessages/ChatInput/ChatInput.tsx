@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import { Container, Button } from '@material-ui/core';
+import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
-
+import clsx from 'clsx';
 import styles from './ChatInput.module.css';
-
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
+import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
+import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -15,7 +15,12 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
+  const [selectedTab, setSelectedTab] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [searchVal, setSearchVal] = useState('');
+  const speedSends = 'Speed sends';
+  const templates = 'Templates';
 
   const submitMessage = () => {
     // close emoji picker
@@ -42,8 +47,70 @@ export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
     );
   }
 
+  const handleClick = (title: string) => {
+    if (selectedTab === title) {
+      setSelectedTab('');
+    } else {
+      setSelectedTab(title);
+    }
+    setOpen(selectedTab !== title);
+  };
+
+  const handleClickAway = () => {
+    setOpen(false);
+    setSelectedTab('');
+  };
+
+  const handleSelectText = (obj: any) => {
+    setMessage(obj.body);
+  };
+
+  const handleSearch = (e: any) => {
+    setSearchVal(e.target.value);
+  };
+
+  const quickSendButtons = () => {
+    let types = [speedSends, templates];
+    let buttons = types.map((type: string) => {
+      return (
+        <div
+          key={type}
+          data-testid="shortcut-button"
+          onClick={() => handleClick(type)}
+          className={clsx(styles.QuickSend, {
+            [styles.QuickSendSelected]: selectedTab === type,
+          })}
+        >
+          {type}
+        </div>
+      );
+    });
+    return <div className={styles.QuickSendButtons}>{buttons}</div>;
+  };
+
   return (
     <Container className={styles.ChatInput}>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div className={styles.SendsContainer}>
+          {open ? (
+            <Fade in={open} timeout={200}>
+              <div className={styles.Popup}>
+                <ChatTemplates
+                  isTemplate={selectedTab === templates}
+                  searchVal={searchVal}
+                  handleSelectText={handleSelectText}
+                />
+                <SearchBar
+                  className={styles.ChatSearchBar}
+                  handleChange={handleSearch}
+                  onReset={() => setSearchVal('')}
+                />
+              </div>
+            </Fade>
+          ) : null}
+          {quickSendButtons()}
+        </div>
+      </ClickAwayListener>
       <div className={styles.ChatInputElements}>
         <div className={styles.InputContainer}>
           <WhatsAppEditor
