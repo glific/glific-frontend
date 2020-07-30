@@ -73,16 +73,6 @@
   padding-left: 8px;
 }
 
-/* .Editor {
-  width: 100%;
-  position: absolute;
-  bottom: 45px;
-  max-height: 150px;
-  overflow-y: scroll;
-  /* z-index: 1000; */
-/* max-height: 100px; */
-/* } */
-
 .SendButtonContainer {
   position: absolute;
   bottom: 10px;
@@ -99,32 +89,3 @@
   width: 75%;
   min-height: 40px;
 }
-
-/* ::-webkit-scrollbar-track {
-  border-radius: 10px;
-  color: red;
-} */
-
-/* .EmojiSelection > .draftJsEmojiPlugin__emojiSelectPopover {
-  margin-top: -460px !important;
-} */
-
-/* 
-.editor {
-  box-sizing: border-box;
-  border: 1px solid #ddd;
-  cursor: text;
-  padding: 16px;
-  border-radius: 2px;
-  margin-bottom: 2em;
-  box-shadow: inset 0px 1px 8px -3px #ababab;
-  background: #fefefe;
-}
-
-.editor :global(.public-DraftEditor-content) {
-  min-height: 140px;
-}
-
-.options {
-  margin-bottom: 20px;
-} */
