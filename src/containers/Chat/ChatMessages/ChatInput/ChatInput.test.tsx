@@ -36,19 +36,19 @@ describe('<ChatInput />', () => {
     // TODO: both change and keypress are triggered correctly so wondering if we need any assertion here
   });
 
-  test('it should select and set emoji', () => {
-    const shallowWrapper = shallow(<ChatInput {...defaultProps} />);
-    const input = shallowWrapper.find('[data-testid="message-input"]');
+  // test('it should select and set emoji', () => {
+  //   const shallowWrapper = shallow(<ChatInput {...defaultProps} />);
+  //   const input = shallowWrapper.find('[data-testid="message-input"]');
 
-    // open the emoji popup
-    shallowWrapper.find('[data-testid="emoji-picker"]').simulate('click');
+  //   // open the emoji popup
+  //   shallowWrapper.find('[data-testid="emoji-picker"]').simulate('click');
 
-    expect(shallowWrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
+  //   expect(shallowWrapper.find('[data-testid="emoji-popup"]')).toHaveLength(1);
 
-    // TODO: select an emoji
-    //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
+  //   // TODO: select an emoji
+  //   //wrapper.find('[data-testid="emoji-popup"] button').simulate('click');
 
-    // close the emoji popup
-    input.simulate('click');
-  });
+  //   // close the emoji popup
+  //   input.simulate('click');
+  // });
 });

@@ -15,36 +15,28 @@ const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emoji
 const { EmojiSelect } = emojiPlugin;
 const plugins = [emojiPlugin];
 
-export interface WhatsAppEditorProps {
-  setMessage(message: string): void;
+interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
-  sendMessage(): void;
+  sendMessage(message: string): void;
+  editorState: any;
+  setEditorState(editorState: any): void;
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
   const handleChange = (editorState: any) => {
-    setEditorState(editorState);
-    props.setMessage(convertToWhatsApp(editorState));
+    props.setEditorState(editorState);
   };
 
   const handleKeyCommand = (command: string, editorState: any) => {
     // On enter, submit. Otherwise, deal with commands like normal.
     if (command === 'enter') {
       // Convert Draft.js to WhatsApp
-      props.sendMessage();
-      const newState = EditorState.createEmpty();
-      setEditorState(
-        EditorState.moveFocusToEnd(
-          EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-        )
-      );
+      props.sendMessage(convertToWhatsApp(editorState));
       return 'handled';
     }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setEditorState(newState);
+      props.setEditorState(newState);
       return 'handled';
     }
     return 'not-handled';
@@ -66,7 +58,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       >
         <div className={styles.Editor}>
           <Editor
-            editorState={editorState}
+            editorState={props.editorState}
             onChange={handleChange}
             plugins={plugins}
             handleKeyCommand={handleKeyCommand}
@@ -74,21 +66,8 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
           />
         </div>
       </ReactResizeDetector>
-      {/* <div className={styles.EmojiContainer}>
-          <IconButton
-            data-testid="emoji-picker"
-            color="primary"
-            aria-label="pick emoji"
-            component="span"
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <span role="img" aria-label="pick emoji">
-              😀
-            </span>
-          </IconButton>
-        </div> */}
       <div className={styles.EmojiButton}>
-        <EmojiSelect />
+        <EmojiSelect aria-label="pick emoji" data-testid="emoji-picker" />
       </div>
     </>
   );

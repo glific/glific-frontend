@@ -3,6 +3,8 @@ import { Container, Button } from '@material-ui/core';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
+import { EditorState, ContentState } from 'draft-js';
+import { convertToWhatsApp } from '../../../../common/RichEditor';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -10,11 +12,17 @@ export interface ChatInputProps {
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
-  const [message, setMessage] = useState('');
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
-  const submitMessage = () => {
+  const submitMessage = (message: string) => {
     if (!message) return;
-    setMessage('');
+
+    // Resetting the EditorState
+    setEditorState(
+      EditorState.moveFocusToEnd(
+        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+      )
+    );
 
     if (typeof props.onSendMessage === 'function') {
       props.onSendMessage(message);
@@ -26,7 +34,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       <div className={styles.ChatInputElements}>
         <WhatsAppEditor
           data-testid="message-input"
-          setMessage={setMessage} // Primarily for message length
+          editorState={editorState}
+          setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={props.handleHeightChange}
         />
@@ -37,8 +46,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             variant="contained"
             color="primary"
             disableElevation
-            onClick={submitMessage}
-            disabled={message.length === 0}
+            onClick={() => submitMessage(convertToWhatsApp(editorState))}
+            disabled={!editorState.getCurrentContent().hasText()}
           >
             Send
             <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
