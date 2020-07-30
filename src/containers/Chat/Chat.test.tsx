@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render, wait } from '@testing-library/react';
 
-import Chat from './Chat';
+import { Chat } from './Chat';
 import { CONVERSATION_MOCKS, CONVERSATION_MOCKS_WITH_NO_DATA } from './Chat.test.helper';
 
 const mocks = CONVERSATION_MOCKS;

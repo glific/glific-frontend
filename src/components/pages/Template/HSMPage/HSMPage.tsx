@@ -3,12 +3,10 @@ import { HSMList } from '../../../../containers/Template/HSM/HSMList/HSMList';
 
 export interface HSMPageProps {}
 
-const HSMTemplatePage: React.SFC<HSMPageProps> = () => {
+export const HSMPage: React.SFC<HSMPageProps> = () => {
   return (
     <div>
       <HSMList />
     </div>
   );
 };
-
-export default HSMTemplatePage;
