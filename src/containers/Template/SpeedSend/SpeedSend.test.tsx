@@ -2,16 +2,16 @@ import React from 'react';
 import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import {
   GET_TEMPLATE,
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
-} from '../../graphql/queries/Template';
-import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { MessageTemplate } from './MessageTemplate';
+} from '../../../graphql/queries/Template';
+import { CREATE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { SpeedSend } from './SpeedSend';
 import { Switch, Route } from 'react-router-dom';
-import { MessageTemplateList } from './MessageTemplateList/MessageTemplateList';
+import { SpeedSendList } from './SpeedSendList/SpeedSendList';
 
 afterEach(cleanup);
 const mocks = [
@@ -45,6 +45,7 @@ const mocks = [
       variables: {
         filter: {
           label: '',
+          isHsm: false,
         },
       },
     },
@@ -60,6 +61,7 @@ const mocks = [
       variables: {
         filter: {
           label: '',
+          isHsm: false,
         },
         opts: {
           limit: 10,
@@ -132,14 +134,14 @@ const mocks = [
   },
 ];
 
-test('cancel button should redirect to MessageTemplatelist page', async () => {
+test('cancel button should redirect to SpeedSendlist page', async () => {
   const { container, getByText, unmount } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Switch>
-          <Route path="/speed-send" exact component={MessageTemplateList} />
+          <Route path="/speed-send" exact component={SpeedSendList} />
         </Switch>
-        <MessageTemplate match={{ params: { id: 1 } }} />
+        <SpeedSend match={{ params: { id: 1 } }} />
       </Router>
     </MockedProvider>
   );
@@ -158,9 +160,9 @@ describe('Save Button', () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <MessageTemplate match={{ params: { id: null } }} />
+          <SpeedSend match={{ params: { id: null } }} />
           <Switch>
-            <Route path="/speed-send" exact component={MessageTemplateList} />
+            <Route path="/speed-send" exact component={SpeedSendList} />
           </Switch>
         </Router>
       </MockedProvider>

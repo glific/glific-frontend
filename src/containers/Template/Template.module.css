@@ -1,3 +1,17 @@
+.Label {
+  width: 172px;
+}
+
+.Body {
+  width: 667px;
+}
+
+.Actions {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
 .LabelText {
   font-family: 'heebo', sans-serif;
   display: flex;
@@ -17,23 +31,4 @@
   color: #93a29b;
   line-height: 1.25;
   margin: 0;
-}
-
-.SpeedSendIcon {
-  width: 29px;
-  height: 29px;
-}
-
-.Label {
-  width: 172px;
-}
-
-.Body {
-  width: 667px;
-}
-
-.Actions {
-  width: 100px;
-  justify-content: flex-end;
-  margin-left: auto;
 }

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
-import { GET_TEMPLATE } from '../../graphql/queries/Template';
-import styles from './HSMTemplate.module.css';
-import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { ReactComponent as SpeedSendIcon } from '../../assets/images/icons/Template/Selected.svg';
-import { DELETE_TEMPLATE } from '../../graphql/mutations/Template';
-import { ListItem } from '../List/ListItem/ListItem';
+import { Input } from '../../../components/UI/Form/Input/Input';
+import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
+import { GET_TEMPLATE } from '../../../graphql/queries/Template';
+import styles from './SpeedSend.module.css';
+import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { ListItem } from '../../List/ListItem/ListItem';
 
-export interface TemplateProps {
+export interface SpeedSendProps {
   match: any;
 }
 
@@ -34,7 +34,6 @@ const formFields = [
 
 const defaultAttribute = {
   type: 'TEXT',
-  isHsm: true,
 };
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
@@ -46,7 +45,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-export const HSMTemplate: React.SFC<TemplateProps> = ({ match }) => {
+export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
 
@@ -63,10 +62,10 @@ export const HSMTemplate: React.SFC<TemplateProps> = ({ match }) => {
       states={states}
       setStates={setStates}
       setValidation={setValidation}
-      listItemName="HSM Template"
+      listItemName="speed send"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="template"
+      redirectionLink="speed-send"
       listItem="sessionTemplate"
       icon={speedSendIcon}
       defaultAttribute={defaultAttribute}
