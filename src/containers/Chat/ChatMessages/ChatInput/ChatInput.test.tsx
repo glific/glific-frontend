@@ -3,8 +3,8 @@ import { shallow, mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, wait, fireEvent, act } from '@testing-library/react';
-import { TEMPLATE_MOCKS } from '../../../MessageTemplate/MessageTemplateList/MessageTemplateList.test.helper';
+import { render, wait, fireEvent } from '@testing-library/react';
+import { TEMPLATE_MOCKS } from '../../../Template/SpeedSend/SpeedSendList/SpeedSendList.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
 
