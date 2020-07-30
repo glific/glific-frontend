@@ -11,7 +11,7 @@ import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './List.module.css';
-import { SearchBar } from '../Chat/ChatConversations/SearchBar';
+import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
@@ -28,7 +28,10 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  searchParameter?: string;
+  filters?: any;
   additionalAction?: {
+    icon: any;
     parameter: string;
     link: string;
   } | null;
@@ -54,6 +57,8 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  searchParameter = 'label',
+  filters = null,
   additionalAction = null,
 }: ListProps) => {
   const client = useApolloClient();
@@ -85,12 +90,12 @@ export const List: React.SFC<ListProps> = ({
       [attribute]: newVal,
     });
   };
-
+  let filter: any = {};
+  filter[searchParameter] = searchVal;
+  filter = { ...filter, ...filters };
   const filterPayload = useCallback(() => {
     return {
-      filter: {
-        label: searchVal,
-      },
+      filter,
       opts: {
         limit: tableVals.pageRows,
         offset: tableVals.pageNum * tableVals.pageRows,
@@ -102,9 +107,7 @@ export const List: React.SFC<ListProps> = ({
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
     variables: {
-      filter: {
-        label: searchVal,
-      },
+      filter,
     },
   });
 
@@ -214,7 +217,7 @@ export const List: React.SFC<ListProps> = ({
           {additionalAction ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
-                {listIcon}
+                {additionalAction.icon}
               </IconButton>
             </Link>
           ) : null}

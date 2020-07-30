@@ -48,8 +48,8 @@ const App = () => {
             <Route path="/tag/add" exact component={Tag} />
             <Route path="/tag/:id/edit" exact component={Tag} />
             <Route path="/speed-send" exact component={MessageTemplatePage} />
-            <Route path="/speed-send/add" exact component={MessageTemplate} />
-            <Route path="/speed-send/:id/edit" exact component={MessageTemplate} />
+            <Route path="/speed-send/add" exact component={SpeedSend} />
+            <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
             <Route path="/automation" exact component={AutomationList} />
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
@@ -57,8 +57,8 @@ const App = () => {
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/template" exact component={HSMTemplatePage} />
-            <Route path="/template/add" exact component={HSMTemplate} />
-            <Route path="/template/:id/edit" exact component={HSMTemplate} />
+            <Route path="/template/add" exact component={HSM} />
+            <Route path="/template/:id/edit" exact component={HSM} />
 
             <Route
               exact
