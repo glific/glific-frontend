@@ -46,8 +46,8 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
         const conversationCopy = JSON.parse(JSON.stringify(conversation));
         conversationCopy.conversation.messages
-          .sort((currentMesage: any, nextMessage: any) => {
-            return currentMesage.id - nextMessage.id;
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
           })
           .reverse();
 
