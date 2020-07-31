@@ -37,15 +37,22 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   });
 
   const [getContactQuery] = useLazyQuery(GET_CONVERSATION_MESSAGE_QUERY, {
-    onCompleted: (data) => {
-      if (data) {
+    onCompleted: (conversation) => {
+      if (conversation) {
         const conversations = client.readQuery({
           query: GET_CONVERSATION_QUERY,
           variables: queryVariables,
         });
 
+        const conversationCopy = JSON.parse(JSON.stringify(conversation));
+        conversationCopy.conversation.messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.conversations.unshift(data.conversation);
+        conversationsCopy.conversations.unshift(conversationCopy.conversation);
         client.writeQuery({
           query: GET_CONVERSATION_QUERY,
           variables: queryVariables,

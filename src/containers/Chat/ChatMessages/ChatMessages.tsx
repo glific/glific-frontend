@@ -393,7 +393,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       );
     });
 
-    messageList = reverseConversation.reverse();
+    messageList = reverseConversation
+      .sort((currentMessage: any, nextMessage: any) => {
+        return currentMessage.id - nextMessage.id;
+      })
+      .reverse();
   }
 
   let messageListContainer;
