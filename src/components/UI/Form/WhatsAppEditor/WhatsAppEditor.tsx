@@ -1,15 +1,22 @@
-import React from 'react';
-import createEmojiPlugin from 'draft-js-emoji-plugin';
+import React, { useState } from 'react';
 import Editor from 'draft-js-plugins-editor';
 import { RichUtils, getDefaultKeyBinding } from 'draft-js';
-import 'draft-js-emoji-plugin/lib/plugin.css';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
+import MoodIcon from '@material-ui/icons/Mood';
+import { IconButton, ClickAwayListener } from '@material-ui/core';
 
-const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emojiTheme
-const { EmojiSelect } = emojiPlugin;
-const plugins = [emojiPlugin];
+// Emoji mart <-> DraftJS imports
+import createEmojiMartPlugin from 'draft-js-emoji-mart-plugin';
+import data from 'emoji-mart/data/apple.json';
+import 'emoji-mart/css/emoji-mart.css';
+const emojiMartPlugin = createEmojiMartPlugin({
+  data,
+  set: 'apple',
+});
+const { Picker } = emojiMartPlugin;
+const plugins = [emojiMartPlugin];
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
@@ -19,6 +26,7 @@ interface WhatsAppEditorProps {
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleChange = (editorState: any) => {
     props.setEditorState(editorState);
   };
@@ -46,6 +54,10 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     return getDefaultKeyBinding(e);
   };
 
+  const handleClickAway = () => {
+    setShowEmojiPicker(false);
+  };
+
   return (
     <>
       <ReactResizeDetector
@@ -64,9 +76,31 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
           />
         </div>
       </ReactResizeDetector>
-      <div className={styles.EmojiButton}>
-        <EmojiSelect aria-label="pick emoji" data-testid="emoji-picker" />
-      </div>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div>
+          <div className={styles.EmojiButton}>
+            <IconButton
+              data-testid="emoji-picker"
+              color="primary"
+              aria-label="pick emoji"
+              component="span"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              <span role="img" aria-label="pick emoji">
+                😀
+              </span>
+            </IconButton>
+          </div>
+          {showEmojiPicker ? (
+            <Picker
+              data-testid="emoji-popup"
+              title="Pick your emoji…"
+              emoji="point_up"
+              style={{ position: 'absolute', bottom: '60px', right: '-150px', zIndex: 100 }}
+            />
+          ) : null}
+        </div>
+      </ClickAwayListener>
     </>
   );
 };

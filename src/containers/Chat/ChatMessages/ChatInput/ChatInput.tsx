@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { EditorState, ContentState } from 'draft-js';
-import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
-import { Picker } from 'emoji-mart';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 
@@ -19,8 +18,6 @@ export interface ChatInputProps {
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
-  const [message, setMessage] = useState('');
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -54,7 +51,13 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const handleSelectText = (obj: any) => {
-    setMessage(obj.body);
+    // Conversion from HTML text to EditorState
+    const blocksFromHTML = convertFromHTML(obj.body);
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap
+    );
+    setEditorState(EditorState.createWithContent(state));
   };
 
   const handleSearch = (e: any) => {
