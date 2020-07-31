@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { IconButton, Typography, Checkbox } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
@@ -31,7 +31,7 @@ export interface ListProps {
   buttonLabel?: string;
   secondButtonLabel?: string;
   secondButtonQuery?: DocumentNode;
-  checkBox?: boolean;
+  showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
   additionalAction?: {
@@ -64,7 +64,7 @@ export const List: React.SFC<ListProps> = ({
   buttonLabel = 'Add New',
   secondButtonLabel,
   secondButtonQuery,
-  checkBox,
+  showCheckbox,
   searchParameter = 'label',
   filters = null,
   additionalAction = null,
@@ -77,10 +77,8 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [checkedItems, setCheckedItems] = useState([]);
 
   // Table attributes
-
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -253,14 +251,7 @@ export const List: React.SFC<ListProps> = ({
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
       const action = additionalAction ? listItem[additionalAction.parameter] : null;
-      const includeCheck = {
-        addCheck: <Checkbox onChange={() => console.log(listItem)} color="primary" />,
-      };
-      if (!checkBox) {
-        delete includeCheck.addCheck;
-      }
       return {
-        ...includeCheck,
         ...columns(listItem),
         operations: getIcons(listItem.id, label, isReserved, action),
       };
@@ -338,6 +329,7 @@ export const List: React.SFC<ListProps> = ({
           totalRows={itemCount}
           handleTableChange={handleTableChange}
           tableVals={tableVals}
+          showCheckbox={showCheckbox}
         />
       ) : (
         <div>There are no {listItemName}s.</div>

@@ -8,8 +8,8 @@ import { List } from '../../List/List';
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['', 'NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
-  const columnStyles = [styles.Check, styles.Name, styles.Phone, styles.Group, styles.Actions];
+  const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
+  const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon className={styles.TagIcon} />;
 
   const getColumns = ({ name, phone, groups }: any) => ({
@@ -59,7 +59,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         buttonLabel="Groups"
         secondButtonLabel="Add to a group"
         searchParameter="name"
-        checkBox={true}
+        showCheckbox={true}
       />
     </div>
   );

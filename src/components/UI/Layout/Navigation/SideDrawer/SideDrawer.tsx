@@ -22,7 +22,6 @@ import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../context/session';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
-import ActiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Active.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
 import { Link } from 'react-router-dom';
@@ -98,13 +97,13 @@ const useStyles = makeStyles((theme: Theme) =>
     LogoutButton: {
       position: 'absolute',
       bottom: '10px',
-      left: '8px',
+      left: '94px',
       width: 'fit-content',
     },
     StaffButton: {
       position: 'absolute',
-      bottom: '17px',
-      left: '94px',
+      bottom: '10px',
+      left: '8px',
       width: 'fit-content',
     },
   })
@@ -117,8 +116,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [fullOpen, setFullOpen] = React.useState(true);
-  const [staffRedirect, setStaffRedirect] = React.useState(false);
-  const [staffPage, setStaffPage] = React.useState(false);
 
   const drawer = (
     <div>
@@ -178,10 +175,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const handleStaffClick = (event: any) => {
-    setStaffRedirect(true);
   };
 
   const container = window !== undefined ? () => window.document.body : undefined;
@@ -246,20 +239,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
           // open
         >
+          <IconButton className={classes.StaffButton} component={Link} to="/staff-management">
+            <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+          </IconButton>
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
-          <Link
-            className={classes.StaffButton}
-            to={`/staff-management`}
-            onClick={() => setStaffPage(!staffPage)}
-          >
-            <img
-              src={staffPage ? ActiveStaffIcon : InactiveStaffIcon}
-              className={styles.StaffIcon}
-              alt="stafficon"
-            />
-          </Link>
           {drawer}
           {popper}
         </Drawer>
