@@ -31,7 +31,6 @@ export interface ListProps {
   buttonLabel?: string;
   secondButtonLabel?: string;
   secondButtonQuery?: DocumentNode;
-  filterKey?: any;
   checkBox?: boolean;
   searchParameter?: string;
   filters?: any;
@@ -66,7 +65,6 @@ export const List: React.SFC<ListProps> = ({
   secondButtonLabel,
   secondButtonQuery,
   checkBox,
-  filterKey = 'label',
   searchParameter = 'label',
   filters = null,
   additionalAction = null,
@@ -131,7 +129,7 @@ export const List: React.SFC<ListProps> = ({
   let toastMessage;
 
   useEffect(() => {
-    refetch(filterKey);
+    refetch();
   }, [refetch, filterPayload]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
@@ -147,7 +145,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      refetch(filterKey);
+      refetch();
       refetchCount();
     },
   });
