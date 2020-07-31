@@ -13,6 +13,8 @@
 .SavedSearchItem {
   display: flex;
   padding: 0px 2px;
+  justify-content: center;
+  align-items: center;
 }
 
 .SavedSearchItemLabel {
@@ -31,8 +33,9 @@
   font-size: 10px;
   color: #edf6f2;
   background-color: #93a29b;
-  margin: auto;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .SavedSearchSelectedCount {
