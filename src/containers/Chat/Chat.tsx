@@ -18,7 +18,7 @@ export interface ChatProps {
   contactId: number;
 }
 
-const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
 
@@ -177,5 +177,3 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     </Paper>
   );
 };
-
-export default Chat;
