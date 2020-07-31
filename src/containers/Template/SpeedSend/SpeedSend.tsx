@@ -7,7 +7,6 @@ import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../../graphql/mutations/Tem
 import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ListItem } from '../../List/ListItem/ListItem';
-import WhatsAppEditor from '../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 export interface SpeedSendProps {
   match: any;
@@ -31,7 +30,6 @@ const dialogMessage = ' It will stop showing when you are drafting a customized 
 const formFields = [
   { component: Input, name: 'label', placeholder: 'Title' },
   { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
-  // { component: WhatsAppEditor, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
 ];
 
 const defaultAttribute = {
