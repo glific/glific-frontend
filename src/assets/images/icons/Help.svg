@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Icon/Help</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/Help" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Info" fill="#040411">
+            <circle id="Oval" cx="6" cy="6" r="6"></circle>
+        </g>
+        <path d="M6.34,7.832 C6.424,7.112 6.652,6.596 7.252,6.08 C8.212,5.276 8.584,4.736 8.584,3.932 C8.584,2.912 7.792,2 6.244,2 C4.972,2 4,2.9 4,3.848 C4,4.304 4.324,4.664 4.756,4.664 C5.188,4.664 5.452,4.328 5.452,3.944 C5.452,3.608 5.224,3.332 4.912,3.248 C5.092,2.84 5.596,2.528 6.232,2.528 C7.036,2.528 7.552,3.104 7.552,3.848 C7.552,4.616 7.156,4.988 6.568,5.708 C6.04,6.356 5.824,7.004 5.812,7.832 L6.34,7.832 Z M6.112,10.316 C6.496,10.316 6.796,10.016 6.796,9.644 C6.796,9.26 6.496,8.96 6.112,8.96 C5.728,8.96 5.428,9.26 5.428,9.644 C5.428,10.016 5.728,10.316 6.112,10.316 Z" id="?" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+</svg>
