@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
+import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
 import { FILTER_AUTOMATION, GET_AUTOMATION_COUNT } from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
@@ -31,8 +32,9 @@ const columnAttributes = {
   columns: getColumns,
   columnStyles: columnStyles,
 };
+const configureIcon = <ConfigureIcon></ConfigureIcon>;
 
-const additionalAction = { parameter: 'uuid', link: '/automation/configure' };
+const additionalAction = { icon: configureIcon, parameter: 'uuid', link: '/automation/configure' };
 
 export const AutomationList: React.SFC<AutomationListProps> = (props) => (
   <List

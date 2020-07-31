@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SpeedSendPage from './SpeedSendPage';
+import { SpeedSendPage } from './SpeedSendPage';
 import { SpeedSendList } from '../../../../containers/Template/SpeedSend/SpeedSendList/SpeedSendList';
 
 const wrapper = shallow(<SpeedSendPage />);
