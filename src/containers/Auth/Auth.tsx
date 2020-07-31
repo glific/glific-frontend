@@ -33,6 +33,14 @@ const Auth: React.SFC<AuthProps> = (props) => {
       boxClass.push(styles.OTPBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
       break;
+    case 'firstreset':
+      boxClass.push(styles.FirstResetBox);
+      boxTitleClass.push(styles.LoginBoxTitle);
+      break;
+    case 'secondreset':
+      boxClass.push(styles.SecondResetBox);
+      boxTitleClass.push(styles.LoginBoxTitle);
+      break;
   }
 
   return (

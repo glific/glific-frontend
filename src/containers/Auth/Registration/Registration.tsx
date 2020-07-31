@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Redirect } from 'react-router-dom';
+import { Formik, Form, Field } from 'formik';
 import axios from 'axios';
 
 import styles from './Registration.module.css';
@@ -123,94 +124,52 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       mode={'registration'}
     >
       <div className={styles.Margin}>
-        <FormControl variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Username</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              input: styles.Input,
-            }}
-            data-testid="username"
-            error={userNameError}
-            label="Username"
-            type="text"
-            value={userName}
-            onChange={handleUserNameChange()}
-          />
-          {userNameError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Invalid username.
-            </FormHelperText>
-          ) : null}
-        </FormControl>
+        <Formik
+          initialValues={{ userName: '', phoneNumber: '', password: '' }}
+          onSubmit={(values, { setSubmitting }) => {
+            setPhoneNumber(values.phoneNumber);
+            setUserName(values.userName);
+            setPassword(values.password);
+            setTimeout(() => {
+              setSubmitting(false);
+            }, 400);
+            axios
+              .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+                user: {
+                  phone: values.phoneNumber,
+                },
+              })
+              .then((response: any) => {
+                setAuthMessage(response);
+              })
+              .catch((error: any) => {
+                // For now let's set an error message manually till the backend give us nicer messages
+                //setErrorMessage(error.response.data.error.message);
+                setErrorMessage('We are unable to register, kindly contact your technical team.');
+              });
+          }}
+        >
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <div className={styles.CenterForm}>
+                <Field className={styles.Form} name="userName" placeholder="Username"></Field>
+                <Field
+                  className={styles.Form}
+                  name="phoneNumber"
+                  placeholder="Your phone number"
+                ></Field>
+                <Field className={styles.Form} name="password" placeholder="Password"></Field>
+                <button className={styles.Button} type="submit">
+                  <div className={styles.ButtonText}>CONTINUE</div>
+                </button>
+              </div>
+            </form>
+          )}
+        </Formik>
+        {/* {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
+          <div className={styles.ErrorMessage}>{errorMessage}</div>
+        ) : null} */}
       </div>
-      <div className={styles.Margin}>
-        <FormControl variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              input: styles.Input,
-            }}
-            data-testid="phoneNumber"
-            error={phoneNumberError}
-            label="Your phone number"
-            type="integer"
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange()}
-          />
-          {phoneNumberError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Invalid phone number.
-            </FormHelperText>
-          ) : null}
-        </FormControl>
-      </div>
-      <div className={styles.Margin}>
-        <FormControl variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              input: styles.Input,
-            }}
-            data-testid="password"
-            error={passwordError}
-            type={showPassword ? 'text' : 'password'}
-            label="Password"
-            value={password}
-            onChange={handlePasswordChange()}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? (
-                    <Visibility classes={{ root: styles.IconButton }} />
-                  ) : (
-                    <VisibilityOff classes={{ root: styles.IconButton }} />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-
-          {passwordError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Invalid password, must be at least 8 characters.
-            </FormHelperText>
-          ) : null}
-        </FormControl>
-      </div>
-      {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
-        <div className={styles.ErrorMessage}>{errorMessage}</div>
-      ) : null}
     </Auth>
   );
 };

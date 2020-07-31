@@ -53,7 +53,7 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       alternateLink={'login'}
       alternateText={'GO TO LOGIN'}
       handlerSubmitCallback={handlerSubmit}
-      mode={'login'}
+      mode={'firstreset'}
     >
       <div>
         <div className={styles.SubText}>Please create a new password for your account</div>

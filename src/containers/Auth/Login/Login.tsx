@@ -8,8 +8,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { Formik, Form, Field } from 'formik';
 import clsx from 'clsx';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import styles from './Login.module.css';
 import { USER_SESSION } from '../../../common/constants';
@@ -116,66 +118,52 @@ export const Login: React.SFC<LoginProps> = () => {
       handlerSubmitCallback={handlerSubmit}
       mode={'login'}
     >
-      <div className={styles.Margin}>
-        <FormControl className={styles.TextField} variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              focused: styles.InputField,
-            }}
-            data-testid="phoneNumber"
-            error={phoneNumberError}
-            label="Your phone number"
-            value={phoneNumber}
-            type="tel"
-            required
-            onChange={handlePhoneNumberChange()}
-          />
-          {phoneNumberError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Please enter a phone number.
-            </FormHelperText>
-          ) : null}
-        </FormControl>
-      </div>
-      <div className={clsx(styles.Margin, styles.BottomMargin)}>
-        <FormControl className={styles.TextField} variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Password</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              focused: styles.InputField,
-            }}
-            data-testid="password"
-            type={showPassword ? 'text' : 'password'}
-            label="Password"
-            value={password}
-            error={passwordError}
-            required
-            onChange={handlePasswordChange()}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-          {passwordError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Please enter a password.
-            </FormHelperText>
-          ) : null}
-        </FormControl>
-      </div>
+      <Formik
+        initialValues={{ phoneNumber: '', password: '' }}
+        onSubmit={(values, { setSubmitting }) => {
+          console.log(values.phoneNumber);
+          setPhoneNumber(values.phoneNumber);
+          setTimeout(() => {
+            setSubmitting(false);
+          }, 400);
+          axios
+            .post(USER_SESSION, {
+              user: {
+                phone: values.phoneNumber,
+                password: values.password,
+              },
+            })
+            .then((response: any) => {
+              const responseString = JSON.stringify(response.data.data);
+              localStorage.setItem('session', responseString);
+              setAuthenticated(true);
+              setSessionToken(responseString);
+            })
+            .catch((error: any) => {
+              setInvalidLogin(true);
+            });
+        }}
+      >
+        {({ handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <div className={styles.CenterForm}>
+              <Field
+                className={styles.Form}
+                name="phoneNumber"
+                placeholder="Your phone number"
+              ></Field>
+              <Field className={styles.Form} name="password" placeholder="Password"></Field>
+              <Link to="/resetpassword-phone">
+                <div className={styles.ForgotPassword}>Forgot Password?</div>
+              </Link>
+              <button className={styles.Button} type="submit">
+                <div className={styles.ButtonText}>LOGIN</div>
+              </button>
+            </div>
+          </form>
+        )}
+      </Formik>
+
       {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
     </Auth>
   );

@@ -101,3 +101,39 @@
   font-weight: bold;
   font-size: 14px;
 }
+
+.Form {
+  border: 2px solid #93a29b !important;
+  border-radius: 12px !important;
+  width: 334px;
+  line-height: 40px;
+  padding-left: 10px;
+  font-family: 'Heebo';
+  font-size: 16px;
+  font-weight: 500;
+  color: #073f24;
+}
+
+.CenterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.Button {
+  color: white;
+  background-color: #119656;
+  border: 2px solid #119656;
+  border-radius: 27px;
+  height: 40px;
+  margin-top: 20px;
+}
+
+.Button:hover {
+  cursor: pointer;
+}
+
+.ButtonText {
+  font-weight: 500;
+  font-family: 'Heebo';
+  font-size: 16px;
+}

@@ -30,7 +30,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       alternateLink={'login'}
       alternateText={'GO TO LOGIN'}
       handlerSubmitCallback={handlerSubmit}
-      mode={'login'}
+      mode={'secondreset'}
     >
       <div>
         <div className={styles.SubText}>Please create a new password for your account</div>
