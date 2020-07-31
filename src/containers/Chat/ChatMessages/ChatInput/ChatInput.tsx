@@ -106,7 +106,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           {quickSendButtons()}
         </div>
       </ClickAwayListener>
-      <div className={styles.ChatInputElements}>
+      <div
+        className={clsx(styles.ChatInputElements, {
+          [styles.Unrounded]: selectedTab !== '',
+          [styles.Rounded]: selectedTab === '',
+        })}
+      >
         <WhatsAppEditor
           data-testid="message-input"
           editorState={editorState}
