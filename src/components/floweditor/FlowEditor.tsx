@@ -3,6 +3,7 @@ import { Button } from '../UI/Form/Button/Button';
 import styles from './FlowEditor.module.css';
 import { Link } from 'react-router-dom';
 import { FLOW_EDITOR_API } from '../../config/index';
+import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 declare function showFlowEditor(node: any, config: any): void;
@@ -107,6 +108,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   return (
     <>
+      <a
+        href="https://help.nyaruka.com/en/articles/1911210-starting-a-flow"
+        className={styles.Link}
+        target="_blank"
+        data-testid="helpButton"
+      >
+        <HelpIcon className={styles.HelpIcon} />
+      </a>
       <Link to="/automation" className={styles.Link}>
         <Button variant="contained" color="primary" className={styles.Button} data-testid="button">
           Done
