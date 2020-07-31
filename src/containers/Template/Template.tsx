@@ -28,7 +28,7 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
-const dialogMessage = ' It will stop showing when you are drafting a customized message';
+const dialogMessage = 'It will stop showing when you draft a customized message';
 
 export interface TemplateProps {
   title: string;

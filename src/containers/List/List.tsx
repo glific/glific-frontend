@@ -11,7 +11,7 @@ import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './List.module.css';
-import { SearchBar } from '../Chat/ChatConversations/SearchBar';
+import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
@@ -31,6 +31,7 @@ export interface ListProps {
   searchParameter?: string;
   filters?: any;
   additionalAction?: {
+    icon: any;
     parameter: string;
     link: string;
   } | null;
@@ -216,7 +217,7 @@ export const List: React.SFC<ListProps> = ({
           {additionalAction ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
-                {listIcon}
+                {additionalAction.icon}
               </IconButton>
             </Link>
           ) : null}
