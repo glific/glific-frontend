@@ -86,7 +86,9 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
               component="span"
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             >
-              <MoodIcon fontSize="large" />
+              <span role="img" aria-label="pick emoji">
+                😀
+              </span>
             </IconButton>
           </div>
           {showEmojiPicker ? (
