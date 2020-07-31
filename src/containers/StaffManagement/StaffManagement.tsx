@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';

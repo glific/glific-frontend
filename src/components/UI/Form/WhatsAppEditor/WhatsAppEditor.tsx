@@ -4,7 +4,6 @@ import { RichUtils, getDefaultKeyBinding } from 'draft-js';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
-import MoodIcon from '@material-ui/icons/Mood';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
 
 // Emoji mart <-> DraftJS imports
