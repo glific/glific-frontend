@@ -31,12 +31,23 @@
 }
 
 .TableFooter {
-  background-color: white;
+  position: fixed;
+  display: flex !important;
+  justify-content: flex-end !important;
+  width: 80%;
+  background: #fafafa;
+  bottom: 0px;
+}
+
+.TableBody {
+  display: flex !important;
+  flex-direction: column;
+  margin-bottom: 40px !important;
 }
 
 .FooterRow {
   border: 0px !important;
-  background-color: #f9f7f4 !important;
+
   font-size: 16px !important;
   color: #073f24 !important;
 }
