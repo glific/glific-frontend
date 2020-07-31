@@ -8,9 +8,9 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Checkbox,
 } from '@material-ui/core';
 import styles from './Pager.module.css';
-import Checkbox from '@material-ui/core/Checkbox';
 
 interface PagerProps {
   columnNames: Array<any>;
@@ -24,10 +24,11 @@ interface PagerProps {
     sortCol: string;
     sortDirection: 'asc' | 'desc';
   };
+  showCheckbox?: boolean;
 }
 // Change name to Pager
 
-const createRows = (data: any, columnStyles: any) => {
+const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
   const createRow = (entry: any) => {
     return Object.keys(entry).map((item: any, i: number) => {
       return (
@@ -40,9 +41,15 @@ const createRows = (data: any, columnStyles: any) => {
       );
     });
   };
+
   return data.map((entry: any, i: number) => {
+    let batchAction = null;
+    if (showCheckbox) {
+      batchAction = <Checkbox />;
+    }
     return (
       <TableRow key={i} className={styles.TableRow}>
+        {batchAction}
         {createRow(entry)}
       </TableRow>
     );
@@ -53,37 +60,45 @@ const tableHeadColumns = (
   columnNames: Array<any>,
   columnStyles: any,
   tableVals: any,
-  handleTableChange: Function
-) => (
-  <TableRow className={styles.TableHeadRow}>
-    {columnNames.map((name: string, i: number) => {
-      return (
-        <TableCell
-          key={i}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
-        >
-          {i !== columnNames.length - 1 ? (
-            <TableSortLabel
-              active={name === tableVals.sortCol}
-              direction={tableVals.sortDirection}
-              onClick={() => {
-                handleTableChange('sortCol', name);
-                handleTableChange(
-                  'sortDirection',
-                  tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                );
-              }}
-            >
-              {name}
-            </TableSortLabel>
-          ) : (
-            name
-          )}
-        </TableCell>
-      );
-    })}
-  </TableRow>
-);
+  handleTableChange: Function,
+  showCheckbox?: boolean
+) => {
+  let batchAction = null;
+  if (showCheckbox) {
+    batchAction = <Checkbox />;
+  }
+  return (
+    <TableRow className={styles.TableHeadRow}>
+      {batchAction}
+      {columnNames.map((name: string, i: number) => {
+        return (
+          <TableCell
+            key={i}
+            className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+          >
+            {i !== columnNames.length - 1 ? (
+              <TableSortLabel
+                active={name === tableVals.sortCol}
+                direction={tableVals.sortDirection}
+                onClick={() => {
+                  handleTableChange('sortCol', name);
+                  handleTableChange(
+                    'sortDirection',
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                  );
+                }}
+              >
+                {name}
+              </TableSortLabel>
+            ) : (
+              name
+            )}
+          </TableCell>
+        );
+      })}
+    </TableRow>
+  );
+};
 
 const pagination = (
   columnNames: Array<any>,
@@ -110,12 +125,13 @@ const pagination = (
 export const Pager: React.SFC<PagerProps> = (props) => {
   // Creates the rows for the table
 
-  const rows = createRows(props.data, props.columnStyles);
+  const rows = createRows(props.data, props.columnStyles, props.showCheckbox);
   const tableHead = tableHeadColumns(
     props.columnNames,
     props.columnStyles,
     props.tableVals,
-    props.handleTableChange
+    props.handleTableChange,
+    props.showCheckbox
   );
 
   const tablePagination = pagination(
