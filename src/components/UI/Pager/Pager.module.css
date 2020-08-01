@@ -42,12 +42,14 @@
 .TableBody {
   display: flex !important;
   flex-direction: column;
-  margin-bottom: 40px !important;
 }
 
 .FooterRow {
   border: 0px !important;
-
   font-size: 16px !important;
   color: #073f24 !important;
+}
+
+.FooterRow > div {
+  min-height: 72px;
 }
