@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableHead,
@@ -124,6 +124,7 @@ const pagination = (
 
 export const Pager: React.SFC<PagerProps> = (props) => {
   // Creates the rows for the table
+  const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(styles.TableFooter);
 
   const rows = createRows(props.data, props.columnStyles, props.showCheckbox);
   const tableHead = tableHeadColumns(
@@ -141,12 +142,19 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     props.tableVals
   );
 
+  useEffect(() => {
+    var html = document.querySelector('html');
+    if (html && html.scrollHeight > html.clientHeight) {
+      setTableFooterStyle(undefined);
+    }
+  });
+
   return (
     <div className={styles.TableContainer}>
       <Table className={styles.Table}>
         <TableHead className={styles.TagListHeader}>{tableHead}</TableHead>
         <TableBody>{rows}</TableBody>
-        <TableFooter className={styles.TableFooter}>
+        <TableFooter className={tableFooterStyle}>
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>
       </Table>
