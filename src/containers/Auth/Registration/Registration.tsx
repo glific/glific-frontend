@@ -149,16 +149,17 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               });
           }}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, values }) => (
             <form onSubmit={handleSubmit}>
               <div className={styles.CenterForm}>
                 <Field className={styles.Form} name="userName" placeholder="Username"></Field>
+                <Field className={styles.Form} name="phoneNumber" placeholder="Your phone number" />
                 <Field
                   className={styles.Form}
-                  name="phoneNumber"
-                  placeholder="Your phone number"
-                ></Field>
-                <Field className={styles.Form} name="password" placeholder="Password"></Field>
+                  name="password"
+                  placeholder="Password"
+                  type={values.password ? 'text' : 'password'}
+                />
                 <button className={styles.Button} type="submit">
                   <div className={styles.ButtonText}>CONTINUE</div>
                 </button>
