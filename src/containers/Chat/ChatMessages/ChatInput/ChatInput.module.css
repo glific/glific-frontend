@@ -12,13 +12,20 @@
   height: 64px;
   width: 100%;
   padding: 10px;
-  border-radius: 0px 0px 12px 12px !important;
   background-color: #ffffff;
   justify-content: space-between;
   height: fit-content;
   max-height: 200px;
   overflow-y: scroll;
   padding-right: 5px;
+}
+
+.Rounded {
+  border-radius: 15px;
+}
+
+.Unrounded {
+  border-radius: 0px 0px 15px 15px;
 }
 
 .ChatInputElements::-webkit-scrollbar {
