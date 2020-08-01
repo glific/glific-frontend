@@ -14,7 +14,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const filterVariables = () => {
     return {
       filter: {
-        body: props.searchVal,
+        term: props.searchVal,
       },
       opts: {
         order: 'ASC',
