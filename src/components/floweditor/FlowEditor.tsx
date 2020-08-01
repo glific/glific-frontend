@@ -112,6 +112,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         href="https://help.nyaruka.com/en/articles/1911210-starting-a-flow"
         className={styles.Link}
         target="_blank"
+        rel="noopener noreferrer"
         data-testid="helpButton"
       >
         <HelpIcon className={styles.HelpIcon} />
