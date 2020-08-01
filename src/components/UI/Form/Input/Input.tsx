@@ -29,6 +29,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {props.placeholder}
         </InputLabel>
         <OutlinedInput
+          classes={{ multiline: styles.Multiline }}
           disabled={disabled}
           error={error[name] && touched[name] ? true : false}
           multiline={textArea}
