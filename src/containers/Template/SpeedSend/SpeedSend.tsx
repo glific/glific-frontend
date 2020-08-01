@@ -29,7 +29,7 @@ const dialogMessage = ' It will stop showing when you are drafting a customized 
 
 const formFields = [
   { component: Input, name: 'label', placeholder: 'Title' },
-  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
+  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
 ];
 
 const defaultAttribute = {
