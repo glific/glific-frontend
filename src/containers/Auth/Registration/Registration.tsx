@@ -93,7 +93,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         .catch((error: any) => {
           // For now let's set an error message manually till the backend give us nicer messages
           //setErrorMessage(error.response.data.error.message);
-          setErrorMessage('We are unable to register, kindly contact your technical team.');
+          setErrorMessage('unable to register');
         });
     }
   };
@@ -208,8 +208,18 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           ) : null}
         </FormControl>
       </div>
-      {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
+      {errorMessage &&
+      errorMessage != 'unable to register' &&
+      !userNameError &&
+      !passwordError &&
+      !phoneNumberError ? (
         <div className={styles.ErrorMessage}>{errorMessage}</div>
+      ) : null}
+      {errorMessage == 'unable to register' ? (
+        <div className={styles.ErrorMessage}>
+          We are unable to register, <br />
+          kindly contact your technical team.
+        </div>
       ) : null}
     </Auth>
   );
