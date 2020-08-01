@@ -39,11 +39,6 @@
   bottom: 0px;
 }
 
-.TableBody {
-  display: flex !important;
-  flex-direction: column;
-}
-
 .FooterRow {
   border: 0px !important;
   font-size: 16px !important;
