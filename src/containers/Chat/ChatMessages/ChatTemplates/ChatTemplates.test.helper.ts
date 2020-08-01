@@ -52,4 +52,30 @@ export const TEMPLATE_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: {
+          term: 'hi',
+        },
+        opts: {
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          {
+            id: '87',
+            label: 'Good message',
+            body: 'hi can you help!',
+            isReserved: true,
+            isHsm: true,
+          },
+        ],
+      },
+    },
+  },
 ];
