@@ -14,7 +14,7 @@ export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => {
   return (
     <Template
       match={match}
-      listItemName="speed send"
+      listItemName="Speed send"
       redirectionLink="speed-send"
       icon={speedSendIcon}
     />
