@@ -37,6 +37,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const handleClick = (title: string) => {
+    // clear the search when tab is opened again
+    setSearchVal('');
     if (selectedTab === title) {
       setSelectedTab('');
     } else {
