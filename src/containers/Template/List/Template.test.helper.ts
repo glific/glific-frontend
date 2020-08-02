@@ -1,6 +1,6 @@
-import { GET_LANGUAGES } from '../../../../graphql/queries/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../../graphql/mutations/Template';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 
 const count = {
   request: {
