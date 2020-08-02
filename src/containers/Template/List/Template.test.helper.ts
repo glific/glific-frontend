@@ -19,7 +19,7 @@ const count = {
   },
 };
 
-const filter = {
+const speedSend = {
   request: {
     query: FILTER_TEMPLATES,
     variables: {
@@ -42,6 +42,54 @@ const filter = {
           body: 'Hey There',
           id: '87',
           isHsm: false,
+          label: 'Good message',
+          isReserved: false,
+        },
+      ],
+    },
+  },
+};
+
+const HSMTemplatecount = {
+  request: {
+    query: GET_TEMPLATES_COUNT,
+    variables: {
+      filter: {
+        label: '',
+        isHsm: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      countSessionTemplates: 2,
+    },
+  },
+}
+
+const HSMTemplate = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: {
+        label: '',
+        isHsm: true,
+      },
+
+      opts: {
+        limit: 10,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          body: 'This is HSM template',
+          id: '98',
+          isHsm: true,
           label: 'Good message',
           isReserved: false,
         },
@@ -77,6 +125,7 @@ const filterByBody = (body: string) => ({
     },
   },
 });
+
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -113,9 +162,9 @@ export const TEMPLATE_MOCKS = [
     },
   },
   count,
-  count,
-  filter,
-  filter,
+  speedSend,
+  HSMTemplatecount,
+  HSMTemplate,
   filterByBody('hi'),
   filterByBody(''),
 ];
