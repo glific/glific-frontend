@@ -1,5 +1,5 @@
 import React from 'react';
-import { SpeedSendList } from '../../../../containers/Template/SpeedSend/SpeedSendList/SpeedSendList';
+import { SpeedSendList } from '../../../../containers/Template/List/SpeedSendList/SpeedSendList';
 
 export interface SpeedSendPageProps {}
 
