@@ -1,6 +1,6 @@
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES, GET_TEMPLATE } from '../../graphql/queries/Template';
+import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 
 const count = {
   request: {
@@ -127,6 +127,53 @@ const filterByBody = (body: string) => ({
 });
 
 export const TEMPLATE_MOCKS = [
+  {
+    request: {
+      query: CREATE_TEMPLATE,
+      variables: {
+        input: {
+          body: 'new Template body',
+          label: 'new Template',
+          languageId: 1,
+          type: 'TEXT',
+        },
+      },
+    },
+    result: {
+      data: {
+        createSessionTemplate: {
+          sessionTemplate: {
+            body: 'new Template body',
+            id: '121',
+            label: 'new Template',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TEMPLATE,
+      variables: {
+        id: 1,
+      },
+    },
+    result: {
+      data: {
+        sessionTemplate: {
+          sessionTemplate: {
+            id: 1,
+            label: 'important',
+            body: 'important template',
+            isActive: true,
+            language: {
+              id: 1,
+            },
+          },
+        },
+      },
+    },
+  },
   {
     request: {
       query: DELETE_TEMPLATE,

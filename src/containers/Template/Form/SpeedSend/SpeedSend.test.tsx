@@ -2,139 +2,14 @@ import React from 'react';
 import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_LANGUAGES } from '../../../../graphql/queries/List';
-import {
-  GET_TEMPLATE,
-  GET_TEMPLATES_COUNT,
-  FILTER_TEMPLATES,
-} from '../../../../graphql/queries/Template';
-import { CREATE_TEMPLATE } from '../../../../graphql/mutations/Template';
+
 import { SpeedSend } from './SpeedSend';
 import { Switch, Route } from 'react-router-dom';
 import { SpeedSendList } from '../../List/SpeedSendList/SpeedSendList';
+import { TEMPLATE_MOCKS } from '../../Template.test.helper';
 
 afterEach(cleanup);
-const mocks = [
-  {
-    request: {
-      query: CREATE_TEMPLATE,
-      variables: {
-        input: {
-          body: 'new Template body',
-          label: 'new Template',
-          languageId: 1,
-          type: 'TEXT',
-        },
-      },
-    },
-    result: {
-      data: {
-        createSessionTemplate: {
-          sessionTemplate: {
-            body: 'new Template body',
-            id: '121',
-            label: 'new Template',
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_TEMPLATES_COUNT,
-      variables: {
-        filter: {
-          label: '',
-          isHsm: false,
-        },
-      },
-    },
-    result: {
-      data: {
-        countSessionTemplates: 2,
-      },
-    },
-  },
-  {
-    request: {
-      query: FILTER_TEMPLATES,
-      variables: {
-        filter: {
-          label: '',
-          isHsm: false,
-        },
-        opts: {
-          limit: 10,
-          offset: 0,
-          order: 'ASC',
-        },
-      },
-    },
-    result: {
-      data: {
-        sessionTemplates: [
-          {
-            id: '87',
-            label: 'Good message',
-            body: 'Hey There',
-            isReserved: false,
-            isHsm: true,
-          },
-          {
-            id: '94',
-            label: 'Message',
-            body: 'some description',
-            isReserved: false,
-            isHsm: false,
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_LANGUAGES,
-    },
-    result: {
-      data: {
-        languages: [
-          {
-            id: '1',
-            label: 'English (United States)',
-          },
-          {
-            id: '2',
-            label: 'Hindi (India)',
-          },
-        ],
-      },
-    },
-  },
-
-  {
-    request: {
-      query: GET_TEMPLATE,
-      variables: {
-        id: 1,
-      },
-    },
-    result: {
-      data: {
-        sessionTemplate: {
-          sessionTemplate: {
-            id: 1,
-            label: 'important',
-            body: 'important template',
-            isActive: true,
-            language: {
-              id: 1,
-            },
-          },
-        },
-      },
-    },
-  },
-];
+const mocks = TEMPLATE_MOCKS;
 
 test('cancel button should redirect to SpeedSendlist page', async () => {
   const { container, getByText, unmount } = render(
