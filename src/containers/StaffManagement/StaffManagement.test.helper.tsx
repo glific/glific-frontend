@@ -1,4 +1,5 @@
 import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT } from '../../graphql/queries/StaffManagement';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
 
 export const STAFF_MANAGEMENT_MOCKS = [
   {
@@ -47,6 +48,25 @@ export const STAFF_MANAGEMENT_MOCKS = [
     result: {
       data: {
         countUsers: 1,
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_LANGUAGES,
+    },
+    result: {
+      data: {
+        languages: [
+          {
+            id: '1',
+            label: 'English (United States)',
+          },
+          {
+            id: '2',
+            label: 'Hindi (India)',
+          },
+        ],
       },
     },
   },
