@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import Editor from 'draft-js-plugins-editor';
-import { RichUtils, getDefaultKeyBinding } from 'draft-js';
+import { Picker } from 'emoji-mart';
+import { RichUtils, getDefaultKeyBinding, Modifier, EditorState } from 'draft-js';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
-
-// Emoji mart <-> DraftJS imports
-import createEmojiMartPlugin from 'draft-js-emoji-mart-plugin';
-import data from 'emoji-mart/data/apple.json';
 import 'emoji-mart/css/emoji-mart.css';
-const emojiMartPlugin = createEmojiMartPlugin({
-  data,
-  set: 'apple',
-});
-const { Picker } = emojiMartPlugin;
-const plugins = [emojiMartPlugin];
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
@@ -37,6 +28,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       props.sendMessage(convertToWhatsApp(editorState));
       return 'handled';
     }
+
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       props.setEditorState(newState);
@@ -57,6 +49,14 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     setShowEmojiPicker(false);
   };
 
+  const handleEmoji = (emoji: any) => {
+    const contentState = props.editorState.getCurrentContent();
+    const selectionState = props.editorState.getSelection();
+    const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
+    const editorState = EditorState.createWithContent(ModifiedContent);
+    props.setEditorState(editorState);
+  };
+
   return (
     <>
       <ReactResizeDetector
@@ -69,7 +69,6 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             data-testid="editor"
             editorState={props.editorState}
             onChange={handleChange}
-            plugins={plugins}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
           />
@@ -96,6 +95,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
               title="Pick your emoji…"
               emoji="point_up"
               style={{ position: 'absolute', bottom: '60px', right: '-150px', zIndex: 100 }}
+              onSelect={handleEmoji}
             />
           ) : null}
         </div>
