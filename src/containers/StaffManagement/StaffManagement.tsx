@@ -3,11 +3,10 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { ReactComponent as SpeedSendIcon } from '../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ListItem } from '../List/ListItem/ListItem';
-import styles from './StaffManagement.module.css';
 
-export interface TemplateProps {
+export interface StaffManagementProps {
   match: any;
 }
 
@@ -24,7 +23,7 @@ const setValidation = (values: any) => {
   return errors;
 };
 
-const dialogMessage = ' It will stop showing when you are drafting a customized message.';
+const dialogMessage = ' Once deleted this action cannot be undone.';
 
 const formFields = [
   { component: Input, name: 'name', type: 'text', placeholder: 'Full Name', query: true },
@@ -39,7 +38,7 @@ const formFields = [
   },
 ];
 
-const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
+const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
   getItemQuery: GET_USERS_QUERY,
@@ -48,7 +47,7 @@ const queries = {
   deleteItemQuery: DELETE_USER,
 };
 
-export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => {
+export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState('');
@@ -72,7 +71,7 @@ export const StaffManagementTemplate: React.SFC<TemplateProps> = ({ match }) => 
       formFields={formFields}
       redirectionLink="staff-management"
       listItem="user"
-      icon={speedSendIcon}
+      icon={staffManagementIcon}
       languageSupport={false}
       checkItemsHeader="Groups"
     />
