@@ -13,6 +13,7 @@ interface ConversationListProps {
   selectedContactId: number;
   setSelectedContactId: (i: number) => void;
   savedSearchCriteria: string | null;
+  conversations: any;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -45,11 +46,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     };
   };
 
-  const data: any = client.readQuery({
-    query: GET_CONVERSATION_QUERY,
-    variables: queryVariables,
-  });
-
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY,
     {
@@ -73,12 +69,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     return null;
   }
 
-  if (data === undefined) {
+  if (props.conversations === undefined) {
     return <p>Error :(</p>;
   }
 
   // Retrieving all convos or the ones searched by.
-  let conversations = data.conversations;
+  let conversations = props.conversations;
 
   if ((props.searchVal || props.savedSearchCriteria) && !called) {
     getFilterConvos();

@@ -171,7 +171,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
-          <ChatConversations contactId={contactId} />
+          <ChatConversations conversations={data.conversations} contactId={contactId} />
         </div>
       </div>
     </Paper>

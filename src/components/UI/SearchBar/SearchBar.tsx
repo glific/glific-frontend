@@ -43,7 +43,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   }
 
   return (
-    <form onSubmit={props.handleSubmit} autoComplete="off">
+    <form onSubmit={props.handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${props.className}`}>
         <div className={styles.IconAndText}>
           <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
