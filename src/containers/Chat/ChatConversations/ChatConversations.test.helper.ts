@@ -2,11 +2,16 @@ import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { mocks as SAVED_SEARCH_MOCK } from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar.test';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
-const searchQuery = (term: any) => {
+const searchQuery = (term: any, messageLimit: number, contactLimit: number, filter: any) => {
   return {
     request: {
       query: SEARCH_QUERY,
-      variables: { term: term, messageOpts: { limit: 50 }, contactOpts: { limit: 50 }, filter: {} },
+      variables: {
+        term: term,
+        messageOpts: { limit: messageLimit },
+        contactOpts: { limit: contactLimit },
+        filter,
+      },
     },
     result: {
       data: {
@@ -14,24 +19,24 @@ const searchQuery = (term: any) => {
           {
             contact: {
               id: '6',
-              name: 'Gattu Laala',
-              phone: '919520225543',
+              name: 'Red Sparrow',
+              phone: '919520285543',
             },
             messages: [
               {
-                body: 'Gh',
+                body: 'Hi',
                 id: '34',
                 insertedAt: '2020-08-03T07:01:36Z',
                 receiver: {
-                  id: '1',
+                  id: '2',
                 },
                 sender: {
-                  id: '6',
+                  id: '1',
                 },
                 tags: [
                   {
                     id: '8',
-                    label: 'Not replied',
+                    label: 'Not working',
                   },
                 ],
               },
@@ -78,8 +83,9 @@ const chatConversationsMocks = [
       },
     },
   },
-  searchQuery('a'),
-  searchQuery(''),
+  searchQuery('a', 50, 50, {}),
+  searchQuery('', 50, 50, {}),
+  searchQuery('', 5, 10, { includeTags: ['12'] }),
 ];
 
 export const conversations = [
@@ -92,7 +98,7 @@ export const conversations = [
     messages: [
       {
         id: '34',
-        body: 'Gh',
+        body: 'Hi',
         insertedAt: '2020-08-03T07:01:36Z',
         receiver: {
           id: '1',
