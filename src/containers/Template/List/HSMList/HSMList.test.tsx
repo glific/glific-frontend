@@ -1,12 +1,10 @@
 import React from 'react';
-import { render, wait, cleanup } from '@testing-library/react';
+import { render, wait } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { HSMList } from './HSMList';
-import { within } from '@testing-library/dom';
 import { TEMPLATE_MOCKS } from '../../Template.test.helper';
 
-afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
 
 const template = (
