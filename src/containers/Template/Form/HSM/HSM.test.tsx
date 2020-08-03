@@ -15,7 +15,7 @@ test('HSM form is loaded correctly in edit mode', async () => {
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <Switch>
-          <Route path="/template/add" exact component={HSMList} />
+          <Route path="/template" exact component={HSMList} />
         </Switch>
         <HSM match={{ params: { id: 1 } }} />
       </Router>
