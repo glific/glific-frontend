@@ -8,7 +8,6 @@ import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearch
 
 export interface ChatConversationsProps {
   contactId: number;
-  conversations: any;
 }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
@@ -55,7 +54,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         searchVal={searchVal}
       />
       <ConversationList
-        conversations={props.conversations}
         searchVal={searchVal}
         selectedContactId={selectedContactId}
         setSelectedContactId={(i: number) => {

@@ -15,7 +15,7 @@ const queryVariables = {
   },
 };
 
-const conversationQuery = {
+export const conversationQuery = {
   request: {
     query: GET_CONVERSATION_QUERY,
     variables: queryVariables,

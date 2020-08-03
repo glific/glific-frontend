@@ -38,7 +38,7 @@ test('it should reset input on clicking cross icon', async () => {
   const resetButton = getByTestId('resetButton');
   fireEvent.click(resetButton);
   await wait();
-  expect(getByText('Red Eye')).toBeInTheDocument();
+  expect(getByText('Jane Doe')).toBeInTheDocument();
 });
 
 test('it should load all contacts with unread tag', async () => {

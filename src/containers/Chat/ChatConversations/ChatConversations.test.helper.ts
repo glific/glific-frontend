@@ -1,6 +1,7 @@
 import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { mocks as SAVED_SEARCH_MOCK } from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar.test';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { conversationQuery } from '../Chat.test.helper';
 
 const searchQuery = (term: any, messageLimit: number, contactLimit: number, filter: any) => {
   return {
@@ -121,4 +122,5 @@ export const ChatConversationMocks = [
   ...chatConversationsMocks,
   ...chatConversationsMocks,
   ...SAVED_SEARCH_MOCK,
+  conversationQuery,
 ];
