@@ -94,8 +94,10 @@ export const ListItem: React.SFC<ListItemProps> = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
-      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
+      if (data) {
+        const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+        if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
+      }
       setFormSubmitted(true);
     },
   });

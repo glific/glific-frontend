@@ -21,3 +21,9 @@
 .Multiline {
   padding-bottom: 35px !important;
 }
+
+.OutlineInput div:first-child {
+  width: inherit !important;
+  height: 60px;
+  overflow: auto;
+}
