@@ -115,9 +115,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     },
   };
 
-  const allConversations: any = client.readQuery({
-    query: GET_CONVERSATION_QUERY,
+  const {
+    loading: conversationLoad,
+    error: conversationError,
+    data: allConversations,
+  }: any = useQuery(GET_CONVERSATION_QUERY, {
     variables: queryVariables,
+    fetchPolicy: 'cache-first',
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(
@@ -190,7 +194,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // HOOKS ESTABLISHED ABOVE
 
   // Run through these cases to ensure data always exists
-  if (called && loading) {
+  if ((called && loading) || conversationLoad) {
     return <Loading />;
   }
   if (called && error) {
@@ -203,13 +207,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   if (contactId) {
     // loop through the cached conversations and find if contact exists
-    allConversations.conversations.map((conversation: any, index: any) => {
-      if (conversation.contact.id === contactId) {
-        conversationIndex = index;
-        conversationInfo = conversation;
-      }
-      return null;
-    });
+    if (allConversations && allConversations.conversations)
+      allConversations.conversations.map((conversation: any, index: any) => {
+        if (conversation.contact.id === contactId) {
+          conversationIndex = index;
+          conversationInfo = conversation;
+        }
+        return null;
+      });
 
     // this means we didn't find the contact in the cached converation,
     // time to get the conversation for this contact from server and then
@@ -220,16 +225,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         return <Loading />;
       }
       conversationIndex = 0;
-      conversationInfo = data.conversation;
+      conversationInfo = data ? data.conversation : null;
 
       // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
       // allConversations.conversations.splice(0, 0, data.conversation);
       // allConversations.conversations.unshift(data.conversation);
     }
-  } else if (contactId && allConversations.conversations.length === 0) {
-    // If there are no conversations (new user), then return that there are "No conversations"
-    // Case with !contactId and convos length == 0 taken care of in Chat.tsx
-    conversationInfo = null;
   }
 
   //toast
@@ -286,6 +287,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                 className={styles.Chip}
                 key={tag.id}
                 data-tagid={tag.id}
+                data-testid="dialogCheckbox"
                 clickable={true}
                 icon={
                   selectedMessageTags?.includes(tag.id.toString()) ? (
@@ -329,6 +331,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               classes={{
                 notchedOutline: styles.InputBorder,
               }}
+              data-testid="tagSearch"
               className={styles.Label}
               label="Search"
               fullWidth
@@ -356,7 +359,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   let messageList: any;
-  if (conversationInfo && conversationInfo.messages.length > 0) {
+  if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
       return (
@@ -425,17 +428,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
+  const contactName = conversationInfo
+    ? conversationInfo.contact.name
+      ? conversationInfo.contact.name
+      : conversationInfo.contact.phone
+    : 'No contact';
+
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar
-        contactName={
-          conversationInfo.contact.name
-            ? conversationInfo.contact.name
-            : conversationInfo.contact.phone
-        }
-      />
+      <ContactBar contactName={contactName} />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
     </Container>
