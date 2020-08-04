@@ -22,7 +22,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    let searchVal = event.target.searchInput.value.trim();
+    let searchVal = event.target.querySelector('input').value.trim();
     setSearchVal(searchVal);
   };
 
