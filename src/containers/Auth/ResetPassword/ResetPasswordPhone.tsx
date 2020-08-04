@@ -6,6 +6,7 @@ import styles from '../Auth.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface ResetPasswordPhoneProps {}
 
@@ -36,6 +37,15 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       });
   };
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'phoneNumber',
+      type: 'text',
+      placeholder: 'Phone number',
+    },
+  ];
+
   if (redirect) {
     return (
       <Redirect
@@ -57,6 +67,7 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       alternateText={'GO TO LOGIN'}
       handlerSubmitCallback={handlerSubmit}
       mode={'firstreset'}
+      formFields={formFields}
     >
       <div>
         <div className={styles.SubText}>Please create a new password for your account</div>

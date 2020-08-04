@@ -1,33 +1,51 @@
 import React from 'react';
-
+import { Formik, Form, Field } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
-import { Button } from '../../components/UI/Form/Button/Button';
 import { Link } from 'react-router-dom';
 
 export interface AuthProps {
-  children: any;
+  // children: any;
   pageTitle: string;
   buttonText: string;
   alternateLink?: string;
   alternateText?: string;
   handlerSubmitCallback: Function;
   mode: string;
+  initialFormikValues?: any;
+  onFormikSubmit?: any;
+  formFields: Array<any>;
+  setStates?: any;
+  states?: any;
 }
 
-const Auth: React.SFC<AuthProps> = (props) => {
+const Auth: React.SFC<AuthProps> = ({
+  // children,
+  pageTitle,
+  buttonText,
+  alternateLink,
+  alternateText,
+  handlerSubmitCallback,
+  mode,
+  initialFormikValues = null,
+  onFormikSubmit,
+  formFields,
+  states,
+}) => {
+  console.log(formFields);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   const buttonClass = [styles.AuthButton];
-  switch (props.mode) {
+  switch (mode) {
     case 'login':
       boxClass.push(styles.LoginBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.LoginButton);
+      buttonClass.push(styles.WhiteButton);
       break;
     case 'registration':
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
+      buttonClass.push(styles.GreenButton);
       break;
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
@@ -43,6 +61,10 @@ const Auth: React.SFC<AuthProps> = (props) => {
       break;
   }
 
+  const submitHandler = () => {
+    console.log('hi');
+  };
+
   return (
     <div className={styles.Container}>
       <div className={styles.Auth}>
@@ -50,12 +72,25 @@ const Auth: React.SFC<AuthProps> = (props) => {
         <div className={boxClass.join(' ')}>
           <div className={boxTitleClass.join(' ')}>
             <Typography variant="h4" classes={{ root: styles.TitleText }}>
-              {props.pageTitle}
+              {pageTitle}
             </Typography>
           </div>
-          <div className={styles.CenterBox}>{props.children}</div>
+          <Formik initialValues={{ states }} onSubmit={submitHandler}>
+            {({ submitForm }) => (
+              <div className={styles.CenterBox}>
+                <Form>
+                  {formFields.map((field, index) => {
+                    return <Field className={styles.FormMargin} key={index} {...field}></Field>;
+                  })}
+                  <button className={buttonClass.join('')} type="submit">
+                    <div className={styles.ButtonText}>{buttonText}</div>
+                  </button>
+                </Form>
+              </div>
+            )}
+          </Formik>
         </div>
-        {props.alternateText ? (
+        {alternateText ? (
           <>
             <div className={styles.Or}>
               <hr />
@@ -63,7 +98,7 @@ const Auth: React.SFC<AuthProps> = (props) => {
               <hr />
             </div>
             <div>
-              <Link to={'/' + props.alternateLink}>{props.alternateText}</Link>
+              <Link to={'/' + alternateLink}>{alternateText}</Link>
             </div>
           </>
         ) : null}

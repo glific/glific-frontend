@@ -11,6 +11,7 @@ import {
 import { SessionContext } from '../../../context/session';
 import styles from '../Auth.module.css';
 import Auth from '../Auth';
+import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface ConfirmOTPProps {
   location: any;
@@ -85,12 +86,21 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     OTP: Yup.string().required('Input required'),
   });
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'OTP',
+      placeholder: 'OTP',
+    },
+  ];
+
   return (
     <Auth
       pageTitle={'Create your new account'}
       buttonText={'CONTINUE'}
       handlerSubmitCallback={handleSubmit}
       mode={'confirmotp'}
+      formFields={formFields}
     >
       <div className={clsx(styles.Margin, styles.BottomMargin)}>
         <Formik

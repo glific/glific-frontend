@@ -8,6 +8,7 @@ import styles from '../Auth.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import Auth from '../Auth';
+import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface LoginProps {}
 
@@ -87,6 +88,20 @@ export const Login: React.SFC<LoginProps> = () => {
     password: Yup.string().required('Input required'),
   });
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'phoneNumber',
+      type: 'text',
+      placeholder: 'Phone number',
+    },
+    {
+      component: Input,
+      name: 'password',
+      placeholder: 'Password',
+    },
+  ];
+
   return (
     <Auth
       pageTitle={'Login to your account'}
@@ -95,6 +110,7 @@ export const Login: React.SFC<LoginProps> = () => {
       alternateText={'CREATE A NEW ACCOUNT'}
       handlerSubmitCallback={handlerSubmit}
       mode={'login'}
+      formFields={formFields}
     >
       <Formik
         initialValues={{ phoneNumber: '', password: '' }}

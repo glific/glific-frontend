@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { Input } from '../../../components/UI/Form/Input/Input';
 
 import styles from '../Auth.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
@@ -20,30 +21,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState(false);
-
-  const handleInputErrors = () => {
-    let foundErrors = false;
-    if (!userName) {
-      setUserNameError(true);
-      foundErrors = true;
-    } else if (userName) {
-      setUserNameError(false);
-    }
-    if (!phoneNumber) {
-      setPhoneNumberError(true);
-      foundErrors = true;
-    } else if (phoneNumber) {
-      setPhoneNumberError(false);
-    }
-    if (!password || password.length < 8) {
-      setPasswordError(true);
-      foundErrors = true;
-    } else if (password) {
-      setPasswordError(false);
-    }
-
-    return foundErrors;
-  };
 
   const handlerSubmit = () => {
     console.log('hi');
@@ -64,6 +41,33 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     );
   }
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'userName',
+      type: 'text',
+      placeholder: 'Username',
+    },
+    {
+      component: Input,
+      name: 'phoneNumber',
+      type: 'text',
+      placeholder: 'Phone number',
+    },
+    {
+      component: Input,
+      name: 'password',
+      placeholder: 'Password',
+    },
+  ];
+
+  const states = { userName, phoneNumber, password };
+  const setStates = ({ userName, phoneNumber, password }: any) => {
+    setUserName(userName);
+    setPhoneNumber(phoneNumber);
+    setPassword(password);
+  };
+
   const FormSchema = Yup.object().shape({
     userName: Yup.string().required('Input required'),
     phoneNumber: Yup.string()
@@ -82,8 +86,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       alternateText={'LOGIN TO GLIFIC'}
       handlerSubmitCallback={handlerSubmit}
       mode={'registration'}
+      formFields={formFields}
+      setStates={setStates}
+      states={states}
     >
-      <div className={styles.Margin}>
+      {/* <div className={styles.Margin}>
         <Formik
           initialValues={{ userName: '', phoneNumber: '', password: '' }}
           validationSchema={FormSchema}
@@ -155,7 +162,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
             </form>
           )}
         </Formik>
-      </div>
+      </div> */}
     </Auth>
   );
 };

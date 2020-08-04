@@ -6,6 +6,7 @@ import styles from '../Auth.module.css';
 import { RESET_PASSWORD } from '../../../common/constants';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;
@@ -30,6 +31,24 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       .required('Input required'),
   });
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'phoneNumber',
+      placeholder: 'Phone number',
+    },
+    {
+      component: Input,
+      name: 'OTP',
+      placeholder: 'OTP',
+    },
+    {
+      component: Input,
+      name: 'password',
+      placeholder: 'New Password',
+    },
+  ];
+
   return (
     <Auth
       pageTitle={'Reset your password'}
@@ -38,6 +57,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       alternateText={'GO TO LOGIN'}
       handlerSubmitCallback={handlerSubmit}
       mode={'secondreset'}
+      formFields={formFields}
     >
       <div>
         <div className={styles.SubText}>Please create a new password for your account</div>
