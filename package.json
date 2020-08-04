@@ -52,7 +52,8 @@
     "react-string-replace": "^0.4.4",
     "styled-components": "^5.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "yup": "^0.29.2"
   },
   "scripts": {
     "setup": "yarn install  && yarn run floweditor",

@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Auth from '../Auth';
-import { Formik, Form, Field } from 'formik';
-import styles from './ResetPasswordPhone.module.css';
+import { Formik, Field } from 'formik';
+import styles from '../Auth.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { ValuesOfCorrectTypeRule } from 'graphql';
+import * as Yup from 'yup';
 
 export interface ResetPasswordPhoneProps {}
 
 export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [errorSubmit, setErrorSubmit] = useState('');
+
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+    phoneNumber: Yup.string()
+      .min(11, 'Please enter a valid phone number.')
+      .required('Input required'),
+  });
 
   const handlerSubmit = () => {
     console.log(phoneNumber);
@@ -27,10 +34,6 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
         console.log(response);
         setRedirect(true);
       });
-  };
-
-  const handlePhoneChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
   };
 
   if (redirect) {
@@ -75,18 +78,16 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
               .then((response) => {
                 console.log(response);
                 setRedirect(true);
-              });
+              })
+              .catch((error) => setErrorSubmit('Sorry, we are unable to send a code.'));
           }}
         >
           {({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
               <div className={styles.CenterForm}>
-                <Field
-                  className={styles.Form}
-                  name="phoneNumber"
-                  placeholder="Your phone number"
-                ></Field>
-                <button className={styles.Button} type="submit">
+                <Field className={styles.Form} name="phoneNumber" placeholder="Your phone number" />
+                {errorSubmit ? <div className={styles.ErrorSubmit}>{errorSubmit}</div> : null}
+                <button className={styles.WhiteButton} type="submit">
                   <div className={styles.ButtonText}>GENERATE OTP TO CONFIRM</div>
                 </button>
               </div>

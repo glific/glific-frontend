@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
-import { FormHelperText } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import axios from 'axios';
+import * as Yup from 'yup';
 
-import styles from './Registration.module.css';
+import styles from '../Auth.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import Auth from '../Auth';
 
@@ -26,30 +19,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    setPasswordError(false);
-  };
-
-  const handleUserNameChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
-    setUserNameError(false);
-  };
-
-  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
-    setPhoneNumberError(false);
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const handleInputErrors = () => {
     let foundErrors = false;
@@ -76,27 +46,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   };
 
   const handlerSubmit = () => {
-    // if errors just return
-    if (handleInputErrors()) {
-      return;
-    }
-
-    if (!userNameError && !phoneNumberError && !passwordError) {
-      axios
-        .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-          user: {
-            phone: phoneNumber,
-          },
-        })
-        .then((response: any) => {
-          setAuthMessage(response);
-        })
-        .catch((error: any) => {
-          // For now let's set an error message manually till the backend give us nicer messages
-          //setErrorMessage(error.response.data.error.message);
-          setErrorMessage('We are unable to register, kindly contact your technical team.');
-        });
-    }
+    console.log('hi');
   };
 
   if (authMessage) {
@@ -114,6 +64,16 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     );
   }
 
+  const FormSchema = Yup.object().shape({
+    userName: Yup.string().required('Input required'),
+    phoneNumber: Yup.string()
+      .required('Input required')
+      .min(11, 'Please enter a valid phone number.'),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters long.')
+      .required('Input required'),
+  });
+
   return (
     <Auth
       pageTitle={'Create your new account'}
@@ -126,6 +86,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       <div className={styles.Margin}>
         <Formik
           initialValues={{ userName: '', phoneNumber: '', password: '' }}
+          validationSchema={FormSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           onSubmit={(values, { setSubmitting }) => {
             setPhoneNumber(values.phoneNumber);
             setUserName(values.userName);
@@ -145,31 +108,53 @@ export const Registration: React.SFC<RegistrationProps> = () => {
               .catch((error: any) => {
                 // For now let's set an error message manually till the backend give us nicer messages
                 //setErrorMessage(error.response.data.error.message);
-                setErrorMessage('We are unable to register, kindly contact your technical team.');
+                setErrorMessage(true);
               });
           }}
         >
-          {({ handleSubmit, values }) => (
+          {({ handleSubmit, values, errors, touched }) => (
             <form onSubmit={handleSubmit}>
               <div className={styles.CenterForm}>
-                <Field className={styles.Form} name="userName" placeholder="Username"></Field>
-                <Field className={styles.Form} name="phoneNumber" placeholder="Your phone number" />
+                <Field
+                  className={errors.userName ? styles.Form : styles.FormMargin}
+                  name="userName"
+                  placeholder="Username"
+                />
+                {errors.userName && touched.userName ? (
+                  <div className={styles.ErrorMessage}>{errors.userName}</div>
+                ) : null}
+                <Field
+                  className={errors.phoneNumber ? styles.Form : styles.FormMargin}
+                  name="phoneNumber"
+                  placeholder="Your phone number"
+                />
+                {errors.phoneNumber && touched.phoneNumber ? (
+                  <div className={styles.ErrorMessage}>{errors.phoneNumber}</div>
+                ) : null}
                 <Field
                   className={styles.Form}
                   name="password"
                   placeholder="Password"
                   type={values.password ? 'text' : 'password'}
                 />
-                <button className={styles.Button} type="submit">
+                {errors.password && touched.password ? (
+                  <div className={styles.ErrorMessage}>{errors.password}</div>
+                ) : null}
+                {errorMessage ? (
+                  <div className={styles.ErrorSubmit}>
+                    We are unable to create an account, <br /> kindly contact your technicaly team.
+                  </div>
+                ) : null}
+                <button
+                  className={errorMessage ? styles.ErrorGreenButtonSubmit : styles.GreenButton}
+                  type="submit"
+                >
                   <div className={styles.ButtonText}>CONTINUE</div>
                 </button>
               </div>
             </form>
           )}
         </Formik>
-        {/* {errorMessage && !userNameError && !passwordError && !phoneNumberError ? (
-          <div className={styles.ErrorMessage}>{errorMessage}</div>
-        ) : null} */}
       </div>
     </Auth>
   );

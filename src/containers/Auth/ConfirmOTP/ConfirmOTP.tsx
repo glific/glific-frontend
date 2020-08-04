@@ -1,22 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { FormHelperText } from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import clsx from 'clsx';
 import axios from 'axios';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Field } from 'formik';
 import { Redirect } from 'react-router-dom';
-
+import * as Yup from 'yup';
 import {
   REACT_APP_GLIFIC_REGISTRATION_API,
   REACT_APP_GLIFIC_AUTHENTICATION_API,
 } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
-import styles from './ConfirmOTP.module.css';
+import styles from '../Auth.module.css';
 import Auth from '../Auth';
 
 export interface ConfirmOTPProps {
@@ -27,12 +20,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [userAuthCode, setUserAuthCode] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [alreadyExists, setAlreadyExists] = useState(false);
-
-  const handleuserAuthCodeChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserAuthCode(event.target.value);
-  };
 
   const handleResend = () => {
     axios
@@ -51,7 +40,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   const handleSubmit = () => {
     if (userAuthCode.length < 6) {
-      setAuthError(true);
+      setAuthError('hi');
     } else {
       axios
         .post(REACT_APP_GLIFIC_REGISTRATION_API, {
@@ -69,11 +58,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           setTokenResponse(responseString);
         })
         .catch(function (error: any) {
-          if (error.response.data.error.errors.phone === 'has already been taken') {
-            setAlreadyExists(true);
-          } else if (error.response.data.error.errors === 'does_not_exist') {
-            setAuthError(true);
-          }
+          setAuthError('hi');
         });
     }
   };
@@ -96,6 +81,10 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     );
   }
 
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+  });
+
   return (
     <Auth
       pageTitle={'Create your new account'}
@@ -106,6 +95,9 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       <div className={clsx(styles.Margin, styles.BottomMargin)}>
         <Formik
           initialValues={{ OTP: '' }}
+          validationSchema={FormSchema}
+          validateOnChange={false}
+          validateOnBlur={false}
           onSubmit={(values, { setSubmitting }) => {
             console.log(values.OTP);
             setTimeout(() => {
@@ -130,16 +122,23 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
                 if (error.response.data.error.errors.phone === 'has already been taken') {
                   setAlreadyExists(true);
                 } else if (error.response.data.error.errors === 'does_not_exist') {
-                  setAuthError(true);
+                  setAuthError('Invalid OTP.');
                 }
               });
           }}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, errors, touched }) => (
             <form onSubmit={handleSubmit}>
               <div className={styles.CenterForm}>
-                <Field className={styles.Form} name="OTP" placeholder="OTP"></Field>
-                <button className={styles.Button} type="submit">
+                <Field className={styles.Form} name="OTP" placeholder="OTP" />
+                {errors.OTP && touched.OTP ? (
+                  <div className={styles.ErrorMessage}>{errors.OTP}</div>
+                ) : null}
+                {alreadyExists ? (
+                  <div>An account with this phone number already exists.</div>
+                ) : null}
+                {authError ? <div>{authError}</div> : null}
+                <button className={styles.GreenButton} type="submit">
                   <div className={styles.ButtonText}>CONTINUE</div>
                 </button>
               </div>

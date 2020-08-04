@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Auth from '../Auth';
-import { Formik, Form, Field } from 'formik';
-import styles from './ResetPasswordConfirmOTP.module.css';
+import { Formik, Field } from 'formik';
+import styles from '../Auth.module.css';
 import { RESET_PASSWORD } from '../../../common/constants';
 import axios from 'axios';
+import * as Yup from 'yup';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;
 }
 
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
-  const [OTP, setOTP] = useState('');
-  const [newPass, setNewPass] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [OTPError, setOTPError] = useState('');
 
   if (redirect) {
     return <Redirect to="/chat" />;
@@ -22,6 +22,13 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   const handlerSubmit = () => {
     console.log('hi');
   };
+
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 8 characters long.')
+      .required('Input required'),
+  });
 
   return (
     <Auth
@@ -36,6 +43,8 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
         <div className={styles.SubText}>Please create a new password for your account</div>
         <Formik
           initialValues={{ phoneNumber: props.location.state.phoneNumber, OTP: '', password: '' }}
+          validationSchema={FormSchema}
+          validateOnChange={false}
           onSubmit={(values, { setSubmitting }) => {
             console.log(values.phoneNumber);
             setTimeout(() => {
@@ -52,26 +61,38 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
               .then((response) => {
                 console.log(response);
                 setRedirect(true);
-              });
+              })
+              .catch((error) => setOTPError('Sorry, we are unable to reset your password.'));
           }}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, errors, touched }) => (
             <form onSubmit={handleSubmit}>
               <div className={styles.CenterForm}>
                 <Field
                   disabled
-                  className={styles.Form}
+                  className={styles.FormMargin}
                   placeholder={props.location.state.phoneNumber}
                   name="phoneNumber"
+                />
+                <Field
+                  className={errors.OTP ? styles.Form : styles.FormMargin}
+                  placeholder="OTP"
+                  name="OTP"
                 ></Field>
-                <Field className={styles.Form} placeholder="OTP" name="OTP"></Field>
+                {errors.OTP && touched.OTP ? (
+                  <div className={styles.ErrorMessage}>{errors.OTP}</div>
+                ) : null}
                 <Field
                   className={styles.Form}
-                  type="phone number"
+                  type="text"
                   name="password"
                   placeholder="New Password"
-                ></Field>
-                <button className={styles.Button} type="submit">
+                />
+                {errors.password && touched.password ? (
+                  <div className={styles.ErrorMessage}>{errors.password}</div>
+                ) : null}
+                {OTPError ? <div className={styles.ErrorSubmit}>{OTPError}</div> : null}
+                <button className={styles.WhiteButton} type="submit">
                   <div className={styles.ButtonText}>SAVE</div>
                 </button>
               </div>

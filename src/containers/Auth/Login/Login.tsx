@@ -1,19 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
-import { FormHelperText } from '@material-ui/core';
-import FormControl from '@material-ui/core/FormControl';
-import IconButton from '@material-ui/core/IconButton';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Formik, Form, Field } from 'formik';
-import clsx from 'clsx';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
-import styles from './Login.module.css';
+import * as Yup from 'yup';
+import styles from '../Auth.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import Auth from '../Auth';
@@ -29,24 +20,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
-
-  const handlePasswordChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    setPasswordError(false);
-  };
-
-  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
-    setPhoneNumberError(false);
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
 
   const handleInputErrors = () => {
     let foundErrors = false;
@@ -109,6 +82,11 @@ export const Login: React.SFC<LoginProps> = () => {
     );
   }
 
+  const FormSchema = Yup.object().shape({
+    phoneNumber: Yup.string().required('Input required'),
+    password: Yup.string().required('Input required'),
+  });
+
   return (
     <Auth
       pageTitle={'Login to your account'}
@@ -120,6 +98,9 @@ export const Login: React.SFC<LoginProps> = () => {
     >
       <Formik
         initialValues={{ phoneNumber: '', password: '' }}
+        validationSchema={FormSchema}
+        validateOnChange={false}
+        validateOnBlur={false}
         onSubmit={(values, { setSubmitting }) => {
           console.log(values.phoneNumber);
           setPhoneNumber(values.phoneNumber);
@@ -144,27 +125,34 @@ export const Login: React.SFC<LoginProps> = () => {
             });
         }}
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, errors, touched }) => (
           <form onSubmit={handleSubmit}>
             <div className={styles.CenterForm}>
               <Field
-                className={styles.Form}
+                className={errors.phoneNumber ? styles.Form : styles.FormMargin}
                 name="phoneNumber"
                 placeholder="Your phone number"
-              ></Field>
-              <Field className={styles.Form} name="password" placeholder="Password"></Field>
+              />
+              {errors.phoneNumber && touched.phoneNumber ? (
+                <div className={styles.ErrorMessage}>{errors.phoneNumber}</div>
+              ) : null}
+              <Field className={styles.Form} name="password" placeholder="Password" />
+              {errors.password && touched.password ? (
+                <div className={styles.ErrorMessage}>{errors.password}</div>
+              ) : null}
               <Link to="/resetpassword-phone">
                 <div className={styles.ForgotPassword}>Forgot Password?</div>
               </Link>
-              <button className={styles.Button} type="submit">
+              {invalidLogin ? (
+                <div className={styles.ErrorSubmit}>Incorrect username or password.</div>
+              ) : null}
+              <button className={styles.WhiteButton} type="submit">
                 <div className={styles.ButtonText}>LOGIN</div>
               </button>
             </div>
           </form>
         )}
       </Formik>
-
-      {invalidLogin ? <div className={styles.Errors}>Incorrect username or password.</div> : null}
     </Auth>
   );
 };

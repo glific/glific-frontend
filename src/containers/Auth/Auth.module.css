@@ -72,19 +72,6 @@
   flex-direction: column;
 }
 
-.AuthButton {
-  width: 335px;
-  border-radius: 27px !important;
-  margin-top: 20px !important;
-}
-
-.LoginButton {
-  background-color: white !important;
-  border: solid 2px #119656 !important;
-  margin-top: 0px;
-  color: #119656 !important;
-}
-
 .OrText {
   color: #93a29b;
   font-weight: bolder;
@@ -130,9 +117,118 @@
 }
 
 .SecondResetBox {
-  height: 430px;
+  height: 450px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
   border-width: 2px;
+}
+
+.SubText {
+  color: #93a29b;
+  display: flex;
+  align-content: start;
+  font-weight: 500;
+  font-family: 'Heebo';
+  margin-left: 4px;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.Form {
+  border: 2px solid #93a29b !important;
+  border-radius: 12px !important;
+  width: 334px;
+  line-height: 40px;
+  padding-left: 10px;
+  font-family: 'Heebo';
+  font-size: 16px;
+  font-weight: 500;
+  color: #073f24;
+}
+
+.CenterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.WhiteButton {
+  color: #119656;
+  background-color: white;
+  border: 2px solid #119656;
+  border-radius: 27px;
+  height: 40px;
+  margin-top: 32px;
+}
+
+.GreenButton {
+  color: white;
+  background-color: #119656;
+  border: 2px solid #119656;
+  border-radius: 27px;
+  height: 40px;
+  margin-top: 32px;
+}
+
+.GreenButton:hover,
+.WhiteButton:hover,
+.ErrorGreenButtonSubmit:hover .ErrorWhiteButtonSubmit:hover {
+  cursor: pointer;
+}
+
+.ButtonText {
+  font-weight: 500;
+  font-family: 'Heebo';
+  font-size: 16px;
+}
+
+.FormMargin {
+  border: 2px solid #93a29b !important;
+  border-radius: 12px !important;
+  width: 334px;
+  line-height: 40px;
+  padding-left: 10px;
+  font-family: 'Heebo';
+  font-size: 16px;
+  font-weight: 500;
+  color: #073f24;
+  margin-bottom: 10px;
+}
+
+.ErrorMessage {
+  margin-top: 0px;
+  color: red;
+  font-family: 'Heebo';
+}
+
+.ForgotPassword {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+}
+
+.ErrorSubmit {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  color: red;
+  font-family: 'Heebo';
+}
+
+.ErrorGreenButtonSubmit {
+  color: white;
+  background-color: #119656;
+  border: 2px solid #119656;
+  border-radius: 27px;
+  height: 40px;
+  margin-top: 20px;
+}
+
+.ErrorWhiteButtonSubmit {
+  color: #119656;
+  background-color: white;
+  border: 2px solid #119656;
+  border-radius: 27px;
+  height: 40px;
+  margin-top: 20px;
 }
