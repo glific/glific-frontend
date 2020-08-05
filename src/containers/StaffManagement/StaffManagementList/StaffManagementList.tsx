@@ -10,7 +10,7 @@ export interface StaffManagementProps {}
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
-  const staffIcon = <StaffIcon className={styles.TagIcon} />;
+  const staffIcon = <StaffIcon />;
 
   const getColumns = ({ name, phone, groups }: any) => ({
     name: getName(name),
@@ -57,9 +57,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...queries}
         {...columnAttributes}
         buttonLabel="Groups"
-        secondButtonLabel="Add to a group"
         searchParameter="name"
-        showCheckbox={true}
       />
     </div>
   );
