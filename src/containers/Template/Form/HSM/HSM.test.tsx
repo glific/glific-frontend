@@ -37,7 +37,7 @@ test('check for validations for the HSM form', async () => {
 
   fireEvent.change(container.querySelector('input[name="label"]'), {
     target: {
-      value: 'We are not allowing an really long title, and we should trigger validtaion for this.',
+      value: 'We are not allowing a really long title, and we should trigger validation for this.',
     },
   });
 
