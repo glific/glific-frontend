@@ -1,6 +1,6 @@
 import React from 'react';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
-import { DELETE_USER, ADD_USER_TO_GROUP } from '../../../graphql/mutations/StaffManagement';
+import { DELETE_USER } from '../../../graphql/mutations/StaffManagement';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { List } from '../../List/List';
@@ -36,7 +36,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  const dialogMessage = 'hello';
+  const dialogMessage = ' Once deleted this action cannot be undone.';
 
   const columnAttributes = {
     columnNames: columnNames,
