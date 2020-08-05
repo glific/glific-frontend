@@ -31,9 +31,7 @@ it('updates state for username', () => {
 
 it('adds state to phoneNumber', () => {
   const wrapper = shallow(createRegistration());
-  wrapper
-    .find('[data-testid="phoneNumber"]')
-    .simulate('change', { target: { value: '1231231234' } });
+  wrapper.find('[data-testid="phoneNumber"]').simulate('change', '1231231234');
   expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
 });
 
@@ -80,7 +78,7 @@ it('set errors if the form fields are blank', async () => {
   const wrapper = mount(createRegistrationMount());
   wrapper.find('button[data-testid="AuthButton"]').simulate('click');
   await wait();
-  expect(wrapper.find('.Mui-error')).toHaveLength(3);
+  expect(wrapper.find('.MuiFormHelperText-root')).toHaveLength(3);
 });
 
 it('no errors are set when if there are valid values', async () => {

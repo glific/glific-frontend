@@ -26,11 +26,8 @@ describe('Login test', () => {
 
   it('updates state for phone number and password', () => {
     const wrapper = shallow(createLogin());
-    wrapper
-      .find('[data-testid="phoneNumber"]')
-      .simulate('change', { target: { value: '1231231234' } });
+    wrapper.find('[data-testid="phoneNumber"]').simulate('change', '1231231234');
     wrapper.find('[data-testid="password"]').simulate('change', { target: { value: 'pass12345' } });
-
     expect(wrapper.find('[data-testid="phoneNumber"]').prop('value')).toEqual('1231231234');
     expect(wrapper.find('[data-testid="password"]').prop('value')).toEqual('pass12345');
   });
@@ -68,7 +65,7 @@ describe('Login test', () => {
     const wrapper = mount(createLoginMount());
     wrapper.find('button[data-testid="AuthButton"]').simulate('click');
     await wait();
-    expect(wrapper.find('.Mui-error')).toHaveLength(2);
+    expect(wrapper.find('.MuiFormHelperText-root')).toHaveLength(2);
   });
 
   it('sets phone number error as false if field is valid', async () => {

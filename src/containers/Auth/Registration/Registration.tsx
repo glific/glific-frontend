@@ -13,6 +13,7 @@ import axios from 'axios';
 import styles from './Registration.module.css';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import Auth from '../Auth';
+import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface RegistrationProps {}
 
@@ -37,8 +38,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     setUserNameError(false);
   };
 
-  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
+  const handlePhoneNumberChange = () => (value: string): void => {
+    setPhoneNumber(value);
     setPhoneNumberError(false);
   };
 
@@ -147,25 +148,21 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       </div>
       <div className={styles.Margin}>
         <FormControl variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              input: styles.Input,
-            }}
+          <PhoneInput
+            inputClass={styles.PhoneNumber}
             data-testid="phoneNumber"
-            error={phoneNumberError}
-            label="Your phone number"
-            type="integer"
             value={phoneNumber}
+            enableSearch={true}
+            inputProps={{
+              label: 'Your phone number',
+              name: 'tel',
+              required: true,
+              autoFocus: false,
+            }}
             onChange={handlePhoneNumberChange()}
+            error={phoneNumberError}
+            helperText="Invalid phone number."
           />
-          {phoneNumberError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Invalid phone number.
-            </FormHelperText>
-          ) : null}
         </FormControl>
       </div>
       <div className={styles.Margin}>

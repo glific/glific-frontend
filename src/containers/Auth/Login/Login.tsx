@@ -15,6 +15,7 @@ import styles from './Login.module.css';
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import Auth from '../Auth';
+import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface LoginProps {}
 
@@ -33,8 +34,8 @@ export const Login: React.SFC<LoginProps> = () => {
     setPasswordError(false);
   };
 
-  const handlePhoneNumberChange = () => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
+  const handlePhoneNumberChange = () => (value: string): void => {
+    setPhoneNumber(value);
     setPhoneNumberError(false);
   };
 
@@ -118,26 +119,21 @@ export const Login: React.SFC<LoginProps> = () => {
     >
       <div className={styles.Margin}>
         <FormControl className={styles.TextField} variant="outlined">
-          <InputLabel classes={{ root: styles.FormLabel }}>Your phone number</InputLabel>
-          <OutlinedInput
-            classes={{
-              root: styles.InputField,
-              notchedOutline: styles.InputField,
-              focused: styles.InputField,
-            }}
+          <PhoneInput
+            inputClass={styles.PhoneNumber}
             data-testid="phoneNumber"
-            error={phoneNumberError}
-            label="Your phone number"
             value={phoneNumber}
-            type="tel"
-            required
+            enableSearch={true}
+            inputProps={{
+              label: 'Your phone number',
+              name: 'tel',
+              required: true,
+              autoFocus: false,
+            }}
             onChange={handlePhoneNumberChange()}
+            error={phoneNumberError}
+            helperText="Please enter a phone number."
           />
-          {phoneNumberError ? (
-            <FormHelperText classes={{ root: styles.FormHelperText }}>
-              Please enter a phone number.
-            </FormHelperText>
-          ) : null}
         </FormControl>
       </div>
       <div className={clsx(styles.Margin, styles.BottomMargin)}>
