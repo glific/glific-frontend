@@ -22,8 +22,8 @@
   padding-bottom: 35px !important;
 }
 
-.OutlineInput div:first-child {
+.OutlineInput > div:first-child {
   width: inherit !important;
-  height: 60px;
+  height: 100px;
   overflow: auto;
 }

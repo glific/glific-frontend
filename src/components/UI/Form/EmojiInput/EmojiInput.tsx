@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { Editor, RichUtils, Modifier } from 'draft-js';
 import { InputAdornment, IconButton } from '@material-ui/core';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
@@ -15,8 +15,9 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const [edit, setEdit] = useState(true);
 
   useEffect(() => {
-    if (edit && rest.value !== '') {
-      setEditorState(EditorState.createWithContent(ContentState.createFromText(rest.value)));
+    if (edit && rest.value.length > 1) {
+      const myeditorState = EditorState.createWithContent(ContentState.createFromText(rest.value));
+      setEditorState(EditorState.moveFocusToEnd(myeditorState));
       setEdit(false);
     }
   }, [rest.value]);
@@ -32,26 +33,32 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
 
   const updateValue = (emoji: any) => {
     const contentState = editorState.getCurrentContent();
-    const length = editorState.getCurrentContent().getPlainText().length;
     let selectionState: any = editorState.getSelection();
-    selectionState = selectionState.set('focusOffset', length);
-    selectionState = selectionState.set('anchorOffset', length);
     const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
-    const myeditorState = EditorState.createWithContent(ModifiedContent);
+    let myeditorState = EditorState.createWithContent(ModifiedContent);
+    myeditorState = EditorState.moveFocusToEnd(myeditorState);
+
     setEditorState(myeditorState);
     const content = myeditorState.getCurrentContent().getPlainText();
     const event = { target: { name: rest.name, value: content } };
     onChange(event);
   };
 
+  useEffect(() => {
+    const current: any = ref.current;
+    if (current) current.focus();
+  }, [rest.value, showEmojiPicker]);
+
   const InputWrapper = (props: any) => {
     const { component: Component, inputRef, ...other } = props;
+
     React.useImperativeHandle(inputRef, () => ({
       focus: () => {
         const current: any = ref.current;
         if (current) current.focus();
       },
     }));
+
     return <Component ref={ref} {...other} />;
   };
 
@@ -76,7 +83,6 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   ) : null;
 
   const draftJsChange = (editorState: any) => {
-    setEdit(false);
     const content = convertToWhatsApp(editorState);
     let eventState = {
       target: { name: rest.name, value: content },
