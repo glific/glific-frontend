@@ -22,7 +22,6 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     countQuery: USER_COUNT,
     filterItemsQuery: FILTER_USERS,
     deleteItemQuery: DELETE_USER,
-    secondButtonQuery: ADD_USER_TO_GROUP,
   };
 
   const getName = (text: string) => {
