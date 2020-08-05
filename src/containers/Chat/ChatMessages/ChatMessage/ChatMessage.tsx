@@ -6,6 +6,7 @@ import { Button } from '@material-ui/core';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import Fade from '@material-ui/core/Fade';
+import Linkify from 'react-linkify';
 import Paper from '@material-ui/core/Paper';
 import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
@@ -162,6 +163,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  let body = WhatsAppToJsx(props.body)[0];
+  body = <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+    <a target="_blank" href={decoratedHref} key={key}>
+      {decoratedText}
+    </a>
+  )}>{body}</Linkify>
+
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
@@ -169,7 +177,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              <div>{WhatsAppToJsx(props.body)}</div>
+              <div>{body}</div>
             </div>
           </Tooltip>
           <Popper
