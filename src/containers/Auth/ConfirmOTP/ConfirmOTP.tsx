@@ -98,7 +98,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     <Auth
       pageTitle={'Create your new account'}
       buttonText={'CONTINUE'}
-      handlerSubmitCallback={handleSubmit}
       mode={'confirmotp'}
       formFields={formFields}
     >

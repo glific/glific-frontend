@@ -180,6 +180,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         }}
         validate={setValidation}
         onSubmit={(item) => {
+          console.log(item);
           saveHandler(item);
         }}
       >

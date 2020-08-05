@@ -1,8 +1,10 @@
 import React from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, setNestedObjectValues } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import * as Yup from 'yup';
+import axios from 'axios';
 
 export interface AuthProps {
   // children: any;
@@ -10,27 +12,33 @@ export interface AuthProps {
   buttonText: string;
   alternateLink?: string;
   alternateText?: string;
-  handlerSubmitCallback: Function;
   mode: string;
   initialFormikValues?: any;
   onFormikSubmit?: any;
   formFields: Array<any>;
   setStates?: any;
   states?: any;
+  handleSubmit?: any;
+  handleSubmitAPI?: any;
+  APIFields?: any;
+  validationSchema?: any;
 }
 
 const Auth: React.SFC<AuthProps> = ({
-  // children,
+  children,
   pageTitle,
   buttonText,
   alternateLink,
   alternateText,
-  handlerSubmitCallback,
   mode,
   initialFormikValues = null,
   onFormikSubmit,
   formFields,
   states,
+  handleSubmit = console.log('hi'),
+  handleSubmitAPI,
+  APIFields,
+  validationSchema,
 }) => {
   console.log(formFields);
   const boxClass = [styles.Box];
@@ -62,7 +70,7 @@ const Auth: React.SFC<AuthProps> = ({
   }
 
   const submitHandler = () => {
-    console.log('hi');
+    axios.post(handleSubmitAPI);
   };
 
   return (
@@ -75,16 +83,31 @@ const Auth: React.SFC<AuthProps> = ({
               {pageTitle}
             </Typography>
           </div>
-          <Formik initialValues={{ states }} onSubmit={submitHandler}>
-            {({ submitForm }) => (
+          <Formik
+            initialValues={{ states }}
+            validateOnChange={false}
+            validateOnBlur={false}
+            validationSchema={validationSchema}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log('hi');
+              setTimeout(() => {
+                setSubmitting(false);
+              }, 400);
+              submitHandler();
+              console.log(values);
+            }}
+          >
+            {({ handleSubmit }) => (
               <div className={styles.CenterBox}>
-                <Form>
+                <Form className={styles.Form}>
                   {formFields.map((field, index) => {
-                    return <Field className={styles.FormMargin} key={index} {...field}></Field>;
+                    return <Field className={styles.Form} key={index} {...field}></Field>;
                   })}
-                  <button className={buttonClass.join('')} type="submit">
-                    <div className={styles.ButtonText}>{buttonText}</div>
-                  </button>
+                  <div className={styles.CenterButton}>
+                    <button className={buttonClass.join('')} onClick={handleSubmit()} type="submit">
+                      <div className={styles.ButtonText}>{buttonText}</div>
+                    </button>
+                  </div>
                 </Form>
               </div>
             )}

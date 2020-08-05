@@ -55,7 +55,6 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       buttonText={'SAVE'}
       alternateLink={'login'}
       alternateText={'GO TO LOGIN'}
-      handlerSubmitCallback={handlerSubmit}
       mode={'secondreset'}
       formFields={formFields}
     >

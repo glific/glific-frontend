@@ -136,15 +136,18 @@
 }
 
 .Form {
-  border: 2px solid #93a29b !important;
-  border-radius: 12px !important;
-  width: 334px;
-  line-height: 40px;
-  padding-left: 10px;
+  width: 350px;
   font-family: 'Heebo';
   font-size: 16px;
   font-weight: 500;
-  color: #073f24;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+
+.CenterButton {
+  display: flex;
+  justify-content: center;
 }
 
 .CenterForm {
@@ -163,11 +166,12 @@
 
 .GreenButton {
   color: white;
+  width: 300px;
   background-color: #119656;
   border: 2px solid #119656;
   border-radius: 27px;
   height: 40px;
-  margin-top: 32px;
+  margin-top: 20px;
 }
 
 .GreenButton:hover,
@@ -180,19 +184,6 @@
   font-weight: 500;
   font-family: 'Heebo';
   font-size: 16px;
-}
-
-.FormMargin {
-  border: 2px solid #93a29b !important;
-  border-radius: 12px !important;
-  width: 334px;
-  line-height: 40px;
-  padding-left: 10px;
-  font-family: 'Heebo';
-  font-size: 16px;
-  font-weight: 500;
-  color: #073f24;
-  margin-bottom: 10px;
 }
 
 .ErrorMessage {

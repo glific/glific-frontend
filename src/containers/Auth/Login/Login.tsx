@@ -108,11 +108,10 @@ export const Login: React.SFC<LoginProps> = () => {
       buttonText={'LOGIN'}
       alternateLink={'registration'}
       alternateText={'CREATE A NEW ACCOUNT'}
-      handlerSubmitCallback={handlerSubmit}
       mode={'login'}
       formFields={formFields}
     >
-      <Formik
+      {/* <Formik
         initialValues={{ phoneNumber: '', password: '' }}
         validationSchema={FormSchema}
         validateOnChange={false}
@@ -168,7 +167,7 @@ export const Login: React.SFC<LoginProps> = () => {
             </div>
           </form>
         )}
-      </Formik>
+      </Formik> */}
     </Auth>
   );
 };

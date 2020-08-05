@@ -14,7 +14,7 @@ export interface RegistrationProps {}
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phone, setPhone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
@@ -23,7 +23,20 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [errorMessage, setErrorMessage] = useState(false);
 
   const handlerSubmit = () => {
-    console.log('hi');
+    axios
+      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+        user: {
+          phone: phone,
+        },
+      })
+      .then((response: any) => {
+        setAuthMessage(response);
+      })
+      .catch((error: any) => {
+        // For now let's set an error message manually till the backend give us nicer messages
+        //setErrorMessage(error.response.data.error.message);
+        setErrorMessage(true);
+      });
   };
 
   if (authMessage) {
@@ -33,7 +46,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           pathname: '/confirmotp',
           state: {
             name: userName,
-            phoneNumber: phoneNumber,
+            phoneNumber: phone,
             password: password,
           },
         }}
@@ -50,7 +63,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     },
     {
       component: Input,
-      name: 'phoneNumber',
+      name: 'phone',
       type: 'text',
       placeholder: 'Phone number',
     },
@@ -61,10 +74,10 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     },
   ];
 
-  const states = { userName, phoneNumber, password };
+  const states = { userName, phone, password };
   const setStates = ({ userName, phoneNumber, password }: any) => {
     setUserName(userName);
-    setPhoneNumber(phoneNumber);
+    setPhone(phone);
     setPassword(password);
   };
 
@@ -78,17 +91,20 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       .required('Input required'),
   });
 
+  const APIFields = { phone };
+
   return (
     <Auth
       pageTitle={'Create your new account'}
       buttonText={'CONTINUE'}
       alternateLink={'login'}
       alternateText={'LOGIN TO GLIFIC'}
-      handlerSubmitCallback={handlerSubmit}
       mode={'registration'}
       formFields={formFields}
       setStates={setStates}
       states={states}
+      handleSubmitAPI={REACT_APP_GLIFIC_AUTHENTICATION_API}
+      validationSchema={FormSchema}
     >
       {/* <div className={styles.Margin}>
         <Formik

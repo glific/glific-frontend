@@ -65,7 +65,6 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       buttonText={'GENERATE OTP TO CONFIRM'}
       alternateLink={'login'}
       alternateText={'GO TO LOGIN'}
-      handlerSubmitCallback={handlerSubmit}
       mode={'firstreset'}
       formFields={formFields}
     >
