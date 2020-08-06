@@ -82,6 +82,18 @@
   white-space: pre-line;
 }
 
+.Content a {
+  text-decoration: none;
+}
+
+.Content a:visited {
+  color: rgb(0, 0, 238);
+}
+
+.Content p {
+  margin: 0px;
+}
+
 .Content::after {
   content: '';
   display: inline;
@@ -158,4 +170,21 @@
   width: 7px;
   margin-left: 4px;
   cursor: pointer;
+}
+
+.LinkPreview {
+  margin-top: 7px;
+  margin-bottom: 10px;
+}
+
+.LinkPreview a {
+  box-shadow: none;
+}
+
+.Links {
+  text-decoration: none;
+}
+
+.Links:visited {
+  color: rgb(0, 0, 238);
 }

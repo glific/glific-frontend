@@ -15,10 +15,8 @@ import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
+import { ReactTinyLink } from 'react-tiny-link';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
-import { ReactTinyLink } from 'react-tiny-link'
-
-
 
 export interface ChatMessageProps {
   id: number;
@@ -166,27 +164,33 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
-  let linkPreview = null
+  let linkPreview = null;
 
   let messagebody = WhatsAppToJsx(props.body);
-  const regexForLink = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
-  if (messagebody[0].match(regexForLink)) {
-    linkPreview = <ReactTinyLink
-      cardSize="small"
-      showGraphic={true}
-      maxLine={2}
-      minLine={1}
-      url={messagebody[0]}
-    />
-  }
-  messagebody = <Linkify componentDecorator={(decoratedHref, decoratedText, key) => {
-    return (
-      <a target="_blank" href={decoratedHref} key={key} data-testid="messageLink">
-        {decoratedText}
-      </a>
-    )
-  }}>{messagebody}</Linkify>
 
+  let array;
+  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+  if ((array = regexForLink.exec(props.body)) != null) {
+    linkPreview = (
+      <div className={styles.LinkPreview}>
+        <ReactTinyLink cardSize="small" showGraphic={true} maxLine={2} minLine={1} url={array[0]} />
+      </div>
+    );
+  }
+
+  messagebody = (
+    <Linkify
+      componentDecorator={(decoratedHref, decoratedText, key) => {
+        return (
+          <a target="_blank" href={decoratedHref} key={key} data-testid="messageLink">
+            {decoratedText}
+          </a>
+        );
+      }}
+    >
+      {messagebody}
+    </Linkify>
+  );
 
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
@@ -195,7 +199,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              <div>{linkPreview}{messagebody}</div>
+              <div>
+                {linkPreview}
+
+                {messagebody}
+              </div>
             </div>
           </Tooltip>
           <Popper
