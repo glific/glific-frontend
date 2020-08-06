@@ -163,12 +163,15 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
-  let body = WhatsAppToJsx(props.body)[0];
-  body = <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-    <a target="_blank" href={decoratedHref} key={key}>
-      {decoratedText}
-    </a>
-  )}>{body}</Linkify>
+  let messagebody = WhatsAppToJsx(props.body);
+  messagebody = <Linkify componentDecorator={(decoratedHref, decoratedText, key) => {
+    return (
+      <a target="_blank" href={decoratedHref} key={key} data-testid="messageLink">
+        {decoratedText}
+      </a>
+    )
+  }}>{messagebody}</Linkify>
+
 
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
@@ -177,7 +180,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              <div>{body}</div>
+              <div>{messagebody}</div>
             </div>
           </Tooltip>
           <Popper
