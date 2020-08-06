@@ -1,10 +1,8 @@
 import React from 'react';
-import { Formik, Form, Field, setNestedObjectValues } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import * as Yup from 'yup';
-import axios from 'axios';
 
 export interface AuthProps {
   // children: any;
@@ -18,29 +16,28 @@ export interface AuthProps {
   formFields: Array<any>;
   setStates?: any;
   states?: any;
-  handleSubmit?: any;
   handleSubmitAPI?: any;
   APIFields?: any;
   validationSchema?: any;
+  titleSubText?: string;
+  linkText?: string;
+  linkURL?: string;
 }
 
 const Auth: React.SFC<AuthProps> = ({
-  children,
   pageTitle,
   buttonText,
   alternateLink,
   alternateText,
   mode,
   initialFormikValues = null,
-  onFormikSubmit,
+  onFormikSubmit = console.log('hi'),
   formFields,
-  states,
-  handleSubmit = console.log('hi'),
-  handleSubmitAPI,
-  APIFields,
   validationSchema,
+  titleSubText,
+  linkText,
+  linkURL,
 }) => {
-  console.log(formFields);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   const buttonClass = [styles.AuthButton];
@@ -58,20 +55,19 @@ const Auth: React.SFC<AuthProps> = ({
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
+      buttonClass.push(styles.GreenButton);
       break;
     case 'firstreset':
       boxClass.push(styles.FirstResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
+      buttonClass.push(styles.WhiteButton);
       break;
     case 'secondreset':
       boxClass.push(styles.SecondResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
+      buttonClass.push(styles.WhiteButton);
       break;
   }
-
-  const submitHandler = () => {
-    axios.post(handleSubmitAPI);
-  };
 
   return (
     <div className={styles.Container}>
@@ -83,28 +79,32 @@ const Auth: React.SFC<AuthProps> = ({
               {pageTitle}
             </Typography>
           </div>
+          <div className={styles.SubText}>{titleSubText}</div>
           <Formik
-            initialValues={{ states }}
+            initialValues={initialFormikValues}
             validateOnChange={false}
             validateOnBlur={false}
             validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log('hi');
-              setTimeout(() => {
-                setSubmitting(false);
-              }, 400);
-              submitHandler();
-              console.log(values);
+            onSubmit={(item) => {
+              onFormikSubmit(item);
             }}
           >
-            {({ handleSubmit }) => (
+            {({ handleSubmit, errors }) => (
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
-                    return <Field className={styles.Form} key={index} {...field}></Field>;
+                    return (
+                      <div>
+                        <Field className={styles.Form} key={index} {...field} />
+                        {/* <ErrorMessage name={field.name} /> */}
+                      </div>
+                    );
                   })}
+                  <Link to={'/' + linkURL}>
+                    <div className={styles.Link}>{linkText}</div>
+                  </Link>
                   <div className={styles.CenterButton}>
-                    <button className={buttonClass.join('')} onClick={handleSubmit()} type="submit">
+                    <button className={buttonClass.join('')} type="submit">
                       <div className={styles.ButtonText}>{buttonText}</div>
                     </button>
                   </div>
@@ -120,9 +120,9 @@ const Auth: React.SFC<AuthProps> = ({
               <div className={styles.OrText}>OR</div>
               <hr />
             </div>
-            <div>
-              <Link to={'/' + alternateLink}>{alternateText}</Link>
-            </div>
+            <Link to={'/' + alternateLink}>
+              <div>{alternateText}</div>
+            </Link>
           </>
         ) : null}
       </div>

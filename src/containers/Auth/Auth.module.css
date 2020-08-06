@@ -27,13 +27,13 @@
 
 .RegistrationBox {
   width: 400px;
-  height: 420px;
+  height: 470px;
   background-color: #073f24;
 }
 
 .OTPBox {
   width: 400px;
-  height: 360px;
+  height: 320px;
   background-color: #073f24;
 }
 
@@ -130,9 +130,8 @@
   align-content: start;
   font-weight: 500;
   font-family: 'Heebo';
-  margin-left: 4px;
+  margin-left: 32px;
   margin-top: 4px;
-  margin-bottom: 24px;
 }
 
 .Form {
@@ -162,6 +161,7 @@
   border-radius: 27px;
   height: 40px;
   margin-top: 32px;
+  width: 300px;
 }
 
 .GreenButton {
@@ -222,4 +222,12 @@
   border-radius: 27px;
   height: 40px;
   margin-top: 20px;
+}
+
+.Link,
+.Link a {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+  margin-left: 10px;
 }
