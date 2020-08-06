@@ -9,11 +9,13 @@ import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
 import { ResetPasswordPhone } from './containers/Auth/ResetPassword/ResetPasswordPhone';
 import { ResetPasswordConfirmOTP } from './containers/Auth/ResetPassword/ResetPasswordConfirmOTP';
-import MessageTemplatePage from './components/pages/Template/SpeedSendPage/SpeedSendPage';
-import { SpeedSend } from './containers/Template/SpeedSend/SpeedSend';
-import HSMTemplatePage from './components/pages/Template/HSMPage/HSMPage';
-import { HSM } from './containers/Template/HSM/HSM';
-import Chat from './containers/Chat/Chat';
+import { StaffManagementList } from './containers/StaffManagement/StaffManagementList/StaffManagementList';
+import { StaffManagement } from './containers/StaffManagement/StaffManagement';
+import { SpeedSendPage } from './components/pages/Template/SpeedSendPage/SpeedSendPage';
+import { SpeedSend } from './containers/Template/Form/SpeedSend/SpeedSend';
+import { HSMPage } from './components/pages/Template/HSMPage/HSMPage';
+import { HSM } from './containers/Template/Form/HSM/HSM';
+import { Chat } from './containers/Chat/Chat';
 import styles from './App.module.css';
 import gqlClient from './config/apolloclient';
 import { ApolloProvider } from '@apollo/client';
@@ -47,7 +49,7 @@ const App = () => {
             <Route path="/tag" exact component={TagPage} />
             <Route path="/tag/add" exact component={Tag} />
             <Route path="/tag/:id/edit" exact component={Tag} />
-            <Route path="/speed-send" exact component={MessageTemplatePage} />
+            <Route path="/speed-send" exact component={SpeedSendPage} />
             <Route path="/speed-send/add" exact component={SpeedSend} />
             <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
             <Route path="/automation" exact component={AutomationList} />
@@ -56,7 +58,10 @@ const App = () => {
             <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
 
             <Route path="/chat" exact component={Chat} />
-            <Route path="/template" exact component={HSMTemplatePage} />
+            <Route path="/staff-management" exact component={StaffManagementList} />
+            <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
+
+            <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
 

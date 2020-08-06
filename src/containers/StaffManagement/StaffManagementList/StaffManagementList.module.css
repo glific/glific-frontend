@@ -1,0 +1,49 @@
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.Title {
+  margin-left: 14px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+}
+
+.Header {
+  display: flex;
+  padding: 10px;
+  padding-right: 24px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  margin-top: 6px;
+  height: 70px;
+  padding-left: 30px;
+}
+
+.Id {
+  width: 60px;
+}
+.Name {
+  width: 200px;
+}
+
+.Phone {
+  width: 200px;
+}
+
+.Group {
+  width: 100px;
+}
+
+.Actions {
+  width: 100px;
+  justify-content: flex-end;
+  margin-left: auto;
+}

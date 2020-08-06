@@ -6,7 +6,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: {
-          body: '',
+          term: '',
         },
         opts: {
           order: 'ASC',
@@ -39,7 +39,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: {
-          body: 'this should not return anything',
+          term: 'this should not return anything',
         },
         opts: {
           order: 'ASC',
@@ -49,6 +49,32 @@ export const TEMPLATE_MOCKS = [
     result: {
       data: {
         sessionTemplates: [],
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: {
+          term: 'hi',
+        },
+        opts: {
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          {
+            id: '87',
+            label: 'Good message',
+            body: 'hi can you help!',
+            isReserved: true,
+            isHsm: true,
+          },
+        ],
       },
     },
   },

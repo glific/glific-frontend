@@ -28,6 +28,8 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
+  buttonLabel?: string;
+  showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
   additionalAction?: {
@@ -57,6 +59,8 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  buttonLabel = 'Add New',
+  showCheckbox,
   searchParameter = 'label',
   filters = null,
   additionalAction = null,
@@ -71,7 +75,6 @@ export const List: React.SFC<ListProps> = ({
   const [searchVal, setSearchVal] = useState('');
 
   // Table attributes
-
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 10,
@@ -262,7 +265,7 @@ export const List: React.SFC<ListProps> = ({
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.searchInput.value.trim();
+    let searchVal = e.target.querySelector('input').value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
@@ -302,7 +305,7 @@ export const List: React.SFC<ListProps> = ({
           {dialogBox}
           <div className={styles.AddButton}>
             <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
-              Add New
+              {buttonLabel}
             </Button>
           </div>
         </div>
@@ -317,6 +320,7 @@ export const List: React.SFC<ListProps> = ({
           totalRows={itemCount}
           handleTableChange={handleTableChange}
           tableVals={tableVals}
+          showCheckbox={showCheckbox}
         />
       ) : (
         <div>There are no {listItemName}s.</div>

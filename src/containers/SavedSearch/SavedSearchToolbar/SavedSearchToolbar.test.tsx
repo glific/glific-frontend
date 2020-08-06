@@ -6,7 +6,7 @@ import { fireEvent } from '@testing-library/dom';
 import SavedSearchToolbar from './SavedSearchToolbar';
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 
-const mocks = [
+export const mocks = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
@@ -49,9 +49,5 @@ describe('testing <SavedSearchToolbar />', () => {
     // simulate saves search is selected
     fireEvent.click(unreadButton);
     expect(container.querySelector('.SavedSearchItemSelected')).toBeInTheDocument();
-
-    // simulate saves search is cleared
-    fireEvent.click(unreadButton);
-    expect(container.querySelector('.SavedSearchItemSelected')).toBeFalsy();
   });
 });

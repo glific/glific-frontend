@@ -81,3 +81,22 @@
 .DeleteButton {
   margin-left: auto !important;
 }
+
+.CheckHeader {
+  color: #073f24;
+  font-weight: 800;
+  font-size: 20px;
+  margin-left: 40px;
+  margin-top: 20px;
+}
+
+.CheckBoxes {
+  width: 455px;
+  height: 200px;
+  margin-left: 10px;
+  margin-top: 8px;
+  background-color: white;
+  border-width: 2px;
+  border-color: #eaedec;
+  border-radius: 12px;
+}

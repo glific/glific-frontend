@@ -1,7 +1,7 @@
 import React from 'react';
-import { List } from '../List/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../graphql/mutations/Template';
+import { List } from '../../List/List';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import styles from './Template.module.css';
 
 const columnNames = ['LABEL', 'BODY', 'ACTIONS'];

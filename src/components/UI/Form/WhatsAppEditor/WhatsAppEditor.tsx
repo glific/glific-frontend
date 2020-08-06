@@ -1,15 +1,12 @@
-import React from 'react';
-import createEmojiPlugin from 'draft-js-emoji-plugin';
+import React, { useState } from 'react';
 import Editor from 'draft-js-plugins-editor';
-import { RichUtils, getDefaultKeyBinding } from 'draft-js';
-import 'draft-js-emoji-plugin/lib/plugin.css';
+import { Picker } from 'emoji-mart';
+import { RichUtils, getDefaultKeyBinding, Modifier, EditorState } from 'draft-js';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';
-
-const emojiPlugin = createEmojiPlugin({ useNativeArt: true }); // , theme: emojiTheme
-const { EmojiSelect } = emojiPlugin;
-const plugins = [emojiPlugin];
+import { IconButton, ClickAwayListener } from '@material-ui/core';
+import 'emoji-mart/css/emoji-mart.css';
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
@@ -19,6 +16,7 @@ interface WhatsAppEditorProps {
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleChange = (editorState: any) => {
     props.setEditorState(editorState);
   };
@@ -30,6 +28,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       props.sendMessage(convertToWhatsApp(editorState));
       return 'handled';
     }
+
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       props.setEditorState(newState);
@@ -46,6 +45,18 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     return getDefaultKeyBinding(e);
   };
 
+  const handleClickAway = () => {
+    setShowEmojiPicker(false);
+  };
+
+  const handleEmoji = (emoji: any) => {
+    const contentState = props.editorState.getCurrentContent();
+    const selectionState = props.editorState.getSelection();
+    const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
+    const editorState = EditorState.createWithContent(ModifiedContent);
+    props.setEditorState(editorState);
+  };
+
   return (
     <>
       <ReactResizeDetector
@@ -58,15 +69,37 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             data-testid="editor"
             editorState={props.editorState}
             onChange={handleChange}
-            plugins={plugins}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
           />
         </div>
       </ReactResizeDetector>
-      <div className={styles.EmojiButton}>
-        <EmojiSelect aria-label="pick emoji" data-testid="emoji-picker" />
-      </div>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div>
+          <div className={styles.EmojiButton}>
+            <IconButton
+              data-testid="emoji-picker"
+              color="primary"
+              aria-label="pick emoji"
+              component="span"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              <span role="img" aria-label="pick emoji">
+                😀
+              </span>
+            </IconButton>
+          </div>
+          {showEmojiPicker ? (
+            <Picker
+              data-testid="emoji-popup"
+              title="Pick your emoji…"
+              emoji="point_up"
+              style={{ position: 'absolute', bottom: '60px', right: '-150px', zIndex: 100 }}
+              onSelect={handleEmoji}
+            />
+          ) : null}
+        </div>
+      </ClickAwayListener>
     </>
   );
 };

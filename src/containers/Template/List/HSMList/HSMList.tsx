@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './HSMList.module.css';
 import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
-import { Template } from '../../Template';
+import { Template } from '../Template';
 
 export interface HSMListProps {}
 

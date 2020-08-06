@@ -1,0 +1,49 @@
+.Errors {
+  color: red;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  font-size: 14px;
+}
+
+.Margin {
+  margin: 4px;
+}
+
+.ErrorText {
+  font-size: 15px;
+  margin: 0px;
+}
+
+.InputField {
+  border-color: #93a29b !important;
+  border-radius: 12px !important;
+  border-width: 2px !important;
+  line-height: 32px;
+  width: 340px;
+}
+
+.FormLabel {
+  color: #93a29b !important;
+}
+
+.IconButton {
+  color: #93a29b;
+}
+
+.FormHelperText {
+  color: red !important;
+  margin-top: 2px !important;
+  line-height: 1.2 !important;
+}
+
+.Input {
+  color: #93a29b !important;
+}
+
+.ErrorMessage {
+  color: red;
+  width: 340px;
+}

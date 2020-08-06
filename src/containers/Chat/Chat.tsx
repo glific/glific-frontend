@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
 import ChatMessages from './ChatMessages/ChatMessages';
@@ -18,7 +18,7 @@ export interface ChatProps {
   contactId: number;
 }
 
-const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
 
@@ -37,15 +37,22 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   });
 
   const [getContactQuery] = useLazyQuery(GET_CONVERSATION_MESSAGE_QUERY, {
-    onCompleted: (data) => {
-      if (data) {
+    onCompleted: (conversation) => {
+      if (conversation) {
         const conversations = client.readQuery({
           query: GET_CONVERSATION_QUERY,
           variables: queryVariables,
         });
 
+        const conversationCopy = JSON.parse(JSON.stringify(conversation));
+        conversationCopy.conversation.messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.conversations.unshift(data.conversation);
+        conversationsCopy.conversations.unshift(conversationCopy.conversation);
         client.writeQuery({
           query: GET_CONVERSATION_QUERY,
           variables: queryVariables,
@@ -157,18 +164,29 @@ const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
   }
 
-  return (
-    <Paper>
-      <div className={styles.Chat}>
+  let chatInterface: any;
+  if (data.conversations.length === 0) {
+    chatInterface = (
+      <Typography variant="h5" className={styles.NoConversations}>
+        There are no chat conversations to display.
+      </Typography>
+    );
+  } else {
+    chatInterface = (
+      <>
         <div className={styles.ChatMessages}>
           <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations contactId={contactId} />
         </div>
-      </div>
+      </>
+    );
+  }
+
+  return (
+    <Paper>
+      <div className={styles.Chat}>{chatInterface}</div>
     </Paper>
   );
 };
-
-export default Chat;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import HSMPage from './HSMPage';
-import { HSMList } from '../../../../containers/Template/HSM/HSMList/HSMList';
+import { HSMPage } from './HSMPage';
+import { HSMList } from '../../../../containers/Template/List/HSMList/HSMList';
 
 const wrapper = shallow(<HSMPage />);
 

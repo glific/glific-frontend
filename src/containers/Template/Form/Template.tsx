@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
+
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
-import { GET_TEMPLATE } from '../../../graphql/queries/Template';
-import styles from './HSM.module.css';
-import { UPDATE_TEMPLATE, CREATE_TEMPLATE } from '../../../graphql/mutations/Template';
-import { ReactComponent as SpeedSendIcon } from '../../../assets/images/icons/Template/Selected.svg';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ListItem } from '../../List/ListItem/ListItem';
-
-export interface HSMProps {
-  match: any;
-}
+import { GET_TEMPLATE } from '../../../graphql/queries/Template';
+import {
+  CREATE_TEMPLATE,
+  UPDATE_TEMPLATE,
+  DELETE_TEMPLATE,
+} from '../../../graphql/mutations/Template';
 
 const setValidation = (values: any) => {
   const errors: Partial<any> = {};
@@ -29,15 +27,12 @@ const dialogMessage = ' It will stop showing when you are drafting a customized 
 
 const formFields = [
   { component: Input, name: 'label', placeholder: 'Title' },
-  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 3, textArea: true },
+  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
 ];
 
 const defaultAttribute = {
   type: 'TEXT',
-  isHsm: true,
 };
-
-const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
 const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -46,7 +41,15 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-export const HSM: React.SFC<HSMProps> = ({ match }) => {
+export interface TemplateProps {
+  match: any;
+  listItemName: string;
+  redirectionLink: string;
+  icon: any;
+  defaultAttribute?: any;
+}
+
+const Template: React.SFC<TemplateProps> = (props) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
 
@@ -56,20 +59,27 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     setBody(body);
   };
 
+  let attributesObject = defaultAttribute;
+  if (props.defaultAttribute) {
+    attributesObject = { ...attributesObject, ...props.defaultAttribute };
+  }
+
   return (
     <ListItem
       {...queries}
-      match={match}
+      match={props.match}
       states={states}
       setStates={setStates}
       setValidation={setValidation}
-      listItemName="HSM Template"
+      listItemName={props.listItemName}
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="template"
+      redirectionLink={props.redirectionLink}
       listItem="sessionTemplate"
-      icon={speedSendIcon}
-      defaultAttribute={defaultAttribute}
+      icon={props.icon}
+      defaultAttribute={attributesObject}
     />
   );
 };
+
+export default Template;

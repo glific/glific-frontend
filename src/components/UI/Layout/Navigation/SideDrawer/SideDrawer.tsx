@@ -21,8 +21,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../context/session';
+import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
+import { Link } from 'react-router-dom';
 
 export interface SideDrawerProps {}
 
@@ -93,6 +95,12 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '12px 12px 12px 15px',
     },
     LogoutButton: {
+      position: 'absolute',
+      bottom: '10px',
+      left: '94px',
+      width: 'fit-content',
+    },
+    StaffButton: {
       position: 'absolute',
       bottom: '10px',
       left: '8px',
@@ -231,10 +239,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
           // open
         >
-          {drawer}
+          <IconButton className={classes.StaffButton} component={Link} to="/staff-management">
+            <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+          </IconButton>
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
+          {drawer}
           {popper}
         </Drawer>
       </Hidden>

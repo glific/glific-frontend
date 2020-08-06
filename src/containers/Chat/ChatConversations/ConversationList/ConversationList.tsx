@@ -4,7 +4,7 @@ import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import { GET_CONVERSATION_QUERY } from '../../../../graphql/queries/Chat';
-import { useApolloClient, useLazyQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 
@@ -28,6 +28,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
   };
 
+  const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
+    GET_CONVERSATION_QUERY,
+    {
+      variables: queryVariables,
+      fetchPolicy: 'cache-first',
+    }
+  );
   const filterVariables = () => {
     if (props.savedSearchCriteria) {
       return JSON.parse(props.savedSearchCriteria);
@@ -45,15 +52,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     };
   };
 
-  const data: any = client.readQuery({
-    query: GET_CONVERSATION_QUERY,
-    variables: queryVariables,
-  });
-
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY,
     {
       variables: filterVariables(),
+      fetchPolicy: 'cache-and-network',
     }
   );
 
@@ -66,18 +69,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }, [props.searchVal]);
 
   // Other cases
-  if (called && loading) return <Loading />;
+  if (called && (loading || conversationLoading)) return <Loading />;
   if (called && error) {
     setErrorMessage(client, error);
     return null;
   }
 
-  if (data === undefined) {
-    return <p>Error :(</p>;
-  }
-
+  let conversations = null;
   // Retrieving all convos or the ones searched by.
-  let conversations = data.conversations;
+  if (data) {
+    conversations = data.conversations;
+  }
 
   if ((props.searchVal || props.savedSearchCriteria) && !called) {
     getFilterConvos();
@@ -89,7 +91,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // build the conversation list only if there are conversations
   let conversationList;
-  if (conversations.length > 0) {
+  if (conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {

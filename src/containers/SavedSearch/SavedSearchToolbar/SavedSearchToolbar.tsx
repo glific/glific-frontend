@@ -37,11 +37,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     savedSearchCriteria: string | null,
     savedSearchId: number | null
   ) => {
-    // we should unset the saved saved when click on the same and revert to orginal result
-    if (selectedSavedSearch === savedSearchId) {
-      savedSearchId = null;
-      savedSearchCriteria = null;
-    }
     props.savedSearchCriteriaCallback(savedSearchCriteria);
     setSelectedSavedSearch(savedSearchId);
   };
@@ -57,6 +52,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
     return (
       <div
+        data-testid="savedSearchDiv"
         className={styles.SavedSearchItem}
         key={savedSearch.id}
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}

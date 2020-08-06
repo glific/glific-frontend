@@ -33,6 +33,8 @@ export interface ListItemProps {
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
+  checkItems?: any;
+  checkItemsHeader?: string;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -55,6 +57,8 @@ export const ListItem: React.SFC<ListItemProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
+  checkItems,
+  checkItemsHeader,
 }: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -189,6 +193,8 @@ export const ListItem: React.SFC<ListItemProps> = ({
             {formFieldItems.map((field, index) => {
               return <Field key={index} {...field}></Field>;
             })}
+            {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
+            {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}
             <div className={styles.Buttons}>
               <Button
                 variant="contained"

@@ -1,5 +1,5 @@
 .ListingContainer {
-  height: calc(100% - 70px);
+  height: calc(100% - 190px);
   overflow-y: auto;
   padding: 0px !important;
 }

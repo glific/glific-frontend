@@ -1,58 +1,50 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-
-import { mount, shallow } from 'enzyme';
+import { render, wait, fireEvent } from '@testing-library/react';
 import ChatConversations from './ChatConversations';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
+import { ChatConversationMocks, conversations } from './ChatConversations.test.helper';
 
-const mocks = [
-  {
-    request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
-    },
-    result: {
-      data: {
-        conversation: {
-          contact: {
-            id: '2',
-            name: 'Jane Doe',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '2',
-              },
-              sender: {
-                id: '1',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  },
-];
+const mocks = ChatConversationMocks;
 
-describe('<ChatConversations />', () => {
-  test('it should render <ChatConversations /> component correctly', () => {
-    const wrapper = shallow(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatConversations />
-      </MockedProvider>
-    );
-    expect(wrapper.exists()).toBe(true);
-  });
+const chatConversation = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <ChatConversations contactId={2} conversations={conversations} />
+    </Router>
+  </MockedProvider>
+);
 
-  // TODO: Need to implement comprehensive test cases for this component
+test('it should render <ChatConversations /> component correctly', async () => {
+  const { container } = render(chatConversation);
+  await wait();
+  expect(container).toBeInTheDocument();
+});
+
+test('it should filter contacts based on search', async () => {
+  const { getByTestId } = render(chatConversation);
+  await wait();
+  fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+  await wait();
+  fireEvent.submit(getByTestId('searchForm'));
+  await wait();
+});
+
+test('it should reset input on clicking cross icon', async () => {
+  const { getByTestId, getByText } = render(chatConversation);
+  await wait();
+  fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+  await wait();
+  const resetButton = getByTestId('resetButton');
+  fireEvent.click(resetButton);
+  await wait();
+  expect(getByText('Jane Doe')).toBeInTheDocument();
+});
+
+test('it should load all contacts with unread tag', async () => {
+  const { getAllByTestId, getByText } = render(chatConversation);
+  await wait();
+  fireEvent.click(getAllByTestId('savedSearchDiv')[0]);
+  await wait();
+  expect(getByText('You do not have any conversations.')).toBeInTheDocument();
 });

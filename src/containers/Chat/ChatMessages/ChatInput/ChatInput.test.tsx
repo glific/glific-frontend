@@ -4,7 +4,7 @@ import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, wait, fireEvent } from '@testing-library/react';
-import { TEMPLATE_MOCKS } from '../../../Template/SpeedSend/SpeedSendList/SpeedSendList.test.helper';
+import { TEMPLATE_MOCKS } from '../ChatTemplates/ChatTemplates.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
 
@@ -60,8 +60,8 @@ describe('<ChatInput />', () => {
   });
 
   test('submit message callback working properly', () => {
-    const submit = wrapper.find('[data-testid="message-input"]');
-    submit.props().sendMessage('This is a test message.');
+    const editor = wrapper.find('[data-testid="message-input"]');
+    editor.props().sendMessage('This is a test message.');
     expect(inputSubmitted).toBeTruthy();
   });
 
@@ -87,13 +87,13 @@ describe('<ChatInput />', () => {
     expect(templates.find(ChatTemplates).exists()).toBeFalsy();
   });
 
-  test('check if reset button works', () => {
+  test('check if reset button works', async () => {
     const speedSends = wrapper.find('[data-testid="shortcut-button"]').first();
     speedSends.simulate('click');
-
+    await wait();
     const searchInput = wrapper.find('[data-testid="searchInput"] input');
     searchInput.simulate('change', { target: { value: 'hi' } });
-
+    await wait();
     const resetButton = wrapper.find('button[data-testid="resetButton"]');
     resetButton.simulate('click');
   });

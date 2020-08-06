@@ -1,14 +1,12 @@
 import React from 'react';
-import { SpeedSendList } from '../../../../containers/Template/SpeedSend/SpeedSendList/SpeedSendList';
+import { SpeedSendList } from '../../../../containers/Template/List/SpeedSendList/SpeedSendList';
 
 export interface SpeedSendPageProps {}
 
-const SpeedSendPage: React.SFC<SpeedSendPageProps> = () => {
+export const SpeedSendPage: React.SFC<SpeedSendPageProps> = () => {
   return (
     <div>
       <SpeedSendList />
     </div>
   );
 };
-
-export default SpeedSendPage;

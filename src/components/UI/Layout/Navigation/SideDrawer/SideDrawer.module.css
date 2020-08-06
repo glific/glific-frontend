@@ -15,3 +15,15 @@
   width: 100% !important;
   justify-content: flex-start !important;
 }
+
+.StaffIcon {
+  width: 32px;
+}
+
+.DrawerIcons {
+  width: 100px;
+}
+
+.StaffButton {
+  width: 100% !important;
+}

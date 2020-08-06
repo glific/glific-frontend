@@ -1,10 +1,19 @@
 .EmojiButton {
   position: absolute;
-  bottom: 14px;
-  right: 160px;
+  bottom: 0;
+  right: 150px;
 }
 
 .Editor {
   width: 75%;
   min-height: 40px;
+}
+
+/* TODO: Override emoji-mart-emoji font-size to make it medium. */
+span.emoji-mart-emoji {
+  font-size: medium;
+}
+
+.emoji-mart-emoji {
+  font-size: medium;
 }

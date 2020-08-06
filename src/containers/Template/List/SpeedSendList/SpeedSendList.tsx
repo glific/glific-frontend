@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './SpeedSendList.module.css';
 import { ReactComponent as SpeedSendIcon } from '../../../../assets/images/icons/SpeedSend/Selected.svg';
-import Template from '../../Template';
+import Template from '../Template';
 
 export interface SpeedSendListProps {}
 
