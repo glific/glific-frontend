@@ -29,8 +29,6 @@ export interface ListProps {
   columnStyles: any;
   title: string;
   buttonLabel?: string;
-  secondButtonLabel?: string;
-  secondButtonQuery?: DocumentNode;
   showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
@@ -62,8 +60,6 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   buttonLabel = 'Add New',
-  secondButtonLabel,
-  secondButtonQuery,
   showCheckbox,
   searchParameter = 'label',
   filters = null,
@@ -269,7 +265,7 @@ export const List: React.SFC<ListProps> = ({
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    let searchVal = e.target.searchInput.value.trim();
+    let searchVal = e.target.querySelector('input').value.trim();
     setSearchVal(searchVal);
     resetTableVals();
   };
@@ -311,11 +307,6 @@ export const List: React.SFC<ListProps> = ({
             <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
               {buttonLabel}
             </Button>
-            {secondButtonLabel ? (
-              <Button color="primary" variant="outlined" onClick={() => setNewItem(true)}>
-                {secondButtonLabel}
-              </Button>
-            ) : null}
           </div>
         </div>
       </div>

@@ -52,19 +52,64 @@ const filter = {
       tags: [
         {
           id: '87',
-          label: 'Good message',
-          description: 'Hey There',
+          label: 'Unread',
+          description: 'Unread',
           keywords: ['Hi'],
           isReserved: false
         },
         {
           id: '88',
-          label: 'Good morning',
-          description: 'Hey There',
+          label: 'Not replied',
+          description: 'Not replied',
           keywords: null,
+          isReserved: true
+        },
+      ],
+    },
+  },
+};
+
+const search = {
+  request: {
+    query: FILTER_TAGS,
+    variables: {
+      filter: {
+        label: 'Unread',
+      },
+      opts: {
+        limit: 10,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          id: '87',
+          label: 'Unread',
+          description: 'Unread',
+          keywords: ['Hi'],
           isReserved: false
         },
       ],
+    },
+  },
+}
+
+const searchCount = {
+  request: {
+    query: GET_TAGS_COUNT,
+    variables: {
+      filter: {
+        label: 'Unread',
+      },
+    },
+  },
+  result: {
+    data: {
+      countTags: 2,
     },
   },
 };
@@ -109,4 +154,6 @@ export const LIST_MOCKS = [
   count,
   filter,
   filter,
+  search,
+  searchCount,
 ];
