@@ -13,8 +13,8 @@ import {
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
+  setStart: () => { },
+  setEnd: () => { },
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
@@ -135,13 +135,4 @@ test('cancel after dialog box open', async () => {
   fireEvent.click(getByText('Cancel'));
 });
 
-test('no conversaations', async () => {
-  const { getByText, getByTestId } = render(
-    <MockedProvider mocks={mocksWithNoConversation} addTypename={false}>
-      <ChatMessages contactId={2} />
-    </MockedProvider>
-  );
-  await wait();
-  await wait();
-  expect(getByText('No contact')).toBeInTheDocument();
-});
+

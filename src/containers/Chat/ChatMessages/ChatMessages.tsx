@@ -280,42 +280,42 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (dialog) {
     const tagList = AllTags.data
       ? AllTags.data.tags.map((tag: any) => {
-          if (tag.label.toLowerCase().includes(search)) {
-            return (
-              <Chip
-                label={tag.label}
-                className={styles.Chip}
-                key={tag.id}
-                data-tagid={tag.id}
-                data-testid="dialogCheckbox"
-                clickable={true}
-                icon={
-                  selectedMessageTags?.includes(tag.id.toString()) ? (
-                    <SvgIcon
-                      component={SelectIcon}
-                      viewBox="0 0 12 12"
-                      className={styles.SelectIcon}
-                    />
-                  ) : undefined
+        if (tag.label.toLowerCase().includes(search)) {
+          return (
+            <Chip
+              label={tag.label}
+              className={styles.Chip}
+              key={tag.id}
+              data-tagid={tag.id}
+              data-testid="dialogCheckbox"
+              clickable={true}
+              icon={
+                selectedMessageTags?.includes(tag.id.toString()) ? (
+                  <SvgIcon
+                    component={SelectIcon}
+                    viewBox="0 0 12 12"
+                    className={styles.SelectIcon}
+                  />
+                ) : undefined
+              }
+              onClick={(event: any) => {
+                const tagId = event.currentTarget.getAttribute('data-tagid');
+                if (selectedMessageTags?.includes(tagId.toString())) {
+                  setSelectedMessageTags(
+                    selectedMessageTags?.filter(
+                      (messageTag: any) => messageTag !== tagId.toString()
+                    )
+                  );
+                } else {
+                  setSelectedMessageTags([...selectedMessageTags, tagId.toString()]);
                 }
-                onClick={(event: any) => {
-                  const tagId = event.currentTarget.getAttribute('data-tagid');
-                  if (selectedMessageTags?.includes(tagId.toString())) {
-                    setSelectedMessageTags(
-                      selectedMessageTags?.filter(
-                        (messageTag: any) => messageTag !== tagId.toString()
-                      )
-                    );
-                  } else {
-                    setSelectedMessageTags([...selectedMessageTags, tagId.toString()]);
-                  }
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
-        })
+              }}
+            />
+          );
+        } else {
+          return null;
+        }
+      })
       : null;
     dialogBox = (
       <DialogBox
@@ -389,7 +389,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           showMessage={
             index !== 0
               ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
-                moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
+              moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
               : true
           }
         />
@@ -428,17 +428,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
-  const contactName = conversationInfo
-    ? conversationInfo.contact.name
-      ? conversationInfo.contact.name
-      : conversationInfo.contact.phone
-    : 'No contact';
+
 
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {toastMessage}
-      <ContactBar contactName={contactName} />
+      <ContactBar contactName={conversationInfo.contact.name
+        ? conversationInfo.contact.name
+        : conversationInfo.contact.phone} />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
     </Container>
