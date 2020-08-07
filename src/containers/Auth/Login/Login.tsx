@@ -12,6 +12,7 @@ export interface LoginProps {}
 export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
+  const [authError, setAuthError] = useState('');
 
   const initialFormikValues = {};
 
@@ -48,6 +49,7 @@ export const Login: React.SFC<LoginProps> = () => {
   ];
 
   const onSubmitLogin = (values: any) => {
+    setAuthError('');
     axios
       .post(USER_SESSION, {
         user: {
@@ -60,6 +62,10 @@ export const Login: React.SFC<LoginProps> = () => {
         localStorage.setItem('session', responseString);
         setAuthenticated(true);
         setSessionToken(responseString);
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+        setAuthError('Invalid phone or password.');
       });
   };
 
@@ -76,6 +82,7 @@ export const Login: React.SFC<LoginProps> = () => {
       validationSchema={FormSchema}
       onFormikSubmit={onSubmitLogin}
       initialFormikValues={initialFormikValues}
+      errorMessage={authError}
     />
   );
 };

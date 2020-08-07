@@ -22,6 +22,7 @@ export interface AuthProps {
   titleSubText?: string;
   linkText?: string;
   linkURL?: string;
+  errorMessage?: string;
 }
 
 const Auth: React.SFC<AuthProps> = ({
@@ -37,6 +38,7 @@ const Auth: React.SFC<AuthProps> = ({
   titleSubText,
   linkText,
   linkURL,
+  errorMessage,
 }) => {
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
@@ -69,6 +71,11 @@ const Auth: React.SFC<AuthProps> = ({
       break;
   }
 
+  let displayErrorMessage: any = null;
+  if (errorMessage) {
+    displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
+  }
+
   return (
     <div className={styles.Container}>
       <div className={styles.Auth}>
@@ -91,11 +98,7 @@ const Auth: React.SFC<AuthProps> = ({
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
-                    return (
-                      <div>
-                        <Field className={styles.Form} key={index} {...field} />
-                      </div>
-                    );
+                    return <Field className={styles.Form} key={index} {...field} />;
                   })}
                   <Link to={'/' + linkURL}>
                     <div className={styles.Link}>{linkText}</div>
@@ -106,6 +109,7 @@ const Auth: React.SFC<AuthProps> = ({
                     </button>
                   </div>
                 </Form>
+                {displayErrorMessage}
               </div>
             )}
           </Formik>
