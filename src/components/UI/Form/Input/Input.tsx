@@ -17,7 +17,12 @@ export interface InputProps {
   textArea?: boolean;
 }
 
-export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
+export const Input: React.SFC<InputProps> = ({
+  textArea = false,
+  disabled = false,
+  type = 'text',
+  ...props
+}) => {
   const touched = props.form.touched;
   const error = props.form.errors;
   const name = props.field.name;
@@ -35,6 +40,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           multiline={textArea}
           rows={props.rows}
           label={props.placeholder}
+          type={type}
           fullWidth
           {...props.field}
           endAdornment={props.emojiPicker ? props.emojiPicker : null}

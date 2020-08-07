@@ -22,6 +22,8 @@ import { AutomationList } from './containers/Automation/AutomationList/Automatio
 import { Automation } from './containers/Automation/Automation';
 import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
+import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
+import { Collection } from './containers/Collection/Collection';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -54,6 +56,10 @@ const App = () => {
             <Route path="/automation/add" exact component={Automation} />
             <Route path="/automation/:id/edit" exact component={Automation} />
             <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
+
+            <Route path="/collection" exact component={CollectionList} />
+            <Route path="/collection/add" exact component={Collection} />
+            <Route path="/collection/:id/edit" exact component={Automation} />
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />

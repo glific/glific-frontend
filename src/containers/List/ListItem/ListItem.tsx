@@ -190,7 +190,16 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
-              return <Field key={index} {...field}></Field>;
+              return (
+                <React.Fragment key={index}>
+                  {field.label ? (
+                    <Typography variant="h5" className={styles.Title}>
+                      {field.label}
+                    </Typography>
+                  ) : null}
+                  <Field key={index} {...field}></Field>
+                </React.Fragment>
+              );
             })}
             {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
             {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}
