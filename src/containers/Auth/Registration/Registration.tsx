@@ -32,13 +32,13 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       component: Input,
       name: 'userName',
       type: 'text',
-      placeholder: 'Username',
+      placeholder: 'Your username',
     },
     {
       component: Input,
       name: 'phone',
       type: 'text',
-      placeholder: 'Phone number',
+      placeholder: 'Your phone number',
     },
     {
       component: Input,

@@ -38,7 +38,7 @@ export const Login: React.SFC<LoginProps> = () => {
       component: Input,
       name: 'phoneNumber',
       type: 'text',
-      placeholder: 'Phone number',
+      placeholder: 'Your phone number',
     },
     {
       component: Input,

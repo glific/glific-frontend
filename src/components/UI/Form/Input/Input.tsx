@@ -39,7 +39,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {...props.field}
           endAdornment={props.emojiPicker ? props.emojiPicker : null}
         ></OutlinedInput>
-        {error[name] && touched[name] ? <FormHelperText>Required</FormHelperText> : null}
+        {error[name] && touched[name] ? <FormHelperText>{error[name]}</FormHelperText> : null}
         {props.helperText ? (
           <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
         ) : null}

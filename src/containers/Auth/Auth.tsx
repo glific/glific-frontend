@@ -82,21 +82,18 @@ const Auth: React.SFC<AuthProps> = ({
           <div className={styles.SubText}>{titleSubText}</div>
           <Formik
             initialValues={initialFormikValues}
-            validateOnChange={false}
-            validateOnBlur={false}
             validationSchema={validationSchema}
             onSubmit={(item) => {
               onFormikSubmit(item);
             }}
           >
-            {({ handleSubmit, errors }) => (
+            {() => (
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
                     return (
                       <div>
                         <Field className={styles.Form} key={index} {...field} />
-                        {/* <ErrorMessage name={field.name} /> */}
                       </div>
                     );
                   })}
