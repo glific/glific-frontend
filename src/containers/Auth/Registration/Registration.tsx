@@ -43,6 +43,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     {
       component: Input,
       name: 'password',
+      type: 'password',
       placeholder: 'Password',
     },
   ];

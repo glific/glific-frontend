@@ -34,6 +34,8 @@ export const Login: React.SFC<LoginProps> = () => {
     password: Yup.string().required('Input required'),
   });
 
+  const handlePasswordVisibility = () => {};
+
   const formFields = [
     {
       component: Input,
@@ -44,7 +46,9 @@ export const Login: React.SFC<LoginProps> = () => {
     {
       component: Input,
       name: 'password',
+      type: 'password',
       placeholder: 'Password',
+      handleClickShowPassword: handlePasswordVisibility,
     },
   ];
 

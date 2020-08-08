@@ -40,6 +40,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
     {
       component: Input,
       name: 'password',
+      type: 'password',
       placeholder: 'New Password',
     },
   ];
