@@ -18,7 +18,7 @@ const setValidation = (values: any) => {
     errors.label = 'Length of the title is too long';
   }
   if (!values.body) {
-    errors.body = 'Mesaage body required';
+    errors.body = 'Message body required';
   }
   return errors;
 };
