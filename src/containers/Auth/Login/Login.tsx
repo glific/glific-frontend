@@ -13,7 +13,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const initialFormikValues = {};
 
@@ -35,10 +34,6 @@ export const Login: React.SFC<LoginProps> = () => {
     password: Yup.string().required('Input required'),
   });
 
-  const handlePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const formFields = [
     {
       component: Input,
@@ -51,8 +46,6 @@ export const Login: React.SFC<LoginProps> = () => {
       name: 'password',
       type: 'password',
       placeholder: 'Password',
-      handleClickShowPassword: handlePasswordVisibility,
-      showPassword: showPassword,
     },
   ];
 

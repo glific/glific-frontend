@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
@@ -40,6 +40,8 @@ const Auth: React.SFC<AuthProps> = ({
   linkURL,
   errorMessage,
 }) => {
+  // handle visibility for the password field
+  const [showPassword, setShowPassword] = useState(false);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   const buttonClass = [styles.AuthButton];
@@ -76,6 +78,17 @@ const Auth: React.SFC<AuthProps> = ({
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
 
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // let's add the additonal password field info to the password field to handle
+  // visibility of the field
+  const passwordFieldAdditionalInfo = {
+    handleClickShowPassword: handlePasswordVisibility,
+    showPassword: showPassword,
+  };
+
   return (
     <div className={styles.Container}>
       <div className={styles.Auth}>
@@ -98,7 +111,11 @@ const Auth: React.SFC<AuthProps> = ({
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
-                    return <Field className={styles.Form} key={index} {...field} />;
+                    let fieldInfo = { ...field };
+                    if (field.type === 'password') {
+                      fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
+                    }
+                    return <Field className={styles.Form} key={index} {...fieldInfo} />;
                   })}
                   <Link to={'/' + linkURL}>
                     <div className={styles.Link}>{linkText}</div>
