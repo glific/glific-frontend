@@ -20,6 +20,21 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState('');
 
+  const handleResend = () => {
+    axios
+      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+        user: {
+          phone: props.location.state.phoneNumber,
+        },
+      })
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
     return <Redirect to={'/registration'} />;
@@ -50,9 +65,11 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const formFields = [
     {
       component: Input,
+      type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
       helperText: 'Please confirm the OTP received at your whatsapp number.',
+      endAdornmentCallback: handleResend,
     },
   ];
 

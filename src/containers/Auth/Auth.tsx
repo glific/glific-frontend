@@ -5,7 +5,6 @@ import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 export interface AuthProps {
-  // children: any;
   pageTitle: string;
   buttonText: string;
   alternateLink?: string;
@@ -85,8 +84,8 @@ const Auth: React.SFC<AuthProps> = ({
   // let's add the additonal password field info to the password field to handle
   // visibility of the field
   const passwordFieldAdditionalInfo = {
-    handleClickShowPassword: handlePasswordVisibility,
-    showPassword: showPassword,
+    endAdornmentCallback: handlePasswordVisibility,
+    togglePassword: showPassword,
   };
 
   return (

@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import styles from './Input.module.css';
 
@@ -23,8 +24,8 @@ export interface InputProps {
   helperText?: string;
   emojiPicker?: boolean | null;
   textArea?: boolean;
-  showPassword?: boolean;
-  handleClickShowPassword?: any;
+  togglePassword?: boolean;
+  endAdornmentCallback?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -36,22 +37,32 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
   let fieldEndAdorment = null;
   if (props.type === 'password') {
     // we should change the type to text if user has clicked on show password
-    if (props.showPassword) {
+    if (props.togglePassword) {
       fieldType = 'text';
     }
     fieldEndAdorment = (
       <InputAdornment position="end">
         <IconButton
           aria-label="toggle password visibility"
-          onClick={props.handleClickShowPassword}
+          onClick={props.endAdornmentCallback}
           edge="end"
         >
-          {props.showPassword ? <Visibility /> : <VisibilityOff />}
+          {props.togglePassword ? <Visibility /> : <VisibilityOff />}
         </IconButton>
       </InputAdornment>
     );
   } else if (props.emojiPicker) {
     fieldEndAdorment = props.emojiPicker;
+  } else if (props.type === 'otp') {
+    fieldType = 'text';
+    fieldEndAdorment = (
+      <InputAdornment position="end">
+        <IconButton aria-label="resend password" onClick={props.endAdornmentCallback} edge="end">
+          <p className={styles.Resend}>resend</p>{' '}
+          <RefreshIcon classes={{ root: styles.ResendButton }} />
+        </IconButton>
+      </InputAdornment>
+    );
   }
 
   return (
