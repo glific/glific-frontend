@@ -16,7 +16,6 @@ export interface InputProps {
   type?: any;
   field: any;
   disabled?: any;
-
   label: string;
   form: any;
   placeholder: any;
@@ -33,13 +32,18 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
   const error = props.form.errors;
   const name = props.field.name;
 
+  let fieldType = props.type;
   let fieldEndAdorment = null;
   if (props.type === 'password') {
+    // we should change the type to text if user has clicked on show password
+    if (props.showPassword) {
+      fieldType = 'text';
+    }
     fieldEndAdorment = (
       <InputAdornment position="end">
         <IconButton
           aria-label="toggle password visibility"
-          onClick={props.handleClickShowPassword()}
+          onClick={props.handleClickShowPassword}
           edge="end"
         >
           {props.showPassword ? <Visibility /> : <VisibilityOff />}
@@ -57,7 +61,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {props.placeholder}
         </InputLabel>
         <OutlinedInput
-          type={props.type}
+          type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
           error={error[name] && touched[name] ? true : false}
