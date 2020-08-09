@@ -20,11 +20,13 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState('');
 
+  // TODO: Refactor this when we centralize axios calls
   const handleResend = () => {
     axios
       .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
         user: {
           phone: props.location.state.phoneNumber,
+          registration: 'false',
         },
       })
       .then((response: any) => {

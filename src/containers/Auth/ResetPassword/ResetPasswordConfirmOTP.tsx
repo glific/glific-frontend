@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Auth from '../Auth';
-import { RESET_PASSWORD } from '../../../common/constants';
+import { RESET_PASSWORD, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -16,6 +16,23 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   if (redirect) {
     return <Redirect to="/login" />;
   }
+
+  // TODO: Refactor this when we centralize axios calls
+  const handleResend = () => {
+    axios
+      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+        user: {
+          phone: props.location.state.phoneNumber,
+          registration: 'false',
+        },
+      })
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
 
   const FormSchema = Yup.object().shape({
     OTP: Yup.string().required('Input required'),
@@ -34,8 +51,11 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
     },
     {
       component: Input,
+      type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
+      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      endAdornmentCallback: handleResend,
     },
     {
       component: Input,

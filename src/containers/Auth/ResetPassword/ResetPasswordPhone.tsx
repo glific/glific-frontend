@@ -30,7 +30,6 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   });
 
   const onSubmitPhone = (values: any) => {
-    console.log(values);
     axios
       .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
         user: {
