@@ -13,6 +13,11 @@ export interface ResetPasswordConfirmOTPProps {
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
   const [redirect, setRedirect] = useState(false);
 
+  // Let's not allow direct navigation to this page
+  if (props.location && props.location.state === undefined) {
+    return <Redirect to={'/resetpassword-phone'} />;
+  }
+
   if (redirect) {
     return <Redirect to="/login" />;
   }
