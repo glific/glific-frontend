@@ -18,21 +18,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [OTP, setOTP] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
-
-  const handleResend = () => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: props.location.state.phoneNumber,
-        },
-      })
-      .then((response: any) => {
-        console.log(response);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
+  const [authError, setAuthError] = useState('');
 
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
@@ -66,6 +52,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       component: Input,
       name: 'OTP',
       placeholder: 'OTP',
+      helperText: 'Please confirm the OTP received at your whatsapp number.',
     },
   ];
 
@@ -79,11 +66,14 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           otp: values.OTP,
         },
       })
-      .then(function (response: any) {
+      .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
         localStorage.setItem('session', responseString);
         setAuthenticated(true);
         setTokenResponse(responseString);
+      })
+      .catch((error: any) => {
+        setAuthError('We are unable to register, kindly contact your technical team.');
       });
   };
 
@@ -95,13 +85,12 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       buttonText={'CONTINUE'}
       mode={'confirmotp'}
       formFields={formFields}
-      alternateLink={'login'}
-      alternateText={'LOGIN TO GLIFIC'}
       setStates={setStates}
       states={states}
       validationSchema={FormSchema}
       onFormikSubmit={onSubmitOTP}
       initialFormikValues={initialFormikValues}
+      errorMessage={authError}
     />
   );
 };
