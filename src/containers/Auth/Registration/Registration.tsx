@@ -11,6 +11,7 @@ export interface RegistrationProps {}
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
+  const [authError, setAuthError] = useState('');
 
   if (redirect) {
     return (
@@ -69,6 +70,9 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         console.log(values);
         setUser(values);
         setRedirect(true);
+      })
+      .catch((error: any) => {
+        setAuthError('We are unable to register, kindly contact your technical team.');
       });
   };
 
@@ -83,6 +87,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       validationSchema={FormSchema}
       onFormikSubmit={onSubmitRegistration}
       initialFormikValues={initialFormikValues}
+      errorMessage={authError}
     />
   );
 };

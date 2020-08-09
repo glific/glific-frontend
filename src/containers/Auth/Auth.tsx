@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
