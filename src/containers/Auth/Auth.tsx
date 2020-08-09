@@ -121,7 +121,7 @@ const Auth: React.SFC<AuthProps> = ({
                     <div className={styles.Link}>{linkText}</div>
                   </Link>
                   <div className={styles.CenterButton}>
-                    <button className={buttonClass.join('')} type="submit">
+                    <button className={buttonClass.join(' ')} type="submit">
                       <div className={styles.ButtonText}>{buttonText}</div>
                     </button>
                   </div>

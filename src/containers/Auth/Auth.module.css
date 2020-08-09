@@ -1,6 +1,7 @@
 .Container {
   width: 100%;
   height: 100vh;
+  font-family: 'Heebo';
 }
 
 .Auth {
@@ -129,14 +130,12 @@
   display: flex;
   align-content: start;
   font-weight: 500;
-  font-family: 'Heebo';
   margin-left: 32px;
   margin-top: 4px;
 }
 
 .Form {
   width: 350px;
-  font-family: 'Heebo';
   font-size: 16px;
   font-weight: 500;
   display: flex;
@@ -154,74 +153,49 @@
   flex-direction: column;
 }
 
+.AuthButton {
+  border-radius: 27px;
+  height: 40px;
+  width: 300px;
+}
+
 .WhiteButton {
   color: #119656;
   background-color: white;
   border: 2px solid #119656;
-  border-radius: 27px;
-  height: 40px;
   margin-top: 32px;
-  width: 300px;
 }
 
 .GreenButton {
   color: white;
-  width: 300px;
   background-color: #119656;
   border: 2px solid #119656;
-  border-radius: 27px;
-  height: 40px;
   margin-top: 20px;
 }
 
-.GreenButton:hover,
-.WhiteButton:hover,
-.ErrorGreenButtonSubmit:hover .ErrorWhiteButtonSubmit:hover {
+.AuthButton:hover {
   cursor: pointer;
+}
+
+.AuthButton:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .ButtonText {
   font-weight: 500;
-  font-family: 'Heebo';
   font-size: 16px;
 }
 
 .ErrorMessage {
   margin-top: 0px;
   color: red;
-  font-family: 'Heebo';
 }
 
 .ForgotPassword {
   font-size: 16px;
   color: #93a29b;
   font-weight: 500;
-}
-
-.ErrorSubmit {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-  color: red;
-  font-family: 'Heebo';
-}
-
-.ErrorGreenButtonSubmit {
-  color: white;
-  background-color: #119656;
-  border: 2px solid #119656;
-  border-radius: 27px;
-  height: 40px;
-  margin-top: 20px;
-}
-
-.ErrorWhiteButtonSubmit {
-  color: #119656;
-  background-color: white;
-  border: 2px solid #119656;
-  border-radius: 27px;
-  height: 40px;
-  margin-top: 20px;
 }
 
 .Link,
