@@ -44,6 +44,21 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
     onChange(event);
   };
 
+  useEffect(()=>{
+    const current:any=ref.current
+    if (current && current.editorContainer)
+    {
+
+      current.editorContainer.parentElement.addEventListener('click',()=>{
+      current.focus()
+    })
+
+   }
+
+   },[ref.current])
+
+
+
   useEffect(() => {
     const current: any = ref.current;
     if (current) current.focus();
