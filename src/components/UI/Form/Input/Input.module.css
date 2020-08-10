@@ -17,6 +17,7 @@
 .HelperText {
   margin-left: 16px !important;
   color: #93a29b !important;
+  font-size: 14px !important;
 }
 
 .Multiline {
@@ -31,4 +32,8 @@
 
 .ResendButton {
   color: #119656;
+}
+
+.Visibility {
+  color: #93a29b;
 }

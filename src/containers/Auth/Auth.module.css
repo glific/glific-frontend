@@ -1,7 +1,7 @@
 .Container {
   width: 100%;
   height: 100vh;
-  font-family: 'Heebo';
+  font-family: 'Heebo' !important;
 }
 
 .Auth {
@@ -205,4 +205,16 @@
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
+}
+
+.RegistrationBox input,
+.RegistrationBox input:hover,
+.OTPBox input,
+.OTPBox input:hover {
+  color: #93a29b !important;
+}
+
+.RegistrationBox fieldset,
+.OTPBox fieldset {
+  border-color: #93a29b !important;
 }

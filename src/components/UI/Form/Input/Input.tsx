@@ -47,7 +47,11 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           onClick={props.endAdornmentCallback}
           edge="end"
         >
-          {props.togglePassword ? <Visibility /> : <VisibilityOff />}
+          {props.togglePassword ? (
+            <Visibility classes={{ root: styles.Visibility }} />
+          ) : (
+            <VisibilityOff classes={{ root: styles.Visibility }} />
+          )}
         </IconButton>
       </InputAdornment>
     );
