@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
 import ChatMessages from './ChatMessages/ChatMessages';
@@ -164,16 +164,29 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
   }
 
-  return (
-    <Paper>
-      <div className={styles.Chat}>
+  let chatInterface: any;
+  if (data.conversations.length === 0) {
+    chatInterface = (
+      <Typography variant="h5" className={styles.NoConversations}>
+        There are no chat conversations to display.
+      </Typography>
+    );
+  } else {
+    chatInterface = (
+      <>
         <div className={styles.ChatMessages}>
           <ChatMessages contactId={contactId} />
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations contactId={contactId} />
         </div>
-      </div>
+      </>
+    );
+  }
+
+  return (
+    <Paper>
+      <div className={styles.Chat}>{chatInterface}</div>
     </Paper>
   );
 };

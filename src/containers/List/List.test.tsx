@@ -19,6 +19,8 @@ const list = (
   </MockedProvider>
 );
 
+afterEach(cleanup);
+
 it('should have loading', async () => {
   const { getByText } = render(list);
   expect(getByText('Loading...')).toBeInTheDocument();
@@ -32,11 +34,20 @@ it('should have add new button', async () => {
   expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
 });
 
-it('should have a table', async () => {
-  const { container } = render(list);
+it('should have a table, search and reset', async () => {
+  const { container, getByTestId } = render(list);
 
   await wait();
   expect(container.querySelector('table')).toBeInTheDocument();
+
+  fireEvent.change(getByTestId('searchInput').querySelector('input'), {
+    target: { value: 'Unread' },
+  });
+  await wait();
+  fireEvent.submit(getByTestId('searchForm'));
+  await wait();
+
+  fireEvent.click(getByTestId('resetButton'));
 });
 
 test('list has proper headers', async () => {

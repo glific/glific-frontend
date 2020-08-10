@@ -8,7 +8,7 @@ import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
 import { StaffManagementList } from './containers/StaffManagement/StaffManagementList/StaffManagementList';
-import { StaffManagementTemplate } from './containers/StaffManagement/StaffManagement';
+import { StaffManagement } from './containers/StaffManagement/StaffManagement';
 import { SpeedSendPage } from './components/pages/Template/SpeedSendPage/SpeedSendPage';
 import { SpeedSend } from './containers/Template/Form/SpeedSend/SpeedSend';
 import { HSMPage } from './components/pages/Template/HSMPage/HSMPage';
@@ -57,7 +57,7 @@ const App = () => {
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />
-            <Route path="/staff-management/:id/edit" exact component={StaffManagementTemplate} />
+            <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
 
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />

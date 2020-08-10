@@ -52,6 +52,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
     return (
       <div
+        data-testid="savedSearchDiv"
         className={styles.SavedSearchItem}
         key={savedSearch.id}
         onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
