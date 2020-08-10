@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
@@ -37,36 +37,31 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
   const filterVariables = () => {
     if (props.savedSearchCriteria) {
-      return JSON.parse(props.savedSearchCriteria);
+      const variables = JSON.parse(props.savedSearchCriteria);
+      variables.filter.term = props.searchVal;
+      return variables;
     }
 
     return {
-      term: props.searchVal,
+      filter: { term: props.searchVal },
       messageOpts: {
         limit: 50,
       },
       contactOpts: {
         limit: 50,
       },
-      filter: {},
     };
   };
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    SEARCH_QUERY,
-    {
+  useEffect(() => {
+    getFilterConvos({
       variables: filterVariables(),
-      fetchPolicy: 'cache-and-network',
-    }
-  );
+    });
+  }, [props.searchVal, props.savedSearchCriteria]);
 
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-    props.setSelectedContactId(-1);
-  }, [props.searchVal]);
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    SEARCH_QUERY
+  );
 
   // Other cases
   if (called && (loading || conversationLoading)) return <Loading />;
@@ -79,10 +74,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // Retrieving all convos or the ones searched by.
   if (data) {
     conversations = data.conversations;
-  }
-
-  if ((props.searchVal || props.savedSearchCriteria) && !called) {
-    getFilterConvos();
   }
 
   if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
