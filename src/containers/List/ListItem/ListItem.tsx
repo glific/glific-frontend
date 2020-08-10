@@ -9,9 +9,13 @@ import styles from './ListItem.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton, Input } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 export interface ListItemProps {
   match: any;
@@ -190,6 +194,23 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
+              let selectItems = field.selectItems;
+              if (field.select) {
+                return (
+                  <FormControl variant="outlined">
+                    <Select className={styles.Select}>
+                      {selectItems.map((item: any, index: any) => {
+                        console.log(item);
+                        return (
+                          <MenuItem key={index} value={item.value}>
+                            {item.name}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                );
+              }
               return <Field key={index} {...field}></Field>;
             })}
             {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}

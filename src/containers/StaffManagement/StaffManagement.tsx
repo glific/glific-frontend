@@ -26,15 +26,34 @@ const setValidation = (values: any) => {
 const dialogMessage = ' Once deleted this action cannot be undone.';
 
 const formFields = [
-  { component: Input, name: 'name', type: 'text', placeholder: 'Full Name', query: true },
-  { component: Input, name: 'phone', disabled: true, placeholder: 'Phone Number', query: false },
+  {
+    component: Input,
+    name: 'name',
+    type: 'text',
+    placeholder: 'Full Name',
+    query: true,
+    select: false,
+  },
+  {
+    component: Input,
+    name: 'phone',
+    disabled: true,
+    placeholder: 'Phone Number',
+    query: false,
+    select: false,
+  },
   {
     component: Input,
     name: 'roles',
-    disabled: true,
     type: 'text',
     placeholder: 'Roles',
     query: true,
+    select: true,
+    fieldName: '',
+    selectItems: [
+      { value: 'admin', name: 'Admin' },
+      { value: 'basic', name: 'Basic' },
+    ],
   },
 ];
 
