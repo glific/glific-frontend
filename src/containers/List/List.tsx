@@ -109,9 +109,7 @@ export const List: React.SFC<ListProps> = ({
 
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
-    variables: {
-      filter,
-    },
+    variables: filterPayload(),
   });
 
   // Get item data here
@@ -273,6 +271,7 @@ export const List: React.SFC<ListProps> = ({
   // Get item data and total number of items.
   let itemList: any;
   if (data) {
+    console.log('data', data);
     itemList = formatList(data[listItem]);
   }
 

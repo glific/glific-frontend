@@ -11,7 +11,14 @@ import {
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
 
+import {
+  CREATE_COLLECTION,
+  UPDATE_COLLECTION,
+  DELETE_COLLECTION,
+} from '../../graphql/mutations/Collection';
+
 import { GET_AUTOMATION } from '../../graphql/queries/Automation';
+import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { useQuery } from '@apollo/client';
@@ -35,10 +42,10 @@ const dialogMessage = "You won't be able to use this automation again.";
 const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
 
 const queries = {
-  getItemQuery: GET_AUTOMATION,
-  createItemQuery: CREATE_AUTOMATION,
-  updateItemQuery: UPDATE_AUTOMATION,
-  deleteItemQuery: DELETE_AUTOMATION,
+  getItemQuery: SAVED_SEARCH_QUERY,
+  createItemQuery: CREATE_COLLECTION,
+  updateItemQuery: UPDATE_COLLECTION,
+  deleteItemQuery: DELETE_COLLECTION,
 };
 
 export const Collection: React.SFC<CollectionProps> = ({ match }) => {

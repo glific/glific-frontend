@@ -1,16 +1,15 @@
 import React from 'react';
 import styles from './CollectionList.module.css';
 import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collections/Selected.svg';
-import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
-import { FILTER_AUTOMATION, GET_AUTOMATION_COUNT } from '../../../graphql/queries/Automation';
-import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
+import { SAVED_SEARCH_QUERY, SAVED_SEARCH_QUERY_COUNT } from '../../../graphql/queries/Search';
+import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';
 
 export interface CollectionListProps {}
 
-const getColumns = ({ shortcode, name }: any) => ({
+const getColumns = ({ shortcode, label }: any) => ({
   shortcode: getShortcode(shortcode),
-  name: getName(name),
+  name: getName(label),
 });
 
 const getShortcode = (label: string) => <p className={styles.LabelText}>{label}</p>;
@@ -23,9 +22,9 @@ const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  countQuery: GET_AUTOMATION_COUNT,
-  filterItemsQuery: FILTER_AUTOMATION,
-  deleteItemQuery: DELETE_AUTOMATION,
+  countQuery: SAVED_SEARCH_QUERY,
+  filterItemsQuery: SAVED_SEARCH_QUERY,
+  deleteItemQuery: DELETE_COLLECTION,
 };
 
 const columnAttributes = {
@@ -33,14 +32,11 @@ const columnAttributes = {
   columns: getColumns,
   columnStyles: columnStyles,
 };
-const configureIcon = <ConfigureIcon></ConfigureIcon>;
-
-// const additionalAction = { icon: configureIcon, parameter: 'uuid', link: '/collection/configure' };
 
 export const CollectionList: React.SFC<CollectionListProps> = (props) => (
   <List
     title="Collection"
-    listItem="flows"
+    listItem="savedSearches"
     listItemName="collection"
     pageLink="collection"
     buttonLabel="+ CREATE COLLECTION"
@@ -48,7 +44,9 @@ export const CollectionList: React.SFC<CollectionListProps> = (props) => (
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}
-    searchParameter="name"
-    // additionalAction={additionalAction}
+    searchParameter="label"
+    // filters={{
+    //   label: 'all',
+    // }}
   />
 );
