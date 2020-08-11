@@ -18,7 +18,7 @@ export const mocks = [
           {
             id: '1',
             args:
-              '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+              '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
             label: 'All unread conversations',
             shortcode: 'Unread',
             count: 10,

@@ -10,7 +10,7 @@ const mocks = ChatConversationMocks;
 const chatConversation = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ChatConversations contactId={2} conversations={conversations} />
+      <ChatConversations contactId={2} />
     </Router>
   </MockedProvider>
 );
