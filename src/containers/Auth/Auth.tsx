@@ -44,32 +44,30 @@ const Auth: React.SFC<AuthProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
-  const buttonClass = [styles.AuthButton];
+  let buttonContainedVariant = true;
   switch (mode) {
     case 'login':
       boxClass.push(styles.LoginBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
     case 'registration':
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
-      buttonClass.push(styles.GreenButton);
       break;
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
-      buttonClass.push(styles.GreenButton);
       break;
     case 'firstreset':
       boxClass.push(styles.FirstResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
     case 'secondreset':
       boxClass.push(styles.SecondResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
   }
 
@@ -122,10 +120,10 @@ const Auth: React.SFC<AuthProps> = ({
                   </Link>
                   <div className={styles.CenterButton}>
                     <Button
-                      variant="contained"
+                      variant={buttonContainedVariant ? 'contained' : 'outlined'}
                       color="primary"
                       onClick={submitForm}
-                      className={buttonClass.join(' ')}
+                      className={styles.AuthButton}
                     >
                       {buttonText}
                     </Button>

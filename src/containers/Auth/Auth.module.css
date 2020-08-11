@@ -146,6 +146,7 @@
 .CenterButton {
   display: flex;
   justify-content: center;
+  padding: 10px 0px;
 }
 
 .CenterForm {
@@ -154,18 +155,7 @@
 }
 
 .AuthButton {
-  border-radius: 27px;
-  height: 40px;
   width: 334px;
-}
-
-.AuthButton:hover {
-  cursor: pointer;
-}
-
-.AuthButton:focus {
-  outline: none;
-  box-shadow: none;
 }
 
 .ErrorMessage {
@@ -180,8 +170,8 @@
   font-weight: 500;
 }
 
-.Link,
-.Link a {
+.Auth .Link,
+.Auth .Link a {
   font-size: 16px;
   color: #93a29b;
   font-weight: 500;
