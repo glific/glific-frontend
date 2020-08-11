@@ -10,22 +10,9 @@ import {
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.label) {
-    errors.label = 'Message title required';
-  } else if (values.label.length > 50) {
-    errors.label = 'Length of the title is too long';
-  }
-  if (!values.body) {
-    errors.body = 'Message body required';
-  }
-  return errors;
-};
-
 const FormSchema = Yup.object().shape({
-  label: Yup.string().required('Input required').max(50, 'Title length too long.'),
-  body: Yup.string().required('Input required'),
+  label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
+  body: Yup.string().required('Message is required.'),
 });
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
@@ -75,7 +62,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       match={props.match}
       states={states}
       setStates={setStates}
-      //setValidation={setValidation}
       validationSchema={FormSchema}
       listItemName={props.listItemName}
       dialogMessage={dialogMessage}
