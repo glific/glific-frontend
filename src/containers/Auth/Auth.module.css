@@ -159,20 +159,6 @@
   width: 334px;
 }
 
-.WhiteButton {
-  color: #119656;
-  background-color: white;
-  border: 2px solid #119656;
-  margin-top: 32px;
-}
-
-.GreenButton {
-  color: white;
-  background-color: #119656;
-  border: 2px solid #119656;
-  margin-top: 10px;
-}
-
 .AuthButton:hover {
   cursor: pointer;
 }
@@ -180,11 +166,6 @@
 .AuthButton:focus {
   outline: none;
   box-shadow: none;
-}
-
-.ButtonText {
-  font-weight: 500;
-  font-size: 16px;
 }
 
 .ErrorMessage {
