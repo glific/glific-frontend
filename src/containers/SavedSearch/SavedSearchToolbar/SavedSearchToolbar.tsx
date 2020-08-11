@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery } from '@apollo/client';
 import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
+import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
 
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
@@ -14,6 +15,7 @@ export interface SavedSearchToolbarProps {
 
 export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
+  const [optionsSelected, setOptionsSelected] = useState(false);
 
   const Ref = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -72,13 +74,14 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   const handleClickAway = () => {
     setAnchorEl(null);
+    setOptionsSelected(false);
   };
 
   const additonalOptions = (
-    <Popper open={open} anchorEl={anchorEl} placement={'bottom-end'} transition>
+    <Popper open={open} anchorEl={anchorEl} placement="bottom" transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
-          <Paper elevation={3}>
+          <Paper elevation={3} className={styles.Popper}>
             {restSearches.map((search: any) => {
               return (
                 <div
@@ -101,8 +104,22 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       <div className={styles.SaveSearchContainer}>{savedSearchList}</div>
       <div className={styles.MoreLink}>
         <ClickAwayListener onClickAway={handleClickAway}>
-          <IconButton aria-label="more" aria-controls="long-menu" aria-haspopup="true" size="small">
-            <OptionsIcon ref={Ref} onClick={() => setAnchorEl(Ref.current)} />
+          <IconButton
+            onClick={() => {
+              setAnchorEl(Ref.current);
+              setOptionsSelected(true);
+            }}
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            size="small"
+            ref={Ref}
+          >
+            {optionsSelected ? (
+              <OptionsIconSelected className={styles.OptionsIcon} />
+            ) : (
+              <OptionsIcon className={styles.OptionsIcon} />
+            )}
           </IconButton>
         </ClickAwayListener>
         {additonalOptions}
