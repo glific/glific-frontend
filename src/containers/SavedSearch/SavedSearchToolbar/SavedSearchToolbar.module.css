@@ -46,3 +46,29 @@
   float: right;
   padding-left: 5px;
 }
+
+.LabelContainer {
+  padding: 8px 16px;
+
+  display: flex;
+  color: #93a29b !important;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.LabelContainer:hover {
+  background-color: #edf6f2;
+}
+
+.Label {
+  margin-right: 20px;
+}
+
+.Count {
+  composes: SavedSearchCount;
+  margin-left: auto;
+}
+
+.Popper {
+  margin-top: 8px !important;
+}
