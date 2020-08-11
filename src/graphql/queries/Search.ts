@@ -40,7 +40,7 @@ export const SAVED_SEARCH_QUERY = gql`
 `;
 
 export const SAVED_SEARCH_QUERY_COUNT = gql`
-  query savedSearchCount($id: ID!, $term: String) {
-    savedSearchCount(id: $id, term: $term)
+  query {
+    countSavedSearches
   }
 `;

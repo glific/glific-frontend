@@ -22,7 +22,7 @@ const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  countQuery: SAVED_SEARCH_QUERY,
+  countQuery: SAVED_SEARCH_QUERY_COUNT,
   filterItemsQuery: SAVED_SEARCH_QUERY,
   deleteItemQuery: DELETE_COLLECTION,
 };
@@ -45,8 +45,5 @@ export const CollectionList: React.SFC<CollectionListProps> = (props) => (
     {...queries}
     {...columnAttributes}
     searchParameter="label"
-    // filters={{
-    //   label: 'all',
-    // }}
   />
 );

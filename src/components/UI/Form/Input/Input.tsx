@@ -38,9 +38,9 @@ export const Input: React.SFC<InputProps> = ({
   const error = props.form.errors;
   const name = props.field.name;
 
-  let fieldType = props.type;
+  let fieldType = type;
   let fieldEndAdorment = null;
-  if (props.type === 'password') {
+  if (type === 'password') {
     // we should change the type to text if user has clicked on show password
     if (props.togglePassword) {
       fieldType = 'text';
@@ -62,7 +62,7 @@ export const Input: React.SFC<InputProps> = ({
     );
   } else if (props.emojiPicker) {
     fieldEndAdorment = props.emojiPicker;
-  } else if (props.type === 'otp') {
+  } else if (type === 'otp') {
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
@@ -88,7 +88,7 @@ export const Input: React.SFC<InputProps> = ({
           multiline={textArea}
           rows={props.rows}
           label={props.placeholder}
-          type={type}
+          // type={type}
           fullWidth
           {...props.field}
           endAdornment={fieldEndAdorment}
