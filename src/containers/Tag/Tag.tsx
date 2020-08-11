@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_TAG } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
@@ -23,6 +24,11 @@ const setValidation = (values: any) => {
   }
   return errors;
 };
+
+const FormSchema = Yup.object().shape({
+  label: Yup.string().required('Input required').max(50, 'Title length too long.'),
+  description: Yup.string().required('Input required'),
+});
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
 
@@ -79,7 +85,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      // setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="tag"
       dialogMessage={dialogMessage}
       formFields={formFields}

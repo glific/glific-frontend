@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
@@ -22,6 +23,11 @@ const setValidation = (values: any) => {
   }
   return errors;
 };
+
+const FormSchema = Yup.object().shape({
+  name: Yup.string().required('Input required'),
+  phone: Yup.string().required('Input required'),
+});
 
 const dialogMessage = ' Once deleted this action cannot be undone.';
 
@@ -65,7 +71,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      //setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="User"
       dialogMessage={dialogMessage}
       formFields={formFields}

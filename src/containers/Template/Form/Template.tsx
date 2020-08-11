@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { ListItem } from '../../List/ListItem/ListItem';
@@ -22,6 +22,11 @@ const setValidation = (values: any) => {
   }
   return errors;
 };
+
+const FormSchema = Yup.object().shape({
+  label: Yup.string().required('Input required').max(50, 'Title length too long.'),
+  body: Yup.string().required('Input required'),
+});
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
@@ -70,7 +75,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       match={props.match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      //setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName={props.listItemName}
       dialogMessage={dialogMessage}
       formFields={formFields}
