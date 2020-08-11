@@ -39,7 +39,7 @@
 }
 
 .LoginBox {
-  height: 440px;
+  height: 450px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -176,6 +176,7 @@
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
+  padding-bottom: 20px;
 }
 
 .RegistrationBox input,
