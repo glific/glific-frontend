@@ -11,8 +11,8 @@ export interface AuthProps {
   alternateLink?: string;
   alternateText?: string;
   mode: string;
-  initialFormikValues?: any;
-  onFormikSubmit?: any;
+  initialFormValues?: any;
+  saveHandler?: any;
   formFields: Array<any>;
   setStates?: any;
   states?: any;
@@ -31,8 +31,8 @@ const Auth: React.SFC<AuthProps> = ({
   alternateLink,
   alternateText,
   mode,
-  initialFormikValues = null,
-  onFormikSubmit = console.log('hi'),
+  initialFormValues = null,
+  saveHandler,
   formFields,
   validationSchema,
   titleSubText,
@@ -99,10 +99,10 @@ const Auth: React.SFC<AuthProps> = ({
           </div>
           <div className={styles.SubText}>{titleSubText}</div>
           <Formik
-            initialValues={initialFormikValues}
+            initialValues={initialFormValues}
             validationSchema={validationSchema}
             onSubmit={(item) => {
-              onFormikSubmit(item);
+              saveHandler(item);
             }}
           >
             {({ submitForm }) => (

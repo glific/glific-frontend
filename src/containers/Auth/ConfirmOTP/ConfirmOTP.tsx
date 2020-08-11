@@ -29,11 +29,9 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           registration: 'false',
         },
       })
-      .then((response: any) => {
-        console.log(response);
-      })
+      .then((response: any) => {})
       .catch((error: any) => {
-        console.log(error);
+        setAuthError('We are unable to an OTP, kindly contact your technical team.');
       });
   };
 
@@ -55,10 +53,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     );
   }
 
-  const FormSchema = Yup.object().shape({
-    OTP: Yup.string().required('Input required'),
-  });
-
   const states = { OTP };
   const setStates = ({ OTP }: any) => {
     setOTP(OTP);
@@ -74,6 +68,12 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       endAdornmentCallback: handleResend,
     },
   ];
+
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+  });
+
+  const initialFormValues = { OTP: '' };
 
   const onSubmitOTP = (values: any) => {
     axios
@@ -96,8 +96,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       });
   };
 
-  const initialFormikValues = {};
-
   return (
     <Auth
       pageTitle={'Create your new account'}
@@ -107,8 +105,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       setStates={setStates}
       states={states}
       validationSchema={FormSchema}
-      onFormikSubmit={onSubmitOTP}
-      initialFormikValues={initialFormikValues}
+      saveHandler={onSubmitOTP}
+      initialFormValues={initialFormValues}
       errorMessage={authError}
     />
   );

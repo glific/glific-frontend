@@ -25,10 +25,6 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
     );
   }
 
-  const FormSchema = Yup.object().shape({
-    phoneNumber: Yup.string().required('Input required'),
-  });
-
   const onSubmitPhone = (values: any) => {
     axios
       .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
@@ -52,7 +48,11 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
     },
   ];
 
-  const initialFormikValues = {};
+  const FormSchema = Yup.object().shape({
+    phoneNumber: Yup.string().required('Input required'),
+  });
+
+  const initialFormValues = { phoneNumber: '' };
 
   return (
     <Auth
@@ -64,8 +64,8 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       formFields={formFields}
       titleSubText="Please confirm your phone number to proceed"
       validationSchema={FormSchema}
-      onFormikSubmit={onSubmitPhone}
-      initialFormikValues={initialFormikValues}
+      saveHandler={onSubmitPhone}
+      initialFormValues={initialFormValues}
     />
   );
 };

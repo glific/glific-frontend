@@ -34,7 +34,7 @@
 
 .OTPBox {
   width: 400px;
-  height: 320px;
+  height: 355px;
   background-color: #073f24;
 }
 
@@ -118,7 +118,7 @@
 }
 
 .SecondResetBox {
-  height: 490px;
+  height: 550px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
