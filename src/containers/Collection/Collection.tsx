@@ -6,18 +6,11 @@ import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Select
 import styles from './Collection.module.css';
 
 import {
-  CREATE_AUTOMATION,
-  UPDATE_AUTOMATION,
-  DELETE_AUTOMATION,
-} from '../../graphql/mutations/Automation';
-
-import {
   CREATE_COLLECTION,
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
 
-import { GET_AUTOMATION } from '../../graphql/queries/Automation';
 import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_TAGS } from '../../graphql/queries/Tag';
@@ -52,15 +45,21 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState([]);
+  const [includeTags, setIncludeTags] = useState([]);
+  const [includeGroups, setIncludeGroups] = useState([]);
+  const [dateFrom, setdateFrom] = useState([]);
+  const [dateTo, setdateTo] = useState([]);
 
-  const states = { title, description };
+  const states = { title, description, includeTags, includeGroups };
 
-  const setStates = ({ title, description }: any) => {
+  const setStates = ({ title, description, includeTags, includeGroups, dateFrom, dateTo }: any) => {
     setTitle(title);
     setDescription(description);
+    setIncludeTags(includeTags);
+    setIncludeGroups(includeGroups);
+    setdateFrom(dateFrom);
+    setdateTo(dateTo);
   };
-
-  const additionalAction = { label: 'Configure', link: '/collection/configure' };
 
   useQuery(GET_TAGS, {
     onCompleted: (data) => {
@@ -106,29 +105,12 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       icon: <TagIcon className={styles.TagIcon} />,
     },
     {
-      component: AutocompleteUI,
-      name: 'excludeTags',
-      placeholder: 'Exclude tags',
-      label: 'Exclude tags',
-      options: tags,
-      optionLabel: 'label',
-      icon: <TagIcon className={styles.TagIcon} />,
-    },
-    {
       component: Input,
       name: 'includeGroup',
       type: 'text',
       textArea: true,
       placeholder: 'Include group',
       label: 'Include group',
-    },
-    {
-      component: Input,
-      name: 'excludeGroup',
-      type: 'text',
-      textArea: true,
-      placeholder: 'Exclude group',
-      label: 'Exclude group',
     },
     {
       component: Input,

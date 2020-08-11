@@ -184,6 +184,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         }}
         validate={setValidation}
         onSubmit={(item) => {
+          console.log('Item', item);
           saveHandler(item);
         }}
       >

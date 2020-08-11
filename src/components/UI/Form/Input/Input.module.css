@@ -16,8 +16,24 @@
 
 .HelperText {
   margin-left: 16px !important;
+  color: #93a29b !important;
+  font-size: 14px !important;
 }
 
 .Multiline {
   padding-bottom: 35px !important;
+}
+
+.Resend {
+  color: #119656;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.ResendButton {
+  color: #119656;
+}
+
+.Visibility {
+  color: #93a29b;
 }
