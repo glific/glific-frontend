@@ -20,8 +20,9 @@ const conversationList = (
   </MockedProvider>
 );
 
-test('it should render ConversationsList properly', () => {
+test('it should render ConversationsList properly', async () => {
   const { container } = render(conversationList);
+  await wait();
   expect(container).toBeInTheDocument();
 });
 

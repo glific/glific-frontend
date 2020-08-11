@@ -30,6 +30,7 @@
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.1",
+    "@types/yup": "^0.29.4",
     "ajv-keywords": "^3.5.0",
     "axios": "^0.19.2",
     "draft-js": "^0.11.6",
@@ -54,7 +55,8 @@
     "react-string-replace": "^0.4.4",
     "styled-components": "^5.1.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "yup": "^0.29.2"
   },
   "scripts": {
     "setup": "yarn install  && yarn run floweditor",
