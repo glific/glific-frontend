@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Button } from '../../components/UI/Form/Button/Button';
 
 export interface AuthProps {
   pageTitle: string;
@@ -106,7 +107,7 @@ const Auth: React.SFC<AuthProps> = ({
               onFormikSubmit(item);
             }}
           >
-            {() => (
+            {({ submitForm }) => (
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
@@ -120,9 +121,18 @@ const Auth: React.SFC<AuthProps> = ({
                     <div className={styles.Link}>{linkText}</div>
                   </Link>
                   <div className={styles.CenterButton}>
-                    <button className={buttonClass.join(' ')} type="submit">
+                    {/* <button className={buttonClass.join(' ')} type="submit" onClick={submitForm}>
                       <div className={styles.ButtonText}>{buttonText}</div>
-                    </button>
+                    </button> */}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={submitForm}
+                      className={buttonClass.join(' ')}
+                    >
+                      {buttonText}
+                      {/* <div className={styles.ButtonText}>{buttonText}</div> */}
+                    </Button>
                   </div>
                 </Form>
                 {displayErrorMessage}
