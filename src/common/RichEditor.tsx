@@ -1,6 +1,5 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
-import { draftToMarkdown } from 'markdown-draft-js';
 import { convertToRaw } from 'draft-js';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
@@ -46,11 +45,37 @@ export const TextReplacements: any = [
 // Finds double asterisks in text with a regular expression.
 export const findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
 
+const textConversion = (text: any, style: any, offset: number, symbol: string) => {
+  text = text.slice(0, style.offset + offset) + symbol + text.slice(style.offset + offset);
+  text =
+    text.slice(0, style.offset + offset + style.length + 1) +
+    symbol +
+    text.slice(style.offset + offset + style.length + 1);
+  return text;
+};
+
 // Convert Draft.js to WhatsApp message format.
 export const convertToWhatsApp = (editorState: any) => {
-  let markdownString = draftToMarkdown(convertToRaw(editorState.getCurrentContent()));
-  let messageText = markdownString.replace(findDoubleAsterisks, '*$1*');
-  return messageText;
+  let markdownString: any = convertToRaw(editorState.getCurrentContent());
+  let finalString = '';
+  markdownString.blocks.map((block: any) => {
+    let text = block.text;
+    let offset = 0;
+    block.inlineStyleRanges.map((style: any) => {
+      switch (style.style) {
+        case 'BOLD':
+          text = textConversion(text, style, offset, '*');
+          break;
+        case 'ITALIC':
+          text = textConversion(text, style, offset, '_');
+          break;
+      }
+      offset += 2;
+    });
+    finalString = finalString + text + '\n';
+  });
+
+  return finalString;
 };
 
 // Converts WhatsApp message formatting into HTML elements.
@@ -75,5 +100,6 @@ export const WhatsAppToJsx = (text: any) => {
       replaceFunc(match)
     );
   }
+
   return text;
 };
