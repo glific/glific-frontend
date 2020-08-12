@@ -14,7 +14,7 @@ import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { WhatsAppToJsx } from '../../../../common/RichEditor';
+import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
 
 export interface ChatMessageProps {
   id: number;
@@ -169,7 +169,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
             <div className={styles.Content} data-testid="content">
-              <div>{WhatsAppToJsx(props.body)}</div>
+              <div>
+                <MessagesWithLinks message={props.body} />
+              </div>
             </div>
           </Tooltip>
           <Popper

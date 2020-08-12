@@ -1,0 +1,8 @@
+.LinkPreview {
+  margin-top: 7px;
+  margin-bottom: 10px;
+}
+
+.LinkPreview a {
+  box-shadow: none;
+}
