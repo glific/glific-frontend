@@ -99,6 +99,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
             {additonalCollections.map((search: any) => {
               return (
                 <div
+                  key={search.id}
                   className={styles.LabelContainer}
                   onClick={() => handleAdditionalSavedSearch(search)}
                 >
