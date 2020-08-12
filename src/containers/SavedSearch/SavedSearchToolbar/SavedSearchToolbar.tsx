@@ -17,6 +17,8 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
 
+  const [fixedCollection, setFixedCollection] = useState<any>([]);
+  const [additonalCollections, setAdditonalCollections] = useState<any>([]);
   const Ref = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -31,6 +33,10 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
+    onCompleted: (data) => {
+      setFixedCollection(data.savedSearches.slice(0, 3));
+      setAdditonalCollections(data.savedSearches.slice(3));
+    },
   });
 
   if (loading) return <Loading />;
@@ -47,10 +53,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setSelectedSavedSearch(savedSearchId);
   };
 
-  const importantSearches = data.savedSearches.slice(0, 3);
-  const restSearches = data.savedSearches.slice(3);
-
-  const savedSearchList = importantSearches.map((savedSearch: any) => {
+  const savedSearchList = fixedCollection.map((savedSearch: any) => {
     // set the selected class if the button is clicked
     let labelClass = [styles.SavedSearchItemLabel];
     let countClass = [styles.SavedSearchCount];
@@ -77,16 +80,27 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setOptionsSelected(false);
   };
 
+  const handleAdditionalSavedSearch = (search: any) => {
+    const removedCollection = fixedCollection[fixedCollection.length - 1];
+    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
+    fixedCollectionCopy.push(search);
+    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
+    moreCollection.unshift(removedCollection);
+    setFixedCollection(fixedCollectionCopy);
+    setAdditonalCollections(moreCollection);
+    handlerSavedSearchCriteria(search.args, search.id);
+  };
+
   const additonalOptions = (
     <Popper open={open} anchorEl={anchorEl} placement="bottom" transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
-            {restSearches.map((search: any) => {
+            {additonalCollections.map((search: any) => {
               return (
                 <div
                   className={styles.LabelContainer}
-                  onClick={() => handlerSavedSearchCriteria(search.args, search.id)}
+                  onClick={() => handleAdditionalSavedSearch(search)}
                 >
                   <span className={styles.Label}>{search.shortcode}</span>
                   <span className={styles.Count}>{search.count}</span>
