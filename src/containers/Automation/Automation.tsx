@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
@@ -16,14 +17,9 @@ export interface AutomationProps {
   match: any;
 }
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.shortcode) {
-    errors.shortcode = 'shortcode is required';
-  }
-
-  return errors;
-};
+const FormSchema = Yup.object().shape({
+  shortcode: Yup.string().required('Shortcode is required.'),
+});
 
 const dialogMessage = "You won't be able to use this automation again.";
 
@@ -70,7 +66,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="automation"
       dialogMessage={dialogMessage}
       formFields={formFields}

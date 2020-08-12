@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
@@ -10,18 +11,10 @@ export interface StaffManagementProps {
   match: any;
 }
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.name) {
-    errors.name = 'User title required';
-  } else if (values.name.length > 50) {
-    errors.name = 'Length of the title is too long';
-  }
-  if (!values.phone) {
-    errors.phone = 'User phone required';
-  }
-  return errors;
-};
+const FormSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required.'),
+  phone: Yup.string().required('Phone is required'),
+});
 
 const dialogMessage = ' Once deleted this action cannot be undone.';
 
@@ -65,7 +58,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="User"
       dialogMessage={dialogMessage}
       formFields={formFields}

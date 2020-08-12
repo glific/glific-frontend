@@ -18,7 +18,7 @@ export interface ListItemProps {
   deleteItemQuery: DocumentNode;
   states: any;
   setStates: any;
-  setValidation: any;
+  validationSchema: any;
   listItemName: string;
   dialogMessage: string;
   formFields: Array<any>;
@@ -42,7 +42,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   deleteItemQuery,
   states,
   setStates,
-  setValidation,
+  validationSchema,
   listItemName,
   dialogMessage,
   formFields,
@@ -182,7 +182,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
           ...states,
           languageId: languageId,
         }}
-        validate={setValidation}
+        validationSchema={validationSchema}
         onSubmit={(item) => {
           saveHandler(item);
         }}
