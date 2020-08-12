@@ -34,12 +34,12 @@
 
 .OTPBox {
   width: 400px;
-  height: 320px;
+  height: 355px;
   background-color: #073f24;
 }
 
 .LoginBox {
-  height: 440px;
+  height: 450px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -118,7 +118,7 @@
 }
 
 .SecondResetBox {
-  height: 490px;
+  height: 550px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -146,6 +146,7 @@
 .CenterButton {
   display: flex;
   justify-content: center;
+  padding: 10px 0px;
 }
 
 .CenterForm {
@@ -154,37 +155,7 @@
 }
 
 .AuthButton {
-  border-radius: 27px;
-  height: 40px;
   width: 334px;
-}
-
-.WhiteButton {
-  color: #119656;
-  background-color: white;
-  border: 2px solid #119656;
-  margin-top: 32px;
-}
-
-.GreenButton {
-  color: white;
-  background-color: #119656;
-  border: 2px solid #119656;
-  margin-top: 10px;
-}
-
-.AuthButton:hover {
-  cursor: pointer;
-}
-
-.AuthButton:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.ButtonText {
-  font-weight: 500;
-  font-size: 16px;
 }
 
 .ErrorMessage {
@@ -199,12 +170,13 @@
   font-weight: 500;
 }
 
-.Link,
-.Link a {
+.Auth .Link,
+.Auth .Link a {
   font-size: 16px;
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
+  padding-bottom: 20px;
 }
 
 .RegistrationBox input,

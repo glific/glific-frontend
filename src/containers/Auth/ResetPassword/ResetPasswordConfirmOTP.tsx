@@ -39,20 +39,12 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       });
   };
 
-  const FormSchema = Yup.object().shape({
-    OTP: Yup.string().required('Input required'),
-    password: Yup.string()
-      .min(6, 'Password must be at least 8 characters long.')
-      .required('Input required'),
-  });
-
-  const initialFormikValues = { phoneNumber: props.location.state.phoneNumber };
-
   const formFields = [
     {
       component: Input,
       name: 'phoneNumber',
       placeholder: 'Phone number',
+      disabled: true,
     },
     {
       component: Input,
@@ -69,6 +61,19 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       placeholder: 'New Password',
     },
   ];
+
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 8 characters long.')
+      .required('Input required'),
+  });
+
+  const initialFormValues = {
+    phoneNumber: props.location.state.phoneNumber,
+    OTP: '',
+    password: '',
+  };
 
   const onSubmitOTP = (values: any) => {
     axios
@@ -93,8 +98,8 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       mode={'secondreset'}
       formFields={formFields}
       validationSchema={FormSchema}
-      onFormikSubmit={onSubmitOTP}
-      initialFormikValues={initialFormikValues}
+      saveHandler={onSubmitOTP}
+      initialFormValues={initialFormValues}
     />
   );
 };
