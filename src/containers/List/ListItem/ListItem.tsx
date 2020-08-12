@@ -42,7 +42,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
   deleteItemQuery,
   states,
   setStates,
-  //setValidation,
   validationSchema,
   listItemName,
   dialogMessage,
