@@ -91,7 +91,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     handlerSavedSearchCriteria(search.args, search.id);
   };
 
-  const additonalOptions = (
+  const additionalOptions = (
     <Popper open={open} anchorEl={anchorEl} placement="bottom" transition>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
@@ -137,7 +137,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
             )}
           </IconButton>
         </ClickAwayListener>
-        {additonalOptions}
+        {additionalOptions}
       </div>
     </div>
   );
