@@ -15,7 +15,10 @@ import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 export interface ListItemProps {
   match: any;
@@ -31,6 +34,7 @@ export interface ListItemProps {
   getItemQuery: DocumentNode;
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
+  additionalQuery?: DocumentNode;
   defaultAttribute?: any;
   icon: any;
   additionalAction?: any;
@@ -39,6 +43,7 @@ export interface ListItemProps {
   languageSupport?: boolean;
   checkItems?: any;
   checkItemsHeader?: string;
+  checkObject?: string;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -55,6 +60,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   getItemQuery,
   createItemQuery,
   updateItemQuery,
+  additionalQuery,
   defaultAttribute = null,
   additionalAction = null,
   icon,
@@ -63,6 +69,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   languageSupport = true,
   checkItems,
   checkItemsHeader,
+  checkObject,
 }: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -71,12 +78,15 @@ export const ListItem: React.SFC<ListItemProps> = ({
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
+  const [groupsID, setGroupsID] = useState();
+  const [additionalData, setadditionalData] = useState();
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
       setLanguageId(data.languages[0].id);
     },
   });
+
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
@@ -87,9 +97,31 @@ export const ListItem: React.SFC<ListItemProps> = ({
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
+        if (data.user && data.user.user) {
+          setGroupsID(data.user.user.groups == undefined ? null : data.user.user.groups);
+        }
       }
     },
   });
+
+  // if (additionalQuery) {
+  //   const { loading, error } = useQuery(additionalQuery, {
+  //     variables: {
+  //       opts: {
+  //         order: 'ASC',
+  //         limit: 10,
+  //         offset: 0,
+  //       },
+  //       filter: {
+  //         label: 'Group',
+  //       },
+  //     },
+  //     onCompleted: (data) => {
+  //       console.log(data);
+  //     },
+  //   });
+  // }
+
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: () => {
       setFormSubmitted(true);
@@ -121,12 +153,15 @@ export const ListItem: React.SFC<ListItemProps> = ({
     };
 
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
+
     let message;
 
     if (itemId) {
+      console.log(payload);
       updateItem({
         variables: {
           id: itemId,
+          groupIds: groupsID,
           input: payload,
         },
       });
@@ -178,6 +213,10 @@ export const ListItem: React.SFC<ListItemProps> = ({
     </Button>
   ) : null;
 
+  const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('hi');
+  };
+
   let form = (
     <>
       <Formik
@@ -188,6 +227,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
         }}
         validate={setValidation}
         onSubmit={(item) => {
+          console.log(item);
           saveHandler(item);
         }}
       >
@@ -200,7 +240,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
                   <FormControl variant="outlined">
                     <Select className={styles.Select}>
                       {selectItems.map((item: any, index: any) => {
-                        console.log(item);
                         return (
                           <MenuItem key={index} value={item.value}>
                             {item.name}
@@ -214,7 +253,28 @@ export const ListItem: React.SFC<ListItemProps> = ({
               return <Field key={index} {...field}></Field>;
             })}
             {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
-            {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}
+            {checkItemsHeader && checkItems ? (
+              <div className={styles.CheckBoxes}>
+                <FormControl>
+                  {checkItems['groups'].map((item: any) => {
+                    console.log(item);
+                    return (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={true}
+                            onChange={handleCheckChange}
+                            name={item.label}
+                            className={styles.CheckBox}
+                          />
+                        }
+                        label={item.label}
+                      />
+                    );
+                  })}
+                </FormControl>
+              </div>
+            ) : null}
             <div className={styles.Buttons}>
               <Button
                 variant="contained"

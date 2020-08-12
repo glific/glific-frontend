@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
+import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ListItem } from '../List/ListItem/ListItem';
+import { useQuery, useMutation } from '@apollo/client';
 
 export interface StaffManagementProps {
   match: any;
@@ -37,7 +38,6 @@ const formFields = [
   {
     component: Input,
     name: 'phone',
-    disabled: true,
     placeholder: 'Phone Number',
     query: false,
     select: false,
@@ -64,12 +64,14 @@ const queries = {
   createItemQuery: CREATE_TEMPLATE,
   updateItemQuery: UPDATE_USER,
   deleteItemQuery: DELETE_USER,
+  additionalQuery: GET_GROUPS,
 };
 
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState('');
+  const [checkItems, setCheckItems] = useState();
 
   const states = { name, phone, roles };
   const setStates = ({ name, phone, roles }: any) => {
@@ -77,6 +79,22 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setPhone(phone);
     setRoles(roles);
   };
+
+  const { loading, error } = useQuery(GET_GROUPS, {
+    variables: {
+      opts: {
+        order: 'ASC',
+        limit: 100,
+        offset: 0,
+      },
+      filter: {
+        label: 'Group',
+      },
+    },
+    onCompleted: (data) => {
+      setCheckItems(data);
+    },
+  });
 
   return (
     <ListItem
@@ -93,6 +111,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       icon={staffManagementIcon}
       languageSupport={false}
       checkItemsHeader="Groups"
+      checkItems={checkItems}
+      checkObject={'groups'}
     />
   );
 };
