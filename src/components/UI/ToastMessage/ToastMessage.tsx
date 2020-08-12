@@ -34,12 +34,11 @@ export const ToastMessage: React.SFC<Props> = ({
       classes={{ anchorOriginTopCenter: Styles.SnackBar }}
       open={open}
       onClose={handleCloseButton}
-      autoHideDuration={hideDuration}
     >
       <Alert
         severity={severity}
         icon={false}
-        action={<CrossIcon onClick={handleCloseButton} />}
+        action={<CrossIcon onClick={handleCloseButton} data-testid="crossIcon" />}
         classes={{
           standardSuccess: Styles.Success,
           action: Styles.Action,
