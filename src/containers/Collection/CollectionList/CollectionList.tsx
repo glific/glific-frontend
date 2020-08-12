@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CollectionList.module.css';
 import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collections/Selected.svg';
 import { List } from '../../List/List';
-import { SAVED_SEARCH_QUERY, SAVED_SEARCH_QUERY_COUNT } from '../../../graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SAVED_SEARCH_QUERY_COUNT } from '../../../graphql/queries/Collection';
 import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';
 
 export interface CollectionListProps {}

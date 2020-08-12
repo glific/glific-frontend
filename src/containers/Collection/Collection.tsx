@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Collection.module.css';
-import { GET_SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
+import { GET_SAVED_SEARCH_QUERY } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
 
-import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { useQuery } from '@apollo/client';
@@ -21,14 +21,9 @@ export interface CollectionProps {
   match?: any;
 }
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.title) {
-    errors.title = 'title is required';
-  }
-
-  return errors;
-};
+const FormSchema = Yup.object().shape({
+  title: Yup.string().required('Title is required.'),
+});
 
 const dialogMessage = "You won't be able to use this automation again.";
 
@@ -132,7 +127,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
