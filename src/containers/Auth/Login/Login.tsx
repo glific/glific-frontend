@@ -14,8 +14,9 @@ export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
 
-  const initialFormikValues = {};
+  const initialFormikValues = { phone: '' };
 
   if (sessionToken) {
     return (
@@ -31,16 +32,26 @@ export const Login: React.SFC<LoginProps> = () => {
   }
 
   const FormSchema = Yup.object().shape({
-    phoneNumber: Yup.string().required('Input required'),
+    phone: Yup.string().required('Input required'),
     password: Yup.string().required('Input required'),
   });
 
+  const handlePhoneNumberChange = () => (value: string): void => {
+    if (value) {
+      setPhoneNumberError(false);
+    } else {
+      setPhoneNumberError(true);
+    }
+  };
+
   const formFields = [
     {
-      component: Input,
-      name: 'phoneNumber',
-      type: 'text',
+      component: PhoneInput,
+      name: 'phone',
+      type: 'phone',
       placeholder: 'Your phone number',
+      // error: phoneNumberError,
+      helperText: 'Please enter a phone number.',
     },
     {
       component: Input,
@@ -55,7 +66,7 @@ export const Login: React.SFC<LoginProps> = () => {
     axios
       .post(USER_SESSION, {
         user: {
-          phone: values.phoneNumber,
+          phone: values.phone,
           password: values.password,
         },
       })
