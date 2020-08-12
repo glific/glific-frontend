@@ -9,11 +9,11 @@ export interface CollectionListProps {}
 
 const getColumns = ({ shortcode, label }: any) => ({
   shortcode: getShortcode(shortcode),
-  name: getName(label),
+  label: getLabel(label),
 });
 
-const getShortcode = (label: string) => <p className={styles.LabelText}>{label}</p>;
-const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
+const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
 const dialogMessage =
