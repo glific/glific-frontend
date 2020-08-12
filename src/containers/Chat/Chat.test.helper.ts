@@ -4,6 +4,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
+import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
 
 const queryVariables = {
   contactOpts: {
@@ -172,7 +173,7 @@ const savedSearchQuery = {
       savedSearches: [
         {
           args:
-            '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           label: 'All unread conversations',
           shortcode: 'Unread',
@@ -185,6 +186,7 @@ const savedSearchQuery = {
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
+  searchQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
@@ -206,6 +208,7 @@ export const CONVERSATION_MOCKS_WITH_NO_DATA = [
   conversationQuery,
   conversationQuery,
   messageSendSubscription,
+  searchQuery,
   savedSearchQuery,
   messageReceivedSubscriptionWithNoData,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
