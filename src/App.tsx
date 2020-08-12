@@ -61,7 +61,7 @@ const App = () => {
 
             <Route path="/collection" exact component={CollectionList} />
             <Route path="/collection/add" exact component={Collection} />
-            <Route path="/collection/:id/edit" exact component={Automation} />
+            <Route path="/collection/:id/edit" exact component={Collection} />
 
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />

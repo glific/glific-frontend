@@ -28,19 +28,14 @@ export interface InputProps {
   endAdornmentCallback?: any;
 }
 
-export const Input: React.SFC<InputProps> = ({
-  textArea = false,
-  disabled = false,
-  type = 'text',
-  ...props
-}) => {
+export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
   const touched = props.form.touched;
   const error = props.form.errors;
   const name = props.field.name;
 
-  let fieldType = type;
+  let fieldType = props.type;
   let fieldEndAdorment = null;
-  if (type === 'password') {
+  if (props.type === 'password') {
     // we should change the type to text if user has clicked on show password
     if (props.togglePassword) {
       fieldType = 'text';
@@ -62,7 +57,7 @@ export const Input: React.SFC<InputProps> = ({
     );
   } else if (props.emojiPicker) {
     fieldEndAdorment = props.emojiPicker;
-  } else if (type === 'otp') {
+  } else if (props.type === 'otp') {
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
@@ -88,7 +83,6 @@ export const Input: React.SFC<InputProps> = ({
           multiline={textArea}
           rows={props.rows}
           label={props.placeholder}
-          // type={type}
           fullWidth
           {...props.field}
           endAdornment={fieldEndAdorment}

@@ -40,7 +40,21 @@ export const SAVED_SEARCH_QUERY = gql`
 `;
 
 export const SAVED_SEARCH_QUERY_COUNT = gql`
-  query {
-    countSavedSearches
+  query countSavedSearches($filter: SavedSearchFilter!) {
+    countSavedSearches(filter: $filter)
+  }
+`;
+
+export const GET_SAVED_SEARCH_QUERY = gql`
+  query savedSearches($id: ID) {
+    savedSearch(id: $id) {
+      savedSearch {
+        id
+        shortcode
+        label
+        args
+        count
+      }
+    }
   }
 `;

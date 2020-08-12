@@ -4,7 +4,7 @@ import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Collection.module.css';
-
+import { GET_SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 import {
   CREATE_COLLECTION,
   UPDATE_COLLECTION,
@@ -35,7 +35,7 @@ const dialogMessage = "You won't be able to use this automation again.";
 const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
 
 const queries = {
-  getItemQuery: SAVED_SEARCH_QUERY,
+  getItemQuery: GET_SAVED_SEARCH_QUERY,
   createItemQuery: CREATE_COLLECTION,
   updateItemQuery: UPDATE_COLLECTION,
   deleteItemQuery: DELETE_COLLECTION,
@@ -138,8 +138,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="collection"
       cancelLink="collection"
-      linkParameter="uuid"
-      listItem="flow"
+      linkParameter="id"
+      listItem="savedSearch"
       icon={collectionIcon}
       // additionalAction={additionalAction}
       languageSupport={false}
