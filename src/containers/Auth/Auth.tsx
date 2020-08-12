@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Button } from '../../components/UI/Form/Button/Button';
 
 export interface AuthProps {
   pageTitle: string;
@@ -10,8 +11,8 @@ export interface AuthProps {
   alternateLink?: string;
   alternateText?: string;
   mode: string;
-  initialFormikValues?: any;
-  onFormikSubmit?: any;
+  initialFormValues?: any;
+  saveHandler?: any;
   formFields: Array<any>;
   setStates?: any;
   states?: any;
@@ -30,8 +31,8 @@ const Auth: React.SFC<AuthProps> = ({
   alternateLink,
   alternateText,
   mode,
-  initialFormikValues = null,
-  onFormikSubmit = console.log('hi'),
+  initialFormValues = null,
+  saveHandler,
   formFields,
   validationSchema,
   titleSubText,
@@ -43,32 +44,30 @@ const Auth: React.SFC<AuthProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
-  const buttonClass = [styles.AuthButton];
+  let buttonContainedVariant = true;
   switch (mode) {
     case 'login':
       boxClass.push(styles.LoginBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
     case 'registration':
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
-      buttonClass.push(styles.GreenButton);
       break;
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
-      buttonClass.push(styles.GreenButton);
       break;
     case 'firstreset':
       boxClass.push(styles.FirstResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
     case 'secondreset':
       boxClass.push(styles.SecondResetBox);
       boxTitleClass.push(styles.LoginBoxTitle);
-      buttonClass.push(styles.WhiteButton);
+      buttonContainedVariant = false;
       break;
   }
 
@@ -100,13 +99,13 @@ const Auth: React.SFC<AuthProps> = ({
           </div>
           <div className={styles.SubText}>{titleSubText}</div>
           <Formik
-            initialValues={initialFormikValues}
+            initialValues={initialFormValues}
             validationSchema={validationSchema}
             onSubmit={(item) => {
-              onFormikSubmit(item);
+              saveHandler(item);
             }}
           >
-            {() => (
+            {({ submitForm }) => (
               <div className={styles.CenterBox}>
                 <Form className={styles.Form}>
                   {formFields.map((field, index) => {
@@ -120,9 +119,14 @@ const Auth: React.SFC<AuthProps> = ({
                     <div className={styles.Link}>{linkText}</div>
                   </Link>
                   <div className={styles.CenterButton}>
-                    <button className={buttonClass.join(' ')} type="submit">
-                      <div className={styles.ButtonText}>{buttonText}</div>
-                    </button>
+                    <Button
+                      variant={buttonContainedVariant ? 'contained' : 'outlined'}
+                      color="primary"
+                      onClick={submitForm}
+                      className={styles.AuthButton}
+                    >
+                      {buttonText}
+                    </Button>
                   </div>
                 </Form>
                 {displayErrorMessage}

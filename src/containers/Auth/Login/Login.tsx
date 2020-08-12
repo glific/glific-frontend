@@ -14,8 +14,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
 
-  const initialFormikValues = {};
-
   if (sessionToken) {
     return (
       <Redirect
@@ -28,11 +26,6 @@ export const Login: React.SFC<LoginProps> = () => {
       />
     );
   }
-
-  const FormSchema = Yup.object().shape({
-    phoneNumber: Yup.string().required('Input required'),
-    password: Yup.string().required('Input required'),
-  });
 
   const formFields = [
     {
@@ -48,6 +41,13 @@ export const Login: React.SFC<LoginProps> = () => {
       placeholder: 'Password',
     },
   ];
+
+  const FormSchema = Yup.object().shape({
+    phoneNumber: Yup.string().required('Input required'),
+    password: Yup.string().required('Input required'),
+  });
+
+  const initialFormValues = { phoneNumber: '', password: '' };
 
   const onSubmitLogin = (values: any) => {
     setAuthError('');
@@ -81,8 +81,8 @@ export const Login: React.SFC<LoginProps> = () => {
       linkText="Forgot Password?"
       linkURL="resetpassword-phone"
       validationSchema={FormSchema}
-      onFormikSubmit={onSubmitLogin}
-      initialFormikValues={initialFormikValues}
+      saveHandler={onSubmitLogin}
+      initialFormValues={initialFormValues}
       errorMessage={authError}
     />
   );
