@@ -31,7 +31,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       })
       .then((response: any) => {})
       .catch((error: any) => {
-        setAuthError('We are unable to an OTP, kindly contact your technical team.');
+        setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });
   };
 
