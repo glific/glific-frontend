@@ -165,7 +165,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
 const savedSearchQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: { limit: 3 } },
+    variables: { filter: {}, opts: { limit: 10 } },
   },
   result: {
     data: {
