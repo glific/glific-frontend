@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import CollectionList from './CollectionList';
+import { CollectionList } from './CollectionList';
 
 describe('<CollectionList />', () => {
   let component;

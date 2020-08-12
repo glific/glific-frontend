@@ -15,10 +15,10 @@ import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { useQuery } from '@apollo/client';
-import { AutocompleteUI } from '../../components/UI/Form/AutocompleteUI/AutocompleteUI';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 
 export interface CollectionProps {
-  match: any;
+  match?: any;
 }
 
 const setValidation = (values: any) => {
@@ -96,9 +96,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       label: 'Assigned To',
     },
     {
-      component: AutocompleteUI,
+      component: AutoComplete,
       name: 'includeTags',
-      placeholder: 'Include tags',
       label: 'Include tags',
       options: tags,
       optionLabel: 'label',
