@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { ListItem } from '../List/ListItem/ListItem';
+import { ListItem } from '../Form/Form';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Collection.module.css';
