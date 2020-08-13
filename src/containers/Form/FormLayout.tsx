@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode } from '@apollo/client';
-import styles from './Form.module.css';
+import styles from './FormLayout.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';

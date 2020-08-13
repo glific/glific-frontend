@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
-import { FormItem } from '../../Form/FormLayout';
+import { FormLayout } from '../../Form/FormLayout';
 import { GET_TEMPLATE } from '../../../graphql/queries/Template';
 import {
   CREATE_TEMPLATE,
@@ -57,7 +57,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }
 
   return (
-    <FormItem
+    <FormLayout
       {...queries}
       match={props.match}
       states={states}
