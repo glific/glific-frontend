@@ -12,10 +12,7 @@ import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton, Input } from '@material-ui/core';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-
+import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 export interface ListItemProps {
   match: any;
   deleteItemQuery: DocumentNode;
@@ -38,6 +35,8 @@ export interface ListItemProps {
   languageSupport?: boolean;
   dropdownLabel?: string;
   dropdownPlaceholder?: string;
+  autoCompleteLabel?: string;
+  autoCompleteOptions?: any;
 }
 
 export const ListItem: React.SFC<ListItemProps> = ({
@@ -62,6 +61,8 @@ export const ListItem: React.SFC<ListItemProps> = ({
   languageSupport = true,
   dropdownLabel = '',
   dropdownPlaceholder = '',
+  autoCompleteLabel = '',
+  autoCompleteOptions = {},
 }: ListItemProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -236,6 +237,15 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
+              if (field.autocomplete) {
+                return (
+                  <AutoComplete
+                    options={autoCompleteOptions}
+                    optionLabel={autoCompleteLabel}
+                    label={autoCompleteLabel}
+                  />
+                );
+              }
               return (
                 <React.Fragment key={index}>
                   {field.label ? (

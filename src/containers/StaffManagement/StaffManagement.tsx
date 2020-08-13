@@ -48,6 +48,13 @@ const formFields = [
       { value: 'basic', name: 'Basic' },
     ],
   },
+  {
+    name: 'groups',
+    type: 'text',
+    placeholder: 'Groups',
+    autocomplete: true,
+    fieldName: '',
+  },
 ];
 
 const staffManagementIcon = <StaffManagementIcon />;
@@ -84,9 +91,15 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       },
     },
     onCompleted: (data) => {
-      setCheckItems(data);
+      let groups = data['groups'].map((item: any) => {
+        return item.label;
+      });
+      console.log(groups);
+      setCheckItems(groups);
+      console.log(data);
     },
   });
+  console.log(checkItems);
 
   return (
     <ListItem
@@ -104,6 +117,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       languageSupport={false}
       dropdownLabel="Roles"
       dropdownPlaceholder="Roles"
+      autoCompleteLabel="Groups"
+      autoCompleteOptions={checkItems}
     />
   );
 };
