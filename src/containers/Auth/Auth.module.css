@@ -1,6 +1,7 @@
 .Container {
   width: 100%;
   height: 100vh;
+  font-family: 'Heebo' !important;
 }
 
 .Auth {
@@ -27,18 +28,18 @@
 
 .RegistrationBox {
   width: 400px;
-  height: 450px;
+  height: 508px;
   background-color: #073f24;
 }
 
 .OTPBox {
   width: 400px;
-  height: 360px;
+  height: 355px;
   background-color: #073f24;
 }
 
 .LoginBox {
-  height: 390px;
+  height: 450px;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -46,7 +47,7 @@
 }
 
 .BoxTitle {
-  justify-content: start;
+  justify-content: flex-start;
   margin-bottom: 10px;
   margin-top: 32px;
   margin-left: 32px;
@@ -70,19 +71,6 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-}
-
-.AuthButton {
-  width: 335px;
-  border-radius: 27px !important;
-  margin-top: 20px !important;
-}
-
-.LoginButton {
-  background-color: white !important;
-  border: solid 2px #119656 !important;
-  margin-top: 0px;
-  color: #119656 !important;
 }
 
 .OrText {
@@ -119,4 +107,86 @@
 .Or {
   display: flex;
   flex-direction: row;
+}
+
+.FirstResetBox {
+  height: 340px;
+  width: 395px;
+  border-color: #eaedec;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.SecondResetBox {
+  height: 550px;
+  width: 395px;
+  border-color: #eaedec;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.SubText {
+  color: #93a29b;
+  display: flex;
+  align-content: flex-start;
+  font-weight: 500;
+  margin-left: 32px;
+  margin-top: 4px;
+}
+
+.Form {
+  width: 350px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+
+.CenterButton {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px;
+}
+
+.CenterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.AuthButton {
+  width: 334px;
+}
+
+.ErrorMessage {
+  margin-top: 5px;
+  color: red;
+  width: 333px;
+}
+
+.ForgotPassword {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+}
+
+.Auth .Link,
+.Auth .Link a {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+  margin-left: 10px;
+  padding-bottom: 20px;
+}
+
+.RegistrationBox input,
+.RegistrationBox input:hover,
+.OTPBox input,
+.OTPBox input:hover {
+  color: #93a29b !important;
+}
+
+.RegistrationBox fieldset,
+.OTPBox fieldset {
+  border-color: #93a29b !important;
 }

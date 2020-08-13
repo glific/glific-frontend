@@ -18,7 +18,7 @@ export interface ListItemProps {
   deleteItemQuery: DocumentNode;
   states: any;
   setStates: any;
-  setValidation: any;
+  validationSchema: any;
   listItemName: string;
   dialogMessage: string;
   formFields: Array<any>;
@@ -42,7 +42,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   deleteItemQuery,
   states,
   setStates,
-  setValidation,
+  validationSchema,
   listItemName,
   dialogMessage,
   formFields,
@@ -182,7 +182,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
           ...states,
           languageId: languageId,
         }}
-        validate={setValidation}
+        validationSchema={validationSchema}
         onSubmit={(item) => {
           saveHandler(item);
         }}
@@ -190,7 +190,16 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
-              return <Field key={index} {...field}></Field>;
+              return (
+                <React.Fragment key={index}>
+                  {field.label ? (
+                    <Typography variant="h5" className={styles.Title}>
+                      {field.label}
+                    </Typography>
+                  ) : null}
+                  <Field key={index} {...field}></Field>
+                </React.Fragment>
+              );
             })}
             {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
             {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}

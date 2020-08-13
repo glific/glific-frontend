@@ -33,7 +33,7 @@ describe('<ToastMessage />', () => {
       <ToastMessage open severity={'success'} message={'Saved.'} handleClose={mockCallback} />
     );
 
-    wrapper.find('button.MuiButtonBase-root').simulate('click');
+    wrapper.find('svg[data-testid="crossIcon"]').simulate('click');
     expect(mockCallback).toHaveBeenCalled();
   });
 
