@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const SAVED_SEARCH_QUERY = gql`
+export const COLLECTION_QUERY = gql`
   query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
     savedSearches(filter: $filter, opts: $opts) {
       id
@@ -12,13 +12,13 @@ export const SAVED_SEARCH_QUERY = gql`
   }
 `;
 
-export const SAVED_SEARCH_QUERY_COUNT = gql`
+export const COLLECTION_QUERY_COUNT = gql`
   query countSavedSearches($filter: SavedSearchFilter!) {
     countSavedSearches(filter: $filter)
   }
 `;
 
-export const GET_SAVED_SEARCH_QUERY = gql`
+export const GET_COLLECTION = gql`
   query savedSearches($id: ID) {
     savedSearch(id: $id) {
       savedSearch {

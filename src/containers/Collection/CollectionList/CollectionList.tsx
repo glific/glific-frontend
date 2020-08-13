@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CollectionList.module.css';
 import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collections/Selected.svg';
 import { List } from '../../List/List';
-import { SAVED_SEARCH_QUERY, SAVED_SEARCH_QUERY_COUNT } from '../../../graphql/queries/Collection';
+import { COLLECTION_QUERY, COLLECTION_QUERY_COUNT } from '../../../graphql/queries/Collection';
 import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';
 
 export interface CollectionListProps {}
@@ -22,8 +22,8 @@ const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  countQuery: SAVED_SEARCH_QUERY_COUNT,
-  filterItemsQuery: SAVED_SEARCH_QUERY,
+  countQuery: COLLECTION_QUERY_COUNT,
+  filterItemsQuery: COLLECTION_QUERY,
   deleteItemQuery: DELETE_COLLECTION,
 };
 

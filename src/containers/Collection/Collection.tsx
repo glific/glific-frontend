@@ -5,7 +5,7 @@ import { ListItem } from '../List/ListItem/ListItem';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Collection.module.css';
-import { GET_SAVED_SEARCH_QUERY } from '../../graphql/queries/Collection';
+import { GET_COLLECTION } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
   UPDATE_COLLECTION,
@@ -30,7 +30,7 @@ const dialogMessage = "You won't be able to use this automation again.";
 const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
 
 const queries = {
-  getItemQuery: GET_SAVED_SEARCH_QUERY,
+  getItemQuery: GET_COLLECTION,
   createItemQuery: CREATE_COLLECTION,
   updateItemQuery: UPDATE_COLLECTION,
   deleteItemQuery: DELETE_COLLECTION,
