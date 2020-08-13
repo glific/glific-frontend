@@ -4,7 +4,7 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_TAG } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
-import { FormItem } from '../Form/Form';
+import { FormItem } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Tag.module.css';
 

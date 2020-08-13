@@ -2,10 +2,10 @@ import React from 'react';
 import { render, wait, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { ListItem } from './Form';
+import { ListItem } from './FormLayout';
 import { Switch, Route } from 'react-router-dom';
 import { TagList } from '../Tag/TagList/TagList';
-import { LIST_ITEM_MOCKS, listItemProps } from './Form.test.helper';
+import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 

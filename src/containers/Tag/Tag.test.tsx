@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Tag } from './Tag';
 import { Route } from 'react-router-dom';
 import { TagList } from './TagList/TagList';
-import { LIST_ITEM_MOCKS } from '../Form/Form.test.helper';
+import { LIST_ITEM_MOCKS } from '../Form/FormLayout.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 

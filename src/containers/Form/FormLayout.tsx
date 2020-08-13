@@ -13,7 +13,7 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 
-export interface FormItemProps {
+export interface FormLayoutProps {
   match: any;
   deleteItemQuery: DocumentNode;
   states: any;
@@ -37,7 +37,7 @@ export interface FormItemProps {
   checkItemsHeader?: string;
 }
 
-export const FormItem: React.SFC<FormItemProps> = ({
+export const FormLayout: React.SFC<FormLayoutProps> = ({
   match,
   deleteItemQuery,
   states,
@@ -59,7 +59,7 @@ export const FormItem: React.SFC<FormItemProps> = ({
   languageSupport = true,
   checkItems,
   checkItemsHeader,
-}: FormItemProps) => {
+}: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);

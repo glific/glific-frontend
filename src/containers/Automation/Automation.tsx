@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { FormItem } from '../Form/Form';
+import { FormItem } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
 

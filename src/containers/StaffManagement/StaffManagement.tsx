@@ -5,7 +5,7 @@ import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { FormItem } from '../Form/Form';
+import { FormItem } from '../Form/FormLayout';
 
 export interface StaffManagementProps {
   match: any;
