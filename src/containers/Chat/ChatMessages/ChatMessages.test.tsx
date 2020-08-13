@@ -87,17 +87,6 @@ test('focus on the latest message', async () => {
   expect(message.scrollIntoView).toBeCalled();
 });
 
-test('chat having no conversations', async () => {
-  const { getByText } = render(
-    <MockedProvider mocks={mocksWithNoMessages} addTypename={false}>
-      <ChatMessages contactId={2} />
-    </MockedProvider>
-  );
-  await wait();
-  await wait();
-  expect(getByText('No messages.')).toBeInTheDocument();
-});
-
 test('chat having multiple messages', async () => {
   const { getByText } = render(
     <MockedProvider mocks={mocksWithMultipleMessages} addTypename={false}>
