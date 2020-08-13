@@ -64,7 +64,6 @@ const queries = {
   createItemQuery: CREATE_TEMPLATE,
   updateItemQuery: UPDATE_USER,
   deleteItemQuery: DELETE_USER,
-  additionalQuery: GET_GROUPS,
 };
 
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
@@ -110,9 +109,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       listItem="user"
       icon={staffManagementIcon}
       languageSupport={false}
-      checkItemsHeader="Groups"
-      checkItems={checkItems}
-      checkObject={'groups'}
+      dropdownLabel="Roles"
+      dropdownPlaceholder="Roles"
     />
   );
 };
