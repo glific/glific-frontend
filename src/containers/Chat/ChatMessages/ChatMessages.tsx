@@ -228,7 +228,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         return <Loading />;
       }
       conversationIndex = 0;
-      conversationInfo = data ? data.search : null;
+      conversationInfo = data ? data.search[0] : null;
 
       // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
       // allConversations.conversations.splice(0, 0, data.conversation);
