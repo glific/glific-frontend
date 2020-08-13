@@ -7,6 +7,8 @@ import { TagPage } from './components/pages/TagPage/TagPage';
 import { Registration } from './containers/Auth/Registration/Registration';
 import { ConfirmOTP } from './containers/Auth/ConfirmOTP/ConfirmOTP';
 import { Login } from './containers/Auth/Login/Login';
+import { ResetPasswordPhone } from './containers/Auth/ResetPassword/ResetPasswordPhone';
+import { ResetPasswordConfirmOTP } from './containers/Auth/ResetPassword/ResetPasswordConfirmOTP';
 import { StaffManagementList } from './containers/StaffManagement/StaffManagementList/StaffManagementList';
 import { StaffManagement } from './containers/StaffManagement/StaffManagement';
 import { SpeedSendPage } from './components/pages/Template/SpeedSendPage/SpeedSendPage';
@@ -22,6 +24,8 @@ import { AutomationList } from './containers/Automation/AutomationList/Automatio
 import { Automation } from './containers/Automation/Automation';
 import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
+import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
+import { Collection } from './containers/Collection/Collection';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -55,6 +59,10 @@ const App = () => {
             <Route path="/automation/:id/edit" exact component={Automation} />
             <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
 
+            <Route path="/collection" exact component={CollectionList} />
+            <Route path="/collection/add" exact component={Collection} />
+            <Route path="/collection/:id/edit" exact component={Collection} />
+
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />
             <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
@@ -81,6 +89,8 @@ const App = () => {
         <Route path="/login" exact component={Login} />
         <Route path="/registration" exact component={Registration} />
         <Route path="/confirmotp" exact component={ConfirmOTP} />
+        <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
+        <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
         <Route path="/" render={() => <Redirect to="/login" />} />
       </Switch>
     );

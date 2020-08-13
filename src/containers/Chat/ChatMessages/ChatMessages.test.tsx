@@ -7,14 +7,13 @@ import { ChatMessages } from './ChatMessages';
 import {
   mocksWithConversation,
   mocksWithMultipleMessages,
-  mocksWithNoConversation,
   mocksWithNoMessages,
 } from './ChatMessage.test.helper';
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({
-  setStart: () => { },
-  setEnd: () => { },
+  setStart: () => {},
+  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
@@ -134,5 +133,3 @@ test('cancel after dialog box open', async () => {
   await wait();
   fireEvent.click(getByText('Cancel'));
 });
-
-

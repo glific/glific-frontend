@@ -27,13 +27,14 @@ test('check for validations for the HSM form', async () => {
   await wait();
   expect(getByText('Add a new HSM Template')).toBeInTheDocument();
 
-  const { queryByText, getAllByText } = within(container.querySelector('form'));
+  const { queryByText } = within(container.querySelector('form'));
   const button = queryByText('Save');
   fireEvent.click(button);
   await wait();
 
   // we should have 2 errors
-  expect(getAllByText('Required')).toHaveLength(2);
+  expect(queryByText('Title is required.')).toBeInTheDocument();
+  expect(queryByText('Message is required.')).toBeInTheDocument();
 
   fireEvent.change(container.querySelector('input[name="label"]'), {
     target: {
@@ -42,5 +43,6 @@ test('check for validations for the HSM form', async () => {
   });
 
   // we should still have 2 errors
-  expect(getAllByText('Required')).toHaveLength(2);
+  expect(queryByText('Title is required.')).toBeInTheDocument();
+  expect(queryByText('Message is required.')).toBeInTheDocument();
 });
