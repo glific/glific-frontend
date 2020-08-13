@@ -36,7 +36,7 @@ const updateMessageTagsQuery = {
 };
 
 const conversationWithNoMessage = {
-  seacrh: [
+  search: [
     {
       contact: {
         id: 2,
