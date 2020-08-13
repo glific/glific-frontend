@@ -1,0 +1,19 @@
+.Success {
+  background-color: #073f24 !important;
+  color: #93a29b !important;
+  border-radius: 12px !important;
+  padding-left: 32px !important;
+  font-size: 16px !important;
+  font-weight: 400;
+}
+
+.Action {
+  cursor: pointer;
+  margin-right: 0px !important;
+  padding-left: 0px !important;
+  margin-left: 32px !important;
+}
+
+.SnackBar {
+  top: 48px !important;
+}
