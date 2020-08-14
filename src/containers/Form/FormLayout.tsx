@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { Dropdown } from '../../../components/UI/Form/Dropdown/Dropdown';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import { useApolloClient, DocumentNode } from '@apollo/client';
-import styles from './ListItem.module.css';
+import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
+import styles from './FormLayout.module.css';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { setNotification, setErrorMessage } from '../../../common/notification';
-import { Typography, IconButton, Input } from '@material-ui/core';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-export interface ListItemProps {
+import { Typography, IconButton } from '@material-ui/core';
+import { Button } from '../../components/UI/Form/Button/Button';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { setNotification, setErrorMessage } from '../../common/notification';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import moment from 'moment';
+import { DATE_FORMAT } from '../../common/constants';
+
+export interface FormLayoutProps {
   match: any;
   deleteItemQuery: DocumentNode;
   states: any;
@@ -39,7 +41,7 @@ export interface ListItemProps {
   autoCompleteOptions?: any;
 }
 
-export const ListItem: React.SFC<ListItemProps> = ({
+export const FormLayout: React.SFC<FormLayoutProps> = ({
   match,
   deleteItemQuery,
   states,
@@ -59,11 +61,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
-  dropdownLabel = '',
-  dropdownPlaceholder = '',
-  autoCompleteLabel = '',
-  autoCompleteOptions = {},
-}: ListItemProps) => {
+}: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -127,6 +125,9 @@ export const ListItem: React.SFC<ListItemProps> = ({
       if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
     },
+    onError: (error: ApolloError) => {
+      console.log('Error', error);
+    },
   });
 
   const client = useApolloClient();
@@ -139,6 +140,32 @@ export const ListItem: React.SFC<ListItemProps> = ({
     return null;
   }
 
+  const collectionPayload = (payload: any) => {
+    return {
+      label: payload.label,
+      shortcode: payload.shortcode,
+      args: JSON.stringify({
+        messageOpts: {
+          offset: 0,
+          limit: 10,
+        },
+        filter: {
+          term: payload.term,
+          includeTags: payload.includeTags.map((option: any) => option.id),
+          includeGroups: payload.includeGroups.map((option: any) => option.id),
+          dateRange: {
+            to: moment(payload.dateFrom).format(DATE_FORMAT),
+            from: moment(payload.dateTo).format(DATE_FORMAT),
+          },
+        },
+        contactOpts: {
+          offset: 0,
+          limit: 20,
+        },
+      }),
+    };
+  };
+
   const saveHandler = ({ languageId, ...item }: any) => {
     let payload = {
       ...item,
@@ -146,6 +173,11 @@ export const ListItem: React.SFC<ListItemProps> = ({
     };
 
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
+
+    // create custom payload for collection
+    if (listItemName === 'collection') {
+      payload = collectionPayload(payload);
+    }
 
     let message;
 
@@ -210,16 +242,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
     console.log('hi');
   };
 
-  const dropdown = (
-    <Dropdown
-      field={'Hi'}
-      label={dropdownLabel}
-      placeholder={dropdownPlaceholder}
-      form={true}
-      options={'Hi'}
-    ></Dropdown>
-  );
-
   let form = (
     <>
       <Formik
@@ -237,15 +259,6 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
-              if (field.autocomplete) {
-                return (
-                  <AutoComplete
-                    options={autoCompleteOptions}
-                    optionLabel={autoCompleteLabel}
-                    label={autoCompleteLabel}
-                  />
-                );
-              }
               return (
                 <React.Fragment key={index}>
                   {field.label ? (

@@ -5,8 +5,8 @@ import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/StaffManageme
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { ListItem } from '../List/ListItem/ListItem';
 import { useQuery, useMutation } from '@apollo/client';
+import { FormLayout } from '../Form/FormLayout';
 
 export interface StaffManagementProps {
   match: any;
@@ -102,7 +102,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   console.log(checkItems);
 
   return (
-    <ListItem
+    <FormLayout
       {...queries}
       match={match}
       states={states}

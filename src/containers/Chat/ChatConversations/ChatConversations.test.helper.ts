@@ -1,4 +1,3 @@
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
 import { mocks as SAVED_SEARCH_MOCK } from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar.test';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { conversationQuery } from '../Chat.test.helper';
@@ -50,8 +49,8 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
 export const chatConversationsMocks = [
   {
     request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
+      query: SEARCH_QUERY,
+      variables: { contactOpts: { limit: 25 }, filter: { id: '2' }, messageOpts: { limit: 25 } },
     },
     result: {
       data: {
