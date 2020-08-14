@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { Dropdown } from '../../../components/UI/Form/Dropdown/Dropdown';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { useApolloClient, DocumentNode } from '@apollo/client';
-import styles from './ListItem.module.css';
+import styles from './FormLayout.module.css';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
+import { Button } from '../../components/UI/Form/Button/Button';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { setNotification, setErrorMessage } from '../../common/notification';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 
-export interface ListItemProps {
+export interface FormLayoutProps {
   match: any;
   deleteItemQuery: DocumentNode;
   states: any;
@@ -37,7 +37,7 @@ export interface ListItemProps {
   checkItemsHeader?: string;
 }
 
-export const ListItem: React.SFC<ListItemProps> = ({
+export const FormLayout: React.SFC<FormLayoutProps> = ({
   match,
   deleteItemQuery,
   states,
@@ -59,7 +59,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
   languageSupport = true,
   checkItems,
   checkItemsHeader,
-}: ListItemProps) => {
+}: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);

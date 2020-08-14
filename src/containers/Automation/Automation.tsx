@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { ListItem } from '../List/ListItem/ListItem';
+import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
 
@@ -61,7 +61,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
 
   return (
-    <ListItem
+    <FormLayout
       {...queries}
       match={match}
       states={states}
