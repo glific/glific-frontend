@@ -1,0 +1,12 @@
+.Card {
+  width: 317px;
+  margin-right: 24px;
+  margin-bottom: 24px;
+  border-radius: 12px !important;
+  border-color: #eaedec !important;
+}
+
+.CardContainer {
+  display: flex;
+  padding: 16px;
+}

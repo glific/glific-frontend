@@ -14,9 +14,10 @@ import styles from './List.module.css';
 import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
+import { GroupListCard } from '../Group/GroupList/GroupListCard/GroupListCard';
 
 export interface ListProps {
-  columnNames: Array<string>;
+  columnNames?: Array<string>;
   countQuery: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;
@@ -32,6 +33,7 @@ export interface ListProps {
   showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
+  displayListType?: string;
   additionalAction?: {
     icon: any;
     parameter: string;
@@ -47,7 +49,7 @@ interface TableVals {
 }
 
 export const List: React.SFC<ListProps> = ({
-  columnNames,
+  columnNames = [],
   countQuery,
   listItem,
   listIcon,
@@ -63,6 +65,7 @@ export const List: React.SFC<ListProps> = ({
   showCheckbox,
   searchParameter = 'label',
   filters = null,
+  displayListType = 'list',
   additionalAction = null,
 }: ListProps) => {
   const client = useApolloClient();
@@ -280,6 +283,23 @@ export const List: React.SFC<ListProps> = ({
     itemCount = countData['count' + listItem[0].toUpperCase() + listItem.slice(1)];
   }
 
+  let displayList;
+  if (displayListType === 'list') {
+    displayList = (
+      <Pager
+        columnStyles={columnStyles}
+        columnNames={columnNames}
+        data={itemList}
+        totalRows={itemCount}
+        handleTableChange={handleTableChange}
+        tableVals={tableVals}
+        showCheckbox={showCheckbox}
+      />
+    );
+  } else if (displayListType == 'card') {
+    displayList = <GroupListCard data={itemList} />;
+  }
+
   return (
     <>
       <div className={styles.Header}>
@@ -311,19 +331,7 @@ export const List: React.SFC<ListProps> = ({
       </div>
 
       {/* Rendering list of items */}
-      {itemList ? (
-        <Pager
-          columnStyles={columnStyles}
-          columnNames={columnNames}
-          data={itemList}
-          totalRows={itemCount}
-          handleTableChange={handleTableChange}
-          tableVals={tableVals}
-          showCheckbox={showCheckbox}
-        />
-      ) : (
-        <div>There are no {listItemName}s.</div>
-      )}
+      {itemList ? displayList : <div>There are no {listItemName}s.</div>}
     </>
   );
 };
