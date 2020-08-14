@@ -28,7 +28,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [showDialog, setShowDialog] = useState(false);
-  const groups = useQuery(GET_GROUPS);
+  const [groups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
   const [contactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
@@ -40,8 +40,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (data) {
     selectedGroups = data.contact.contact.groups.map((group: any) => group.id);
   }
-  if (groups.data) {
-    options = groups.data.groups;
+  if (groupsData) {
+    options = groupsData.groups;
   }
 
   let dialogBox = null;
@@ -89,6 +89,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
+                groups();
                 contactGroups();
                 setShowDialog(true);
               }}
