@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { useQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
@@ -11,18 +12,17 @@ import {
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
-
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_TAGS } from '../../graphql/queries/Tag';
-import { useQuery } from '@apollo/client';
+import { GET_GROUPS } from '../../graphql/queries/Groups';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 
 export interface CollectionProps {
   match?: any;
 }
 
 const FormSchema = Yup.object().shape({
-  title: Yup.string().required('Title is required.'),
+  shortcode: Yup.string().required('Title is required.'),
 });
 
 const dialogMessage = "You won't be able to use this automation again.";
@@ -37,19 +37,20 @@ const queries = {
 };
 
 export const Collection: React.SFC<CollectionProps> = ({ match }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [shortcode, setShortcode] = useState('');
+  const [label, setLabel] = useState('');
   const [tags, setTags] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
-  const [dateFrom, setdateFrom] = useState([]);
-  const [dateTo, setdateTo] = useState([]);
+  const [dateFrom, setdateFrom] = useState('');
+  const [dateTo, setdateTo] = useState('');
 
-  const states = { title, description, includeTags, includeGroups };
+  const states = { shortcode, label, includeTags, includeGroups, dateFrom, dateTo };
 
-  const setStates = ({ title, description, includeTags, includeGroups, dateFrom, dateTo }: any) => {
-    setTitle(title);
-    setDescription(description);
+  const setStates = ({ shortcode, label, includeTags, includeGroups, dateFrom, dateTo }: any) => {
+    setShortcode(shortcode);
+    setLabel(label);
     setIncludeTags(includeTags);
     setIncludeGroups(includeGroups);
     setdateFrom(dateFrom);
@@ -61,17 +62,22 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       setTags(data.tags);
     },
   });
+  useQuery(GET_GROUPS, {
+    onCompleted: (data) => {
+      setGroups(data.groups);
+    },
+  });
 
   const formFields = [
     {
       component: Input,
-      name: 'title',
+      name: 'shortcode',
       type: 'text',
       placeholder: 'Collection Title',
     },
     {
       component: Input,
-      name: 'description',
+      name: 'label',
       type: 'text',
       placeholder: 'Description',
       rows: 3,
@@ -79,42 +85,44 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     },
     {
       component: Input,
-      name: 'name',
+      name: 'term',
       type: 'text',
       placeholder: 'Enter name, tag, keyword',
     },
     {
-      component: Dropdown,
-      name: 'staffGroup',
-      type: 'text',
-      placeholder: 'Select staff group',
-      label: 'Assigned To',
-    },
-    {
       component: AutoComplete,
       name: 'includeTags',
-      label: 'Include tags',
+      label: 'Includes tags',
       options: tags,
       optionLabel: 'label',
+      textFieldProps: {
+        label: 'Includes tags',
+        // required: true,
+        variant: 'outlined',
+      },
       icon: <TagIcon className={styles.TagIcon} />,
     },
     {
-      component: Input,
-      name: 'includeGroup',
-      type: 'text',
-      textArea: true,
-      placeholder: 'Include group',
-      label: 'Include group',
+      component: AutoComplete,
+      name: 'includeGroups',
+      placeholder: 'Includes groups',
+      label: 'Includes groups',
+      options: groups,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Includes groups',
+        variant: 'outlined',
+      },
     },
     {
-      component: Input,
+      component: Calendar,
       name: 'dateFrom',
       type: 'date',
       placeholder: 'Date from',
       label: 'Date range',
     },
     {
-      component: Input,
+      component: Calendar,
       name: 'dateTo',
       type: 'date',
       placeholder: 'Date to',
@@ -136,7 +144,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       linkParameter="id"
       listItem="savedSearch"
       icon={collectionIcon}
-      // additionalAction={additionalAction}
       languageSupport={false}
     />
   );
