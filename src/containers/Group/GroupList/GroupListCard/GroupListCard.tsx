@@ -8,7 +8,6 @@ interface GroupListCardProps {
 }
 
 export const GroupListCard: React.SFC<GroupListCardProps> = (props) => {
-  console.log(props.data);
   const viewDetails = (
     <Link to="/group/members" className={styles.Link}>
       <p>View Details</p>

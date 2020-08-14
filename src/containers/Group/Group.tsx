@@ -19,7 +19,7 @@ const FormSchema = Yup.object().shape({
   description: Yup.string().required('Description is required.'),
 });
 
-const dialogMessage = "You won't be able to use this for tagging messages.";
+const dialogMessage = "You won't be able to use this group again.";
 
 const formFields = (options: any) => {
   return [

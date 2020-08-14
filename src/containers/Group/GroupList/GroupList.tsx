@@ -17,7 +17,7 @@ const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
 
 const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
 
-const dialogMessage = "You won't be able to use this for tagging messages.";
+const dialogMessage = "You won't be able to use this group again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
 const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
