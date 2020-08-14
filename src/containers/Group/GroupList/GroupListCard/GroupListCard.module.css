@@ -1,5 +1,5 @@
 .Card {
-  width: 317px;
+  width: 310px;
   margin-right: 24px;
   margin-bottom: 24px;
   border-radius: 12px !important;
@@ -9,6 +9,7 @@
 .CardContainer {
   display: flex;
   padding: 16px;
+  flex-wrap: wrap;
 }
 
 .Link {

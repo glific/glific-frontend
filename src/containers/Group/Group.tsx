@@ -4,7 +4,7 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUP, GET_GROUPS } from '../../graphql/queries/Group';
 import { UPDATE_GROUP, CREATE_GROUP, DELETE_GROUP } from '../../graphql/mutations/Group';
 
-import { ListItem } from '../List/ListItem/ListItem';
+import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Group.module.css';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
@@ -75,7 +75,7 @@ export const Group: React.SFC<TagProps> = ({ match }) => {
   };
 
   return (
-    <ListItem
+    <FormLayout
       {...queries}
       match={match}
       states={states}
