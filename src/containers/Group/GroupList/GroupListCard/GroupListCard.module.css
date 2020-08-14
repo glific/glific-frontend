@@ -10,3 +10,23 @@
   display: flex;
   padding: 16px;
 }
+
+.Link {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #119656;
+  padding-left: 8px;
+  font-size: 16px;
+}
+.Link > p {
+  margin: 0px;
+}
+
+.CardActions > :last-child {
+  margin-left: auto !important;
+}
+
+.CardActions {
+  padding-bottom: 4px !important;
+}

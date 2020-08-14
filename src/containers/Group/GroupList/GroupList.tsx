@@ -2,8 +2,8 @@ import React from 'react';
 import { GET_GROUPS_COUNT, FILTER_GROUPS } from '../../../graphql/queries/Group';
 import { DELETE_GROUP } from '../../../graphql/mutations/Group';
 import styles from './GroupList.module.css';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { List } from '../../List/List';
 
 export interface GroupListProps {}
@@ -19,7 +19,7 @@ const getDescription = (text: string) => <p className={styles.GroupDescription}>
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
-const tagIcon = <TagIcon className={styles.TagIcon} />;
+const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
 const queries = {
   countQuery: GET_GROUPS_COUNT,
@@ -32,6 +32,10 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
+const contactIcon = <AddContactIcon />;
+
+const additionalAction = { icon: contactIcon, parameter: 'group', link: '/groups' };
+
 export const GroupList: React.SFC<GroupListProps> = (props) => (
   <List
     title="Groups"
@@ -40,7 +44,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => (
     displayListType="card"
     buttonLabel="+ CREATE GROUP"
     pageLink="group"
-    listIcon={tagIcon}
+    listIcon={groupIcon}
+    additionalAction={additionalAction}
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}

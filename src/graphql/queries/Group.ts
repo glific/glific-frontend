@@ -28,3 +28,12 @@ export const FILTER_GROUPS = gql`
     }
   }
 `;
+
+export const GET_GROUPS = gql`
+  {
+    groups {
+      id
+      label
+    }
+  }
+`;
