@@ -35,7 +35,7 @@ const columnAttributes = {
 
 export const CollectionList: React.SFC<CollectionListProps> = (props) => (
   <List
-    title="Collection"
+    title="Collections"
     listItem="savedSearches"
     listItemName="collection"
     pageLink="collection"

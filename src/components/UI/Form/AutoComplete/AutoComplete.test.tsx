@@ -3,15 +3,22 @@ import { shallow } from 'enzyme';
 import { AutoComplete } from './AutoComplete';
 
 describe('<AutoComplete />', () => {
-  const tags: any[] = [
+  const option: any[] = [
     {
-      __typename: 'Tag',
       description: null,
       id: '1',
       label: 'Messages',
     },
   ];
-  const wrapper = shallow(<AutoComplete label="Include tags" options={tags} optionLabel="label" />);
+  const props = {
+    label: 'Example',
+    options: { option },
+    optionLabel: 'label',
+    field: { name: 'example', value: [] },
+    form: { dirty: false, touched: false, errors: false, setFieldValue: null },
+  };
+
+  const wrapper = shallow(<AutoComplete {...props} />);
 
   it('renders <AutoComplete /> component', () => {
     expect(wrapper).toBeTruthy();
