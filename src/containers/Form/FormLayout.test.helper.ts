@@ -1,7 +1,7 @@
-import { GET_TAG, GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../../graphql/mutations/Tag';
-import { Input } from '../../../components/UI/Form/Input/Input';
+import { GET_TAG, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag';
+import { Input } from '../../components/UI/Form/Input/Input';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_TAG,
