@@ -14,11 +14,14 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
+import { CREATE_CONTACT_GROUP } from '../../../../graphql/mutations/Group';
+import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 
 export interface ContactBarProps {
   contactName: string;
+  contactId: string;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -26,24 +29,48 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const open = Boolean(anchorEl);
   const [showDialog, setShowDialog] = useState(false);
   const groups = useQuery(GET_GROUPS);
+  const [contactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
+    variables: { id: props.contactId },
+    fetchPolicy: 'cache-and-network',
+  });
+  const [createContactGroup] = useMutation(CREATE_CONTACT_GROUP);
   let options = [];
+  let selectedGroups = [];
 
+  if (data) {
+    selectedGroups = data.contact.contact.groups.map((group: any) => group.id);
+  }
   if (groups.data) {
     options = groups.data.groups;
   }
 
   let dialogBox = null;
 
-  const handleDialogOk = () => {
+  const handleDialogOk = (selectedGroupIds: any) => {
+    selectedGroupIds.forEach((groupId: any) => {
+      createContactGroup({
+        variables: {
+          input: {
+            contactId: props.contactId,
+            groupId: groupId,
+          },
+        },
+      });
+    });
+    setShowDialog(false);
+  };
+
+  const handleDialogCancel = () => {
     setShowDialog(false);
   };
 
   if (showDialog) {
     dialogBox = (
       <SearchDialogBox
+        selectedOptions={selectedGroups}
         title="Add contact to group"
         handleOk={handleDialogOk}
-        handleCancel={handleDialogOk}
+        handleCancel={handleDialogCancel}
         options={options}
       ></SearchDialogBox>
     );
@@ -59,7 +86,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Button className={styles.ListButtonPrimary} onClick={() => setShowDialog(true)}>
+            <Button
+              className={styles.ListButtonPrimary}
+              onClick={() => {
+                contactGroups();
+                setShowDialog(true);
+              }}
+            >
               <AddContactIcon className={styles.Icon} />
               Add contact to group
             </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DialogBox } from '../DialogBox/DialogBox';
 import {
   FormControl,
@@ -16,11 +16,16 @@ export interface SearchDialogBoxProps {
   handleOk: Function;
   handleCancel: Function;
   options: any;
+  selectedOptions: any;
 }
 
 export const SearchDialogBox = (props: any) => {
   const [search, setSearch] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
+
+  useEffect(() => {
+    setSelectedOptions(props.selectedOptions);
+  }, [props.selectedOptions]);
 
   const handleCheckboxChange = (event: any) => {
     const optionId = event.target.id;
@@ -32,8 +37,8 @@ export const SearchDialogBox = (props: any) => {
     }
   };
 
-  let tagList = null;
-  tagList = props.options.map((option: any) => {
+  let optionsList = null;
+  optionsList = props.options.map((option: any) => {
     if (option.label.toLowerCase().includes(search)) {
       return (
         <div>
@@ -56,7 +61,7 @@ export const SearchDialogBox = (props: any) => {
   return (
     <DialogBox
       title={props.title}
-      handleOk={props.handleOk}
+      handleOk={() => props.handleOk(selectedOptions)}
       handleCancel={props.handleCancel}
       titleAlign="left"
       buttonOk="Save"
@@ -81,7 +86,7 @@ export const SearchDialogBox = (props: any) => {
           />
         </FormControl>
         <div>
-          <form className={styles.Form}>{tagList}</form>
+          <form className={styles.Form}>{optionsList}</form>
         </div>
       </div>
     </DialogBox>

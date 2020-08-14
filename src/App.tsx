@@ -43,7 +43,7 @@ const App = () => {
   const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
   let routes;
 
-  if (authenticated) {
+  if (!authenticated) {
     routes = (
       <div className={styles.App}>
         <Layout>
