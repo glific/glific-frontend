@@ -1,9 +1,8 @@
-import { GET_CONVERSATION_QUERY, GET_CONVERSATION_MESSAGE_QUERY } from '../../graphql/queries/Chat';
 import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY } from '../../graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
 
 const queryVariables = {
@@ -12,18 +11,18 @@ const queryVariables = {
   },
   filter: {},
   messageOpts: {
-    limit: 100,
+    limit: 50,
   },
 };
 
 export const conversationQuery = {
   request: {
-    query: GET_CONVERSATION_QUERY,
+    query: SEARCH_QUERY,
     variables: queryVariables,
   },
   result: {
     data: {
-      conversations: [
+      search: [
         {
           contact: {
             id: '2',
@@ -128,37 +127,45 @@ const messageSendSubscription = {
 
 const conversationMessageQuery = (contactId: any, contactName: string, contactNumber: string) => ({
   request: {
-    query: GET_CONVERSATION_MESSAGE_QUERY,
-    variables: { contactId: contactId, filter: {}, messageOpts: { limit: 100 } },
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: {
+        limit: 50,
+      },
+      filter: { id: contactId.toString() },
+      messageOpts: { limit: 50 },
+    },
   },
   result: {
     data: {
-      conversation: {
-        contact: {
-          id: contactId,
-          name: contactName,
-          phone: contactNumber,
-        },
-        messages: [
-          {
-            id: '1',
-            body: 'Hello',
-            insertedAt: '2020-06-25T13:36:43Z',
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '3',
-            },
-            tags: [
-              {
-                id: '1',
-                label: 'Unread',
-              },
-            ],
+      search: [
+        {
+          contact: {
+            id: contactId.toString(),
+            name: contactName,
+            phone: contactNumber,
           },
-        ],
-      },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '3',
+              },
+              tags: [
+                {
+                  id: '1',
+                  label: 'Unread',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
   },
 });
@@ -166,7 +173,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
 const savedSearchQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: { limit: 3 } },
+    variables: { filter: {}, opts: { limit: 10 } },
   },
   result: {
     data: {
@@ -193,23 +200,4 @@ export const CONVERSATION_MOCKS = [
   savedSearchQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-];
-
-const messageReceivedSubscriptionWithNoData = {
-  request: {
-    query: MESSAGE_RECEIVED_SUBSCRIPTION,
-    variables: queryVariables,
-  },
-  result: {
-    data: null,
-  },
-};
-export const CONVERSATION_MOCKS_WITH_NO_DATA = [
-  conversationQuery,
-  conversationQuery,
-  messageSendSubscription,
-  searchQuery,
-  savedSearchQuery,
-  messageReceivedSubscriptionWithNoData,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009'),
 ];

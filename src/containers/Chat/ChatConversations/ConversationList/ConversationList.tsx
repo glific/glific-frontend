@@ -3,10 +3,9 @@ import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import { GET_CONVERSATION_QUERY } from '../../../../graphql/queries/Chat';
+import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 
 interface ConversationListProps {
   searchVal: string;
@@ -17,19 +16,18 @@ interface ConversationListProps {
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
-  const firstUpdate = useRef(true);
   const queryVariables = {
     contactOpts: {
       limit: 50,
     },
     filter: {},
     messageOpts: {
-      limit: 100,
+      limit: 50,
     },
   };
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
-    GET_CONVERSATION_QUERY,
+    SEARCH_QUERY,
     {
       variables: queryVariables,
       fetchPolicy: 'cache-first',
@@ -64,7 +62,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
 
   // Other cases
-  if (called && (loading || conversationLoading)) return <Loading />;
+  if ((called && loading) || conversationLoading) return <Loading />;
+
   if (called && error) {
     setErrorMessage(client, error);
     return null;
@@ -73,7 +72,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   let conversations = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
-    conversations = data.conversations;
+    conversations = data.search;
   }
 
   if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
