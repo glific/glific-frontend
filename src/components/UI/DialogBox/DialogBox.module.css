@@ -1,14 +1,15 @@
 .DialogboxPaper {
   border-radius: 24px !important;
+  margin: 0px !important;
   margin-top: 66px !important;
+  width: 395px !important ;
 }
 
 .ScrollPaper {
   align-items: unset !important;
 }
 .Dialogbox {
-  max-width: 459px;
-  min-width: 459px;
+  width: 459px;
   margin: 0 auto;
   height: unset !important;
 }
@@ -21,6 +22,15 @@
 .DialogTitle {
   color: #073f24;
   padding-top: 24px !important;
-  text-align: center;
   padding-bottom: 8px !important;
+}
+
+.DialogTitleCenter {
+  composes: DialogTitle;
+  text-align: center;
+}
+
+.DialogTitleLeft {
+  composes: DialogTitle;
+  text-align: left;
 }
