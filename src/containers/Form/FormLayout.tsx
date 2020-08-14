@@ -35,10 +35,6 @@ export interface FormLayoutProps {
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
-  dropdownLabel?: string;
-  dropdownPlaceholder?: string;
-  autoCompleteLabel?: string;
-  autoCompleteOptions?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({

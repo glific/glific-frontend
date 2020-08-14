@@ -7,55 +7,14 @@ import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from '../Form/FormLayout';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
 export interface StaffManagementProps {
   match: any;
 }
 
-const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required.'),
-  phone: Yup.string().required('Phone is required'),
-});
-
 const dialogMessage = ' Once deleted this action cannot be undone.';
-
-const formFields = [
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'Full Name',
-    query: true,
-    select: false,
-  },
-  {
-    component: Input,
-    name: 'phone',
-    placeholder: 'Phone Number',
-    query: false,
-    select: false,
-  },
-  {
-    component: Input,
-    name: 'roles',
-    type: 'text',
-    placeholder: 'Roles',
-    query: true,
-    select: true,
-    fieldName: '',
-    selectItems: [
-      { value: 'admin', name: 'Admin' },
-      { value: 'basic', name: 'Basic' },
-    ],
-  },
-  {
-    name: 'groups',
-    type: 'text',
-    placeholder: 'Groups',
-    autocomplete: true,
-    fieldName: '',
-  },
-];
 
 const staffManagementIcon = <StaffManagementIcon />;
 
@@ -70,36 +29,64 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState('');
-  const [checkItems, setCheckItems] = useState();
+  const [groups, setGroups] = useState([]);
 
   const states = { name, phone, roles };
-  const setStates = ({ name, phone, roles }: any) => {
+  const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
     setRoles(roles);
+    setGroups(groups);
   };
 
-  const { loading, error } = useQuery(GET_GROUPS, {
-    variables: {
-      opts: {
-        order: 'ASC',
-        limit: 100,
-        offset: 0,
-      },
-      filter: {
-        label: 'Group',
-      },
-    },
+  useQuery(GET_GROUPS, {
     onCompleted: (data) => {
-      let groups = data['groups'].map((item: any) => {
-        return item.label;
-      });
-      console.log(groups);
-      setCheckItems(groups);
-      console.log(data);
+      setGroups(data.groups);
     },
   });
-  console.log(checkItems);
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Full Name',
+      query: true,
+      select: false,
+    },
+    {
+      component: Input,
+      name: 'phone',
+      placeholder: 'Phone Number',
+      query: false,
+      select: false,
+    },
+    {
+      component: Dropdown,
+      name: 'roles',
+      placeholder: 'Roles',
+      options: [
+        { value: 'admin', name: 'Admin' },
+        { value: 'basic', name: 'Basic' },
+      ],
+    },
+    {
+      component: AutoComplete,
+      name: 'groups',
+      placeholder: 'Groups',
+      options: groups,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Groups',
+        variant: 'outlined',
+      },
+    },
+  ];
+
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required.'),
+    phone: Yup.string().required('Phone is required'),
+  });
 
   return (
     <FormLayout
@@ -115,10 +102,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       listItem="user"
       icon={staffManagementIcon}
       languageSupport={false}
-      dropdownLabel="Roles"
-      dropdownPlaceholder="Roles"
-      autoCompleteLabel="Groups"
-      autoCompleteOptions={checkItems}
     />
   );
 };
