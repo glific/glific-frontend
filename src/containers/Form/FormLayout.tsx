@@ -35,8 +35,6 @@ export interface FormLayoutProps {
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
-  checkItems?: any;
-  checkItemsHeader?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -59,8 +57,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
-  checkItems,
-  checkItemsHeader,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -69,12 +65,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
+  const [groupsID, setGroupsID] = useState();
+  const [additionalData, setadditionalData] = useState();
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
       setLanguageId(data.languages[0].id);
     },
   });
+
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
@@ -85,9 +84,31 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
+        if (data.user && data.user.user) {
+          setGroupsID(data.user.user.groups == undefined ? null : data.user.user.groups);
+        }
       }
     },
   });
+
+  // if (additionalQuery) {
+  //   const { loading, error } = useQuery(additionalQuery, {
+  //     variables: {
+  //       opts: {
+  //         order: 'ASC',
+  //         limit: 10,
+  //         offset: 0,
+  //       },
+  //       filter: {
+  //         label: 'Group',
+  //       },
+  //     },
+  //     onCompleted: (data) => {
+  //       console.log(data);
+  //     },
+  //   });
+  // }
+
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: () => {
       setFormSubmitted(true);
@@ -157,9 +178,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     let message;
 
     if (itemId) {
+      console.log(payload);
       updateItem({
         variables: {
           id: itemId,
+          groupIds: groupsID,
           input: payload,
         },
       });
@@ -211,6 +234,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     </Button>
   ) : null;
 
+  const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('hi');
+  };
+
   let form = (
     <>
       <Formik
@@ -221,6 +248,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
         validationSchema={validationSchema}
         onSubmit={(item) => {
+          console.log(item);
           saveHandler(item);
         }}
       >
@@ -238,8 +266,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 </React.Fragment>
               );
             })}
-            {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
-            {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}
             <div className={styles.Buttons}>
               <Button
                 variant="contained"

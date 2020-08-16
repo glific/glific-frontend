@@ -13,7 +13,7 @@ import {
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
 import { GET_TAGS } from '../../graphql/queries/Tag';
-import { GET_GROUPS } from '../../graphql/queries/Groups';
+import { GET_GROUPS } from '../../graphql/queries/Group';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 
