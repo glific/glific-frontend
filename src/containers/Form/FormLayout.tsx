@@ -66,7 +66,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [groupsID, setGroupsID] = useState();
-  const [additionalData, setadditionalData] = useState();
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -90,24 +89,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
-
-  // if (additionalQuery) {
-  //   const { loading, error } = useQuery(additionalQuery, {
-  //     variables: {
-  //       opts: {
-  //         order: 'ASC',
-  //         limit: 10,
-  //         offset: 0,
-  //       },
-  //       filter: {
-  //         label: 'Group',
-  //       },
-  //     },
-  //     onCompleted: (data) => {
-  //       console.log(data);
-  //     },
-  //   });
-  // }
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: () => {
