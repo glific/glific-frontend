@@ -157,11 +157,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     let message;
 
     if (itemId) {
-      console.log(payload);
       updateItem({
         variables: {
           id: itemId,
-          groupIds: groupsID,
           input: payload,
         },
       });
@@ -223,7 +221,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
         validationSchema={validationSchema}
         onSubmit={(item) => {
-          console.log(item);
           saveHandler(item);
         }}
       >

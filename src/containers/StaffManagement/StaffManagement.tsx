@@ -29,7 +29,7 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState('');
+  const [roles, setRoles] = useState([]);
   const [groups, setGroups] = useState([]);
 
   const states = { name, phone, roles, groups };
@@ -65,7 +65,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       placeholder: 'Roles',
       options: [
         { id: 'admin', label: 'Admin' },
-        { id: 'basic', label: 'Basic' },
+        { id: 'staff', label: 'Staff' },
       ],
     },
     {
