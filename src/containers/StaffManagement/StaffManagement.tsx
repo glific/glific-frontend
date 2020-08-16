@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { useQuery } from '@apollo/client';
+
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/Users';
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
-import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from '../Form/FormLayout';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { GET_USERS_QUERY } from '../../graphql/queries/User';
+import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
+import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
+import { GET_GROUPS } from '../../graphql/queries/Group';
 
 export interface StaffManagementProps {
   match: any;
@@ -20,7 +21,7 @@ const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
   getItemQuery: GET_USERS_QUERY,
-  createItemQuery: CREATE_TEMPLATE,
+  createItemQuery: UPDATE_USER,
   updateItemQuery: UPDATE_USER,
   deleteItemQuery: DELETE_USER,
 };

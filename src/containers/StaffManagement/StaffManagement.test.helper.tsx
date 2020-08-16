@@ -1,4 +1,4 @@
-import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT } from '../../graphql/queries/Users';
+import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT } from '../../graphql/queries/User';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 
