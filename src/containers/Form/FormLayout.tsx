@@ -85,7 +85,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
         if (data.user && data.user.user) {
-          setGroupsID(data.user.user.groups == undefined ? null : data.user.user.groups);
+          setGroupsID(data.user.user.groups === undefined ? null : data.user.user.groups);
         }
       }
     },
@@ -233,10 +233,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       Remove
     </Button>
   ) : null;
-
-  const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('hi');
-  };
 
   let form = (
     <>
