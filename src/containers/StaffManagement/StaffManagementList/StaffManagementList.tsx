@@ -1,5 +1,5 @@
 import React from 'react';
-import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
+import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/Users';
 import { DELETE_USER } from '../../../graphql/mutations/StaffManagement';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';

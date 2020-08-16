@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/StaffManagement';
+import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/Users';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
@@ -31,7 +31,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [roles, setRoles] = useState('');
   const [groups, setGroups] = useState([]);
 
-  const states = { name, phone, roles };
+  const states = { name, phone, roles, groups };
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
@@ -66,8 +66,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'roles',
       placeholder: 'Roles',
       options: [
-        { value: 'admin', name: 'Admin' },
-        { value: 'basic', name: 'Basic' },
+        { id: 'admin', label: 'Admin' },
+        { id: 'basic', label: 'Basic' },
       ],
     },
     {
