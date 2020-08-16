@@ -84,9 +84,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
-        if (data.user && data.user.user) {
-          setGroupsID(data.user.user.groups === undefined ? null : data.user.user.groups);
-        }
       }
     },
   });

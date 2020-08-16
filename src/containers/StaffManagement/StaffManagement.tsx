@@ -52,15 +52,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'name',
       type: 'text',
       placeholder: 'Full Name',
-      query: true,
-      select: false,
     },
     {
       component: Input,
       name: 'phone',
       placeholder: 'Phone Number',
-      query: false,
-      select: false,
+      disabled: true,
     },
     {
       component: Dropdown,
