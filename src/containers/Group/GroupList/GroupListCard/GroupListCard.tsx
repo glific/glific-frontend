@@ -17,11 +17,11 @@ export const GroupListCard: React.SFC<GroupListCardProps> = (props) => {
     <div className={styles.CardContainer}>
       {props.data.map((group: any) => {
         return (
-          <Card variant="outlined" className={styles.Card}>
+          <Card variant="outlined" className={styles.Card} key={group.id}>
             <CardContent>
-              {group.label}
+              <div data-testid="label">{group.label}</div>
 
-              <Typography variant="body2" component="p">
+              <Typography variant="body2" component="p" data-testid="description">
                 {group.description}
               </Typography>
             </CardContent>
