@@ -154,6 +154,13 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       payload = collectionPayload(payload);
     }
 
+    // remove fields from the payload that marked as skipPayload = true
+    formFields.map((field: any) => {
+      if (field.skipPayload) {
+        delete payload[field.name];
+      }
+    });
+
     let message;
 
     if (itemId) {

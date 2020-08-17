@@ -72,6 +72,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'phone',
       placeholder: 'Phone Number',
       disabled: true,
+      skipPayload: true,
     },
     {
       component: Dropdown,
