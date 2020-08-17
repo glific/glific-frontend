@@ -99,4 +99,15 @@
   border-width: 2px;
   border-color: #eaedec;
   border-radius: 12px;
+  padding: 15px;
+}
+
+.CheckBox {
+  color: blue !important;
+}
+
+.Select {
+  width: 450px;
+  margin-left: 8px;
+  margin-top: 8px;
 }

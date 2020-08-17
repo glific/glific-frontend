@@ -35,3 +35,13 @@ export const FILTER_USERS = gql`
     }
   }
 `;
+
+export const GET_GROUPS = gql`
+  query groups($filter: GroupFilter, $opts: Opts) {
+    groups(filter: $filter, opts: $opts) {
+      id
+      label
+      isRestricted
+    }
+  }
+`;
