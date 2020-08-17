@@ -6,7 +6,7 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { GET_USERS_QUERY } from '../../graphql/queries/User';
+import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { GET_GROUPS } from '../../graphql/queries/Group';
@@ -37,9 +37,21 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
-    setRoles(roles);
+    // TODO: fix this once backend fixes the endpoint
+    //setRoles(roles);
     setGroups(groups);
   };
+
+  useQuery(GET_USER_ROLES, {
+    onCompleted: (data) => {
+      // TODO: fix this once backend fixes the endpoint
+      let rolesList: any = [];
+      data.roles.map((role: any) => {
+        rolesList.push({ id: role, label: role });
+      });
+      setRoles(rolesList);
+    },
+  });
 
   const { loading, data } = useQuery(GET_GROUPS);
   if (loading) return <Loading />;
@@ -65,10 +77,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: Dropdown,
       name: 'roles',
       placeholder: 'Roles',
-      options: [
-        { id: 'admin', label: 'Admin' },
-        { id: 'staff', label: 'Staff' },
-      ],
+      options: roles,
     },
     {
       component: AutoComplete,
