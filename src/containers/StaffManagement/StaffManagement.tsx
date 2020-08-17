@@ -10,6 +10,7 @@ import { GET_USERS_QUERY } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { GET_GROUPS } from '../../graphql/queries/Group';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 export interface StaffManagementProps {
   match: any;
@@ -40,11 +41,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setGroups(groups);
   };
 
-  useQuery(GET_GROUPS, {
-    onCompleted: (data) => {
-      setGroups(data.groups);
-    },
-  });
+  const { loading, data } = useQuery(GET_GROUPS);
+  if (loading) return <Loading />;
+
+  if (!data.groups) {
+    return null;
+  }
 
   const formFields = [
     {
@@ -72,7 +74,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: AutoComplete,
       name: 'groups',
       placeholder: 'Groups',
-      options: groups,
+      options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Groups',
