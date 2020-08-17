@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY, GET_GROUPS } from '../../graphql/queries/StaffManagement';
+import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
+import { GET_GROUPS } from '../../graphql/queries/Group';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
 import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
