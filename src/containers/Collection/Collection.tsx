@@ -16,6 +16,8 @@ import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
+import { DATE_FORMAT } from '../../common/constants';
+import moment from 'moment';
 
 export interface CollectionProps {
   match?: any;
@@ -23,9 +25,10 @@ export interface CollectionProps {
 
 const FormSchema = Yup.object().shape({
   shortcode: Yup.string().required('Title is required.'),
+  label: Yup.string().required('Description is required.'),
 });
 
-const dialogMessage = "You won't be able to use this automation again.";
+const dialogMessage = "You won't be able to use this collection again.";
 
 const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
 
@@ -39,22 +42,58 @@ const queries = {
 export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
+  const [term, setTerm] = useState('');
   const [tags, setTags] = useState([]);
   const [groups, setGroups] = useState([]);
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
-  const [dateFrom, setdateFrom] = useState('');
-  const [dateTo, setdateTo] = useState('');
+  const [dateFrom, setdateFrom] = useState(null);
+  const [dateTo, setdateTo] = useState(null);
 
-  const states = { shortcode, label, includeTags, includeGroups, dateFrom, dateTo };
-
-  const setStates = ({ shortcode, label, includeTags, includeGroups, dateFrom, dateTo }: any) => {
+  const states = { shortcode, label, term, includeTags, includeGroups, dateFrom, dateTo };
+  const setStates = ({ shortcode, label, args }: any) => {
     setShortcode(shortcode);
     setLabel(label);
-    setIncludeTags(includeTags);
-    setIncludeGroups(includeGroups);
-    setdateFrom(dateFrom);
-    setdateTo(dateTo);
+    setArgs(args);
+  };
+
+  const setArgs = (args: any) => {
+    let filters = JSON.parse(args);
+    Object.keys(filters.filter).map((key) => {
+      switch (key) {
+        case 'includeTags':
+          if (filters.filter.hasOwnProperty('includeTags'))
+            setIncludeTags(getObject(tags, filters.filter['includeTags']));
+          break;
+        case 'includeGroups':
+          if (filters.filter.hasOwnProperty('includeGroups'))
+            setIncludeGroups(getObject(tags, filters.filter['includeGroups']));
+          break;
+        case 'dateRange':
+          if (filters.filter.hasOwnProperty('dateRange')) {
+            setdateFrom(filters.filter.dateRange.from);
+            setdateTo(filters.filter.dateRange.to);
+          }
+          break;
+        case 'term':
+          setTerm(filters.filter.term);
+          break;
+        default:
+          break;
+      }
+    });
+  };
+
+  const getObject = (arr: any, data: any) => {
+    if (arr && data) {
+      let result: any = [];
+      arr.map((obj: any) => {
+        data.map((ID: any) => {
+          if (obj.id === ID) result.push(obj);
+        });
+      });
+      return result;
+    }
   };
 
   useQuery(GET_TAGS, {
@@ -62,6 +101,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       setTags(data.tags);
     },
   });
+
   useQuery(GET_GROUPS, {
     onCompleted: (data) => {
       setGroups(data.groups);
@@ -129,12 +169,39 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     },
   ];
 
+  const setPayload = (payload: any) => {
+    return {
+      label: payload.label,
+      shortcode: payload.shortcode,
+      args: JSON.stringify({
+        messageOpts: {
+          offset: 0,
+          limit: 10,
+        },
+        filter: {
+          term: payload.term,
+          includeTags: payload.includeTags.map((option: any) => option.id),
+          includeGroups: payload.includeGroups.map((option: any) => option.id),
+          dateRange: {
+            to: moment(payload.dateTo).format(DATE_FORMAT),
+            from: moment(payload.dateFrom).format(DATE_FORMAT),
+          },
+        },
+        contactOpts: {
+          offset: 0,
+          limit: 20,
+        },
+      }),
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
