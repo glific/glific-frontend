@@ -5,12 +5,12 @@ import { GET_GROUP, GET_GROUPS } from '../../graphql/queries/Group';
 import { UPDATE_GROUP, CREATE_GROUP, DELETE_GROUP } from '../../graphql/mutations/Group';
 
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import styles from './Group.module.css';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { useQuery } from '@apollo/client';
 
-export interface TagProps {
+export interface GroupProps {
   match: any;
 }
 
@@ -49,7 +49,7 @@ const formFields = (options: any) => {
   ];
 };
 
-const tagIcon = <TagIcon className={styles.TagIcon} />;
+const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
 const queries = {
   getItemQuery: GET_GROUP,
@@ -58,7 +58,7 @@ const queries = {
   deleteItemQuery: DELETE_GROUP,
 };
 
-export const Group: React.SFC<TagProps> = ({ match }) => {
+export const Group: React.SFC<GroupProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
 
@@ -87,7 +87,7 @@ export const Group: React.SFC<TagProps> = ({ match }) => {
       formFields={formFields(options)}
       redirectionLink="group"
       listItem="group"
-      icon={tagIcon}
+      icon={groupIcon}
     />
   );
 };

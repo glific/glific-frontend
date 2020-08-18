@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, CardContent, Typography, CardActions } from '@material-ui/core';
-import styles from './GroupListCard.module.css';
+import styles from './ListCard.module.css';
 import { Link } from 'react-router-dom';
 
-interface GroupListCardProps {
+interface ListCardProps {
   data: any;
+  link: any;
 }
 
-export const GroupListCard: React.SFC<GroupListCardProps> = (props) => {
+export const ListCard: React.SFC<ListCardProps> = (props) => {
   const viewDetails = (
-    <Link to="/group/members" className={styles.Link}>
+    <Link to={props.link} className={styles.Link}>
       <p>View Details</p>
     </Link>
   );
   return (
     <div className={styles.CardContainer}>
-      {props.data.map((group: any) => {
+      {props.data.map((data: any) => {
         return (
-          <Card variant="outlined" className={styles.Card} key={group.id}>
+          <Card variant="outlined" className={styles.Card} key={data.id}>
             <CardContent>
-              <div data-testid="label">{group.label}</div>
+              <div data-testid="label">{data.label}</div>
 
               <Typography variant="body2" component="p" data-testid="description">
-                {group.description}
+                {data.description}
               </Typography>
             </CardContent>
             <CardActions className={styles.CardActions}>
               {viewDetails}
-              {group.operations}
+              {data.operations}
             </CardActions>
           </Card>
         );

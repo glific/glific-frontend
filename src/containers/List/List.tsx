@@ -14,7 +14,7 @@ import styles from './List.module.css';
 import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
-import { GroupListCard } from '../Group/GroupList/GroupListCard/GroupListCard';
+import { ListCard } from './ListCard/ListCard';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -34,6 +34,7 @@ export interface ListProps {
   searchParameter?: string;
   filters?: any;
   displayListType?: string;
+  cardLink?: string | null;
   additionalAction?: {
     icon: any;
     parameter: string;
@@ -66,6 +67,7 @@ export const List: React.SFC<ListProps> = ({
   searchParameter = 'label',
   filters = null,
   displayListType = 'list',
+  cardLink = null,
   additionalAction = null,
 }: ListProps) => {
   const client = useApolloClient();
@@ -296,7 +298,7 @@ export const List: React.SFC<ListProps> = ({
       />
     );
   } else if (displayListType == 'card') {
-    displayList = <GroupListCard data={itemList} />;
+    displayList = <ListCard data={itemList} link={cardLink} />;
   }
 
   return (

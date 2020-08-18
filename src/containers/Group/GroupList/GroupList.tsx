@@ -47,6 +47,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => (
     listIcon={groupIcon}
     additionalAction={additionalAction}
     dialogMessage={dialogMessage}
+    cardLink="/group/members"
     {...queries}
     {...columnAttributes}
   />

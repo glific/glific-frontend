@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { GroupListCard } from './GroupListCard';
+import { ListCard } from './ListCard';
 
 const defaultProps = {
   data: [
@@ -11,9 +11,10 @@ const defaultProps = {
       operations: null,
     },
   ],
+  link: '/details',
 };
 
-const card = <GroupListCard {...defaultProps} />;
+const card = <ListCard {...defaultProps} />;
 
 test('it should have correct label', () => {
   const wrapper = shallow(card);
