@@ -1,4 +1,9 @@
-import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT } from '../../graphql/queries/User';
+import {
+  GET_USERS_QUERY,
+  FILTER_USERS,
+  USER_COUNT,
+  GET_USER_ROLES,
+} from '../../graphql/queries/User';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 
@@ -89,6 +94,16 @@ export const STAFF_MANAGEMENT_MOCKS = [
             isRestricted: true,
           },
         ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_USER_ROLES,
+    },
+    result: {
+      data: {
+        roles: ['none', 'staff', 'manager', 'admin'],
       },
     },
   },
