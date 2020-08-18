@@ -104,6 +104,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);
+      return null;
     },
   });
 
@@ -126,7 +127,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
 
     // create custom payload for collection
-    if (listItemName === 'collection') {
+    if (setPayload) {
       payload = setPayload(payload);
     }
 
