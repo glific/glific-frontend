@@ -5,12 +5,13 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { getIn } from 'formik';
+import moment from 'moment';
+import { DATE_FORMAT } from '../../../../common/constants';
 
 export interface CalendarProps {
   variant?: any;
   inputVariant?: any;
   format?: string;
-  KeyboardButtonProps: object;
   field: any;
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
@@ -27,8 +28,8 @@ export const Calendar: React.SFC<CalendarProps> = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
-
-  const dateValue = field.value ? field.value : new Date();
+  moment.defaultFormat = DATE_FORMAT;
+  const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : '';
   const defaultDateValue = field.value ? field.value : setFieldValue(field.name, new Date());
 
   const handleDateChange = (date: Date | null) => {
@@ -45,8 +46,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
           variant={variant}
           inputVariant={inputVariant}
           format={format}
-          margin="none"
-          id="date-picker-inline"
+          data-testid="date-picker-inline"
           label={placeholder}
           value={dateValue}
           onChange={handleDateChange}
