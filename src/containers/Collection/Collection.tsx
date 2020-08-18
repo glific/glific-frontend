@@ -18,6 +18,7 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import { DATE_FORMAT } from '../../common/constants';
 import moment from 'moment';
+import Loading from '../../components/UI/Layout/Loading/Loading';
 
 export interface CollectionProps {
   match?: any;
@@ -63,11 +64,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       switch (key) {
         case 'includeTags':
           if (filters.filter.hasOwnProperty('includeTags'))
-            setIncludeTags(getObject(tags, filters.filter['includeTags']));
+            setIncludeTags(getObject(dataT.tags, filters.filter['includeTags']));
           break;
         case 'includeGroups':
           if (filters.filter.hasOwnProperty('includeGroups'))
-            setIncludeGroups(getObject(tags, filters.filter['includeGroups']));
+            setIncludeGroups(getObject(data.groups, filters.filter['includeGroups']));
           break;
         case 'dateRange':
           if (filters.filter.hasOwnProperty('dateRange')) {
@@ -96,17 +97,10 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     }
   };
 
-  useQuery(GET_TAGS, {
-    onCompleted: (data) => {
-      setTags(data.tags);
-    },
-  });
+  const { data: dataT } = useQuery(GET_TAGS);
+  const { data } = useQuery(GET_GROUPS);
 
-  useQuery(GET_GROUPS, {
-    onCompleted: (data) => {
-      setGroups(data.groups);
-    },
-  });
+  if (!data || !dataT) return <Loading />;
 
   const formFields = [
     {
@@ -133,7 +127,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       component: AutoComplete,
       name: 'includeTags',
       label: 'Includes tags',
-      options: tags,
+      options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Includes tags',
@@ -147,7 +141,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       name: 'includeGroups',
       placeholder: 'Includes groups',
       label: 'Includes groups',
-      options: groups,
+      options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Includes groups',
