@@ -36,6 +36,7 @@ export interface FormLayoutProps {
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
+  setPayload?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -58,6 +59,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
+  setPayload,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -101,7 +103,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       setFormSubmitted(true);
     },
     onError: (error: ApolloError) => {
-      console.log('Error', error);
+      setErrorMessage(client, error);
+      return null;
     },
   });
 
@@ -115,32 +118,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
-  const collectionPayload = (payload: any) => {
-    return {
-      label: payload.label,
-      shortcode: payload.shortcode,
-      args: JSON.stringify({
-        messageOpts: {
-          offset: 0,
-          limit: 10,
-        },
-        filter: {
-          term: payload.term,
-          includeTags: payload.includeTags.map((option: any) => option.id),
-          includeGroups: payload.includeGroups.map((option: any) => option.id),
-          dateRange: {
-            to: moment(payload.dateFrom).format(DATE_FORMAT),
-            from: moment(payload.dateTo).format(DATE_FORMAT),
-          },
-        },
-        contactOpts: {
-          offset: 0,
-          limit: 20,
-        },
-      }),
-    };
-  };
-
   const saveHandler = ({ languageId, ...item }: any) => {
     let payload = {
       ...item,
@@ -150,8 +127,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
 
     // create custom payload for collection
-    if (listItemName === 'collection') {
-      payload = collectionPayload(payload);
+    if (setPayload) {
+      payload = setPayload(payload);
     }
 
     // remove fields from the payload that marked as skipPayload = true
