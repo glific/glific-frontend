@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Collection } from './Collection';
-import { ApolloProvider } from '@apollo/client';
 import gqlClient from '../../config/apolloclient';
 import { render, wait, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -13,9 +12,9 @@ import { LIST_ITEM_MOCKS } from './Collection.test.helper';
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = shallow(
-  <ApolloProvider client={gqlClient(null)}>
+  <MockedProvider mocks={[]}>
     <Collection />
-  </ApolloProvider>
+  </MockedProvider>
 );
 
 describe('<Collection />', () => {
