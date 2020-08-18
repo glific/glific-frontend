@@ -197,7 +197,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="collection"
+      listItemName="Collection"
       dialogMessage={dialogMessage}
       formFields={formFields}
       redirectionLink="collection"
