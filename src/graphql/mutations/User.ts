@@ -12,8 +12,8 @@ export const DELETE_USER = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation updateUser($id: ID!, $input: UserInput!, $groupIds: [ID]!) {
-    updateUser(id: $id, input: $input, groupIds: $groupIds) {
+  mutation updateUser($id: ID!, $input: UserInput!) {
+    updateUser(id: $id, input: $input) {
       user {
         id
         name
@@ -31,24 +31,3 @@ export const UPDATE_USER = gql`
   }
 `;
 
-export const ADD_USER_TO_GROUP = gql`
-  mutation createUserGroup($input: UserGroupInput!) {
-    createUserGroup(input: $input) {
-      userGroup {
-        id
-        user {
-          id
-          name
-        }
-        group {
-          id
-          label
-        }
-      }
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;

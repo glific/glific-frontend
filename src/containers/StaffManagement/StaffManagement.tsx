@@ -98,12 +98,29 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     phone: Yup.string().required('Phone is required'),
   });
 
+  const setPayload = (payload: any) => {
+    // let's build the groupIds, as backend expects the array of group ids
+    let groupIds = payload.groups.map((group: any) => {
+      return group.id;
+    });
+
+    // remove groups from the payload
+    delete payload['groups'];
+
+    // return modified payload
+    return {
+      ...payload,
+      groupIds: groupIds,
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName="User"
       dialogMessage={dialogMessage}

@@ -10,6 +10,7 @@ export const GET_USERS_QUERY = gql`
         roles
         groups {
           id
+          label
         }
       }
     }
