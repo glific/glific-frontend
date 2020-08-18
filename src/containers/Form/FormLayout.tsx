@@ -4,7 +4,6 @@ import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
-import moment from 'moment';
 
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
@@ -12,7 +11,6 @@ import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { DATE_FORMAT } from '../../common/constants';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
 
@@ -68,7 +66,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
-  const [groupsID, setGroupsID] = useState();
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {

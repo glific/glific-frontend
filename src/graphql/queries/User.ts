@@ -31,6 +31,7 @@ export const FILTER_USERS = gql`
       roles
       groups {
         id
+        label
       }
     }
   }

@@ -32,8 +32,11 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  const getGroups = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
+  const getGroups = (groupList: any) => {
+    const groups = groupList.map((group: any) => {
+      return group.label;
+    });
+    return <p className={styles.TableText}>{groups.join(', ')}</p>;
   };
 
   const dialogMessage = ' Once deleted this action cannot be undone.';
