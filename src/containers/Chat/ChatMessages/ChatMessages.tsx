@@ -7,12 +7,14 @@ import {
   Chip,
   SvgIcon,
   FormControl,
+  TextField,
   InputAdornment,
 } from '@material-ui/core';
 import moment from 'moment';
+import AutoComplete from '@material-ui/lab/Autocomplete';
 
 import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification, setErrorMessage } from '../../../common/notification';
@@ -320,6 +322,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           }
         })
       : null;
+
+    const tagIcon = <TagIcon />;
+
     dialogBox = (
       <DialogBox
         title="Assign tag to message"
@@ -329,22 +334,34 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       >
         <div className={styles.DialogBox}>
           <FormControl fullWidth>
-            <InputLabel variant="outlined">Search</InputLabel>
-            <OutlinedInput
-              classes={{
-                notchedOutline: styles.InputBorder,
-              }}
-              data-testid="tagSearch"
-              className={styles.Label}
-              label="Search"
-              fullWidth
-              onChange={(event) => setSearch(event.target.value)}
-              startAdornment={
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
+            <AutoComplete
+              value={
+                AllTags.data
+                  ? AllTags.data.tags.filter((tag: any) =>
+                      selectedMessageTags.includes(tag.id.toString())
+                    )
+                  : []
               }
-            />
+              renderTags={(value: any, getTagProps) =>
+                value.map((option: any, index: number) => (
+                  <Chip
+                    style={{ backgroundColor: '#e2f1ea' }}
+                    className={styles.Chip}
+                    icon={tagIcon}
+                    label={option.label}
+                    {...getTagProps({ index })}
+                  />
+                ))
+              }
+              multiple
+              freeSolo
+              onChange={(event, value: any) => {
+                setSelectedMessageTags(value.map((tag: any) => tag.id));
+              }}
+              options={AllTags.data ? AllTags.data.tags : []}
+              getOptionLabel={(option: any) => option.label}
+              renderInput={(params) => <TextField {...params} variant="outlined" />}
+            ></AutoComplete>
           </FormControl>
           <div>
             <form id="tagsForm" className={styles.Form}>
