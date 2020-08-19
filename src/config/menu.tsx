@@ -41,3 +41,18 @@ export const staffManagementMenus = [
     path: '/staff-management',
   },
 ];
+
+export const userAccountMenus = [
+  {
+    title: 'Profile',
+    path: '#',
+  },
+  {
+    title: 'My Account',
+    path: '#',
+  },
+  {
+    title: 'Logout',
+    path: '/logout',
+  },
+];

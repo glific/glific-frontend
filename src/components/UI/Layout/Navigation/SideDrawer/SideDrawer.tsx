@@ -25,7 +25,7 @@ import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagemen
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
 import Menu from '../../../Menu/Menu';
-import { staffManagementMenus } from '../../../../../config/menu';
+import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
 
 export interface SideDrawerProps {}
 
@@ -99,12 +99,10 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       bottom: '10px',
       width: 'fit-content',
+      display: 'flex',
     },
     LogoutButton: {
-      position: 'absolute',
-      bottom: '10px',
       left: '94px',
-      width: 'fit-content',
     },
     StaffButton: {
       left: '8px',
@@ -154,27 +152,27 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
     </div>
   );
 
-  const popper = (
-    <Popper
-      open={open}
-      anchorEl={anchorEl}
-      placement="right-end"
-      transition
-      className={styles.Popper}
-    >
-      {({ TransitionProps }) => (
-        <Fade {...TransitionProps} timeout={350}>
-          <Paper elevation={3}>
-            <Button color="primary">My Account</Button>
-            <br />
-            <Button className={styles.LogoutButton} color="secondary" onClick={handleLogout}>
-              Logout
-            </Button>
-          </Paper>
-        </Fade>
-      )}
-    </Popper>
-  );
+  // const popper = (
+  //   <Popper
+  //     open={open}
+  //     anchorEl={anchorEl}
+  //     placement="right-end"
+  //     transition
+  //     className={styles.Popper}
+  //   >
+  //     {({ TransitionProps }) => (
+  //       <Fade {...TransitionProps} timeout={350}>
+  //         <Paper elevation={3}>
+  //           <Button color="primary">My Account</Button>
+  //           <br />
+  //           <Button className={styles.LogoutButton} color="secondary" onClick={handleLogout}>
+  //             Logout
+  //           </Button>
+  //         </Paper>
+  //       </Fade>
+  //     )}
+  //   </Popper>
+  // );
 
   const handleClick = (event: any) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -245,16 +243,16 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <div className={classes.BottomMenus}>
             <Menu menus={staffManagementMenus}>
               <IconButton className={classes.StaffButton}>
-                <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+                <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="staff icon" />
               </IconButton>
             </Menu>
-
-            <IconButton className={classes.LogoutButton} onClick={handleClick}>
-              <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
-            </IconButton>
+            <Menu menus={userAccountMenus}>
+              <IconButton className={classes.LogoutButton}>
+                <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
+              </IconButton>
+            </Menu>
           </div>
           {drawer}
-          {popper}
         </Drawer>
       </Hidden>
     </nav>
