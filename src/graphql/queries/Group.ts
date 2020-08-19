@@ -34,6 +34,7 @@ export const GET_GROUPS = gql`
     groups {
       id
       label
+      isRestricted
     }
   }
 `;

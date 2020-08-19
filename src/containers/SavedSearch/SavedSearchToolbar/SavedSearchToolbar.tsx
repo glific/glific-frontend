@@ -31,7 +31,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     },
   };
 
-  const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const { loading, error, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedCollection(data.savedSearches.slice(0, 3));
