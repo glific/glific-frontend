@@ -9,11 +9,12 @@ import {
   FormControl,
   TextField,
   InputAdornment,
+  Popper,
 } from '@material-ui/core';
 import moment from 'moment';
 import AutoComplete from '@material-ui/lab/Autocomplete';
 
-import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Close.svg';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
@@ -77,7 +78,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
-  const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
@@ -140,7 +140,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
-      setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
     },
@@ -250,7 +249,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const closeDialogBox = () => {
     setDialogbox(false);
     setShowDropdown(null);
-    setSearch('');
   };
 
   const handleSubmit = () => {
@@ -282,48 +280,23 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
 
-  if (dialog) {
-    const tagList = AllTags.data
-      ? AllTags.data.tags.map((tag: any) => {
-          if (tag.label.toLowerCase().includes(search)) {
-            return (
-              <Chip
-                label={tag.label}
-                className={styles.Chip}
-                key={tag.id}
-                data-tagid={tag.id}
-                data-testid="dialogCheckbox"
-                clickable={true}
-                icon={
-                  selectedMessageTags?.includes(tag.id.toString()) ? (
-                    <SvgIcon
-                      component={SelectIcon}
-                      viewBox="0 0 12 12"
-                      className={styles.SelectIcon}
-                    />
-                  ) : undefined
-                }
-                onClick={(event: any) => {
-                  const tagId = event.currentTarget.getAttribute('data-tagid');
-                  if (selectedMessageTags?.includes(tagId.toString())) {
-                    setSelectedMessageTags(
-                      selectedMessageTags?.filter(
-                        (messageTag: any) => messageTag !== tagId.toString()
-                      )
-                    );
-                  } else {
-                    setSelectedMessageTags([...selectedMessageTags, tagId.toString()]);
-                  }
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
-        })
-      : null;
+  const Tags = AllTags.data ? AllTags.data.tags : [];
 
-    const tagIcon = <TagIcon />;
+  if (dialog) {
+    const tagIcon = <TagIcon className={styles.TagIcon} />;
+    const leftTags = Tags.filter((tag: any) => !selectedMessageTags.includes(tag.id.toString()));
+    const tagList = leftTags.map((tag: any) => {
+      return (
+        <Chip
+          label={tag.label}
+          className={styles.Chip}
+          key={tag.id}
+          data-tagid={tag.id}
+          data-testid="dialogCheckbox"
+          icon={tagIcon}
+        />
+      );
+    });
 
     dialogBox = (
       <DialogBox
@@ -335,6 +308,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         <div className={styles.DialogBox}>
           <FormControl fullWidth>
             <AutoComplete
+              PopperComponent={(props) => <Popper className={styles.Popper} {...props}></Popper>}
               value={
                 AllTags.data
                   ? AllTags.data.tags.filter((tag: any) =>
@@ -345,11 +319,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               renderTags={(value: any, getTagProps) =>
                 value.map((option: any, index: number) => (
                   <Chip
-                    style={{ backgroundColor: '#e2f1ea' }}
-                    className={styles.Chip}
+                    style={{ backgroundColor: '#e2f1ea', color: '#073F24', fontSize: '16px' }}
                     icon={tagIcon}
                     label={option.label}
                     {...getTagProps({ index })}
+                    deleteIcon={<DeleteIcon className={styles.DeleteIcon} />}
                   />
                 ))
               }
