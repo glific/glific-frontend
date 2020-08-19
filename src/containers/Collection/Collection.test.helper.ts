@@ -9,8 +9,8 @@ import {
   UPDATE_COLLECTION,
 } from '../../graphql/mutations/Collection';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_GROUPS } from '../../graphql/queries/StaffManagement';
-import { GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
+import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 
 export const listItemProps = {
