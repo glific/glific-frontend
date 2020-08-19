@@ -295,6 +295,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           key={tag.id}
           data-tagid={tag.id}
           data-testid="dialogCheckbox"
+          onClick={(event: any) => {
+            const tagId = event.currentTarget.getAttribute('data-tagid').toString();
+            if (selectedMessageTags?.includes(tagId)) {
+              setSelectedMessageTags(
+                selectedMessageTags?.filter((messageTag: any) => messageTag !== tagId)
+              );
+            } else {
+              setSelectedMessageTags([...selectedMessageTags, tagId]);
+            }
+          }}
           icon={tagIcon}
         />
       );
