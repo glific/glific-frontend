@@ -339,7 +339,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               options={AllTags.data ? AllTags.data.tags : []}
               getOptionLabel={(option: any) => option.label}
               renderInput={(params) => (
-                <TextField {...params} variant="outlined" data-testid="dialogInput" />
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  data-testid="dialogInput"
+                  placeholder="Search"
+                />
               )}
             ></AutoComplete>
           </FormControl>
