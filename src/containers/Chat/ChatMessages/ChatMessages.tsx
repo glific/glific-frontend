@@ -280,12 +280,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
 
-  const Tags = AllTags.data ? AllTags.data.tags : [];
+  const tags = AllTags.data ? AllTags.data.tags : [];
 
   if (dialog) {
     const tagIcon = <TagIcon className={styles.TagIcon} />;
-    const leftTags = Tags.filter((tag: any) => !selectedMessageTags.includes(tag.id.toString()));
-    const tagList = leftTags.map((tag: any) => {
+    const tagsRemaining = tags.filter(
+      (tag: any) => !selectedMessageTags.includes(tag.id.toString())
+    );
+    const tagList = tagsRemaining.map((tag: any) => {
       return (
         <Chip
           label={tag.label}
@@ -323,7 +325,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                     icon={tagIcon}
                     label={option.label}
                     {...getTagProps({ index })}
-                    deleteIcon={<DeleteIcon className={styles.DeleteIcon} />}
+                    deleteIcon={
+                      <DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />
+                    }
                   />
                 ))
               }
@@ -334,7 +338,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               }}
               options={AllTags.data ? AllTags.data.tags : []}
               getOptionLabel={(option: any) => option.label}
-              renderInput={(params) => <TextField {...params} variant="outlined" />}
+              renderInput={(params) => (
+                <TextField {...params} variant="outlined" data-testid="dialogInput" />
+              )}
             ></AutoComplete>
           </FormControl>
           <div>
