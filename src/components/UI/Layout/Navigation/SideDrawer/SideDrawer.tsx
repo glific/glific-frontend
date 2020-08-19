@@ -24,9 +24,8 @@ import { SessionContext } from '../../../../../context/session';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
-import { Link } from 'react-router-dom';
 import Menu from '../../../Menu/Menu';
-import { staffIconMenus } from '../../../../../config/menu';
+import { staffManagementMenus } from '../../../../../config/menu';
 
 export interface SideDrawerProps {}
 
@@ -96,6 +95,11 @@ const useStyles = makeStyles((theme: Theme) =>
     closedIcon: {
       margin: '12px 12px 12px 15px',
     },
+    BottomMenus: {
+      position: 'absolute',
+      bottom: '10px',
+      width: 'fit-content',
+    },
     LogoutButton: {
       position: 'absolute',
       bottom: '10px',
@@ -103,10 +107,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 'fit-content',
     },
     StaffButton: {
-      position: 'absolute',
-      bottom: '10px',
       left: '8px',
-      width: 'fit-content',
     },
   })
 );
@@ -241,15 +242,17 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
           // open
         >
-          <Menu menus={staffIconMenus}>
-            <IconButton className={classes.StaffButton}>
-              <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
-            </IconButton>
-          </Menu>
+          <div className={classes.BottomMenus}>
+            <Menu menus={staffManagementMenus}>
+              <IconButton className={classes.StaffButton}>
+                <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+              </IconButton>
+            </Menu>
 
-          <IconButton className={classes.LogoutButton} onClick={handleClick}>
-            <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
-          </IconButton>
+            <IconButton className={classes.LogoutButton} onClick={handleClick}>
+              <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
+            </IconButton>
+          </div>
           {drawer}
           {popper}
         </Drawer>

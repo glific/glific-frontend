@@ -31,13 +31,13 @@ export const sideDrawerMenus = [
   },
 ];
 
-export const staffIconMenus = [
+export const staffManagementMenus = [
   {
     title: 'Groups',
     path: '/group',
   },
   {
     title: 'Staff Management',
-    path: '/staffmanagement',
+    path: '/staff-management',
   },
 ];
