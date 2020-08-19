@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { InputBase, IconButton } from '@material-ui/core';
+import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
+import { ReactComponent as AdvancedSearch } from '../../../assets/images/icons/AdvancedSearch.svg';
+import { DialogBox } from '../DialogBox/DialogBox';
+import { Collection } from '../../../containers/Collection/Collection';
 
 export interface SearchBarProps {
   handleChange?: (event: any) => void;
@@ -16,6 +19,7 @@ export interface SearchBarProps {
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [localSearchValue, setLocalSearchValue] = useState('');
+  const [dialog, setDialogbox] = useState(false);
 
   // use local state value so that we can set the defaults correctly
   let inputValue: string = '';
@@ -42,6 +46,36 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     );
   }
 
+  const handleClick = () => {
+    setDialogbox(!dialog);
+  };
+
+  const closeDialogBox = () => {
+    setDialogbox(false);
+  };
+
+  const handleSubmit = () => {
+    console.log('Submit');
+  };
+
+  const search = (data: any) => {
+    setLocalSearchValue(data.term);
+    let target = { value: data.term, param: data };
+    if (props.handleChange) {
+      props.handleChange({ target });
+    }
+  };
+
+  let dialogBox;
+  if (dialog) {
+    let match = { params: { id: null } };
+    dialogBox = (
+      <DialogBox title="" handleCancel={closeDialogBox} handleOk={handleSubmit} buttonOk="Search">
+        <Collection match={match} type="search" search={search}></Collection>
+      </DialogBox>
+    );
+  }
+
   return (
     <form onSubmit={props.handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${props.className}`}>
@@ -59,10 +93,18 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
               }
             }}
             value={inputValue}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton aria-label="toggle password visibility" onClick={handleClick}>
+                  <AdvancedSearch />
+                </IconButton>
+              </InputAdornment>
+            }
           />
         </div>
         {resetButton}
       </div>
+      {dialogBox}
     </form>
   );
 };

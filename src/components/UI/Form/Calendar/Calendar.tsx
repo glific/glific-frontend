@@ -30,7 +30,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
   const hasError = dirty && touchedVal && errorText !== undefined;
   moment.defaultFormat = DATE_FORMAT;
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : '';
-  const defaultDateValue = field.value ? field.value : setFieldValue(field.name, new Date());
+  // const defaultDateValue = field.value ? field.value : setFieldValue(field.name, '');
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -47,6 +47,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
           inputVariant={inputVariant}
           format={format}
           data-testid="date-picker-inline"
+          defaultValue=""
           label={placeholder}
           value={dateValue}
           onChange={handleDateChange}

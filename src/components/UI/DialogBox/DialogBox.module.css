@@ -7,10 +7,10 @@
   align-items: unset !important;
 }
 .Dialogbox {
-  max-width: 459px;
+  max-width: 80%;
   min-width: 459px;
   margin: 0 auto;
-  height: unset !important;
+  /* height: unset !important; */
 }
 
 .DialogActions {

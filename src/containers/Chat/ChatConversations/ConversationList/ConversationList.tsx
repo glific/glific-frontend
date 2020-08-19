@@ -6,12 +6,14 @@ import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
+import moment from 'moment';
 
 interface ConversationListProps {
   searchVal: string;
   selectedContactId: number;
   setSelectedContactId: (i: number) => void;
   savedSearchCriteria: string | null;
+  searchParam?: any;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -39,9 +41,24 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       variables.filter.term = props.searchVal;
       return variables;
     }
+    let filter: any = {};
+    if (props.searchVal) filter.term = props.searchVal;
+    let params = props.searchParam;
+    if (params) {
+      if (params.includeTags && params.includeTags.length > 0)
+        filter.includeTags = params.includeTags.map((obj: any) => obj.id);
+      if (params.includeGroups && params.includeGroups.length > 0)
+        filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
+      if (params.dateFrom) {
+        filter.dateRange = {
+          from: moment(params.dateFrom).format('YYYY-MM-DD'),
+          to: moment(params.dateTo).format('YYYY-MM-DD'),
+        };
+      }
+    }
 
     return {
-      filter: { term: props.searchVal },
+      filter: filter,
       messageOpts: {
         limit: 50,
       },
@@ -55,7 +72,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     getFilterConvos({
       variables: filterVariables(),
     });
-  }, [props.searchVal, props.savedSearchCriteria]);
+  }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY

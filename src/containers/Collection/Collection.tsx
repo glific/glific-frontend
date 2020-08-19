@@ -19,14 +19,17 @@ import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import { DATE_FORMAT } from '../../common/constants';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
+import { Typography } from '@material-ui/core';
 
 export interface CollectionProps {
   match?: any;
+  type?: string;
+  search?: any;
 }
 
-const FormSchema = Yup.object().shape({
-  shortcode: Yup.string().required('Title is required.'),
-  label: Yup.string().required('Description is required.'),
+let FormSchema = Yup.object().shape({
+  // shortcode: Yup.string().required('Title is required.'),
+  // label: Yup.string().required('Description is required.'),
 });
 
 const dialogMessage = "You won't be able to use this collection again.";
@@ -40,16 +43,16 @@ const queries = {
   deleteItemQuery: DELETE_COLLECTION,
 };
 
-export const Collection: React.SFC<CollectionProps> = ({ match }) => {
+export const Collection: React.SFC<CollectionProps> = ({ match, type = 'save', search }) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
-  const [tags, setTags] = useState([]);
-  const [groups, setGroups] = useState([]);
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
+  const [formFields, setFormFields] = useState<any>([]);
+  const [button, setButton] = useState<string>('Save');
 
   const states = { shortcode, label, term, includeTags, includeGroups, dateFrom, dateTo };
   const setStates = ({ shortcode, label, args }: any) => {
@@ -102,7 +105,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   if (!data || !dataT) return <Loading />;
 
-  const formFields = [
+  const DataFields = [
     {
       component: Input,
       name: 'shortcode',
@@ -117,6 +120,9 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       rows: 3,
       textArea: true,
     },
+  ];
+
+  const searchFields = [
     {
       component: Input,
       name: 'term',
@@ -164,6 +170,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   ];
 
   const setPayload = (payload: any) => {
+    search(payload);
     return {
       label: payload.label,
       shortcode: payload.shortcode,
@@ -189,6 +196,33 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     };
   };
 
+  const advanceSearch = (data: any) => {
+    let heading;
+    if (type === 'search')
+      heading = (
+        <React.Fragment>
+          <Typography variant="h5" className={styles.Title}>
+            Search conversations
+          </Typography>
+          <Typography variant="subtitle1" className={styles.Title}>
+            Apply more parameters to search for conversations.
+          </Typography>
+        </React.Fragment>
+      );
+    if (formFields.length === 0 && type === 'search') {
+      // setFormFields([]);
+      setFormFields(searchFields);
+      setButton('Search');
+      let FormSchema = Yup.object().shape({
+        term: Yup.string().required('Term is required.'),
+      });
+      FormSchema = FormSchema;
+    }
+    return {
+      heading,
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
@@ -199,13 +233,15 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={formFields.length > 0 ? formFields : [...DataFields, ...searchFields]}
       redirectionLink="collection"
       cancelLink="collection"
       linkParameter="id"
       listItem="savedSearch"
       icon={collectionIcon}
       languageSupport={false}
+      advanceSearch={advanceSearch}
+      button={button}
     />
   );
 };

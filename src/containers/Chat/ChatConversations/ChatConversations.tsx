@@ -13,10 +13,12 @@ export interface ChatConversationsProps {
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
+  const [searchParam, setSearchParam] = useState({});
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
 
   const handleChange = (event: any) => {
+    if (event.target.param) setSearchParam(event.target.param);
     setSearchVal(event.target.value);
   };
 
@@ -55,6 +57,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       />
       <ConversationList
         searchVal={searchVal}
+        searchParam={searchParam}
         selectedContactId={selectedContactId}
         setSelectedContactId={(i: number) => {
           setSelectedContactId(i);
