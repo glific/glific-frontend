@@ -37,26 +37,23 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
-    // TODO: fix this once backend fixes the endpoint
-    //setRoles(roles);
+    setRoles(roles);
     setGroups(groups);
   };
 
   useQuery(GET_USER_ROLES, {
     onCompleted: (data) => {
-      // TODO: fix this once backend fixes the endpoint
-      let rolesList: any = [];
-      data.roles.map((role: any) => {
-        rolesList.push({ id: role, label: role });
-      });
-      setRoles(rolesList);
+      setRoles(data.roles);
     },
   });
 
-  const { loading, data } = useQuery(GET_GROUPS);
-  if (loading) return <Loading />;
+  const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
 
-  if (!data.groups) {
+  const { loading, data } = useQuery(GET_GROUPS);
+
+  if (loading || loadingRoles) return <Loading />;
+
+  if (!data.groups || !roleData.roles) {
     return null;
   }
 
@@ -75,10 +72,15 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       skipPayload: true,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'roles',
       placeholder: 'Roles',
-      options: roles,
+      options: roleData.roles,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Roles',
+        variant: 'outlined',
+      },
     },
     {
       component: AutoComplete,

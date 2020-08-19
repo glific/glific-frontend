@@ -103,7 +103,24 @@ export const STAFF_MANAGEMENT_MOCKS = [
     },
     result: {
       data: {
-        roles: ['none', 'staff', 'manager', 'admin'],
+        roles: [
+          {
+            id: 1,
+            label: 'none',
+          },
+          {
+            id: 2,
+            label: 'staff',
+          },
+          {
+            id: 3,
+            label: 'manager',
+          },
+          {
+            id: 4,
+            label: 'admin',
+          },
+        ],
       },
     },
   },
