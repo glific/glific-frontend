@@ -30,3 +30,14 @@ export const sideDrawerMenus = [
     icon: 'template',
   },
 ];
+
+export const staffIconMenus = [
+  {
+    title: 'Groups',
+    path: '/group',
+  },
+  {
+    title: 'Staff Management',
+    path: '/staffmanagement',
+  },
+];

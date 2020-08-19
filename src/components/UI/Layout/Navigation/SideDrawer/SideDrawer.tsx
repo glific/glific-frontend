@@ -25,6 +25,8 @@ import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagemen
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import styles from './SideDrawer.module.css';
 import { Link } from 'react-router-dom';
+import Menu from '../../../Menu/Menu';
+import { staffIconMenus } from '../../../../../config/menu';
 
 export interface SideDrawerProps {}
 
@@ -239,9 +241,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
           // open
         >
-          <IconButton className={classes.StaffButton} component={Link} to="/staff-management">
-            <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
-          </IconButton>
+          <Menu menus={staffIconMenus}>
+            <IconButton className={classes.StaffButton}>
+              <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+            </IconButton>
+          </Menu>
+
           <IconButton className={classes.LogoutButton} onClick={handleClick}>
             <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
           </IconButton>
