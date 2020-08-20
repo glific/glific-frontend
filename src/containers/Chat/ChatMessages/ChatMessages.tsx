@@ -325,7 +325,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
                   {...params}
                   variant="outlined"
                   data-testid="dialogInput"
-                  placeholder="Search"
+                  label="Search"
                 />
               )}
             ></AutoComplete>
