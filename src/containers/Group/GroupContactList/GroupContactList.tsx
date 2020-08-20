@@ -1,15 +1,16 @@
 import React from 'react';
 import { GET_GROUPS_COUNT, FILTER_GROUPS } from '../../../graphql/queries/Group';
+import { CONTACT_SEARCH_QUERY } from '../../../graphql/queries/Contact';
+
 import { DELETE_GROUP } from '../../../graphql/mutations/Group';
-import styles from './GroupList.module.css';
+import styles from './GroupContactList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { List } from '../../List/List';
 
-export interface GroupListProps {}
+export interface GroupContactListProps {}
 
-const getColumns = ({ id, label, description }: any) => ({
-  id: id,
+const getColumns = ({ label, description }: any) => ({
   label: getLabel(label),
   description: getDescription(description),
 });
@@ -24,7 +25,7 @@ const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
 const queries = {
   countQuery: GET_GROUPS_COUNT,
-  filterItemsQuery: FILTER_GROUPS,
+  filterItemsQuery: CONTACT_SEARCH_QUERY,
   deleteItemQuery: DELETE_GROUP,
 };
 
@@ -37,22 +38,19 @@ const contactIcon = <AddContactIcon />;
 
 const additionalAction = { icon: contactIcon, parameter: 'group', link: '/groups' };
 
-export const GroupList: React.SFC<GroupListProps> = (props) => {
-  const cardLink = { start: 'group', end: 'contacts' };
-  return (
-    <List
-      title="Groups"
-      listItem="groups"
-      listItemName="group"
-      displayListType="card"
-      buttonLabel="+ CREATE GROUP"
-      pageLink="group"
-      listIcon={groupIcon}
-      additionalAction={additionalAction}
-      dialogMessage={dialogMessage}
-      cardLink={cardLink}
-      {...queries}
-      {...columnAttributes}
-    />
-  );
-};
+export const GroupContactList: React.SFC<GroupContactListProps> = (props) => (
+  <List
+    title="Groups"
+    listItem="groups"
+    listItemName="group"
+    searchParameter="name"
+    buttonLabel="+ CREATE GROUP"
+    filters={{ includeGroups: '1' }}
+    pageLink="group"
+    listIcon={groupIcon}
+    additionalAction={additionalAction}
+    dialogMessage={dialogMessage}
+    {...queries}
+    {...columnAttributes}
+  />
+);

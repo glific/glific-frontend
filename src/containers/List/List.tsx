@@ -34,7 +34,7 @@ export interface ListProps {
   searchParameter?: string;
   filters?: any;
   displayListType?: string;
-  cardLink?: string | null;
+  cardLink?: any;
   additionalAction?: {
     icon: any;
     parameter: string;
@@ -101,6 +101,7 @@ export const List: React.SFC<ListProps> = ({
   let filter: any = {};
   filter[searchParameter] = searchVal;
   filter = { ...filter, ...filters };
+  console.log(filter);
   const filterPayload = useCallback(() => {
     return {
       filter,

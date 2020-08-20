@@ -9,8 +9,9 @@ interface ListCardProps {
 }
 
 export const ListCard: React.SFC<ListCardProps> = (props) => {
-  const viewDetails = (
-    <Link to={props.link} className={styles.Link}>
+  const link = (id: any) => '/' + props.link.start + '/' + id + '/' + props.link.end;
+  const viewDetails = (id: any) => (
+    <Link to={link(id)} className={styles.Link}>
       <p>View Details</p>
     </Link>
   );
@@ -27,7 +28,7 @@ export const ListCard: React.SFC<ListCardProps> = (props) => {
               </Typography>
             </CardContent>
             <CardActions className={styles.CardActions}>
-              {viewDetails}
+              {viewDetails(data.id)}
               {data.operations}
             </CardActions>
           </Card>
