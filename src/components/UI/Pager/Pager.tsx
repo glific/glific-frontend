@@ -147,7 +147,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     if (html && html.scrollHeight > html.clientHeight) {
       setTableFooterStyle(undefined);
     }
-  });
+  }, []);
 
   return (
     <div className={styles.TableContainer}>

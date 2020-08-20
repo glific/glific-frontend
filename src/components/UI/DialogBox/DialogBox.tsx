@@ -18,6 +18,7 @@ interface DialogProps {
   colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   alignButtons?: string;
   skipCancel?: boolean;
+  skipOk?: boolean;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -32,6 +33,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   colorCancel = 'default',
   alignButtons,
   skipCancel = false,
+  skipOk = false,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -55,6 +57,20 @@ export const DialogBox: React.SFC<DialogProps> = ({
     );
   }
 
+  let okButtonDisplay = null;
+  if (!skipOk) {
+    okButtonDisplay = (
+      <Button
+        onClick={handleOKButton}
+        color={colorOk}
+        variant={'contained'}
+        data-testid="ok-button"
+      >
+        {buttonOk}
+      </Button>
+    );
+  }
+
   return (
     <div>
       <Dialog
@@ -74,14 +90,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
         <DialogActions className={`${styles.DialogActions} ${alignButtons}`}>
-          <Button
-            onClick={handleOKButton}
-            color={colorOk}
-            variant={'contained'}
-            data-testid="ok-button"
-          >
-            {buttonOk}
-          </Button>
+          {okButtonDisplay}
           {cancelButtonDisplay}
         </DialogActions>
       </Dialog>

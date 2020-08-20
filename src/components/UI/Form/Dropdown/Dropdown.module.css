@@ -13,3 +13,9 @@
   border-radius: 12px !important;
   border-width: 2px !important;
 }
+
+.HelperText {
+  margin-left: 16px !important;
+  color: #93a29b !important;
+  font-size: 12px !important;
+}

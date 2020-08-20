@@ -66,12 +66,25 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     }
   };
 
+  // create collection
   let dialogBox;
   if (dialog) {
     let match = { params: { id: null } };
     dialogBox = (
-      <DialogBox title="" handleCancel={closeDialogBox} handleOk={handleSubmit} buttonOk="Search">
-        <Collection match={match} type="search" search={search}></Collection>
+      <DialogBox
+        title=""
+        handleCancel={closeDialogBox}
+        handleOk={handleSubmit}
+        buttonOk="Search"
+        skipOk={true}
+        skipCancel={true}
+      >
+        <Collection
+          match={match}
+          type="search"
+          search={search}
+          handleCancel={closeDialogBox}
+        ></Collection>
       </DialogBox>
     );
   }

@@ -25,6 +25,7 @@ export interface CollectionProps {
   match?: any;
   type?: string;
   search?: any;
+  handleCancel?: any;
 }
 
 let FormSchema = Yup.object().shape({
@@ -43,7 +44,12 @@ const queries = {
   deleteItemQuery: DELETE_COLLECTION,
 };
 
-export const Collection: React.SFC<CollectionProps> = ({ match, type = 'save', search }) => {
+export const Collection: React.SFC<CollectionProps> = ({
+  match,
+  type = 'save',
+  search,
+  ...props
+}) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
@@ -197,6 +203,9 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type = 'save', s
   };
 
   const advanceSearch = (data: any) => {
+    console.log('Adv', data);
+    // close dialogbox
+    if (data === 'cancel') props.handleCancel();
     let heading;
     if (type === 'search')
       heading = (
@@ -242,6 +251,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type = 'save', s
       languageSupport={false}
       advanceSearch={advanceSearch}
       button={button}
+      type={type}
     />
   );
 };

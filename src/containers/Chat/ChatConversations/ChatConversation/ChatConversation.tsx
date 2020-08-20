@@ -75,6 +75,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     }
   }, [unread, selected, contactId]);
 
+  const name = contactName.length > 20 ? contactName.slice(0, 20) + '...' : contactName;
+
   return (
     <ListItem
       data-testid="list"
@@ -91,7 +93,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       </div>
       <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">
-          {contactName}
+          {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
           {WhatsAppToJsx(lastMessage.body)}

@@ -36,6 +36,7 @@ export interface FormLayoutProps {
   setPayload?: any;
   advanceSearch?: any;
   button?: string;
+  type?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -61,6 +62,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   setPayload,
   advanceSearch,
   button = 'Save',
+  type,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -161,6 +163,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const cancelHandler = () => {
+    // for chat collection
+    console.log(type);
+    if (type === 'search') {
+      advanceSearch('cancel');
+      return;
+    }
     setFormCancelled(true);
   };
 
