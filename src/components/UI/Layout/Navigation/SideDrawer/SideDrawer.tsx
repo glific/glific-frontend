@@ -114,8 +114,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const { setAuthenticated } = useContext(SessionContext);
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const [fullOpen, setFullOpen] = React.useState(true);
 
   const drawer = (
@@ -151,32 +149,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       <SideMenus opened={fullOpen} />
     </div>
   );
-
-  // const popper = (
-  //   <Popper
-  //     open={open}
-  //     anchorEl={anchorEl}
-  //     placement="right-end"
-  //     transition
-  //     className={styles.Popper}
-  //   >
-  //     {({ TransitionProps }) => (
-  //       <Fade {...TransitionProps} timeout={350}>
-  //         <Paper elevation={3}>
-  //           <Button color="primary">My Account</Button>
-  //           <br />
-  //           <Button className={styles.LogoutButton} color="secondary" onClick={handleLogout}>
-  //             Logout
-  //           </Button>
-  //         </Paper>
-  //       </Fade>
-  //     )}
-  //   </Popper>
-  // );
-
-  const handleClick = (event: any) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
