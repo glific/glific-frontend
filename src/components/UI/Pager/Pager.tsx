@@ -124,7 +124,7 @@ const pagination = (
 
 export const Pager: React.SFC<PagerProps> = (props) => {
   // Creates the rows for the table
-  const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(styles.TableFooter);
+  const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
   const rows = createRows(props.data, props.columnStyles, props.showCheckbox);
   const tableHead = tableHeadColumns(
@@ -143,9 +143,12 @@ export const Pager: React.SFC<PagerProps> = (props) => {
   );
 
   useEffect(() => {
+    let table = document.querySelector('.MuiTable-root');
     var html = document.querySelector('html');
-    if (html && html.scrollHeight > html.clientHeight) {
-      setTableFooterStyle(undefined);
+    if (table && html) {
+      if (table.scrollHeight < html.clientHeight - 142) {
+        setTableFooterStyle(styles.TableFooter);
+      }
     }
   }, []);
 

@@ -28,29 +28,13 @@
   height: calc(100% - 175px);
 }
 
-.Search {
-  width: 318px;
-  height: 100%;
-  padding: 0 10px;
-  background: #ffffff;
-  transition: all 0.35s ease;
-  border-radius: 10px;
-}
-
-.SearchBar {
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: flex;
-  width: 350px;
-  padding: 0px;
-  transition: all 0.35s ease;
-}
-
 .Chip {
   margin-right: 8px !important;
   margin-bottom: 8px !important;
-  background-color: #e7f9f1 !important;
-  padding-right: 6px !important;
+  color: #073f24 !important;
+  font-size: 16px !important;
+  background-color: #eaedec !important;
+  padding-right: 3px !important;
 }
 .Form {
   height: 18vh !important;
@@ -62,12 +46,24 @@
   overflow: auto !important;
 }
 
-.SelectIcon {
-  margin-left: 12px !important;
-  width: 12px !important;
-}
-
 .InputBorder {
   border-radius: 12px !important;
   border-width: 2px !important;
+}
+
+.TagIcon {
+  width: 13px !important;
+  margin-left: 10px !important;
+}
+
+.DeleteIcon {
+  width: 8px !important;
+  margin-right: 13px !important;
+}
+.Paper > ul > li:hover {
+  background-color: #edf6f2 !important;
+}
+
+.Paper > ul > li {
+  color: #073f24;
 }
