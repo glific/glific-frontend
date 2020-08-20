@@ -52,7 +52,7 @@ it('should contain the mock message', async () => {
   expect(getByText('Hey')).toBeInTheDocument();
 });
 
-test('click on assign tag should open a dialog box with mock messages', async () => {
+test('click on assign tag should open a dialog box with already assigned tags', async () => {
   const { getByTestId } = render(chatMessages);
   await wait();
   fireEvent.click(getByTestId('messageOptions'));
@@ -61,7 +61,7 @@ test('click on assign tag should open a dialog box with mock messages', async ()
     fireEvent.click(getByTestId('dialogButton'));
   });
   await wait();
-  expect(getByTestId('dialogBox')).toHaveTextContent('Good message');
+  expect(getByTestId('dialogBox')).toHaveTextContent('important');
 });
 
 test('assigned tags should be shown in searchbox', async () => {
