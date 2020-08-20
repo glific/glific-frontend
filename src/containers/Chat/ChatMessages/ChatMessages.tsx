@@ -10,6 +10,7 @@ import {
   TextField,
   InputAdornment,
   Popper,
+  Paper,
 } from '@material-ui/core';
 import moment from 'moment';
 import AutoComplete from '@material-ui/lab/Autocomplete';
@@ -284,31 +285,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   if (dialog) {
     const tagIcon = <TagIcon className={styles.TagIcon} />;
-    const tagsRemaining = tags.filter(
-      (tag: any) => !selectedMessageTags.includes(tag.id.toString())
-    );
-    const tagList = tagsRemaining.map((tag: any) => {
-      return (
-        <Chip
-          label={tag.label}
-          className={styles.Chip}
-          key={tag.id}
-          data-tagid={tag.id}
-          data-testid="dialogCheckbox"
-          onClick={(event: any) => {
-            const tagId = event.currentTarget.getAttribute('data-tagid').toString();
-            if (selectedMessageTags?.includes(tagId)) {
-              setSelectedMessageTags(
-                selectedMessageTags?.filter((messageTag: any) => messageTag !== tagId)
-              );
-            } else {
-              setSelectedMessageTags([...selectedMessageTags, tagId]);
-            }
-          }}
-          icon={tagIcon}
-        />
-      );
-    });
 
     dialogBox = (
       <DialogBox
@@ -320,14 +296,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         <div className={styles.DialogBox}>
           <FormControl fullWidth>
             <AutoComplete
-              PopperComponent={(props) => <Popper className={styles.Popper} {...props}></Popper>}
-              value={
-                AllTags.data
-                  ? AllTags.data.tags.filter((tag: any) =>
-                      selectedMessageTags.includes(tag.id.toString())
-                    )
-                  : []
-              }
+              PaperComponent={({ className, ...props }) => (
+                <Paper className={`${styles.Paper} ${className}`} {...props}></Paper>
+              )}
+              value={tags.filter((tag: any) => selectedMessageTags.includes(tag.id.toString()))}
               renderTags={(value: any, getTagProps) =>
                 value.map((option: any, index: number) => (
                   <Chip
@@ -358,11 +330,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
               )}
             ></AutoComplete>
           </FormControl>
-          <div>
-            <form id="tagsForm" className={styles.Form}>
-              {tagList}
-            </form>
-          </div>
         </div>
       </DialogBox>
     );

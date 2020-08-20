@@ -60,8 +60,10 @@
   width: 8px !important;
   margin-right: 13px !important;
 }
+.Paper > ul > li:hover {
+  background-color: #edf6f2 !important;
+}
 
-.Popper {
-  max-width: 40px !important;
-  color: red !important;
+.Paper > ul > li {
+  color: #073f24;
 }
