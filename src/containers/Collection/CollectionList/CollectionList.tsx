@@ -37,7 +37,7 @@ export const CollectionList: React.SFC<CollectionListProps> = (props) => (
   <List
     title="Collections"
     listItem="savedSearches"
-    listItemName="collection"
+    listItemName="Collection"
     pageLink="collection"
     buttonLabel="+ CREATE COLLECTION"
     listIcon={collectionIcon}

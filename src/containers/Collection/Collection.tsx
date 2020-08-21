@@ -199,7 +199,7 @@ export const Collection: React.SFC<CollectionProps> = ({
       },
     };
 
-    if (payload.dateFrom && payload.dateFrom != 'Invalid date') {
+    if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
       let dateRange = {
         dateRange: {
           to: moment(payload.dateTo).format('yyyy-MM-DD'),
@@ -275,7 +275,7 @@ export const Collection: React.SFC<CollectionProps> = ({
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="collection"
+      listItemName="Collection"
       dialogMessage={dialogMessage}
       formFields={formFields.length > 0 ? formFields : getFields()}
       redirectionLink="collection"
