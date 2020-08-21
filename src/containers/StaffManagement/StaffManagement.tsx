@@ -36,6 +36,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
+
+    // let' format the roles so that it is displayed correctly in the UI
     if (roles) {
       let defaultRoles: any = [];
       roles.map((role: any) => {
@@ -43,7 +45,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       });
       setRoles(defaultRoles);
     }
-
     setGroups(groups);
   };
 
