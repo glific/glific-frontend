@@ -18,10 +18,7 @@ export const UPDATE_USER = gql`
         id
         name
         phone
-        roles {
-          id
-          label
-        }
+        roles
         groups {
           id
           label

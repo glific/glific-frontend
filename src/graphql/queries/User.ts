@@ -40,9 +40,6 @@ export const FILTER_USERS = gql`
 
 export const GET_USER_ROLES = gql`
   query {
-    roles {
-      id
-      label
-    }
+    roles
   }
 `;

@@ -5,7 +5,6 @@ import { useQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
@@ -37,15 +36,16 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
-    setRoles(roles);
+    if (roles) {
+      let defaultRoles: any = [];
+      roles.map((role: any) => {
+        defaultRoles.push({ id: roles, label: roles });
+      });
+      setRoles(defaultRoles);
+    }
+
     setGroups(groups);
   };
-
-  useQuery(GET_USER_ROLES, {
-    onCompleted: (data) => {
-      setRoles(data.roles);
-    },
-  });
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
 
@@ -55,6 +55,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
 
   if (!data.groups || !roleData.roles) {
     return null;
+  }
+
+  let rolesList: any = [];
+  if (roleData.roles) {
+    roleData.roles.map((role: any) => {
+      rolesList.push({ id: role, label: role });
+    });
   }
 
   const formFields = [
@@ -75,7 +82,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: AutoComplete,
       name: 'roles',
       placeholder: 'Roles',
-      options: roleData.roles,
+      options: rolesList,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Roles',
@@ -109,10 +116,19 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     // remove groups from the payload
     delete payload['groups'];
 
+    // let's rebuild roles, as per backend
+    let roleIds = payload.roles.map((role: any) => {
+      return role.id;
+    });
+
+    // delete current roles from the payload
+    delete payload['roles'];
+
     // return modified payload
     return {
       ...payload,
       groupIds: groupIds,
+      roles: roleIds,
     };
   };
 
