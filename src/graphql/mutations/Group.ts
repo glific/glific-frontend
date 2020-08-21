@@ -10,6 +10,7 @@ export const CREATE_CONTACT_GROUP = gql`
     }
   }
 `;
+
 export const DELETE_GROUP = gql`
   mutation deleteGroup($id: ID!) {
     deleteGroup(id: $id) {
