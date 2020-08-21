@@ -112,7 +112,6 @@ export const List: React.SFC<ListProps> = ({
   let filter: any = {};
   filter[searchParameter] = searchVal;
   filter = { ...filter, ...filters };
-  console.log(filter);
   const filterPayload = useCallback(() => {
     return {
       filter,

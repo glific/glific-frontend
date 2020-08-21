@@ -43,7 +43,6 @@ const columnAttributes = {
 export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   const groupId = props.match.params.id;
   const group = useQuery(GET_GROUP, { variables: { id: groupId } });
-  console.log(group.data);
   const title = group.data ? group.data.group.group.label : 'Group';
   return (
     <List
