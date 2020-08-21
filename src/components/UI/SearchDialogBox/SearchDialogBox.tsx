@@ -32,6 +32,7 @@ export const SearchDialogBox = (props: any) => {
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
+            className={styles.Autocomplete}
             PaperComponent={({ className, ...props }) => (
               <Paper className={`${styles.Paper} ${className}`} {...props}></Paper>
             )}
