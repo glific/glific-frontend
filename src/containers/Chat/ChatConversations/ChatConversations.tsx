@@ -5,6 +5,9 @@ import SearchBar from '../../../components/UI/SearchBar/SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import ConversationList from './ConversationList/ConversationList';
 import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
+import { Button } from '../../../components/UI/Form/Button/Button';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
+import { Collection } from '../../Collection/Collection';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -16,6 +19,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [searchParam, setSearchParam] = useState({});
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
+  const [dialog, setDialogbox] = useState(false);
+  const [dialogType, setDialogboxType] = useState('');
 
   const handleChange = (event: any) => {
     if (event.target.param) setSearchParam(event.target.param);
@@ -36,6 +41,81 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSavedSearchCriteria(criteria);
   };
 
+  const search = (data: any) => {
+    let target = { value: data.term, param: data };
+    if (handleChange) {
+      handleChange({ target });
+    }
+    // After search close dialogbox
+    closeDialogBox();
+  };
+
+  const handleClick = (event: any, data: any) => {
+    event.preventDefault();
+    if (data) setDialogboxType(data);
+    setDialogbox(!dialog);
+  };
+
+  const closeDialogBox = () => {
+    setDialogbox(false);
+  };
+
+  // create collection
+  let dialogBox;
+
+  if (dialog) {
+    let match = { params: { id: null } };
+    let collection = (
+      <Collection
+        match={match}
+        type="saveSearch"
+        search={search}
+        searchParam={searchParam}
+        handleCancel={closeDialogBox}
+      ></Collection>
+    );
+
+    if (dialogType === 'search')
+      collection = (
+        <Collection
+          match={match}
+          type="search"
+          search={search}
+          handleCancel={closeDialogBox}
+        ></Collection>
+      );
+
+    dialogBox = (
+      <DialogBox
+        title=""
+        handleCancel={closeDialogBox}
+        handleOk={handleSubmit}
+        buttonOk="Search"
+        skipOk={true}
+        skipCancel={true}
+      >
+        {collection}
+      </DialogBox>
+    );
+  }
+
+  let saveCollectionButton;
+
+  if (Object.keys(searchParam).length !== 0)
+    saveCollectionButton = (
+      <div className={styles.SaveCollection}>
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={(e: any) => {
+            handleClick(e, 'saveSearch');
+          }}
+        >
+          Save search to collections
+        </Button>
+      </div>
+    );
+
   return (
     <Container className={styles.ChatConversations} disableGutters>
       <Toolbar className={styles.ToolBar}>
@@ -54,6 +134,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         handleSubmit={handleSubmit}
         onReset={() => resetSearch()}
         searchVal={searchVal}
+        handleClick={handleClick}
+        endAdornment={true}
       />
       <ConversationList
         searchVal={searchVal}
@@ -64,6 +146,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         }}
         savedSearchCriteria={savedSearchCriteria}
       />
+      {saveCollectionButton}
+      {dialogBox}
     </Container>
   );
 };

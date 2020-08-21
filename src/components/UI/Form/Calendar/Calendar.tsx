@@ -28,8 +28,8 @@ export const Calendar: React.SFC<CalendarProps> = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
-  moment.defaultFormat = DATE_FORMAT;
-  const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : '';
+  moment.defaultFormat = 'yyyy-MM-dd';
+  const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
   // const defaultDateValue = field.value ? field.value : setFieldValue(field.name, '');
 
   const handleDateChange = (date: Date | null) => {

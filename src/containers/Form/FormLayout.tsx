@@ -136,13 +136,13 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     if (setPayload) {
       payload = setPayload(payload);
       let data = advanceSearch(payload);
-      if (data && data.heading) return;
+
+      if (data && data.heading && type === 'search') return;
     }
 
     let message;
 
     if (itemId) {
-      console.log(payload);
       updateItem({
         variables: {
           id: itemId,
@@ -163,9 +163,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const cancelHandler = () => {
-    // for chat collection
-    console.log(type);
-    if (type === 'search') {
+    // for chat screen collection
+    if (type === 'search' || type === 'saveSearch') {
       advanceSearch('cancel');
       return;
     }

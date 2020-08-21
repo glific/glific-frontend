@@ -3,6 +3,7 @@
   height: 100vh;
   padding-left: 10px;
   overflow-y: hidden;
+  position: relative;
 }
 
 .IconBackground {
@@ -30,4 +31,13 @@
   font-size: 24px !important;
   color: #073f24 !important;
   margin-top: 3px !important;
+}
+
+.SaveCollection {
+  display: grid;
+  justify-content: center;
+  position: absolute;
+  bottom: 25px;
+  width: 100%;
+  background-color: #fff;
 }

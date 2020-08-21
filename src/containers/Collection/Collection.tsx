@@ -26,6 +26,7 @@ export interface CollectionProps {
   type?: string;
   search?: any;
   handleCancel?: any;
+  searchParam?: any;
 }
 
 let FormSchema = Yup.object().shape({
@@ -176,38 +177,56 @@ export const Collection: React.SFC<CollectionProps> = ({
   ];
 
   const setPayload = (payload: any) => {
-    search(payload);
+    if (search) search(payload);
+    if (props.searchParam) {
+      payload.term = props.searchParam.term;
+      payload.includeTags = props.searchParam.includeTags;
+      payload.includeGroups = props.searchParam.includeGroups;
+      payload.dateTo = props.searchParam.dateTo;
+      payload.dateFrom = props.searchParam.dateFrom;
+    }
+    let args = {
+      messageOpts: {
+        offset: 0,
+        limit: 10,
+      },
+      filter: {
+        term: payload.term,
+        includeTags: payload.includeTags.map((option: any) => option.id),
+        includeGroups: payload.includeGroups.map((option: any) => option.id),
+        // dateRange: {
+        //   to: moment(payload.dateTo).format('yyyy-MM-DD'),
+        //   from: moment(payload.dateFrom).format('yyyy-MM-DD'),
+        // },
+      },
+      contactOpts: {
+        offset: 0,
+        limit: 20,
+      },
+    };
+
+    if (payload.dateFrom && payload.dateFrom != 'Invalid date') {
+      let dateRange = {
+        dateRange: {
+          to: moment(payload.dateTo).format('yyyy-MM-DD'),
+          from: moment(payload.dateFrom).format('yyyy-MM-DD'),
+        },
+      };
+      args.filter = Object.assign(args.filter, dateRange);
+    }
     return {
       label: payload.label,
       shortcode: payload.shortcode,
-      args: JSON.stringify({
-        messageOpts: {
-          offset: 0,
-          limit: 10,
-        },
-        filter: {
-          term: payload.term,
-          includeTags: payload.includeTags.map((option: any) => option.id),
-          includeGroups: payload.includeGroups.map((option: any) => option.id),
-          dateRange: {
-            to: moment(payload.dateTo).format(DATE_FORMAT),
-            from: moment(payload.dateFrom).format(DATE_FORMAT),
-          },
-        },
-        contactOpts: {
-          offset: 0,
-          limit: 20,
-        },
-      }),
+      args: JSON.stringify(args),
     };
   };
 
   const advanceSearch = (data: any) => {
-    console.log('Adv', data);
     // close dialogbox
     if (data === 'cancel') props.handleCancel();
+
     let heading;
-    if (type === 'search')
+    if (type === 'search') {
       heading = (
         <React.Fragment>
           <Typography variant="h5" className={styles.Title}>
@@ -218,18 +237,47 @@ export const Collection: React.SFC<CollectionProps> = ({
           </Typography>
         </React.Fragment>
       );
-    if (formFields.length === 0 && type === 'search') {
-      // setFormFields([]);
-      setFormFields(searchFields);
-      setButton('Search');
-      let FormSchema = Yup.object().shape({
-        term: Yup.string().required('Term is required.'),
+
+      FormSchema = Yup.object().shape({
+        // shortcode: Yup.string().required('Title is required.'),
+        // label: Yup.string().required('Description is required.'),
       });
-      FormSchema = FormSchema;
+    }
+
+    if (type === 'saveSearch') {
+      heading = (
+        <React.Fragment>
+          <Typography variant="h5" className={styles.Title}>
+            Save search to collections
+          </Typography>
+        </React.Fragment>
+      );
+
+      FormSchema = Yup.object().shape({
+        shortcode: Yup.string().required('Title is required.'),
+        label: Yup.string().required('Description is required.'),
+      });
+    }
+
+    if (formFields.length === 0) {
+      if (type === 'search') {
+        setFormFields(searchFields);
+        setButton('Search');
+      }
+
+      if (type === 'saveSearch') setFormFields(DataFields);
     }
     return {
       heading,
     };
+  };
+
+  const getFields = () => {
+    FormSchema = Yup.object().shape({
+      shortcode: Yup.string().required('Title is required.'),
+      label: Yup.string().required('Description is required.'),
+    });
+    return [...DataFields, ...searchFields];
   };
 
   return (
@@ -242,7 +290,7 @@ export const Collection: React.SFC<CollectionProps> = ({
       validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
-      formFields={formFields.length > 0 ? formFields : [...DataFields, ...searchFields]}
+      formFields={formFields.length > 0 ? formFields : getFields()}
       redirectionLink="collection"
       cancelLink="collection"
       linkParameter="id"
