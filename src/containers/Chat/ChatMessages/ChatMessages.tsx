@@ -1,17 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import {
-  Container,
-  InputLabel,
-  OutlinedInput,
-  Chip,
-  SvgIcon,
-  FormControl,
-  TextField,
-  InputAdornment,
-  Popper,
-  Paper,
-} from '@material-ui/core';
+import { Container, Chip, FormControl, TextField, Paper } from '@material-ui/core';
 import moment from 'moment';
 import AutoComplete from '@material-ui/lab/Autocomplete';
 
