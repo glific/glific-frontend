@@ -39,7 +39,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     if (roles) {
       let defaultRoles: any = [];
       roles.map((role: any) => {
-        defaultRoles.push({ id: roles, label: roles });
+        defaultRoles.push({ id: role, label: role });
       });
       setRoles(defaultRoles);
     }
