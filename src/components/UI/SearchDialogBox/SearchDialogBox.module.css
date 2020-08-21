@@ -9,18 +9,6 @@
   min-height: 100px;
   overflow: auto;
 }
-.Label {
-  color: #073f24 !important;
-  font-size: 16px !important;
-  padding-left: 6px !important;
-  font-weight: 500;
-  line-height: 1.25 !important;
-}
-
-.Label input::placeholder {
-  color: #93a29b !important;
-  font-weight: 500 !important;
-}
 
 .Input {
   padding: 8px !important;
