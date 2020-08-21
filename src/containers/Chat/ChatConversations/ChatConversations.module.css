@@ -34,10 +34,18 @@
 }
 
 .SaveCollection {
-  display: grid;
   justify-content: center;
   position: absolute;
-  bottom: 25px;
   width: 100%;
+  bottom: 25px;
   background-color: #fff;
+  border: 1px solid rgba(17, 150, 86, 0.5);
+  border-radius: 25px;
+  width: fit-content;
+  height: 48px;
+}
+
+.button {
+  border: unset !important;
+  padding-left: 10px;
 }

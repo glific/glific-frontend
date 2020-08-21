@@ -82,8 +82,10 @@ export const chatConversationsMocks = [
       },
     },
   },
+  searchQuery(50, 50, {}),
   searchQuery(50, 50, { term: 'a' }),
   searchQuery(50, 50, { term: '' }),
+  searchQuery(5, 10, { includeTags: ['12'] }),
   searchQuery(5, 10, { term: '', includeTags: ['12'] }),
 ];
 

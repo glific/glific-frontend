@@ -6,7 +6,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { getIn } from 'formik';
 import moment from 'moment';
-import { DATE_FORMAT } from '../../../../common/constants';
 
 export interface CalendarProps {
   variant?: any;

@@ -38,7 +38,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const filterVariables = () => {
     if (props.savedSearchCriteria) {
       const variables = JSON.parse(props.savedSearchCriteria);
-      variables.filter.term = props.searchVal;
+      if (props.searchVal) variables.filter.term = props.searchVal;
       return variables;
     }
     let filter: any = {};

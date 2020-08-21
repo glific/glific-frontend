@@ -16,7 +16,6 @@ import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import { DATE_FORMAT } from '../../common/constants';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { Typography } from '@material-ui/core';
@@ -29,10 +28,11 @@ export interface CollectionProps {
   searchParam?: any;
 }
 
-let FormSchema = Yup.object().shape({
-  // shortcode: Yup.string().required('Title is required.'),
-  // label: Yup.string().required('Description is required.'),
-});
+const validation = {
+  shortcode: Yup.string().required('Title is required.'),
+  label: Yup.string().required('Description is required.'),
+};
+let FormSchema = Yup.object().shape({});
 
 const dialogMessage = "You won't be able to use this collection again.";
 
@@ -194,10 +194,6 @@ export const Collection: React.SFC<CollectionProps> = ({
         term: payload.term,
         includeTags: payload.includeTags.map((option: any) => option.id),
         includeGroups: payload.includeGroups.map((option: any) => option.id),
-        // dateRange: {
-        //   to: moment(payload.dateTo).format('yyyy-MM-DD'),
-        //   from: moment(payload.dateFrom).format('yyyy-MM-DD'),
-        // },
       },
       contactOpts: {
         offset: 0,
@@ -238,10 +234,7 @@ export const Collection: React.SFC<CollectionProps> = ({
         </React.Fragment>
       );
 
-      FormSchema = Yup.object().shape({
-        // shortcode: Yup.string().required('Title is required.'),
-        // label: Yup.string().required('Description is required.'),
-      });
+      FormSchema = Yup.object().shape({});
     }
 
     if (type === 'saveSearch') {
@@ -252,11 +245,7 @@ export const Collection: React.SFC<CollectionProps> = ({
           </Typography>
         </React.Fragment>
       );
-
-      FormSchema = Yup.object().shape({
-        shortcode: Yup.string().required('Title is required.'),
-        label: Yup.string().required('Description is required.'),
-      });
+      addFieldsValidation(validation);
     }
 
     if (formFields.length === 0) {
@@ -264,7 +253,6 @@ export const Collection: React.SFC<CollectionProps> = ({
         setFormFields(searchFields);
         setButton('Search');
       }
-
       if (type === 'saveSearch') setFormFields(DataFields);
     }
     return {
@@ -272,11 +260,12 @@ export const Collection: React.SFC<CollectionProps> = ({
     };
   };
 
+  const addFieldsValidation = (object: object) => {
+    FormSchema = Yup.object().shape(object);
+  };
+
   const getFields = () => {
-    FormSchema = Yup.object().shape({
-      shortcode: Yup.string().required('Title is required.'),
-      label: Yup.string().required('Description is required.'),
-    });
+    addFieldsValidation(validation);
     return [...DataFields, ...searchFields];
   };
 

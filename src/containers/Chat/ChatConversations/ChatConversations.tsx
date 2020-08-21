@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Toolbar, Container } from '@material-ui/core';
+import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
@@ -8,6 +8,7 @@ import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearch
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Collection } from '../../Collection/Collection';
+import CancelOutlined from '@material-ui/icons/CancelOutlined';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -19,6 +20,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [searchParam, setSearchParam] = useState({});
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
+  const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
 
@@ -37,8 +39,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSearchVal('');
   };
 
-  const handlerSavedSearchCriteria = (criteria: string) => {
+  const handlerSavedSearchCriteria = (criteria: string, id: any) => {
     setSavedSearchCriteria(criteria);
+    setSavedSearchCriteriaId(id);
   };
 
   const search = (data: any) => {
@@ -48,6 +51,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     }
     // After search close dialogbox
     closeDialogBox();
+    if (dialogType === 'saveSearch') {
+      setSearchParam({});
+      resetSearch();
+    }
   };
 
   const handleClick = (event: any, data: any) => {
@@ -64,7 +71,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   let dialogBox;
 
   if (dialog) {
-    let match = { params: { id: null } };
+    let match = { params: { id: savedSearchCriteriaId } };
     let collection = (
       <Collection
         match={match}
@@ -105,6 +112,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     saveCollectionButton = (
       <div className={styles.SaveCollection}>
         <Button
+          className={styles.button}
           color="primary"
           variant="outlined"
           onClick={(e: any) => {
@@ -113,6 +121,15 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         >
           Save search to collections
         </Button>
+        <IconButton
+          aria-label="cancel"
+          onClick={(e: any) => {
+            setSearchParam({});
+            resetSearch();
+          }}
+        >
+          <CancelOutlined />
+        </IconButton>
       </div>
     );
 
