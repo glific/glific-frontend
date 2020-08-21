@@ -34,7 +34,11 @@ export const SearchDialogBox = (props: any) => {
           <AutoComplete
             className={styles.Autocomplete}
             PaperComponent={({ className, ...props }) => (
-              <Paper className={`${styles.Paper} ${className}`} {...props}></Paper>
+              <Paper
+                className={`${styles.Paper} ${className}`}
+                {...props}
+                data-testid="dialogInput"
+              ></Paper>
             )}
             value={props.options.filter((option: any) =>
               selectedOptions.includes(option.id.toString())
@@ -42,6 +46,7 @@ export const SearchDialogBox = (props: any) => {
             renderTags={(value: any, getTagProps) =>
               value.map((option: any, index: number) => (
                 <Chip
+                  data-testid="searchChip"
                   style={{ backgroundColor: '#e2f1ea', color: '#073F24', fontSize: '16px' }}
                   label={option.label}
                   {...getTagProps({ index })}

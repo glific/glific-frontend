@@ -76,7 +76,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className={titleStyle}>
+        <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
           {title}
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
