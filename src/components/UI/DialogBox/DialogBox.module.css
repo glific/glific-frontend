@@ -1,14 +1,14 @@
 .DialogboxPaper {
   border-radius: 24px !important;
   margin-top: 66px !important;
-  width: 395px !important;
+  min-width: 395px !important;
 }
 
 .ScrollPaper {
   align-items: unset !important;
 }
 .Dialogbox {
-  max-width: 459px;
+  max-width: 80%;
   min-width: 459px;
   margin: 0 auto;
   height: unset !important;

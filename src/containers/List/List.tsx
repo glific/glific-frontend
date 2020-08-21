@@ -297,7 +297,7 @@ export const List: React.SFC<ListProps> = ({
         showCheckbox={showCheckbox}
       />
     );
-  } else if (displayListType == 'card') {
+  } else if (displayListType === 'card') {
     displayList = <ListCard data={itemList} link={cardLink} />;
   }
 
