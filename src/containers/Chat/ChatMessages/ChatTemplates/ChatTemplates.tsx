@@ -52,6 +52,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
           </div>
         );
       }
+      return null;
     });
 
     return listItems.length !== 0 ? (

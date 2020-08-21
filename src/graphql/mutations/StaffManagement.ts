@@ -12,13 +12,16 @@ export const DELETE_USER = gql`
 `;
 
 export const UPDATE_USER = gql`
-  mutation updateUser($id: ID!, $input: UserInput!) {
-    updateUser(id: $id, input: $input) {
+  mutation updateUser($id: ID!, $input: UserInput!, $groupIds: [ID]!) {
+    updateUser(id: $id, input: $input, groupIds: $groupIds) {
       user {
         id
         name
         phone
         roles
+        groups {
+          label
+        }
       }
       errors {
         key

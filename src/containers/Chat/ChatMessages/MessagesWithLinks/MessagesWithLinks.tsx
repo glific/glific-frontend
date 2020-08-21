@@ -14,7 +14,7 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   let linkPreview = null;
   let messagebody = WhatsAppToJsx(props.message);
   let array;
-  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
   if ((array = regexForLink.exec(props.message)) != null) {
     linkPreview = (
       <div className={styles.LinkPreview}>
@@ -27,7 +27,13 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
     <Linkify
       componentDecorator={(decoratedHref, decoratedText, key) => {
         return (
-          <a target="_blank" href={decoratedHref} key={key} data-testid="messageLink">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={decoratedHref}
+            key={key}
+            data-testid="messageLink"
+          >
             {decoratedText}
           </a>
         );

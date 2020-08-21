@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
@@ -64,8 +64,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   // Other cases
   if ((called && loading) || conversationLoading) return <Loading />;
 
-  if (called && error) {
-    setErrorMessage(client, error);
+  if ((called && error) || conversationError) {
+    if (error) {
+      setErrorMessage(client, error);
+    } else if (conversationError) {
+      setErrorMessage(client, conversationError);
+    }
+
     return null;
   }
 
