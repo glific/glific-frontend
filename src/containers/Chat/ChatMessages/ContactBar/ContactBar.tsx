@@ -14,10 +14,11 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { CREATE_CONTACT_GROUP } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
+import { setNotification } from '../../../../common/notification';
 
 export interface ContactBarProps {
   contactName: string;
@@ -25,6 +26,7 @@ export interface ContactBarProps {
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
+  const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [showDialog, setShowDialog] = useState(false);
@@ -57,6 +59,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         },
       });
     });
+    setNotification(client, 'Added to group succesfully');
     setShowDialog(false);
   };
 
