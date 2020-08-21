@@ -143,7 +143,6 @@ export const Collection: React.SFC<CollectionProps> = ({
       options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Includes tags',
         // required: true,
         variant: 'outlined',
       },
@@ -157,7 +156,6 @@ export const Collection: React.SFC<CollectionProps> = ({
       options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Includes groups',
         variant: 'outlined',
       },
     },

@@ -46,7 +46,6 @@ export const Calendar: React.SFC<CalendarProps> = ({
           inputVariant={inputVariant}
           format={format}
           data-testid="date-picker-inline"
-          defaultValue=""
           label={placeholder}
           value={dateValue}
           onChange={handleDateChange}
