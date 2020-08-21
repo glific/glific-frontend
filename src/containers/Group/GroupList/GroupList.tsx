@@ -45,7 +45,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       listItem="groups"
       listItemName="group"
       displayListType="card"
-      buttonLabel="+ CREATE GROUP"
+      button={{ show: true, label: '+ CREATE GROUP' }}
       pageLink="group"
       listIcon={groupIcon}
       additionalAction={additionalAction}

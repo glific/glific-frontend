@@ -14,6 +14,7 @@ import styles from './List.module.css';
 import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
+import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ListCard } from './ListCard/ListCard';
 
 export interface ListProps {
@@ -29,17 +30,22 @@ export interface ListProps {
   listIcon: any;
   columnStyles: any;
   title: string;
-  buttonLabel?: string;
+  button?: {
+    show: boolean;
+    label: string;
+  };
   showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
   displayListType?: string;
   cardLink?: any;
+  editSupport?: boolean;
   additionalAction?: {
     icon: any;
     parameter: string;
     link: string;
   } | null;
+  deleteIcon?: any;
 }
 
 interface TableVals {
@@ -62,13 +68,18 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
-  buttonLabel = 'Add New',
+  button = {
+    show: true,
+    label: 'Add New',
+  },
   showCheckbox,
+  editSupport = true,
   searchParameter = 'label',
   filters = null,
   displayListType = 'list',
   cardLink = null,
   additionalAction = null,
+  deleteIcon = 'normal',
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -217,6 +228,16 @@ export const List: React.SFC<ListProps> = ({
     if (isReserved) {
       return null;
     }
+    let editButton = null;
+    if (editSupport) {
+      editButton = (
+        <Link to={`/${pageLink}/` + id + '/edit'}>
+          <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+            <EditIcon />
+          </IconButton>
+        </Link>
+      );
+    }
 
     if (id) {
       return (
@@ -228,18 +249,16 @@ export const List: React.SFC<ListProps> = ({
               </IconButton>
             </Link>
           ) : null}
-          <Link to={`/${pageLink}/` + id + '/edit'}>
-            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-              <EditIcon />
-            </IconButton>
-          </Link>
+
+          {editButton}
+
           <IconButton
             aria-label="Delete"
             color="default"
             data-testid="DeleteIcon"
             onClick={() => showDialogHandler(id!, label)}
           >
-            <DeleteIcon />
+            {deleteIcon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>
         </div>
       );
@@ -324,11 +343,13 @@ export const List: React.SFC<ListProps> = ({
         <div>
           {toastMessage}
           {dialogBox}
-          <div className={styles.AddButton}>
-            <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
-              {buttonLabel}
-            </Button>
-          </div>
+          {button.show ? (
+            <div className={styles.AddButton}>
+              <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
+                {button.label}
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
 

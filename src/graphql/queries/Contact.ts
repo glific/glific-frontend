@@ -15,3 +15,14 @@ export const GET_CONTACT_COUNT = gql`
     countContacts(filter: $filter)
   }
 `;
+
+export const DELETE_CONTACT_GROUP = gql`
+  mutation deleteContactGroup($id: ID!) {
+    deleteContactGroup(id: $id) {
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

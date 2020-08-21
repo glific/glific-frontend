@@ -1,0 +1,37 @@
+.Name {
+  width: 250px;
+}
+
+.Phone {
+  width: 300px;
+}
+
+.Actions {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.NameText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: #073f24;
+  line-height: 1;
+}
+
+.PhoneText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.GroupIcon {
+  width: 29px;
+  height: 29px;
+}
