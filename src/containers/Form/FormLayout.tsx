@@ -34,6 +34,9 @@ export interface FormLayoutProps {
   cancelLink?: any;
   languageSupport?: boolean;
   setPayload?: any;
+  advanceSearch?: any;
+  button?: string;
+  type?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -57,6 +60,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   cancelLink = null,
   languageSupport = true,
   setPayload,
+  advanceSearch,
+  button = 'Save',
+  type,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -129,12 +135,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     // create custom payload for collection
     if (setPayload) {
       payload = setPayload(payload);
+      let data = advanceSearch(payload);
+
+      if (data && data.heading && type === 'search') return;
     }
 
     let message;
 
     if (itemId) {
-      console.log(payload);
       updateItem({
         variables: {
           id: itemId,
@@ -155,6 +163,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const cancelHandler = () => {
+    // for chat screen collection
+    if (type === 'search' || type === 'saveSearch') {
+      advanceSearch('cancel');
+      return;
+    }
     setFormCancelled(true);
   };
 
@@ -224,7 +237,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 onClick={submitForm}
                 className={styles.Button}
               >
-                Save
+                {button}
               </Button>
               {additionalAction ? (
                 <Button
@@ -270,7 +283,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     );
   }
 
-  const heading = (
+  let heading = (
     <Typography variant="h5" className={styles.Title}>
       <IconButton disabled={true} className={styles.Icon}>
         {icon}
@@ -278,6 +291,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       {itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
     </Typography>
   );
+
+  if (advanceSearch) {
+    let data = advanceSearch({});
+    if (data && data.heading) heading = data.heading;
+  }
 
   return (
     <div className={styles.ItemAdd}>

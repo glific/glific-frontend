@@ -49,7 +49,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     savedSearchCriteria: string | null,
     savedSearchId: number | null
   ) => {
-    props.savedSearchCriteriaCallback(savedSearchCriteria);
+    props.savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
     setSelectedSavedSearch(savedSearchId);
   };
 
