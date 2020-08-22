@@ -20,7 +20,7 @@ export const ListCard: React.SFC<ListCardProps> = (props) => {
       {props.data.map((data: any) => {
         return (
           <Card variant="outlined" className={styles.Card} key={data.id}>
-            <CardContent>
+            <CardContent className={styles.CardContent}>
               <div data-testid="label">{data.label}</div>
 
               <Typography variant="body2" component="p" data-testid="description">

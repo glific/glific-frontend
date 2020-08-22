@@ -14,16 +14,23 @@ export interface GroupContactListProps {
   match: any;
 }
 
-const columnNames = ['NAME', 'PHONE', 'ACTIONS'];
+const columnNames = ['NAME', 'GROUPS', 'ACTIONS'];
 
-const getColumns = ({ name, phone }: any) => ({
-  label: getName(name),
-  description: getPhone(phone),
+const getColumns = ({ name, phone, groups }: any) => ({
+  label: getName(name, phone),
+  groups: getGroups(groups),
 });
 
-const getName = (label: string) => <p className={styles.NameText}>{label}</p>;
+const getName = (label: string, phone: string) => (
+  <>
+    <p className={styles.NameText}>{label}</p>
+    <p>{phone}</p>
+  </>
+);
 
-const getPhone = (text: string) => <p className={styles.PhoneText}>{text}</p>;
+const getGroups = (groups: Array<any>) => (
+  <p className={styles.PhoneText}>{groups.map((group: any) => group.label).join(', ')}</p>
+);
 
 const dialogMessage = 'This contact will be permanently removed from this group';
 const columnStyles = [styles.Name, styles.Phone, styles.Actions];

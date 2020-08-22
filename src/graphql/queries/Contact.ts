@@ -6,6 +6,10 @@ export const CONTACT_SEARCH_QUERY = gql`
       id
       name
       phone
+      groups {
+        id
+        label
+      }
     }
   }
 `;

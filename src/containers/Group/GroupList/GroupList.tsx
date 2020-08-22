@@ -33,10 +33,6 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
-const contactIcon = <AddContactIcon />;
-
-const additionalAction = { icon: contactIcon, parameter: 'group', link: '/groups' };
-
 export const GroupList: React.SFC<GroupListProps> = (props) => {
   const cardLink = { start: 'group', end: 'contacts' };
   return (
@@ -48,7 +44,6 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       button={{ show: true, label: '+ CREATE GROUP' }}
       pageLink="group"
       listIcon={groupIcon}
-      additionalAction={additionalAction}
       dialogMessage={dialogMessage}
       cardLink={cardLink}
       {...queries}
