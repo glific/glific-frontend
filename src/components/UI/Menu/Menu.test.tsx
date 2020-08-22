@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Menu from './Menu';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -20,10 +20,12 @@ const component = (
 
 describe('<Menu />', () => {
   test('it should mount', () => {
-    render(component);
+    const { queryByText } = render(component);
 
     const menuComponent = screen.getByTestId('Menu');
-
     expect(menuComponent).toBeInTheDocument();
+
+    const menuOption = queryByText('My Account');
+    fireEvent.click(menuOption);
   });
 });
