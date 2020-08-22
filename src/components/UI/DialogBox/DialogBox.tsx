@@ -14,6 +14,7 @@ interface DialogProps {
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
+  titleAlign?: string;
   colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   alignButtons?: string;
@@ -32,6 +33,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   colorOk = 'primary',
   colorCancel = 'default',
   alignButtons,
+  titleAlign = 'center',
   skipCancel = false,
   skipOk = false,
 }) => {
@@ -55,6 +57,11 @@ export const DialogBox: React.SFC<DialogProps> = ({
         {buttonCancel}
       </Button>
     );
+  }
+
+  let titleStyle = styles.DialogTitleCenter;
+  if (titleAlign === 'left') {
+    titleStyle = styles.DialogTitleLeft;
   }
 
   let okButtonDisplay = null;
@@ -85,7 +92,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className={styles.DialogTitle}>
+        <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
           {title}
         </DialogTitle>
         <DialogContent>{children}</DialogContent>

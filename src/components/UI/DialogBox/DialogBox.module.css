@@ -1,5 +1,6 @@
 .DialogboxPaper {
   border-radius: 24px !important;
+  margin: 0px !important;
   margin-top: 66px !important;
   min-width: 395px !important;
 }
@@ -22,6 +23,15 @@
 .DialogTitle {
   color: #073f24;
   padding-top: 24px !important;
-  text-align: center;
   padding-bottom: 8px !important;
+}
+
+.DialogTitleCenter {
+  composes: DialogTitle;
+  text-align: center;
+}
+
+.DialogTitleLeft {
+  composes: DialogTitle;
+  text-align: left;
 }

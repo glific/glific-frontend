@@ -1,5 +1,16 @@
 import { gql } from '@apollo/client';
 
+export const CREATE_CONTACT_GROUP = gql`
+  mutation createContactGroup($input: ContactGroupInput!) {
+    createContactGroup(input: $input) {
+      contactGroup {
+        id
+        value
+      }
+    }
+  }
+`;
+
 export const DELETE_GROUP = gql`
   mutation deleteGroup($id: ID!) {
     deleteGroup(id: $id) {
