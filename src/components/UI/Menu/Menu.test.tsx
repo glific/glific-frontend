@@ -1,26 +1,26 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import Menu from './Menu';
-import { Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-const menuProps = {
-  menus: [
-    {
-      title: 'My Account',
-      path: '/group',
-      onClickHandler: jest.fn(),
-    },
-  ],
-};
+const menuList = [
+  {
+    title: 'My Account',
+    path: '/group',
+  },
+];
+
+const component = (
+  <Router>
+    <Menu menus={menuList}>
+      <div>Menu Option</div>
+    </Menu>
+  </Router>
+);
 
 describe('<Menu />', () => {
   test('it should mount', () => {
-    render(
-      <Router>
-        <Menu {...menuProps} />
-      </Router>
-    );
+    render(component);
 
     const menuComponent = screen.getByTestId('Menu');
 

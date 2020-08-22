@@ -10,7 +10,12 @@ export interface MenuItemProps {
 
 const MenuItem: React.SFC<MenuItemProps> = (props) => {
   return (
-    <MenuItemElement onClick={props.onClickHandler} component={Link} to={props.path}>
+    <MenuItemElement
+      onClick={props.onClickHandler}
+      component={Link}
+      to={props.path}
+      data-testid="MenuItem"
+    >
       {props.title}
     </MenuItemElement>
   );

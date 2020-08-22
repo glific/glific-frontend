@@ -210,7 +210,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
             }),
           }}
           variant="permanent"
-          // open
         >
           <div className={classes.BottomMenus}>
             <Menu menus={staffManagementMenus}>

@@ -1,6 +1,6 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import MenuItem from './MenuItem';
 
 const menuItemProps = {
@@ -9,9 +9,15 @@ const menuItemProps = {
   onClickHandler: jest.fn(),
 };
 
+const component = (
+  <Router>
+    <MenuItem {...menuItemProps} />
+  </Router>
+);
+
 describe('<MenuItem />', () => {
   test('it should mount', () => {
-    render(<MenuItem {...menuItemProps} />);
+    render(component);
 
     const menuItemComponent = screen.getByTestId('MenuItem');
 
