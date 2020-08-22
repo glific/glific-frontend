@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
-import styles from './FormLayout.module.css';
 import { useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
+
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { setNotification, setErrorMessage } from '../../common/notification';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { setNotification, setErrorMessage } from '../../common/notification';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import styles from './FormLayout.module.css';
 
 export interface FormLayoutProps {
   match: any;
@@ -71,7 +72,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
-  const [groupsID, setGroupsID] = useState();
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -89,9 +89,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
-        if (data.user && data.user.user) {
-          setGroupsID(data.user.user.groups === undefined ? null : data.user.user.groups);
-        }
       }
     },
   });
@@ -140,13 +137,19 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data && data.heading && type === 'search') return;
     }
 
+    // remove fields from the payload that marked as skipPayload = true
+    formFields.map((field: any) => {
+      if (field.skipPayload) {
+        delete payload[field.name];
+      }
+    });
+
     let message;
 
     if (itemId) {
       updateItem({
         variables: {
           id: itemId,
-          groupIds: groupsID,
           input: payload,
         },
       });

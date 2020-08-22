@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { useQuery } from '@apollo/client';
+
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
-import { GET_GROUPS } from '../../graphql/queries/Group';
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
-import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { useQuery, useMutation } from '@apollo/client';
 import { FormLayout } from '../Form/FormLayout';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
+import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
+import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
+import { GET_GROUPS } from '../../graphql/queries/Group';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 export interface StaffManagementProps {
   match: any;
@@ -21,7 +21,7 @@ const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
   getItemQuery: GET_USERS_QUERY,
-  createItemQuery: CREATE_TEMPLATE,
+  createItemQuery: UPDATE_USER,
   updateItemQuery: UPDATE_USER,
   deleteItemQuery: DELETE_USER,
 };
@@ -29,22 +29,41 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState('');
+  const [roles, setRoles] = useState([]);
   const [groups, setGroups] = useState([]);
 
-  const states = { name, phone, roles };
+  const states = { name, phone, roles, groups };
   const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
-    setRoles(roles);
+
+    // let' format the roles so that it is displayed correctly in the UI
+    if (roles) {
+      let defaultRoles: any = [];
+      roles.map((role: any) => {
+        defaultRoles.push({ id: role, label: role });
+      });
+      setRoles(defaultRoles);
+    }
     setGroups(groups);
   };
 
-  useQuery(GET_GROUPS, {
-    onCompleted: (data) => {
-      setGroups(data.groups);
-    },
-  });
+  const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
+
+  const { loading, data } = useQuery(GET_GROUPS);
+
+  if (loading || loadingRoles) return <Loading />;
+
+  if (!data.groups || !roleData.roles) {
+    return null;
+  }
+
+  let rolesList: any = [];
+  if (roleData.roles) {
+    roleData.roles.map((role: any) => {
+      rolesList.push({ id: role, label: role });
+    });
+  }
 
   const formFields = [
     {
@@ -52,30 +71,30 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'name',
       type: 'text',
       placeholder: 'Full Name',
-      query: true,
-      select: false,
     },
     {
       component: Input,
       name: 'phone',
       placeholder: 'Phone Number',
-      query: false,
-      select: false,
+      disabled: true,
+      skipPayload: true,
     },
     {
-      component: Dropdown,
+      component: AutoComplete,
       name: 'roles',
       placeholder: 'Roles',
-      options: [
-        { value: 'admin', name: 'Admin' },
-        { value: 'basic', name: 'Basic' },
-      ],
+      options: rolesList,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Roles',
+        variant: 'outlined',
+      },
     },
     {
       component: AutoComplete,
       name: 'groups',
       placeholder: 'Groups',
-      options: groups,
+      options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Groups',
@@ -89,12 +108,38 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     phone: Yup.string().required('Phone is required'),
   });
 
+  const setPayload = (payload: any) => {
+    // let's build the groupIds, as backend expects the array of group ids
+    let groupIds = payload.groups.map((group: any) => {
+      return group.id;
+    });
+
+    // remove groups from the payload
+    delete payload['groups'];
+
+    // let's rebuild roles, as per backend
+    let roleIds = payload.roles.map((role: any) => {
+      return role.id;
+    });
+
+    // delete current roles from the payload
+    delete payload['roles'];
+
+    // return modified payload
+    return {
+      ...payload,
+      groupIds: groupIds,
+      roles: roleIds,
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName="User"
       dialogMessage={dialogMessage}
