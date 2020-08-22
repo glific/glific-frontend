@@ -16,18 +16,23 @@ import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import { DATE_FORMAT } from '../../common/constants';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
+import { Typography } from '@material-ui/core';
 
 export interface CollectionProps {
   match?: any;
+  type?: string;
+  search?: any;
+  handleCancel?: any;
+  searchParam?: any;
 }
 
-const FormSchema = Yup.object().shape({
+const validation = {
   shortcode: Yup.string().required('Title is required.'),
   label: Yup.string().required('Description is required.'),
-});
+};
+let FormSchema = Yup.object().shape({});
 
 const dialogMessage = "You won't be able to use this collection again.";
 
@@ -40,16 +45,21 @@ const queries = {
   deleteItemQuery: DELETE_COLLECTION,
 };
 
-export const Collection: React.SFC<CollectionProps> = ({ match }) => {
+export const Collection: React.SFC<CollectionProps> = ({
+  match,
+  type = 'save',
+  search,
+  ...props
+}) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
-  const [tags, setTags] = useState([]);
-  const [groups, setGroups] = useState([]);
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
+  const [formFields, setFormFields] = useState<any>([]);
+  const [button, setButton] = useState<string>('Save');
 
   const states = { shortcode, label, term, includeTags, includeGroups, dateFrom, dateTo };
   const setStates = ({ shortcode, label, args }: any) => {
@@ -102,7 +112,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   if (!data || !dataT) return <Loading />;
 
-  const formFields = [
+  const DataFields = [
     {
       component: Input,
       name: 'shortcode',
@@ -117,6 +127,9 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       rows: 3,
       textArea: true,
     },
+  ];
+
+  const searchFields = [
     {
       component: Input,
       name: 'term',
@@ -130,7 +143,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Includes tags',
         // required: true,
         variant: 'outlined',
       },
@@ -144,7 +156,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Includes groups',
         variant: 'outlined',
       },
     },
@@ -164,29 +175,96 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   ];
 
   const setPayload = (payload: any) => {
+    if (search) search(payload);
+    if (props.searchParam) {
+      payload.term = props.searchParam.term;
+      payload.includeTags = props.searchParam.includeTags;
+      payload.includeGroups = props.searchParam.includeGroups;
+      payload.dateTo = props.searchParam.dateTo;
+      payload.dateFrom = props.searchParam.dateFrom;
+    }
+    let args = {
+      messageOpts: {
+        offset: 0,
+        limit: 10,
+      },
+      filter: {
+        term: payload.term,
+        includeTags: payload.includeTags.map((option: any) => option.id),
+        includeGroups: payload.includeGroups.map((option: any) => option.id),
+      },
+      contactOpts: {
+        offset: 0,
+        limit: 20,
+      },
+    };
+
+    if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
+      let dateRange = {
+        dateRange: {
+          to: moment(payload.dateTo).format('yyyy-MM-DD'),
+          from: moment(payload.dateFrom).format('yyyy-MM-DD'),
+        },
+      };
+      args.filter = Object.assign(args.filter, dateRange);
+    }
     return {
       label: payload.label,
       shortcode: payload.shortcode,
-      args: JSON.stringify({
-        messageOpts: {
-          offset: 0,
-          limit: 10,
-        },
-        filter: {
-          term: payload.term,
-          includeTags: payload.includeTags.map((option: any) => option.id),
-          includeGroups: payload.includeGroups.map((option: any) => option.id),
-          dateRange: {
-            to: moment(payload.dateTo).format(DATE_FORMAT),
-            from: moment(payload.dateFrom).format(DATE_FORMAT),
-          },
-        },
-        contactOpts: {
-          offset: 0,
-          limit: 20,
-        },
-      }),
+      args: JSON.stringify(args),
     };
+  };
+
+  const advanceSearch = (data: any) => {
+    // close dialogbox
+    if (data === 'cancel') props.handleCancel();
+
+    let heading;
+    if (type === 'search') {
+      heading = (
+        <React.Fragment>
+          <Typography variant="h5" className={styles.Title}>
+            Search conversations
+          </Typography>
+          <Typography variant="subtitle1" className={styles.Title}>
+            Apply more parameters to search for conversations.
+          </Typography>
+        </React.Fragment>
+      );
+
+      FormSchema = Yup.object().shape({});
+    }
+
+    if (type === 'saveSearch') {
+      heading = (
+        <React.Fragment>
+          <Typography variant="h5" className={styles.Title}>
+            Save search to collections
+          </Typography>
+        </React.Fragment>
+      );
+      addFieldsValidation(validation);
+    }
+
+    if (formFields.length === 0) {
+      if (type === 'search') {
+        setFormFields(searchFields);
+        setButton('Search');
+      }
+      if (type === 'saveSearch') setFormFields(DataFields);
+    }
+    return {
+      heading,
+    };
+  };
+
+  const addFieldsValidation = (object: object) => {
+    FormSchema = Yup.object().shape(object);
+  };
+
+  const getFields = () => {
+    addFieldsValidation(validation);
+    return [...DataFields, ...searchFields];
   };
 
   return (
@@ -197,15 +275,18 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="collection"
+      listItemName="Collection"
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={formFields.length > 0 ? formFields : getFields()}
       redirectionLink="collection"
       cancelLink="collection"
       linkParameter="id"
       listItem="savedSearch"
       icon={collectionIcon}
       languageSupport={false}
+      advanceSearch={advanceSearch}
+      button={button}
+      type={type}
     />
   );
 };

@@ -1,18 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import {
-  Container,
-  InputLabel,
-  OutlinedInput,
-  Chip,
-  SvgIcon,
-  FormControl,
-  InputAdornment,
-} from '@material-ui/core';
+import { Container, Chip, FormControl, TextField, Paper } from '@material-ui/core';
 import moment from 'moment';
+import AutoComplete from '@material-ui/lab/Autocomplete';
+import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 
-import { ReactComponent as SelectIcon } from '../../../assets/images/icons/Select.svg';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Close.svg';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification, setErrorMessage } from '../../../common/notification';
@@ -75,7 +69,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
-  const [search, setSearch] = useState('');
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
@@ -138,7 +131,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: (data) => {
-      setSearch('');
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
     },
@@ -248,15 +240,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const closeDialogBox = () => {
     setDialogbox(false);
     setShowDropdown(null);
-    setSearch('');
   };
 
-  const handleSubmit = () => {
-    // const tagsForm = document.getElementById('tagsForm');
-    // let messageTags: any = tagsForm?.querySelectorAll('input[type="checkbox"]');
-    // messageTags = [].slice.call(messageTags);
-    // const selectedTags = messageTags.filter((tag: any) => tag.checked).map((tag: any) => tag.name);
-
+  const handleSubmit = (selectedMessageTags: any) => {
     const selectedTags = selectedMessageTags.filter(
       (tag: any) => !previousMessageTags.includes(tag)
     );
@@ -280,79 +266,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
 
+  const tags = AllTags.data ? AllTags.data.tags : [];
+
   if (dialog) {
-    const tagList = AllTags.data
-      ? AllTags.data.tags.map((tag: any) => {
-          if (tag.label.toLowerCase().includes(search)) {
-            return (
-              <Chip
-                label={tag.label}
-                className={styles.Chip}
-                key={tag.id}
-                data-tagid={tag.id}
-                data-testid="dialogCheckbox"
-                clickable={true}
-                icon={
-                  selectedMessageTags?.includes(tag.id.toString()) ? (
-                    <SvgIcon
-                      component={SelectIcon}
-                      viewBox="0 0 12 12"
-                      className={styles.SelectIcon}
-                    />
-                  ) : undefined
-                }
-                onClick={(event: any) => {
-                  const tagId = event.currentTarget.getAttribute('data-tagid');
-                  if (selectedMessageTags?.includes(tagId.toString())) {
-                    setSelectedMessageTags(
-                      selectedMessageTags?.filter(
-                        (messageTag: any) => messageTag !== tagId.toString()
-                      )
-                    );
-                  } else {
-                    setSelectedMessageTags([...selectedMessageTags, tagId.toString()]);
-                  }
-                }}
-              />
-            );
-          } else {
-            return null;
-          }
-        })
-      : null;
+    const tagIcon = <TagIcon className={styles.TagIcon} />;
+
     dialogBox = (
-      <DialogBox
+      <SearchDialogBox
+        selectedOptions={selectedMessageTags}
         title="Assign tag to message"
-        handleCancel={closeDialogBox}
         handleOk={handleSubmit}
-        buttonOk="Save"
-      >
-        <div className={styles.DialogBox}>
-          <FormControl fullWidth>
-            <InputLabel variant="outlined">Search</InputLabel>
-            <OutlinedInput
-              classes={{
-                notchedOutline: styles.InputBorder,
-              }}
-              data-testid="tagSearch"
-              className={styles.Label}
-              label="Search"
-              fullWidth
-              onChange={(event) => setSearch(event.target.value)}
-              startAdornment={
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <div>
-            <form id="tagsForm" className={styles.Form}>
-              {tagList}
-            </form>
-          </div>
-        </div>
-      </DialogBox>
+        handleCancel={closeDialogBox}
+        options={tags}
+      ></SearchDialogBox>
     );
   }
 
@@ -441,6 +367,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             ? conversationInfo.contact.name
             : conversationInfo.contact.phone
         }
+        contactId={contactId.toString()}
       />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />

@@ -1,18 +1,15 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Collection } from './Collection';
-import gqlClient from '../../config/apolloclient';
-import { render, wait, within, fireEvent } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { Route } from 'react-router-dom';
-import { CollectionList } from './CollectionList/CollectionList';
+
+import { Collection } from './Collection';
 import { LIST_ITEM_MOCKS } from './Collection.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = shallow(
-  <MockedProvider mocks={[]}>
+  <MockedProvider mocks={mocks} addTypename={false}>
     <Collection />
   </MockedProvider>
 );
@@ -23,22 +20,13 @@ describe('<Collection />', () => {
   });
 });
 
-test('cancel button should redirect to collectionlist page', async () => {
-  const { container, getByText, unmount } = render(
+test('should load the collection edit', async () => {
+  const { getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <Collection match={{ params: { id: 1 } }} />
-        <Route path="/collection" exact component={CollectionList} />
-      </Router>
+      <Collection match={{ params: { id: 1 } }} />
     </MockedProvider>
   );
-  await wait();
-  const { queryByText } = within(container.querySelector('form'));
-  const button = queryByText('Cancel');
 
-  fireEvent.click(button);
-  expect(getByText('Loading...')).toBeInTheDocument();
   await wait();
-  expect(getByText('Collections')).toBeInTheDocument();
-  unmount();
+  expect(getByText('Edit Collection')).toBeInTheDocument();
 });

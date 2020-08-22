@@ -14,3 +14,58 @@
   font-size: 20px !important;
   color: #073f24;
 }
+
+.Configure {
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.Configure > :first-child {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+.Popper {
+  z-index: 1500;
+}
+
+.Popper button {
+  padding: 5px 30px 5px 10px !important;
+  text-transform: none !important;
+}
+
+.Popper > div:first-child {
+  padding-top: 10px !important;
+}
+
+.Popper > div:last-child {
+  padding-bottom: 10px !important;
+}
+
+.ListButton {
+  width: 100% !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+  justify-content: flex-start !important;
+}
+
+.ListButton:hover {
+  background-color: #edf6f2 !important;
+}
+
+.Link {
+  text-decoration: none;
+}
+
+.Icon {
+  margin-right: 16px;
+}
+
+.ListButtonPrimary {
+  composes: ListButton;
+  color: #073f24 !important;
+}
+
+.Container {
+  margin-top: 6px;
+}

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { InputBase, IconButton } from '@material-ui/core';
+import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
+import { ReactComponent as AdvancedSearch } from '../../../assets/images/icons/AdvancedSearch.svg';
 
 export interface SearchBarProps {
   handleChange?: (event: any) => void;
@@ -12,6 +13,8 @@ export interface SearchBarProps {
   // different functionalities, look at `ChatConversations` for without, and `TagList` with.
   searchVal?: string; // Calvin update-- all use-cases will use searchVal?
   className?: any;
+  handleClick?: any;
+  endAdornment?: any;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
@@ -42,6 +45,22 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     );
   }
 
+  let endAdornment;
+  if (props.endAdornment) {
+    endAdornment = (
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="toggle password visibility"
+          onClick={(e: any) => {
+            props.handleClick(e, 'search');
+          }}
+        >
+          <AdvancedSearch />
+        </IconButton>
+      </InputAdornment>
+    );
+  }
+
   return (
     <form onSubmit={props.handleSubmit} autoComplete="off" data-testid="searchForm">
       <div className={`${styles.SearchBar} ${props.className}`}>
@@ -59,6 +78,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
               }
             }}
             value={inputValue}
+            endAdornment={endAdornment}
           />
         </div>
         {resetButton}

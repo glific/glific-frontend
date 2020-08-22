@@ -48,5 +48,6 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     {...columnAttributes}
     searchParameter="name"
     additionalAction={additionalAction}
+    buttonLabel="+ CREATE AUTOMATION"
   />
 );

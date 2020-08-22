@@ -1,7 +1,8 @@
 import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
-import styles from './Dropdown.module.css';
 import { Select, FormControl, InputLabel, FormHelperText } from '@material-ui/core';
+
+import styles from './Dropdown.module.css';
 
 export interface DropdownProps {
   type?: any;
