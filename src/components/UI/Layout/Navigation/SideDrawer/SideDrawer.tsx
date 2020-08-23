@@ -4,27 +4,22 @@ import {
   Drawer,
   makeStyles,
   createStyles,
-  Fade,
-  Paper,
-  Button,
   Theme,
   Divider,
   Toolbar,
   Typography,
-  Popper,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import axios from 'axios';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
+import styles from './SideDrawer.module.css';
+import Menu from '../../../Menu/Menu';
 import * as constants from '../../../../../common/constants';
 import { SessionContext } from '../../../../../context/session';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
-import styles from './SideDrawer.module.css';
-import Menu from '../../../Menu/Menu';
 import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
 
 export interface SideDrawerProps {}
@@ -111,7 +106,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
-  const { setAuthenticated } = useContext(SessionContext);
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
@@ -152,25 +146,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
-  const session = localStorage.getItem('session');
-  const accessToken = session ? JSON.parse(session).access_token : null;
-
-  const handleLogout = () => {
-    axios
-      .delete(constants.USER_SESSION, {
-        headers: {
-          Authorization: accessToken,
-        },
-      })
-      .then((response: any) => {
-        localStorage.removeItem('session');
-        setAuthenticated(false);
-      })
-      .catch(function (error: any) {
-        console.log(error);
-      });
-  };
-
   return (
     <nav
       className={clsx({
@@ -196,7 +171,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           {drawer}
         </Drawer>
       </Hidden>
-      {/* Rendered */}
       <Hidden xsDown implementation="css">
         <Drawer
           className={clsx(classes.drawer, {
