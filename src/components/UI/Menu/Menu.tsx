@@ -20,9 +20,7 @@ const Menu: React.SFC<MenuProps> = (props) => {
   };
 
   const menuList = props.menus.map((menu: any) => {
-    return (
-      <MenuItem onClickHandler={handleClose} title={menu.title} path={menu.path} key={menu.title} />
-    );
+    return <MenuItem onClickHandler={handleClose} key={menu.title} {...menu} />;
   });
 
   return (

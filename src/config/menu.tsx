@@ -54,5 +54,6 @@ export const userAccountMenus = [
   {
     title: 'Logout',
     path: '/logout',
+    className: 'Warning',
   },
 ];
