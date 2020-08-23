@@ -1,7 +1,8 @@
 import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
+import { Select, FormControl, InputLabel, FormHelperText } from '@material-ui/core';
+
 import styles from './Dropdown.module.css';
-import Select from '@material-ui/core/Select';
 
 export interface DropdownProps {
   type?: any;
@@ -9,6 +10,8 @@ export interface DropdownProps {
   options: any;
   label: string;
   form: any;
+  placeholder: string;
+  helperText: string;
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
@@ -23,8 +26,17 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
     : null;
   return (
     <div className={styles.Dropdown}>
-      <label className={styles.Label}>{props.label}</label>
-      <Select {...props.field}>{options}</Select>
+      <FormControl variant="outlined" fullWidth>
+        {props.placeholder ? (
+          <InputLabel id="simple-select-outlined-label">{props.placeholder}</InputLabel>
+        ) : null}
+        <Select {...props.field} label={props.placeholder} fullWidth>
+          {options}
+        </Select>
+        {props.helperText ? (
+          <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+        ) : null}
+      </FormControl>
     </div>
   );
 };

@@ -1,56 +1,211 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Hidden,
   Drawer,
   makeStyles,
   createStyles,
+  Fade,
+  Paper,
+  Button,
   Theme,
-  useTheme,
   Divider,
   Toolbar,
   Typography,
+  Popper,
 } from '@material-ui/core';
-
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import axios from 'axios';
+import clsx from 'clsx';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 import SideMenus from '../SideMenus/SideMenus';
 import * as constants from '../../../../../common/constants';
+import { SessionContext } from '../../../../../context/session';
+import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
+import UserIcon from '../../../../../assets/images/icons/User.png';
+import styles from './SideDrawer.module.css';
+import { Link } from 'react-router-dom';
 
 export interface SideDrawerProps {}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
+const theme = createMuiTheme({
+  typography: {
+    h6: {
+      fontSize: 24,
+      fontFamily: 'Tenor Sans, sans-serif',
+      color: '#0D6B3D',
+    },
+  },
+});
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+      whiteSpace: 'nowrap',
+    },
+    navClose: {
+      width: '72px',
+    },
+    drawerOpen: {
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+    drawerClose: {
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      overflowX: 'hidden',
+      width: theme.spacing(7) + 1,
       [theme.breakpoints.up('sm')]: {
-        width: drawerWidth,
-        flexShrink: 0,
+        width: theme.spacing(9) + 1,
       },
     },
-    drawerPaper: {
-      width: drawerWidth,
+    toolbar: {
+      display: 'flex',
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+    drawerPaper: {},
+    outerBox: {
+      display: 'flex',
+      width: '100%',
+      justifyContent: 'space-between',
+    },
+    anotherToolBar: {
+      padding: '0px',
+    },
+    title: {
+      alignSelf: 'center',
+      margin: '0 0 0 15px',
+    },
+    iconButton: {
+      margin: '0 10px 0 0',
+    },
+    closedIcon: {
+      margin: '12px 12px 12px 15px',
+    },
+    LogoutButton: {
+      position: 'absolute',
+      bottom: '10px',
+      left: '94px',
+      width: 'fit-content',
+    },
+    StaffButton: {
+      position: 'absolute',
+      bottom: '10px',
+      left: '8px',
+      width: 'fit-content',
     },
   })
 );
 
 export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
+  const { setAuthenticated } = useContext(SessionContext);
   const classes = useStyles();
-  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [fullOpen, setFullOpen] = React.useState(true);
 
   const drawer = (
     <div>
-      <Toolbar>
-        <Typography variant="h6">Glific</Typography>
+      <Toolbar className={classes.anotherToolBar}>
+        {fullOpen ? (
+          <div className={classes.outerBox}>
+            <ThemeProvider theme={theme}>
+              <Typography variant="h6" className={classes.title}>
+                Glific
+              </Typography>
+            </ThemeProvider>
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => setFullOpen(false)}
+              data-testid="drawer-button"
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
+        ) : (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            style={{ margin: 'auto' }}
+            onClick={() => setFullOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
       </Toolbar>
       <Divider />
-      <SideMenus />
+      <SideMenus opened={fullOpen} />
     </div>
   );
 
+  const popper = (
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      placement="right-end"
+      transition
+      className={styles.Popper}
+    >
+      {({ TransitionProps }) => (
+        <Fade {...TransitionProps} timeout={350}>
+          <Paper elevation={3}>
+            <Button color="primary">My Account</Button>
+            <br />
+            <Button className={styles.LogoutButton} color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Paper>
+        </Fade>
+      )}
+    </Popper>
+  );
+
+  const handleClick = (event: any) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
   const container = window !== undefined ? () => window.document.body : undefined;
 
+  const session = localStorage.getItem('session');
+  const accessToken = session ? JSON.parse(session).access_token : null;
+
+  const handleLogout = () => {
+    axios
+      .delete(constants.USER_SESSION, {
+        headers: {
+          Authorization: accessToken,
+        },
+      })
+      .then((response: any) => {
+        localStorage.removeItem('session');
+        setAuthenticated(false);
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
+  };
+
   return (
-    <nav className={classes.drawer} aria-label="navigation menus">
+    <nav
+      className={clsx({
+        [classes.drawer]: fullOpen,
+        [classes.navClose]: !fullOpen,
+      })}
+      aria-label="navigation menus"
+    >
       <Hidden smUp implementation="css">
         <Drawer
           container={container}
@@ -68,15 +223,30 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           {drawer}
         </Drawer>
       </Hidden>
+      {/* Rendered */}
       <Hidden xsDown implementation="css">
         <Drawer
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: fullOpen,
+            [classes.drawerClose]: !fullOpen,
+          })}
           classes={{
-            paper: classes.drawerPaper,
+            paper: clsx({
+              [classes.drawerOpen]: fullOpen,
+              [classes.drawerClose]: !fullOpen,
+            }),
           }}
           variant="permanent"
-          open
+          // open
         >
+          <IconButton className={classes.StaffButton} component={Link} to="/staff-management">
+            <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="stafficon" />
+          </IconButton>
+          <IconButton className={classes.LogoutButton} onClick={handleClick}>
+            <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
+          </IconButton>
           {drawer}
+          {popper}
         </Drawer>
       </Hidden>
     </nav>

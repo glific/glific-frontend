@@ -1,0 +1,50 @@
+.TableRow {
+  display: flex !important;
+  background-color: white;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+  border: 1px solid #eaedec !important;
+  padding: 4px 16px;
+  padding-right: 5px;
+}
+
+.TableHeadRow {
+  display: flex !important;
+  margin-bottom: 4px !important;
+  padding: 0px 16px;
+  margin-right: 14px;
+  padding-right: 5px;
+  line-height: 1 !important;
+}
+
+.TableCell {
+  font-size: 14px !important;
+  color: #ccd4d0 !important;
+  display: flex !important;
+  padding: 0px !important;
+  border: unset !important;
+}
+
+.TableContainer {
+  margin: 14px 24px;
+  margin-bottom: 10px;
+}
+
+.TableFooter {
+  position: fixed;
+  display: flex !important;
+  justify-content: flex-end !important;
+  width: 80%;
+  background: #fafafa;
+  bottom: 0px;
+}
+
+.FooterRow {
+  border: 0px !important;
+  font-size: 16px !important;
+  color: #073f24 !important;
+}
+
+.FooterRow > div {
+  min-height: 72px;
+}

@@ -1,97 +1,141 @@
 import React, { useState } from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import { Container, Button } from '@material-ui/core';
-import { Picker } from 'emoji-mart';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
+import clsx from 'clsx';
 
+import { convertToWhatsApp } from '../../../../common/RichEditor';
 import styles from './ChatInput.module.css';
-
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
+import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
+import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
+  handleHeightChange(newHeight: number): void;
 }
 
-export const ChatInput: React.SFC<ChatInputProps> = ({ onSendMessage }) => {
-  const [message, setMessage] = useState('');
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+export const ChatInput: React.SFC<ChatInputProps> = (props) => {
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [selectedTab, setSelectedTab] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const [searchVal, setSearchVal] = useState('');
+  const speedSends = 'Speed sends';
+  const templates = 'Templates';
 
-  const keyPressHandler = (e: any) => {
-    if (e.key === 'Enter') {
-      submitMessage();
-    }
-  };
-
-  const changeHandler = ({ target }: any) => {
-    setMessage(target.value);
-  };
-
-  const submitMessage = () => {
+  const submitMessage = (message: string) => {
     if (!message) return;
 
-    setMessage('');
-
-    if (typeof onSendMessage === 'function') {
-      onSendMessage(message);
-    }
+    // Resetting the EditorState
+    setEditorState(
+      EditorState.moveFocusToEnd(
+        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+      )
+    );
+    props.onSendMessage(message);
   };
 
-  let emojiPicker;
-  if (showEmojiPicker) {
-    emojiPicker = (
-      <Picker
-        data-testid="emoji-popup"
-        title="Pick your emoji…"
-        emoji="point_up"
-        style={{ position: 'absolute', bottom: '190px', right: '444px' }}
-        onSelect={(emoji: any) => setMessage(message + emoji.native)}
-      />
+  const handleClick = (title: string) => {
+    // clear the search when tab is opened again
+    setSearchVal('');
+    if (selectedTab === title) {
+      setSelectedTab('');
+    } else {
+      setSelectedTab(title);
+    }
+    setOpen(selectedTab !== title);
+  };
+
+  const handleClickAway = () => {
+    setOpen(false);
+    setSelectedTab('');
+  };
+
+  const handleSelectText = (obj: any) => {
+    // Conversion from HTML text to EditorState
+    const blocksFromHTML = convertFromHTML(obj.body);
+    const state = ContentState.createFromBlockArray(
+      blocksFromHTML.contentBlocks,
+      blocksFromHTML.entityMap
     );
-  }
+    setEditorState(EditorState.createWithContent(state));
+  };
+
+  const handleSearch = (e: any) => {
+    setSearchVal(e.target.value);
+  };
+
+  const quickSendButtons = () => {
+    let types = [speedSends, templates];
+    let buttons = types.map((type: string) => {
+      return (
+        <div
+          key={type}
+          data-testid="shortcut-button"
+          onClick={() => handleClick(type)}
+          className={clsx(styles.QuickSend, {
+            [styles.QuickSendSelected]: selectedTab === type,
+          })}
+        >
+          {type}
+        </div>
+      );
+    });
+    return <div className={styles.QuickSendButtons}>{buttons}</div>;
+  };
 
   return (
     <Container className={styles.ChatInput}>
-      <div className={styles.ChatInputElements}>
-        <div className={styles.InputContainer}>
-          <input
-            className={styles.InputBox}
-            data-testid="message-input"
-            type="text"
-            placeholder="Start typing..."
-            value={message}
-            onKeyPress={keyPressHandler}
-            onChange={changeHandler}
-            onClick={() => setShowEmojiPicker(false)}
-          />
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div className={styles.SendsContainer}>
+          {open ? (
+            <Fade in={open} timeout={200}>
+              <div className={styles.Popup}>
+                <ChatTemplates
+                  isTemplate={selectedTab === templates}
+                  searchVal={searchVal}
+                  handleSelectText={handleSelectText}
+                />
+                <SearchBar
+                  className={styles.ChatSearchBar}
+                  handleChange={handleSearch}
+                  onReset={() => setSearchVal('')}
+                />
+              </div>
+            </Fade>
+          ) : null}
+          {quickSendButtons()}
         </div>
-        <div className={styles.EmojiContainer}>
-          <IconButton
-            data-testid="emoji-picker"
-            color="primary"
-            aria-label="pick emoji"
-            component="span"
-            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <span role="img" aria-label="pick emoji">
-              😀
-            </span>
-          </IconButton>
-        </div>
+      </ClickAwayListener>
+      <div
+        className={clsx(styles.ChatInputElements, {
+          [styles.Unrounded]: selectedTab !== '',
+          [styles.Rounded]: selectedTab === '',
+        })}
+      >
+        <WhatsAppEditor
+          data-testid="message-input"
+          editorState={editorState}
+          setEditorState={setEditorState}
+          sendMessage={submitMessage}
+          handleHeightChange={props.handleHeightChange}
+        />
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
             data-testid="send-button"
             variant="contained"
             color="primary"
-            onClick={submitMessage}
-            disabled={message.length === 0}
+            disableElevation
+            onClick={() => submitMessage(convertToWhatsApp(editorState))}
+            disabled={!editorState.getCurrentContent().hasText()}
           >
             Send
             <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
           </Button>
         </div>
       </div>
-      {emojiPicker}
     </Container>
   );
 };

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Contact/View</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Contact/View" stroke="#073F24" stroke-width="2">
+            <g id="Icon/User" transform="translate(0.000000, 1.000000)">
+                <circle id="Oval" cx="8.51393189" cy="4.51393189" r="3.51393189"></circle>
+                <path d="M8.97058824,11.3349845 C5.63862609,11.3349845 3.07911292,12.1568758 1.34551084,13.9016077 L1.34551084,15.6544892 L16.5956656,15.6544892 L16.5956656,13.9016077 C14.8620635,12.1568758 12.3025504,11.3349845 8.97058824,11.3349845 Z" id="Path-12"></path>
+            </g>
+        </g>
+    </g>
+</svg>

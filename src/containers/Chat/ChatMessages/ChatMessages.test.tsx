@@ -1,14 +1,15 @@
 import React from 'react';
-import { render, wait, screen, cleanup } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, wait, act, within } from '@testing-library/react';
+
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_LANGUAGES } from '../../../graphql/queries/Tag';
+
 import { ChatMessages } from './ChatMessages';
-import { GET_CONVERSATION_MESSAGE_QUERY } from '../../../graphql/queries/Chat';
-import { CREATE_MESSAGE_MUTATION, CREATE_MESSAGE_TAG } from '../../../graphql/mutations/Chat';
-import { GET_TAGS } from '../../../graphql/queries/Tag';
-import { Switch, Route } from 'react-router-dom';
-import { within, fireEvent, waitForDomChange } from '@testing-library/dom';
+import {
+  mocksWithConversation,
+  mocksWithMultipleMessages,
+  mocksWithNoMessages,
+} from './ChatMessage.test.helper';
+import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({
   setStart: () => {},
@@ -19,256 +20,97 @@ global.document.createRange = () => ({
   },
 });
 
-const mocks = [
-  {
-    request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 25 } },
-    },
-    result: {
-      data: {
-        conversation: {
-          contact: {
-            id: '2',
-            name: 'Vaibhav',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '2',
-              },
-              sender: {
-                id: '1',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
-  },
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
-  {
-    request: {
-      query: GET_TAGS,
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            id: '87',
-            label: 'Good message',
-            description: 'Hey There',
-          },
-          {
-            id: '1',
-            label: 'important',
-            description: 'some description',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_MESSAGE_TAG,
-      variables: {
-        input: {
-          messageId: '1',
-          tagId: '87',
-        },
-      },
-    },
-    result: {
-      data: {
-        createMessageTag: {
-          messageTag: {
-            message: {
-              id: '1',
-            },
-            tag: {
-              id: '87',
-              label: 'Good message',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_MESSAGE_TAG,
-      variables: {
-        input: {
-          messageId: '1',
-          tagId: '1',
-        },
-      },
-    },
-    result: {
-      data: {
-        createMessageTag: {
-          messageTag: {
-            message: {
-              id: '1',
-            },
-            tag: {
-              id: '1',
-              label: 'important',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: CREATE_MESSAGE_MUTATION,
-      variables: {
-        input: {
-          body: 'Hey There Wow',
-          senderId: 1,
-          receiverId: '2',
-          type: 'TEXT',
-          flow: 'OUTBOUND',
-        },
-      },
-    },
-    result: {
-      data: {
-        createMessage: {
-          message: {
-            body: 'Hey There Wow',
-            insertedAt: '2020-06-25T13:36:43Z',
-            id: '10388',
-            receiver: {
-              id: '2',
-            },
-            sender: {
-              id: '1',
-            },
+const chatMessages = (
+  <MockedProvider mocks={mocksWithConversation} addTypename={false}>
+    <ChatMessages contactId={2} />
+  </MockedProvider>
+);
 
-            tags: [
-              {
-                id: 1,
-                label: 'critical',
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
-];
+it('should have loading state', async () => {
+  const { getByText } = render(chatMessages);
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await wait();
+});
 
-describe('<ChatMessages />', () => {
-  it('should have loading state', async () => {
-    const { getByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-  });
+it('should have title as contact name', async () => {
+  const { getByTestId } = render(chatMessages);
+  await wait();
+  expect(getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
+});
 
-  it('should have title as contact name', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    expect(getByTestId('name')).toHaveTextContent('Vaibhav');
-  });
+it('should have an emoji picker', async () => {
+  const { getByTestId } = render(chatMessages);
+  await wait();
+  expect(getByTestId('emoji-picker')).toBeInTheDocument();
+});
 
-  test('input should function properly', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    fireEvent.change(getByTestId('message-input'), {
-      target: { value: 'Hey There' },
-    });
-    expect(getByTestId('message-input').getAttribute('value')).toBe('Hey There');
-  });
+it('should contain the mock message', async () => {
+  const { getByText } = render(chatMessages);
+  await wait();
+  expect(getByText('Hey')).toBeInTheDocument();
+});
 
-  it('should have an emoji picker', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    expect(getByTestId('emoji-picker')).toBeInTheDocument();
-  });
-
-  it('should contain the mock message', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    expect(getByTestId('content')).toHaveTextContent('Hey there whats up?');
-  });
-
-  test('click on assign tag should open a dialog box with mock messages', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    fireEvent.click(getByTestId('messageOptions'));
-    await wait();
+test('click on assign tag should open a dialog box with already assigned tags', async () => {
+  const { getByTestId } = render(chatMessages);
+  await wait();
+  fireEvent.click(getByTestId('messageOptions'));
+  await wait();
+  act(() => {
     fireEvent.click(getByTestId('dialogButton'));
-    await wait();
-    expect(getByTestId('dialogBox')).toHaveTextContent('Good message');
   });
+  await wait();
+  expect(getByTestId('dialogBox')).toHaveTextContent('important');
+});
 
-  test('add a new message on submit to input box', async () => {
-    const { getAllByTestId, getByTestId, rerender } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    fireEvent.change(getByTestId('message-input'), {
-      target: { value: 'Hey There Wow' },
-    });
-    await wait();
-    fireEvent.keyPress(getByTestId('message-input'), { key: 'Enter', code: 13, charCode: 13 });
-    await wait();
-    expect(getByTestId('messageContainer')).toHaveTextContent('Hey There Wow');
-  });
+test('assigned tags should be shown in searchbox', async () => {
+  const { getByTestId } = render(chatMessages);
+  await wait();
+  fireEvent.click(getByTestId('messageOptions'));
+  await wait();
+  fireEvent.click(getByTestId('dialogButton'));
+  await wait();
+  const searchBox = within(getByTestId('dialogInput'));
+  expect(searchBox.getByText('important')).toBeInTheDOM();
+});
 
-  test('assign a tag to message', async () => {
-    const { container, getAllByTestId, getByTestId, getByText, queryByText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatMessages contactId="2" />
-      </MockedProvider>
-    );
-    await wait();
-    fireEvent.click(getByTestId('messageOptions'));
-    await wait();
+test('remove already assigned tags', async () => {
+  const { getAllByTestId, getByTestId, getByText } = render(chatMessages);
+  await wait();
+  fireEvent.click(getByTestId('messageOptions'));
+  await wait();
+  fireEvent.click(getByTestId('dialogButton'));
+  await wait();
+  const searchBox = within(getByTestId('dialogInput'));
+  fireEvent.click(searchBox.getByTestId('deleteIcon'));
+});
+
+test('focus on the latest message', async () => {
+  const { container, getByTestId, getByText } = render(chatMessages);
+  await wait();
+  const message = getByTestId('message');
+  expect(message.scrollIntoView).toBeCalled();
+});
+
+test('chat having multiple messages', async () => {
+  const { getByText } = render(
+    <MockedProvider mocks={mocksWithMultipleMessages} addTypename={false}>
+      <ChatMessages contactId={2} />
+    </MockedProvider>
+  );
+  await wait();
+  expect(getByText('Yo')).toBeInTheDocument();
+});
+
+test('cancel after dialog box open', async () => {
+  const { getByText, getByTestId } = render(chatMessages);
+  await wait();
+  fireEvent.click(getByTestId('messageOptions'));
+  await wait();
+  act(() => {
     fireEvent.click(getByTestId('dialogButton'));
-    await wait();
-    fireEvent.click(getAllByTestId('dialogCheckbox')[0].querySelector('input'));
-    fireEvent.click(getAllByTestId('dialogCheckbox')[1].querySelector('input'));
-    await wait();
-    fireEvent.click(getByText('Confirm'));
-    await wait();
-    expect(getByText('Good message')).toBeInTheDocument();
   });
+  await wait();
+  fireEvent.click(getByText('Cancel'));
 });

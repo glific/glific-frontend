@@ -1,0 +1,11 @@
+.Button {
+  font-size: 16px !important;
+  margin-right: 8px !important;
+  color: white !important;
+  border-radius: 27px !important;
+  box-shadow: unset !important;
+}
+
+.ButtonColor {
+  color: #119656 !important;
+}

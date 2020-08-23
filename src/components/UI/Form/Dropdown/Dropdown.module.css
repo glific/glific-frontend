@@ -1,10 +1,21 @@
 .Dropdown {
   display: flex;
-  padding: 20px;
+  padding: 8px;
 }
 
 .Label {
   width: 50%;
   align-self: center;
   font-weight: bold;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
+}
+
+.HelperText {
+  margin-left: 16px !important;
+  color: #93a29b !important;
+  font-size: 12px !important;
 }

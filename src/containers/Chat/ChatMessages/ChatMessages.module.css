@@ -4,48 +4,66 @@
   flex-flow: column;
   height: 100vh;
   background-color: #f9f7f4;
+  position: relative;
 }
 
 .DialogBox {
-  width: 500px;
+  padding-bottom: 16px;
+  min-width: 300px;
 }
 
 .MessageList {
   display: block;
   flex: 2;
-  overflow-y: overlay;
+  padding-top: 11.5px !important;
+  overflow-y: auto;
   padding-left: 0px !important;
+  padding-right: 16px !important;
   height: calc(100% - 175px);
 }
 
-.Search {
-  width: 318px;
-  height: 100%;
-  padding: 0 10px;
-  background: #ffffff;
-  transition: all 0.35s ease;
-  border-radius: 10px;
+.NoMessages {
+  padding-top: 11.5px !important;
+  padding-left: 24px !important;
+  height: calc(100% - 175px);
 }
 
-.SearchBar {
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: flex;
-  width: 350px;
-  padding: 0px;
-  transition: all 0.35s ease;
+.Chip {
+  margin-right: 8px !important;
+  margin-bottom: 8px !important;
+  color: #073f24 !important;
+  font-size: 16px !important;
+  background-color: #eaedec !important;
+  padding-right: 3px !important;
 }
-
-.SearchInput {
-  position: absolute !important;
-  top: 60px;
-  width: 500px !important;
-}
-
 .Form {
-  height: 40vh !important;
+  height: 18vh !important;
   width: 100%;
-  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 16px;
   position: relative !important;
   overflow: auto !important;
+}
+
+.InputBorder {
+  border-radius: 12px !important;
+  border-width: 2px !important;
+}
+
+.TagIcon {
+  width: 13px !important;
+  margin-left: 10px !important;
+}
+
+.DeleteIcon {
+  width: 8px !important;
+  margin-right: 13px !important;
+}
+.Paper > ul > li:hover {
+  background-color: #edf6f2 !important;
+}
+
+.Paper > ul > li {
+  color: #073f24;
 }

@@ -1,0 +1,71 @@
+.Buttons {
+  width: 315px;
+  border-color: #e0e0e0;
+  vertical-align: middle;
+  margin-left: auto;
+}
+
+.Table {
+  border-radius: 10px;
+}
+
+.Title {
+  margin-left: 14px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+}
+
+.additonalButton {
+  width: 42px;
+  height: 42px;
+}
+
+.IconButton {
+  background-color: '#e0e0e0';
+}
+
+.DropdownButton {
+  margin-left: 24px !important;
+  border-radius: 50% !important;
+  min-width: 25px !important;
+  margin-right: 14px !important;
+}
+.AddButton {
+  height: 80%;
+  text-transform: capitalize;
+  border-radius: 20px;
+  margin-left: 24px;
+}
+
+.Header {
+  display: flex;
+  padding: 10px;
+  padding-right: 24px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  margin-top: 6px;
+  height: 70px;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.Icons {
+  margin-left: auto;
+}
+
+.ButtonsCenter {
+  justify-content: center !important;
+}
+
+.DialogText {
+  margin-top: 0px;
+  text-align: center;
+  color: #073f24;
+  font-weight: 400;
+  font-family: 'heebo', sans-serif;
+}

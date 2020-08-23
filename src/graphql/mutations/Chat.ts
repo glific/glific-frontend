@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_MESSAGE_MUTATION = gql`
-  mutation createMessage($input: MessageInput!) {
-    createMessage(input: $input) {
+export const CREATE_AND_SEND_MESSAGE_MUTATION = gql`
+  mutation createAndSendMessage($input: MessageInput!) {
+    createAndSendMessage(input: $input) {
       message {
         id
         body
@@ -22,10 +22,10 @@ export const CREATE_MESSAGE_MUTATION = gql`
   }
 `;
 
-export const CREATE_MESSAGE_TAG = gql`
-  mutation createMessageTag($input: MessageTagInput!) {
-    createMessageTag(input: $input) {
-      messageTag {
+export const UPDATE_MESSAGE_TAGS = gql`
+  mutation updateMessageTags($input: MessageTagsInput!) {
+    updateMessageTags(input: $input) {
+      messageTags {
         message {
           id
         }
@@ -35,5 +35,20 @@ export const CREATE_MESSAGE_TAG = gql`
         }
       }
     }
+  }
+`;
+
+export const MESSAGE_FRAGMENT = gql`
+  fragment tags on Message {
+    tags {
+      id
+      label
+    }
+  }
+`;
+
+export const MARK_AS_READ = gql`
+  mutation markContactMessagesAsRead($contactId: Gid!) {
+    markContactMessagesAsRead(contactId: $contactId)
   }
 `;

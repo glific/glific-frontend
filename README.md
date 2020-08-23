@@ -2,6 +2,10 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 ![](https://github.com/glific/glific-frontend/workflows/Continuous%20Integration/badge.svg)
+[![Code coverage badge](https://img.shields.io/codecov/c/github/glific/glific-frontend/master.svg)](https://codecov.io/gh/glific/glific-frontend/branch/master)
+![GitHub issues](https://img.shields.io/github/issues-raw/glific/glific-frontend)
+[![Discord](https://img.shields.io/discord/717975833226248303.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/MVf2KF)
+[![codebeat badge](https://codebeat.co/badges/263bd19a-841c-40ca-813f-ca30931eb6dc)](https://codebeat.co/projects/github-com-glific-glific-frontend-master)
 
 Frontend interface built using React.
 
@@ -11,13 +15,13 @@ Frontend interface built using React.
 
 1. Create a new file `.env` in the projecct root directory and copy the contents from `.env.example`.
 2. Update the `.env` file with relevant configurations.
-3. Run `yarn install`
+3. Run `yarn setup`
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn install`
+### `yarn setup`
 
 Install the dependencies and required packages.<br />
 
@@ -35,7 +39,7 @@ Launches the test runner in the interactive watch mode.<br />
 
 ### `yarn test:coverage`
 
-Launches the test runner in the interactive watch mode and code converage stats.<br />
+Launches the test runner in the interactive watch mode and code coverage stats.<br />
 
 ### `yarn build`
 

@@ -5,8 +5,28 @@ export const sideDrawerMenus = [
     icon: 'chat',
   },
   {
-    title: 'Tag',
+    title: 'Tags',
     path: '/tag',
     icon: 'tag',
+  },
+  {
+    title: 'Speed sends',
+    path: '/speed-send',
+    icon: 'speedSend',
+  },
+  {
+    title: 'Automations',
+    path: '/automation',
+    icon: 'automation',
+  },
+  {
+    title: 'Collections',
+    path: '/collection',
+    icon: 'collection',
+  },
+  {
+    title: 'Templates',
+    path: '/template',
+    icon: 'template',
   },
 ];
