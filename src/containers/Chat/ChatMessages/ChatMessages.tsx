@@ -1,14 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
-import { Container, Chip, FormControl, TextField, Paper } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import moment from 'moment';
-import AutoComplete from '@material-ui/lab/Autocomplete';
+
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Close.svg';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
@@ -23,7 +19,6 @@ import {
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface ChatMessagesProps {
   contactId: number;
@@ -269,8 +264,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const tags = AllTags.data ? AllTags.data.tags : [];
 
   if (dialog) {
-    const tagIcon = <TagIcon className={styles.TagIcon} />;
-
     dialogBox = (
       <SearchDialogBox
         selectedOptions={selectedMessageTags}

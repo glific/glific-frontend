@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
   Hidden,
   Drawer,
@@ -17,7 +17,6 @@ import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 import Menu from '../../../Menu/Menu';
 import * as constants from '../../../../../common/constants';
-import { SessionContext } from '../../../../../context/session';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
 import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
