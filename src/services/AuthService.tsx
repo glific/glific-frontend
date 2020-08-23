@@ -1,26 +1,12 @@
 import React, { useContext } from 'react';
 import { SessionContext } from '../context/session';
 
-export interface AuthServiceProps {
-  match: any;
-}
+export interface LogoutServiceProps {}
 
-const AuthService: React.SFC<AuthServiceProps> = (props) => {
+export const LogoutService: React.SFC<LogoutServiceProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
-  const { match } = props;
 
-  const logoutHandler = () => {
-    localStorage.removeItem('session');
-    setAuthenticated(false);
-  };
-
-  switch (match.path) {
-    case '/logout':
-      logoutHandler();
-      break;
-  }
-
-  return <div>Logout</div>;
+  localStorage.removeItem('session');
+  setAuthenticated(false);
+  return null;
 };
-
-export default AuthService;

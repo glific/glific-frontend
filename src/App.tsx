@@ -28,7 +28,7 @@ import { CollectionList } from './containers/Collection/CollectionList/Collectio
 import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
 import { Group } from './containers/Group/Group';
-import AuthService from './services/AuthService';
+import { LogoutService } from './services/AuthService';
 
 const App = () => {
   const session = localStorage.getItem('session');
@@ -78,7 +78,7 @@ const App = () => {
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
 
-            <Route path="/logout" exact component={AuthService} />
+            <Route path="/logout" exact component={LogoutService} />
 
             <Route
               exact
