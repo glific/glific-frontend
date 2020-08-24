@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, RouteComponentProps, Redirect, Route } from 'react-router-dom';
 import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
@@ -28,11 +28,14 @@ import { CollectionList } from './containers/Collection/CollectionList/Collectio
 import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
 import { Group } from './containers/Group/Group';
-import { LogoutService } from './services/AuthService';
+import { LogoutService, checkAuthStatusService } from './services/AuthService';
 
 const App = () => {
-  const session = localStorage.getItem('session');
-  const [authenticated, setAuthenticated] = useState(session ? true : false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setAuthenticated(checkAuthStatusService());
+  }, []);
 
   const values = {
     authenticated: authenticated,

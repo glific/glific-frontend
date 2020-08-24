@@ -10,3 +10,20 @@ export const LogoutService: React.SFC<LogoutServiceProps> = () => {
   setAuthenticated(false);
   return null;
 };
+
+export const checkAuthStatusService = () => {
+  let authStatus = false;
+  const session = localStorage.getItem('session');
+  if (!session) {
+    authStatus = false;
+  } else {
+    const tokenExpiryTime = new Date(JSON.parse(session).token_expiry_time);
+    if (tokenExpiryTime > new Date()) {
+      authStatus = true;
+    } else {
+      authStatus = false;
+    }
+  }
+
+  return authStatus;
+};
