@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './AutoComplete.module.css';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip } from '@material-ui/core';
 import { getIn } from 'formik';
+import styles from './AutoComplete.module.css';
 
 export interface AutocompleteProps {
   options: any;
@@ -33,12 +33,12 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     <Autocomplete
       className={styles.Input}
       multiple
-      id="checkboxes-tags-demo"
+      data-testid="autocomplete-element"
       options={optionValue}
       getOptionLabel={(option: any) => option[optionLabel]}
-      onChange={(event, Value: any) => {
-        if (Value) {
-          setFieldValue(field.name, Value);
+      onChange={(event, value: any) => {
+        if (value) {
+          setFieldValue(field.name, value);
         }
       }}
       value={field.value}

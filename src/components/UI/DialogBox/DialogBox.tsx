@@ -14,10 +14,12 @@ interface DialogProps {
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
+  titleAlign?: string;
   colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   alignButtons?: string;
   skipCancel?: boolean;
+  skipOk?: boolean;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -31,7 +33,9 @@ export const DialogBox: React.SFC<DialogProps> = ({
   colorOk = 'primary',
   colorCancel = 'default',
   alignButtons,
+  titleAlign = 'center',
   skipCancel = false,
+  skipOk = false,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -55,6 +59,25 @@ export const DialogBox: React.SFC<DialogProps> = ({
     );
   }
 
+  let titleStyle = styles.DialogTitleCenter;
+  if (titleAlign === 'left') {
+    titleStyle = styles.DialogTitleLeft;
+  }
+
+  let okButtonDisplay = null;
+  if (!skipOk) {
+    okButtonDisplay = (
+      <Button
+        onClick={handleOKButton}
+        color={colorOk}
+        variant={'contained'}
+        data-testid="ok-button"
+      >
+        {buttonOk}
+      </Button>
+    );
+  }
+
   return (
     <div>
       <Dialog
@@ -69,19 +92,12 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className={styles.DialogTitle}>
+        <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
           {title}
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
         <DialogActions className={`${styles.DialogActions} ${alignButtons}`}>
-          <Button
-            onClick={handleOKButton}
-            color={colorOk}
-            variant={'contained'}
-            data-testid="ok-button"
-          >
-            {buttonOk}
-          </Button>
+          {okButtonDisplay}
           {cancelButtonDisplay}
         </DialogActions>
       </Dialog>
