@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { Dropdown } from '../../../components/UI/Form/Dropdown/Dropdown';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import { useApolloClient, DocumentNode } from '@apollo/client';
-import styles from './ListItem.module.css';
+import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { setNotification, setErrorMessage } from '../../../common/notification';
 import { Typography, IconButton } from '@material-ui/core';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/White.svg';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
-export interface ListItemProps {
+import { Button } from '../../components/UI/Form/Button/Button';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { setNotification, setErrorMessage } from '../../common/notification';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
+import styles from './FormLayout.module.css';
+
+export interface FormLayoutProps {
   match: any;
   deleteItemQuery: DocumentNode;
   states: any;
   setStates: any;
-  setValidation: any;
+  validationSchema: any;
   listItemName: string;
   dialogMessage: string;
   formFields: Array<any>;
@@ -33,16 +34,18 @@ export interface ListItemProps {
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
-  checkItems?: any;
-  checkItemsHeader?: string;
+  setPayload?: any;
+  advanceSearch?: any;
+  button?: string;
+  type?: string;
 }
 
-export const ListItem: React.SFC<ListItemProps> = ({
+export const FormLayout: React.SFC<FormLayoutProps> = ({
   match,
   deleteItemQuery,
   states,
   setStates,
-  setValidation,
+  validationSchema,
   listItemName,
   dialogMessage,
   formFields,
@@ -57,9 +60,11 @@ export const ListItem: React.SFC<ListItemProps> = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
-  checkItems,
-  checkItemsHeader,
-}: ListItemProps) => {
+  setPayload,
+  advanceSearch,
+  button = 'Save',
+  type,
+}: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -73,6 +78,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
       setLanguageId(data.languages[0].id);
     },
   });
+
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
@@ -86,6 +92,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
       }
     },
   });
+
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: () => {
       setFormSubmitted(true);
@@ -97,6 +104,10 @@ export const ListItem: React.SFC<ListItemProps> = ({
       const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
       if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
+    },
+    onError: (error: ApolloError) => {
+      setErrorMessage(client, error);
+      return null;
     },
   });
 
@@ -117,6 +128,22 @@ export const ListItem: React.SFC<ListItemProps> = ({
     };
 
     payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
+
+    // create custom payload for collection
+    if (setPayload) {
+      payload = setPayload(payload);
+      let data = advanceSearch(payload);
+
+      if (data && data.heading && type === 'search') return;
+    }
+
+    // remove fields from the payload that marked as skipPayload = true
+    formFields.map((field: any) => {
+      if (field.skipPayload) {
+        delete payload[field.name];
+      }
+    });
+
     let message;
 
     if (itemId) {
@@ -139,6 +166,11 @@ export const ListItem: React.SFC<ListItemProps> = ({
   };
 
   const cancelHandler = () => {
+    // for chat screen collection
+    if (type === 'search' || type === 'saveSearch') {
+      advanceSearch('cancel');
+      return;
+    }
     setFormCancelled(true);
   };
 
@@ -182,7 +214,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
           ...states,
           languageId: languageId,
         }}
-        validate={setValidation}
+        validationSchema={validationSchema}
         onSubmit={(item) => {
           saveHandler(item);
         }}
@@ -190,10 +222,17 @@ export const ListItem: React.SFC<ListItemProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form}>
             {formFieldItems.map((field, index) => {
-              return <Field key={index} {...field}></Field>;
+              return (
+                <React.Fragment key={index}>
+                  {field.label ? (
+                    <Typography variant="h5" className={styles.Title}>
+                      {field.label}
+                    </Typography>
+                  ) : null}
+                  <Field key={index} {...field}></Field>
+                </React.Fragment>
+              );
             })}
-            {checkItemsHeader ? <div className={styles.CheckHeader}>{checkItemsHeader}</div> : null}
-            {checkItemsHeader ? <div className={styles.CheckBoxes}></div> : null}
             <div className={styles.Buttons}>
               <Button
                 variant="contained"
@@ -201,7 +240,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
                 onClick={submitForm}
                 className={styles.Button}
               >
-                Save
+                {button}
               </Button>
               {additionalAction ? (
                 <Button
@@ -247,7 +286,7 @@ export const ListItem: React.SFC<ListItemProps> = ({
     );
   }
 
-  const heading = (
+  let heading = (
     <Typography variant="h5" className={styles.Title}>
       <IconButton disabled={true} className={styles.Icon}>
         {icon}
@@ -255,6 +294,11 @@ export const ListItem: React.SFC<ListItemProps> = ({
       {itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
     </Typography>
   );
+
+  if (advanceSearch) {
+    let data = advanceSearch({});
+    if (data && data.heading) heading = data.heading;
+  }
 
   return (
     <div className={styles.ItemAdd}>

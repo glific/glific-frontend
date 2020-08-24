@@ -62,8 +62,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     },
   ];
 
-  const initialFormikValues = { phone: '' };
-
   const FormSchema = Yup.object().shape({
     userName: Yup.string().required('Input required'),
     phone: Yup.string().required('Input required').min(11, 'Please enter a valid phone number.'),
@@ -71,6 +69,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       .min(8, 'Password must be at least 8 characters long.')
       .required('Input required'),
   });
+
+  const initialFormValues = { userName: '', phone: '', password: '' };
 
   const onSubmitRegistration = (values: any) => {
     axios
@@ -80,7 +80,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         },
       })
       .then((response) => {
-        console.log(values);
         setUser(values);
         setRedirect(true);
       })
@@ -98,8 +97,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       mode={'registration'}
       formFields={formFields}
       validationSchema={FormSchema}
-      onFormikSubmit={onSubmitRegistration}
-      initialFormikValues={initialFormikValues}
+      saveHandler={onSubmitRegistration}
+      initialFormValues={initialFormValues}
       errorMessage={authError}
     />
   );

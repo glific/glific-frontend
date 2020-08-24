@@ -19,25 +19,7 @@ export const UPDATE_USER = gql`
         name
         phone
         roles
-      }
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
-
-export const ADD_USER_TO_GROUP = gql`
-  mutation createUserGroup($input: UserGroupInput!) {
-    createUserGroup(input: $input) {
-      userGroup {
-        id
-        user {
-          id
-          name
-        }
-        group {
+        groups {
           id
           label
         }
@@ -49,3 +31,4 @@ export const ADD_USER_TO_GROUP = gql`
     }
   }
 `;
+

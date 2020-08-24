@@ -37,6 +37,7 @@ export interface TemplateProps {
   pageLink: string;
   listIcon: any;
   filters: any;
+  buttonLabel: string;
 }
 
 export const Template: React.SFC<TemplateProps> = (props) => {
@@ -49,6 +50,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listIcon={props.listIcon}
       dialogMessage={dialogMessage}
       filters={props.filters}
+      buttonLabel={props.buttonLabel}
       {...columnAttributes}
       {...queries}
     />

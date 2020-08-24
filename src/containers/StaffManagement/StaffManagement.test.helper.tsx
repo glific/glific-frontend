@@ -1,5 +1,11 @@
-import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT } from '../../graphql/queries/StaffManagement';
+import {
+  GET_USERS_QUERY,
+  FILTER_USERS,
+  USER_COUNT,
+  GET_USER_ROLES,
+} from '../../graphql/queries/User';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { GET_GROUPS } from '../../graphql/queries/Group';
 
 export const STAFF_MANAGEMENT_MOCKS = [
   {
@@ -65,6 +71,54 @@ export const STAFF_MANAGEMENT_MOCKS = [
           {
             id: '2',
             label: 'Hindi (India)',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_GROUPS,
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Group 1',
+            isRestricted: true,
+          },
+          {
+            id: '2',
+            label: 'Group 2',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_USER_ROLES,
+    },
+    result: {
+      data: {
+        roles: [
+          {
+            id: 1,
+            label: 'none',
+          },
+          {
+            id: 2,
+            label: 'staff',
+          },
+          {
+            id: 3,
+            label: 'manager',
+          },
+          {
+            id: 4,
+            label: 'admin',
           },
         ],
       },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, act } from '@testing-library/react';
+import { render, wait, act, within } from '@testing-library/react';
 
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -7,14 +7,13 @@ import { ChatMessages } from './ChatMessages';
 import {
   mocksWithConversation,
   mocksWithMultipleMessages,
-  mocksWithNoConversation,
   mocksWithNoMessages,
 } from './ChatMessage.test.helper';
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({
-  setStart: () => { },
-  setEnd: () => { },
+  setStart: () => {},
+  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
@@ -53,7 +52,7 @@ it('should contain the mock message', async () => {
   expect(getByText('Hey')).toBeInTheDocument();
 });
 
-test('click on assign tag should open a dialog box with mock messages', async () => {
+test('click on assign tag should open a dialog box with already assigned tags', async () => {
   const { getByTestId } = render(chatMessages);
   await wait();
   fireEvent.click(getByTestId('messageOptions'));
@@ -62,23 +61,29 @@ test('click on assign tag should open a dialog box with mock messages', async ()
     fireEvent.click(getByTestId('dialogButton'));
   });
   await wait();
-  expect(getByTestId('dialogBox')).toHaveTextContent('Good message');
+  expect(getByTestId('dialogBox')).toHaveTextContent('important');
 });
 
-test('assign a tag to message', async () => {
+test('assigned tags should be shown in searchbox', async () => {
+  const { getByTestId } = render(chatMessages);
+  await wait();
+  fireEvent.click(getByTestId('messageOptions'));
+  await wait();
+  fireEvent.click(getByTestId('dialogButton'));
+  await wait();
+  const searchBox = within(getByTestId('dialogInput'));
+  expect(searchBox.getByText('important')).toBeInTheDOM();
+});
+
+test('remove already assigned tags', async () => {
   const { getAllByTestId, getByTestId, getByText } = render(chatMessages);
   await wait();
   fireEvent.click(getByTestId('messageOptions'));
   await wait();
-  act(() => {
-    fireEvent.click(getByTestId('dialogButton'));
-  });
+  fireEvent.click(getByTestId('dialogButton'));
   await wait();
-  fireEvent.click(getAllByTestId('dialogCheckbox')[0]);
-  fireEvent.click(getAllByTestId('dialogCheckbox')[1]);
-  fireEvent.click(getByText('Save'));
-  await wait();
-  expect(getByText('important')).toBeInTheDocument();
+  const searchBox = within(getByTestId('dialogInput'));
+  fireEvent.click(searchBox.getByTestId('deleteIcon'));
 });
 
 test('focus on the latest message', async () => {
@@ -86,17 +91,6 @@ test('focus on the latest message', async () => {
   await wait();
   const message = getByTestId('message');
   expect(message.scrollIntoView).toBeCalled();
-});
-
-test('chat having no conversations', async () => {
-  const { getByText } = render(
-    <MockedProvider mocks={mocksWithNoMessages} addTypename={false}>
-      <ChatMessages contactId={2} />
-    </MockedProvider>
-  );
-  await wait();
-  await wait();
-  expect(getByText('No messages.')).toBeInTheDocument();
 });
 
 test('chat having multiple messages', async () => {
@@ -107,20 +101,6 @@ test('chat having multiple messages', async () => {
   );
   await wait();
   expect(getByText('Yo')).toBeInTheDocument();
-});
-
-test('dialog box', async () => {
-  const { getAllByText, getByText, getByTestId } = render(chatMessages);
-  await wait();
-  fireEvent.click(getByTestId('messageOptions'));
-  await wait();
-  act(() => {
-    fireEvent.click(getByTestId('dialogButton'));
-  });
-  await wait();
-  fireEvent.change(getByTestId('tagSearch').querySelector('input'), { target: { value: 'i' } });
-  expect(getAllByText('important')[0]).toBeInTheDocument();
-  fireEvent.click(getByText('Save'));
 });
 
 test('cancel after dialog box open', async () => {
@@ -134,5 +114,3 @@ test('cancel after dialog box open', async () => {
   await wait();
   fireEvent.click(getByText('Cancel'));
 });
-
-

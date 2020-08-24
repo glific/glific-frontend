@@ -1,0 +1,8 @@
+.Input {
+  display: flex;
+  padding: 8px;
+}
+
+.Chip {
+  background-color: #e2f1ea !important;
+}

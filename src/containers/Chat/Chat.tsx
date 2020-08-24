@@ -6,8 +6,7 @@ import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import styles from './Chat.module.css';
-
-import { GET_CONVERSATION_QUERY, GET_CONVERSATION_MESSAGE_QUERY } from '../../graphql/queries/Chat';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
@@ -28,33 +27,33 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     },
     filter: {},
     messageOpts: {
-      limit: 100,
+      limit: 50,
     },
   };
 
-  const { loading, error, data, subscribeToMore, client } = useQuery<any>(GET_CONVERSATION_QUERY, {
+  const { loading, error, data, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
   });
 
-  const [getContactQuery] = useLazyQuery(GET_CONVERSATION_MESSAGE_QUERY, {
+  const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
       if (conversation) {
         const conversations = client.readQuery({
-          query: GET_CONVERSATION_QUERY,
+          query: SEARCH_QUERY,
           variables: queryVariables,
         });
 
         const conversationCopy = JSON.parse(JSON.stringify(conversation));
-        conversationCopy.conversation.messages
+        conversationCopy.search[0].messages
           .sort((currentMessage: any, nextMessage: any) => {
             return currentMessage.id - nextMessage.id;
           })
           .reverse();
 
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.conversations.unshift(conversationCopy.conversation);
+        conversationsCopy.search.unshift(conversationCopy.search[0]);
         client.writeQuery({
-          query: GET_CONVERSATION_QUERY,
+          query: SEARCH_QUERY,
           variables: queryVariables,
           data: conversationsCopy,
         });
@@ -84,7 +83,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       //loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
-      cachedConversations.conversations.map((conversation: any, index: any) => {
+      cachedConversations.search.map((conversation: any, index: any) => {
         if (conversation.contact.id === contactId) {
           conversationIndex = index;
           conversationFound = true;
@@ -97,10 +96,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       if (!conversationFound) {
         getContactQuery({
           variables: {
-            contactId: contactId,
-            filter: {},
+            contactOpts: {
+              limit: 50,
+            },
+            filter: { id: contactId },
             messageOpts: {
-              limit: 100,
+              limit: 50,
             },
           },
         });
@@ -110,13 +111,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       // We need to add new message to existing messages array and moving conversation to the top
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
-      let updatedConversation = updatedConversations.conversations;
+      let updatedConversation = updatedConversations.search;
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
       updatedConversation[0].messages.unshift(newMessage);
-      updatedConversations.conversations = [
-        ...updatedConversation,
-        ...updatedConversations.conversations,
-      ];
+      updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
 
       // return the updated object
       const returnConversations = Object.assign({}, cachedConversations, {
@@ -160,12 +158,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     return null;
   }
 
-  if (!contactId && data.conversations.length !== 0) {
-    return <Redirect to={'/chat/'.concat(data.conversations[0].contact.id)} />;
+  if (!contactId && data.search.length !== 0) {
+    return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }
 
   let chatInterface: any;
-  if (data.conversations.length === 0) {
+  if (data.search.length === 0) {
     chatInterface = (
       <Typography variant="h5" className={styles.NoConversations}>
         There are no chat conversations to display.

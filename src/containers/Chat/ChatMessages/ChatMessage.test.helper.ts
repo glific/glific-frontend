@@ -1,7 +1,4 @@
-import {
-  GET_CONVERSATION_MESSAGE_QUERY,
-  GET_CONVERSATION_QUERY,
-} from '../../../graphql/queries/Chat';
+import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   UPDATE_MESSAGE_TAGS,
@@ -39,7 +36,7 @@ const updateMessageTagsQuery = {
 };
 
 const conversationWithNoMessage = {
-  conversations: [
+  search: [
     {
       contact: {
         id: 2,
@@ -51,7 +48,7 @@ const conversationWithNoMessage = {
   ],
 };
 const conversation = {
-  conversations: [
+  search: [
     {
       contact: {
         id: 2,
@@ -90,7 +87,7 @@ const conversation = {
 };
 
 const conversationWithMultipleMessages = {
-  conversations: [
+  search: [
     {
       contact: {
         id: 2,
@@ -130,14 +127,14 @@ const conversationWithMultipleMessages = {
 const getConversationQuery = (data: any) => {
   return {
     request: {
-      query: GET_CONVERSATION_QUERY,
+      query: SEARCH_QUERY,
       variables: {
         contactOpts: {
           limit: 50,
         },
         filter: {},
         messageOpts: {
-          limit: 100,
+          limit: 50,
         },
       },
     },
@@ -147,46 +144,44 @@ const getConversationQuery = (data: any) => {
   };
 };
 
-const noConversation = {
-  conversations: [],
-};
-
 const mocks = [
   updateMessageTagsQuery,
   updateMessageTagsQuery,
 
   {
     request: {
-      query: GET_CONVERSATION_MESSAGE_QUERY,
-      variables: { contactId: '2', filter: {}, messageOpts: { limit: 100 } },
+      query: SEARCH_QUERY,
+      variables: { contactOpts: { limit: 50 }, filter: { id: '2' }, messageOpts: { limit: 50 } },
     },
     result: {
       data: {
-        conversation: {
-          contact: {
-            id: '2',
-            name: 'Vaibhav',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '2',
-              },
-              sender: {
-                id: '1',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                },
-              ],
+        search: [
+          {
+            contact: {
+              id: '2',
+              name: 'Vaibhav',
             },
-          ],
-        },
+            messages: [
+              {
+                id: '1',
+                body: 'Hey there whats up?',
+                insertedAt: '2020-06-25T13:36:43Z',
+                receiver: {
+                  id: '2',
+                },
+                sender: {
+                  id: '1',
+                },
+                tags: [
+                  {
+                    id: '1',
+                    label: 'important',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     },
   },
@@ -259,4 +254,3 @@ export const mocksWithMultipleMessages = [
   ...mocks,
   getConversationQuery(conversationWithMultipleMessages),
 ];
-export const mocksWithNoConversation = [...mocks, getConversationQuery(noConversation)];

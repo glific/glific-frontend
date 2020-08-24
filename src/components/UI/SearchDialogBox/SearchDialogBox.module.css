@@ -1,0 +1,43 @@
+.DialogBox {
+  width: 100%;
+}
+
+.Form {
+  padding-top: 5px;
+  padding-left: 4px;
+  max-height: 260px;
+  min-height: 100px;
+  overflow: auto;
+}
+
+.Input {
+  padding: 8px !important;
+  font-size: 12px !important;
+}
+
+.SearchIcon {
+  width: 13px;
+}
+
+.Outline {
+  border-radius: 6px !important;
+  border-width: 1px !important;
+  border-color: #eaedec !important;
+}
+
+.DeleteIcon {
+  width: 8px !important;
+  margin-right: 13px !important;
+}
+
+.Paper > ul > li:hover {
+  background-color: #edf6f2 !important;
+}
+
+.Autocomplete {
+  margin-bottom: 10px !important;
+}
+
+.Paper > ul > li {
+  color: #073f24;
+}

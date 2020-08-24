@@ -20,6 +20,11 @@ export const sideDrawerMenus = [
     icon: 'automation',
   },
   {
+    title: 'Collections',
+    path: '/collection',
+    icon: 'collection',
+  },
+  {
     title: 'Templates',
     path: '/template',
     icon: 'template',

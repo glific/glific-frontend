@@ -33,8 +33,8 @@ test('check for validations for the HSM form', async () => {
   await wait();
 
   // we should have 2 errors
-  expect(queryByText('Message title required')).toBeInTheDocument();
-  expect(queryByText('Message body required')).toBeInTheDocument();
+  expect(queryByText('Title is required.')).toBeInTheDocument();
+  expect(queryByText('Message is required.')).toBeInTheDocument();
 
   fireEvent.change(container.querySelector('input[name="label"]'), {
     target: {
@@ -43,6 +43,6 @@ test('check for validations for the HSM form', async () => {
   });
 
   // we should still have 2 errors
-  expect(queryByText('Message title required')).toBeInTheDocument();
-  expect(queryByText('Message body required')).toBeInTheDocument();
+  expect(queryByText('Title is required.')).toBeInTheDocument();
+  expect(queryByText('Message is required.')).toBeInTheDocument();
 });

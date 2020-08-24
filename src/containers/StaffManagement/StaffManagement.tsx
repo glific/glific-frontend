@@ -1,48 +1,27 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
+import { useQuery } from '@apollo/client';
+
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_USERS_QUERY } from '../../graphql/queries/StaffManagement';
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/StaffManagement';
-import { CREATE_TEMPLATE } from '../../graphql/mutations/Template';
+import { FormLayout } from '../Form/FormLayout';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
+import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { ListItem } from '../List/ListItem/ListItem';
+import { GET_GROUPS } from '../../graphql/queries/Group';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 export interface StaffManagementProps {
   match: any;
 }
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.name) {
-    errors.name = 'User title required';
-  } else if (values.name.length > 50) {
-    errors.name = 'Length of the title is too long';
-  }
-  if (!values.phone) {
-    errors.phone = 'User phone required';
-  }
-  return errors;
-};
-
 const dialogMessage = ' Once deleted this action cannot be undone.';
-
-const formFields = [
-  { component: Input, name: 'name', type: 'text', placeholder: 'Full Name', query: true },
-  { component: Input, name: 'phone', disabled: true, placeholder: 'Phone Number', query: false },
-  {
-    component: Input,
-    name: 'roles',
-    disabled: true,
-    type: 'text',
-    placeholder: 'Roles',
-    query: true,
-  },
-];
 
 const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
   getItemQuery: GET_USERS_QUERY,
-  createItemQuery: CREATE_TEMPLATE,
+  createItemQuery: UPDATE_USER,
   updateItemQuery: UPDATE_USER,
   deleteItemQuery: DELETE_USER,
 };
@@ -50,22 +29,118 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState('');
+  const [roles, setRoles] = useState([]);
+  const [groups, setGroups] = useState([]);
 
-  const states = { name, phone, roles };
-  const setStates = ({ name, phone, roles }: any) => {
+  const states = { name, phone, roles, groups };
+  const setStates = ({ name, phone, roles, groups }: any) => {
     setName(name);
     setPhone(phone);
-    setRoles(roles);
+
+    // let' format the roles so that it is displayed correctly in the UI
+    if (roles) {
+      let defaultRoles: any = [];
+      roles.map((role: any) => {
+        defaultRoles.push({ id: role, label: role });
+      });
+      setRoles(defaultRoles);
+    }
+    setGroups(groups);
+  };
+
+  const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
+
+  const { loading, data } = useQuery(GET_GROUPS);
+
+  if (loading || loadingRoles) return <Loading />;
+
+  if (!data.groups || !roleData.roles) {
+    return null;
+  }
+
+  let rolesList: any = [];
+  if (roleData.roles) {
+    roleData.roles.map((role: any) => {
+      rolesList.push({ id: role, label: role });
+    });
+  }
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Full Name',
+    },
+    {
+      component: Input,
+      name: 'phone',
+      placeholder: 'Phone Number',
+      disabled: true,
+      skipPayload: true,
+    },
+    {
+      component: AutoComplete,
+      name: 'roles',
+      placeholder: 'Roles',
+      options: rolesList,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Roles',
+        variant: 'outlined',
+      },
+    },
+    {
+      component: AutoComplete,
+      name: 'groups',
+      placeholder: 'Groups',
+      options: data.groups,
+      optionLabel: 'label',
+      textFieldProps: {
+        label: 'Groups',
+        variant: 'outlined',
+      },
+    },
+  ];
+
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required.'),
+    phone: Yup.string().required('Phone is required'),
+  });
+
+  const setPayload = (payload: any) => {
+    // let's build the groupIds, as backend expects the array of group ids
+    let groupIds = payload.groups.map((group: any) => {
+      return group.id;
+    });
+
+    // remove groups from the payload
+    delete payload['groups'];
+
+    // let's rebuild roles, as per backend
+    let roleIds = payload.roles.map((role: any) => {
+      return role.id;
+    });
+
+    // delete current roles from the payload
+    delete payload['roles'];
+
+    // return modified payload
+    return {
+      ...payload,
+      groupIds: groupIds,
+      roles: roleIds,
+    };
   };
 
   return (
-    <ListItem
+    <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      setPayload={setPayload}
+      validationSchema={FormSchema}
       listItemName="User"
       dialogMessage={dialogMessage}
       formFields={formFields}
@@ -73,7 +148,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       listItem="user"
       icon={staffManagementIcon}
       languageSupport={false}
-      checkItemsHeader="Groups"
     />
   );
 };

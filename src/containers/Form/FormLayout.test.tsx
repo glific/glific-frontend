@@ -2,10 +2,10 @@ import React from 'react';
 import { render, wait, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { ListItem } from './ListItem';
-import { Switch, Route } from 'react-router-dom';
-import { TagList } from './../../Tag/TagList/TagList';
-import { LIST_ITEM_MOCKS, listItemProps } from './ListItem.test.helper';
+import { FormLayout } from './FormLayout';
+import { Route } from 'react-router-dom';
+import { TagList } from '../Tag/TagList/TagList';
+import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
@@ -14,7 +14,7 @@ const defaultProps = listItemProps;
 const addItem = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ListItem match={{ params: { id: null } }} {...defaultProps} />
+      <FormLayout match={{ params: { id: null } }} {...defaultProps} />
     </Router>
   </MockedProvider>
 );
@@ -34,7 +34,7 @@ it('should have a form with inputs', async () => {
 const editItem = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ListItem match={{ params: { id: 1 } }} {...defaultProps} />
+      <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
     </Router>
   </MockedProvider>
 );
@@ -51,7 +51,7 @@ test('cancel button should redirect to taglist page', async () => {
   const { container, getByText, unmount } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
-        <ListItem match={{ params: { id: 1 } }} {...defaultProps} />
+        <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
         <Route path="/tag" exact component={TagList} />
       </Router>
     </MockedProvider>
@@ -71,7 +71,7 @@ test('save button should add a new tag', async () => {
   const { container, getByText, getAllByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
-        <ListItem match={{ params: { id: null } }} {...defaultProps} />
+        <FormLayout match={{ params: { id: null } }} {...defaultProps} />
         <Route path="/tag" exact component={TagList} />
       </Router>
     </MockedProvider>

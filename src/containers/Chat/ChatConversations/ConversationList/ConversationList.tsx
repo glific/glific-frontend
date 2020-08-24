@@ -1,35 +1,35 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { List, Container } from '@material-ui/core';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import { GET_CONVERSATION_QUERY } from '../../../../graphql/queries/Chat';
+import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import moment from 'moment';
 
 interface ConversationListProps {
   searchVal: string;
   selectedContactId: number;
   setSelectedContactId: (i: number) => void;
   savedSearchCriteria: string | null;
+  searchParam?: any;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
-  const firstUpdate = useRef(true);
   const queryVariables = {
     contactOpts: {
       limit: 50,
     },
     filter: {},
     messageOpts: {
-      limit: 100,
+      limit: 50,
     },
   };
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
-    GET_CONVERSATION_QUERY,
+    SEARCH_QUERY,
     {
       variables: queryVariables,
       fetchPolicy: 'cache-first',
@@ -37,52 +37,64 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
   const filterVariables = () => {
     if (props.savedSearchCriteria) {
-      return JSON.parse(props.savedSearchCriteria);
+      const variables = JSON.parse(props.savedSearchCriteria);
+      if (props.searchVal) variables.filter.term = props.searchVal;
+      return variables;
+    }
+    let filter: any = {};
+    if (props.searchVal) filter.term = props.searchVal;
+    let params = props.searchParam;
+    if (params) {
+      if (params.includeTags && params.includeTags.length > 0)
+        filter.includeTags = params.includeTags.map((obj: any) => obj.id);
+      if (params.includeGroups && params.includeGroups.length > 0)
+        filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
+      if (params.dateFrom) {
+        filter.dateRange = {
+          from: moment(params.dateFrom).format('YYYY-MM-DD'),
+          to: moment(params.dateTo).format('YYYY-MM-DD'),
+        };
+      }
     }
 
     return {
-      term: props.searchVal,
+      filter: filter,
       messageOpts: {
         limit: 50,
       },
       contactOpts: {
         limit: 50,
       },
-      filter: {},
     };
   };
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    SEARCH_QUERY,
-    {
+  useEffect(() => {
+    getFilterConvos({
       variables: filterVariables(),
-      fetchPolicy: 'cache-and-network',
-    }
+    });
+  }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
+
+  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+    SEARCH_QUERY
   );
 
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-    props.setSelectedContactId(-1);
-  }, [props.searchVal]);
-
   // Other cases
-  if (called && (loading || conversationLoading)) return <Loading />;
-  if (called && error) {
-    setErrorMessage(client, error);
+  if ((called && loading) || conversationLoading) return <Loading />;
+
+  if ((called && error) || conversationError) {
+    if (error) {
+      setErrorMessage(client, error);
+    } else if (conversationError) {
+      setErrorMessage(client, conversationError);
+    }
+
     return null;
   }
 
   let conversations = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
-    conversations = data.conversations;
-  }
-
-  if ((props.searchVal || props.savedSearchCriteria) && !called) {
-    getFilterConvos();
+    conversations = data.search;
   }
 
   if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {

@@ -10,6 +10,7 @@ export const GET_USERS_QUERY = gql`
         roles
         groups {
           id
+          label
         }
       }
     }
@@ -31,7 +32,14 @@ export const FILTER_USERS = gql`
       roles
       groups {
         id
+        label
       }
     }
+  }
+`;
+
+export const GET_USER_ROLES = gql`
+  query {
+    roles
   }
 `;
