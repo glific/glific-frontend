@@ -50,7 +50,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listIcon={props.listIcon}
       dialogMessage={dialogMessage}
       filters={props.filters}
-      buttonLabel={props.buttonLabel}
+      button={{ show: true, label: props.buttonLabel }}
       {...columnAttributes}
       {...queries}
     />
