@@ -44,10 +44,10 @@ const App = () => {
     },
   };
 
-  const defaultRedirect = () => <Redirect to="/chat" />;
   let routes;
 
   if (authenticated) {
+    const defaultRedirect = () => <Redirect to="/chat" />;
     routes = (
       <div className={styles.App}>
         <Layout>
