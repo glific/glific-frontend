@@ -31,11 +31,13 @@ export interface FormLayoutProps {
   defaultAttribute?: any;
   icon: any;
   additionalAction?: any;
+  additionalQuery?: any;
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
   setPayload?: any;
   advanceSearch?: any;
+  additionalState?: any;
   button?: string;
   type?: string;
 }
@@ -54,9 +56,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getItemQuery,
   createItemQuery,
   updateItemQuery,
+  additionalQuery = null,
   defaultAttribute = null,
   additionalAction = null,
   icon,
+  additionalState,
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
@@ -78,7 +82,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       setLanguageId(data.languages[0].id);
     },
   });
-
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
@@ -95,15 +98,23 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: () => {
+      if (additionalQuery) {
+        additionalQuery(itemId);
+      }
       setFormSubmitted(true);
     },
   });
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
-      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
-      setFormSubmitted(true);
+      if (data) {
+        const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+        if (additionalQuery) {
+          additionalQuery(data[`create${camelCaseItem}`][listItem].id, []);
+        }
+        if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
+        setFormSubmitted(true);
+      }
     },
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);
@@ -139,6 +150,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
     // remove fields from the payload that marked as skipPayload = true
     formFields.map((field: any) => {
+      if (field.additionalState) {
+        additionalState(payload[field.additionalState]);
+      }
       if (field.skipPayload) {
         delete payload[field.name];
       }

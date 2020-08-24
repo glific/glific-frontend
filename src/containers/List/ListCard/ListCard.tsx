@@ -23,7 +23,7 @@ export const ListCard: React.SFC<ListCardProps> = (props) => {
             <CardContent className={styles.CardContent}>
               <div data-testid="label">{data.label}</div>
 
-              <Typography variant="body2" component="p" data-testid="description">
+              <Typography variant="body2" component="div" data-testid="description">
                 {data.description}
               </Typography>
             </CardContent>

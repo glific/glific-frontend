@@ -1,14 +1,11 @@
 import React from 'react';
-import {
-  CONTACT_SEARCH_QUERY,
-  GET_CONTACT_COUNT,
-  DELETE_CONTACT_GROUP,
-} from '../../../graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 import styles from './GroupContactList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { useQuery } from '@apollo/client';
 import { List } from '../../List/List';
 import { GET_GROUP } from '../../../graphql/queries/Group';
+import { UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 
 export interface GroupContactListProps {
   match: any;
@@ -39,7 +36,7 @@ const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 const queries = {
   countQuery: GET_CONTACT_COUNT,
   filterItemsQuery: CONTACT_SEARCH_QUERY,
-  deleteItemQuery: DELETE_CONTACT_GROUP,
+  deleteItemQuery: UPDATE_GROUP_CONTACTS,
 };
 
 const columnAttributes = {
@@ -51,6 +48,16 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   const groupId = props.match.params.id;
   const group = useQuery(GET_GROUP, { variables: { id: groupId } });
   const title = group.data ? group.data.group.group.label : 'Group';
+
+  const getDeleteQueryVariables = (id: any) => {
+    return {
+      input: {
+        groupId: groupId,
+        addContactIds: [],
+        deleteContactIds: [id],
+      },
+    };
+  };
   return (
     <List
       columnNames={columnNames}
@@ -62,7 +69,7 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
       button={{ show: false, label: '' }}
       pageLink="contact"
       listIcon={groupIcon}
-      deleteIcon={'cross'}
+      deleteModifier={{ icon: 'cross', variables: getDeleteQueryVariables }}
       editSupport={false}
       dialogMessage={dialogMessage}
       {...queries}

@@ -45,7 +45,10 @@ export interface ListProps {
     parameter: string;
     link: string;
   } | null;
-  deleteIcon?: any;
+  deleteModifier?: {
+    icon: string;
+    variables: any;
+  };
 }
 
 interface TableVals {
@@ -73,13 +76,13 @@ export const List: React.SFC<ListProps> = ({
     label: 'Add New',
   },
   showCheckbox,
+  deleteModifier = { icon: 'normal', variables: null },
   editSupport = true,
   searchParameter = 'label',
   filters = null,
   displayListType = 'list',
   cardLink = null,
   additionalAction = null,
-  deleteIcon = 'normal',
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -211,7 +214,8 @@ export const List: React.SFC<ListProps> = ({
   }
 
   const deleteHandler = (id: number) => {
-    deleteItem({ variables: { id } });
+    const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
+    deleteItem({ variables: variables });
     setNotification(client, `${listItemName} deleted Successfully`);
   };
 
@@ -257,7 +261,7 @@ export const List: React.SFC<ListProps> = ({
             data-testid="DeleteIcon"
             onClick={() => showDialogHandler(id!, label)}
           >
-            {deleteIcon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>
         </div>
       );

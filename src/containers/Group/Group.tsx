@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_GROUP, GET_GROUPS } from '../../graphql/queries/Group';
-import { UPDATE_GROUP, CREATE_GROUP, DELETE_GROUP } from '../../graphql/mutations/Group';
+import { GET_GROUP } from '../../graphql/queries/Group';
+import { GET_CONTACTS, GET_GROUP_CONTACTS } from '../../graphql/queries/Contact';
+import {
+  UPDATE_GROUP,
+  CREATE_GROUP,
+  DELETE_GROUP,
+  UPDATE_GROUP_CONTACTS,
+} from '../../graphql/mutations/Group';
 
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import styles from './Group.module.css';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { useQuery } from '@apollo/client';
+import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 
 export interface GroupProps {
   match: any;
@@ -37,14 +44,19 @@ const formFields = (options: any) => {
       rows: 3,
       textArea: true,
     },
-
     {
-      component: Dropdown,
-      name: 'groups',
-      placeholder: 'Assigned to group',
+      component: AutoComplete,
+      name: 'contacts',
+      additionalState: 'contacts',
       options: options,
-      helperText:
-        'People from the assigned group will be responsible to chat with users in this group',
+      optionLabel: 'name',
+      textFieldProps: {
+        // required: true,
+        label: 'Add contact to group',
+        variant: 'outlined',
+      },
+      skipPayload: true,
+      icon: <ContactIcon className={styles.ContactIcon} />,
     },
   ];
 };
@@ -59,26 +71,71 @@ const queries = {
 };
 
 export const Group: React.SFC<GroupProps> = ({ match }) => {
+  const [selectedContacts, { data: groupContacts }] = useLazyQuery(GET_GROUP_CONTACTS);
+  const groupId = match.params.id ? match.params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
+  const [contacts, setContacts] = useState([]);
+  const [selected, setSelected] = useState([]);
 
-  const groups = useQuery(GET_GROUPS);
+  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS);
+
+  const updateContacts = (groupId: any) => {
+    const initialSelectedContacts = contacts.map((contact: any) => contact.id);
+    const finalSelectedContacts = selected.map((contact: any) => contact.id);
+    const selectedContacts = finalSelectedContacts.filter(
+      (contact: any) => !initialSelectedContacts.includes(contact)
+    );
+    const removedContacts = initialSelectedContacts.filter(
+      (contact: any) => !finalSelectedContacts.includes(contact)
+    );
+
+    if (selectedContacts.length > 0 || removedContacts.length > 0) {
+      updateGroupContacts({
+        variables: {
+          input: {
+            addContactIds: selectedContacts,
+            groupId: groupId,
+            deleteContactIds: removedContacts,
+          },
+        },
+      });
+    }
+  };
+
+  const { data } = useQuery(GET_CONTACTS);
   let options = [];
-  if (groups.data) {
-    options = groups.data.groups;
+  if (data) {
+    options = data.contacts;
   }
 
-  const states = { label, description };
-  const setStates = ({ label, description }: any) => {
+  useEffect(() => {
+    if (groupId) {
+      selectedContacts({ variables: { id: groupId } });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (groupContacts) setContacts(groupContacts.group.group.contacts);
+  }, [groupContacts]);
+
+  const states = { label, description, contacts };
+  const setStates = ({ label, description, ...props }: any) => {
     setLabel(label);
     setDescription(description);
   };
 
+  const additionalState = (contact: any) => {
+    setSelected(contact);
+  };
+
   return (
     <FormLayout
+      additionalQuery={updateContacts}
       {...queries}
       match={match}
       states={states}
+      additionalState={additionalState}
       languageSupport={false}
       setStates={setStates}
       validationSchema={FormSchema}

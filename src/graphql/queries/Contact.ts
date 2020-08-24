@@ -20,25 +20,37 @@ export const GET_CONTACT_COUNT = gql`
   }
 `;
 
-export const DELETE_CONTACT_GROUP = gql`
-  mutation deleteContactGroup($id: ID!) {
-    deleteContactGroup(id: $id) {
-      errors {
-        key
-        message
-      }
-    }
-  }
-`;
-
 export const GET_CONTACT_GROUPS = gql`
   query contact($id: ID!) {
     contact(id: $id) {
       contact {
         groups {
           id
+          label
         }
       }
+    }
+  }
+`;
+
+export const GET_GROUP_CONTACTS = gql`
+  query group($id: ID!) {
+    group(id: $id) {
+      group {
+        contacts {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_CONTACTS = gql`
+  {
+    contacts {
+      id
+      name
     }
   }
 `;

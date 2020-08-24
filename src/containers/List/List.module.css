@@ -63,6 +63,7 @@
 }
 
 .DialogText {
+  max-width: 395px;
   margin-top: 0px;
   text-align: center;
   color: #073f24;

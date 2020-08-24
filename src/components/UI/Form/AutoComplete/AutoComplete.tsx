@@ -41,7 +41,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           setFieldValue(field.name, value);
         }
       }}
-      value={field.value}
+      value={optionValue.filter((option: any) =>
+        field.value.map((value: any) => value.id).includes(option.id)
+      )}
       freeSolo
       renderTags={(value: any, getTagProps) =>
         value.map((option: any, index: number) => (
