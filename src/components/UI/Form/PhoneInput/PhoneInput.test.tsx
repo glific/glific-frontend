@@ -4,12 +4,12 @@ import PhoneInput from './PhoneInput';
 
 describe('<PhoneInput />', () => {
   const props = {
-    error: false,
     helperText: 'Your helper text',
+    field: { name: 'example', value: [] },
+    placeholder: 'Your phone number',
+    form: { dirty: false, touched: false, errors: false, setFieldValue: null },
   };
-  const phoneInput = () => (
-    <PhoneInput error={props.error} helperText={props.helperText} onChange={onchange} />
-  );
+  const phoneInput = () => <PhoneInput {...props} />;
   let component;
 
   beforeEach(() => {

@@ -14,7 +14,6 @@ export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
-  const [phoneNumberError, setPhoneNumberError] = useState(false);
 
   if (sessionToken) {
     return (
@@ -32,10 +31,9 @@ export const Login: React.SFC<LoginProps> = () => {
   const formFields = [
     {
       component: PhoneInput,
-      name: 'phone',
+      name: 'phoneNumber',
       type: 'phone',
       placeholder: 'Your phone number',
-      // error: phoneNumberError,
       helperText: 'Please enter a phone number.',
     },
     {
@@ -58,7 +56,7 @@ export const Login: React.SFC<LoginProps> = () => {
     axios
       .post(USER_SESSION, {
         user: {
-          phone: values.phone,
+          phone: values.phoneNumber,
           password: values.password,
         },
       })

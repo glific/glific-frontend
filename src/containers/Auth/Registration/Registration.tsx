@@ -13,7 +13,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
   const [authError, setAuthError] = useState('');
-  const [phoneNumberError, setPhoneNumberError] = useState(false);
 
   if (redirect) {
     return (
@@ -30,15 +29,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     );
   }
 
-  const handlePhoneNumberChange = () => (value: string): void => {
-    // initialFormikValues['phone'] = value;
-    if (value) {
-      setPhoneNumberError(false);
-    } else {
-      setPhoneNumberError(true);
-    }
-  };
-
   const formFields = [
     {
       component: Input,
@@ -51,7 +41,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       name: 'phone',
       type: 'phone',
       placeholder: 'Your phone number',
-      // error: phoneNumberError,
       helperText: 'Please enter a phone number.',
     },
     {

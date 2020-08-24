@@ -122,9 +122,10 @@ const Auth: React.SFC<AuthProps> = ({
                     }
                     return <Field className={styles.Form} key={index} {...fieldInfo} />;
                   })}
-                  <Link to={'/' + linkURL}>
-                    <div className={styles.Link}>{linkText}</div>
-                  </Link>
+
+                  <div className={styles.Link}>
+                    <Link to={'/' + linkURL}>{linkText} </Link>
+                  </div>
                   <div className={styles.CenterButton}>
                     <Button
                       variant={buttonContainedVariant ? 'contained' : 'outlined'}

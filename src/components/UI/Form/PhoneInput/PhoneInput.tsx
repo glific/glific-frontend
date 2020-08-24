@@ -3,47 +3,51 @@ import styles from './PhoneInput.module.css';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
+import { getIn } from 'formik';
 
 export interface InputProps {
-  inputClass?: string;
-  value?: string;
   enableSearch?: boolean;
   inputProps?: object;
-  // onChange: any;
-  error: boolean;
   helperText: string;
   field: any;
-  handleChange: any;
   placeholder: string;
-  handlePhone: any;
+  form: { dirty: any; touched: any; errors: any; setFieldValue: any };
 }
 
-export const PhoneInput: React.SFC<InputProps> = ({ ...props }) => {
-  // const onChange = props.onChange;
-  const error = props.error;
+export const PhoneInput: React.SFC<InputProps> = ({
+  enableSearch = true,
+  form: { dirty, touched, errors, setFieldValue },
+  field,
+  inputProps = {
+    required: true,
+    autoFocus: false,
+  },
+  ...props
+}) => {
+  const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = dirty && touchedVal && errorText !== undefined;
 
   return (
     <div className={styles.Input}>
       <FormControl>
         <ReactPhoneInput
+          containerClass={styles.Container}
           inputClass={styles.PhoneNumber}
           data-testid="phoneNumber"
           placeholder={props.placeholder}
-          enableSearch={true}
+          enableSearch={enableSearch}
           country={'in'}
-          inputProps={{
-            label: 'Your phone number',
-            name: 'phoneNumber',
-            required: true,
-            autoFocus: false,
+          autoFormat={false}
+          inputProps={inputProps}
+          {...field}
+          value={field.value}
+          onChange={(event) => {
+            setFieldValue(field.name, event);
           }}
-          {...props.field}
-          onChange={props.handlePhone()}
         />
-        {error ? (
-          <FormHelperText classes={{ root: styles.FormHelperText }}>
-            {props.helperText}
-          </FormHelperText>
+        {errorText ? (
+          <FormHelperText classes={{ root: styles.FormHelperText }}>{errorText}</FormHelperText>
         ) : null}
       </FormControl>
     </div>
