@@ -41,9 +41,7 @@ const App = () => {
     },
   };
 
-  const accessToken = session ? JSON.parse(session).access_token : null;
   const defaultRedirect = () => <Redirect to="/chat" />;
-  const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
   let routes;
 
   if (authenticated) {
@@ -107,7 +105,7 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={gqlClient()}>
         <ErrorHandler />
         {routes}
       </ApolloProvider>
