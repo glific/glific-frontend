@@ -14,7 +14,7 @@ export interface GroupContactListProps {
   match: any;
 }
 
-const columnNames = ['NAME', 'GROUPS', 'ACTIONS'];
+const columnNames = ['NAME', 'ALL GROUPS', 'ACTIONS'];
 
 const getColumns = ({ name, phone, groups }: any) => ({
   label: getName(name, phone),
@@ -24,12 +24,12 @@ const getColumns = ({ name, phone, groups }: any) => ({
 const getName = (label: string, phone: string) => (
   <>
     <p className={styles.NameText}>{label}</p>
-    <p>{phone}</p>
+    <p className={styles.Phone}>{phone}</p>
   </>
 );
 
 const getGroups = (groups: Array<any>) => (
-  <p className={styles.PhoneText}>{groups.map((group: any) => group.label).join(', ')}</p>
+  <p className={styles.GroupsText}>{groups.map((group: any) => group.label).join(', ')}</p>
 );
 
 const dialogMessage = 'This contact will be permanently removed from this group';

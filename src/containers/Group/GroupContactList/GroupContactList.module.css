@@ -16,15 +16,19 @@
   font-weight: 500;
   font-size: 20px;
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
   color: #073f24;
   line-height: 1;
 }
 
-.PhoneText {
+.Phone {
+  margin-top: 6px;
+}
+
+.GroupsText {
   margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
+  padding: 6px 0px;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
