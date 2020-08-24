@@ -11,7 +11,8 @@
 }
 
 .PhoneNumber:focus {
-  border-color: inherit !important;
+  border-color: rgba(0, 0, 0, 0.23) !important;
+  /* border-color: inherit !important; */
   box-shadow: none !important;
 }
 
