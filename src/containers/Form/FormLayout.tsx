@@ -38,6 +38,7 @@ export interface FormLayoutProps {
   advanceSearch?: any;
   button?: string;
   type?: string;
+  afterSave?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -64,6 +65,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   advanceSearch,
   button = 'Save',
   type,
+  afterSave,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -104,6 +106,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
       if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
       setFormSubmitted(true);
+      // emit data after save
+      if (afterSave) {
+        afterSave(data);
+      }
     },
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);
@@ -193,18 +199,18 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     : null;
 
   const formFieldItems = languageSupport ? [...formFields, language] : formFields;
-
-  const deleteButton = itemId ? (
-    <Button
-      variant="contained"
-      color="secondary"
-      className={styles.DeleteButton}
-      onClick={() => setShowDialog(true)}
-    >
-      <DeleteIcon className={styles.DeleteIcon} />
-      Remove
-    </Button>
-  ) : null;
+  const deleteButton =
+    itemId && !type ? (
+      <Button
+        variant="contained"
+        color="secondary"
+        className={styles.DeleteButton}
+        onClick={() => setShowDialog(true)}
+      >
+        <DeleteIcon className={styles.DeleteIcon} />
+        Remove
+      </Button>
+    ) : null;
 
   let form = (
     <>

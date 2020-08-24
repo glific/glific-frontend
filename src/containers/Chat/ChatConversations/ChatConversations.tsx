@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
@@ -67,9 +67,15 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setDialogbox(false);
   };
 
+  const saveHandler = (data: any) => {
+    handlerSavedSearchCriteria(
+      data.createSavedSearch.savedSearch.args,
+      data.createSavedSearch.savedSearch.id
+    );
+  };
+
   // create collection
   let dialogBox;
-
   if (dialog) {
     let match = { params: { id: savedSearchCriteriaId } };
     let collection = (
@@ -79,6 +85,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         search={search}
         searchParam={searchParam}
         handleCancel={closeDialogBox}
+        handleSave={saveHandler}
       ></Collection>
     );
 
@@ -111,25 +118,28 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   if (Object.keys(searchParam).length !== 0)
     saveCollectionButton = (
       <div className={styles.SaveCollection}>
-        <Button
-          className={styles.button}
-          color="primary"
-          variant="outlined"
-          onClick={(e: any) => {
-            handleClick(e, 'saveSearch');
-          }}
-        >
-          Save search to collections
-        </Button>
-        <IconButton
-          aria-label="cancel"
-          onClick={(e: any) => {
-            setSearchParam({});
-            resetSearch();
-          }}
-        >
-          <CancelOutlined />
-        </IconButton>
+        <div className={styles.container}>
+          <Button
+            className={styles.button}
+            color="primary"
+            variant="outlined"
+            onClick={(e: any) => {
+              handleClick(e, 'saveSearch');
+            }}
+          >
+            Save search to collections
+          </Button>
+          <IconButton
+            className={styles.cancelButton}
+            aria-label="cancel"
+            onClick={(e: any) => {
+              setSearchParam({});
+              resetSearch();
+            }}
+          >
+            <CancelOutlined />
+          </IconButton>
+        </div>
       </div>
     );
 
@@ -145,7 +155,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           </Typography>
         </div>
       </Toolbar>
-      <SavedSearchToolbar savedSearchCriteriaCallback={handlerSavedSearchCriteria} />
+      <SavedSearchToolbar
+        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+        refetchData={{ savedSearchCriteria, savedSearchCriteriaId }}
+      />
       <SearchBar
         handleChange={handleChange}
         handleSubmit={handleSubmit}

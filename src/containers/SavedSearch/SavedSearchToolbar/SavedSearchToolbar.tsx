@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
 import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
@@ -11,6 +11,7 @@ import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
+  refetchData?: any;
 }
 
 export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
@@ -27,17 +28,29 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const queryVariables = {
     filter: {},
     opts: {
-      limit: 10,
+      limit: 20,
     },
   };
 
-  const { loading, error, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedCollection(data.savedSearches.slice(0, 3));
       setAdditonalCollections(data.savedSearches.slice(3));
+      console.log('oncomplited');
+      if (props.refetchData) {
+        handlerSavedSearchCriteria(
+          props.refetchData.savedSearchCriteria,
+          props.refetchData.savedSearchCriteriaId
+        );
+      }
     },
   });
+
+  useEffect(() => {
+    console.log('SAVE SEARCH Toolbar', props.refetchData);
+    refetch();
+  }, [props.refetchData]);
 
   if (loading) return <Loading />;
   if (error) {
