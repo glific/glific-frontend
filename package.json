@@ -52,6 +52,7 @@
     "react": "^16.13.1",
     "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
+    "react-phone-input-2": "^2.13.7",
     "react-linkify": "^1.0.0-alpha",
     "react-resize-detector": "^5.0.6",
     "react-router-dom": "^5.2.0",
