@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { GroupContactList } from './GroupContactList';
+import { GroupContact } from './GroupContact';
 import { GET_GROUP } from '../../../graphql/queries/Group';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -27,10 +27,10 @@ const mocks = [
 
 const wrapper = shallow(
   <MockedProvider mocks={mocks} addTypename={false}>
-    <GroupContactList match={{ params: { id: 1 } }} />
+    <GroupContact match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
-it('should render GroupContactList', () => {
+it('should render GroupContact', () => {
   expect(wrapper.exists()).toBe(true);
 });

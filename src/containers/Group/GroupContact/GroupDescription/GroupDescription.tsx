@@ -1,11 +1,19 @@
 import React from 'react';
 import styles from './GroupDescription.module.css';
 
-export const GroupDescription = ({ users = [], description }: any) => {
+export interface GroupDescriptionProps {
+  users: Array<any>;
+  description: string;
+}
+
+export const GroupDescription: React.FC<GroupDescriptionProps> = ({
+  users = [],
+  description,
+}: GroupDescriptionProps) => {
   const userList = (
     <ul className={styles.UserList}>
       {users.map((user: any) => (
-        <li>{user.name}</li>
+        <li key={user.id}>{user.name}</li>
       ))}
     </ul>
   );

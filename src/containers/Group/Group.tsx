@@ -47,8 +47,8 @@ const formFields = (options: any) => {
     },
     {
       component: AutoComplete,
-      name: 'contacts',
-      additionalState: 'contacts',
+      name: 'users',
+      additionalState: 'users',
       options: options,
       optionLabel: 'name',
       textFieldProps: {
@@ -72,34 +72,34 @@ const queries = {
 };
 
 export const Group: React.SFC<GroupProps> = ({ match }) => {
-  const [selectedContacts, { data: groupContacts }] = useLazyQuery(GET_GROUP_USERS, {
+  const [selectedContacts, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
     fetchPolicy: 'cache-and-network',
   });
   const groupId = match.params.id ? match.params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
-  const [contacts, setContacts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
 
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_USERS);
 
   const updateContacts = (groupId: any) => {
-    const initialSelectedContacts = contacts.map((contact: any) => contact.id);
-    const finalSelectedContacts = selected.map((contact: any) => contact.id);
-    const selectedContacts = finalSelectedContacts.filter(
-      (contact: any) => !initialSelectedContacts.includes(contact)
+    const initialSelectedUsers = users.map((user: any) => user.id);
+    const finalSelectedUsers = selected.map((user: any) => user.id);
+    const selectedUsers = finalSelectedUsers.filter(
+      (user: any) => !initialSelectedUsers.includes(user)
     );
-    const removedContacts = initialSelectedContacts.filter(
-      (contact: any) => !finalSelectedContacts.includes(contact)
+    const removedUsers = initialSelectedUsers.filter(
+      (contact: any) => !finalSelectedUsers.includes(contact)
     );
 
-    if (selectedContacts.length > 0 || removedContacts.length > 0) {
+    if (selectedUsers.length > 0 || removedUsers.length > 0) {
       updateGroupContacts({
         variables: {
           input: {
-            addUserIds: selectedContacts,
+            addUserIds: selectedUsers,
             groupId: groupId,
-            deleteUserIds: removedContacts,
+            deleteUserIds: removedUsers,
           },
         },
       });
@@ -119,17 +119,17 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   }, []);
 
   useEffect(() => {
-    if (groupContacts) setContacts(groupContacts.group.group.users);
-  }, [groupContacts]);
+    if (groupUsers) setUsers(groupUsers.group.group.users);
+  }, [groupUsers]);
 
-  const states = { label, description, contacts };
-  const setStates = ({ label, description, ...props }: any) => {
+  const states = { label, description, users };
+  const setStates = ({ label, description }: any) => {
     setLabel(label);
     setDescription(description);
   };
 
-  const additionalState = (contact: any) => {
-    setSelected(contact);
+  const additionalState = (user: any) => {
+    setSelected(user);
   };
 
   return (

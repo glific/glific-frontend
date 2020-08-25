@@ -1,9 +1,9 @@
 import React from 'react';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
 import styles from './GroupContactList.module.css';
-import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
-import { List } from '../../List/List';
-import { UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
+import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/StaffManagement/Active.svg';
+import { List } from '../../../List/List';
+import { UPDATE_GROUP_CONTACTS } from '../../../../graphql/mutations/Group';
 
 export interface GroupContactListProps {
   match: any;
