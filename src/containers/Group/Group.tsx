@@ -53,7 +53,7 @@ const formFields = (options: any) => {
       optionLabel: 'name',
       textFieldProps: {
         // required: true,
-        label: 'Add contact to group',
+        label: 'Assign members to group',
         variant: 'outlined',
       },
       skipPayload: true,

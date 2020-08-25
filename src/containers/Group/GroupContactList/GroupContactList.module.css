@@ -1,13 +1,14 @@
 .Name {
-  width: 250px;
+  width: 300px;
 }
 
 .Phone {
-  width: 300px;
+  width: 200px;
 }
 
 .Actions {
   justify-content: flex-end;
+  align-items: center;
   margin-left: auto;
 }
 
