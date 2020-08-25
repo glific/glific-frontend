@@ -47,7 +47,7 @@ const App = () => {
 
   let routes;
 
-  if (!authenticated) {
+  if (authenticated) {
     const defaultRedirect = () => <Redirect to="/chat" />;
     routes = (
       <div className={styles.App}>
