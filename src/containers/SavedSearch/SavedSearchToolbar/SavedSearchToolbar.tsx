@@ -38,7 +38,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       refetch();
       handleAdditionalSavedSearch(props.refetchData.savedSearchCollection);
     }
-  }, [props.refetchData.savedSearchCriteriaId]);
+  }, [props.refetchData.savedSearchCollection]);
 
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,

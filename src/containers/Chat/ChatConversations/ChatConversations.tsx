@@ -159,7 +159,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       </Toolbar>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearchCriteriaId, savedSearchCollection }}
+        refetchData={{ savedSearchCollection }}
       />
       <SearchBar
         handleChange={handleChange}
