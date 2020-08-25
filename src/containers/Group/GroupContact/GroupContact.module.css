@@ -1,6 +1,7 @@
 .ContactList {
   width: 68%;
   position: relative;
+  overflow: auto;
 }
 
 .GroupDescription {
