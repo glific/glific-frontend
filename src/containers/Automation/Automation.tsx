@@ -42,12 +42,13 @@ const formFields = [
     name: 'keywords',
     type: 'text',
     placeholder: 'Keywords',
-    helperText: 'Write comma separated keywords that starts the automation',
+    helperText: 'Enter comma separated keywords that trigger this automation',
   },
 
   {
     component: Checkbox,
-    name: 'ignorekeywords',
+    name: 'ignoreKeywords',
+    title: 'Ignore Keywords',
   },
 ];
 
