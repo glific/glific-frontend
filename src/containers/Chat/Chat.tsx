@@ -84,20 +84,15 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           contactId = subscriptionData.data.receivedMessage.sender.id;
           break;
         case 'TAG_ADDED':
-          // we should use receiver id to update the tag
-          contactId = subscriptionData.data.createdMessageTag.message.receiver.id;
+          if (subscriptionData.data.createdMessageTag.message.flow === 'INBOUND') {
+            // we should use sender id to update the tag
+            contactId = subscriptionData.data.createdMessageTag.message.sender.id;
+          } else {
+            // we should use receiver id to update the tag
+            contactId = subscriptionData.data.createdMessageTag.message.receiver.id;
+          }
           break;
       }
-
-      // if (action === 'SENT') {
-      //   // set the receiver contact id
-      //   newMessage = subscriptionData.data.sentMessage;
-      //   contactId = subscriptionData.data.sentMessage.receiver.id;
-      // } else {
-      //   // set the sender contact id
-      //   newMessage = subscriptionData.data.receivedMessage;
-      //   contactId = subscriptionData.data.receivedMessage.sender.id;
-      // }
 
       //loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
@@ -151,6 +146,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         });
       }
 
+      // update the conversations
       updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
 
       // return the updated object
