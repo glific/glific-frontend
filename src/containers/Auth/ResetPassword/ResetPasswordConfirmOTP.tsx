@@ -5,6 +5,7 @@ import { RESET_PASSWORD, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../co
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
+import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;
@@ -41,10 +42,11 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
 
   const formFields = [
     {
-      component: Input,
+      component: PhoneInput,
       name: 'phoneNumber',
+      type: 'phone',
       placeholder: 'Phone number',
-      disabled: true,
+      helperText: 'Please enter a phone number.',
     },
     {
       component: Input,

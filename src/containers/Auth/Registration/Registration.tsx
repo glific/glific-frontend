@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import Auth from '../Auth';
+import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface RegistrationProps {}
 
@@ -36,10 +37,11 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       placeholder: 'Your username',
     },
     {
-      component: Input,
+      component: PhoneInput,
       name: 'phone',
-      type: 'text',
+      type: 'phone',
       placeholder: 'Your phone number',
+      helperText: 'Please enter a phone number.',
     },
     {
       component: Input,
