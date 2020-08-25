@@ -3,7 +3,6 @@ import { GET_GROUPS_COUNT, FILTER_GROUPS } from '../../../graphql/queries/Group'
 import { DELETE_GROUP } from '../../../graphql/mutations/Group';
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
-import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { List } from '../../List/List';
 
 export interface GroupListProps {}

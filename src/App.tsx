@@ -27,7 +27,7 @@ import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
 import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
-import { GroupContactList } from './containers/Group/GroupContactList/GroupContactList';
+import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
 
 const App = () => {
@@ -63,7 +63,7 @@ const App = () => {
             <Route path="/group" exact component={GroupList} />
             <Route path="/group/add" exact component={Group} />
             <Route path="/group/:id/edit" exact component={Group} />
-            <Route path="/group/:id/contacts" exact component={GroupContactList} />
+            <Route path="/group/:id/contacts" exact component={GroupContact} />
 
             <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
 

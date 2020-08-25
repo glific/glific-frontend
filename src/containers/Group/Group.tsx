@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_GROUP } from '../../graphql/queries/Group';
-import { GET_CONTACTS, GET_GROUP_CONTACTS } from '../../graphql/queries/Contact';
+import { GET_GROUP, GET_GROUP_USERS } from '../../graphql/queries/Group';
+import { GET_USERS } from '../../graphql/queries/User';
+
 import {
   UPDATE_GROUP,
   CREATE_GROUP,
   DELETE_GROUP,
-  UPDATE_GROUP_CONTACTS,
+  UPDATE_GROUP_USERS,
 } from '../../graphql/mutations/Group';
 
 import { FormLayout } from '../Form/FormLayout';
@@ -71,14 +72,16 @@ const queries = {
 };
 
 export const Group: React.SFC<GroupProps> = ({ match }) => {
-  const [selectedContacts, { data: groupContacts }] = useLazyQuery(GET_GROUP_CONTACTS);
+  const [selectedContacts, { data: groupContacts }] = useLazyQuery(GET_GROUP_USERS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const groupId = match.params.id ? match.params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [contacts, setContacts] = useState([]);
   const [selected, setSelected] = useState([]);
 
-  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS);
+  const [updateGroupContacts] = useMutation(UPDATE_GROUP_USERS);
 
   const updateContacts = (groupId: any) => {
     const initialSelectedContacts = contacts.map((contact: any) => contact.id);
@@ -94,19 +97,19 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
       updateGroupContacts({
         variables: {
           input: {
-            addContactIds: selectedContacts,
+            addUserIds: selectedContacts,
             groupId: groupId,
-            deleteContactIds: removedContacts,
+            deleteUserIds: removedContacts,
           },
         },
       });
     }
   };
 
-  const { data } = useQuery(GET_CONTACTS);
+  const { data } = useQuery(GET_USERS);
   let options = [];
   if (data) {
-    options = data.contacts;
+    options = data.users;
   }
 
   useEffect(() => {
@@ -116,7 +119,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   }, []);
 
   useEffect(() => {
-    if (groupContacts) setContacts(groupContacts.group.group.contacts);
+    if (groupContacts) setContacts(groupContacts.group.group.users);
   }, [groupContacts]);
 
   const states = { label, description, contacts };

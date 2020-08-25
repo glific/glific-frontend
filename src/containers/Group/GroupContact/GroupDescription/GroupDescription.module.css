@@ -1,0 +1,48 @@
+.DescriptionContainer {
+  height: 100vh;
+  padding: 24px;
+}
+
+.Description {
+  font-size: 16px;
+  margin-top: 0px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin-bottom: 30px;
+}
+
+.Something {
+  width: 100%;
+  border-bottom: 1px solid #eaedec;
+  line-height: 0.1em;
+  margin: 10px 0 20px 0px;
+}
+
+.Something span {
+  background: #fff;
+  color: #cacaca;
+
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 10px;
+  padding-left: 0px;
+}
+
+.UserList li {
+  color: #93a29b;
+  font-size: 16px;
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+
+.UserList {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.Title {
+  color: #073f24;
+  font-weight: 500;
+  margin-bottom: 12px;
+  margin-top: 0px;
+}

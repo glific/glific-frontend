@@ -2,13 +2,12 @@ import React from 'react';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 import styles from './GroupContactList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
-import { useQuery } from '@apollo/client';
 import { List } from '../../List/List';
-import { GET_GROUP } from '../../../graphql/queries/Group';
 import { UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 
 export interface GroupContactListProps {
   match: any;
+  title: string;
 }
 
 const columnNames = ['NAME', 'ALL GROUPS', 'ACTIONS'];
@@ -46,8 +45,6 @@ const columnAttributes = {
 
 export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   const groupId = props.match.params.id;
-  const group = useQuery(GET_GROUP, { variables: { id: groupId } });
-  const title = group.data ? group.data.group.group.label : 'Group';
 
   const getDeleteQueryVariables = (id: any) => {
     return {
@@ -61,7 +58,7 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   return (
     <List
       columnNames={columnNames}
-      title={title}
+      title={props.title}
       listItem="contacts"
       listItemName="contact"
       searchParameter="name"

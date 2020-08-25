@@ -1,0 +1,13 @@
+.ContactList {
+  width: 68%;
+  position: relative;
+}
+
+.GroupDescription {
+  width: 32%;
+  background-color: white;
+  box-shadow: -2px 0px 6px rgba(0, 0, 0, 0.06);
+}
+.GroupContactContainer {
+  display: flex;
+}
