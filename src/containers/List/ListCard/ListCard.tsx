@@ -9,7 +9,9 @@ interface ListCardProps {
 }
 
 export const ListCard: React.SFC<ListCardProps> = (props) => {
-  const link = (id: any) => '/' + props.link.start + '/' + id + '/' + props.link.end;
+  const link = (id: any) => {
+    return `/${props.link.start}/${id}/${props.link.end}`;
+  };
   const viewDetails = (id: any) => (
     <Link to={link(id)} className={styles.Link}>
       <p>View Details</p>

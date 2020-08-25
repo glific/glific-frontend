@@ -72,7 +72,7 @@ const queries = {
 };
 
 export const Group: React.SFC<GroupProps> = ({ match }) => {
-  const [selectedContacts, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
+  const [selectedUsers, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
     fetchPolicy: 'cache-and-network',
   });
   const groupId = match.params.id ? match.params.id : null;
@@ -81,9 +81,9 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
 
-  const [updateGroupContacts] = useMutation(UPDATE_GROUP_USERS);
+  const [updateGroupUsers] = useMutation(UPDATE_GROUP_USERS);
 
-  const updateContacts = (groupId: any) => {
+  const updateUsers = (groupId: any) => {
     const initialSelectedUsers = users.map((user: any) => user.id);
     const finalSelectedUsers = selected.map((user: any) => user.id);
     const selectedUsers = finalSelectedUsers.filter(
@@ -94,7 +94,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     );
 
     if (selectedUsers.length > 0 || removedUsers.length > 0) {
-      updateGroupContacts({
+      updateGroupUsers({
         variables: {
           input: {
             addUserIds: selectedUsers,
@@ -114,7 +114,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
 
   useEffect(() => {
     if (groupId) {
-      selectedContacts({ variables: { id: groupId } });
+      selectedUsers({ variables: { id: groupId } });
     }
   }, []);
 
@@ -134,7 +134,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
 
   return (
     <FormLayout
-      additionalQuery={updateContacts}
+      additionalQuery={updateUsers}
       {...queries}
       match={match}
       states={states}
