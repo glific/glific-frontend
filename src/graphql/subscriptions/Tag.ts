@@ -5,7 +5,11 @@ subscription {
   createdMessageTag {
     message {
       id
+      flow
       receiver {
+        id
+      }
+      sender {
         id
       }
     }
