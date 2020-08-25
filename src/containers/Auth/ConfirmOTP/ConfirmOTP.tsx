@@ -87,7 +87,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('session', responseString);
+        localStorage.setItem('glific_session', responseString);
         setAuthenticated(true);
         setTokenResponse(responseString);
       })

@@ -13,6 +13,10 @@ test('should load the staff user edit form', async () => {
       <StaffManagement match={{ params: { id: 1 } }} />
     </MockedProvider>
   );
+
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+
   await wait();
   expect(getByText('Edit User')).toBeInTheDocument();
 });
