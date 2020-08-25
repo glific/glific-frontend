@@ -9,13 +9,13 @@ export interface LogoutServiceProps {}
 export const LogoutService: React.SFC<LogoutServiceProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
 
-  localStorage.removeItem('session');
+  localStorage.removeItem('glific_session');
   setAuthenticated(false);
   return null;
 };
 
 export const renewAuthToken = () => {
-  const session = localStorage.getItem('session');
+  const session = localStorage.getItem('glific_session');
   // if session object does not exist then just return false
   if (!session) {
     return new Promise((res) => {
@@ -30,7 +30,7 @@ export const renewAuthToken = () => {
     .then((response: any) => {
       // set the new session object
       const responseString = JSON.stringify(response.data.data);
-      localStorage.setItem('session', responseString);
+      localStorage.setItem('glific_session', responseString);
       return { renewStatus: true };
     })
     .catch((error: any) => {
@@ -40,7 +40,7 @@ export const renewAuthToken = () => {
 
 export const checkAuthStatusService = () => {
   let authStatus = false;
-  const session = localStorage.getItem('session');
+  const session = localStorage.getItem('glific_session');
   if (!session) {
     authStatus = false;
   } else {

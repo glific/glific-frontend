@@ -10,7 +10,7 @@ const gqlClient = () => {
   // build authentication link
   const authLink = setContext((_, { headers }) => {
     // get the session object from local storage if it exists
-    const session = localStorage.getItem('session');
+    const session = localStorage.getItem('glific_session');
     // parse the token and send it to backend
     const accessToken = session ? JSON.parse(session).access_token : null;
 

@@ -60,7 +60,7 @@ export const Login: React.SFC<LoginProps> = () => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('session', responseString);
+        localStorage.setItem('glific_session', responseString);
         setAuthenticated(true);
         setSessionToken(responseString);
       })

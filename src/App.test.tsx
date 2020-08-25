@@ -31,7 +31,7 @@ describe('<App /> ', () => {
   });
 
   test('it should render <Chat /> component if session is active', async () => {
-    localStorage.setItem('session', '{"access_token":"access","renewal_token":"renew"}');
+    localStorage.setItem('glific_session', '{"access_token":"access","renewal_token":"renew"}');
     const wrapper = mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <MemoryRouter>
