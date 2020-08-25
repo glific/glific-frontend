@@ -1,12 +1,12 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
-import { Redirect } from 'react-router';
 
 import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from '../../common/notification';
+import { renewAuthToken } from '../../services/AuthService';
 
 export interface ErrorHandlerProps {}
 
@@ -34,11 +34,10 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   if (data.errorMessage.networkError) {
     title = 'A network error has occured!';
 
-    // if we get authentication errors, then gracefully logout the user
-    // instead of showing error message. This can be happen due to wierd
-    // state of tokens
+    // if we get 401 authentication error then let's attempt to auto renew
+    // the token / session
     if (data.errorMessage.networkError.statusCode === 401) {
-      return <Redirect to="/logout" />;
+      renewAuthToken();
     }
   }
 
