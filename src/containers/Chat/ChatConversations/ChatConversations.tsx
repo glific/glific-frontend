@@ -21,6 +21,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
+  const [savedSearchCollection, setSavedSearchCollection] = useState(null);
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
 
@@ -68,6 +69,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   };
 
   const saveHandler = (data: any) => {
+    setSavedSearchCollection(data.createSavedSearch.savedSearch);
     handlerSavedSearchCriteria(
       data.createSavedSearch.savedSearch.args,
       data.createSavedSearch.savedSearch.id
@@ -157,7 +159,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       </Toolbar>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearchCriteria, savedSearchCriteriaId }}
+        refetchData={{ savedSearchCriteriaId, savedSearchCollection }}
       />
       <SearchBar
         handleChange={handleChange}

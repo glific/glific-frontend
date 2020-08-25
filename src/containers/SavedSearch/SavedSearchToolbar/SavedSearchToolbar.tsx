@@ -28,29 +28,25 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const queryVariables = {
     filter: {},
     opts: {
-      limit: 20,
+      limit: 10,
     },
   };
+
+  useEffect(() => {
+    // display created collection
+    if (props.refetchData.savedSearchCollection) {
+      refetch();
+      handleAdditionalSavedSearch(props.refetchData.savedSearchCollection);
+    }
+  }, [props.refetchData.savedSearchCriteriaId]);
 
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedCollection(data.savedSearches.slice(0, 3));
       setAdditonalCollections(data.savedSearches.slice(3));
-      console.log('oncomplited');
-      if (props.refetchData) {
-        handlerSavedSearchCriteria(
-          props.refetchData.savedSearchCriteria,
-          props.refetchData.savedSearchCriteriaId
-        );
-      }
     },
   });
-
-  useEffect(() => {
-    console.log('SAVE SEARCH Toolbar', props.refetchData);
-    refetch();
-  }, [props.refetchData]);
 
   if (loading) return <Loading />;
   if (error) {

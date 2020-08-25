@@ -30,7 +30,10 @@ export const mocks = [
 ];
 
 describe('testing <SavedSearchToolbar />', () => {
-  const defaultProps = { savedSearchCriteriaCallback: jest.fn };
+  const defaultProps = {
+    savedSearchCriteriaCallback: jest.fn,
+    refetchData: { savedSearchCriteriaId: null },
+  };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
     const { findByText, getByText, container } = render(
