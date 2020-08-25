@@ -25,6 +25,7 @@ export interface CollectionProps {
   type?: string;
   search?: any;
   handleCancel?: any;
+  handleSave?: any;
   searchParam?: any;
 }
 
@@ -45,12 +46,7 @@ const queries = {
   deleteItemQuery: DELETE_COLLECTION,
 };
 
-export const Collection: React.SFC<CollectionProps> = ({
-  match,
-  type = 'save',
-  search,
-  ...props
-}) => {
+export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ...props }) => {
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
@@ -267,6 +263,10 @@ export const Collection: React.SFC<CollectionProps> = ({
     return [...DataFields, ...searchFields];
   };
 
+  const saveHandler = (data: any) => {
+    if (props.handleSave) props.handleSave(data);
+  };
+
   return (
     <FormLayout
       {...queries}
@@ -287,6 +287,7 @@ export const Collection: React.SFC<CollectionProps> = ({
       advanceSearch={advanceSearch}
       button={button}
       type={type}
+      afterSave={saveHandler}
     />
   );
 };

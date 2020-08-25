@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, RouteComponentProps, Redirect, Route } from 'react-router-dom';
 import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
@@ -29,10 +29,14 @@ import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
 import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
+import { LogoutService, checkAuthStatusService } from './services/AuthService';
 
 const App = () => {
-  const session = localStorage.getItem('session');
-  const [authenticated, setAuthenticated] = useState(session ? true : false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setAuthenticated(checkAuthStatusService());
+  }, []);
 
   const values = {
     authenticated: authenticated,
@@ -41,12 +45,10 @@ const App = () => {
     },
   };
 
-  const accessToken = session ? JSON.parse(session).access_token : null;
-  const defaultRedirect = () => <Redirect to="/chat" />;
-  const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
   let routes;
 
-  if (authenticated) {
+  if (!authenticated) {
+    const defaultRedirect = () => <Redirect to="/chat" />;
     routes = (
       <div className={styles.App}>
         <Layout>
@@ -79,6 +81,8 @@ const App = () => {
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
 
+            <Route path="/logout" exact component={LogoutService} />
+
             <Route
               exact
               path="/chat/:contactId"
@@ -106,7 +110,7 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={gqlClient()}>
         <ErrorHandler />
         {routes}
       </ApolloProvider>

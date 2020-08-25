@@ -5,6 +5,7 @@ import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { Input } from '../../../components/UI/Form/Input/Input';
+import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface ResetPasswordPhoneProps {}
 
@@ -41,10 +42,11 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
 
   const formFields = [
     {
-      component: Input,
+      component: PhoneInput,
       name: 'phoneNumber',
-      type: 'text',
+      type: 'phone',
       placeholder: 'Phone number',
+      helperText: 'Please enter a phone number.',
     },
   ];
 
