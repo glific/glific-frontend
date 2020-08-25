@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
+
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
@@ -12,6 +13,7 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
 import { setErrorMessage } from '../../common/notification';
+import { TAG_MESSAGE_SUBSCRIPTION } from '../../graphql/subscriptions/Tag';
 
 export interface ChatProps {
   contactId: number;
@@ -69,16 +71,33 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       }
 
       let newMessage: any;
-      let contactId: number;
-      if (action === 'SENT') {
-        // set the receiver contact id
-        newMessage = subscriptionData.data.sentMessage;
-        contactId = subscriptionData.data.sentMessage.receiver.id;
-      } else {
-        // set the sender contact id
-        newMessage = subscriptionData.data.receivedMessage;
-        contactId = subscriptionData.data.receivedMessage.sender.id;
+      let contactId: number = 0;
+      switch (action) {
+        case 'SENT':
+          // set the receiver contact id
+          newMessage = subscriptionData.data.sentMessage;
+          contactId = subscriptionData.data.sentMessage.receiver.id;
+          break;
+        case 'RECEIVED':
+          // set the sender contact id
+          newMessage = subscriptionData.data.receivedMessage;
+          contactId = subscriptionData.data.receivedMessage.sender.id;
+          break;
+        case 'TAG_ADDED':
+          // we should use receiver id to update the tag
+          contactId = subscriptionData.data.createdMessageTag.message.receiver.id;
+          break;
       }
+
+      // if (action === 'SENT') {
+      //   // set the receiver contact id
+      //   newMessage = subscriptionData.data.sentMessage;
+      //   contactId = subscriptionData.data.sentMessage.receiver.id;
+      // } else {
+      //   // set the sender contact id
+      //   newMessage = subscriptionData.data.receivedMessage;
+      //   contactId = subscriptionData.data.receivedMessage.sender.id;
+      // }
 
       //loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
@@ -109,11 +128,29 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return cachedConversations;
       }
 
-      // We need to add new message to existing messages array and moving conversation to the top
+      // we need to handle 2 scenarios:
+      // 1. Add new message if message is sent or received
+      // 2. Add/Delete message tags for a message
+      // let's start by parsing existing conversations
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
       let updatedConversation = updatedConversations.search;
+
+      // get the conversation for the contact that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
-      updatedConversation[0].messages.unshift(newMessage);
+
+      // Add new message and move the conversation to the top
+      if (newMessage) {
+        updatedConversation[0].messages.unshift(newMessage);
+      } else {
+        // let's add/delete tags for the message
+        // tag object: subscriptionData.data.createdMessageTag.tag
+        updatedConversation[0].messages.map((message: any) => {
+          if (message.id === subscriptionData.data.createdMessageTag.message.id) {
+            message.tags.push(subscriptionData.data.createdMessageTag.tag);
+          }
+        });
+      }
+
       updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
 
       // return the updated object
@@ -143,6 +180,15 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'SENT');
+      },
+    });
+
+    // tag added subscription
+    subscribeToMore({
+      document: TAG_MESSAGE_SUBSCRIPTION,
+      variables: queryVariables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return updateConversations(prev, subscriptionData, 'TAG_ADDED');
       },
     });
   }, [subscribeToMore, queryVariables, updateConversations]);
