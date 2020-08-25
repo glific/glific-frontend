@@ -34,7 +34,6 @@ describe('<App /> ', () => {
     // let's create token expiry date for tomorrow
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() + 1);
-    console.log(new Date(tokenExpiryDate));
     localStorage.setItem(
       'glific_session',
       '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
