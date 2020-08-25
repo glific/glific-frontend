@@ -29,6 +29,7 @@ import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
 import { Group } from './containers/Group/Group';
 import { LogoutService, checkAuthStatusService } from './services/AuthService';
+import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -65,7 +66,7 @@ const App = () => {
             <Route path="/group/add" exact component={Group} />
             <Route path="/group/:id/edit" exact component={Group} />
 
-            <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
+            <Route path="/automation/configure/:id" exact component={FlowEditorContainer} />
 
             <Route path="/collection" exact component={CollectionList} />
             <Route path="/collection/add" exact component={Collection} />
