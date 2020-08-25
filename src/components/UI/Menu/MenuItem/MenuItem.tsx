@@ -12,8 +12,8 @@ export interface MenuItemProps {
 
 const MenuItem: React.SFC<MenuItemProps> = (props) => {
   let menuItemClass = '';
-  if (props.className === 'Warning') {
-    menuItemClass = styles.Warning;
+  if (props.className === 'Danger') {
+    menuItemClass = styles.Danger;
   }
 
   return (
