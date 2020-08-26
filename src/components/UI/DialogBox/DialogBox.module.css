@@ -22,6 +22,7 @@
 
 .DialogTitle {
   color: #073f24;
+  max-width: 395px;
   padding-top: 24px !important;
   padding-bottom: 8px !important;
 }

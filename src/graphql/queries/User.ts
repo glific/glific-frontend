@@ -43,3 +43,12 @@ export const GET_USER_ROLES = gql`
     roles
   }
 `;
+
+export const GET_USERS = gql`
+  {
+    users {
+      id
+      name
+    }
+  }
+`;

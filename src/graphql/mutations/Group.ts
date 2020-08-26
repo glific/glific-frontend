@@ -45,3 +45,25 @@ export const UPDATE_GROUP = gql`
     }
   }
 `;
+
+export const UPDATE_GROUP_USERS = gql`
+  mutation updateGroupUsers($input: GroupUsersInput!) {
+    updateGroupUsers(input: $input) {
+      groupUsers {
+        id
+        value
+      }
+    }
+  }
+`;
+
+export const UPDATE_GROUP_CONTACTS = gql`
+  mutation updateGroupContacts($input: GroupContactsInput!) {
+    updateGroupContacts(input: $input) {
+      groupContacts {
+        id
+        value
+      }
+    }
+  }
+`;
