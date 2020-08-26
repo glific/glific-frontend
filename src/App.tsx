@@ -31,6 +31,7 @@ import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
 import { LogoutService, checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
+import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -81,6 +82,9 @@ const App = () => {
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
+
+            <Route path="/settings" exact component={OrganisationSettings} />
+            <Route path="/settings/:id/edit" exact component={OrganisationSettings} />
 
             <Route path="/logout" exact component={LogoutService} />
 

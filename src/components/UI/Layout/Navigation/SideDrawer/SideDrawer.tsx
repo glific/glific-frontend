@@ -8,6 +8,8 @@ import {
   Divider,
   Toolbar,
   Typography,
+  MenuList,
+  MenuItem,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -19,7 +21,10 @@ import Menu from '../../../Menu/Menu';
 import * as constants from '../../../../../common/constants';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import UserIcon from '../../../../../assets/images/icons/User.png';
+import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
+import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
+import { Link } from 'react-router-dom';
 
 export interface SideDrawerProps {}
 
@@ -96,7 +101,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     LogoutButton: {
-      left: '94px',
+      // left: '94px',
     },
     StaffButton: {
       left: '8px',
@@ -108,6 +113,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
+  const [active, setActive] = React.useState(false);
 
   const drawer = (
     <div>
@@ -144,6 +150,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   );
 
   const container = window !== undefined ? () => window.document.body : undefined;
+
+  const handleClick = () => {
+    setActive(!active);
+  };
 
   return (
     <nav
@@ -185,16 +195,33 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
         >
           <div className={classes.BottomMenus}>
-            <Menu menus={staffManagementMenus}>
-              <IconButton className={classes.StaffButton}>
-                <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="staff icon" />
-              </IconButton>
-            </Menu>
-            <Menu menus={userAccountMenus}>
-              <IconButton className={classes.LogoutButton}>
-                <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
-              </IconButton>
-            </Menu>
+            <MenuList className={styles.BottomMenuList}>
+              <MenuItem>
+                <Menu menus={staffManagementMenus}>
+                  <IconButton className={classes.StaffButton}>
+                    <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="staff icon" />
+                  </IconButton>
+                </Menu>
+              </MenuItem>
+              <MenuItem>
+                <Menu menus={userAccountMenus}>
+                  <IconButton className={classes.LogoutButton}>
+                    <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
+                  </IconButton>
+                </Menu>
+              </MenuItem>
+              <MenuItem>
+                <div>
+                  <Link to={'/settings'} onClick={handleClick}>
+                    <img
+                      src={active ? ActiveIcon : InactiveIcon}
+                      className={styles.UserIcon}
+                      alt="settings"
+                    />
+                  </Link>
+                </div>
+              </MenuItem>
+            </MenuList>
           </div>
           {drawer}
         </Drawer>
