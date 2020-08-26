@@ -27,6 +27,9 @@ test('should load the collection edit', async () => {
     </MockedProvider>
   );
 
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+
   await wait();
   expect(getByText('Edit Collection')).toBeInTheDocument();
 });

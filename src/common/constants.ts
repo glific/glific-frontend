@@ -7,3 +7,4 @@ export const REACT_APP_GLIFIC_AUTHENTICATION_API =
   process.env.REACT_APP_GLIFIC_API + '/v1/registration/send-otp';
 export const USER_SESSION = process.env.REACT_APP_GLIFIC_API + '/v1/session';
 export const RESET_PASSWORD = process.env.REACT_APP_GLIFIC_API + '/v1/registration/reset-password';
+export const RENEW_TOKEN = USER_SESSION + '/renew';

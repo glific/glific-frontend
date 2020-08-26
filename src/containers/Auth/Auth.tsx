@@ -87,6 +87,10 @@ const Auth: React.SFC<AuthProps> = ({
     togglePassword: showPassword,
   };
 
+  const handlePhone = () => (value: string): void => {
+    initialFormValues['phone'] = value;
+  };
+
   return (
     <div className={styles.Container}>
       <div className={styles.Auth}>
@@ -113,11 +117,15 @@ const Auth: React.SFC<AuthProps> = ({
                     if (field.type === 'password') {
                       fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
                     }
+                    if (field.type === 'phone') {
+                      fieldInfo = { ...field, handlePhone };
+                    }
                     return <Field className={styles.Form} key={index} {...fieldInfo} />;
                   })}
-                  <Link to={'/' + linkURL}>
-                    <div className={styles.Link}>{linkText}</div>
-                  </Link>
+
+                  <div className={styles.Link}>
+                    <Link to={'/' + linkURL}>{linkText} </Link>
+                  </div>
                   <div className={styles.CenterButton}>
                     <Button
                       variant={buttonContainedVariant ? 'contained' : 'outlined'}

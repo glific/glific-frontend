@@ -170,13 +170,18 @@
   font-weight: 500;
 }
 
-.Auth .Link,
-.Auth .Link a {
+.Auth .Link {
   font-size: 16px;
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
   padding-bottom: 20px;
+}
+
+.Auth .Link a {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
 }
 
 .RegistrationBox input,

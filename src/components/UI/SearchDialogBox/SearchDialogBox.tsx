@@ -4,7 +4,6 @@ import { FormControl, Paper, Chip, TextField } from '@material-ui/core';
 import styles from './SearchDialogBox.module.css';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Close.svg';
 import AutoComplete from '@material-ui/lab/Autocomplete';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Desktop.svg';
 
 export interface SearchDialogBoxProps {
   title: string;
