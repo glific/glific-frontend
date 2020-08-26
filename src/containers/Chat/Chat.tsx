@@ -12,8 +12,11 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
+import {
+  ADD_MESSAGE_TAG_SUBSCRIPTION,
+  DELETE_MESSAGE_TAG_SUBSCRIPTION,
+} from '../../graphql/subscriptions/Tag';
 import { setErrorMessage } from '../../common/notification';
-import { TAG_MESSAGE_SUBSCRIPTION } from '../../graphql/subscriptions/Tag';
 
 export interface ChatProps {
   contactId: number;
@@ -72,6 +75,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       let newMessage: any;
       let contactId: number = 0;
+      let tagData: any;
       switch (action) {
         case 'SENT':
           // set the receiver contact id
@@ -84,12 +88,18 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           contactId = subscriptionData.data.receivedMessage.sender.id;
           break;
         case 'TAG_ADDED':
-          if (subscriptionData.data.createdMessageTag.message.flow === 'INBOUND') {
+          tagData = subscriptionData.data.createdMessageTag;
+        case 'TAG_DELETED':
+          if (!tagData) {
+            tagData = subscriptionData.data.deletedMessageTag;
+          }
+
+          if (tagData.message.flow === 'INBOUND') {
             // we should use sender id to update the tag
-            contactId = subscriptionData.data.createdMessageTag.message.sender.id;
+            contactId = tagData.message.sender.id;
           } else {
             // we should use receiver id to update the tag
-            contactId = subscriptionData.data.createdMessageTag.message.receiver.id;
+            contactId = tagData.message.receiver.id;
           }
           break;
       }
@@ -138,10 +148,19 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         updatedConversation[0].messages.unshift(newMessage);
       } else {
         // let's add/delete tags for the message
-        // tag object: subscriptionData.data.createdMessageTag.tag
+        // tag object: tagData.tag
         updatedConversation[0].messages.map((message: any) => {
-          if (message.id === subscriptionData.data.createdMessageTag.message.id) {
-            message.tags.push(subscriptionData.data.createdMessageTag.tag);
+          if (message.id === tagData.message.id) {
+            // let's add tag if action === "TAG_ADDED"
+            if (action === 'TAG_ADDED') {
+              console.log('tag added');
+              message.tags.push(tagData.tag);
+            } else {
+              // handle delete of selected tags
+              console.log('tag deleted');
+              console.log('tagData', tagData);
+              console.log('message.tags', message.tags);
+            }
           }
         });
       }
@@ -181,10 +200,19 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
     // tag added subscription
     subscribeToMore({
-      document: TAG_MESSAGE_SUBSCRIPTION,
+      document: ADD_MESSAGE_TAG_SUBSCRIPTION,
       variables: queryVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'TAG_ADDED');
+      },
+    });
+
+    // tag delete subscription
+    subscribeToMore({
+      document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+      variables: queryVariables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return updateConversations(prev, subscriptionData, 'TAG_DELETED');
       },
     });
   }, [subscribeToMore, queryVariables, updateConversations]);
