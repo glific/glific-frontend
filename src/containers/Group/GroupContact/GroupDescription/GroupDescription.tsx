@@ -22,7 +22,7 @@ export const GroupDescription: React.FC<GroupDescriptionProps> = ({
       <h2 className={styles.Title}>Description</h2>
       <p className={styles.Description}>{description}</p>
 
-      <div className={styles.Something}>
+      <div className={styles.MembersTitle}>
         <span>Members</span>
       </div>
 

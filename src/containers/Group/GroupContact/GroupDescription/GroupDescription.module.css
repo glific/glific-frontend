@@ -11,14 +11,14 @@
   margin-bottom: 30px;
 }
 
-.Something {
+.MembersTitle {
   width: 100%;
   border-bottom: 1px solid #eaedec;
   line-height: 0.1em;
   margin: 10px 0 20px 0px;
 }
 
-.Something span {
+.MembersTitle span {
   background: #fff;
   color: #cacaca;
 
