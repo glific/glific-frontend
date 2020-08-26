@@ -19,6 +19,8 @@ export const GET_AUTOMATION = gql`
         name
         shortcode
         uuid
+        keywords
+        ignoreKeywords
       }
     }
   }

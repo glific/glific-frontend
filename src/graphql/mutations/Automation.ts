@@ -20,6 +20,10 @@ export const CREATE_AUTOMATION = gql`
         shortcode
         uuid
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;
@@ -31,6 +35,10 @@ export const UPDATE_AUTOMATION = gql`
         id
         name
         shortcode
+      }
+      errors {
+        key
+        message
       }
     }
   }

@@ -13,7 +13,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
   return (
     <div className={styles.Checkbox}>
       <FormControlLabel
-        control={<CheckboxElement {...props.field} />}
+        control={<CheckboxElement {...props.field} checked={props.field.value} />}
         label={props.title}
         data-testid="checkboxLabel"
       />

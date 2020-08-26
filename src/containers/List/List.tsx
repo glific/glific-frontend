@@ -78,6 +78,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
@@ -201,7 +202,7 @@ export const List: React.SFC<ListProps> = ({
 
   const deleteHandler = (id: number) => {
     deleteItem({ variables: { id } });
-    setNotification(client, `${listItemName} deleted Successfully`);
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   // Reformat all items to be entered in table

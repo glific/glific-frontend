@@ -81,9 +81,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
 
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
+    fetchPolicy: 'network-only',
     skip: !itemId,
     onCompleted: (data) => {
       if (itemId && data) {
@@ -94,21 +97,33 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
+  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
-    onCompleted: () => {
-      setFormSubmitted(true);
+    onCompleted: (data) => {
+      const itemUpdated = `update${camelCaseItem}`;
+
+      if (data[itemUpdated].errors) {
+        setErrorMessage(client, data[itemUpdated].errors[0]);
+      } else {
+        setFormSubmitted(true);
+      }
     },
   });
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
-      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
-      setFormSubmitted(true);
-      // emit data after save
-      if (afterSave) {
-        afterSave(data);
+      const itemCreated = `create${camelCaseItem}`;
+
+      if (data[itemCreated].errors) {
+        setErrorMessage(client, data[itemCreated].errors[0]);
+      } else {
+        if (!itemId) setLink(data[itemCreated][listItem][linkParameter]);
+        setFormSubmitted(true);
+        // emit data after save
+        if (afterSave) {
+          afterSave(data);
+        }
       }
     },
     onError: (error: ApolloError) => {
@@ -159,14 +174,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           input: payload,
         },
       });
-      message = `${listItemName} edited successfully!`;
+      message = `${capitalListItemName} edited successfully!`;
     } else {
       createItem({
         variables: {
           input: payload,
         },
       });
-      message = `${listItemName} added successfully!`;
+      message = `${capitalListItemName} added successfully!`;
     }
     setNotification(client, message);
   };
@@ -273,7 +288,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const handleDeleteItem = () => {
     deleteItem({ variables: { id: itemId } });
-    setNotification(client, `${listItemName} deleted Successfully`);
+    setNotification(client, `${capitalListItemName} deleted successfully`);
     setFormSubmitted(true);
   };
   let dialogBox;
