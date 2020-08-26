@@ -6,6 +6,7 @@ export const GET_CONTACT_GROUPS = gql`
       contact {
         groups {
           id
+          label
         }
       }
     }

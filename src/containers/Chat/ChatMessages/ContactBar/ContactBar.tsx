@@ -9,14 +9,14 @@ import {
   ClickAwayListener,
 } from '@material-ui/core';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { ReactComponent as ConfigureIcon } from '../../../../assets/images/icons/Configure/Configure.svg';
+import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
-import { CREATE_CONTACT_GROUP } from '../../../../graphql/mutations/Group';
+import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { setNotification } from '../../../../common/notification';
 
@@ -31,16 +31,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const open = Boolean(anchorEl);
   const [showDialog, setShowDialog] = useState(false);
   const [groups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
-  const [contactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
+  const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
   });
-  const [createContactGroup] = useMutation(CREATE_CONTACT_GROUP);
+  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
+    onCompleted: () => refetch(),
+  });
   let options = [];
-  let selectedGroups = [];
+  let initialSelectedGroupIds: Array<any> = [];
+  let selectedGroupsName = [];
 
   if (data) {
-    selectedGroups = data.contact.contact.groups.map((group: any) => group.id);
+    initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
+    selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
   }
   if (groupsData) {
     options = groupsData.groups;
@@ -49,17 +53,31 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let dialogBox = null;
 
   const handleDialogOk = (selectedGroupIds: any) => {
-    selectedGroupIds.forEach((groupId: any) => {
-      createContactGroup({
+    const finalSelectedGroups = selectedGroupIds.filter(
+      (groupId: any) => !initialSelectedGroupIds.includes(groupId)
+    );
+    const finalRemovedGroups = initialSelectedGroupIds.filter(
+      (groupId: any) => !selectedGroupIds.includes(groupId)
+    );
+
+    if (finalSelectedGroups.length > 0 || finalRemovedGroups.length > 0) {
+      updateContactGroups({
         variables: {
           input: {
             contactId: props.contactId,
-            groupId: groupId,
+            addGroupIds: finalSelectedGroups,
+            deleteGroupIds: finalRemovedGroups,
           },
         },
       });
-    });
-    setNotification(client, 'Added to group succesfully');
+    }
+
+    if (finalSelectedGroups.length > 0) {
+      setNotification(client, 'Added to group succesfully');
+    } else if (finalRemovedGroups.length > 0) {
+      setNotification(client, 'Removed from group succesfully');
+    }
+
     setShowDialog(false);
   };
 
@@ -70,7 +88,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (showDialog) {
     dialogBox = (
       <SearchDialogBox
-        selectedOptions={selectedGroups}
+        selectedOptions={initialSelectedGroupIds}
         title="Add contact to group"
         handleOk={handleDialogOk}
         handleCancel={handleDialogCancel}
@@ -82,7 +100,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     <Popper
       open={open}
       anchorEl={anchorEl}
-      placement="bottom-end"
+      placement="bottom-start"
       transition
       className={styles.Popper}
     >
@@ -93,12 +111,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               className={styles.ListButtonPrimary}
               onClick={() => {
                 groups();
-                contactGroups();
+
                 setShowDialog(true);
               }}
             >
               <AddContactIcon className={styles.Icon} />
-              Add contact to group
+              Add to group
             </Button>
 
             <br />
@@ -122,16 +140,31 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
+  const contactGroups = (
+    <div className={styles.ContactGroups}>
+      <span className={styles.GroupHeading}>Groups</span>
+      <span className={styles.GroupsName} data-testid="groupNames">
+        {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
+      </span>
+    </div>
+  );
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-        {props.contactName}
-      </Typography>
-      <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-        <div className={styles.Configure}>
-          <ConfigureIcon onClick={handleConfigureIconClick} />
+      <div>
+        <div className={styles.ContactDetails}>
+          <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
+            {props.contactName}
+          </Typography>
+
+          <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+            <div className={styles.Configure}>
+              <DropdownIcon onClick={handleConfigureIconClick} />
+            </div>
+          </ClickAwayListener>
         </div>
-      </ClickAwayListener>
+        {contactGroups}
+      </div>
       {popper}
       {dialogBox}
     </Toolbar>
