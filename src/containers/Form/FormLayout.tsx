@@ -31,11 +31,13 @@ export interface FormLayoutProps {
   defaultAttribute?: any;
   icon: any;
   additionalAction?: any;
+  additionalQuery?: any;
   linkParameter?: any;
   cancelLink?: any;
   languageSupport?: boolean;
   setPayload?: any;
   advanceSearch?: any;
+  additionalState?: any;
   button?: string;
   type?: string;
   afterSave?: any;
@@ -55,9 +57,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getItemQuery,
   createItemQuery,
   updateItemQuery,
+  additionalQuery = null,
   defaultAttribute = null,
   additionalAction = null,
   icon,
+  additionalState,
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
@@ -106,6 +110,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data[itemUpdated].errors) {
         setErrorMessage(client, data[itemUpdated].errors[0]);
       } else {
+        if (additionalQuery) {
+          additionalQuery(itemId);
+        }
         setFormSubmitted(true);
       }
     },
@@ -118,6 +125,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data[itemCreated].errors) {
         setErrorMessage(client, data[itemCreated].errors[0]);
       } else {
+        if (additionalQuery) {
+          additionalQuery(data[`create${camelCaseItem}`][listItem].id);
+        }
         if (!itemId) setLink(data[itemCreated][listItem][linkParameter]);
         setFormSubmitted(true);
         // emit data after save
@@ -160,6 +170,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
     // remove fields from the payload that marked as skipPayload = true
     formFields.map((field: any) => {
+      if (field.additionalState) {
+        additionalState(payload[field.additionalState]);
+      }
       if (field.skipPayload) {
         delete payload[field.name];
       }

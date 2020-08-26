@@ -7,6 +7,10 @@ export const GET_GROUP = gql`
         id
         label
         description
+        users {
+          id
+          name
+        }
       }
     }
   }
@@ -35,6 +39,19 @@ export const GET_GROUPS = gql`
       id
       label
       isRestricted
+    }
+  }
+`;
+
+export const GET_GROUP_USERS = gql`
+  query group($id: ID!) {
+    group(id: $id) {
+      group {
+        users {
+          id
+          name
+        }
+      }
     }
   }
 `;
