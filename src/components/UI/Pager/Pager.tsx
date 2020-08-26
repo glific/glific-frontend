@@ -150,7 +150,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
         setTableFooterStyle(styles.TableFooter);
       }
     }
-  }, []);
+  });
 
   return (
     <div className={styles.TableContainer}>

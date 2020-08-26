@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_GROUP, GET_GROUPS } from '../../graphql/queries/Group';
-import { UPDATE_GROUP, CREATE_GROUP, DELETE_GROUP } from '../../graphql/mutations/Group';
+import { GET_GROUP, GET_GROUP_USERS } from '../../graphql/queries/Group';
+import { GET_USERS } from '../../graphql/queries/User';
+
+import {
+  UPDATE_GROUP,
+  CREATE_GROUP,
+  DELETE_GROUP,
+  UPDATE_GROUP_USERS,
+} from '../../graphql/mutations/Group';
 
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import styles from './Group.module.css';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { useQuery } from '@apollo/client';
+import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 
 export interface GroupProps {
   match: any;
@@ -37,14 +45,19 @@ const formFields = (options: any) => {
       rows: 3,
       textArea: true,
     },
-
     {
-      component: Dropdown,
-      name: 'groups',
-      placeholder: 'Assigned to group',
+      component: AutoComplete,
+      name: 'users',
+      additionalState: 'users',
       options: options,
-      helperText:
-        'People from the assigned group will be responsible to chat with users in this group',
+      optionLabel: 'name',
+      textFieldProps: {
+        // required: true,
+        label: 'Assign members to group',
+        variant: 'outlined',
+      },
+      skipPayload: true,
+      icon: <ContactIcon className={styles.ContactIcon} />,
     },
   ];
 };
@@ -59,26 +72,73 @@ const queries = {
 };
 
 export const Group: React.SFC<GroupProps> = ({ match }) => {
+  const [selectedUsers, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const groupId = match.params.id ? match.params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
+  const [users, setUsers] = useState([]);
+  const [selected, setSelected] = useState([]);
 
-  const groups = useQuery(GET_GROUPS);
+  const [updateGroupUsers] = useMutation(UPDATE_GROUP_USERS);
+
+  const updateUsers = (groupId: any) => {
+    const initialSelectedUsers = users.map((user: any) => user.id);
+    const finalSelectedUsers = selected.map((user: any) => user.id);
+    const selectedUsers = finalSelectedUsers.filter(
+      (user: any) => !initialSelectedUsers.includes(user)
+    );
+    const removedUsers = initialSelectedUsers.filter(
+      (contact: any) => !finalSelectedUsers.includes(contact)
+    );
+
+    if (selectedUsers.length > 0 || removedUsers.length > 0) {
+      updateGroupUsers({
+        variables: {
+          input: {
+            addUserIds: selectedUsers,
+            groupId: groupId,
+            deleteUserIds: removedUsers,
+          },
+        },
+      });
+    }
+  };
+
+  const { data } = useQuery(GET_USERS);
   let options = [];
-  if (groups.data) {
-    options = groups.data.groups;
+  if (data) {
+    options = data.users;
   }
 
-  const states = { label, description };
+  useEffect(() => {
+    if (groupId) {
+      selectedUsers({ variables: { id: groupId } });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (groupUsers) setUsers(groupUsers.group.group.users);
+  }, [groupUsers]);
+
+  const states = { label, description, users };
   const setStates = ({ label, description }: any) => {
     setLabel(label);
     setDescription(description);
   };
 
+  const additionalState = (user: any) => {
+    setSelected(user);
+  };
+
   return (
     <FormLayout
+      additionalQuery={updateUsers}
       {...queries}
       match={match}
       states={states}
+      additionalState={additionalState}
       languageSupport={false}
       setStates={setStates}
       validationSchema={FormSchema}
