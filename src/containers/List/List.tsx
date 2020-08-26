@@ -142,12 +142,10 @@ export const List: React.SFC<ListProps> = ({
 
   useEffect(() => {
     refetch();
-  }, [refetch, filterPayload]);
+    refetchCount();
+  }, [refetch, filterPayload, searchVal]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
-  useEffect(() => {
-    refetchCount();
-  }, [searchVal, refetchCount]);
 
   useEffect(() => {
     return () => {
