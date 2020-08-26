@@ -3,37 +3,10 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
-import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { wait } from '@testing-library/react';
+import { contactGroupsQuery } from '../ChatMessage.test.helper';
 
-const mocks = [
-  {
-    request: {
-      query: GET_CONTACT_GROUPS,
-      variables: {
-        id: '2',
-      },
-    },
-    result: {
-      data: {
-        contact: {
-          contact: {
-            groups: [
-              {
-                id: '1',
-                label: 'Default Group',
-              },
-              {
-                id: '2',
-                label: 'Staff Group',
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
-];
+const mocks = [contactGroupsQuery];
 
 const defaultProps = {
   contactName: 'Jane Doe',
