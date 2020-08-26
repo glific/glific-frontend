@@ -157,9 +157,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
               message.tags.push(tagData.tag);
             } else {
               // handle delete of selected tags
-              console.log('tag deleted');
-              console.log('tagData', tagData);
-              console.log('message.tags', message.tags);
+              message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
             }
           }
         });
