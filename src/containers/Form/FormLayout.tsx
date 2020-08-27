@@ -90,7 +90,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
-    fetchPolicy: 'network-only',
     skip: !itemId,
     onCompleted: (data) => {
       if (itemId && data) {

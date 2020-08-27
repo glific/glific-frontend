@@ -39,6 +39,8 @@ export const FILTER_AUTOMATION = gql`
       name
       shortcode
       uuid
+      keywords
+      ignoreKeywords
     }
   }
 `;
