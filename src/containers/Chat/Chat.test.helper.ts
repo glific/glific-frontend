@@ -4,7 +4,7 @@ import {
 } from '../../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
-import { contactGroupsQuery } from './ChatMessages/ChatMessage.test.helper';
+import { contactGroupsQuery } from './ChatMessages/ChatMessages.test.helper';
 
 const queryVariables = {
   contactOpts: {
