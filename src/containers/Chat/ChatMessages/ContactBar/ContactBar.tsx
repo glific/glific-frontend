@@ -140,14 +140,17 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const contactGroups = (
-    <div className={styles.ContactGroups}>
-      <span className={styles.GroupHeading}>Groups</span>
-      <span className={styles.GroupsName} data-testid="groupNames">
-        {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
-      </span>
-    </div>
-  );
+  let contactGroups: any;
+  if (selectedGroupsName.length > 0) {
+    contactGroups = (
+      <div className={styles.ContactGroups}>
+        <span className={styles.GroupHeading}>Groups</span>
+        <span className={styles.GroupsName} data-testid="groupNames">
+          {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <Toolbar className={styles.ContactBar} color="primary">
