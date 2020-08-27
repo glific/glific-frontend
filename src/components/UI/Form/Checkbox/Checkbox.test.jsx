@@ -4,23 +4,15 @@ import { Checkbox as CheckboxElement } from '@material-ui/core';
 import { Checkbox } from './Checkbox';
 
 describe('<Checkbox />', () => {
+  const props = {
+    label: 'Example',
+    field: { name: 'example', value: null },
+    form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
+  };
+
+  const wrapper = shallow(<Checkbox {...props} />);
+
   it('renders <Checkbox /> component', () => {
-    const wrapper = shallow(<Checkbox />);
     expect(wrapper).toBeTruthy();
-  });
-
-  it('should have correct label', () => {
-    const wrapper = shallow(<Checkbox label="Is Active" />);
-    expect(wrapper.find('label').text()).toEqual('Is Active');
-  });
-
-  it('should have an initial value', () => {
-    const wrapper = shallow(<Checkbox field={{ checked: false }} />);
-    expect(wrapper.find(CheckboxElement).props().checked).toEqual(false);
-  });
-
-  it('it checked when checked flag is true', () => {
-    const wrapper = shallow(<Checkbox field={{ checked: true }} />);
-    expect(wrapper.find(CheckboxElement).props().checked).toEqual(true);
   });
 });

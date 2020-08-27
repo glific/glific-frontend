@@ -4,13 +4,11 @@ import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_COLLECTION } from '../../graphql/queries/Collection';
-import {
-  CREATE_COLLECTION,
-  UPDATE_COLLECTION,
-  DELETE_COLLECTION,
-} from '../../graphql/mutations/Collection';
-import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
+import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { CREATE_COLLECTION, DELETE_COLLECTION } from '../../graphql/mutations/Collection';
+
+import { UPDATE_ORGANIZATION } from '../../graphql/mutations/Organization';
+import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
 import { useQuery } from '@apollo/client';
@@ -22,16 +20,15 @@ export interface SettingsProps {
 }
 
 const FormSchema = Yup.object().shape({
-  shortcode: Yup.string().required('Title is required.'),
-  label: Yup.string().required('Description is required.'),
+  name: Yup.string().required('Organisation name is required.'),
 });
 
-const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
+const SettingIcon = <Settingicon className={styles.Icon} />;
 
 const queries = {
-  getItemQuery: GET_COLLECTION,
+  getItemQuery: GET_ORGANIZATION,
   createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
+  updateItemQuery: UPDATE_ORGANIZATION,
   deleteItemQuery: DELETE_COLLECTION,
 };
 
@@ -46,18 +43,49 @@ const dayList = [
 ];
 
 export const OrganisationSettings: React.SFC<SettingsProps> = () => {
-  const [shortcode, setShortcode] = useState('');
-  const [label, setLabel] = useState('');
-  const [hours, setHours] = useState(false);
-  const [days, setDays] = useState([]);
-  const [flow, setFlow] = useState([]);
+  const [name, setName] = useState('');
+  const [providerKey, setProviderKey] = useState('');
+  const [providerNumber, setProviderNumber] = useState('');
+  const [hours, setHours] = useState(true);
+  const [enabledDays, setEnabledDays] = useState<any>([]);
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
+  const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
 
-  const states = { shortcode, label, hours, days, flow };
-  const setStates = ({ shortcode, label, hours }: any) => {
-    setShortcode(shortcode);
-    setLabel(label);
-    setHours(hours);
+  const states = {
+    name,
+    providerKey,
+    providerNumber,
+    hours,
+    startTime,
+    endTime,
+    enabledDays,
+    flowId,
+  };
+
+  const setStates = ({ name, providerKey, providerNumber, outOfOffice }: any) => {
+    setName(name);
+    setProviderKey(providerKey);
+    setProviderNumber(providerNumber);
+    setHours(outOfOffice.enabled);
+    setIsDisable(!outOfOffice.enabled);
+    setOutOfOffice(outOfOffice);
+    setFlowId(getFlow(outOfOffice.flowId));
+  };
+
+  const setOutOfOffice = (data: any) => {
+    setStartTime(data.startTime);
+    setEndTime(data.endTime);
+    setEnabledDays(getEnabledDays(data.enabledDays));
+  };
+
+  const getEnabledDays = (data: any) => {
+    return data.filter((option: any) => option.enabled);
+  };
+
+  const getFlow = (id: string) => {
+    return data.flows.filter((option: any) => option.id == id)[0];
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
@@ -71,19 +99,19 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const formFields = [
     {
       component: Input,
-      name: 'organisation',
+      name: 'name',
       type: 'text',
       placeholder: 'Organisation name',
     },
     {
       component: Input,
-      name: 'api',
+      name: 'providerKey',
       type: 'text',
       placeholder: 'Gupshup API key',
     },
     {
       component: Input,
-      name: 'whatsapp',
+      name: 'providerNumber',
       type: 'text',
       placeholder: 'Gupshup WhatsApp number',
     },
@@ -95,19 +123,19 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     },
     {
       component: TimePicker,
-      name: 'Opens',
+      name: 'startTime',
       placeholder: 'Opens',
       disabled: IsDisabled,
     },
     {
       component: TimePicker,
-      name: 'Closes',
+      name: 'endTime',
       placeholder: 'Closes',
       disabled: IsDisabled,
     },
     {
       component: AutoComplete,
-      name: 'days',
+      name: 'enabledDays',
       options: dayList,
       optionLabel: 'label',
       textFieldProps: {
@@ -118,7 +146,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     },
     {
       component: AutoComplete,
-      name: 'flow',
+      name: 'flowId',
       options: data.flows,
       optionLabel: 'name',
       multiple: false,
@@ -132,22 +160,53 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     },
   ];
 
+  const assignDays = (enabledDays: any) => {
+    let array: any = [];
+    for (let i = 0; i < 7; i++) {
+      array[i] = { id: i + 1, enabled: false };
+      enabledDays.map((days: any) => {
+        if (i + 1 === days.id) {
+          array[i] = { id: i + 1, enabled: true };
+        }
+      });
+    }
+    return array;
+  };
+
+  const setPayload = (payload: any) => {
+    return {
+      name: payload.name,
+      displayName: 'updated organization display name',
+      providerKey: payload.providerKey,
+      providerNumber: payload.providerNumber,
+      outOfOffice: {
+        enabled: payload.hours,
+        enabledDays: assignDays(payload.enabledDays),
+        endTime: payload.endTime,
+        flowId: payload.flowId.id,
+        startTime: payload.startTime,
+      },
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
-      match={{ params: { id: null } }}
+      match={{ params: { id: 1 } }} // for now organization id is hardcoded.
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}
+      setPayload={setPayload}
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
-      redirectionLink="settings"
-      cancelLink="settings"
+      redirectionLink="chat"
+      cancelLink="chat"
       linkParameter="id"
-      listItem="savedSearch"
-      icon={collectionIcon}
+      listItem="organization"
+      icon={SettingIcon}
       languageSupport={false}
+      type={'settings'}
     />
   );
 };

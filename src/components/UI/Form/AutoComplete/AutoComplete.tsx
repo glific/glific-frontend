@@ -32,11 +32,6 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
   const optionValue = options.length > 0 ? options : [];
-  const getValue = () => {
-    return optionValue.filter((option: any) =>
-      field.value.map((value: any) => value.id).includes(option.id)
-    );
-  };
 
   return (
     <div className={styles.Input}>

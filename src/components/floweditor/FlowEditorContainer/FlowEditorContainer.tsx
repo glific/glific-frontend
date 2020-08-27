@@ -34,7 +34,7 @@ export const FlowEditorContainer = (props: FlowEditorContainerProps) => {
   return (
     <>
       <a
-        href="https://help.nyaruka.com/en/articles/1911210-starting-a-flow"
+        href="https://app.rapidpro.io/video/"
         className={styles.Link}
         target="_blank"
         rel="noopener noreferrer"

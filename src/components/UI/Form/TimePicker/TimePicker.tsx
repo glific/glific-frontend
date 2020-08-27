@@ -27,12 +27,12 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
-  moment.defaultFormat = 'yyyy-MM-dd';
+  moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
 
-  const handleDateChange = (date: Date | null) => {
-    if (date) {
-      setFieldValue(field.name, date);
+  const handleDateChange = (time: Date | null) => {
+    if (time) {
+      setFieldValue(field.name, moment(time).format('THH:mm:ss'));
     }
   };
 

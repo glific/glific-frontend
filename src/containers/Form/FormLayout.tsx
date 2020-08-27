@@ -149,9 +149,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     // create custom payload for collection
     if (setPayload) {
       payload = setPayload(payload);
-      let data = advanceSearch(payload);
+      if (advanceSearch) {
+        let data = advanceSearch(payload);
 
-      if (data && data.heading && type === 'search') return;
+        if (data && data.heading && type === 'search') return;
+      }
     }
 
     // remove fields from the payload that marked as skipPayload = true

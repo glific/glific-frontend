@@ -84,7 +84,6 @@ const App = () => {
             <Route path="/template/:id/edit" exact component={HSM} />
 
             <Route path="/settings" exact component={OrganisationSettings} />
-            <Route path="/settings/:id/edit" exact component={OrganisationSettings} />
 
             <Route path="/logout" exact component={LogoutService} />
 
