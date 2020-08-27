@@ -5,7 +5,7 @@ import { Checkbox } from './Checkbox';
 
 describe('<Checkbox />', () => {
   const props = {
-    label: 'Example',
+    fieldLabel: 'Example',
     field: { name: 'example', value: null },
     form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
   };

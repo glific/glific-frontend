@@ -14,6 +14,7 @@ import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
 import { useQuery } from '@apollo/client';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import Typography from '@material-ui/core/Typography/Typography';
 
 export interface SettingsProps {
   match: any;
@@ -118,7 +119,11 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     {
       component: Checkbox,
       name: 'hours',
-      label: 'Hours of operations',
+      fieldLabel: (
+        <Typography variant="h6" style={{ color: '#073f24' }}>
+          Hours of operations
+        </Typography>
+      ),
       handleChange: handleChange,
     },
     {
