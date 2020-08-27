@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import Auth from '../Auth';
+import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface LoginProps {}
@@ -29,10 +30,11 @@ export const Login: React.SFC<LoginProps> = () => {
 
   const formFields = [
     {
-      component: Input,
+      component: PhoneInput,
       name: 'phoneNumber',
-      type: 'text',
+      type: 'phone',
       placeholder: 'Your phone number',
+      helperText: 'Please enter a phone number.',
     },
     {
       component: Input,
@@ -60,7 +62,7 @@ export const Login: React.SFC<LoginProps> = () => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('session', responseString);
+        localStorage.setItem('glific_session', responseString);
         setAuthenticated(true);
         setSessionToken(responseString);
       })

@@ -8,6 +8,7 @@ export const CREATE_COLLECTION = gql`
         label
         shortcode
         args
+        count
       }
       errors {
         key

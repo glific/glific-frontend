@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, RouteComponentProps, Redirect, Route } from 'react-router-dom';
 import './assets/fonts/fonts.css';
 import { Layout } from './components/UI/Layout/Layout';
@@ -27,11 +27,17 @@ import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
 import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
+import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
+import { LogoutService, checkAuthStatusService } from './services/AuthService';
+import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
 
 const App = () => {
-  const session = localStorage.getItem('session');
-  const [authenticated, setAuthenticated] = useState(session ? true : false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setAuthenticated(checkAuthStatusService());
+  }, []);
 
   const values = {
     authenticated: authenticated,
@@ -40,12 +46,10 @@ const App = () => {
     },
   };
 
-  const accessToken = session ? JSON.parse(session).access_token : null;
-  const defaultRedirect = () => <Redirect to="/chat" />;
-  const client = authenticated ? gqlClient(accessToken) : gqlClient(null);
   let routes;
 
   if (authenticated) {
+    const defaultRedirect = () => <Redirect to="/chat" />;
     routes = (
       <div className={styles.App}>
         <Layout>
@@ -62,8 +66,9 @@ const App = () => {
             <Route path="/group" exact component={GroupList} />
             <Route path="/group/add" exact component={Group} />
             <Route path="/group/:id/edit" exact component={Group} />
+            <Route path="/group/:id/contacts" exact component={GroupContact} />
 
-            <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
+            <Route path="/automation/configure/:id" exact component={FlowEditorContainer} />
 
             <Route path="/collection" exact component={CollectionList} />
             <Route path="/collection/add" exact component={Collection} />
@@ -76,6 +81,8 @@ const App = () => {
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
+
+            <Route path="/logout" exact component={LogoutService} />
 
             <Route
               exact
@@ -104,7 +111,7 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={gqlClient()}>
         <ErrorHandler />
         {routes}
       </ApolloProvider>

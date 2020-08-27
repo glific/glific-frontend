@@ -3,12 +3,12 @@ import { GET_GROUPS_COUNT, FILTER_GROUPS } from '../../../graphql/queries/Group'
 import { DELETE_GROUP } from '../../../graphql/mutations/Group';
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
-import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { List } from '../../List/List';
 
 export interface GroupListProps {}
 
-const getColumns = ({ label, description }: any) => ({
+const getColumns = ({ id, label, description }: any) => ({
+  id: id,
   label: getLabel(label),
   description: getDescription(description),
 });
@@ -32,23 +32,21 @@ const columnAttributes = {
   columnStyles: columnStyles,
 };
 
-const contactIcon = <AddContactIcon />;
-
-const additionalAction = { icon: contactIcon, parameter: 'group', link: '/groups' };
-
-export const GroupList: React.SFC<GroupListProps> = (props) => (
-  <List
-    title="Groups"
-    listItem="groups"
-    listItemName="group"
-    displayListType="card"
-    buttonLabel="+ CREATE GROUP"
-    pageLink="group"
-    listIcon={groupIcon}
-    additionalAction={additionalAction}
-    dialogMessage={dialogMessage}
-    cardLink="/group/members"
-    {...queries}
-    {...columnAttributes}
-  />
-);
+export const GroupList: React.SFC<GroupListProps> = (props) => {
+  const cardLink = { start: 'group', end: 'contacts' };
+  return (
+    <List
+      title="Groups"
+      listItem="groups"
+      listItemName="group"
+      displayListType="card"
+      button={{ show: true, label: '+ CREATE GROUP' }}
+      pageLink="group"
+      listIcon={groupIcon}
+      dialogMessage={dialogMessage}
+      cardLink={cardLink}
+      {...queries}
+      {...columnAttributes}
+    />
+  );
+};

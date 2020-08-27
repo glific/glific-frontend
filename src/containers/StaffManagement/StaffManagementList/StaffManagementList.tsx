@@ -58,7 +58,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        buttonLabel="Groups"
+        button={{ show: true, label: '+ Groups' }}
         searchParameter="name"
       />
     </div>

@@ -72,7 +72,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="automation"
       cancelLink="automation"
-      linkParameter="uuid"
+      linkParameter="id"
       listItem="flow"
       icon={automationIcon}
       additionalAction={additionalAction}

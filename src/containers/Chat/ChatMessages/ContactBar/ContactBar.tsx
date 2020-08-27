@@ -14,7 +14,7 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { CREATE_CONTACT_GROUP } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';

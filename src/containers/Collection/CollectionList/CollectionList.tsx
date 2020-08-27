@@ -39,7 +39,7 @@ export const CollectionList: React.SFC<CollectionListProps> = (props) => (
     listItem="savedSearches"
     listItemName="Collection"
     pageLink="collection"
-    buttonLabel="+ CREATE COLLECTION"
+    button={{ show: true, label: '+ CREATE COLLECTION' }}
     listIcon={collectionIcon}
     dialogMessage={dialogMessage}
     {...queries}

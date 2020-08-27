@@ -31,12 +31,13 @@
 }
 
 .TableFooter {
-  position: fixed;
+  position: absolute;
   display: flex !important;
   justify-content: flex-end !important;
   width: 80%;
   background: #fafafa;
   bottom: 0px;
+  right: 4px;
 }
 
 .FooterRow {
