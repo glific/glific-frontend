@@ -51,6 +51,7 @@ export const TagList: React.SFC<TagListProps> = (props) => (
     listItemName="tag"
     pageLink="tag"
     listIcon={tagIcon}
+    button={{ show: true, label: '+ CREATE TAG' }}
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}

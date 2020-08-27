@@ -10,7 +10,7 @@ export const mocks = [
   {
     request: {
       query: SAVED_SEARCH_QUERY,
-      variables: { filter: {}, opts: { limit: 3 } },
+      variables: { filter: {}, opts: { limit: 10 } },
     },
     result: {
       data: {
@@ -18,7 +18,7 @@ export const mocks = [
           {
             id: '1',
             args:
-              '{"term":"","messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+              '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
             label: 'All unread conversations',
             shortcode: 'Unread',
             count: 10,
@@ -30,7 +30,10 @@ export const mocks = [
 ];
 
 describe('testing <SavedSearchToolbar />', () => {
-  const defaultProps = { savedSearchCriteriaCallback: jest.fn };
+  const defaultProps = {
+    savedSearchCriteriaCallback: jest.fn,
+    refetchData: { savedSearchCollection: null },
+  };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
     const { findByText, getByText, container } = render(

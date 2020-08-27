@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_TAG } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
-import { ListItem } from '../List/ListItem/ListItem';
+import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Tag.module.css';
 
@@ -11,18 +12,10 @@ export interface TagProps {
   match: any;
 }
 
-const setValidation = (values: any) => {
-  const errors: Partial<any> = {};
-  if (!values.label) {
-    errors.label = 'Tag title is required';
-  } else if (values.label.length > 50) {
-    errors.label = 'Title length too long';
-  }
-  if (!values.description) {
-    errors.description = 'Tag description is required';
-  }
-  return errors;
-};
+const FormSchema = Yup.object().shape({
+  label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
+  description: Yup.string().required('Description is required.'),
+});
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
 
@@ -74,12 +67,12 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   };
 
   return (
-    <ListItem
+    <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
-      setValidation={setValidation}
+      validationSchema={FormSchema}
       listItemName="tag"
       dialogMessage={dialogMessage}
       formFields={formFields}

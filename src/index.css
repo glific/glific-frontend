@@ -1,5 +1,6 @@
 /* flow editor css */
 html {
+  font-family: 'heebo';
   --curvature: 4px;
   --curvature-widget: 4px;
   --primary-rgb: 52, 152, 219;
@@ -61,8 +62,7 @@ html {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Heebo',
-    'Tenor Sans' 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'heebo' !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

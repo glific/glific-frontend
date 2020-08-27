@@ -10,7 +10,7 @@ const mocks = ChatConversationMocks;
 const chatConversation = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ChatConversations contactId={2} conversations={conversations} />
+      <ChatConversations contactId={2} />
     </Router>
   </MockedProvider>
 );
@@ -38,7 +38,7 @@ test('it should reset input on clicking cross icon', async () => {
   const resetButton = getByTestId('resetButton');
   fireEvent.click(resetButton);
   await wait();
-  expect(getByText('Jane Doe')).toBeInTheDocument();
+  expect(getByText('Red Sparrow')).toBeInTheDocument();
 });
 
 test('it should load all contacts with unread tag', async () => {

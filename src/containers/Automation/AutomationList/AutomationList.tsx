@@ -34,7 +34,7 @@ const columnAttributes = {
 };
 const configureIcon = <ConfigureIcon></ConfigureIcon>;
 
-const additionalAction = { icon: configureIcon, parameter: 'uuid', link: '/automation/configure' };
+const additionalAction = { icon: configureIcon, parameter: 'id', link: '/automation/configure' };
 
 export const AutomationList: React.SFC<AutomationListProps> = (props) => (
   <List
@@ -48,5 +48,6 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     {...columnAttributes}
     searchParameter="name"
     additionalAction={additionalAction}
+    button={{ show: true, label: '+ CREATE AUTOMATION' }}
   />
 );

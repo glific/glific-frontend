@@ -3,6 +3,7 @@
   height: 100vh;
   padding-left: 10px;
   overflow-y: hidden;
+  position: relative;
 }
 
 .IconBackground {
@@ -30,4 +31,30 @@
   font-size: 24px !important;
   color: #073f24 !important;
   margin-top: 3px !important;
+}
+
+.SaveCollection {
+  margin: 6%;
+  position: absolute;
+  width: 100%;
+  bottom: 3%;
+  background-color: #fff;
+  border: 1px solid rgba(17, 150, 86, 0.5);
+  border-radius: 25px;
+  width: fit-content;
+  height: 48px;
+  text-align: center !important;
+}
+
+.button {
+  border: unset !important;
+  padding: 0px !important;
+}
+
+.cancelButton {
+  padding: 0px !important;
+}
+
+.container {
+  padding: 10px !important;
 }

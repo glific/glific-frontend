@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { Button } from '../UI/Form/Button/Button';
-import styles from './FlowEditor.module.css';
-import { Link } from 'react-router-dom';
+
 import { FLOW_EDITOR_API } from '../../config/index';
-import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
+
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 declare function showFlowEditor(node: any, config: any): void;
@@ -78,15 +76,11 @@ const setConfig = (uuid: any) => {
 };
 
 export interface FlowEditorProps {
-  match: {
-    params: {
-      uuid: string;
-    };
-  };
+  uuid: string;
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
-  const config = setConfig(props.match.params.uuid);
+  const config = setConfig(props.uuid);
 
   useEffect(() => {
     const files = loadfiles();
@@ -106,23 +100,5 @@ export const FlowEditor = (props: FlowEditorProps) => {
     }
   }, []);
 
-  return (
-    <>
-      <a
-        href="https://help.nyaruka.com/en/articles/1911210-starting-a-flow"
-        className={styles.Link}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-testid="helpButton"
-      >
-        <HelpIcon className={styles.HelpIcon} />
-      </a>
-      <Link to="/automation" className={styles.Link}>
-        <Button variant="contained" color="primary" className={styles.Button} data-testid="button">
-          Done
-        </Button>
-      </Link>
-      <div id="flow"></div>
-    </>
-  );
+  return <div id="flow"></div>;
 };

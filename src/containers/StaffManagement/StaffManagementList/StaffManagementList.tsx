@@ -1,6 +1,6 @@
 import React from 'react';
-import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/StaffManagement';
-import { DELETE_USER } from '../../../graphql/mutations/StaffManagement';
+import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
+import { DELETE_USER } from '../../../graphql/mutations/User';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
 import { List } from '../../List/List';
@@ -32,8 +32,11 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  const getGroups = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
+  const getGroups = (groupList: any) => {
+    const groups = groupList.map((group: any) => {
+      return group.label;
+    });
+    return <p className={styles.TableText}>{groups.join(', ')}</p>;
   };
 
   const dialogMessage = ' Once deleted this action cannot be undone.';
@@ -55,7 +58,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        buttonLabel="Groups"
+        button={{ show: true, label: '+ Groups' }}
         searchParameter="name"
       />
     </div>

@@ -1,0 +1,17 @@
+.LabelText {
+  font-weight: 500;
+  font-size: 20px;
+  margin: 0px;
+  color: #073f24;
+}
+
+.GroupDescription {
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+}
+
+.GroupIcon {
+  width: 29px;
+  height: 29px;
+}
