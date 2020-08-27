@@ -43,3 +43,11 @@ export const UPDATE_AUTOMATION = gql`
     }
   }
 `;
+
+export const PUBLISH_AUTOMATION = gql`
+  mutation publishFlow($id: ID!) {
+    publishFlow(id: $id) {
+      success
+    }
+  }
+`;
