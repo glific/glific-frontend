@@ -29,6 +29,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         }
         labelPlacement="end"
         label={props.fieldLabel}
+        data-testid="checkboxLabel"
       />
     </div>
   );

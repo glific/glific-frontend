@@ -19,6 +19,8 @@ export const GET_AUTOMATION = gql`
         name
         shortcode
         uuid
+        keywords
+        ignoreKeywords
       }
     }
   }
@@ -37,6 +39,8 @@ export const FILTER_AUTOMATION = gql`
       name
       shortcode
       uuid
+      keywords
+      ignoreKeywords
     }
   }
 `;
