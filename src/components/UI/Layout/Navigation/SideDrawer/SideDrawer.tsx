@@ -97,14 +97,9 @@ const useStyles = makeStyles((theme: Theme) =>
     BottomMenus: {
       position: 'absolute',
       bottom: '10px',
-      width: 'fit-content',
       display: 'flex',
-    },
-    LogoutButton: {
-      // left: '94px',
-    },
-    StaffButton: {
-      left: '8px',
+      width: '100%',
+      paddingLeft: '8px',
     },
   })
 );
@@ -195,33 +190,31 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="permanent"
         >
           <div className={classes.BottomMenus}>
-            <MenuList className={styles.BottomMenuList}>
-              <MenuItem>
-                <Menu menus={staffManagementMenus}>
-                  <IconButton className={classes.StaffButton}>
-                    <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="staff icon" />
-                  </IconButton>
-                </Menu>
-              </MenuItem>
-              <MenuItem>
-                <Menu menus={userAccountMenus}>
-                  <IconButton className={classes.LogoutButton}>
-                    <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
-                  </IconButton>
-                </Menu>
-              </MenuItem>
-              <MenuItem>
-                <div>
-                  <Link to={'/settings'} onClick={handleClick}>
-                    <img
-                      src={active ? ActiveIcon : InactiveIcon}
-                      className={styles.UserIcon}
-                      alt="settings"
-                    />
-                  </Link>
-                </div>
-              </MenuItem>
-            </MenuList>
+            <div>
+              <Menu menus={staffManagementMenus}>
+                <IconButton>
+                  <img src={InactiveStaffIcon} className={styles.StaffIcon} alt="staff icon" />
+                </IconButton>
+              </Menu>
+            </div>
+            <div>
+              <Menu menus={userAccountMenus}>
+                <IconButton>
+                  <img src={UserIcon} className={styles.UserIcon} alt="user icon" />
+                </IconButton>
+              </Menu>
+            </div>
+            <div>
+              <Link to={'/settings'} onClick={handleClick}>
+                <IconButton>
+                  <img
+                    src={active ? ActiveIcon : InactiveIcon}
+                    className={styles.UserIcon}
+                    alt="settings"
+                  />
+                </IconButton>
+              </Link>
+            </div>
           </div>
           {drawer}
         </Drawer>

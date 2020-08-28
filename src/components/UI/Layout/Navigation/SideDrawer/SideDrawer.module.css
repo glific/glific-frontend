@@ -11,11 +11,6 @@
   text-transform: none !important;
 }
 
-.LogoutButton {
-  /* width: 100% !important;
-  justify-content: flex-start !important; */
-}
-
 .StaffIcon {
   width: 32px;
 }
@@ -26,9 +21,4 @@
 
 .StaffButton {
   width: 100% !important;
-}
-
-.BottomMenuList li {
-  display: inline-flex;
-  padding: 10px !important;
 }
