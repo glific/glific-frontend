@@ -13,6 +13,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/W
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
+import { convertToWhatsApp } from '../../common/RichEditor';
 
 export interface FormLayoutProps {
   match: any;
@@ -158,6 +159,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     formFields.map((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
+      }
+      if (field.addValueToPayload) {
+        payload[field.name] = convertToWhatsApp(additionalState);
       }
       if (field.skipPayload) {
         delete payload[field.name];

@@ -9,3 +9,7 @@
 .Emoji {
   width: 24px;
 }
+
+:global(.public-DraftEditor-content) {
+  padding-bottom: 81px;
+}

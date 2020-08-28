@@ -17,11 +17,21 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
-const formFields = [
-  { component: Input, name: 'label', placeholder: 'Title' },
-  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
-];
-
+const formFields = (editorState: any, setBody: any) => {
+  return [
+    { component: Input, name: 'label', placeholder: 'Title' },
+    {
+      component: EmojiInput,
+      name: 'body',
+      placeholder: 'Message',
+      rows: 5,
+      addValueToPayload: true,
+      textArea: true,
+      setEditorState: editorState,
+      setBody: setBody,
+    },
+  ];
+};
 const defaultAttribute = {
   type: 'TEXT',
 };
@@ -44,6 +54,7 @@ export interface TemplateProps {
 const Template: React.SFC<TemplateProps> = (props) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
+  const [editorState, setEditorState] = useState();
 
   const states = { label, body };
   const setStates = ({ label, body }: any) => {
@@ -61,11 +72,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
       {...queries}
       match={props.match}
       states={states}
+      additionalState={editorState}
       setStates={setStates}
       validationSchema={FormSchema}
       listItemName={props.listItemName}
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={formFields(setEditorState, setBody)}
       redirectionLink={props.redirectionLink}
       listItem="sessionTemplate"
       icon={props.icon}

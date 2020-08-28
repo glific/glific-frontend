@@ -1,7 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { Editor, RichUtils, Modifier } from 'draft-js';
 import { InputAdornment, IconButton } from '@material-ui/core';
-import { convertToWhatsApp } from '../../../../common/RichEditor';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { Input } from '../Input/Input';
@@ -12,13 +11,14 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const ref = React.useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [edit, setEdit] = useState(true);
+  const [edit, setEdit] = useState('');
 
   useEffect(() => {
-    if (edit && rest.value.length > 1) {
+    if (edit === '') {
       const myeditorState = EditorState.createWithContent(ContentState.createFromText(rest.value));
-      setEditorState(EditorState.moveFocusToEnd(myeditorState));
-      setEdit(false);
+      setEditorState(myeditorState);
+      props.setBody(' ');
+      setEdit(rest.value);
     }
   }, [rest.value]);
 
@@ -37,32 +37,11 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
     const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
     let myeditorState = EditorState.createWithContent(ModifiedContent);
     myeditorState = EditorState.moveFocusToEnd(myeditorState);
-
     setEditorState(myeditorState);
     const content = myeditorState.getCurrentContent().getPlainText();
     const event = { target: { name: rest.name, value: content } };
     onChange(event);
   };
-
-  useEffect(()=>{
-    const current:any=ref.current
-    if (current && current.editorContainer)
-    {
-
-      current.editorContainer.parentElement.addEventListener('click',()=>{
-      current.focus()
-    })
-
-   }
-
-   },[ref.current])
-
-
-
-  useEffect(() => {
-    const current: any = ref.current;
-    if (current) current.focus();
-  }, [rest.value, showEmojiPicker]);
 
   const InputWrapper = (props: any) => {
     const { component: Component, inputRef, ...other } = props;
@@ -98,11 +77,7 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   ) : null;
 
   const draftJsChange = (editorState: any) => {
-    const content = convertToWhatsApp(editorState);
-    let eventState = {
-      target: { name: rest.name, value: content },
-    };
-    onChange(eventState);
+    props.setEditorState(editorState);
   };
 
   const picker = (
