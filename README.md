@@ -49,6 +49,15 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
+## Docker image for production
+```
+docker build \
+--build-arg REACT_APP_GLIFIC_API=API-URL \
+--build-arg REACT_APP_WEB_SOCKET=WEB-SOCKET-URL \
+--build-arg REACT_APP_FLOW_EDITOR_API=FLOW-EDITOR-URL \
+--no-cache -t .
+```
+
 ## Learn More
 
 ### Glific
