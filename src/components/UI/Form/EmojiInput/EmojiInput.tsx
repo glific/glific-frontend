@@ -14,19 +14,19 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const handleKeyCommand = (command: any, editorState: any) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      props.form.setFieldValue('body', newState);
+      props.form.setFieldValue(rest.name, newState);
       return 'handled';
     }
     return 'not-handled';
   };
 
   const updateValue = (emoji: any) => {
-    const contentState = props.form.values.body.getCurrentContent();
-    let selectionState: any = props.form.values.body.getSelection();
+    const contentState = props.form.values[rest.name].getCurrentContent();
+    let selectionState: any = props.form.values[rest.name].getSelection();
     const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
     let myeditorState = EditorState.createWithContent(ModifiedContent);
     myeditorState = EditorState.moveFocusToEnd(myeditorState);
-    props.form.setFieldValue('body', myeditorState);
+    props.form.setFieldValue(rest.name, myeditorState);
   };
 
   const InputWrapper = (props: any) => {
@@ -45,7 +45,7 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const inputComponent = InputWrapper;
   const inputProps = {
     component: Editor,
-    editorState: props.form.values.body,
+    editorState: props.form.values[rest.name],
     handleKeyCommand: handleKeyCommand,
     onBlur: props.form.handleBlur,
   };
@@ -63,7 +63,7 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   ) : null;
 
   const draftJsChange = (editorState: any) => {
-    props.form.setFieldValue('body', editorState);
+    props.form.setFieldValue(rest.name, editorState);
   };
 
   const picker = (

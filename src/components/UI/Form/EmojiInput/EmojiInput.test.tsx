@@ -1,10 +1,16 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { EmojiInput } from './EmojiInput';
+import { Editor, EditorState } from 'draft-js';
 
 const wrapper = mount(
   <EmojiInput
-    form={{ touched: false, errors: {} }}
+    form={{
+      touched: false,
+      errors: {},
+      values: { input: EditorState.createEmpty() },
+      setFieldValue: jest.fn(),
+    }}
     field={{ name: 'input', value: '', onChange: jest.fn() }}
     placeholder="Title"
   />
