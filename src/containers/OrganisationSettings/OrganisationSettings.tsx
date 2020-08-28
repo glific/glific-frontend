@@ -90,7 +90,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const getFlow = (id: string) => {
-    return data.flows.filter((option: any) => option.id == id)[0];
+    return data.flows.filter((option: any) => option.id === id)[0];
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
