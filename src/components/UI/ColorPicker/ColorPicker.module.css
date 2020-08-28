@@ -1,0 +1,11 @@
+.ColorPicker {
+  width: 20px;
+  height: 20px;
+  display: contents;
+}
+
+.ChooseColor {
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+}

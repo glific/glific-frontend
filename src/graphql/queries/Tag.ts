@@ -6,6 +6,7 @@ export const GET_TAGS = gql`
       id
       label
       description
+      colorcode
     }
   }
 `;
@@ -18,6 +19,7 @@ export const GET_TAG = gql`
         label
         description
         keywords
+        colorcode
         language {
           id
         }
