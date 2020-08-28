@@ -4,6 +4,34 @@ import {
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { GET_CONTACT_GROUPS } from '../../../graphql/queries/Contact';
+
+export const contactGroupsQuery = {
+  request: {
+    query: GET_CONTACT_GROUPS,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          groups: [
+            {
+              id: '1',
+              label: 'Default Group',
+            },
+            {
+              id: '2',
+              label: 'Staff Group',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
 
 const updateMessageTagsQuery = {
   request: {
@@ -145,6 +173,7 @@ const getConversationQuery = (data: any) => {
 };
 
 const mocks = [
+  contactGroupsQuery,
   updateMessageTagsQuery,
   updateMessageTagsQuery,
 

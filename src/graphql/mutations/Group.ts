@@ -11,6 +11,17 @@ export const CREATE_CONTACT_GROUP = gql`
   }
 `;
 
+export const UPDATE_CONTACT_GROUPS = gql`
+  mutation updateContactGroups($input: ContactGroupsInput!) {
+    updateContactGroups(input: $input) {
+      contactGroups {
+        id
+        value
+      }
+    }
+  }
+`;
+
 export const DELETE_GROUP = gql`
   mutation deleteGroup($id: ID!) {
     deleteGroup(id: $id) {

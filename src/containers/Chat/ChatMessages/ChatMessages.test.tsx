@@ -8,7 +8,7 @@ import {
   mocksWithConversation,
   mocksWithMultipleMessages,
   mocksWithNoMessages,
-} from './ChatMessage.test.helper';
+} from './ChatMessages.test.helper';
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({

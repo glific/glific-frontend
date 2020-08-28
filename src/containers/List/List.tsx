@@ -92,6 +92,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
@@ -141,12 +142,10 @@ export const List: React.SFC<ListProps> = ({
 
   useEffect(() => {
     refetch();
-  }, [refetch, filterPayload]);
+    refetchCount();
+  }, [refetch, filterPayload, searchVal]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
-  useEffect(() => {
-    refetchCount();
-  }, [searchVal, refetchCount]);
 
   useEffect(() => {
     return () => {
@@ -216,7 +215,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables: variables });
-    setNotification(client, `${listItemName} deleted Successfully`);
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   // Reformat all items to be entered in table
