@@ -14,6 +14,7 @@ import {
 } from '../../graphql/mutations/Collection';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import moment from 'moment';
@@ -52,12 +53,21 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const [term, setTerm] = useState('');
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
+  const [includeUsers, setIncludeUsers] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
 
-  const states = { shortcode, label, term, includeTags, includeGroups, dateFrom, dateTo };
+  const states = {
+    shortcode,
+    label,
+    term,
+    includeTags,
+    includeGroups,
+    dateFrom,
+    dateTo,
+  };
   const setStates = ({ shortcode, label, args }: any) => {
     setShortcode(shortcode);
     setLabel(label);
@@ -105,8 +115,9 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const { data: dataT } = useQuery(GET_TAGS);
   const { data } = useQuery(GET_GROUPS);
+  const { data: dataUser } = useQuery(GET_USERS);
 
-  if (!data || !dataT) return <Loading />;
+  if (!data || !dataT || !dataUser) return <Loading />;
 
   const DataFields = [
     {
@@ -125,7 +136,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
-  const searchFields = [
+  let searchFields = [
     {
       component: Input,
       name: 'term',
@@ -167,6 +178,20 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       name: 'dateTo',
       type: 'date',
       placeholder: 'Date to',
+    },
+  ];
+
+  const UserFields = [
+    {
+      component: AutoComplete,
+      name: 'includeUsers',
+      placeholder: 'Includes users',
+      label: 'Includes users',
+      options: dataUser.users ? dataUser.users : [],
+      optionLabel: 'name',
+      textFieldProps: {
+        variant: 'outlined',
+      },
     },
   ];
 
@@ -244,7 +269,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
     if (formFields.length === 0) {
       if (type === 'search') {
-        setFormFields(searchFields);
+        setFormFields([...searchFields]);
         setButton('Search');
       }
       if (type === 'saveSearch') setFormFields(DataFields);

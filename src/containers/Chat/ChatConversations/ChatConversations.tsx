@@ -122,7 +122,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const toolTip = 'The collection will be updated as per new filters';
 
   const btnUpdate = savedSearchCriteriaId ? (
-    <Tooltip title={toolTip} placement="right">
+    <Tooltip title={toolTip} placement="left" tooltipClass={styles.tooltipClass}>
       <Button
         color="primary"
         variant="outlined"
