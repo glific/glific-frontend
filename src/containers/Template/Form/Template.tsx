@@ -12,7 +12,11 @@ import {
 import { EditorState, ContentState } from 'draft-js';
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
-  // Removing validation for now until we find how to make proper Schema
+  body: Yup.string()
+    .transform((current, original) => {
+      return original.getCurrentContent().getPlainText();
+    })
+    .required('Message is required.'),
 });
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
