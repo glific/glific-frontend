@@ -9,7 +9,9 @@ import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mu
 export interface ProfileProps {
   match: any;
 }
-const FormSchema = Yup.object().shape({});
+const FormSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required.'),
+});
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
 

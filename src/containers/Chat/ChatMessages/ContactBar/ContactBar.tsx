@@ -116,13 +116,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Link to={`/contact-profile/${props.contactId}`}>
-              <Button
-                className={styles.ListButtonPrimary}
-                onClick={() => {
-                  setShowDialog(true);
-                }}
-              >
+            <Link to={`/contact-profile/${props.contactId}`} className={styles.Link}>
+              <Button className={styles.ListButtonPrimary}>
                 <ProfileIcon className={styles.Icon} />
                 View Contact Profile
               </Button>
@@ -141,7 +136,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <br />
 
             <Button
-              className={styles.ListButtonDang}
+              className={styles.ListButtonDanger}
               color="secondary"
               onClick={() => setAnchorEl(null)}
             >
