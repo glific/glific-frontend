@@ -23,7 +23,7 @@ export interface InputProps {
   placeholder: any;
   rows: number;
   helperText?: string;
-  emojiPicker?: boolean | null;
+  emojiPicker?: any;
   textArea?: boolean;
   togglePassword?: boolean;
   endAdornmentCallback?: any;

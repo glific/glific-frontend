@@ -7,7 +7,18 @@ import { Input } from '../Input/Input';
 import { EditorState, ContentState } from 'draft-js';
 import Styles from './EmojiInput.module.css';
 
-export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
+export interface EmojiInputProps {
+  field: any;
+  form: any;
+  label: string;
+  placeholder: string;
+  rows: number;
+}
+
+export const EmojiInput: React.FC<EmojiInputProps> = ({
+  field: { onChange, ...rest },
+  ...props
+}: EmojiInputProps) => {
   const ref = React.useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
