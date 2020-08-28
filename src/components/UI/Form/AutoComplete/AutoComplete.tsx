@@ -40,11 +40,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
-          getOptionLabel={(option: any) => option[optionLabel]}
+          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
-            if (value) {
-              setFieldValue(field.name, value);
-            }
+            setFieldValue(field.name, value);
           }}
           value={
             multiple

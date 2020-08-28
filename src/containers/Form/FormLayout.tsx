@@ -115,6 +115,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setFormSubmitted(true);
       }
     },
+    onError: (error: ApolloError) => {
+      setErrorMessage(client, error);
+      return null;
+    },
   });
 
   const [createItem] = useMutation(createItemQuery, {

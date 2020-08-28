@@ -27,3 +27,42 @@ export const UPDATE_ORGANIZATION = gql`
     }
   }
 `;
+
+export const CREATE_ORGANIZATION = gql`
+  mutation createOrganization($input: OrganizationInput!) {
+    createOrganization(input: $input) {
+      organization {
+        id
+        name
+        displayName
+        contactName
+        email
+        provider {
+          id
+          name
+        }
+        providerKey
+        providerNumber
+        defaultLanguage {
+          id
+          label
+        }
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const DELETE_ORGANIZATION = gql`
+  mutation deleteOrganization($id: ID!) {
+    deleteOrganization(id: $id) {
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

@@ -5,9 +5,11 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
 import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
-import { CREATE_COLLECTION, DELETE_COLLECTION } from '../../graphql/mutations/Collection';
-
-import { UPDATE_ORGANIZATION } from '../../graphql/mutations/Organization';
+import {
+  CREATE_ORGANIZATION,
+  DELETE_ORGANIZATION,
+  UPDATE_ORGANIZATION,
+} from '../../graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
@@ -22,15 +24,17 @@ export interface SettingsProps {
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Organisation name is required.'),
+  providerKey: Yup.string().required('Gupshup API key is required.'),
+  providerNumber: Yup.string().required('Gupshup WhatsApp number is required.'),
 });
 
 const SettingIcon = <Settingicon className={styles.Icon} />;
 
 const queries = {
   getItemQuery: GET_ORGANIZATION,
-  createItemQuery: CREATE_COLLECTION,
+  createItemQuery: CREATE_ORGANIZATION,
   updateItemQuery: UPDATE_ORGANIZATION,
-  deleteItemQuery: DELETE_COLLECTION,
+  deleteItemQuery: DELETE_ORGANIZATION,
 };
 
 const dayList = [
@@ -188,7 +192,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
         endTime: payload.endTime,
-        flowId: payload.flowId.id,
+        flowId: payload.flowId ? payload.flowId.id : null,
         startTime: payload.startTime,
       },
     };
