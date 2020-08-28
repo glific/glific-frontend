@@ -5,6 +5,7 @@ import {
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
 import { ADD_MESSAGE_TAG_SUBSCRIPTION, DELETE_MESSAGE_TAG_SUBSCRIPTION } from '../../graphql/subscriptions/Tag';
+import { contactGroupsQuery } from './ChatMessages/ChatMessages.test.helper';
 
 const queryVariables = {
   contactOpts: {
@@ -242,6 +243,7 @@ const savedSearchQuery = {
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
+  contactGroupsQuery,
   searchQuery,
   conversationQuery,
   messageReceivedSubscription,

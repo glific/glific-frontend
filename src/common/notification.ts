@@ -8,7 +8,7 @@ export const setNotification = (client: any, message: string | null) => {
   });
 };
 
-export const setErrorMessage = (client: any, error: ApolloError | '') => {
+export const setErrorMessage = (client: any, error: any) => {
   let errorMessage;
 
   // error === '' when we are reseting the error
@@ -17,7 +17,11 @@ export const setErrorMessage = (client: any, error: ApolloError | '') => {
       message: error.message,
       type: error.name,
       networkError: error.networkError,
-      graphqlError: error.graphQLErrors
+      graphqlError: error.graphQLErrors,
+    };
+
+    if ('key' in error) {
+      errorMessage.message = error.key + ': ' + error.message;
     }
   } else {
     errorMessage = '';
@@ -27,4 +31,4 @@ export const setErrorMessage = (client: any, error: ApolloError | '') => {
     query: ERROR_MESSAGE,
     data: { errorMessage },
   });
-}
+};
