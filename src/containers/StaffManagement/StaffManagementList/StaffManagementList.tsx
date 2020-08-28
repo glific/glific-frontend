@@ -3,6 +3,7 @@ import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
 import { DELETE_USER } from '../../../graphql/mutations/User';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
 
 export interface StaffManagementProps {}
@@ -47,6 +48,9 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     columnStyles: columnStyles,
   };
 
+  const chatIcon = <ChatIcon></ChatIcon>;
+  const additionalAction = { icon: chatIcon, parameter: 'id', link: '/chat' };
+
   return (
     <div>
       <List
@@ -60,6 +64,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...columnAttributes}
         button={{ show: true, label: '+ Groups' }}
         searchParameter="name"
+        additionalAction={additionalAction}
       />
     </div>
   );
