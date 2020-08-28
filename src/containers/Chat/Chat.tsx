@@ -153,7 +153,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           if (message.id === tagData.message.id) {
             // let's add tag if action === "TAG_ADDED"
             if (action === 'TAG_ADDED') {
-              console.log('tag added');
               message.tags.push(tagData.tag);
             } else {
               // handle delete of selected tags
