@@ -34,21 +34,13 @@
 }
 
 .SaveCollection {
-  margin: 6%;
+  margin: 0% 6%;
   position: absolute;
-  width: 100%;
-  bottom: 3%;
-  background-color: #fff;
-  border: 1px solid rgba(17, 150, 86, 0.5);
-  border-radius: 25px;
-  width: fit-content;
+  width: 85%;
+  height: 10% !important;
+  bottom: 15px;
+  width: -moz-fit-content;
   height: 48px;
-  text-align: center !important;
-}
-
-.button {
-  border: unset !important;
-  padding: 0px !important;
 }
 
 .cancelButton {
@@ -57,4 +49,6 @@
 
 .container {
   padding: 10px !important;
+  display: flex;
+  justify-content: center;
 }

@@ -52,7 +52,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
         <IconButton
           aria-label="toggle password visibility"
           onClick={(e: any) => {
-            props.handleClick(e, 'search');
+            props.handleClick(e, 'search', 'update');
           }}
         >
           <AdvancedSearch />

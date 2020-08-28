@@ -9,6 +9,7 @@ import { Button } from '../../../components/UI/Form/Button/Button';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Collection } from '../../Collection/Collection';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
+import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -22,6 +23,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearchCollection, setSavedSearchCollection] = useState(null);
+  const [collectionMethod, setCollectionMethod] = useState('');
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
 
@@ -58,8 +60,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     }
   };
 
-  const handleClick = (event: any, data: any) => {
+  const handleClick = (event: any, data: any, type: string) => {
     event.preventDefault();
+    if (type) setCollectionMethod(type);
     if (data) setDialogboxType(data);
     setDialogbox(!dialog);
   };
@@ -79,7 +82,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // create collection
   let dialogBox;
   if (dialog) {
-    let match = { params: { id: savedSearchCriteriaId } };
+    let match = { params: { id: collectionMethod === 'update' ? savedSearchCriteriaId : null } };
+    console.log('match', collectionMethod, savedSearchCriteriaId, match);
     let collection = (
       <Collection
         match={match}
@@ -115,32 +119,56 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     );
   }
 
+  const toolTip = 'The collection will be updated as per new filters';
+
+  const btnUpdate = savedSearchCriteriaId ? (
+    <Tooltip title={toolTip} placement="right">
+      <Button
+        color="primary"
+        variant="outlined"
+        onClick={(e: any) => {
+          handleClick(e, 'saveSearch', 'update');
+        }}
+      >
+        Update
+      </Button>
+    </Tooltip>
+  ) : null;
+
+  const btnCreate = (
+    <Button
+      color="primary"
+      variant="outlined"
+      onClick={(e: any) => {
+        handleClick(e, 'saveSearch', 'new');
+      }}
+    >
+      Create new
+    </Button>
+  );
+
+  const btnCancel = (
+    <IconButton
+      className={styles.cancelButton}
+      aria-label="cancel"
+      onClick={(e: any) => {
+        setSearchParam({});
+        resetSearch();
+      }}
+    >
+      <CancelOutlined />
+    </IconButton>
+  );
+
   let saveCollectionButton;
 
   if (Object.keys(searchParam).length !== 0)
     saveCollectionButton = (
       <div className={styles.SaveCollection}>
         <div className={styles.container}>
-          <Button
-            className={styles.button}
-            color="primary"
-            variant="outlined"
-            onClick={(e: any) => {
-              handleClick(e, 'saveSearch');
-            }}
-          >
-            Save search to collections
-          </Button>
-          <IconButton
-            className={styles.cancelButton}
-            aria-label="cancel"
-            onClick={(e: any) => {
-              setSearchParam({});
-              resetSearch();
-            }}
-          >
-            <CancelOutlined />
-          </IconButton>
+          {btnUpdate}
+          {btnCreate}
+          {btnCancel}
         </div>
       </div>
     );
