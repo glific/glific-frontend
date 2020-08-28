@@ -160,8 +160,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }
-      if (field.addValueToPayload) {
-        payload[field.name] = convertToWhatsApp(additionalState);
+      if (field.convertToWhatsApp) {
+        payload[field.name] = convertToWhatsApp(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];

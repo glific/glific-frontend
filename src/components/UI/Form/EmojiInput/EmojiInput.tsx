@@ -10,37 +10,23 @@ import Styles from './EmojiInput.module.css';
 export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const ref = React.useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [edit, setEdit] = useState('');
-
-  useEffect(() => {
-    if (edit === '') {
-      const myeditorState = EditorState.createWithContent(ContentState.createFromText(rest.value));
-      setEditorState(myeditorState);
-      props.setBody(' ');
-      setEdit(rest.value);
-    }
-  }, [rest.value]);
 
   const handleKeyCommand = (command: any, editorState: any) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setEditorState(newState);
+      props.form.setFieldValue('body', newState);
       return 'handled';
     }
     return 'not-handled';
   };
 
   const updateValue = (emoji: any) => {
-    const contentState = editorState.getCurrentContent();
-    let selectionState: any = editorState.getSelection();
+    const contentState = props.form.values.body.getCurrentContent();
+    let selectionState: any = props.form.values.body.getSelection();
     const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
     let myeditorState = EditorState.createWithContent(ModifiedContent);
     myeditorState = EditorState.moveFocusToEnd(myeditorState);
-    setEditorState(myeditorState);
-    const content = myeditorState.getCurrentContent().getPlainText();
-    const event = { target: { name: rest.name, value: content } };
-    onChange(event);
+    props.form.setFieldValue('body', myeditorState);
   };
 
   const InputWrapper = (props: any) => {
@@ -59,9 +45,9 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   const inputComponent = InputWrapper;
   const inputProps = {
     component: Editor,
-    editorState: editorState,
-    onChange: setEditorState,
+    editorState: props.form.values.body,
     handleKeyCommand: handleKeyCommand,
+    onBlur: props.form.handleBlur,
   };
 
   const editor = { inputComponent: inputComponent, inputProps: inputProps };
@@ -77,7 +63,7 @@ export const EmojiInput = ({ field: { onChange, ...rest }, ...props }: any) => {
   ) : null;
 
   const draftJsChange = (editorState: any) => {
-    props.setEditorState(editorState);
+    props.form.setFieldValue('body', editorState);
   };
 
   const picker = (
