@@ -4,7 +4,7 @@ import { Checkbox as CheckboxElement, FormControlLabel } from '@material-ui/core
 
 export interface CheckboxProps {
   field: any;
-  fieldLabel: string;
+  title: string;
   form: any;
   handleChange?: Function;
 }
@@ -20,6 +20,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
       <FormControlLabel
         control={
           <CheckboxElement
+            data-testid="checkboxLabel"
             className={styles.CheckboxColor}
             {...props.field}
             color="primary"
@@ -28,7 +29,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
           />
         }
         labelPlacement="end"
-        label={props.fieldLabel}
+        label={props.title}
       />
     </div>
   );

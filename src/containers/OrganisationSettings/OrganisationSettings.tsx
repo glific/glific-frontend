@@ -119,7 +119,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     {
       component: Checkbox,
       name: 'hours',
-      fieldLabel: (
+      title: (
         <Typography variant="h6" style={{ color: '#073f24' }}>
           Hours of operations
         </Typography>

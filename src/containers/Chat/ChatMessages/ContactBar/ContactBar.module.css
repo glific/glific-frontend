@@ -17,12 +17,8 @@
 
 .Configure {
   cursor: pointer;
-  margin-left: auto;
-}
-
-.Configure > :first-child {
-  width: 21px !important;
-  height: 21px !important;
+  margin-left: 6px;
+  margin-top: 6px;
 }
 
 .Popper {
@@ -59,6 +55,7 @@
 
 .Icon {
   margin-right: 16px;
+  margin-left: 6px;
 }
 
 .ListButtonPrimary {
@@ -68,4 +65,27 @@
 
 .Container {
   margin-top: 6px;
+  min-width: 200px;
+}
+
+.ContactGroups {
+  flex-direction: row;
+}
+
+.GroupHeading {
+  font-weight: 500;
+  line-height: 1;
+  color: #cacaca;
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.GroupsName {
+  composes: GroupHeading;
+  color: #93a29b;
+}
+
+.ContactDetails {
+  display: flex;
+  align-items: center;
 }
