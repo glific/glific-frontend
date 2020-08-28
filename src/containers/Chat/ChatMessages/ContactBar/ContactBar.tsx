@@ -19,7 +19,6 @@ import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { setNotification } from '../../../../common/notification';
-import { Loading } from '../../../../components/UI/Layout/Loading/Loading';
 
 export interface ContactBarProps {
   contactName: string;
@@ -36,7 +35,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [groups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
 
   // get contact groups
-  const { data, refetch, loading } = useQuery(GET_CONTACT_GROUPS, {
+  const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
   });
