@@ -12,6 +12,7 @@ import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/Searc
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
+import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
@@ -115,11 +116,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
+            <Link to={`/contact-profile/${props.contactId}`}>
+              <Button
+                className={styles.ListButtonPrimary}
+                onClick={() => {
+                  setShowDialog(true);
+                }}
+              >
+                <ProfileIcon className={styles.Icon} />
+                View Contact Profile
+              </Button>
+            </Link>
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
                 groups();
-
                 setShowDialog(true);
               }}
             >
@@ -128,16 +139,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             </Button>
 
             <br />
-            <Link to={'/staff-management'} className={styles.Link}>
-              <Button
-                className={styles.ListButton}
-                color="secondary"
-                onClick={() => setAnchorEl(null)}
-              >
-                <BlockIcon className={styles.Icon} />
-                Block Contact
-              </Button>
-            </Link>
+
+            <Button
+              className={styles.ListButtonDang}
+              color="secondary"
+              onClick={() => setAnchorEl(null)}
+            >
+              <BlockIcon className={styles.Icon} />
+              Block Contact
+            </Button>
           </Paper>
         </Fade>
       )}

@@ -31,6 +31,7 @@ import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
 import { LogoutService, checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
+import { Profile } from './containers/Profile/Profile';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -77,6 +78,7 @@ const App = () => {
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />
             <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
+            <Route path="/contact-profile/:id" exact component={Profile} />
 
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />

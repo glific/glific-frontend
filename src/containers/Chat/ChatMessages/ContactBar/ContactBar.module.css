@@ -62,10 +62,17 @@
   composes: ListButton;
   color: #073f24 !important;
 }
+.ListButtonDanger {
+  composes: ListButton;
+}
+
+.ListButtonDanger:hover {
+  background-color: #ffebee !important;
+}
 
 .Container {
   margin-top: 6px;
-  min-width: 200px;
+  width: 230px;
 }
 
 .ContactGroups {
