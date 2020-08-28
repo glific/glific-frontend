@@ -106,7 +106,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   if (conversations && conversations.length > 0) {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
+      let senderLastMessage = [];
       if (conversation.messages.length > 0) {
+        senderLastMessage = conversation.messages.filter(
+          (message: any) => message.sender.id === conversation.contact.id
+        )[0];
         lastMessage = conversation.messages[0];
       }
       return (
@@ -120,6 +124,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
           lastMessage={lastMessage}
+          senderLastMessage={senderLastMessage}
         />
       );
     });

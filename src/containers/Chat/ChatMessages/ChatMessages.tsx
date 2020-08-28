@@ -349,6 +349,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const handleHeightChange = (newHeight: number) => {
     setReducedHeight(newHeight);
   };
+  const lastMessageTime = conversationInfo.messages.filter(
+    (message: any) => message.sender.id === conversationInfo.contact.id
+  )[0].insertedAt;
 
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
@@ -361,6 +364,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             : conversationInfo.contact.phone
         }
         contactId={contactId.toString()}
+        lastMessageTime={lastMessageTime}
       />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />

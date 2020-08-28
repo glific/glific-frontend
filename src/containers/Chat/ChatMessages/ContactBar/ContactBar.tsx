@@ -14,16 +14,17 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient, useQuery, gql } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { setNotification } from '../../../../common/notification';
-import { Loading } from '../../../../components/UI/Layout/Loading/Loading';
+import { Timer } from '../../../../components/UI/Timer/Timer';
 
 export interface ContactBarProps {
   contactName: string;
   contactId: string;
+  lastMessageTime: any;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -160,6 +161,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const sessionTimer = (
+    <div className={styles.SessionTimer}>
+      <span>Session Timer</span>
+      <Timer time={props.lastMessageTime} />
+    </div>
+  );
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div>
@@ -176,6 +183,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         </div>
         {contactGroups}
       </div>
+      {sessionTimer}
       {popper}
       {dialogBox}
     </Toolbar>

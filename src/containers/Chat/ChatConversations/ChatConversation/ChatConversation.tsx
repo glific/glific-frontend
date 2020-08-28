@@ -8,11 +8,13 @@ import { DATE_FORMAT } from '../../../../common/constants';
 import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
+import { Timer } from '../../../../components/UI/Timer/Timer';
 
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
   selected: boolean;
+  senderLastMessage: any;
   onClick: (i: any) => void;
   index: number;
   lastMessage: {
@@ -90,6 +92,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     >
       <div>
         <div className={chatBubble.join(' ')} />
+        <div className={styles.Timer}>
+          <Timer time={props.senderLastMessage.insertedAt} />
+        </div>
       </div>
       <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">
