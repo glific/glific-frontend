@@ -32,12 +32,16 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   };
 
   const updateValue = (emoji: any) => {
-    const contentState = props.form.values[rest.name].getCurrentContent();
-    let selectionState: any = props.form.values[rest.name].getSelection();
-    const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
-    let myeditorState = EditorState.createWithContent(ModifiedContent);
-    myeditorState = EditorState.moveFocusToEnd(myeditorState);
-    props.form.setFieldValue(rest.name, myeditorState);
+    const editorContentState = props.form.values[rest.name].getCurrentContent();
+    let editorSelectionState: any = props.form.values[rest.name].getSelection();
+    const ModifiedContent = Modifier.insertText(
+      editorContentState,
+      editorSelectionState,
+      emoji.native
+    );
+    let updatedEditorState = EditorState.createWithContent(ModifiedContent);
+    updatedEditorState = EditorState.moveFocusToEnd(updatedEditorState);
+    props.form.setFieldValue(rest.name, updatedEditorState);
   };
 
   const InputWrapper = (props: any) => {
