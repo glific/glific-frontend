@@ -19,7 +19,7 @@ const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
 const dialogMessage =
   'This action will remove all the conversations that were linked to this collection and remove it as an option to filter your chat screen.';
 const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
-const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
+const collectionIcon = <CollectionIcon className={styles.Icon} />;
 
 const queries = {
   countQuery: COLLECTION_QUERY_COUNT,

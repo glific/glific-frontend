@@ -1,24 +1,18 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Checkbox as CheckboxElement } from '@material-ui/core';
 import { Checkbox } from './Checkbox';
 
-const defaultProps = {
-  title: 'Default Checkbox',
-  field: {
-    name: 'checkbox',
-    value: false,
-  },
-  form: null,
-};
+describe('<Checkbox />', () => {
+  const props = {
+    fieldLabel: 'Example',
+    field: { name: 'example', value: null },
+    form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
+  };
 
-const wrapper = mount(<Checkbox {...defaultProps} />);
-it('renders <Checkbox /> component', () => {
-  expect(wrapper).toBeTruthy();
-});
+  const wrapper = shallow(<Checkbox {...props} />);
 
-it('should have correct label', () => {
-  expect(
-    wrapper.find('label[data-testid="checkboxLabel"] > .MuiFormControlLabel-label').text()
-  ).toEqual('Default Checkbox');
+  it('renders <Checkbox /> component', () => {
+    expect(wrapper).toBeTruthy();
+  });
 });
