@@ -14,7 +14,7 @@ const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
 });
 
-const dialogMessage = "You won't be able to use this for tagging messages.";
+const dialogMessage = "You won't be able to send the messages to this contact.";
 
 const getOptions = (options: any) => {
   return options.map((option: any) => ({ id: option, label: option }));
