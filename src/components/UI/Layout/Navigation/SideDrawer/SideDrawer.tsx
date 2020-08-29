@@ -8,8 +8,6 @@ import {
   Divider,
   Toolbar,
   Typography,
-  MenuList,
-  MenuItem,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
