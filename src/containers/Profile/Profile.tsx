@@ -53,7 +53,7 @@ const formFields = [
   },
 ];
 
-const tagIcon = <ProfileIcon />;
+const profileIcon = <ProfileIcon />;
 
 const queries = {
   getItemQuery: GET_CONTACT,
@@ -88,7 +88,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink={`chat/${match.params.id}`}
       listItem="contact"
-      icon={tagIcon}
+      icon={profileIcon}
     />
   );
 };
