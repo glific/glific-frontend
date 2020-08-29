@@ -120,6 +120,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
           lastMessage={lastMessage}
+          senderLastMessage={conversation.contact.lastMessageAt}
         />
       );
     });

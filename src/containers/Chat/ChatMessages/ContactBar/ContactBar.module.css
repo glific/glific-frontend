@@ -1,5 +1,5 @@
 .ContactBar {
-  padding: 16px;
+  padding: 16px 32px !important;
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -95,4 +95,19 @@
 .ContactDetails {
   display: flex;
   align-items: center;
+}
+
+.SessionTimer {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer span {
+  font-size: 10px;
+  width: 40px;
+  text-align: right;
+  line-height: 1;
+  color: #cacaca;
+  margin-right: 6px;
 }
