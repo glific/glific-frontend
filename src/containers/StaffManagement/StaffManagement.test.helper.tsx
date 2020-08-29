@@ -41,6 +41,7 @@ export const STAFF_MANAGEMENT_MOCKS = [
             name: 'Glific Admin',
             phone: '919900991223',
             roles: ['admin'],
+            contact: { id: 1 },
           },
         ],
       },
