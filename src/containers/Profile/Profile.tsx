@@ -6,6 +6,7 @@ import styles from './Profile.module.css';
 import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 export interface ProfileProps {
   match: any;
 }
@@ -14,6 +15,14 @@ const FormSchema = Yup.object().shape({
 });
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
+
+const getOptions = (options: any) => {
+  return options.map((option: any) => ({ id: option, label: option }));
+};
+
+const statusOptions = getOptions(['VALID', 'INVALID', 'PROCESSING', 'FAILED']);
+
+const providerStatusOptions = getOptions(['HSM', 'NONE', 'SESSION', 'SESSION_AND_HSM']);
 
 const formFields = [
   {
@@ -28,6 +37,24 @@ const formFields = [
     placeholder: 'Phone Number',
     disabled: true,
     skipPayload: true,
+  },
+  {
+    component: Input,
+    name: 'settings',
+    placeholder: 'Settings',
+  },
+  {
+    component: Dropdown,
+    name: 'status',
+    placeholder: 'Status',
+    options: statusOptions,
+  },
+
+  {
+    component: Dropdown,
+    name: 'providerStatus',
+    placeholder: 'Provider status',
+    options: providerStatusOptions,
   },
 ];
 
@@ -44,10 +71,17 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
-  const states = { name, phone };
-  const setStates = ({ name, phone }: any) => {
+  const [settings, setSettings] = useState('');
+  const [status, setStatus] = useState('');
+  const [providerStatus, setProviderStatus] = useState('');
+
+  const states = { name, phone, settings, status, providerStatus };
+  const setStates = ({ name, phone, settings, status, providerStatus }: any) => {
     setName(name);
     setPhone(phone);
+    setSettings(settings);
+    setStatus(status);
+    setProviderStatus(providerStatus);
   };
 
   return (
@@ -62,7 +96,6 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink={`chat/${match.params.id}`}
       listItem="contact"
-      languageSupport={false}
       icon={tagIcon}
     />
   );

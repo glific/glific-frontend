@@ -62,6 +62,14 @@ export const GET_CONTACT = gql`
         id
         name
         phone
+        language {
+          id
+          label
+        }
+        status
+        providerStatus
+        settings
+        fields
       }
     }
   }
