@@ -33,7 +33,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [colorcode, setColorcode] = useState('');
+  const [colorcode, setColorcode] = useState('#00d084');
 
   const states = { label, description, keywords, colorcode };
   const setStates = ({ label, description, keywords, colorcode }: any) => {
@@ -70,12 +70,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       rows: 3,
       helperText: 'Use commas to separate the keywords',
       textArea: true,
-    },
-    {
-      component: Input,
-      name: 'colorcode',
-      type: 'text',
-      placeholder: 'Select color',
     },
     { component: ColorPicker, colorCode: colorcode, handleChange: getColorCode },
   ];

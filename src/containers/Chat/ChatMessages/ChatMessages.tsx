@@ -125,35 +125,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
-    },
-    update: (cache, { data }) => {
-      const allConversations: any = client.readQuery({
-        query: SEARCH_QUERY,
-        variables: queryVariables,
-      });
-
-      const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-      if (data.updateMessageTags.messageTags) {
-        const addedTags = data.updateMessageTags.messageTags.map((tags: any) => tags.tag);
-        messagesCopy.search[conversationIndex].messages = messagesCopy.search[
-          conversationIndex
-        ].messages.map((message: any) => {
-          if (message.id === editTagsMessageId) {
-            message.tags = message.tags.filter((tag: any) => !unselectedTags.includes(tag.id));
-            message.tags = [...message.tags, ...addedTags];
-          }
-          return message;
-        });
-
-        cache.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: messagesCopy,
-        });
-      }
     },
   });
 

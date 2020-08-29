@@ -13,8 +13,7 @@ export interface Props {
 export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
   const [displayPicker, setDisplayPicker] = useState(false);
   let colorCode = props.colorCode ? props.colorCode : '#7bdcb5';
-
-  console.log('Props', props);
+  props.field.value = colorCode;
 
   const handleChangeComplete = (color: any, event: any) => {
     colorCode = color.hex;
@@ -27,14 +26,16 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
 
   return (
     <div className={styles.ColorPicker} data-testid="ColorPicker">
-      {/* <Input
-        type="text"
-        placeholder="Select color"
-        field={props.field}
-        form={props.form}
-        label="st"
-        rows={1}
-      ></Input> */}
+      <div className={styles.ColorInput}>
+        <Input
+          type="text"
+          placeholder="Select color"
+          field={props.field}
+          form={props.form}
+          label=""
+          rows={0}
+        ></Input>
+      </div>
       <div
         className={styles.ChooseColor}
         style={{
@@ -42,7 +43,13 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
         }}
         onClick={handleClick}
       ></div>
-      {displayPicker ? <TwitterPicker onChangeComplete={handleChangeComplete} /> : null}
+      {displayPicker ? (
+        <TwitterPicker
+          className={styles.PickerPanel}
+          triangle={'top-right'}
+          onChangeComplete={handleChangeComplete}
+        />
+      ) : null}
     </div>
   );
 };
