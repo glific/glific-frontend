@@ -22,7 +22,6 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
 import { Automation } from './containers/Automation/Automation';
-import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
 import { Collection } from './containers/Collection/Collection';

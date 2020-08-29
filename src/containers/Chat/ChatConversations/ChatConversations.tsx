@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
