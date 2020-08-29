@@ -42,3 +42,7 @@
 .Visibility {
   color: #93a29b;
 }
+
+.OutlineInput :global(.public-DraftEditor-content) {
+  padding-bottom: 81px;
+}
