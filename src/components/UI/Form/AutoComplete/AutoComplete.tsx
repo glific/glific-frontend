@@ -65,6 +65,12 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               />
             ))
           }
+          renderOption={(option, { selected }) => (
+            <React.Fragment>
+              {multiple ? <Checkbox icon={icon} checked={selected} /> : ''}
+              {option[optionLabel]}
+            </React.Fragment>
+          )}
           renderInput={(params) => (
             <TextField
               {...params}
