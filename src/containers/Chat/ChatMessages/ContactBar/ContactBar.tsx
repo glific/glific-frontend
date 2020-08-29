@@ -162,7 +162,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const sessionTimer = (
-    <div className={styles.SessionTimer}>
+    <div className={styles.SessionTimer} data-testid="sessionTimer">
       <span>Session Timer</span>
       <Timer time={props.lastMessageTime} />
     </div>

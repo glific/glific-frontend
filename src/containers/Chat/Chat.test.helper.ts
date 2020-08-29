@@ -89,7 +89,7 @@ const messageReceivedSubscription = {
           phone: '917834811114',
         },
         sender: {
-          id: '3',
+          id: '2',
           phone: '919090709009',
         },
         tags: [],
@@ -155,7 +155,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
                 id: '1',
               },
               sender: {
-                id: '3',
+                id: '2',
               },
               tags: [
                 {

@@ -21,7 +21,7 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  contactId: number;
+  contactId: number | string;
 }
 
 interface ConversationMessage {

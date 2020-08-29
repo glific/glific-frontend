@@ -10,6 +10,7 @@ const mocks = [contactGroupsQuery];
 const defaultProps = {
   contactName: 'Jane Doe',
   contactId: '2',
+  lastMessageTime: new Date(),
 };
 
 const component = (
@@ -27,4 +28,10 @@ test('it should render the name correctly', async () => {
 
   await wait();
   expect(getByText('Default Group, Staff Group')).toBeInTheDocument();
+});
+
+test('it should have a session timer', async () => {
+  const { getByText } = render(component);
+  await wait();
+  expect(getByText('24')).toBeInTheDocument();
 });

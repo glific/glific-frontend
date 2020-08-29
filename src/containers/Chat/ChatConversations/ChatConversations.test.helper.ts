@@ -30,7 +30,7 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
                   id: '2',
                 },
                 sender: {
-                  id: '1',
+                  id: '6',
                 },
                 tags: [
                   {
@@ -65,10 +65,10 @@ export const chatConversationsMocks = [
               body: 'Hey there whats up?',
               insertedAt: '2020-06-25T13:36:43Z',
               receiver: {
-                id: '2',
+                id: '1',
               },
               sender: {
-                id: '1',
+                id: '2',
               },
               tags: [
                 {

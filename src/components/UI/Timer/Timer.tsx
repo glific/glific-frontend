@@ -22,5 +22,9 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     hours = '0' + hours.toString();
   }
 
-  return <div className={timerStyle}>{hours}</div>;
+  return (
+    <div className={timerStyle} data-testid="timerCount">
+      {hours}
+    </div>
+  );
 };

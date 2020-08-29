@@ -26,12 +26,17 @@ const mocks = [
 ];
 
 const insertedAt = '2020-06-19T18:44:02Z';
+const senderInsertedAt = '2020-06-19T18:44:02Z';
 const defaultProps = {
   contactId: 1,
   contactName: 'Jane Doe',
   selected: true,
   index: 0,
   onClick: mockCallback,
+  senderLastMessage: {
+    body: 'Hey!',
+    senderInsertedAt,
+  },
   lastMessage: {
     body: 'Hello there!',
     insertedAt,
