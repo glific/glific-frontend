@@ -4,6 +4,7 @@ import {
 } from '../../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
+import { ADD_MESSAGE_TAG_SUBSCRIPTION, DELETE_MESSAGE_TAG_SUBSCRIPTION } from '../../graphql/subscriptions/Tag';
 import { contactGroupsQuery } from './ChatMessages/ChatMessages.test.helper';
 
 const queryVariables = {
@@ -126,6 +127,54 @@ const messageSendSubscription = {
   },
 };
 
+const addMessageTagSubscription = {
+  request: {
+    query: ADD_MESSAGE_TAG_SUBSCRIPTION,
+    variables: queryVariables,
+  },
+  result: {
+    data: {
+      createdMessageTag: {
+        message: {
+          flow: 'OUTBOUND',
+          id: '22',
+          receiver: {
+            id: '2',
+          },
+          sender: {
+            id: '1',
+          },
+        },
+        tag: { id: 1, label: 'Greeting' },
+      },
+    },
+  },
+};
+
+const deleteMessageTagSubscription = {
+  request: {
+    query: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+    variables: queryVariables,
+  },
+  result: {
+    data: {
+      deletedMessageTag: {
+        message: {
+          flow: 'OUTBOUND',
+          id: '22',
+          receiver: {
+            id: '2',
+          },
+          sender: {
+            id: '1',
+          },
+        },
+        tag: { id: 1, label: 'Greeting' },
+      },
+    },
+  },
+};
+
 const conversationMessageQuery = (contactId: any, contactName: string, contactNumber: string) => ({
   request: {
     query: SEARCH_QUERY,
@@ -199,6 +248,8 @@ export const CONVERSATION_MOCKS = [
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  addMessageTagSubscription,
+  deleteMessageTagSubscription,
   savedSearchQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),

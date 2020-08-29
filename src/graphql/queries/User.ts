@@ -34,6 +34,9 @@ export const FILTER_USERS = gql`
         id
         label
       }
+      contact {
+        id
+      }
     }
   }
 `;

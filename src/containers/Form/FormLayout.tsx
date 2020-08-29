@@ -263,7 +263,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form}>
+          <Form className={styles.Form} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>
