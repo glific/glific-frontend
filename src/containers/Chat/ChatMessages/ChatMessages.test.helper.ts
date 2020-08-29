@@ -82,6 +82,7 @@ const conversation = {
         id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
@@ -121,6 +122,7 @@ const conversationWithMultipleMessages = {
         id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
