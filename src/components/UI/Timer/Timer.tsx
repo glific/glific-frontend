@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Timer.module.css';
 import moment from 'moment';
 export interface TimerProps {
@@ -6,7 +6,14 @@ export interface TimerProps {
 }
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
-  const currentTime = moment(new Date());
+  const [currentTime, setCurrentTime] = useState(moment(new Date()));
+
+  useEffect(() => {
+    setInterval(() => {
+      setCurrentTime(moment(new Date()));
+    }, 60000);
+  }, []);
+
   var lastMessageTime = moment(props.time);
   var duration = moment.duration(currentTime.diff(lastMessageTime));
   var hours: string | number = Math.floor(duration.asHours());
