@@ -113,6 +113,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemId);
         }
         setFormSubmitted(true);
+        // emit data after save
+        // if (afterSave) {
+        //   afterSave(data);
+        // }
       }
     },
     onError: (error: ApolloError) => {

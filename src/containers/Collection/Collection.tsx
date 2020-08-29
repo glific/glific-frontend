@@ -65,6 +65,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     term,
     includeTags,
     includeGroups,
+    includeUsers,
     dateFrom,
     dateTo,
   };
@@ -85,6 +86,10 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
         case 'includeGroups':
           if (filters.filter.hasOwnProperty('includeGroups'))
             setIncludeGroups(getObject(data.groups, filters.filter['includeGroups']));
+          break;
+        case 'includeUsers':
+          if (filters.filter.hasOwnProperty('includeUsers'))
+            setIncludeUsers(getObject(dataUser.users, filters.filter['includeUsers']));
           break;
         case 'dateRange':
           if (filters.filter.hasOwnProperty('dateRange')) {
@@ -167,6 +172,17 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       },
     },
     {
+      component: AutoComplete,
+      name: 'includeUsers',
+      placeholder: 'Includes users',
+      label: 'Includes users',
+      options: dataUser.users ? dataUser.users : [],
+      optionLabel: 'name',
+      textFieldProps: {
+        variant: 'outlined',
+      },
+    },
+    {
       component: Calendar,
       name: 'dateFrom',
       type: 'date',
@@ -181,26 +197,13 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
-  const UserFields = [
-    {
-      component: AutoComplete,
-      name: 'includeUsers',
-      placeholder: 'Includes users',
-      label: 'Includes users',
-      options: dataUser.users ? dataUser.users : [],
-      optionLabel: 'name',
-      textFieldProps: {
-        variant: 'outlined',
-      },
-    },
-  ];
-
   const setPayload = (payload: any) => {
     if (search) search(payload);
     if (props.searchParam) {
       payload.term = props.searchParam.term;
       payload.includeTags = props.searchParam.includeTags;
       payload.includeGroups = props.searchParam.includeGroups;
+      payload.includeUsers = props.searchParam.includeUsers;
       payload.dateTo = props.searchParam.dateTo;
       payload.dateFrom = props.searchParam.dateFrom;
     }
@@ -213,6 +216,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
         term: payload.term,
         includeTags: payload.includeTags.map((option: any) => option.id),
         includeGroups: payload.includeGroups.map((option: any) => option.id),
+        includeUsers: payload.includeUsers.map((option: any) => option.id),
       },
       contactOpts: {
         offset: 0,
