@@ -37,7 +37,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [groups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
 
   // get contact groups
-  const { data, refetch, loading } = useQuery(GET_CONTACT_GROUPS, {
+  const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
   });

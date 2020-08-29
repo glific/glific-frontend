@@ -22,7 +22,6 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
 import { Automation } from './containers/Automation/Automation';
-import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
 import { Collection } from './containers/Collection/Collection';
@@ -31,6 +30,7 @@ import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
 import { LogoutService, checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
+import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -81,6 +81,8 @@ const App = () => {
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
+
+            <Route path="/settings" exact component={OrganisationSettings} />
 
             <Route path="/logout" exact component={LogoutService} />
 
