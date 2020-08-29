@@ -93,7 +93,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       <div>
         <div className={chatBubble.join(' ')} />
         <div className={styles.Timer}>
-          <Timer time={props.senderLastMessage.insertedAt} />
+          <Timer time={props.senderLastMessage} />
         </div>
       </div>
       <div className={chatInfoClass.join(' ')}>
