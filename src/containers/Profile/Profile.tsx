@@ -39,11 +39,6 @@ const formFields = [
     skipPayload: true,
   },
   {
-    component: Input,
-    name: 'settings',
-    placeholder: 'Settings',
-  },
-  {
     component: Dropdown,
     name: 'status',
     placeholder: 'Status',
@@ -70,16 +65,13 @@ const queries = {
 export const Profile: React.SFC<ProfileProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-
-  const [settings, setSettings] = useState('');
   const [status, setStatus] = useState('');
   const [providerStatus, setProviderStatus] = useState('');
 
-  const states = { name, phone, settings, status, providerStatus };
-  const setStates = ({ name, phone, settings, status, providerStatus }: any) => {
+  const states = { name, phone, status, providerStatus };
+  const setStates = ({ name, phone, status, providerStatus }: any) => {
     setName(name);
     setPhone(phone);
-    setSettings(settings);
     setStatus(status);
     setProviderStatus(providerStatus);
   };
