@@ -271,7 +271,16 @@ export const List: React.SFC<ListProps> = ({
     return listItems.map(({ ...listItem }) => {
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
-      const action = additionalAction ? listItem[additionalAction.parameter] : null;
+      let action: any;
+      if (additionalAction) {
+        // check if we are dealing with nested element
+        const params = additionalAction.parameter.split('.');
+        if (params.length > 1) {
+          action = listItem[params[0]][params[1]];
+        } else {
+          action = listItem[params[0]];
+        }
+      }
       return {
         ...columns(listItem),
         operations: getIcons(listItem.id, label, isReserved, action),
