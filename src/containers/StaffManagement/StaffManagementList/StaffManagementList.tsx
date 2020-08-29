@@ -58,7 +58,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   };
 
   const chatIcon = <ChatIcon></ChatIcon>;
-  const additionalAction = { icon: chatIcon, parameter: 'id', link: '/chat' };
+  const additionalAction = { icon: chatIcon, parameter: 'contact.id', link: '/chat' };
 
   return (
     <div>
