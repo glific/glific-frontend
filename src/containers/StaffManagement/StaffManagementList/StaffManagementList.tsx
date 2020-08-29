@@ -13,8 +13,8 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon />;
 
-  const getColumns = ({ name, phone, groups }: any) => ({
-    name: getName(name),
+  const getColumns = ({ name, phone, groups, roles, contact }: any) => ({
+    name: getName(name, roles),
     phone: getPhone(phone),
     group: getGroups(groups),
   });
@@ -25,8 +25,17 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     deleteItemQuery: DELETE_USER,
   };
 
-  const getName = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
+  const getName = (text: string, roleList: any) => {
+    const roles = roleList.map((role: any) => {
+      return role;
+    });
+    return (
+      <p className={styles.TableText + ' ' + styles.NameText}>
+        {text}
+        <br />
+        <span className={styles.Role}>{roles.join(', ')}</span>
+      </p>
+    );
   };
 
   const getPhone = (text: string) => {
