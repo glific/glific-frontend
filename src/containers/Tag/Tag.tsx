@@ -71,7 +71,12 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       helperText: 'Use commas to separate the keywords',
       textArea: true,
     },
-    { component: ColorPicker, colorCode: colorcode, handleChange: getColorCode },
+    {
+      component: ColorPicker,
+      colorCode: colorcode,
+      helperText: 'Tag color',
+      handleChange: getColorCode,
+    },
   ];
 
   return (

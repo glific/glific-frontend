@@ -3,6 +3,8 @@
   align-items: center;
   width: 100% !important;
   position: relative;
+  height: 70px;
+  margin-left: 10px;
 }
 
 .ChooseColor {
@@ -13,11 +15,19 @@
 
 .ColorInput {
   width: calc(100% - 59px);
+  display: none;
 }
 
 .PickerPanel {
-  right: 10px;
-  position: absolute !important;
-  top: 75px;
+  left: 20px;
   z-index: 1;
+}
+
+.Container {
+  margin-left: 10px;
+  height: 100px;
+}
+
+.HelperText {
+  margin-left: 10px !important;
 }

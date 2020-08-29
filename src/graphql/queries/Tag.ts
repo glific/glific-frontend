@@ -42,6 +42,7 @@ export const FILTER_TAGS = gql`
       description
       keywords
       isReserved
+      colorcode
     }
   }
 `;
