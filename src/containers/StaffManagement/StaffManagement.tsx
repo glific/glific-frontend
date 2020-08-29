@@ -70,7 +70,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Full Name',
+      placeholder: 'Username',
     },
     {
       component: Input,

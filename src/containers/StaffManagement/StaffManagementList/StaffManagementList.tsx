@@ -3,6 +3,7 @@ import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
 import { DELETE_USER } from '../../../graphql/mutations/User';
 import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
 
 export interface StaffManagementProps {}
@@ -12,8 +13,8 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon />;
 
-  const getColumns = ({ name, phone, groups }: any) => ({
-    name: getName(name),
+  const getColumns = ({ name, phone, groups, roles, contact }: any) => ({
+    name: getName(name, roles),
     phone: getPhone(phone),
     group: getGroups(groups),
   });
@@ -24,8 +25,17 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     deleteItemQuery: DELETE_USER,
   };
 
-  const getName = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
+  const getName = (text: string, roleList: any) => {
+    const roles = roleList.map((role: any) => {
+      return role;
+    });
+    return (
+      <p className={styles.TableText + ' ' + styles.NameText}>
+        {text}
+        <br />
+        <span className={styles.Role}>{roles.join(', ')}</span>
+      </p>
+    );
   };
 
   const getPhone = (text: string) => {
@@ -47,6 +57,9 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     columnStyles: columnStyles,
   };
 
+  const chatIcon = <ChatIcon></ChatIcon>;
+  const additionalAction = { icon: chatIcon, parameter: 'contact.id', link: '/chat' };
+
   return (
     <div>
       <List
@@ -60,6 +73,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         {...columnAttributes}
         button={{ show: true, label: '+ Groups' }}
         searchParameter="name"
+        additionalAction={additionalAction}
       />
     </div>
   );
