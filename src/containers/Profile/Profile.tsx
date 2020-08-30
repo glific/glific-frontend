@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormLayout } from '../Form/FormLayout';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import styles from './Profile.module.css';
+
 import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
