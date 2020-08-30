@@ -15,7 +15,7 @@ import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Blo
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useMutation, useLazyQuery, useApolloClient, useQuery, gql } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
