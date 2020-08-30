@@ -17,7 +17,7 @@ export const UserProfile: React.SFC<UserProfileProps> = () => {
 
   return (
     <div className={styles.UserProfile} data-testid="UserProfile">
-      <Profile {...contactParams} />
+      <Profile {...contactParams} redirectionLink={'chat/'} />
     </div>
   );
 };

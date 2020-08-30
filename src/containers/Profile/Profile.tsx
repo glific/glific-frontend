@@ -7,9 +7,7 @@ import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-export interface ProfileProps {
-  match: any;
-}
+
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
 });
@@ -62,7 +60,12 @@ const queries = {
   deleteItemQuery: DELETE_CONTACT,
 };
 
-export const Profile: React.SFC<ProfileProps> = ({ match }) => {
+export interface ProfileProps {
+  match: any;
+  redirectionLink: string;
+}
+
+export const Profile: React.SFC<ProfileProps> = ({ match, redirectionLink }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
@@ -86,7 +89,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
       listItemName="contact"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={`chat/${match.params.id}`}
+      redirectionLink={redirectionLink}
       listItem="contact"
       icon={profileIcon}
     />
