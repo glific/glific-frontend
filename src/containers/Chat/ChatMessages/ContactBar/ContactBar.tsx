@@ -120,7 +120,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <Link to={`/contact-profile/${props.contactId}`} className={styles.Link}>
               <Button className={styles.ListButtonPrimary}>
                 <ProfileIcon className={styles.Icon} />
-                View Contact Profile
+                View contact profile
               </Button>
             </Link>
             <Button
@@ -134,8 +134,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               Add to group
             </Button>
 
-            <br />
-
+            {/* <br />
+            // commenting this as it will be implemented in v0.4
             <Button
               className={styles.ListButtonDanger}
               color="secondary"
@@ -143,7 +143,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             >
               <BlockIcon className={styles.Icon} />
               Block Contact
-            </Button>
+            </Button> */}
           </Paper>
         </Fade>
       )}
