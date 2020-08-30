@@ -82,6 +82,11 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
     },
   ];
 
+  let type: any;
+  if (profileType === 'User') {
+    type = 'UserProfile';
+  }
+
   return (
     <FormLayout
       {...queries}
@@ -95,6 +100,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
       redirectionLink={redirectionLink}
       listItem="contact"
       icon={profileIcon}
+      type={type}
     />
   );
 };
