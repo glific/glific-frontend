@@ -34,7 +34,7 @@ import { Profile } from './containers/Profile/Profile';
 import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
