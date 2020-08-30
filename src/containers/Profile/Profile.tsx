@@ -8,10 +8,6 @@ import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
-const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required.'),
-});
-
 const dialogMessage = "You won't be able to send the messages to this contact.";
 
 const getOptions = (options: any) => {
@@ -21,35 +17,6 @@ const getOptions = (options: any) => {
 const statusOptions = getOptions(['VALID', 'INVALID', 'PROCESSING', 'FAILED']);
 
 const providerStatusOptions = getOptions(['HSM', 'NONE', 'SESSION', 'SESSION_AND_HSM']);
-
-const formFields = [
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'Name',
-  },
-  {
-    component: Input,
-    name: 'phone',
-    placeholder: 'Phone Number',
-    disabled: true,
-    skipPayload: true,
-  },
-  {
-    component: Dropdown,
-    name: 'status',
-    placeholder: 'Status',
-    options: statusOptions,
-  },
-
-  {
-    component: Dropdown,
-    name: 'providerStatus',
-    placeholder: 'Provider status',
-    options: providerStatusOptions,
-  },
-];
 
 const profileIcon = <ProfileIcon />;
 
@@ -62,10 +29,11 @@ const queries = {
 
 export interface ProfileProps {
   match: any;
+  profileType: string;
   redirectionLink: string;
 }
 
-export const Profile: React.SFC<ProfileProps> = ({ match, redirectionLink }) => {
+export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirectionLink }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
@@ -78,6 +46,41 @@ export const Profile: React.SFC<ProfileProps> = ({ match, redirectionLink }) => 
     setStatus(status);
     setProviderStatus(providerStatus);
   };
+
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required.'),
+  });
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Name',
+    },
+    {
+      component: Input,
+      name: 'phone',
+      placeholder: 'Phone Number',
+      disabled: true,
+      skipPayload: true,
+    },
+    {
+      component: Dropdown,
+      name: 'status',
+      placeholder: 'Status',
+      options: statusOptions,
+      disabled: profileType === 'User' ? true : false,
+    },
+
+    {
+      component: Dropdown,
+      name: 'providerStatus',
+      placeholder: 'Provider status',
+      options: providerStatusOptions,
+      disabled: profileType === 'User' ? true : false,
+    },
+  ];
 
   return (
     <FormLayout
