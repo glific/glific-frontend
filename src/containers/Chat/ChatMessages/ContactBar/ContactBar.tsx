@@ -15,7 +15,7 @@ import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Blo
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useMutation, useLazyQuery, useApolloClient, useQuery, gql } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
@@ -120,7 +120,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <Link to={`/contact-profile/${props.contactId}`} className={styles.Link}>
               <Button className={styles.ListButtonPrimary}>
                 <ProfileIcon className={styles.Icon} />
-                View Contact Profile
+                View contact profile
               </Button>
             </Link>
             <Button
@@ -134,8 +134,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               Add to group
             </Button>
 
-            <br />
-
+            {/* <br />
+            // commenting this as it will be implemented in v0.4
             <Button
               className={styles.ListButtonDanger}
               color="secondary"
@@ -143,7 +143,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             >
               <BlockIcon className={styles.Icon} />
               Block Contact
-            </Button>
+            </Button> */}
           </Paper>
         </Fade>
       )}
