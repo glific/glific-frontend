@@ -32,6 +32,7 @@ import { LogoutService, checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
 import { ContactProfile } from './containers/Profile/Contact/ContactProfile';
 import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
+import { UserProfile } from './containers/Profile/User/UserProfile';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
@@ -79,6 +80,7 @@ const App = () => {
             <Route path="/staff-management" exact component={StaffManagementList} />
             <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
             <Route path="/contact-profile/:id" exact component={ContactProfile} />
+            <Route path="/user-profile" exact component={UserProfile} />
 
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />

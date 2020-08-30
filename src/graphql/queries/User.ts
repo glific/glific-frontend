@@ -55,3 +55,19 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+export const GET_CURRENT_USER = gql`
+  query currentUser {
+    currentUser {
+      user {
+        id
+        name
+        phone
+        roles
+        contact {
+          id
+        }
+      }
+    }
+  }
+`;
