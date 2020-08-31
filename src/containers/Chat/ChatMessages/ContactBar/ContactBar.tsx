@@ -13,6 +13,7 @@ import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
+import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
 import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
@@ -21,6 +22,9 @@ import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { setNotification } from '../../../../common/notification';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { GET_AUTOMATIONS } from '../../../../graphql/queries/Automation';
+import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
+import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Automation';
 
 export interface ContactBarProps {
   contactName: string;
@@ -32,10 +36,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [showDialog, setShowDialog] = useState(false);
-
+  const [showGroupDialog, setShowGroupDialog] = useState(false);
+  const [showAutomationDialog, setShowAutomationDialog] = useState(false);
   // get group list
-  const [groups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
+  const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
+
+  // get automation list
+  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS);
 
   // get contact groups
   const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
@@ -48,7 +55,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     onCompleted: () => refetch(),
   });
 
-  let options = [];
+  const [addAutomation] = useMutation(ADD_AUTOMATION_TO_CONTACT, {
+    onCompleted: (data) => {
+      setShowAutomationDialog(false);
+      setNotification(client, 'Automation started successfully');
+    },
+  });
+
+  let groupOptions = [];
+  let automationOptions = [];
   let initialSelectedGroupIds: Array<any> = [];
   let selectedGroupsName = [];
 
@@ -57,12 +72,16 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
   }
   if (groupsData) {
-    options = groupsData.groups;
+    groupOptions = groupsData.groups;
+  }
+
+  if (automationsData) {
+    automationOptions = automationsData.flows;
   }
 
   let dialogBox = null;
 
-  const handleDialogOk = (selectedGroupIds: any) => {
+  const handleGroupDialogOk = (selectedGroupIds: any) => {
     const finalSelectedGroups = selectedGroupIds.filter(
       (groupId: any) => !initialSelectedGroupIds.includes(groupId)
     );
@@ -88,22 +107,48 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       setNotification(client, 'Removed from group succesfully');
     }
 
-    setShowDialog(false);
+    setShowGroupDialog(false);
   };
 
-  const handleDialogCancel = () => {
-    setShowDialog(false);
+  const handleGroupDialogCancel = () => {
+    setShowGroupDialog(false);
   };
 
-  if (showDialog) {
+  if (showGroupDialog) {
     dialogBox = (
       <SearchDialogBox
         selectedOptions={initialSelectedGroupIds}
         title="Add contact to group"
-        handleOk={handleDialogOk}
-        handleCancel={handleDialogCancel}
-        options={options}
+        handleOk={handleGroupDialogOk}
+        handleCancel={handleGroupDialogCancel}
+        options={groupOptions}
       ></SearchDialogBox>
+    );
+  }
+
+  const handleAutomationSubmit = (automationId: any) => {
+    addAutomation({
+      variables: {
+        flowId: automationId,
+        contactId: props.contactId,
+      },
+    });
+  };
+
+  const closeAutomationDialogBox = () => {
+    setShowAutomationDialog(false);
+  };
+
+  if (showAutomationDialog) {
+    dialogBox = (
+      <DropdownDialog
+        title="Select automation flow"
+        handleOk={handleAutomationSubmit}
+        handleCancel={closeAutomationDialogBox}
+        options={automationOptions}
+        placeholder="Select flow"
+        description="The contact will be responded as per the messages planned in the automation."
+      />
     );
   }
   const popper = (
@@ -126,8 +171,18 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
-                groups();
-                setShowDialog(true);
+                getAutomations();
+                setShowAutomationDialog(true);
+              }}
+            >
+              <AutomationIcon className={styles.Icon} />
+              Start automation flow
+            </Button>
+            <Button
+              className={styles.ListButtonPrimary}
+              onClick={() => {
+                getGroups();
+                setShowGroupDialog(true);
               }}
             >
               <AddContactIcon className={styles.Icon} />
