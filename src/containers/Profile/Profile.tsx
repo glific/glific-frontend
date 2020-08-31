@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { FormLayout } from '../Form/FormLayout';
+import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
-import { Input } from '../../components/UI/Form/Input/Input';
 
-import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
-import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { CONTACT_STATUS, PROVIDER_STATUS } from '../../common/constants';
+import { FormLayout } from '../Form/FormLayout';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Input } from '../../components/UI/Form/Input/Input';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { GET_CONTACT } from '../../graphql/queries/Contact';
+import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
+import { GET_CURRENT_USER } from '../../graphql/queries/User';
 
 const dialogMessage = "You won't be able to send the messages to this contact.";
 
@@ -21,7 +24,7 @@ const queries = {
 };
 
 export interface ProfileProps {
-  match: any;
+  match?: any;
   profileType: string;
   redirectionLink: string;
 }
@@ -31,6 +34,20 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [providerStatus, setProviderStatus] = useState('');
+
+  const { data, loading } = useQuery(GET_CURRENT_USER);
+  if (loading) return <Loading />;
+
+  const loggedInUserContactId = data.currentUser.user.contact.id;
+
+  let currentContactId;
+  if (!match) {
+    // let's manually set the contact id in the match object in case of user profile
+    match = { params: { id: loggedInUserContactId } };
+    currentContactId = loggedInUserContactId;
+  } else {
+    currentContactId = match.params.id;
+  }
 
   const states = { name, phone, status, providerStatus };
   const setStates = ({ name, phone, status, providerStatus }: any) => {
@@ -78,7 +95,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
   ];
 
   let type: any;
-  if (profileType === 'User') {
+  if (profileType === 'User' || loggedInUserContactId === currentContactId) {
     type = 'UserProfile';
   }
 
