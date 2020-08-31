@@ -6,7 +6,7 @@ export const GET_TAGS = gql`
       id
       label
       description
-      colorcode
+      colorCode
     }
   }
 `;
@@ -19,7 +19,7 @@ export const GET_TAG = gql`
         label
         description
         keywords
-        colorcode
+        colorCode
         language {
           id
         }
@@ -42,7 +42,7 @@ export const FILTER_TAGS = gql`
       description
       keywords
       isReserved
-      colorcode
+      colorCode
     }
   }
 `;

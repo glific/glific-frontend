@@ -8,16 +8,16 @@ import { List } from '../../List/List';
 
 export interface TagListProps {}
 
-const getColumns = ({ label, description, keywords, colorcode }: any) => ({
-  label: getLabel(label, colorcode),
+const getColumns = ({ label, description, keywords, colorCode }: any) => ({
+  label: getLabel(label, colorCode),
   description: getDescription(description),
   keywords: getKeywords(keywords),
 });
 
-const getLabel = (label: string, colorcode: string) => (
+const getLabel = (label: string, colorCode: string) => (
   <div className={styles.LabelContainer}>
-    <FilledTagIcon className={styles.FilledTagIcon} fill={colorcode} style={{ fill: colorcode }} />
-    <p className={styles.LabelText} style={{ color: colorcode }}>
+    <FilledTagIcon className={styles.FilledTagIcon} fill={colorCode} style={{ fill: colorCode }} />
+    <p className={styles.LabelText} style={{ color: colorCode }}>
       {label}
     </p>
   </div>

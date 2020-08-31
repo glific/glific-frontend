@@ -50,7 +50,7 @@ export const conversationQuery = {
                 {
                   id: '2',
                   label: 'Important',
-                  colorcode: '#00d084',
+                  colorCode: '#00d084',
                 },
               ],
             },
@@ -216,7 +216,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
                 {
                   id: '1',
                   label: 'Unread',
-                  colorcode: '#00d084',
+                  colorCode: '#00d084',
                 },
               ],
             },

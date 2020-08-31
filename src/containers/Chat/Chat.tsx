@@ -231,7 +231,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   }
 
   let chatInterface: any;
-  if (data.search.length === 0) {
+  if (data && data.search.length === 0) {
     chatInterface = (
       <Typography variant="h5" className={styles.NoConversations}>
         There are no chat conversations to display.

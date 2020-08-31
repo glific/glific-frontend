@@ -167,7 +167,7 @@ export const LIST_ITEM_MOCKS = [
             language: {
               id: 1,
             },
-            colorcode: '#00d084',
+            colorCode: '#00d084',
           },
         },
       },

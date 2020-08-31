@@ -37,7 +37,7 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
                   {
                     id: '8',
                     label: 'Not working',
-                    colorcode: '#00d084',
+                    colorCode: '#00d084',
                   },
                 ],
               },
@@ -78,7 +78,7 @@ export const chatConversationsMocks = [
                 {
                   id: '1',
                   label: 'important',
-                  colorcode: '#00d084',
+                  colorCode: '#00d084',
                 },
               ],
             },

@@ -22,7 +22,7 @@ export const SEARCH_QUERY = gql`
         tags {
           id
           label
-          colorcode
+          colorCode
         }
       }
     }

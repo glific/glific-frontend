@@ -99,17 +99,17 @@ const conversation = {
             {
               id: '1',
               label: 'important',
-              colorcode: '#00d084',
+              colorCode: '#00d084',
             },
             {
               id: '5',
               label: 'Greeting',
-              colorcode: '#00d084',
+              colorCode: '#00d084',
             },
             {
               id: '15',
               label: 'Help',
-              colorcode: '#00d084',
+              colorCode: '#00d084',
             },
           ],
         },
@@ -210,7 +210,7 @@ const mocks = [
                   {
                     id: '1',
                     label: 'important',
-                    colorcode: '#00d084',
+                    colorCode: '#00d084',
                   },
                 ],
               },

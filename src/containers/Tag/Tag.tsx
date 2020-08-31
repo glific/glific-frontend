@@ -33,14 +33,14 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [colorcode, setColorcode] = useState('#00d084');
+  const [colorCode, setColorcode] = useState('#00d084');
 
-  const states = { label, description, keywords, colorcode };
-  const setStates = ({ label, description, keywords, colorcode }: any) => {
+  const states = { label, description, keywords, colorCode };
+  const setStates = ({ label, description, keywords, colorCode }: any) => {
     setLabel(label);
     setDescription(description);
     setKeywords(keywords);
-    setColorcode(colorcode);
+    setColorcode(colorCode);
   };
 
   const getColorCode = (code: string) => {
@@ -73,7 +73,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     },
     {
       component: ColorPicker,
-      colorCode: colorcode,
+      colorCode: colorCode,
       helperText: 'Tag color',
       handleChange: getColorCode,
     },
