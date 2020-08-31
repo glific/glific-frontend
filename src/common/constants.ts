@@ -8,3 +8,20 @@ export const REACT_APP_GLIFIC_AUTHENTICATION_API =
 export const USER_SESSION = process.env.REACT_APP_GLIFIC_API + '/v1/session';
 export const RESET_PASSWORD = process.env.REACT_APP_GLIFIC_API + '/v1/registration/reset-password';
 export const RENEW_TOKEN = USER_SESSION + '/renew';
+
+// const enums
+// provider status against the contact
+export const PROVIDER_STATUS = [
+  { id: 'NONE', label: 'Cannot send messages' },
+  { id: 'HSM', label: 'Can send template messages' },
+  { id: 'SESSION', label: 'Can send speed sends' },
+  { id: 'SESSION_AND_HSM', label: 'Can send template messages and speed sends' },
+];
+
+// status against the contact
+export const CONTACT_STATUS = [
+  { id: 'VALID', label: 'Valid contact' },
+  { id: 'INVALID', label: 'Invalid contact' },
+  { id: 'PROCESSING', label: 'Processing' },
+  { id: 'FAILED', label: 'Failed' },
+];

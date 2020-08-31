@@ -120,6 +120,54 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   };
 
+  const restoreSearch = () => {
+    let args = {
+      messageOpts: {
+        offset: 0,
+        limit: 10,
+      },
+      filter: {
+        term: props.searchParam.term,
+        includeTags: props.searchParam.includeTags
+          ? props.searchParam.includeTags.map((option: any) => option.id)
+          : [],
+        includeGroups: props.searchParam.includeGroups
+          ? props.searchParam.includeGroups.map((option: any) => option.id)
+          : [],
+        includeUsers: props.searchParam.includeUsers
+          ? props.searchParam.includeUsers.map((option: any) => option.id)
+          : [],
+      },
+      contactOpts: {
+        offset: 0,
+        limit: 20,
+      },
+    };
+
+    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
+      let dateRange = {
+        dateRange: {
+          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
+          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+        },
+      };
+      args.filter = Object.assign(args.filter, dateRange);
+    }
+
+    setStates({
+      label: props.searchParam.label,
+      shortcode: props.searchParam.shortcode,
+      args: JSON.stringify(args),
+    });
+  };
+
+  useEffect(() => {
+    // Chat collection:restore collection search
+    if (props.searchParam && Object.keys(props.searchParam).length !== 0) {
+      restoreSearch();
+    }
+  }, [props.searchParam]);
+
   const { data: dataT } = useQuery(GET_TAGS);
   const { data } = useQuery(GET_GROUPS);
   const { data: dataUser } = useQuery(GET_USERS);
@@ -199,57 +247,9 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
-  const restoreSearch = () => {
-    let args = {
-      messageOpts: {
-        offset: 0,
-        limit: 10,
-      },
-      filter: {
-        term: props.searchParam.term,
-        includeTags: props.searchParam.includeTags
-          ? props.searchParam.includeTags.map((option: any) => option.id)
-          : [],
-        includeGroups: props.searchParam.includeGroups
-          ? props.searchParam.includeGroups.map((option: any) => option.id)
-          : [],
-        includeUsers: props.searchParam.includeUsers
-          ? props.searchParam.includeUsers.map((option: any) => option.id)
-          : [],
-      },
-      contactOpts: {
-        offset: 0,
-        limit: 20,
-      },
-    };
-
-    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
-      let dateRange = {
-        dateRange: {
-          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
-          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
-        },
-      };
-      args.filter = Object.assign(args.filter, dateRange);
-    }
-
-    setStates({
-      label: props.searchParam.label,
-      shortcode: props.searchParam.shortcode,
-      args: JSON.stringify(args),
-    });
-  };
-
-  if (
-    (props.searchParam && Object.keys(props.searchParam).length !== 0 && !term) ||
-    (term && term !== props.searchParam.term && !match)
-  ) {
-    restoreSearch();
-  }
-
   const setPayload = (payload: any) => {
     if (search) search(payload);
-    if (props.searchParam.term) {
+    if (props.searchParam) {
       // payload.term = props.searchParam.term;
       // payload.includeTags = props.searchParam.includeTags;
       // payload.includeGroups = props.searchParam.includeGroups;

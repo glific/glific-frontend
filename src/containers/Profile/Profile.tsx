@@ -1,57 +1,18 @@
 import React, { useState } from 'react';
-import { FormLayout } from '../Form/FormLayout';
+import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
-import { Input } from '../../components/UI/Form/Input/Input';
-import styles from './Profile.module.css';
-import { GET_CONTACT } from '../../graphql/queries/Contact';
+
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
-import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
+import { CONTACT_STATUS, PROVIDER_STATUS } from '../../common/constants';
+import { FormLayout } from '../Form/FormLayout';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-export interface ProfileProps {
-  match: any;
-}
-const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required.'),
-});
+import { Input } from '../../components/UI/Form/Input/Input';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { GET_CONTACT } from '../../graphql/queries/Contact';
+import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
+import { GET_CURRENT_USER } from '../../graphql/queries/User';
 
 const dialogMessage = "You won't be able to send the messages to this contact.";
-
-const getOptions = (options: any) => {
-  return options.map((option: any) => ({ id: option, label: option }));
-};
-
-const statusOptions = getOptions(['VALID', 'INVALID', 'PROCESSING', 'FAILED']);
-
-const providerStatusOptions = getOptions(['HSM', 'NONE', 'SESSION', 'SESSION_AND_HSM']);
-
-const formFields = [
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'Name',
-  },
-  {
-    component: Input,
-    name: 'phone',
-    placeholder: 'Phone Number',
-    disabled: true,
-    skipPayload: true,
-  },
-  {
-    component: Dropdown,
-    name: 'status',
-    placeholder: 'Status',
-    options: statusOptions,
-  },
-
-  {
-    component: Dropdown,
-    name: 'providerStatus',
-    placeholder: 'Provider status',
-    options: providerStatusOptions,
-  },
-];
 
 const profileIcon = <ProfileIcon />;
 
@@ -62,11 +23,31 @@ const queries = {
   deleteItemQuery: DELETE_CONTACT,
 };
 
-export const Profile: React.SFC<ProfileProps> = ({ match }) => {
+export interface ProfileProps {
+  match?: any;
+  profileType: string;
+  redirectionLink: string;
+}
+
+export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirectionLink }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [providerStatus, setProviderStatus] = useState('');
+
+  const { data, loading } = useQuery(GET_CURRENT_USER);
+  if (loading) return <Loading />;
+
+  const loggedInUserContactId = data.currentUser.user.contact.id;
+
+  let currentContactId;
+  if (!match) {
+    // let's manually set the contact id in the match object in case of user profile
+    match = { params: { id: loggedInUserContactId } };
+    currentContactId = loggedInUserContactId;
+  } else {
+    currentContactId = match.params.id;
+  }
 
   const states = { name, phone, status, providerStatus };
   const setStates = ({ name, phone, status, providerStatus }: any) => {
@@ -75,6 +56,48 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
     setStatus(status);
     setProviderStatus(providerStatus);
   };
+
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required.'),
+  });
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Name',
+    },
+    {
+      component: Input,
+      name: 'phone',
+      placeholder: 'Phone Number',
+      disabled: true,
+      skipPayload: true,
+    },
+    {
+      component: Dropdown,
+      name: 'status',
+      placeholder: 'Status',
+      options: CONTACT_STATUS,
+      disabled: true,
+      skipPayload: true,
+    },
+
+    {
+      component: Dropdown,
+      name: 'providerStatus',
+      placeholder: 'Provider status',
+      options: PROVIDER_STATUS,
+      disabled: true,
+      skipPayload: true,
+    },
+  ];
+
+  let type: any;
+  if (profileType === 'User' || loggedInUserContactId === currentContactId) {
+    type = 'UserProfile';
+  }
 
   return (
     <FormLayout
@@ -86,9 +109,10 @@ export const Profile: React.SFC<ProfileProps> = ({ match }) => {
       listItemName="contact"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={`chat/${match.params.id}`}
+      redirectionLink={redirectionLink}
       listItem="contact"
       icon={profileIcon}
+      type={type}
     />
   );
 };

@@ -141,6 +141,7 @@
   display: flex;
   align-content: center;
   flex-direction: column;
+  padding: 0px 8px;
 }
 
 .CenterButton {

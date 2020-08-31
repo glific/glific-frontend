@@ -1,5 +1,5 @@
 .PhoneNumber {
-  width: 330px !important;
+  width: 334px !important;
   padding-top: 18.5px !important;
   padding-bottom: 18.5px !important;
   padding-left: 48px !important;
@@ -21,8 +21,4 @@
   margin-top: 2px !important;
   margin-left: 14px !important;
   line-height: 1.2 !important;
-}
-
-.Container {
-  margin-left: 10px;
 }
