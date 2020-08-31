@@ -7,16 +7,9 @@ import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { CONTACT_STATUS, PROVIDER_STATUS } from '../../common/constants';
 
 const dialogMessage = "You won't be able to send the messages to this contact.";
-
-const getOptions = (options: any) => {
-  return options.map((option: any) => ({ id: option, label: option }));
-};
-
-const statusOptions = getOptions(['VALID', 'INVALID', 'PROCESSING', 'FAILED']);
-
-const providerStatusOptions = getOptions(['HSM', 'NONE', 'SESSION', 'SESSION_AND_HSM']);
 
 const profileIcon = <ProfileIcon />;
 
@@ -69,16 +62,18 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
       component: Dropdown,
       name: 'status',
       placeholder: 'Status',
-      options: statusOptions,
-      disabled: profileType === 'User' ? true : false,
+      options: CONTACT_STATUS,
+      disabled: true,
+      skipPayload: true,
     },
 
     {
       component: Dropdown,
       name: 'providerStatus',
       placeholder: 'Provider status',
-      options: providerStatusOptions,
-      disabled: profileType === 'User' ? true : false,
+      options: PROVIDER_STATUS,
+      disabled: true,
+      skipPayload: true,
     },
   ];
 
