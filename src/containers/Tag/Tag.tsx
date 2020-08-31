@@ -33,7 +33,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [colorCode, setColorcode] = useState('#00d084');
+  const [colorCode, setColorcode] = useState('#0C976D');
 
   const states = { label, description, keywords, colorCode };
   const setStates = ({ label, description, keywords, colorCode }: any) => {

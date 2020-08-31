@@ -55,14 +55,16 @@ const filter = {
           label: 'Unread',
           description: 'Unread',
           keywords: ['Hi'],
-          isReserved: false
+          isReserved: false,
+          colorCode: null,
         },
         {
           id: '88',
           label: 'Not replied',
           description: 'Not replied',
           keywords: null,
-          isReserved: true
+          isReserved: true,
+          colorCode: null,
         },
       ],
     },
@@ -91,12 +93,12 @@ const search = {
           label: 'Unread',
           description: 'Unread',
           keywords: ['Hi'],
-          isReserved: false
+          isReserved: false,
         },
       ],
     },
   },
-}
+};
 
 const searchCount = {
   request: {

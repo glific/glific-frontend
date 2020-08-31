@@ -1,14 +1,18 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import ColorPicker from './ColorPicker';
+import { shallow } from 'enzyme';
+import { ColorPicker } from './ColorPicker';
 
 describe('<ColorPicker />', () => {
-  test('it should mount', () => {
-    render(<ColorPicker />);
-    
-    const colorPicker = screen.getByTestId('ColorPicker');
+  const props = {
+    colorCode: '#0C976D',
+    helperText: 'Tag color',
+    field: { name: 'example', value: null },
+  };
 
-    expect(colorPicker).toBeInTheDocument();
+  const wrapper = shallow(<ColorPicker {...props} />);
+
+  it('renders <ColorPicker /> component', () => {
+    expect(wrapper).toBeTruthy();
   });
 });

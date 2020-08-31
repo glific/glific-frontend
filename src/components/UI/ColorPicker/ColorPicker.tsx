@@ -14,7 +14,7 @@ export interface Props {
 
 export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
   const [displayPicker, setDisplayPicker] = useState(false);
-  let colorCode = props.colorCode ? props.colorCode : '#7bdcb5';
+  let colorCode = props.colorCode ? props.colorCode : '#0C976D';
   props.field.value = colorCode;
 
   const handleChangeComplete = (color: any, event: any) => {

@@ -4,6 +4,7 @@ import {
 } from '../../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
+import { searchQueryEmptyMock as searchEmptyQuery } from './ChatConversations/ChatConversations.test.helper';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
@@ -68,6 +69,7 @@ export const conversationQuery = {
                 {
                   id: '1',
                   label: 'Unread',
+                  colorCode: '#00d084',
                 },
               ],
             },
@@ -252,6 +254,7 @@ export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
   searchQuery,
+  searchEmptyQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,

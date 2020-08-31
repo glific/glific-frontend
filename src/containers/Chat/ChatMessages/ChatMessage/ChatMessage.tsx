@@ -129,7 +129,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           style={{ color: tag.colorCode }}
           data-testid="tags"
         >
-          <TagIcon className={styles.TagIcon} fill={tag.colorCode} />
+          <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
           {tag.label}
           <CloseIcon
             className={styles.CloseIcon}

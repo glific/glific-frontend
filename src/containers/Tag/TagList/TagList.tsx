@@ -16,7 +16,7 @@ const getColumns = ({ label, description, keywords, colorCode }: any) => ({
 
 const getLabel = (label: string, colorCode: string) => (
   <div className={styles.LabelContainer}>
-    <FilledTagIcon className={styles.FilledTagIcon} fill={colorCode} style={{ fill: colorCode }} />
+    <FilledTagIcon className={styles.FilledTagIcon} stroke={colorCode ? colorCode : '#0C976D'} />
     <p className={styles.LabelText} style={{ color: colorCode }}>
       {label}
     </p>
