@@ -43,7 +43,8 @@ export interface ListProps {
   additionalAction?: {
     icon: any;
     parameter: string;
-    link: string;
+    link?: string;
+    dialog?: any;
   } | null;
   deleteModifier?: {
     icon: string;
@@ -244,12 +245,22 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction ? (
+          {additionalAction && additionalAction.link ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
                 {additionalAction.icon}
               </IconButton>
             </Link>
+          ) : null}
+
+          {additionalAction && additionalAction.dialog ? (
+            <IconButton
+              color="default"
+              className={styles.additonalButton}
+              onClick={() => additionalAction.dialog(additionalActionParameter)}
+            >
+              {additionalAction.icon}
+            </IconButton>
           ) : null}
 
           {editButton}
