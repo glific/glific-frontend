@@ -11,7 +11,7 @@ export interface DropdownProps {
   label: string;
   form?: any;
   placeholder: string;
-  helperText: string;
+  helperText?: string;
   disabled?: boolean;
 }
 
