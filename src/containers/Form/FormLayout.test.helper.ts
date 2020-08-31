@@ -122,6 +122,7 @@ export const LIST_ITEM_MOCKS = [
             keywords: ['Hi'],
             description: 'important task',
             isReserved: false,
+            colorCode: '#0C976D',
           },
           {
             id: '94',
@@ -129,6 +130,7 @@ export const LIST_ITEM_MOCKS = [
             keywords: ['Hi'],
             description: 'complete this task',
             isReserved: false,
+            colorCode: '#0C976D',
           },
         ],
       },

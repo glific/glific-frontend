@@ -55,6 +55,7 @@ const updateMessageTagsQuery = {
             tag: {
               id: '87',
               label: 'Good message',
+              colorCode: '#0C976D',
             },
           },
         ],
