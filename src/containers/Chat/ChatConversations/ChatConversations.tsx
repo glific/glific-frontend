@@ -18,7 +18,7 @@ export interface ChatConversationsProps {
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
-  const [searchParam, setSearchParam] = useState({});
+  const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
@@ -28,7 +28,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [dialogType, setDialogboxType] = useState('');
 
   const handleChange = (event: any) => {
-    if (event.target.param) setSearchParam(event.target.param);
+    if (event.target.param) {
+      setSearchParam(event.target.param);
+    }
     setSearchVal(event.target.value);
   };
 
@@ -72,11 +74,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   };
 
   const saveHandler = (data: any) => {
-    setSavedSearchCollection(data.createSavedSearch.savedSearch);
-    handlerSavedSearchCriteria(
-      data.createSavedSearch.savedSearch.args,
-      data.createSavedSearch.savedSearch.id
-    );
+    setSavedSearchCollection(data.savedSearch);
+    handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
   // create collection
@@ -100,6 +99,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           match={match}
           type="search"
           search={search}
+          searchParam={searchParam}
           handleCancel={closeDialogBox}
         ></Collection>
       );

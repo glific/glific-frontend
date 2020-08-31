@@ -24,7 +24,7 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 const chatMessages = (
   <MockedProvider mocks={mocksWithConversation} addTypename={false}>
-    <ChatMessages contactId={2} />
+    <ChatMessages contactId={'2'} />
   </MockedProvider>
 );
 
@@ -96,7 +96,7 @@ test('focus on the latest message', async () => {
 test('chat having multiple messages', async () => {
   const { getByText } = render(
     <MockedProvider mocks={mocksWithMultipleMessages} addTypename={false}>
-      <ChatMessages contactId={2} />
+      <ChatMessages contactId={'2'} />
     </MockedProvider>
   );
   await wait();

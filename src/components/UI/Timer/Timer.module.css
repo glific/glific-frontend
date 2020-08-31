@@ -1,0 +1,22 @@
+.Timer {
+  font-family: 'Space Mono';
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.TimerNormal {
+  composes: Timer;
+  color: #7200a1;
+}
+
+.TimerApproachEnd {
+  composes: Timer;
+  color: #dd1f1f;
+}
+
+.TimerEnd {
+  margin-left: 3px;
+  composes: Timer;
+  color: #93a29b;
+}

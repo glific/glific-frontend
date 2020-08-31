@@ -88,9 +88,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           contactId = subscriptionData.data.receivedMessage.sender.id;
           break;
         case 'TAG_ADDED':
-          tagData = subscriptionData.data.createdMessageTag;
         case 'TAG_DELETED':
-          if (!tagData) {
+          if (action === 'TAG_ADDED') {
+            tagData = subscriptionData.data.createdMessageTag;
+          } else {
             tagData = subscriptionData.data.deletedMessageTag;
           }
 

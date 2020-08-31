@@ -32,6 +32,10 @@ const defaultProps = {
   selected: true,
   index: 0,
   onClick: mockCallback,
+  senderLastMessage: {
+    body: 'Hey!',
+    insertedAt,
+  },
   lastMessage: {
     body: 'Hello there!',
     insertedAt,

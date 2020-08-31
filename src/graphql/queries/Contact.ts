@@ -54,3 +54,23 @@ export const GET_CONTACTS = gql`
     }
   }
 `;
+
+export const GET_CONTACT = gql`
+  query getContact($id: ID!) {
+    contact(id: $id) {
+      contact {
+        id
+        name
+        phone
+        language {
+          id
+          label
+        }
+        status
+        providerStatus
+        settings
+        fields
+      }
+    }
+  }
+`;

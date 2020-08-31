@@ -114,9 +114,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }
         setFormSubmitted(true);
         // emit data after save
-        // if (afterSave) {
-        //   afterSave(data);
-        // }
+        if (afterSave) {
+          afterSave(data.updateSavedSearch);
+        }
       }
     },
     onError: (error: ApolloError) => {
@@ -139,7 +139,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setFormSubmitted(true);
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data.createSavedSearch);
         }
       }
     },

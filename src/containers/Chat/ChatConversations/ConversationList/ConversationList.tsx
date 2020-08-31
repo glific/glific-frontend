@@ -37,7 +37,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
   const filterVariables = () => {
     if (props.savedSearchCriteria) {
-      const variables = JSON.parse(props.savedSearchCriteria);
+      let variables = JSON.parse(props.savedSearchCriteria);
       if (props.searchVal) variables.filter.term = props.searchVal;
       return variables;
     }
@@ -49,6 +49,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         filter.includeTags = params.includeTags.map((obj: any) => obj.id);
       if (params.includeGroups && params.includeGroups.length > 0)
         filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
+      if (params.includeUsers && params.includeUsers.length > 0)
+        filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
           from: moment(params.dateFrom).format('YYYY-MM-DD'),
@@ -120,6 +122,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
           lastMessage={lastMessage}
+          senderLastMessage={conversation.contact.lastMessageAt}
         />
       );
     });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -28,6 +28,7 @@ export interface CollectionProps {
   handleCancel?: any;
   handleSave?: any;
   searchParam?: any;
+  setState?: any;
 }
 
 const validation = {
@@ -77,6 +78,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const setArgs = (args: any) => {
     let filters = JSON.parse(args);
+
     Object.keys(filters.filter).map((key) => {
       switch (key) {
         case 'includeTags':
@@ -197,15 +199,63 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
+  const restoreSearch = () => {
+    let args = {
+      messageOpts: {
+        offset: 0,
+        limit: 10,
+      },
+      filter: {
+        term: props.searchParam.term,
+        includeTags: props.searchParam.includeTags
+          ? props.searchParam.includeTags.map((option: any) => option.id)
+          : [],
+        includeGroups: props.searchParam.includeGroups
+          ? props.searchParam.includeGroups.map((option: any) => option.id)
+          : [],
+        includeUsers: props.searchParam.includeUsers
+          ? props.searchParam.includeUsers.map((option: any) => option.id)
+          : [],
+      },
+      contactOpts: {
+        offset: 0,
+        limit: 20,
+      },
+    };
+
+    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
+      let dateRange = {
+        dateRange: {
+          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
+          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+        },
+      };
+      args.filter = Object.assign(args.filter, dateRange);
+    }
+
+    setStates({
+      label: props.searchParam.label,
+      shortcode: props.searchParam.shortcode,
+      args: JSON.stringify(args),
+    });
+  };
+
+  if (
+    (props.searchParam && Object.keys(props.searchParam).length !== 0 && !term) ||
+    (term && term !== props.searchParam.term && !match)
+  ) {
+    restoreSearch();
+  }
+
   const setPayload = (payload: any) => {
     if (search) search(payload);
-    if (props.searchParam) {
-      payload.term = props.searchParam.term;
-      payload.includeTags = props.searchParam.includeTags;
-      payload.includeGroups = props.searchParam.includeGroups;
-      payload.includeUsers = props.searchParam.includeUsers;
-      payload.dateTo = props.searchParam.dateTo;
-      payload.dateFrom = props.searchParam.dateFrom;
+    if (props.searchParam.term) {
+      // payload.term = props.searchParam.term;
+      // payload.includeTags = props.searchParam.includeTags;
+      // payload.includeGroups = props.searchParam.includeGroups;
+      // payload.includeUsers = props.searchParam.includeUsers;
+      // payload.dateTo = props.searchParam.dateTo;
+      // payload.dateFrom = props.searchParam.dateFrom;
     }
     let args = {
       messageOpts: {
@@ -214,9 +264,13 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       },
       filter: {
         term: payload.term,
-        includeTags: payload.includeTags.map((option: any) => option.id),
-        includeGroups: payload.includeGroups.map((option: any) => option.id),
-        includeUsers: payload.includeUsers.map((option: any) => option.id),
+        includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
+        includeGroups: payload.includeGroups
+          ? payload.includeGroups.map((option: any) => option.id)
+          : [],
+        includeUsers: payload.includeUsers
+          ? payload.includeUsers.map((option: any) => option.id)
+          : [],
       },
       contactOpts: {
         offset: 0,
@@ -233,6 +287,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       };
       args.filter = Object.assign(args.filter, dateRange);
     }
+
     return {
       label: payload.label,
       shortcode: payload.shortcode,

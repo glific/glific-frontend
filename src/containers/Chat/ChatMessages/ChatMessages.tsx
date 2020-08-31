@@ -21,7 +21,7 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  contactId: number;
+  contactId: number | string;
 }
 
 interface ConversationMessage {
@@ -335,6 +335,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             : conversationInfo.contact.phone
         }
         contactId={contactId.toString()}
+        lastMessageTime={conversationInfo.contact.lastMessageAt}
       />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
