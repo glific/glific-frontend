@@ -1,12 +1,21 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import ContactProfile from './ContactProfile';
+import { MockedProvider } from '@apollo/client/testing';
+
+import { ContactProfile } from './ContactProfile';
+import { LOGGED_IN_USER_MOCK } from '../Profile.test.helper';
+
+const mocks = LOGGED_IN_USER_MOCK;
 
 describe('<ContactProfile />', () => {
+  const defaultProps = { match: { params: { id: 1 } } };
   test('it should mount', () => {
-    render(<ContactProfile />);
-    
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ContactProfile {...defaultProps} />
+      </MockedProvider>
+    );
+
     const contactProfile = screen.getByTestId('ContactProfile');
 
     expect(contactProfile).toBeInTheDocument();
