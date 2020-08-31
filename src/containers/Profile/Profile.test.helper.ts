@@ -9,14 +9,12 @@ export const LOGGED_IN_USER_MOCK = [
       data: {
         currentUser: {
           user: {
-            user: {
-              id: "1",
-              name: "John Doe",
-              phone: "+919820198765",
-              roles: [
-                "admin"
-              ]
-            }
+            id: "1",
+            name: "John Doe",
+            phone: "+919820198765",
+            roles: [
+              "admin"
+            ]
           }
         }
       }
