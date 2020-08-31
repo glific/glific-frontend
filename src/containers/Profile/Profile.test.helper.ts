@@ -14,7 +14,10 @@ export const LOGGED_IN_USER_MOCK = [
             phone: "+919820198765",
             roles: [
               "admin"
-            ]
+            ],
+            contact: {
+              id: "1"
+            }
           }
         }
       }
