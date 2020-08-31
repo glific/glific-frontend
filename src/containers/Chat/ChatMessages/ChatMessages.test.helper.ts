@@ -79,9 +79,10 @@ const conversation = {
   search: [
     {
       contact: {
-        id: 2,
+        id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
@@ -121,9 +122,10 @@ const conversationWithMultipleMessages = {
   search: [
     {
       contact: {
-        id: 2,
+        id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
@@ -199,10 +201,10 @@ const mocks = [
                 body: 'Hey there whats up?',
                 insertedAt: '2020-06-25T13:36:43Z',
                 receiver: {
-                  id: '2',
+                  id: '1',
                 },
                 sender: {
-                  id: '1',
+                  id: '2',
                 },
                 tags: [
                   {
@@ -247,7 +249,7 @@ const mocks = [
       variables: {
         input: {
           body: 'Hey There Wow',
-          senderId: 1,
+          senderId: '1',
           receiverId: '2',
           type: 'TEXT',
           flow: 'OUTBOUND',
@@ -282,7 +284,6 @@ const mocks = [
 ];
 
 export const mocksWithConversation = [...mocks, getConversationQuery(conversation)];
-export const mocksWithNoMessages = [...mocks, getConversationQuery(conversationWithNoMessage)];
 export const mocksWithMultipleMessages = [
   ...mocks,
   getConversationQuery(conversationWithMultipleMessages),

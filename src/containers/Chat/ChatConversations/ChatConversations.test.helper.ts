@@ -20,6 +20,7 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
               id: '6',
               name: 'Red Sparrow',
               phone: '919520285543',
+              lastMessageAt: '2020-08-03T07:01:36Z',
             },
             messages: [
               {
@@ -30,7 +31,7 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
                   id: '2',
                 },
                 sender: {
-                  id: '1',
+                  id: '6',
                 },
                 tags: [
                   {
@@ -59,6 +60,8 @@ export const chatConversationsMocks = [
           contact: {
             id: '2',
             name: 'Jane Doe',
+            phone: '919520285543',
+            lastMessageAt: '2020-08-03T07:01:36Z',
           },
           messages: [
             {
@@ -66,10 +69,10 @@ export const chatConversationsMocks = [
               body: 'Hey there whats up?',
               insertedAt: '2020-06-25T13:36:43Z',
               receiver: {
-                id: '2',
+                id: '1',
               },
               sender: {
-                id: '1',
+                id: '2',
               },
               tags: [
                 {
@@ -99,6 +102,7 @@ export const conversations = [
       id: '6',
       name: 'Red Eye',
       phone: '919520225543',
+      lastMessageAt: '2020-08-03T07:01:36Z',
     },
     messages: [
       {
