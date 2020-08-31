@@ -233,11 +233,13 @@ const mocks = [
             id: '87',
             label: 'Good message',
             description: 'Hey There',
+            colorCode: '#0C976D',
           },
           {
             id: '1',
             label: 'important',
             description: 'some description',
+            colorCode: '#0C976D',
           },
         ],
       },
