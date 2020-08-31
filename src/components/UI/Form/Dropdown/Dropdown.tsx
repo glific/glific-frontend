@@ -6,12 +6,12 @@ import styles from './Dropdown.module.css';
 
 export interface DropdownProps {
   type?: any;
-  field: any;
+  field?: any;
   options: any;
   label: string;
-  form: any;
+  form?: any;
   placeholder: string;
-  helperText: string;
+  helperText?: string;
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
@@ -19,13 +19,13 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
     ? props.options.map((option: any) => {
         return (
           <MenuItem value={option.id} key={option.id}>
-            {option.label}
+            {option.label ? option.label : option.name}
           </MenuItem>
         );
       })
     : null;
   return (
-    <div className={styles.Dropdown}>
+    <div className={styles.Dropdown} data-testid="dropdown">
       <FormControl variant="outlined" fullWidth>
         {props.placeholder ? (
           <InputLabel id="simple-select-outlined-label">{props.placeholder}</InputLabel>

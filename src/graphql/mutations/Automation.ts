@@ -51,3 +51,19 @@ export const PUBLISH_AUTOMATION = gql`
     }
   }
 `;
+
+export const ADD_AUTOMATION_TO_GROUP = gql`
+  mutation startGroupFlow($flowId: ID!, $groupId: ID!) {
+    startGroupFlow(flowId: $flowId, groupId: $groupId) {
+      success
+    }
+  }
+`;
+
+export const ADD_AUTOMATION_TO_CONTACT = gql`
+  mutation startContactFlow($flowId: ID!, $contactId: ID!) {
+    startContactFlow(flowId: $flowId, contactId: $contactId) {
+      success
+    }
+  }
+`;
