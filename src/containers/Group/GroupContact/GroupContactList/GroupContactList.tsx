@@ -10,7 +10,7 @@ export interface GroupContactListProps {
   title: string;
 }
 
-const columnNames = ['NAME', 'ALL GROUPS', 'ACTIONS'];
+const columnNames = ['BENEFICIARY', 'ALL GROUPS', 'ACTIONS'];
 
 const getColumns = ({ name, phone, groups }: any) => ({
   label: getName(name, phone),
