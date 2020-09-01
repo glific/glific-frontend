@@ -10,6 +10,7 @@ import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Select
 import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
 
 export interface TagProps {
   match: any;
@@ -35,19 +36,26 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
+  const [colorCode, setColorcode] = useState('#0C976D');
   const [parentId, setParentId] = useState([]);
 
-  const states = { label, description, keywords, parentId };
-  const setStates = ({ label, description, keywords, parentId }: any) => {
+  const states = { label, description, keywords, colorCode, parentId };
+  const setStates = ({ label, description, keywords, colorCode, parentId }: any) => {
+    console.log('parentId', parentId);
     setLabel(label);
     setDescription(description);
     setKeywords(keywords);
-    setParentId(parentId);
+    setColorcode(colorCode);
+    // setParentId(parentId);
   };
 
   const { data } = useQuery(GET_TAGS);
 
   if (!data) return <Loading />;
+
+  const getColorCode = (code: string) => {
+    setColorcode(code);
+  };
 
   const formFields = [
     {
@@ -83,7 +91,13 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
         label: 'Parent tag',
         variant: 'outlined',
       },
+    },
+    {
       multiple: false,
+      component: ColorPicker,
+      colorCode: colorCode,
+      helperText: 'Tag color',
+      handleChange: getColorCode,
     },
   ];
 

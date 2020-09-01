@@ -17,6 +17,7 @@ import {
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Tag';
 import { setErrorMessage } from '../../common/notification';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 
 export interface ChatProps {
   contactId: number;
@@ -26,15 +27,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
 
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const { loading, error, data, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -231,7 +224,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   }
 
   let chatInterface: any;
-  if (data.search.length === 0) {
+  if (data && data.search.length === 0) {
     chatInterface = (
       <Typography variant="h5" className={styles.NoConversations}>
         There are no chat conversations to display.

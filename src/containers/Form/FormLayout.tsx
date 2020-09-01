@@ -13,6 +13,8 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/W
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
 
@@ -43,6 +45,7 @@ export interface FormLayoutProps {
   button?: string;
   type?: string;
   afterSave?: any;
+  afterDelete?: any;
   refetchQueries?: any;
   redirect?: boolean;
 }
@@ -74,16 +77,25 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   button = 'Save',
   type,
   afterSave,
+  afterDelete,
   refetchQueries,
   redirect = true,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
-  const [deleteItem] = useMutation(deleteItemQuery);
+  const [deleteItem] = useMutation(deleteItemQuery, {
+    refetchQueries: [
+      {
+        query: SEARCH_QUERY,
+        variables: SEARCH_QUERY_VARIABLES,
+      },
+    ],
+  });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
+  const [deleted, setDeleted] = useState(false);
   const message = useQuery(NOTIFICATION);
   let toastMessage: {} | null | undefined;
 
@@ -239,6 +251,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
+  if (deleted) {
+    if (afterDelete) {
+      return <Redirect to={afterDelete.link} />;
+    } else {
+      return <Redirect to={redirectionLink} />;
+    }
+  }
+
   if (formCancelled) {
     return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
@@ -330,7 +350,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const handleDeleteItem = () => {
     deleteItem({ variables: { id: itemId } });
     setNotification(client, `${capitalListItemName} deleted successfully`);
-    setFormSubmitted(true);
+
+    setDeleted(true);
   };
   let dialogBox;
 
