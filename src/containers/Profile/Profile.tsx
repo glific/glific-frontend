@@ -27,9 +27,15 @@ export interface ProfileProps {
   match?: any;
   profileType: string;
   redirectionLink: string;
+  afterDelete?: any;
 }
 
-export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirectionLink }) => {
+export const Profile: React.SFC<ProfileProps> = ({
+  match,
+  profileType,
+  redirectionLink,
+  afterDelete,
+}) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
@@ -112,6 +118,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
       redirectionLink={redirectionLink}
       listItem="contact"
       icon={profileIcon}
+      afterDelete={afterDelete}
       type={type}
     />
   );
