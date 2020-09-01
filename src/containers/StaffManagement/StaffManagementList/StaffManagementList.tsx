@@ -9,11 +9,11 @@ import { List } from '../../List/List';
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
+  const columnNames = ['NAME', 'PHONE NO.', 'ASSIGNED TO', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon />;
 
-  const getColumns = ({ name, phone, groups, roles, contact }: any) => ({
+  const getColumns = ({ name, phone, groups, roles }: any) => ({
     name: getName(name, roles),
     phone: getPhone(phone),
     group: getGroups(groups),

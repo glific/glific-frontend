@@ -30,10 +30,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [roles, setRoles] = useState([]);
-  const [groups, setGroups] = useState([]);
 
-  const states = { name, phone, roles, groups };
-  const setStates = ({ name, phone, roles, groups }: any) => {
+  const states = { name, phone, roles };
+  const setStates = ({ name, phone, roles }: any) => {
     setName(name);
     setPhone(phone);
 
@@ -45,16 +44,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       });
       setRoles(defaultRoles);
     }
-    setGroups(groups);
   };
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
 
-  const { loading, data } = useQuery(GET_GROUPS);
+  if (loadingRoles) return <Loading />;
 
-  if (loading || loadingRoles) return <Loading />;
-
-  if (!data.groups || !roleData.roles) {
+  if (!roleData.roles) {
     return null;
   }
 
@@ -90,17 +86,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         variant: 'outlined',
       },
     },
-    {
-      component: AutoComplete,
-      name: 'groups',
-      placeholder: 'Groups',
-      options: data.groups,
-      optionLabel: 'label',
-      textFieldProps: {
-        label: 'Groups',
-        variant: 'outlined',
-      },
-    },
   ];
 
   const FormSchema = Yup.object().shape({
@@ -109,14 +94,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   const setPayload = (payload: any) => {
-    // let's build the groupIds, as backend expects the array of group ids
-    let groupIds = payload.groups.map((group: any) => {
-      return group.id;
-    });
-
-    // remove groups from the payload
-    delete payload['groups'];
-
     // let's rebuild roles, as per backend
     let roleIds = payload.roles.map((role: any) => {
       return role.id;
@@ -128,7 +105,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     // return modified payload
     return {
       ...payload,
-      groupIds: groupIds,
       roles: roleIds,
     };
   };
