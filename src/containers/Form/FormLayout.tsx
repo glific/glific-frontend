@@ -199,7 +199,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           input: payload,
         },
       });
-      message = `${capitalListItemName} added successfully!`;
+      message = `${capitalListItemName} created successfully!`;
     }
     setNotification(client, message);
   };
