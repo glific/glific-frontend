@@ -5,10 +5,10 @@ export const UPDATE_ORGANIZATION = gql`
     updateOrganization(id: $id, input: $input) {
       organization {
         id
+        shortcode
         name
-        displayName
         providerKey
-        providerNumber
+        providerPhone
         outOfOffice {
           enabled
           startTime
@@ -33,8 +33,8 @@ export const CREATE_ORGANIZATION = gql`
     createOrganization(input: $input) {
       organization {
         id
+        shortcode
         name
-        displayName
         contactName
         email
         provider {
@@ -42,7 +42,7 @@ export const CREATE_ORGANIZATION = gql`
           name
         }
         providerKey
-        providerNumber
+        providerPhone
         defaultLanguage {
           id
           label

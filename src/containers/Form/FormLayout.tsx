@@ -13,6 +13,8 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/W
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
+import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
+import { NOTIFICATION } from '../../graphql/queries/Notification';
 
 export interface FormLayoutProps {
   match: any;
@@ -41,6 +43,7 @@ export interface FormLayoutProps {
   button?: string;
   type?: string;
   afterSave?: any;
+  redirect?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -70,6 +73,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   button = 'Save',
   type,
   afterSave,
+  redirect = true,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -78,6 +82,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
+  const message = useQuery(NOTIFICATION);
+  let toastMessage: {} | null | undefined;
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
@@ -204,6 +210,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setNotification(client, message);
   };
 
+  //toast
+  const closeToastMessage = () => {
+    setNotification(client, null);
+  };
+
+  if (message.data && message.data.message) {
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
+
   const cancelHandler = () => {
     // for chat screen collection
     if (type === 'search' || type === 'saveSearch') {
@@ -213,7 +228,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setFormCancelled(true);
   };
 
-  if (formSubmitted) {
+  if (formSubmitted && redirect) {
     return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 
@@ -260,6 +275,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       >
         {({ submitForm }) => (
           <Form className={styles.Form} data-testid="formLayout">
+            {toastMessage}
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>
