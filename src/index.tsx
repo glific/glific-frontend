@@ -16,8 +16,8 @@ if (SENTRY_DSN) {
 
 ReactDOM.render(
   <React.StrictMode>
-    <CssBaseline />
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
         <App />
       </BrowserRouter>
