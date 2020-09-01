@@ -11,21 +11,11 @@
   margin-bottom: 30px;
 }
 
-.MembersTitle {
+.StaffDivider {
   width: 100%;
   border-bottom: 1px solid #eaedec;
   line-height: 0.1em;
   margin: 10px 0 20px 0px;
-}
-
-.MembersTitle span {
-  background: #fff;
-  color: #cacaca;
-
-  font-size: 12px;
-  font-weight: 500;
-  padding: 0 10px;
-  padding-left: 0px;
 }
 
 .UserList li {
