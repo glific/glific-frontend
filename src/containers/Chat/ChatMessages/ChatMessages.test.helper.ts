@@ -55,6 +55,7 @@ const updateMessageTagsQuery = {
             tag: {
               id: '87',
               label: 'Good message',
+              colorCode: '#0C976D',
             },
           },
         ],
@@ -99,14 +100,17 @@ const conversation = {
             {
               id: '1',
               label: 'important',
+              colorCode: '#00d084',
             },
             {
               id: '5',
               label: 'Greeting',
+              colorCode: '#00d084',
             },
             {
               id: '15',
               label: 'Help',
+              colorCode: '#00d084',
             },
           ],
         },
@@ -207,6 +211,7 @@ const mocks = [
                   {
                     id: '1',
                     label: 'important',
+                    colorCode: '#00d084',
                   },
                 ],
               },
@@ -228,11 +233,13 @@ const mocks = [
             id: '87',
             label: 'Good message',
             description: 'Hey There',
+            colorCode: '#0C976D',
           },
           {
             id: '1',
             label: 'important',
             description: 'some description',
+            colorCode: '#0C976D',
           },
         ],
       },
