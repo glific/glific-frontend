@@ -17,6 +17,9 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   var lastMessageTime = moment(props.time);
   var duration = moment.duration(currentTime.diff(lastMessageTime));
   var hours: string | number = Math.floor(duration.asHours());
+  if (hours < 0) {
+    hours = 0;
+  }
   hours = hours > 24 ? 0 : 24 - hours;
   let timerStyle = styles.TimerNormal;
   if (hours === 0) {
