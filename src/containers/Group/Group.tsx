@@ -52,12 +52,12 @@ const formFields = (options: any) => {
       options: options,
       optionLabel: 'name',
       textFieldProps: {
-        // required: true,
-        label: 'Assign members to group',
+        label: 'Assign staff to group',
         variant: 'outlined',
       },
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
+      helperText: 'Assigned staff members will be responsible to chat with contacts in this group',
     },
   ];
 };
