@@ -8,7 +8,6 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { GET_GROUPS } from '../../graphql/queries/Group';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 export interface StaffManagementProps {
