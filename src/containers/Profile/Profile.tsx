@@ -27,9 +27,17 @@ export interface ProfileProps {
   match?: any;
   profileType: string;
   redirectionLink: string;
+  additionalField?: any;
+  additionalStates?: any;
 }
 
-export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirectionLink }) => {
+export const Profile: React.SFC<ProfileProps> = ({
+  match,
+  profileType,
+  redirectionLink,
+  additionalField,
+  additionalStates,
+}) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
@@ -49,12 +57,19 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
     currentContactId = match.params.id;
   }
 
-  const states = { name, phone, status, providerStatus };
-  const setStates = ({ name, phone, status, providerStatus }: any) => {
+  let states: any = { name, phone, status, providerStatus };
+  if (additionalStates) {
+    states[additionalStates.name] = additionalStates.state;
+  }
+
+  const setStates = ({ name, phone, status, providerStatus, ...rest }: any) => {
     setName(name);
     setPhone(phone);
     setStatus(status);
     setProviderStatus(providerStatus);
+    if (additionalStates) {
+      additionalStates.setState(rest[additionalStates.name]);
+    }
   };
 
   const FormSchema = Yup.object().shape({
@@ -68,6 +83,7 @@ export const Profile: React.SFC<ProfileProps> = ({ match, profileType, redirecti
       type: 'text',
       placeholder: 'Name',
     },
+    additionalField,
     {
       component: Input,
       name: 'phone',

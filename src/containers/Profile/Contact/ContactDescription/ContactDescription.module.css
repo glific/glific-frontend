@@ -1,0 +1,52 @@
+.DescriptionContainer {
+  height: 100vh;
+  padding: 24px;
+}
+
+.Title {
+  color: #073f24;
+  font-weight: 500;
+  margin-bottom: 12px;
+  margin-top: 0px;
+}
+
+.Description {
+  font-size: 16px;
+  display: flex;
+  margin-top: 0px;
+  color: #93a29b;
+  line-height: 1.25;
+  padding-bottom: 22px;
+}
+
+.SessionTimer {
+  font-size: 10px;
+  margin-left: auto;
+  align-content: center;
+  display: flex;
+}
+
+.SessionTimer > span {
+  margin-right: 6px;
+}
+
+.DetailBlock {
+  padding-top: 22px;
+  border-top: 1px solid #eaedec;
+  padding-bottom: 16px;
+}
+
+.DetailBlock div {
+  margin-bottom: 6px;
+}
+
+.DescriptionItem {
+  font-size: 16px;
+  color: #cacaca;
+  margin-right: 6px;
+}
+
+.DescriptionItemValue {
+  font-size: 16px;
+  color: #073f24;
+}
