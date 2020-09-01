@@ -1,20 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const GET_ORGANIZATIONS = gql`
-  query organizations($filter: OrganizationFilter, $opts: Opts) {
-    organizations(filter: $filter, opts: $opts) {
-      id
-      isActive
-      name
-      providerKey
-      providerPhone
-      shortcode
-    }
-  }
-`;
-
 export const GET_ORGANIZATION = gql`
-  query organization($id: ID!) {
+  query organization($id: ID) {
     organization(id: $id) {
       organization {
         id

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION, GET_ORGANIZATIONS } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
@@ -100,11 +100,11 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
 
   const { data } = useQuery(GET_AUTOMATIONS);
 
-  const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATIONS);
+  const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
     if (orgData) {
-      let data = orgData.organizations[0];
+      let data = orgData.organization.organization;
       //get login OrganizationId
       setOrganizationId(data.id);
     }
