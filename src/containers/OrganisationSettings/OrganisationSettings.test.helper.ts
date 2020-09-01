@@ -1,5 +1,5 @@
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION, GET_ORGANIZATIONS } from '../../graphql/queries/Organization';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 
 export const LIST_ITEM_MOCKS = [
@@ -51,7 +51,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_ORGANIZATION,
-      variables: { id: 1 },
+      variables: { id: '1' },
     },
     result: {
       data: {
@@ -61,22 +61,21 @@ export const LIST_ITEM_MOCKS = [
             __typename: 'Organization',
             defaultLanguage: { __typename: 'Language', id: '2', label: 'English (United States)' },
             id: '1',
-            name: 'Glific',
             outOfOffice: {
               __typename: 'OutOfOffice',
               enabled: true,
               enabledDays: [
-                { __typename: 'EnabledDay', enabled: false, id: 1 },
-                { __typename: 'EnabledDay', enabled: false, id: 2 },
-                { __typename: 'EnabledDay', enabled: false, id: 3 },
-                { __typename: 'EnabledDay', enabled: false, id: 4 },
+                { __typename: 'EnabledDay', enabled: true, id: 1 },
+                { __typename: 'EnabledDay', enabled: true, id: 2 },
+                { __typename: 'EnabledDay', enabled: true, id: 3 },
+                { __typename: 'EnabledDay', enabled: true, id: 4 },
                 { __typename: 'EnabledDay', enabled: true, id: 5 },
-                { __typename: 'EnabledDay', enabled: true, id: 6 },
+                { __typename: 'EnabledDay', enabled: false, id: 6 },
                 { __typename: 'EnabledDay', enabled: false, id: 7 },
               ],
-              endTime: '20:00:00',
+              endTime: '12:30:27',
               flowId: '6',
-              startTime: '10:00:00',
+              startTime: '12:31:27',
             },
             provider: {
               __typename: 'Provider',
@@ -85,12 +84,33 @@ export const LIST_ITEM_MOCKS = [
               name: 'Gupshup',
               url: 'https://gupshup.io/',
             },
-            providerKey: 'key',
-            providerNumber: '9897899878979',
+            providerKey: 'ADD_PROVIDER_API_KEY',
+            providerPhone: '917834811114',
+            shortcode: 'Glific',
           },
         },
       },
     },
   },
-  ,
+  {
+    request: {
+      query: GET_ORGANIZATIONS,
+      variables: {},
+    },
+    result: {
+      data: {
+        organizations: [
+          {
+            __typename: 'Organization',
+            id: '1',
+            isActive: true,
+            name: 'Glific',
+            providerKey: 'ADD_PROVIDER_API_KEY',
+            providerPhone: '917834811114',
+            shortcode: 'Glific',
+          },
+        ],
+      },
+    },
+  },
 ];

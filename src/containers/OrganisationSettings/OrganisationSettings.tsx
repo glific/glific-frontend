@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './OrganisationSettings.module.css';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION, GET_ORGANIZATIONS } from '../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
@@ -13,7 +13,7 @@ import {
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import Typography from '@material-ui/core/Typography/Typography';
@@ -23,9 +23,9 @@ export interface SettingsProps {
 }
 
 const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Organisation name is required.'),
+  shortcode: Yup.string().required('Organisation name is required.'),
   providerKey: Yup.string().required('Gupshup API key is required.'),
-  providerNumber: Yup.string().required('Gupshup WhatsApp number is required.'),
+  providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 });
 
 const SettingIcon = <Settingicon className={styles.Icon} />;
@@ -48,20 +48,21 @@ const dayList = [
 ];
 
 export const OrganisationSettings: React.SFC<SettingsProps> = () => {
-  const [name, setName] = useState('');
+  const [shortcode, setShortcode] = useState('');
   const [providerKey, setProviderKey] = useState('');
-  const [providerNumber, setProviderNumber] = useState('');
+  const [providerPhone, setProviderNumber] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
+  const [organizationId, setOrganizationId] = useState(null);
 
   const states = {
-    name,
+    shortcode,
     providerKey,
-    providerNumber,
+    providerPhone,
     hours,
     startTime,
     endTime,
@@ -69,10 +70,10 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     flowId,
   };
 
-  const setStates = ({ name, providerKey, providerNumber, outOfOffice }: any) => {
-    setName(name);
+  const setStates = ({ shortcode, providerKey, providerPhone, outOfOffice }: any) => {
+    setShortcode(shortcode);
     setProviderKey(providerKey);
-    setProviderNumber(providerNumber);
+    setProviderNumber(providerPhone);
     setHours(outOfOffice.enabled);
     setIsDisable(!outOfOffice.enabled);
     setOutOfOffice(outOfOffice);
@@ -93,9 +94,23 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     return data.flows.filter((option: any) => option.id === id)[0];
   };
 
+  useEffect(() => {
+    getOrg();
+  }, []);
+
   const { data } = useQuery(GET_AUTOMATIONS);
 
-  if (!data) return <Loading />;
+  const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATIONS);
+
+  useEffect(() => {
+    if (orgData) {
+      let data = orgData.organizations[0];
+      //get login OrganizationId
+      setOrganizationId(data.id);
+    }
+  }, [orgData]);
+
+  if (!data || !orgData) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -104,7 +119,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const formFields = [
     {
       component: Input,
-      name: 'name',
+      name: 'shortcode',
       type: 'text',
       placeholder: 'Organisation name',
     },
@@ -116,7 +131,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     },
     {
       component: Input,
-      name: 'providerNumber',
+      name: 'providerPhone',
       type: 'text',
       placeholder: 'Gupshup WhatsApp number',
     },
@@ -184,10 +199,9 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
 
   const setPayload = (payload: any) => {
     return {
-      name: payload.name,
-      displayName: 'updated organization display name',
+      shortcode: payload.shortcode,
       providerKey: payload.providerKey,
-      providerNumber: payload.providerNumber,
+      providerPhone: payload.providerPhone,
       outOfOffice: {
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
@@ -201,7 +215,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   return (
     <FormLayout
       {...queries}
-      match={{ params: { id: 1 } }} // for now organization id is hardcoded.
+      match={{ params: { id: organizationId } }}
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}
