@@ -43,6 +43,7 @@ export interface FormLayoutProps {
   button?: string;
   type?: string;
   afterSave?: any;
+  refetchQueries?: any;
   redirect?: boolean;
 }
 
@@ -73,6 +74,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   button = 'Save',
   type,
   afterSave,
+  refetchQueries,
   redirect = true,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -144,6 +146,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           afterSave(data);
         }
       }
+    },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onCreate) {
+        return [{ query: refetchQueries.onCreate }];
+      } else return [];
     },
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);

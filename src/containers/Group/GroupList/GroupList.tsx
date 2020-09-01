@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GET_GROUPS_COUNT, FILTER_GROUPS } from '../../../graphql/queries/Group';
+import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
 import { DELETE_GROUP } from '../../../graphql/mutations/Group';
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
@@ -96,10 +96,15 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     parameter: 'id',
     dialog: setAutomationDialog,
   };
+
+  const refetchQueries = {
+    onDelete: GET_GROUPS,
+  };
   const cardLink = { start: 'group', end: 'contacts' };
   return (
     <>
       <List
+        refetchQueries={refetchQueries}
         title="Groups"
         listItem="groups"
         listItemName="group"
