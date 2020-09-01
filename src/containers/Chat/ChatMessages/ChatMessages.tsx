@@ -11,7 +11,7 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import { TIME_FORMAT } from '../../../common/constants';
+import { TIME_FORMAT, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -90,15 +90,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }, [toastMessage, client]);
 
   // get the conversations stored from the cache
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const {
     loading: conversationLoad,
