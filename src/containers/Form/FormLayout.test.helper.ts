@@ -1,4 +1,4 @@
-import { GET_TAG, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_TAG, GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -39,6 +39,7 @@ export const LIST_ITEM_MOCKS = [
           description: 'important label',
           languageId: 1,
           colorCode: '#0C976D',
+          parentId: null,
         },
       },
     },
@@ -50,6 +51,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'important label',
             label: 'important',
             colorCode: '#0C976D',
+            parent: null,
           },
         },
       },
@@ -66,6 +68,7 @@ export const LIST_ITEM_MOCKS = [
           keywords: '',
           languageId: 1,
           colorCode: '#0C976D',
+          parentId: '1',
         },
       },
     },
@@ -77,6 +80,9 @@ export const LIST_ITEM_MOCKS = [
             description: 'new Tag description',
             label: 'new Tag',
             colorCode: '#0C976D',
+            parent: {
+              id: '1',
+            },
           },
         },
       },
@@ -123,6 +129,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'important task',
             isReserved: false,
             colorCode: '#0C976D',
+            parent: null,
           },
           {
             id: '94',
@@ -131,6 +138,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'complete this task',
             isReserved: false,
             colorCode: '#0C976D',
+            parent: null,
           },
         ],
       },
@@ -174,9 +182,86 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
+            parent: null,
           },
         },
       },
+    },
+  },
+  {
+    request: {
+      query: GET_TAG,
+      variables: {},
+    },
+    result: {
+      data: {
+        tag: {
+          tag: {
+            id: 1,
+            label: 'important',
+            description: 'important label',
+            keywords: ['hi'],
+            language: {
+              id: 1,
+            },
+            colorCode: '#00d084',
+            parent: null,
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TAG,
+      variables: {},
+    },
+    result: {
+      data: {
+        tag: {
+          tag: {
+            id: 1,
+            label: 'important',
+            description: 'important label',
+            keywords: ['hi'],
+            language: {
+              id: 1,
+            },
+            colorCode: '#00d084',
+            parent: {
+              id: '1',
+            },
+          },
+        },
+      },
+    },
+  },
+
+  {
+    request: {
+      query: GET_TAGS,
+      variables: {},
+    },
+    result: {
+      data: [
+        {
+          tag: {
+            tag: {
+              id: 1,
+              label: 'important',
+              description: 'important label',
+              keywords: ['hi'],
+              language: {
+                id: 1,
+              },
+              colorCode: '#00d084',
+              parent: {
+                id: '1',
+              },
+            },
+          },
+        },
+      ],
     },
   },
 ];

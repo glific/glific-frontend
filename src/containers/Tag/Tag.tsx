@@ -37,24 +37,45 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
   const [colorCode, setColorcode] = useState('#0C976D');
-  const [parentId, setParentId] = useState([]);
+  const [parentId, setParentId] = useState<any>([]);
 
   const states = { label, description, keywords, colorCode, parentId };
-  const setStates = ({ label, description, keywords, colorCode, parentId }: any) => {
-    console.log('parentId', parentId);
+  const setStates = ({ label, description, keywords, colorCode, parent }: any) => {
     setLabel(label);
     setDescription(description);
     setKeywords(keywords);
     setColorcode(colorCode);
-    // setParentId(parentId);
+    if (parent) {
+      setParentId(getObject(data.tags, [parent.id])[0]);
+    }
   };
 
   const { data } = useQuery(GET_TAGS);
 
   if (!data) return <Loading />;
 
+  let tags = [];
+  // remove the self tag from list
+  if (data && match && match.params.id) {
+    tags = data.tags.filter(function (tag: any) {
+      return tag.id !== match.params.id;
+    });
+  }
+
   const getColorCode = (code: string) => {
     setColorcode(code);
+  };
+
+  const getObject = (arr: any, data: any) => {
+    if (arr && data) {
+      let result: any = [];
+      arr.map((obj: any) => {
+        data.map((ID: any) => {
+          if (obj.id === ID) result.push(obj);
+        });
+      });
+      return result;
+    }
   };
 
   const formFields = [
@@ -85,15 +106,15 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       component: AutoComplete,
       name: 'parentId',
       placeholder: 'Parent tag',
-      options: data.tags,
+      options: tags,
       optionLabel: 'label',
+      multiple: false,
       textFieldProps: {
         label: 'Parent tag',
         variant: 'outlined',
       },
     },
     {
-      multiple: false,
       component: ColorPicker,
       colorCode: colorCode,
       helperText: 'Tag color',
@@ -101,12 +122,20 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     },
   ];
 
+  const setPayload = (payload: any) => {
+    if (payload.parentId) {
+      payload.parentId = payload.parentId.id;
+    }
+    return payload;
+  };
+
   return (
     <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName="tag"
       dialogMessage={dialogMessage}
