@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_GROUP, GET_GROUP_USERS } from '../../graphql/queries/Group';
+import { GET_GROUP, GET_GROUP_USERS, GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
 
 import {
@@ -132,8 +132,11 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     setSelected(user);
   };
 
+  const refetchQueries = { onCreate: GET_GROUPS };
+
   return (
     <FormLayout
+      refetchQueries={refetchQueries}
       additionalQuery={updateUsers}
       {...queries}
       match={match}

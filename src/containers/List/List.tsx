@@ -50,6 +50,7 @@ export interface ListProps {
     icon: string;
     variables: any;
   };
+  refetchQueries?: any;
 }
 
 interface TableVals {
@@ -84,6 +85,7 @@ export const List: React.SFC<ListProps> = ({
   displayListType = 'list',
   cardLink = null,
   additionalAction = null,
+  refetchQueries,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -158,6 +160,11 @@ export const List: React.SFC<ListProps> = ({
     onCompleted: () => {
       refetch();
       refetchCount();
+    },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onDelete) {
+        return [{ query: refetchQueries.onDelete }];
+      } else return [];
     },
   });
 
