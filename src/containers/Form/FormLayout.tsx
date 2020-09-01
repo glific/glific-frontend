@@ -41,6 +41,7 @@ export interface FormLayoutProps {
   button?: string;
   type?: string;
   afterSave?: any;
+  redirect?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -70,6 +71,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   button = 'Save',
   type,
   afterSave,
+  redirect = true,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery);
@@ -213,7 +215,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setFormCancelled(true);
   };
 
-  if (formSubmitted) {
+  if (formSubmitted && redirect) {
     return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
   }
 

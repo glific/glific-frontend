@@ -28,7 +28,7 @@ const FormSchema = Yup.object().shape({
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 });
 
-const SettingIcon = <Settingicon className={styles.Icon} />;
+const SettingIcon = <Settingicon />;
 
 const queries = {
   getItemQuery: GET_ORGANIZATION,
@@ -223,13 +223,14 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
-      redirectionLink="chat"
+      redirectionLink=""
       cancelLink="chat"
       linkParameter="id"
       listItem="organization"
       icon={SettingIcon}
       languageSupport={false}
       type={'settings'}
+      redirect={false}
     />
   );
 };
