@@ -1,6 +1,7 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw, convertFromRaw } from 'draft-js';
+import { markdownToDraft } from 'markdown-draft-js';
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 export const TextReplacements: any = [
@@ -43,14 +44,12 @@ export const TextReplacements: any = [
 ];
 
 // Finds double asterisks in text with a regular expression.
-export const findDoubleAsterisks = new RegExp(/\*{2}(.+?)\*{2}/g);
 
 const textConversion = (text: any, style: any, offset: number, symbol: string) => {
-  text = text.slice(0, style.offset + offset) + symbol + text.slice(style.offset + offset);
-  text =
-    text.slice(0, style.offset + offset + style.length + 1) +
-    symbol +
-    text.slice(style.offset + offset + style.length + 1);
+  const initialOffset = style.offset + offset;
+  const finalOffset = initialOffset + style.length + 1;
+  text = text.slice(0, initialOffset) + symbol + text.slice(initialOffset);
+  text = text.slice(0, finalOffset) + symbol + text.slice(finalOffset);
   return text;
 };
 
@@ -58,8 +57,10 @@ const textConversion = (text: any, style: any, offset: number, symbol: string) =
 export const convertToWhatsApp = (editorState: any) => {
   let markdownString: any = convertToRaw(editorState.getCurrentContent());
   let finalString = '';
+
   markdownString.blocks.map((block: any) => {
     let text = block.text;
+
     let offset = 0;
     block.inlineStyleRanges.map((style: any) => {
       switch (style.style) {
@@ -79,6 +80,18 @@ export const convertToWhatsApp = (editorState: any) => {
 };
 
 // Converts WhatsApp message formatting into HTML elements.
+
+export const WhatsAppToDraftEditor = (text: string) => {
+  const regexforBold = /[*][^*]*[*]/gi;
+  const addedBold = text.replace(regexforBold, function (str: any) {
+    return '*' + str + '*';
+  });
+
+  const rawData = markdownToDraft(addedBold);
+  const contentState = convertFromRaw(rawData);
+  return contentState;
+};
+
 export const WhatsAppToJsx = (text: any) => {
   let replacements = TextReplacements;
   for (let i = 0; i < replacements.length; i++) {

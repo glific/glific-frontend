@@ -10,6 +10,7 @@ import {
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
 import { EditorState, ContentState } from 'draft-js';
+import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
   body: Yup.string()
@@ -59,7 +60,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const states = { label, body };
   const setStates = ({ label, body }: any) => {
     setLabel(label);
-    setBody(EditorState.createWithContent(ContentState.createFromText(body)));
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(body)));
   };
 
   let attributesObject = defaultAttribute;
