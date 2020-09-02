@@ -28,7 +28,7 @@ export interface ProfileProps {
   profileType: string;
   redirectionLink: string;
   additionalField?: any;
-  additionalStates?: any;
+  additionalProfileStates?: any;
   additionalState?: any;
   additionalQuery?: any;
 }
@@ -38,7 +38,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   profileType,
   redirectionLink,
   additionalField,
-  additionalStates,
+  additionalProfileStates,
   additionalState,
   additionalQuery,
 }) => {
@@ -68,8 +68,8 @@ export const Profile: React.SFC<ProfileProps> = ({
     setPhone(phone);
     setStatus(status);
     setProviderStatus(providerStatus);
-    if (additionalStates) {
-      additionalStates.setState(rest[additionalStates.name]);
+    if (additionalProfileStates) {
+      additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
   };
 
@@ -110,8 +110,8 @@ export const Profile: React.SFC<ProfileProps> = ({
     },
   ];
 
-  if (additionalStates) {
-    states[additionalStates.name] = additionalStates.state;
+  if (additionalProfileStates) {
+    states[additionalProfileStates.name] = additionalProfileStates.state;
     formFields.splice(1, 0, additionalField);
   }
 

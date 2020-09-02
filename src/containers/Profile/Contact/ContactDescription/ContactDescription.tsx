@@ -38,7 +38,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     <div className={styles.DescriptionContainer}>
       <h2 className={styles.Title}>Details</h2>
       <div className={styles.Description}>
-        <span>+{phoneNo}</span>
+        <span data-testid="phoneNo">+{phoneNo}</span>
 
         <div className={styles.SessionTimer}>
           <span>Session Timer</span>
@@ -47,10 +47,12 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
       </div>
 
       <div className={styles.DetailBlock}>
-        {groupDetails.map((group: any, index) => (
+        {groupDetails.map((groupItem: any, index) => (
           <div key={index}>
-            <span className={styles.DescriptionItem}>{group.label}</span>
-            <span className={styles.DescriptionItemValue}>{group.value}</span>
+            <span className={styles.DescriptionItem}>{groupItem.label}</span>
+            <span className={styles.DescriptionItemValue} data-testid="groups">
+              {groupItem.value}
+            </span>
           </div>
         ))}
       </div>

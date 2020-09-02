@@ -84,7 +84,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
       <div className={styles.ContactForm} data-testid="ContactProfile">
         <Profile
           {...props}
-          additionalStates={additonalStates}
+          additionalProfileStates={additonalStates}
           additionalField={assignTags}
           additionalState={setSelectedTags}
           additionalQuery={updateTags}
