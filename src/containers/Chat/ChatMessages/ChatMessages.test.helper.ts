@@ -246,7 +246,7 @@ const mocks = [
             label: 'important',
             description: 'some description',
             colorCode: '#0C976D',
-            parent: { id: '1' },
+            parent: { id: '2' },
           },
         ],
       },

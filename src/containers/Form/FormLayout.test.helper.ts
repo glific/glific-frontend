@@ -182,7 +182,7 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
-            parent: { id: '1' },
+            parent: { id: '2' },
           },
         },
       },
@@ -205,7 +205,7 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
-            parent: { id: '1' },
+            parent: { id: '2' },
           },
         },
       },
@@ -229,7 +229,7 @@ export const LIST_ITEM_MOCKS = [
             },
             colorCode: '#00d084',
             parent: {
-              id: '1',
+              id: '2',
             },
           },
         },
@@ -243,25 +243,17 @@ export const LIST_ITEM_MOCKS = [
       variables: {},
     },
     result: {
-      data: [
-        {
-          tag: {
-            tag: {
-              id: 1,
-              label: 'important',
-              description: 'important label',
-              keywords: ['hi'],
-              language: {
-                id: 1,
-              },
-              colorCode: '#00d084',
-              parent: {
-                id: '1',
-              },
-            },
+      data: {
+        tags: [
+          {
+            id: '1',
+            label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
           },
-        },
-      ],
+        ],
+      },
     },
   },
 ];
