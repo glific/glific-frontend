@@ -9,7 +9,12 @@ export interface ContactProfileProps {
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   return (
     <div className={styles.ContactProfile} data-testid="ContactProfile">
-      <Profile {...props} profileType="Contact" redirectionLink={`chat/${props.match.params.id}`} />
+      <Profile
+        {...props}
+        profileType="Contact"
+        redirectionLink={`chat/${props.match.params.id}`}
+        afterDelete={{ link: '/chat' }}
+      />
     </div>
   );
 };

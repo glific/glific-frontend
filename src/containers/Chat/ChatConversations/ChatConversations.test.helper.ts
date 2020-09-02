@@ -37,6 +37,7 @@ const searchQuery = (messageLimit: number, contactLimit: number, filter: any) =>
                   {
                     id: '8',
                     label: 'Not working',
+                    colorCode: '#00d084',
                   },
                 ],
               },
@@ -77,6 +78,7 @@ export const chatConversationsMocks = [
                 {
                   id: '1',
                   label: 'important',
+                  colorCode: null,
                 },
               ],
             },
@@ -93,6 +95,7 @@ export const chatConversationsMocks = [
 ];
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });
+export const searchQueryEmptyMock = searchQuery(50, 50, {});
 
 export const conversations = [
   {
