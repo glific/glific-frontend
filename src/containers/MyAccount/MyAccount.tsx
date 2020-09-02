@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { Typography, IconButton } from '@material-ui/core';
+import { Formik, Form, Field } from 'formik';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ReactComponent as UserIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { UPDATE_CURRENT_USER } from '../../graphql/mutations/User';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
+import { Button } from '../../components/UI/Form/Button/Button';
 
 export interface MyAccountProps {}
 
-const userIcon = <UserIcon />;
-
 export const MyAccount: React.SFC<MyAccountProps> = () => {
+  const [showOTPButton, setShowOTPButton] = useState(true);
   const [password, setPassword] = useState('');
-
-  const states = { password };
-  const setStates = ({ password }: any) => {};
 
   const FormSchema = Yup.object().shape({
     password: Yup.string()
@@ -32,9 +31,91 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     },
   ];
 
+  // send otp
+  const sendOTPHandler = () => {
+    setShowOTPButton(false);
+  };
+
+  const cancelHandler = () => {};
+  const saveHandler = (item: any) => {};
+
+  let button = 'Sent OTP';
+  if (!showOTPButton) {
+    button = 'Resend OTP';
+  }
+
+  // form fields
+  const formFieldLayout = formFields.map((field: any, index) => {
+    return (
+      <React.Fragment key={index}>
+        {field.label ? (
+          <Typography variant="h5" className={styles.Title}>
+            {field.label}
+          </Typography>
+        ) : null}
+        <Field key={index} {...field}></Field>
+      </React.Fragment>
+    );
+  });
+
+  let form = (
+    <>
+      <Formik
+        enableReinitialize
+        initialValues={{
+          password,
+        }}
+        validationSchema={FormSchema}
+        onSubmit={(item) => {
+          saveHandler(item);
+        }}
+      >
+        {({ submitForm }) => (
+          <Form className={styles.Form} data-testid="formLayout">
+            {/* {toastMessage} */}
+            {!showOTPButton ? { formFieldLayout } : ''}
+            <div className={styles.Buttons}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={sendOTPHandler}
+                className={styles.Button}
+              >
+                {button}
+              </Button>
+              {!showOTPButton ? (
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={submitForm}
+                    className={styles.Button}
+                  >
+                    Save
+                  </Button>
+                  <Button variant="contained" color="default" onClick={cancelHandler}>
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                ''
+              )}
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+
   return (
     <div className={styles.MyAccount} data-testid="MyAccount">
-      MyAccount Component
+      <Typography variant="h5" className={styles.Title}>
+        <IconButton disabled={true} className={styles.Icon}>
+          <UserIcon />
+        </IconButton>
+        My Account
+      </Typography>
+      {form}
     </div>
   );
 };

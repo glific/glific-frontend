@@ -1,7 +1,21 @@
 .MyAccount {
+  width: fit-content;
 }
 
-.UserIcon {
-  width: 29px;
-  height: 29px;
+.Title {
+  margin-left: 24px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.Form {
+  padding: 16px 24px;
+  width: 530px;
 }
