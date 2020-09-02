@@ -16,20 +16,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   const [showOTPButton, setShowOTPButton] = useState(true);
   const [password, setPassword] = useState('');
 
-  const FormSchema = Yup.object().shape({
-    password: Yup.string()
-      .min(6, 'Password must be at least 8 characters long.')
-      .required('Input required'),
-  });
-
-  const formFields = [
-    {
-      component: Input,
-      name: 'password',
-      type: 'password',
-      placeholder: 'Change Password',
-    },
-  ];
+  const resendOTPHandler = () => {};
 
   // send otp
   const sendOTPHandler = () => {
@@ -39,25 +26,46 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   const cancelHandler = () => {};
   const saveHandler = (item: any) => {};
 
-  let button = 'Sent OTP';
-  if (!showOTPButton) {
-    button = 'Resend OTP';
-  }
-
-  // form fields
-  const formFieldLayout = formFields.map((field: any, index) => {
-    return (
-      <React.Fragment key={index}>
-        {field.label ? (
-          <Typography variant="h5" className={styles.Title}>
-            {field.label}
-          </Typography>
-        ) : null}
-        <Field key={index} {...field}></Field>
-      </React.Fragment>
-    );
+  const FormSchema = Yup.object().shape({
+    OTP: Yup.string().required('Input required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 8 characters long.')
+      .required('Input required'),
   });
 
+  const formFields = [
+    {
+      component: Input,
+      type: 'otp',
+      name: 'OTP',
+      placeholder: 'OTP',
+      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      endAdornmentCallback: resendOTPHandler,
+    },
+    {
+      component: Input,
+      name: 'password',
+      type: 'password',
+      placeholder: 'Change Password',
+    },
+  ];
+
+  // form fields
+  let formFieldLayout: any;
+  if (!showOTPButton) {
+    formFieldLayout = formFields.map((field: any, index) => {
+      return (
+        <React.Fragment key={index}>
+          {field.label ? (
+            <Typography variant="h5" className={styles.Title}>
+              {field.label}
+            </Typography>
+          ) : null}
+          <Field key={index} {...field}></Field>
+        </React.Fragment>
+      );
+    });
+  }
   let form = (
     <>
       <Formik
@@ -67,23 +75,25 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         }}
         validationSchema={FormSchema}
         onSubmit={(item) => {
+          console.log('submitted');
           saveHandler(item);
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form} data-testid="formLayout">
+          <Form className={styles.Form}>
             {/* {toastMessage} */}
-            {!showOTPButton ? { formFieldLayout } : ''}
+            {formFieldLayout}
             <div className={styles.Buttons}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={sendOTPHandler}
-                className={styles.Button}
-              >
-                {button}
-              </Button>
-              {!showOTPButton ? (
+              {showOTPButton ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={sendOTPHandler}
+                  className={styles.Button}
+                >
+                  Send OTP
+                </Button>
+              ) : (
                 <>
                   <Button
                     variant="contained"
@@ -97,8 +107,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     Cancel
                   </Button>
                 </>
-              ) : (
-                ''
               )}
             </div>
           </Form>
