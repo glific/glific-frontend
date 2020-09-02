@@ -46,5 +46,6 @@ test('it should load all contacts with unread tag', async () => {
   await wait();
   fireEvent.click(getAllByTestId('savedSearchDiv')[0]);
   await wait();
+  await wait();
   expect(getByText('You do not have any conversations.')).toBeInTheDocument();
 });
