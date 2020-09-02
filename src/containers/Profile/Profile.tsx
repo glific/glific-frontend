@@ -31,6 +31,7 @@ export interface ProfileProps {
   additionalProfileStates?: any;
   additionalState?: any;
   additionalQuery?: any;
+  afterDelete?: any;
 }
 
 export const Profile: React.SFC<ProfileProps> = ({
@@ -41,6 +42,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   additionalProfileStates,
   additionalState,
   additionalQuery,
+  afterDelete,
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -135,6 +137,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       redirectionLink={redirectionLink}
       listItem="contact"
       icon={profileIcon}
+      afterDelete={afterDelete}
       type={type}
     />
   );

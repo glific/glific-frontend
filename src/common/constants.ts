@@ -1,3 +1,5 @@
+import { SEARCH_QUERY } from '../graphql/queries/Search';
+
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
@@ -25,3 +27,13 @@ export const CONTACT_STATUS = [
   { id: 'PROCESSING', label: 'Processing' },
   { id: 'FAILED', label: 'Failed' },
 ];
+
+export const SEARCH_QUERY_VARIABLES = {
+  contactOpts: {
+    limit: 50,
+  },
+  filter: {},
+  messageOpts: {
+    limit: 50,
+  },
+};

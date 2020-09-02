@@ -51,6 +51,12 @@ const theme = createMuiTheme({
         justifyContent: 'flex-start',
       },
     },
+    MuiCssBaseline: {
+      '@global': {
+        //override the pseudo-classes
+        '.Mui-disabled': { cursor: 'not-allowed !important' },
+      },
+    },
   },
 });
 

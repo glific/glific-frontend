@@ -90,6 +90,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           additionalQuery={updateTags}
           profileType="Contact"
           redirectionLink={`chat/${props.match.params.id}`}
+          afterDelete={{ link: '/chat' }}
         />
       </div>
       <div className={styles.ContactDescription}>
