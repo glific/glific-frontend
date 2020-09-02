@@ -10,6 +10,7 @@ export const CONTACT_SEARCH_QUERY = gql`
         id
         label
       }
+      status
     }
   }
 `;

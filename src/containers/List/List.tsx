@@ -199,7 +199,7 @@ export const List: React.SFC<ListProps> = ({
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
         colorOk="secondary"
-        alignButtons={styles.ButtonsCenter}
+        alignButtons={'center'}
       >
         <p className={styles.DialogText}>{dialogMessage}</p>
       </DialogBox>
