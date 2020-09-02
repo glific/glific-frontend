@@ -45,6 +45,10 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   };
 
   const handlerSavedSearchCriteria = (criteria: string, id: any) => {
+    // Reset(empty) advance search if collection changed
+    setSearchParam({});
+    resetSearch();
+
     setSavedSearchCriteria(criteria);
     setSavedSearchCriteriaId(id);
   };

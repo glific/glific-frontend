@@ -153,10 +153,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       };
       args.filter = Object.assign(args.filter, dateRange);
     }
-
+    // For create new collection then label & shortcode should be empty
+    // For update collection match.params.id should not empty
     setStates({
-      label: props.searchParam.label,
-      shortcode: props.searchParam.shortcode,
+      label: match.params.id ? props.searchParam.label : '',
+      shortcode: match.params.id ? props.searchParam.shortcode : '',
       args: JSON.stringify(args),
     });
   };

@@ -78,7 +78,7 @@ export const chatConversationsMocks = [
                 {
                   id: '1',
                   label: 'important',
-                  colorCode: null,
+                  colorCode: '#00d084',
                 },
               ],
             },
@@ -120,6 +120,7 @@ export const conversations = [
           {
             id: '8',
             label: 'Not replied',
+            colorCode: '#00d084',
           },
         ],
       },
