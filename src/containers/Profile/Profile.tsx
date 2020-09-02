@@ -29,6 +29,8 @@ export interface ProfileProps {
   redirectionLink: string;
   additionalField?: any;
   additionalStates?: any;
+  additionalState?: any;
+  additionalQuery?: any;
 }
 
 export const Profile: React.SFC<ProfileProps> = ({
@@ -37,6 +39,8 @@ export const Profile: React.SFC<ProfileProps> = ({
   redirectionLink,
   additionalField,
   additionalStates,
+  additionalState,
+  additionalQuery,
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -58,9 +62,6 @@ export const Profile: React.SFC<ProfileProps> = ({
   }
 
   let states: any = { name, phone, status, providerStatus };
-  if (additionalStates) {
-    states[additionalStates.name] = additionalStates.state;
-  }
 
   const setStates = ({ name, phone, status, providerStatus, ...rest }: any) => {
     setName(name);
@@ -76,14 +77,13 @@ export const Profile: React.SFC<ProfileProps> = ({
     name: Yup.string().required('Name is required.'),
   });
 
-  const formFields = [
+  let formFields = [
     {
       component: Input,
       name: 'name',
       type: 'text',
       placeholder: 'Name',
     },
-    additionalField,
     {
       component: Input,
       name: 'phone',
@@ -110,6 +110,11 @@ export const Profile: React.SFC<ProfileProps> = ({
     },
   ];
 
+  if (additionalStates) {
+    states[additionalStates.name] = additionalStates.state;
+    formFields.splice(1, 0, additionalField);
+  }
+
   let type: any;
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {
     type = 'UserProfile';
@@ -121,9 +126,11 @@ export const Profile: React.SFC<ProfileProps> = ({
       match={match}
       states={states}
       setStates={setStates}
+      additionalState={additionalState}
       validationSchema={FormSchema}
       listItemName="contact"
       dialogMessage={dialogMessage}
+      additionalQuery={additionalQuery}
       formFields={formFields}
       redirectionLink={redirectionLink}
       listItem="contact"

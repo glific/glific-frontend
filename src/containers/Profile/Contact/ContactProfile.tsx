@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
 
 export interface ContactProfileProps {
   match: any;
@@ -14,24 +15,50 @@ export interface ContactProfileProps {
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: props.match.params.id } });
   const { data: tagsData } = useQuery(GET_TAGS);
-
+  const [updateContactTags] = useMutation(UPDATE_CONTACT_TAGS);
   const [tags, setTags] = useState([]);
+  const [selected, setSelected] = useState([]);
   let tagsOptions: Array<any> = [];
 
   if (tagsData) {
     tagsOptions = tagsData.tags;
   }
 
+  const updateTags = (contactId: any) => {
+    const initialSelectedTags = tags.map((tag: any) => tag.id);
+    const finalSelectedTags = selected.map((tag: any) => tag.id);
+    const selectedTags = finalSelectedTags.filter(
+      (user: any) => !initialSelectedTags.includes(user)
+    );
+    const removedTags = initialSelectedTags.filter(
+      (contact: any) => !finalSelectedTags.includes(contact)
+    );
+
+    if (selectedTags.length > 0 || removedTags.length > 0) {
+      updateContactTags({
+        variables: {
+          input: {
+            addTagIds: selectedTags,
+            contactId: contactId,
+            deleteTagIds: removedTags,
+          },
+        },
+      });
+    }
+  };
+
   const assignTags = {
     component: AutoComplete,
     name: 'tags',
-    // additionalState: 'users',
     options: tagsOptions,
+    additionalState: 'tags',
+    skipPayload: true,
     optionLabel: 'label',
     textFieldProps: {
-      // required: true,
       label: 'Assign tags',
       variant: 'outlined',
+      multiline: true,
+      rows: 3,
     },
   };
 
@@ -48,6 +75,10 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   }
 
   const additonalStates = { name: 'tags', state: tags, setState: setTags };
+
+  const setSelectedTags = (tags: any) => {
+    setSelected(tags);
+  };
   return (
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">
@@ -55,6 +86,8 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           {...props}
           additionalStates={additonalStates}
           additionalField={assignTags}
+          additionalState={setSelectedTags}
+          additionalQuery={updateTags}
           profileType="Contact"
           redirectionLink={`chat/${props.match.params.id}`}
         />
