@@ -19,3 +19,9 @@
   padding: 16px 24px;
   width: 530px;
 }
+
+.HelperText {
+  padding-top: 10px;
+  color: #93a29b !important;
+  font-size: 14px !important;
+}

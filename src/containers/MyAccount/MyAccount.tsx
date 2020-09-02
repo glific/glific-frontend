@@ -85,14 +85,17 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
             {formFieldLayout}
             <div className={styles.Buttons}>
               {showOTPButton ? (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={sendOTPHandler}
-                  className={styles.Button}
-                >
-                  Send OTP
-                </Button>
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={sendOTPHandler}
+                    className={styles.Button}
+                  >
+                    Generate OTP
+                  </Button>
+                  <div className={styles.HelperText}>To change first please generate OTP</div>
+                </>
               ) : (
                 <>
                   <Button
@@ -122,6 +125,9 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
           <UserIcon />
         </IconButton>
         My Account
+      </Typography>
+      <Typography variant="h6" className={styles.Title}>
+        Change Password
       </Typography>
       {form}
     </div>
