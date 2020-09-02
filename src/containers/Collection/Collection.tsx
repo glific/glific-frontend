@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -14,6 +14,7 @@ import {
 } from '../../graphql/mutations/Collection';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import moment from 'moment';
@@ -27,6 +28,7 @@ export interface CollectionProps {
   handleCancel?: any;
   handleSave?: any;
   searchParam?: any;
+  setState?: any;
 }
 
 const validation = {
@@ -52,12 +54,22 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const [term, setTerm] = useState('');
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
+  const [includeUsers, setIncludeUsers] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
 
-  const states = { shortcode, label, term, includeTags, includeGroups, dateFrom, dateTo };
+  const states = {
+    shortcode,
+    label,
+    term,
+    includeTags,
+    includeGroups,
+    includeUsers,
+    dateFrom,
+    dateTo,
+  };
   const setStates = ({ shortcode, label, args }: any) => {
     setShortcode(shortcode);
     setLabel(label);
@@ -66,6 +78,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const setArgs = (args: any) => {
     let filters = JSON.parse(args);
+
     Object.keys(filters.filter).map((key) => {
       switch (key) {
         case 'includeTags':
@@ -75,6 +88,10 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
         case 'includeGroups':
           if (filters.filter.hasOwnProperty('includeGroups'))
             setIncludeGroups(getObject(data.groups, filters.filter['includeGroups']));
+          break;
+        case 'includeUsers':
+          if (filters.filter.hasOwnProperty('includeUsers'))
+            setIncludeUsers(getObject(dataUser.users, filters.filter['includeUsers']));
           break;
         case 'dateRange':
           if (filters.filter.hasOwnProperty('dateRange')) {
@@ -103,10 +120,60 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   };
 
+  const restoreSearch = () => {
+    let args = {
+      messageOpts: {
+        offset: 0,
+        limit: 10,
+      },
+      filter: {
+        term: props.searchParam.term,
+        includeTags: props.searchParam.includeTags
+          ? props.searchParam.includeTags.map((option: any) => option.id)
+          : [],
+        includeGroups: props.searchParam.includeGroups
+          ? props.searchParam.includeGroups.map((option: any) => option.id)
+          : [],
+        includeUsers: props.searchParam.includeUsers
+          ? props.searchParam.includeUsers.map((option: any) => option.id)
+          : [],
+      },
+      contactOpts: {
+        offset: 0,
+        limit: 20,
+      },
+    };
+
+    if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
+      let dateRange = {
+        dateRange: {
+          to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
+          from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
+        },
+      };
+      args.filter = Object.assign(args.filter, dateRange);
+    }
+    // For create new collection then label & shortcode should be empty
+    // For update collection match.params.id should not empty
+    setStates({
+      label: match.params.id ? props.searchParam.label : '',
+      shortcode: match.params.id ? props.searchParam.shortcode : '',
+      args: JSON.stringify(args),
+    });
+  };
+
+  useEffect(() => {
+    // Chat collection:restore collection search
+    if (props.searchParam && Object.keys(props.searchParam).length !== 0) {
+      restoreSearch();
+    }
+  }, [props.searchParam]);
+
   const { data: dataT } = useQuery(GET_TAGS);
   const { data } = useQuery(GET_GROUPS);
+  const { data: dataUser } = useQuery(GET_USERS);
 
-  if (!data || !dataT) return <Loading />;
+  if (!data || !dataT || !dataUser) return <Loading />;
 
   const DataFields = [
     {
@@ -125,7 +192,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
-  const searchFields = [
+  let searchFields = [
     {
       component: Input,
       name: 'term',
@@ -156,6 +223,17 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       },
     },
     {
+      component: AutoComplete,
+      name: 'includeUsers',
+      placeholder: 'Includes users',
+      label: 'Includes users',
+      options: dataUser.users ? dataUser.users : [],
+      optionLabel: 'name',
+      textFieldProps: {
+        variant: 'outlined',
+      },
+    },
+    {
       component: Calendar,
       name: 'dateFrom',
       type: 'date',
@@ -173,11 +251,12 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const setPayload = (payload: any) => {
     if (search) search(payload);
     if (props.searchParam) {
-      payload.term = props.searchParam.term;
-      payload.includeTags = props.searchParam.includeTags;
-      payload.includeGroups = props.searchParam.includeGroups;
-      payload.dateTo = props.searchParam.dateTo;
-      payload.dateFrom = props.searchParam.dateFrom;
+      // payload.term = props.searchParam.term;
+      // payload.includeTags = props.searchParam.includeTags;
+      // payload.includeGroups = props.searchParam.includeGroups;
+      // payload.includeUsers = props.searchParam.includeUsers;
+      // payload.dateTo = props.searchParam.dateTo;
+      // payload.dateFrom = props.searchParam.dateFrom;
     }
     let args = {
       messageOpts: {
@@ -186,8 +265,13 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       },
       filter: {
         term: payload.term,
-        includeTags: payload.includeTags.map((option: any) => option.id),
-        includeGroups: payload.includeGroups.map((option: any) => option.id),
+        includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
+        includeGroups: payload.includeGroups
+          ? payload.includeGroups.map((option: any) => option.id)
+          : [],
+        includeUsers: payload.includeUsers
+          ? payload.includeUsers.map((option: any) => option.id)
+          : [],
       },
       contactOpts: {
         offset: 0,
@@ -204,6 +288,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       };
       args.filter = Object.assign(args.filter, dateRange);
     }
+
     return {
       label: payload.label,
       shortcode: payload.shortcode,
@@ -244,7 +329,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
     if (formFields.length === 0) {
       if (type === 'search') {
-        setFormFields(searchFields);
+        setFormFields([...searchFields]);
         setButton('Search');
       }
       if (type === 'saveSearch') setFormFields(DataFields);

@@ -24,6 +24,9 @@ export const UPDATE_COLLECTION = gql`
       savedSearch {
         id
         label
+        shortcode
+        args
+        count
       }
       errors {
         key
