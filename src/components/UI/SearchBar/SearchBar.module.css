@@ -3,6 +3,7 @@
   width: 100%;
   padding: 0 0 0 10px;
   border-radius: 10px;
+  align-items: center !important;
 }
 
 .IconAndText {

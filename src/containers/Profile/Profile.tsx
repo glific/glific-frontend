@@ -27,6 +27,10 @@ export interface ProfileProps {
   match?: any;
   profileType: string;
   redirectionLink: string;
+  additionalField?: any;
+  additionalProfileStates?: any;
+  additionalState?: any;
+  additionalQuery?: any;
   afterDelete?: any;
 }
 
@@ -34,6 +38,10 @@ export const Profile: React.SFC<ProfileProps> = ({
   match,
   profileType,
   redirectionLink,
+  additionalField,
+  additionalProfileStates,
+  additionalState,
+  additionalQuery,
   afterDelete,
 }) => {
   const [name, setName] = useState('');
@@ -55,19 +63,23 @@ export const Profile: React.SFC<ProfileProps> = ({
     currentContactId = match.params.id;
   }
 
-  const states = { name, phone, status, providerStatus };
-  const setStates = ({ name, phone, status, providerStatus }: any) => {
+  let states: any = { name, phone, status, providerStatus };
+
+  const setStates = ({ name, phone, status, providerStatus, ...rest }: any) => {
     setName(name);
     setPhone(phone);
     setStatus(status);
     setProviderStatus(providerStatus);
+    if (additionalProfileStates) {
+      additionalProfileStates.setState(rest[additionalProfileStates.name]);
+    }
   };
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
   });
 
-  const formFields = [
+  let formFields = [
     {
       component: Input,
       name: 'name',
@@ -100,6 +112,11 @@ export const Profile: React.SFC<ProfileProps> = ({
     },
   ];
 
+  if (additionalProfileStates) {
+    states[additionalProfileStates.name] = additionalProfileStates.state;
+    formFields.splice(1, 0, additionalField);
+  }
+
   let type: any;
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {
     type = 'UserProfile';
@@ -111,9 +128,11 @@ export const Profile: React.SFC<ProfileProps> = ({
       match={match}
       states={states}
       setStates={setStates}
+      additionalState={additionalState}
       validationSchema={FormSchema}
       listItemName="contact"
       dialogMessage={dialogMessage}
+      additionalQuery={additionalQuery}
       formFields={formFields}
       redirectionLink={redirectionLink}
       listItem="contact"
