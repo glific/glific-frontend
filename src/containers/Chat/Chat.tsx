@@ -220,7 +220,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   }
 
   if (!contactId && data.search.length !== 0) {
-    console.log(data.search);
     return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }
 
