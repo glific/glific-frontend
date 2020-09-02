@@ -57,7 +57,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   let tags = [];
   // remove the self tag from list
   if (data && match && match.params.id) {
-    tags = data.tags.filter(function (tag: any) {
+    tags = data.tags.filter((tag: any) =>  {
       return tag.id !== match.params.id;
     });
   }
