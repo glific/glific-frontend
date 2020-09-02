@@ -159,6 +159,25 @@ export const LIST_ITEM_MOCKS = [
             label: 'Messages',
             description: null,
             colorCode: '#0C976D',
+            parent: { id: '2' },
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TAGS,
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '1',
+            label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
           },
         ],
       },
