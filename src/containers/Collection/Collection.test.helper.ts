@@ -159,7 +159,7 @@ export const LIST_ITEM_MOCKS = [
             label: 'Messages',
             description: null,
             colorCode: '#0C976D',
-            parent: null,
+            parent: { id: '1' },
           },
         ],
       },
