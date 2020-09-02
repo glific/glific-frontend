@@ -28,6 +28,7 @@ const withResult = {
                 id: '8',
                 label: 'Not working',
                 colorCode: '#00d084',
+                parent: null,
               },
             ],
           },
