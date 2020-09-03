@@ -2,7 +2,7 @@ import React from 'react';
 import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import styles from './TagList.module.css';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Dark.svg';
 import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { List } from '../../List/List';
 

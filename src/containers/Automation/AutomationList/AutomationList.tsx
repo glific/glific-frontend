@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './AutomationList.module.css';
-import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
+import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
 import { FILTER_AUTOMATION, GET_AUTOMATION_COUNT } from '../../../graphql/queries/Automation';

@@ -48,6 +48,7 @@ export interface FormLayoutProps {
   afterDelete?: any;
   refetchQueries?: any;
   redirect?: boolean;
+  title?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -69,6 +70,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   additionalAction = null,
   icon,
   additionalState,
+  title,
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
@@ -380,7 +382,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       <IconButton disabled={true} className={styles.Icon}>
         {icon}
       </IconButton>
-      {itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
+      {title ? title : itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
     </Typography>
   );
 

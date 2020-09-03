@@ -35,15 +35,9 @@ describe('list icon tests', () => {
 
   it('renders appropriate icons', () => {
     let keys = Object.keys(iconList);
-    // Check without styling
     for (let i = 0; i < keys.length; i++) {
       const wrapper = shallow(createIcon(keys[i], false));
       expect(wrapper.find('img').props().src).toEqual('Unselected.svg');
-    }
-    // Check with styling
-    for (let i = 0; i < keys.length; i++) {
-      const wrapper = shallow(createIcon(keys[i], true));
-      expect(wrapper.find('img').props().className).toEqual('SelectedColor');
     }
   });
 });
