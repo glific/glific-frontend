@@ -1,6 +1,6 @@
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 
-const requestQuery = {
+const contactSearchQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
     variables: {
@@ -28,8 +28,8 @@ const requestQuery = {
   },
 };
 export const CONTACT_LIST_MOCKS = [
-  requestQuery,
-  requestQuery,
+  contactSearchQuery,
+  contactSearchQuery,
   {
     request: {
       query: GET_CONTACT_COUNT,
