@@ -28,7 +28,8 @@ const getGroups = (groups: Array<any>) => (
   <p className={styles.GroupsText}>{groups.map((group: any) => group.label).join(', ')}</p>
 );
 
-const dialogMessage = 'This contact will be permanently removed from this group';
+const dialogTitle = 'Are you sure you want to remove contact from this group?';
+const dialogMessage = 'The contact will no longer receive messages sent to this group';
 const columnStyles = [styles.Name, styles.Phone, styles.Actions];
 const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
@@ -57,6 +58,7 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   };
   return (
     <List
+      dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={props.title}
       listItem="contacts"
