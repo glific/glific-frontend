@@ -12,6 +12,7 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { GET_USERS } from '../../graphql/queries/User';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_COLLECTION,
@@ -155,10 +156,29 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            __typename: 'Tag',
-            description: null,
             id: '1',
             label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TAGS,
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '1',
+            label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
           },
         ],
       },
@@ -180,6 +200,17 @@ export const LIST_ITEM_MOCKS = [
             label: 'Hindi (India)',
           },
         ],
+      },
+    },
+  },
+
+  {
+    request: {
+      query: GET_USERS,
+    },
+    result: {
+      data: {
+        users: [{ __typename: 'User', id: '1', name: 'Glific Admin' }],
       },
     },
   },

@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, DialogTitle } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
@@ -50,6 +50,8 @@ export interface ListProps {
     icon: string;
     variables: any;
   };
+  refetchQueries?: any;
+  dialogTitle?: string;
 }
 
 interface TableVals {
@@ -72,6 +74,7 @@ export const List: React.SFC<ListProps> = ({
   columns,
   columnStyles,
   title,
+  dialogTitle,
   button = {
     show: true,
     label: 'Add New',
@@ -84,6 +87,7 @@ export const List: React.SFC<ListProps> = ({
   displayListType = 'list',
   cardLink = null,
   additionalAction = null,
+  refetchQueries,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -159,6 +163,11 @@ export const List: React.SFC<ListProps> = ({
       refetch();
       refetchCount();
     },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onDelete) {
+        return [{ query: refetchQueries.onDelete }];
+      } else return [];
+    },
   });
 
   const showDialogHandler = (id: any, label: string) => {
@@ -188,7 +197,11 @@ export const List: React.SFC<ListProps> = ({
   if (deleteItemID) {
     dialogBox = (
       <DialogBox
-        title={`Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`}
+        title={
+          dialogTitle
+            ? dialogTitle
+            : `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
+        }
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
         colorOk="secondary"

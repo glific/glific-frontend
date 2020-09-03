@@ -6,7 +6,7 @@ import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 
-import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
@@ -123,8 +123,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
-        <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
-          <TagIcon className={styles.TagIcon} />
+        <div
+          key={tag.id}
+          className={`${styles.Tag} ${tagMargin}`}
+          style={{ color: tag.colorCode }}
+          data-testid="tags"
+        >
+          <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
           {tag.label}
           <CloseIcon
             className={styles.CloseIcon}

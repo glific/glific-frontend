@@ -40,7 +40,6 @@
 
 .Buttons {
   margin-top: 24px;
-  margin-left: 8px;
   display: flex;
   justify-content: flex-start;
 }
@@ -54,6 +53,15 @@
   margin-top: 16px !important;
   vertical-align: middle;
   font-weight: 500 !important;
+  color: #073f24;
+}
+
+.FieldLabel {
+  margin-left: 12px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  font-size: 20px !important;
   color: #073f24;
 }
 

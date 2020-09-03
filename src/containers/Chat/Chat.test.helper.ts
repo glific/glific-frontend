@@ -4,7 +4,11 @@ import {
 } from '../../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from './ChatConversations/ChatConversations.test.helper';
-import { ADD_MESSAGE_TAG_SUBSCRIPTION, DELETE_MESSAGE_TAG_SUBSCRIPTION } from '../../graphql/subscriptions/Tag';
+import { searchQueryEmptyMock as searchEmptyQuery } from './ChatConversations/ChatConversations.test.helper';
+import {
+  ADD_MESSAGE_TAG_SUBSCRIPTION,
+  DELETE_MESSAGE_TAG_SUBSCRIPTION,
+} from '../../graphql/subscriptions/Tag';
 import { contactGroupsQuery } from './ChatMessages/ChatMessages.test.helper';
 
 const queryVariables = {
@@ -47,6 +51,8 @@ export const conversationQuery = {
                 {
                   id: '2',
                   label: 'Important',
+                  colorCode: '#00d084',
+                  parent: null,
                 },
               ],
             },
@@ -64,6 +70,8 @@ export const conversationQuery = {
                 {
                   id: '1',
                   label: 'Unread',
+                  colorCode: '#00d084',
+                  parent: null,
                 },
               ],
             },
@@ -146,7 +154,7 @@ const addMessageTagSubscription = {
             id: '1',
           },
         },
-        tag: { id: 1, label: 'Greeting' },
+        tag: { id: 1, label: 'Greeting', colorCode: '#00d084', parent: null },
       },
     },
   },
@@ -170,7 +178,7 @@ const deleteMessageTagSubscription = {
             id: '1',
           },
         },
-        tag: { id: 1, label: 'Greeting' },
+        tag: { id: 1, label: 'Greeting', colorCode: '#00d084', parent: null },
       },
     },
   },
@@ -212,6 +220,8 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
                 {
                   id: '1',
                   label: 'Unread',
+                  colorCode: '#00d084',
+                  parent: null,
                 },
               ],
             },
@@ -247,6 +257,7 @@ export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
   searchQuery,
+  searchEmptyQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,

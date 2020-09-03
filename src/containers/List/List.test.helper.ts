@@ -1,4 +1,4 @@
-import { GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
 
@@ -55,14 +55,18 @@ const filter = {
           label: 'Unread',
           description: 'Unread',
           keywords: ['Hi'],
-          isReserved: false
+          isReserved: false,
+          colorCode: '#0C976D',
+          parent: null,
         },
         {
           id: '88',
           label: 'Not replied',
           description: 'Not replied',
           keywords: null,
-          isReserved: true
+          isReserved: true,
+          colorCode: '#0C976D',
+          parent: null,
         },
       ],
     },
@@ -91,12 +95,14 @@ const search = {
           label: 'Unread',
           description: 'Unread',
           keywords: ['Hi'],
-          isReserved: false
+          isReserved: false,
+          colorCode: '#0C976D',
+          parent: null,
         },
       ],
     },
   },
-}
+};
 
 const searchCount = {
   request: {
@@ -110,6 +116,33 @@ const searchCount = {
   result: {
     data: {
       countTags: 2,
+    },
+  },
+};
+
+const getTags = {
+  request: {
+    query: GET_TAGS,
+    variables: {},
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          colorCode: '#0C976D',
+          description: 'A default message tag',
+          id: '1',
+          label: 'Messages',
+          parent: null,
+        },
+        {
+          colorCode: '#0C976D',
+          description: 'A contact tag for users that are marked as contacts',
+          id: '2',
+          label: 'Contacts',
+          parent: null,
+        },
+      ],
     },
   },
 };
@@ -156,4 +189,5 @@ export const LIST_MOCKS = [
   filter,
   search,
   searchCount,
+  getTags,
 ];

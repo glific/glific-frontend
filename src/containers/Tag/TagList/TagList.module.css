@@ -37,19 +37,19 @@
 }
 
 .Label {
-  width: 200px;
+  width: 15%;
 }
 
 .Description {
-  width: 280px;
+  width: 30%;
 }
 
 .Keywords {
-  width: 375px;
+  width: 35%;
 }
 
 .Actions {
-  width: 100px;
+  width: 20%;
   justify-content: flex-end;
   margin-left: auto;
 }

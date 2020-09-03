@@ -16,6 +16,11 @@ const theme = createMuiTheme({
     fontFamily: ['heebo', 'sans-serif'].join(','),
   },
   overrides: {
+    MuiInputBase: {
+      root: {
+        alignItems: 'baseline',
+      },
+    },
     MuiBackdrop: {
       root: {
         backgroundColor: 'rgba(147,162,155,0.48)',
@@ -44,6 +49,12 @@ const theme = createMuiTheme({
     MuiDialogActions: {
       root: {
         justifyContent: 'flex-start',
+      },
+    },
+    MuiCssBaseline: {
+      '@global': {
+        //override the pseudo-classes
+        '.Mui-disabled': { cursor: 'not-allowed !important' },
       },
     },
   },

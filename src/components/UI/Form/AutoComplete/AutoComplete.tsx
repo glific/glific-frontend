@@ -52,7 +52,6 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               : field.value
           }
           disabled={disabled}
-          freeSolo
           disableCloseOnSelect
           renderTags={(value: any, getTagProps) =>
             value.map((option: any, index: number) => (
@@ -67,7 +66,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           }
           renderOption={(option, { selected }) => (
             <React.Fragment>
-              {multiple ? <Checkbox icon={icon} checked={selected} /> : ''}
+              {multiple ? <Checkbox icon={icon} checked={selected} color="primary" /> : ''}
               {option[optionLabel]}
             </React.Fragment>
           )}

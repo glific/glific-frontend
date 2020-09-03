@@ -7,6 +7,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
 import moment from 'moment';
+import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 
 interface ConversationListProps {
   searchVal: string;
@@ -18,15 +19,7 @@ interface ConversationListProps {
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -36,19 +29,24 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   );
   const filterVariables = () => {
-    if (props.savedSearchCriteria) {
-      const variables = JSON.parse(props.savedSearchCriteria);
+    if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
+      let variables = JSON.parse(props.savedSearchCriteria);
       if (props.searchVal) variables.filter.term = props.searchVal;
       return variables;
     }
+
     let filter: any = {};
-    if (props.searchVal) filter.term = props.searchVal;
+    if (props.searchVal) {
+      filter.term = props.searchVal;
+    }
     let params = props.searchParam;
     if (params) {
       if (params.includeTags && params.includeTags.length > 0)
         filter.includeTags = params.includeTags.map((obj: any) => obj.id);
       if (params.includeGroups && params.includeGroups.length > 0)
         filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
+      if (params.includeUsers && params.includeUsers.length > 0)
+        filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
           from: moment(params.dateFrom).format('YYYY-MM-DD'),
@@ -97,7 +95,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = data.search;
   }
 
-  if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
+  if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
