@@ -63,10 +63,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   }
 
-  const getColorCode = (code: string) => {
-    setColorcode(code);
-  };
-
   const getObject = (arr: any, data: any) => {
     if (arr && data) {
       let result: any = [];
@@ -117,9 +113,9 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     },
     {
       component: ColorPicker,
+      name: 'colorCode',
       colorCode: colorCode,
       helperText: 'Tag color',
-      handleChange: getColorCode,
     },
   ];
 
