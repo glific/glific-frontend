@@ -71,6 +71,7 @@ const conversationWithNoMessage = {
         id: 2,
         name: 'Effie Cormier',
         phone: '9044222334',
+        status: 'VALID',
       },
       messages: null,
     },
@@ -84,6 +85,7 @@ const conversation = {
         name: 'Effie Cormier',
         phone: '9044222334',
         lastMessageAt: '2020-06-29T09:31:47Z',
+        status: 'VALID',
       },
       messages: [
         {
@@ -127,6 +129,7 @@ const conversationWithMultipleMessages = {
         name: 'Effie Cormier',
         phone: '9044222334',
         lastMessageAt: '2020-06-29T09:31:47Z',
+        status: 'VALID',
       },
       messages: [
         {
@@ -195,6 +198,7 @@ const mocks = [
             contact: {
               id: '2',
               name: 'Vaibhav',
+              status: 'VALID',
             },
             messages: [
               {

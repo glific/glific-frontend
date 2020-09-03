@@ -61,6 +61,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
     refetchQueries: [
       { query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES },
       { query: CONTACT_SEARCH_QUERY, variables: contactSearchQueryVariables },
+      { query: GET_CONTACT_COUNT, variables: contactSearchQueryVariables },
     ],
   });
 

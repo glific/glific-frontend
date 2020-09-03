@@ -14,7 +14,7 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import styles from './ContactBar.module.css';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
@@ -64,7 +64,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
       setNotification(client, 'Contact blocked successfully');
-      setShowBlockDialog(false);
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
