@@ -22,7 +22,6 @@ import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { AutomationList } from './containers/Automation/AutomationList/AutomationList';
 import { Automation } from './containers/Automation/Automation';
-import { FlowEditor } from './components/floweditor/FlowEditor';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { CollectionList } from './containers/Collection/CollectionList/CollectionList';
 import { Collection } from './containers/Collection/Collection';
@@ -31,9 +30,12 @@ import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
 import { LogoutService, checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
+import { ContactProfile } from './containers/Profile/Contact/ContactProfile';
+import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
+import { UserProfile } from './containers/Profile/User/UserProfile';
 
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
@@ -77,10 +79,14 @@ const App = () => {
             <Route path="/chat" exact component={Chat} />
             <Route path="/staff-management" exact component={StaffManagementList} />
             <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
+            <Route path="/contact-profile/:id" exact component={ContactProfile} />
+            <Route path="/user-profile" exact component={UserProfile} />
 
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
             <Route path="/template/:id/edit" exact component={HSM} />
+
+            <Route path="/settings" exact component={OrganisationSettings} />
 
             <Route path="/logout" exact component={LogoutService} />
 

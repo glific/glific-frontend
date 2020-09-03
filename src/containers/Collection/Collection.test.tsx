@@ -1,6 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { render, wait } from '@testing-library/react';
+
+import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { Collection } from './Collection';
@@ -8,28 +8,18 @@ import { LIST_ITEM_MOCKS } from './Collection.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
-const wrapper = shallow(
+const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Collection />
+    <Collection match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
-describe('<Collection />', () => {
-  it('should render Collection', () => {
-    expect(wrapper.exists()).toBe(true);
-  });
-});
-
 test('should load the collection edit', async () => {
-  const { getByText } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Collection match={{ params: { id: 1 } }} />
-    </MockedProvider>
-  );
+  const { getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
-  await wait();
-  expect(getByText('Edit Collection')).toBeInTheDocument();
+  const formLayout = await findByTestId('formLayout');
+  expect(formLayout).toHaveTextContent('Collection');
 });

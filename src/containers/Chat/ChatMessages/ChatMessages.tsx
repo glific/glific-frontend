@@ -11,7 +11,7 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import styles from './ChatMessages.module.css';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
-import { TIME_FORMAT } from '../../../common/constants';
+import { TIME_FORMAT, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -21,7 +21,7 @@ import {
 import { GET_TAGS } from '../../../graphql/queries/Tag';
 
 export interface ChatMessagesProps {
-  contactId: number;
+  contactId: number | string;
 }
 
 interface ConversationMessage {
@@ -90,15 +90,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }, [toastMessage, client]);
 
   // get the conversations stored from the cache
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const {
     loading: conversationLoad,
@@ -125,35 +117,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       setNotification(client, 'Tags added succesfully');
       setDialogbox(false);
-    },
-    update: (cache, { data }) => {
-      const allConversations: any = client.readQuery({
-        query: SEARCH_QUERY,
-        variables: queryVariables,
-      });
-
-      const messagesCopy = JSON.parse(JSON.stringify(allConversations));
-      if (data.updateMessageTags.messageTags) {
-        const addedTags = data.updateMessageTags.messageTags.map((tags: any) => tags.tag);
-        messagesCopy.search[conversationIndex].messages = messagesCopy.search[
-          conversationIndex
-        ].messages.map((message: any) => {
-          if (message.id === editTagsMessageId) {
-            message.tags = message.tags.filter((tag: any) => !unselectedTags.includes(tag.id));
-            message.tags = [...message.tags, ...addedTags];
-          }
-          return message;
-        });
-
-        cache.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: messagesCopy,
-        });
-      }
     },
   });
 
@@ -361,6 +327,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             : conversationInfo.contact.phone
         }
         contactId={contactId.toString()}
+        lastMessageTime={conversationInfo.contact.lastMessageAt}
       />
       {messageListContainer}
       <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />

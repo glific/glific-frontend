@@ -1,5 +1,5 @@
 .ContactBar {
-  padding: 16px;
+  padding: 16px 32px !important;
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -17,12 +17,8 @@
 
 .Configure {
   cursor: pointer;
-  margin-left: auto;
-}
-
-.Configure > :first-child {
-  width: 21px !important;
-  height: 21px !important;
+  margin-left: 6px;
+  margin-top: 6px;
 }
 
 .Popper {
@@ -59,13 +55,59 @@
 
 .Icon {
   margin-right: 16px;
+  margin-left: 6px;
 }
 
 .ListButtonPrimary {
   composes: ListButton;
   color: #073f24 !important;
 }
+.ListButtonDanger {
+  composes: ListButton;
+}
+
+.ListButtonDanger:hover {
+  background-color: #ffebee !important;
+}
 
 .Container {
   margin-top: 6px;
+  width: 240px;
+}
+
+.ContactGroups {
+  flex-direction: row;
+}
+
+.GroupHeading {
+  font-weight: 500;
+  line-height: 1;
+  color: #cacaca;
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.GroupsName {
+  composes: GroupHeading;
+  color: #93a29b;
+}
+
+.ContactDetails {
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.SessionTimer span {
+  font-size: 10px;
+  width: 40px;
+  text-align: right;
+  line-height: 1;
+  color: #cacaca;
+  margin-right: 6px;
 }

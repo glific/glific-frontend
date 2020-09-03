@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
+
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
@@ -11,7 +12,12 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Chat';
+import {
+  ADD_MESSAGE_TAG_SUBSCRIPTION,
+  DELETE_MESSAGE_TAG_SUBSCRIPTION,
+} from '../../graphql/subscriptions/Tag';
 import { setErrorMessage } from '../../common/notification';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 
 export interface ChatProps {
   contactId: number;
@@ -21,15 +27,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
 
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const { loading, error, data, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -69,15 +67,35 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       }
 
       let newMessage: any;
-      let contactId: number;
-      if (action === 'SENT') {
-        // set the receiver contact id
-        newMessage = subscriptionData.data.sentMessage;
-        contactId = subscriptionData.data.sentMessage.receiver.id;
-      } else {
-        // set the sender contact id
-        newMessage = subscriptionData.data.receivedMessage;
-        contactId = subscriptionData.data.receivedMessage.sender.id;
+      let contactId: number = 0;
+      let tagData: any;
+      switch (action) {
+        case 'SENT':
+          // set the receiver contact id
+          newMessage = subscriptionData.data.sentMessage;
+          contactId = subscriptionData.data.sentMessage.receiver.id;
+          break;
+        case 'RECEIVED':
+          // set the sender contact id
+          newMessage = subscriptionData.data.receivedMessage;
+          contactId = subscriptionData.data.receivedMessage.sender.id;
+          break;
+        case 'TAG_ADDED':
+        case 'TAG_DELETED':
+          if (action === 'TAG_ADDED') {
+            tagData = subscriptionData.data.createdMessageTag;
+          } else {
+            tagData = subscriptionData.data.deletedMessageTag;
+          }
+
+          if (tagData.message.flow === 'INBOUND') {
+            // we should use sender id to update the tag
+            contactId = tagData.message.sender.id;
+          } else {
+            // we should use receiver id to update the tag
+            contactId = tagData.message.receiver.id;
+          }
+          break;
       }
 
       //loop through the cached conversations and find if contact exists
@@ -109,11 +127,36 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return cachedConversations;
       }
 
-      // We need to add new message to existing messages array and moving conversation to the top
+      // we need to handle 2 scenarios:
+      // 1. Add new message if message is sent or received
+      // 2. Add/Delete message tags for a message
+      // let's start by parsing existing conversations
       const updatedConversations = JSON.parse(JSON.stringify(cachedConversations));
       let updatedConversation = updatedConversations.search;
+
+      // get the conversation for the contact that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
-      updatedConversation[0].messages.unshift(newMessage);
+
+      // Add new message and move the conversation to the top
+      if (newMessage) {
+        updatedConversation[0].messages.unshift(newMessage);
+      } else {
+        // let's add/delete tags for the message
+        // tag object: tagData.tag
+        updatedConversation[0].messages.map((message: any) => {
+          if (message.id === tagData.message.id) {
+            // let's add tag if action === "TAG_ADDED"
+            if (action === 'TAG_ADDED') {
+              message.tags.push(tagData.tag);
+            } else {
+              // handle delete of selected tags
+              message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
+            }
+          }
+        });
+      }
+
+      // update the conversations
       updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
 
       // return the updated object
@@ -145,6 +188,24 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return updateConversations(prev, subscriptionData, 'SENT');
       },
     });
+
+    // tag added subscription
+    subscribeToMore({
+      document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+      variables: queryVariables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return updateConversations(prev, subscriptionData, 'TAG_ADDED');
+      },
+    });
+
+    // tag delete subscription
+    subscribeToMore({
+      document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+      variables: queryVariables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return updateConversations(prev, subscriptionData, 'TAG_DELETED');
+      },
+    });
   }, [subscribeToMore, queryVariables, updateConversations]);
 
   useEffect(() => {
@@ -163,7 +224,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   }
 
   let chatInterface: any;
-  if (data.search.length === 0) {
+  if (data && data.search.length === 0) {
     chatInterface = (
       <Typography variant="h5" className={styles.NoConversations}>
         There are no chat conversations to display.

@@ -20,6 +20,10 @@ export const CREATE_AUTOMATION = gql`
         shortcode
         uuid
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;
@@ -32,6 +36,10 @@ export const UPDATE_AUTOMATION = gql`
         name
         shortcode
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;
@@ -39,6 +47,22 @@ export const UPDATE_AUTOMATION = gql`
 export const PUBLISH_AUTOMATION = gql`
   mutation publishFlow($id: ID!) {
     publishFlow(id: $id) {
+      success
+    }
+  }
+`;
+
+export const ADD_AUTOMATION_TO_GROUP = gql`
+  mutation startGroupFlow($flowId: ID!, $groupId: ID!) {
+    startGroupFlow(flowId: $flowId, groupId: $groupId) {
+      success
+    }
+  }
+`;
+
+export const ADD_AUTOMATION_TO_CONTACT = gql`
+  mutation startContactFlow($flowId: ID!, $contactId: ID!) {
+    startContactFlow(flowId: $flowId, contactId: $contactId) {
       success
     }
   }

@@ -4,6 +4,34 @@ import {
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { GET_CONTACT_GROUPS } from '../../../graphql/queries/Contact';
+
+export const contactGroupsQuery = {
+  request: {
+    query: GET_CONTACT_GROUPS,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          groups: [
+            {
+              id: '1',
+              label: 'Default Group',
+            },
+            {
+              id: '2',
+              label: 'Staff Group',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
 
 const updateMessageTagsQuery = {
   request: {
@@ -27,6 +55,7 @@ const updateMessageTagsQuery = {
             tag: {
               id: '87',
               label: 'Good message',
+              colorCode: '#0C976D',
             },
           },
         ],
@@ -51,9 +80,10 @@ const conversation = {
   search: [
     {
       contact: {
-        id: 2,
+        id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
@@ -70,14 +100,17 @@ const conversation = {
             {
               id: '1',
               label: 'important',
+              colorCode: '#00d084',
             },
             {
               id: '5',
               label: 'Greeting',
+              colorCode: '#00d084',
             },
             {
               id: '15',
               label: 'Help',
+              colorCode: '#00d084',
             },
           ],
         },
@@ -90,9 +123,10 @@ const conversationWithMultipleMessages = {
   search: [
     {
       contact: {
-        id: 2,
+        id: '2',
         name: 'Effie Cormier',
         phone: '9044222334',
+        lastMessageAt: '2020-06-29T09:31:47Z',
       },
       messages: [
         {
@@ -145,6 +179,7 @@ const getConversationQuery = (data: any) => {
 };
 
 const mocks = [
+  contactGroupsQuery,
   updateMessageTagsQuery,
   updateMessageTagsQuery,
 
@@ -167,15 +202,16 @@ const mocks = [
                 body: 'Hey there whats up?',
                 insertedAt: '2020-06-25T13:36:43Z',
                 receiver: {
-                  id: '2',
+                  id: '1',
                 },
                 sender: {
-                  id: '1',
+                  id: '2',
                 },
                 tags: [
                   {
                     id: '1',
                     label: 'important',
+                    colorCode: '#00d084',
                   },
                 ],
               },
@@ -197,11 +233,13 @@ const mocks = [
             id: '87',
             label: 'Good message',
             description: 'Hey There',
+            colorCode: '#0C976D',
           },
           {
             id: '1',
             label: 'important',
             description: 'some description',
+            colorCode: '#0C976D',
           },
         ],
       },
@@ -214,7 +252,7 @@ const mocks = [
       variables: {
         input: {
           body: 'Hey There Wow',
-          senderId: 1,
+          senderId: '1',
           receiverId: '2',
           type: 'TEXT',
           flow: 'OUTBOUND',
@@ -249,7 +287,6 @@ const mocks = [
 ];
 
 export const mocksWithConversation = [...mocks, getConversationQuery(conversation)];
-export const mocksWithNoMessages = [...mocks, getConversationQuery(conversationWithNoMessage)];
 export const mocksWithMultipleMessages = [
   ...mocks,
   getConversationQuery(conversationWithMultipleMessages),

@@ -8,7 +8,6 @@ export interface LogoutServiceProps {}
 
 export const LogoutService: React.SFC<LogoutServiceProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
-
   localStorage.removeItem('glific_session');
   setAuthenticated(false);
   return null;
@@ -34,7 +33,8 @@ export const renewAuthToken = () => {
       return { renewStatus: true };
     })
     .catch((error: any) => {
-      console.log('error', error);
+      console.log('Renewal Error', error);
+      return { renewStatus: false };
     });
 };
 

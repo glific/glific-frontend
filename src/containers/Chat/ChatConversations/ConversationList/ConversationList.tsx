@@ -7,6 +7,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
 import moment from 'moment';
+import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 
 interface ConversationListProps {
   searchVal: string;
@@ -18,15 +19,7 @@ interface ConversationListProps {
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
-  const queryVariables = {
-    contactOpts: {
-      limit: 50,
-    },
-    filter: {},
-    messageOpts: {
-      limit: 50,
-    },
-  };
+  const queryVariables = SEARCH_QUERY_VARIABLES;
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -120,6 +113,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             conversation.contact.name ? conversation.contact.name : conversation.contact.phone
           }
           lastMessage={lastMessage}
+          senderLastMessage={conversation.contact.lastMessageAt}
         />
       );
     });

@@ -34,6 +34,9 @@ export const FILTER_USERS = gql`
         id
         label
       }
+      contact {
+        id
+      }
     }
   }
 `;
@@ -49,6 +52,22 @@ export const GET_USERS = gql`
     users {
       id
       name
+    }
+  }
+`;
+
+export const GET_CURRENT_USER = gql`
+  query currentUser {
+    currentUser {
+      user {
+        id
+        name
+        phone
+        roles
+        contact {
+          id
+        }
+      }
     }
   }
 `;

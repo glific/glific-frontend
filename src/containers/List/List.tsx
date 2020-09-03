@@ -43,12 +43,14 @@ export interface ListProps {
   additionalAction?: {
     icon: any;
     parameter: string;
-    link: string;
+    link?: string;
+    dialog?: any;
   } | null;
   deleteModifier?: {
     icon: string;
     variables: any;
   };
+  refetchQueries?: any;
 }
 
 interface TableVals {
@@ -83,6 +85,7 @@ export const List: React.SFC<ListProps> = ({
   displayListType = 'list',
   cardLink = null,
   additionalAction = null,
+  refetchQueries,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -92,6 +95,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
@@ -141,12 +145,10 @@ export const List: React.SFC<ListProps> = ({
 
   useEffect(() => {
     refetch();
-  }, [refetch, filterPayload]);
+    refetchCount();
+  }, [refetch, filterPayload, searchVal]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
-  useEffect(() => {
-    refetchCount();
-  }, [searchVal, refetchCount]);
 
   useEffect(() => {
     return () => {
@@ -158,6 +160,11 @@ export const List: React.SFC<ListProps> = ({
     onCompleted: () => {
       refetch();
       refetchCount();
+    },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onDelete) {
+        return [{ query: refetchQueries.onDelete }];
+      } else return [];
     },
   });
 
@@ -216,7 +223,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables: variables });
-    setNotification(client, `${listItemName} deleted Successfully`);
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   // Reformat all items to be entered in table
@@ -245,12 +252,22 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction ? (
+          {additionalAction && additionalAction.link ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
               <IconButton color="default" className={styles.additonalButton}>
                 {additionalAction.icon}
               </IconButton>
             </Link>
+          ) : null}
+
+          {additionalAction && additionalAction.dialog ? (
+            <IconButton
+              color="default"
+              className={styles.additonalButton}
+              onClick={() => additionalAction.dialog(additionalActionParameter)}
+            >
+              {additionalAction.icon}
+            </IconButton>
           ) : null}
 
           {editButton}
@@ -272,7 +289,16 @@ export const List: React.SFC<ListProps> = ({
     return listItems.map(({ ...listItem }) => {
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
-      const action = additionalAction ? listItem[additionalAction.parameter] : null;
+      let action: any;
+      if (additionalAction) {
+        // check if we are dealing with nested element
+        const params = additionalAction.parameter.split('.');
+        if (params.length > 1) {
+          action = listItem[params[0]][params[1]];
+        } else {
+          action = listItem[params[0]];
+        }
+      }
       return {
         ...columns(listItem),
         operations: getIcons(listItem.id, label, isReserved, action),

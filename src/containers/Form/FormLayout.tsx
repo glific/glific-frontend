@@ -14,6 +14,10 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
+import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
+import { NOTIFICATION } from '../../graphql/queries/Notification';
 
 export interface FormLayoutProps {
   match: any;
@@ -42,6 +46,9 @@ export interface FormLayoutProps {
   button?: string;
   type?: string;
   afterSave?: any;
+  afterDelete?: any;
+  refetchQueries?: any;
+  redirect?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -71,20 +78,36 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   button = 'Save',
   type,
   afterSave,
+  afterDelete,
+  refetchQueries,
+  redirect = true,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
-  const [deleteItem] = useMutation(deleteItemQuery);
+  const [deleteItem] = useMutation(deleteItemQuery, {
+    refetchQueries: [
+      {
+        query: SEARCH_QUERY,
+        variables: SEARCH_QUERY_VARIABLES,
+      },
+    ],
+  });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
   const [formCancelled, setFormCancelled] = useState(false);
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
+  const [deleted, setDeleted] = useState(false);
+  const message = useQuery(NOTIFICATION);
+  let toastMessage: {} | null | undefined;
 
   const languages = useQuery(GET_LANGUAGES, {
     onCompleted: (data) => {
       setLanguageId(data.languages[0].id);
     },
   });
+
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+
   const itemId = match.params.id ? match.params.id : false;
   const { loading, error } = useQuery(getItemQuery, {
     variables: { id: itemId },
@@ -98,30 +121,49 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
+  const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
-    onCompleted: () => {
-      if (additionalQuery) {
-        additionalQuery(itemId);
+    onCompleted: (data) => {
+      const itemUpdated = `update${camelCaseItem}`;
+
+      if (data[itemUpdated].errors) {
+        setErrorMessage(client, data[itemUpdated].errors[0]);
+      } else {
+        if (additionalQuery) {
+          additionalQuery(itemId);
+        }
+        setFormSubmitted(true);
       }
-      setFormSubmitted(true);
+    },
+    onError: (error: ApolloError) => {
+      setErrorMessage(client, error);
+      return null;
     },
   });
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
+      const itemCreated = `create${camelCaseItem}`;
 
-      if (additionalQuery) {
-        additionalQuery(data[`create${camelCaseItem}`][listItem].id);
+      if (data[itemCreated].errors) {
+        setErrorMessage(client, data[itemCreated].errors[0]);
+      } else {
+        if (additionalQuery) {
+          additionalQuery(data[`create${camelCaseItem}`][listItem].id);
+        }
+        if (!itemId) setLink(data[itemCreated][listItem][linkParameter]);
+        setFormSubmitted(true);
+        // emit data after save
+        if (afterSave) {
+          afterSave(data);
+        }
       }
-      if (!itemId) setLink(data[`create${camelCaseItem}`][listItem][linkParameter]);
-
-      setFormSubmitted(true);
-      // emit data after save
-      if (afterSave) {
-        afterSave(data);
-      }
+    },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onCreate) {
+        return [{ query: refetchQueries.onCreate }];
+      } else return [];
     },
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);
@@ -150,9 +192,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     // create custom payload for collection
     if (setPayload) {
       payload = setPayload(payload);
-      let data = advanceSearch(payload);
+      if (advanceSearch) {
+        let data = advanceSearch(payload);
 
-      if (data && data.heading && type === 'search') return;
+        if (data && data.heading && type === 'search') return;
+      }
     }
 
     // remove fields from the payload that marked as skipPayload = true
@@ -177,17 +221,26 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           input: payload,
         },
       });
-      message = `${listItemName} edited successfully!`;
+      message = `${capitalListItemName} edited successfully!`;
     } else {
       createItem({
         variables: {
           input: payload,
         },
       });
-      message = `${listItemName} added successfully!`;
+      message = `${capitalListItemName} created successfully!`;
     }
     setNotification(client, message);
   };
+
+  //toast
+  const closeToastMessage = () => {
+    setNotification(client, null);
+  };
+
+  if (message.data && message.data.message) {
+    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+  }
 
   const cancelHandler = () => {
     // for chat screen collection
@@ -198,8 +251,16 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setFormCancelled(true);
   };
 
-  if (formSubmitted) {
+  if (formSubmitted && redirect) {
     return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+  }
+
+  if (deleted) {
+    if (afterDelete) {
+      return <Redirect to={afterDelete.link} />;
+    } else {
+      return <Redirect to={redirectionLink} />;
+    }
   }
 
   if (formCancelled) {
@@ -244,7 +305,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form}>
+          <Form className={styles.Form} data-testid="formLayout">
+            {toastMessage}
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>
@@ -291,8 +353,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const handleDeleteItem = () => {
     deleteItem({ variables: { id: itemId } });
-    setNotification(client, `${listItemName} deleted Successfully`);
-    setFormSubmitted(true);
+    setNotification(client, `${capitalListItemName} deleted successfully`);
+
+    setDeleted(true);
   };
   let dialogBox;
 

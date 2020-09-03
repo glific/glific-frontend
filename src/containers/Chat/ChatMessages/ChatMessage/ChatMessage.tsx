@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
-import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Selected.svg';
+import { useMutation, useApolloClient } from '@apollo/client';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
-import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
-import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-import AddToMessageTemplate from '../AddToMessageTemplate/AddToMessageTemplate';
+import moment from 'moment';
+
+import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
+import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
+import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
-import { useMutation, useApolloClient } from '@apollo/client';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
-import { UPDATE_MESSAGE_TAGS, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
+import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
 
@@ -62,21 +63,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   }, [focus, id]);
 
+  // tagging delete mutation
   const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-    update: (cache) => {
-      const tags = client.readFragment({
-        id: `Message:${props.id}`,
-        fragment: MESSAGE_FRAGMENT,
-      });
-      if (tags) {
-        const tagsCopy = JSON.parse(JSON.stringify(tags));
-        tagsCopy.tags = tagsCopy.tags.filter((tag: any) => tag.id !== deleteId);
-        cache.writeFragment({
-          id: `Message:${props.id}`,
-          fragment: MESSAGE_FRAGMENT,
-          data: tagsCopy,
-        });
-      }
+    onCompleted: () => {
       setNotification(client, 'Tag deleted successfully');
     },
   });
@@ -134,8 +123,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (props.tags && props.tags.length > 0)
     tag = props.tags.map((tag: any) => {
       return (
-        <div key={tag.id} className={`${styles.Tag} ${tagMargin}`} data-testid="tags">
-          <TagIcon className={styles.TagIcon} />
+        <div
+          key={tag.id}
+          className={`${styles.Tag} ${tagMargin}`}
+          style={{ color: tag.colorCode }}
+          data-testid="tags"
+        >
+          <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
           {tag.label}
           <CloseIcon
             className={styles.CloseIcon}

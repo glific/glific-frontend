@@ -155,10 +155,10 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            __typename: 'Tag',
-            description: null,
             id: '1',
             label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
           },
         ],
       },

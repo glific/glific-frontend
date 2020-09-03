@@ -8,8 +8,8 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { GET_GROUPS } from '../../graphql/queries/Group';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { GET_GROUPS } from '../../graphql/queries/Group';
 
 export interface StaffManagementProps {
   match: any;
@@ -70,7 +70,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Full Name',
+      placeholder: 'Username',
     },
     {
       component: Input,
@@ -93,11 +93,11 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'groups',
-      placeholder: 'Groups',
+      placeholder: 'Assigned to group(s)',
       options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Groups',
+        label: 'Assigned to group(s)',
         variant: 'outlined',
       },
     },
