@@ -19,6 +19,7 @@ import {
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { Redirect } from 'react-router';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -142,6 +143,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   );
 
   // HOOKS ESTABLISHED ABOVE
+
+  if (data && data.search[0].contact.status === 'BLOCKED') {
+    return <Redirect to="/chat" />;
+  }
 
   // Run through these cases to ensure data always exists
   if ((called && loading) || conversationLoad) {

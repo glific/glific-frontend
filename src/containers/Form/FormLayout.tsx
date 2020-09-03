@@ -370,7 +370,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
-        alignButtons={styles.ButtonsCenter}
+        alignButtons={'center'}
       >
         <p className={styles.DialogText}>{dialogMessage}</p>
       </DialogBox>

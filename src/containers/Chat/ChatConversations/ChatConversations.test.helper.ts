@@ -11,6 +11,7 @@ const withResult = {
           name: 'Red Sparrow',
           phone: '919520285543',
           lastMessageAt: '2020-08-03T07:01:36Z',
+          status: 'VALID',
         },
         messages: [
           {
