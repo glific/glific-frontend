@@ -31,5 +31,5 @@ test('should load the OrganisationSettings edit', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await wait();
-  expect(getByText('Edit Settings')).toBeInTheDocument();
+  expect(getByText('Settings')).toBeInTheDocument();
 });
