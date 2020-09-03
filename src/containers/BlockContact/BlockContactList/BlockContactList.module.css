@@ -29,11 +29,11 @@
 }
 
 .Phone {
-  width: 280px;
+  width: 140px;
 }
 
 .Actions {
-  width: 100px;
+  width: 120px;
   justify-content: flex-end;
   margin-left: auto;
 }
