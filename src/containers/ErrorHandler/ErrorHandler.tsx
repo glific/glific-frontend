@@ -43,10 +43,6 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
         if (response?.renewStatus) {
           // this is hack to reload the page after token as been renewed
           window.location.reload();
-        } else {
-          console.log('trigger redirection');
-          // something went wrong hence gracefully logout and it will send the user to login
-          window.location.href = '/logout';
         }
       });
     }
