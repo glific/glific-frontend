@@ -32,7 +32,7 @@ export interface CollectionProps {
 }
 
 const validation = {
-  shortcode: Yup.string().required('Title is required.'),
+  shortcode: Yup.string().required('Title is required.').max(20, 'Title is too long.'),
   label: Yup.string().required('Description is required.'),
 };
 let FormSchema = Yup.object().shape({});
