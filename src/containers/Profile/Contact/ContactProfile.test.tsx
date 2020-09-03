@@ -9,8 +9,6 @@ const mocks = LOGGED_IN_USER_MOCK;
 
 const defaultProps = {
   match: { params: { id: 1 } },
-  profileType: 'Contact',
-  redirectionLink: '/chat',
 };
 
 describe('<ContactProfile />', () => {
