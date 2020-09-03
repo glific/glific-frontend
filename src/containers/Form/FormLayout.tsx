@@ -316,7 +316,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               return (
                 <React.Fragment key={index}>
                   {field.label ? (
-                    <Typography variant="h5" className={styles.Title}>
+                    <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   ) : null}

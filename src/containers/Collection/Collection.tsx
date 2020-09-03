@@ -307,7 +307,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
           <Typography variant="h5" className={styles.Title}>
             Search conversations
           </Typography>
-          <Typography variant="subtitle1" className={styles.Title}>
+          <Typography variant="subtitle1" className={styles.Subtext}>
             Apply more parameters to search for conversations.
           </Typography>
         </React.Fragment>
