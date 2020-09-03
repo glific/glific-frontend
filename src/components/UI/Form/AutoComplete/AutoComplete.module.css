@@ -6,3 +6,7 @@
 .Chip {
   background-color: #e2f1ea !important;
 }
+
+.HelperText {
+  margin-left: 16px !important;
+}

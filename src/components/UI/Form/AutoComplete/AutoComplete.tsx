@@ -52,7 +52,6 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               : field.value
           }
           disabled={disabled}
-          freeSolo
           disableCloseOnSelect
           renderTags={(value: any, getTagProps) =>
             value.map((option: any, index: number) => (
