@@ -19,6 +19,9 @@ export const CREATE_TAG = gql`
         description
         label
         colorCode
+        parent {
+          id
+        }
       }
     }
   }
@@ -32,6 +35,9 @@ export const UPDATE_TAG = gql`
         label
         description
         colorCode
+        parent {
+          id
+        }
       }
     }
   }

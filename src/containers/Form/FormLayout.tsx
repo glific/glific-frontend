@@ -83,6 +83,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery, {
+    onCompleted: () => {
+      setNotification(client, `${capitalListItemName} deleted successfully`);
+      setDeleted(true);
+    },
+    awaitRefetchQueries: true,
     refetchQueries: [
       {
         query: SEARCH_QUERY,
@@ -133,6 +138,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemId);
         }
         setFormSubmitted(true);
+        // emit data after save
+        if (afterSave) {
+          afterSave(data.updateSavedSearch);
+        }
       }
     },
     onError: (error: ApolloError) => {
@@ -155,7 +164,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setFormSubmitted(true);
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data.createSavedSearch);
         }
       }
     },
@@ -307,7 +316,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               return (
                 <React.Fragment key={index}>
                   {field.label ? (
-                    <Typography variant="h5" className={styles.Title}>
+                    <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   ) : null}
@@ -349,9 +358,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const handleDeleteItem = () => {
     deleteItem({ variables: { id: itemId } });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
-
-    setDeleted(true);
   };
   let dialogBox;
 

@@ -5,9 +5,9 @@ import { ColorPicker } from './ColorPicker';
 
 describe('<ColorPicker />', () => {
   const props = {
+    name: 'colorCode',
     colorCode: '#0C976D',
     helperText: 'Tag color',
-    field: { name: 'example', value: null },
   };
 
   const wrapper = shallow(<ColorPicker {...props} />);

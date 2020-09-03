@@ -1,16 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, wait, fireEvent } from '@testing-library/react';
+import { render, wait, fireEvent, cleanup } from '@testing-library/react';
 import ChatConversations from './ChatConversations';
 import { MockedProvider } from '@apollo/client/testing';
-import { ChatConversationMocks, conversations } from './ChatConversations.test.helper';
+import { ChatConversationMocks } from './ChatConversations.test.helper';
 
 const mocks = ChatConversationMocks;
 
+afterEach(cleanup);
 const chatConversation = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <MockedProvider mocks={mocks}>
     <Router>
-      <ChatConversations contactId={2} />
+      <ChatConversations contactId={6} />
     </Router>
   </MockedProvider>
 );
@@ -45,6 +46,7 @@ test('it should load all contacts with unread tag', async () => {
   const { getAllByTestId, getByText } = render(chatConversation);
   await wait();
   fireEvent.click(getAllByTestId('savedSearchDiv')[0]);
+  await wait();
   await wait();
   expect(getByText('You do not have any conversations.')).toBeInTheDocument();
 });

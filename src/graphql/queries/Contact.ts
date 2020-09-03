@@ -71,6 +71,26 @@ export const GET_CONTACT = gql`
         providerStatus
         settings
         fields
+        tags {
+          id
+          label
+        }
+      }
+    }
+  }
+`;
+
+export const GET_CONTACT_DETAILS = gql`
+  query getContact($id: ID!) {
+    contact(id: $id) {
+      contact {
+        phone
+        lastMessageAt
+        groups {
+          id
+          label
+        }
+        fields
       }
     }
   }

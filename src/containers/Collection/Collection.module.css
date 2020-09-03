@@ -1,7 +1,13 @@
 .Title {
-  margin-left: 24px !important;
+  margin-left: 36px !important;
   margin-top: 16px !important;
   vertical-align: middle;
   font-weight: 500 !important;
   color: #073f24;
+}
+
+.Subtext {
+  margin-left: 36px !important;
+  vertical-align: middle;
+  color: #afbbb6;
 }
