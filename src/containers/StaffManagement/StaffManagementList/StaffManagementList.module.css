@@ -54,3 +54,8 @@
   justify-content: flex-end;
   margin-left: auto;
 }
+
+.StaffIcon {
+  width: 32px;
+  height: 32px;
+}

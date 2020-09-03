@@ -8,6 +8,15 @@ import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
 import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
 import speedSendIcon from '../../../assets/images/icons/SpeedSend/Unselected.svg';
 import templateIcon from '../../../assets/images/icons/Template/Unselected.svg';
+import chatSelectedIcon from '../../../assets/images/icons/Chat/Selected.svg';
+import tagSelectedIcon from '../../../assets/images/icons/Tags/Selected.svg';
+import broadcastSelectedIcon from '../../../assets/images/icons/Broadcast/Selected.svg';
+import automationSelectedIcon from '../../../assets/images/icons/Automations/Selected.svg';
+import collectionsSelectedIcon from '../../../assets/images/icons/Collections/Selected.svg';
+import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
+import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
+import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
+import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
 import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
@@ -28,10 +37,21 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     template: templateIcon,
   };
 
+  const stringsToSelectedIcons: { [iconName: string]: string } = {
+    chat: chatSelectedIcon,
+    tag: tagSelectedIcon,
+    broadcast: broadcastSelectedIcon,
+    automation: automationSelectedIcon,
+    collection: collectionsSelectedIcon,
+    // goal: goalsSelectedIcon,
+    analytics: analyticsSelectedIcon,
+    speedSend: speedSendSelectedIcon,
+    template: templateSelectedIcon,
+  };
+
   return (
     <img
-      src={stringsToIcons[props.icon]}
-      className={props.selected ? styles.SelectedColor : undefined}
+      src={props.selected ? stringsToSelectedIcons[props.icon] : stringsToIcons[props.icon]}
       alt={'Selected '.concat(props.icon)}
     />
   );
