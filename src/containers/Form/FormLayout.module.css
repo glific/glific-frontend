@@ -56,6 +56,15 @@
   color: #073f24;
 }
 
+.FieldLabel {
+  margin-left: 12px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  font-size: 20px !important;
+  color: #073f24;
+}
+
 .Icon {
   background-color: #eaedec !important;
   margin-right: 10px !important;

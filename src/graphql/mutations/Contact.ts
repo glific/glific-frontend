@@ -34,3 +34,13 @@ export const UPDATE_CONTACT = gql`
     }
   }
 `;
+
+export const UPDATE_CONTACT_TAGS = gql`
+  mutation updateContactTags($input: ContactTagsInput!) {
+    updateContactTags(input: $input) {
+      contactTags {
+        id
+      }
+    }
+  }
+`;

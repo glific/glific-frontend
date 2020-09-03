@@ -31,7 +31,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
 
   return (
     <div className={timerStyle} data-testid="timerCount">
-      {hours}
+      {hours ? hours : ''}
     </div>
   );
 };
