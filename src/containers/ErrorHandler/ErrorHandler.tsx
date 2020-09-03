@@ -31,6 +31,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   // Handle type of error message
   let title = 'An error has occured!';
 
+  let attemptTokenRenewal = false;
   if (data.errorMessage.networkError) {
     // set specific message for network error
     title = 'A network error has occured!';
@@ -38,21 +39,21 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
     // if we get 401 authentication error then let's attempt to auto renew
     // the token / session
     if (data.errorMessage.networkError.statusCode === 401) {
+      attemptTokenRenewal = true;
       renewAuthToken().then((response: any) => {
         console.log('renewal', response);
         if (response?.renewStatus) {
+          attemptTokenRenewal = false;
           // this is hack to reload the page after token as been renewed
           window.location.reload();
-        } else {
-          console.log('trigger redirection');
-          // something went wrong hence gracefully logout and it will send the user to login
-          window.location.href = '/logout';
         }
       });
     }
   }
 
-  let errorMesageToDisplay = <p>{data.errorMessage.message}</p>;
+  if (attemptTokenRenewal) {
+    return <Loading />;
+  }
 
   return (
     <Container>
@@ -65,7 +66,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
           buttonOk="Ok"
           skipCancel
         >
-          {errorMesageToDisplay}
+          <p>{data.errorMessage.message}</p>
         </DialogBox>
       </div>
     </Container>
