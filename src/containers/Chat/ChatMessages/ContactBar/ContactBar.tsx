@@ -14,7 +14,7 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import styles from './ContactBar.module.css';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
@@ -25,6 +25,10 @@ import { Timer } from '../../../../components/UI/Timer/Timer';
 import { GET_AUTOMATIONS } from '../../../../graphql/queries/Automation';
 import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Automation';
+import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
+import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 
 export interface ContactBarProps {
   contactName: string;
@@ -38,6 +42,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const open = Boolean(anchorEl);
   const [showGroupDialog, setShowGroupDialog] = useState(false);
   const [showAutomationDialog, setShowAutomationDialog] = useState(false);
+  const [showBlockDialog, setShowBlockDialog] = useState(false);
+
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
 
@@ -53,6 +59,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   // mutation to update the contact groups
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
     onCompleted: () => refetch(),
+  });
+
+  const [blockContact] = useMutation(UPDATE_CONTACT, {
+    onCompleted: () => {
+      setNotification(client, 'Contact blocked successfully');
+    },
+    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
   const [addAutomation] = useMutation(ADD_AUTOMATION_TO_CONTACT, {
@@ -151,6 +164,33 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       />
     );
   }
+
+  const handleBlock = () => {
+    blockContact({
+      variables: {
+        id: props.contactId,
+        input: {
+          status: 'BLOCKED',
+        },
+      },
+    });
+  };
+
+  if (showBlockDialog) {
+    dialogBox = (
+      <DialogBox
+        title="Do you want to block this contact"
+        handleOk={handleBlock}
+        handleCancel={() => setShowBlockDialog(false)}
+        alignButtons={'center'}
+        colorOk="secondary"
+      >
+        <p className={styles.DialogText}>
+          You will not be able to view their chats and interact with them again
+        </p>
+      </DialogBox>
+    );
+  }
   const popper = (
     <Popper
       open={open}
@@ -189,16 +229,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               Add to group
             </Button>
 
-            {/* <br />
-            // commenting this as it will be implemented in v0.4
             <Button
               className={styles.ListButtonDanger}
               color="secondary"
-              onClick={() => setAnchorEl(null)}
+              onClick={() => setShowBlockDialog(true)}
             >
               <BlockIcon className={styles.Icon} />
               Block Contact
-            </Button> */}
+            </Button>
           </Paper>
         </Fade>
       )}

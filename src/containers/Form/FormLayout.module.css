@@ -14,10 +14,6 @@
   }
 }
 
-.ButtonsCenter {
-  justify-content: center !important;
-}
-
 .Input {
   display: flex;
   padding: 8px;
@@ -53,6 +49,15 @@
   margin-top: 16px !important;
   vertical-align: middle;
   font-weight: 500 !important;
+  color: #073f24;
+}
+
+.FieldLabel {
+  margin-left: 12px !important;
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  font-size: 20px !important;
   color: #073f24;
 }
 

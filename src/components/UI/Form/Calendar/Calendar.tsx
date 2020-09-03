@@ -31,9 +31,11 @@ export const Calendar: React.SFC<CalendarProps> = ({
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
   // const defaultDateValue = field.value ? field.value : setFieldValue(field.name, '');
 
-  const handleDateChange = (date: Date | null) => {
+  const handleDateChange = (date: Date | null | string) => {
     if (date) {
-      setFieldValue(field.name, date);
+      if (date !== 'Invalid Date') setFieldValue(field.name, date);
+    } else {
+      setFieldValue(field.name, null);
     }
   };
 

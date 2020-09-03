@@ -16,11 +16,6 @@ const theme = createMuiTheme({
     fontFamily: ['heebo', 'sans-serif'].join(','),
   },
   overrides: {
-    MuiInputBase: {
-      root: {
-        alignItems: 'baseline',
-      },
-    },
     MuiBackdrop: {
       root: {
         backgroundColor: 'rgba(147,162,155,0.48)',

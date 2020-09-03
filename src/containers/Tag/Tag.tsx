@@ -55,14 +55,13 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   if (!data) return <Loading />;
 
   let tags = [];
-  // remove the self tag from list
-  if (data && match && match.params.id) {
-    tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
+  if (data) {
+    tags = data.tags;
+    // remove the self tag from list
+    if (data && match && match.params.id) {
+      tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
+    }
   }
-
-  const getColorCode = (code: string) => {
-    setColorcode(code);
-  };
 
   const getObject = (arr: any, data: any) => {
     if (arr && data) {
@@ -114,9 +113,9 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     },
     {
       component: ColorPicker,
+      name: 'colorCode',
       colorCode: colorCode,
       helperText: 'Tag color',
-      handleChange: getColorCode,
     },
   ];
 

@@ -34,7 +34,9 @@ export const renewAuthToken = () => {
     })
     .catch((error: any) => {
       console.log('Renewal Error', error);
-      return { renewStatus: false };
+      // if we are not able to renew the token for some wierd reason or if refresh token
+      // is invalid then gracefully logout and it will send the user to login
+      window.location.href = '/logout';
     });
 };
 

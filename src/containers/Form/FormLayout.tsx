@@ -48,6 +48,7 @@ export interface FormLayoutProps {
   afterDelete?: any;
   refetchQueries?: any;
   redirect?: boolean;
+  title?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -69,6 +70,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   additionalAction = null,
   icon,
   additionalState,
+  title,
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
@@ -138,6 +140,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemId);
         }
         setFormSubmitted(true);
+        // emit data after save
+        if (afterSave) {
+          afterSave(data.updateSavedSearch);
+        }
       }
     },
     onError: (error: ApolloError) => {
@@ -160,7 +166,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setFormSubmitted(true);
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data.createSavedSearch);
         }
       }
     },
@@ -312,7 +318,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               return (
                 <React.Fragment key={index}>
                   {field.label ? (
-                    <Typography variant="h5" className={styles.Title}>
+                    <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   ) : null}
@@ -364,7 +370,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
-        alignButtons={styles.ButtonsCenter}
+        alignButtons={'center'}
       >
         <p className={styles.DialogText}>{dialogMessage}</p>
       </DialogBox>
@@ -376,7 +382,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       <IconButton disabled={true} className={styles.Icon}>
         {icon}
       </IconButton>
-      {itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
+      {title ? title : itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
     </Typography>
   );
 

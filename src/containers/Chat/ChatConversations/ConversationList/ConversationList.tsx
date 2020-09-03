@@ -29,19 +29,24 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   );
   const filterVariables = () => {
-    if (props.savedSearchCriteria) {
-      const variables = JSON.parse(props.savedSearchCriteria);
+    if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
+      let variables = JSON.parse(props.savedSearchCriteria);
       if (props.searchVal) variables.filter.term = props.searchVal;
       return variables;
     }
+
     let filter: any = {};
-    if (props.searchVal) filter.term = props.searchVal;
+    if (props.searchVal) {
+      filter.term = props.searchVal;
+    }
     let params = props.searchParam;
     if (params) {
       if (params.includeTags && params.includeTags.length > 0)
         filter.includeTags = params.includeTags.map((obj: any) => obj.id);
       if (params.includeGroups && params.includeGroups.length > 0)
         filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
+      if (params.includeUsers && params.includeUsers.length > 0)
+        filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
           from: moment(params.dateFrom).format('YYYY-MM-DD'),
@@ -90,7 +95,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = data.search;
   }
 
-  if (called && (props.searchVal !== '' || props.savedSearchCriteria)) {
+  if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 

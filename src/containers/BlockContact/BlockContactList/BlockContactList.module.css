@@ -1,11 +1,6 @@
-.TagIcon {
+.BlockIcon {
   width: 29px;
   height: 29px;
-}
-
-.FilledTagIcon {
-  margin-right: 7px;
-  align-self: center;
 }
 
 .LabelText {
@@ -29,27 +24,24 @@
   margin: 0;
 }
 
-.LabelContainer {
-  display: flex;
-  height: fit-content;
-  align-items: baseline;
-  align-content: center;
-}
-
 .Label {
-  width: 15%;
+  width: 300px;
 }
 
-.Description {
-  width: 30%;
-}
-
-.Keywords {
-  width: 35%;
+.Phone {
+  width: 140px;
 }
 
 .Actions {
-  width: 20%;
+  width: 120px;
   justify-content: flex-end;
   margin-left: auto;
+}
+
+.DialogText {
+  max-width: 347px;
+  margin-top: 0px;
+  text-align: center;
+  font-size: 14px;
+  color: #073f24;
 }

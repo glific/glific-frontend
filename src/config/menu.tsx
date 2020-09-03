@@ -40,6 +40,10 @@ export const staffManagementMenus = [
     title: 'Staff Management',
     path: '/staff-management',
   },
+  {
+    title: 'Blocked Contacts',
+    path: '/blocked-contacts',
+  },
 ];
 
 export const userAccountMenus = [

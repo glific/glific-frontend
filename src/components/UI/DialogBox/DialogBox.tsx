@@ -32,7 +32,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   buttonCancel = 'Cancel',
   colorOk = 'primary',
   colorCancel = 'default',
-  alignButtons,
+  alignButtons = 'left',
   titleAlign = 'center',
   skipCancel = false,
   skipOk = false,
@@ -77,7 +77,10 @@ export const DialogBox: React.SFC<DialogProps> = ({
       </Button>
     );
   }
-
+  let dialogActionStyle = styles.DialogActions;
+  if (alignButtons === 'center') {
+    dialogActionStyle = styles.DialogActionsCenter;
+  }
   return (
     <div>
       <Dialog
@@ -96,7 +99,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
           {title}
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
-        <DialogActions className={`${styles.DialogActions} ${alignButtons}`}>
+        <DialogActions className={dialogActionStyle}>
           {okButtonDisplay}
           {cancelButtonDisplay}
         </DialogActions>
