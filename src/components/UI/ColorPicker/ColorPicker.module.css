@@ -19,15 +19,15 @@
 }
 
 .PickerPanel {
-  left: 20px;
+  left: 60px;
   z-index: 1;
+  bottom: 85px;
 }
 
 .Container {
-  margin-left: 10px;
-  height: 100px;
+  padding: 10px;
 }
 
-.HelperText {
-  margin-left: 10px !important;
+.ContainListener {
+  height: inherit;
 }

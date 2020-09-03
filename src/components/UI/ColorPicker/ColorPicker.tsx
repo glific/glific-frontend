@@ -3,6 +3,7 @@ import styles from './ColorPicker.module.css';
 import { TwitterPicker } from 'react-color';
 import { Input } from '../Form/Input/Input';
 import FormHelperText from '@material-ui/core/FormHelperText/FormHelperText';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 export interface Props {
   handleChange?: any;
@@ -22,8 +23,8 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
     props.handleChange(colorCode);
   };
 
-  const handleClick = () => {
-    setDisplayPicker(!displayPicker);
+  const onClickAway = () => {
+    setDisplayPicker(false);
   };
 
   return (
@@ -39,24 +40,28 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
             rows={0}
           ></Input>
         </div>
-        <div
-          className={styles.ChooseColor}
-          style={{
-            backgroundColor: colorCode,
-          }}
-          onClick={handleClick}
-        ></div>
-        {displayPicker ? (
-          <TwitterPicker
-            className={styles.PickerPanel}
-            triangle={'hide'}
-            onChangeComplete={handleChangeComplete}
-          />
-        ) : null}
+        <ClickAwayListener onClickAway={onClickAway}>
+          <div className={styles.ContainListener}>
+            <div
+              className={styles.ChooseColor}
+              style={{
+                backgroundColor: colorCode,
+              }}
+              onClick={() => setDisplayPicker(!displayPicker)}
+            ></div>
+            {props.helperText ? (
+              <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+            ) : null}
+            {displayPicker ? (
+              <TwitterPicker
+                className={styles.PickerPanel}
+                triangle={'hide'}
+                onChangeComplete={handleChangeComplete}
+              />
+            ) : null}
+          </div>
+        </ClickAwayListener>
       </div>
-      {props.helperText ? (
-        <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
-      ) : null}
     </div>
   );
 };
