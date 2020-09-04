@@ -15,6 +15,7 @@ import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
+import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { ListCard } from './ListCard/ListCard';
 
 export interface ListProps {
@@ -52,6 +53,7 @@ export interface ListProps {
   };
   refetchQueries?: any;
   dialogTitle?: string;
+  backLinkButton?: any;
 }
 
 interface TableVals {
@@ -88,6 +90,7 @@ export const List: React.SFC<ListProps> = ({
   cardLink = null,
   additionalAction = null,
   refetchQueries,
+  backLinkButton,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -355,7 +358,14 @@ export const List: React.SFC<ListProps> = ({
   } else if (displayListType === 'card') {
     displayList = <ListCard data={itemList} link={cardLink} />;
   }
-
+  const backLink = backLinkButton ? (
+    <div className={styles.BackLink}>
+      <Link to={backLinkButton.link}>
+        <BackIcon />
+        {backLinkButton.text}
+      </Link>
+    </div>
+  ) : null;
   return (
     <>
       <div className={styles.Header}>
@@ -388,7 +398,9 @@ export const List: React.SFC<ListProps> = ({
         </div>
       </div>
 
+      {backLink}
       {/* Rendering list of items */}
+
       {itemList ? displayList : <div>There are no {listItemName}s.</div>}
     </>
   );
