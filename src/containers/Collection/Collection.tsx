@@ -208,7 +208,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       name: 'shortcode',
       type: 'text',
       placeholder: 'Collection Title',
-      validate: Validate,
+      validate: validateTitle,
     },
     {
       component: Input,
