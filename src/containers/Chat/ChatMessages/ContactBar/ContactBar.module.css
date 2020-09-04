@@ -9,6 +9,11 @@
   line-height: 56px;
 }
 
+.Container {
+  margin-left: auto;
+  text-align: right;
+}
+
 .Title {
   font-family: 'Heebo', sans-serif !important;
   font-size: 20px !important;
@@ -98,14 +103,16 @@
 }
 
 .SessionTimer {
-  margin-left: auto;
   display: flex;
   align-items: center;
+  margin-right: 6px;
+  justify-content: flex-end;
+  margin-bottom: 5px;
 }
 
 .SessionTimer span {
   font-size: 10px;
-  width: 40px;
+
   text-align: right;
   line-height: 1;
   color: #cacaca;
