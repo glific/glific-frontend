@@ -1,6 +1,29 @@
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { GET_CONTACT_DETAILS } from '../../graphql/queries/Contact';
 
+const contactDetailsQuery = {
+  request: {
+    query: GET_CONTACT_DETAILS,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          phone: '+919820198765',
+          groups: [
+            {
+              id: '1',
+              label: 'Default group',
+            },
+          ],
+          fields: {},
+          lastMessageAt: '',
+        },
+      },
+    },
+  },
+};
 export const LOGGED_IN_USER_MOCK = [
   {
     request: {
@@ -22,27 +45,6 @@ export const LOGGED_IN_USER_MOCK = [
       },
     },
   },
-  {
-    request: {
-      query: GET_CONTACT_DETAILS,
-      variables: { id: '1' },
-    },
-    result: {
-      data: {
-        contact: {
-          contact: {
-            phone: '+919820198765',
-            groups: [
-              {
-                id: '1',
-                label: 'Default group',
-              },
-            ],
-            fields: {},
-            lastMessageAt: '',
-          },
-        },
-      },
-    },
-  },
+  contactDetailsQuery,
+  contactDetailsQuery,
 ];
