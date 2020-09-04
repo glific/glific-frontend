@@ -26,6 +26,7 @@ export interface InputProps {
   textArea?: boolean;
   togglePassword?: boolean;
   endAdornmentCallback?: any;
+  validate?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
