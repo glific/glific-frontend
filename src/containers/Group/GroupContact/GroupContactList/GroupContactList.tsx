@@ -1,7 +1,7 @@
 import React from 'react';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
 import styles from './GroupContactList.module.css';
-import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/Groups/Dark.svg';
 import { List } from '../../../List/List';
 import { UPDATE_GROUP_CONTACTS } from '../../../../graphql/mutations/Group';
 
@@ -56,8 +56,10 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
       },
     };
   };
+
   return (
     <List
+      backLinkButton={{ text: 'Back to all groups', link: '/group' }}
       dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={props.title}
