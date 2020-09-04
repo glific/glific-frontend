@@ -18,13 +18,14 @@ import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Select
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
 import styles from './ListIcon.module.css';
+import { useLocation } from 'react-router';
 
 export interface ListIconProps {
   icon: string;
-  selected: boolean;
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
+  const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
     chat: chatIcon,
     tag: tagIcon,
@@ -33,7 +34,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     collection: collectionsIcon,
     goal: goalsIcon,
     analytics: analyticsIcon,
-    speedSend: speedSendIcon,
+    'speed-send': speedSendIcon,
     template: templateIcon,
   };
 
@@ -45,13 +46,17 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     collection: collectionsSelectedIcon,
     // goal: goalsSelectedIcon,
     analytics: analyticsSelectedIcon,
-    speedSend: speedSendSelectedIcon,
+    'speed-send': speedSendSelectedIcon,
     template: templateSelectedIcon,
   };
 
   return (
     <img
-      src={props.selected ? stringsToSelectedIcons[props.icon] : stringsToIcons[props.icon]}
+      src={
+        location.pathname.startsWith('/' + props.icon)
+          ? stringsToSelectedIcons[props.icon]
+          : stringsToIcons[props.icon]
+      }
       alt={'Selected '.concat(props.icon)}
     />
   );
