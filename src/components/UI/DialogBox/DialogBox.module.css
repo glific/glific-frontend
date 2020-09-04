@@ -20,6 +20,11 @@
   padding-bottom: 24px !important;
 }
 
+.DialogActionsCenter {
+  composes: DialogActions;
+  justify-content: center !important;
+}
+
 .DialogTitle {
   color: #073f24;
   max-width: 395px;

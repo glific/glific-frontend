@@ -35,6 +35,7 @@ export const conversationQuery = {
             name: 'Jane Doe',
             phone: '919090909009',
             lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
           },
           messages: [
             {
@@ -204,6 +205,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
             name: contactName,
             phone: contactNumber,
             lastMessageAt: '2020-06-25T13:36:43Z',
+            status: 'VALID',
           },
           messages: [
             {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="24px" viewBox="0 0 32 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Groups" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Groups" transform="translate(-265.000000, -29.000000)" stroke="#073F24" stroke-width="2">
+            <g id="Icon/Staff" transform="translate(257.000000, 16.000000)">
+                <g id="Group" transform="translate(8.962406, 13.401003)">
+                    <circle id="Oval" cx="15.037594" cy="5.01253133" r="4.01253133"></circle>
+                    <path d="M7.01503759,19.0501253 L23.0601504,19.0501253 L23.0601504,16.3582183 C21.502597,14.1470611 18.8667859,13.0300752 15.037594,13.0300752 C11.2084021,13.0300752 8.57259095,14.1470611 7.01503759,16.3582183 L7.01503759,19.0501253 Z" id="Path-12" fill="#EAEDEC"></path>
+                    <path d="M21.7756549,22.0551378 L26.7217672,22.0551378 L26.7217672,19.0568904 C25.2333916,17.045697 22.6555183,16.0401003 18.9881474,16.0401003 C18.6653625,16.0401003 18.3510177,16.0478903 18.0451128,16.0634704" id="Path-12" fill="#EAEDEC" stroke-linecap="round" transform="translate(22.383440, 19.047619) scale(-1, 1) translate(-22.383440, -19.047619) "></path>
+                    <path d="M7.29691161,22.0551378 L11.9968727,22.0551378 L11.9968727,19.0568904 C10.508497,17.045697 7.93062375,16.0401003 4.2632529,16.0401003 C3.88122542,16.0401003 3.51102035,16.0510122 3.15263768,16.0728362" id="Path-12" fill="#EAEDEC" stroke-linecap="round"></path>
+                    <circle id="Oval-Copy" cx="25.5639098" cy="9.52380952" r="3.5112782"></circle>
+                    <circle id="Oval-Copy-2" cx="4.5112782" cy="9.52380952" r="3.5112782"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

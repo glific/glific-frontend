@@ -14,10 +14,6 @@
   }
 }
 
-.ButtonsCenter {
-  justify-content: center !important;
-}
-
 .Input {
   display: flex;
   padding: 8px;

@@ -8,6 +8,7 @@ export const SEARCH_QUERY = gql`
         name
         phone
         lastMessageAt
+        status
       }
       messages {
         id

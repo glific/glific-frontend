@@ -57,8 +57,6 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     textFieldProps: {
       label: 'Assign tags',
       variant: 'outlined',
-      multiline: true,
-      rows: 3,
     },
   };
 

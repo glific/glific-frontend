@@ -19,6 +19,7 @@ subscription {
     tags {
       id
       label
+      colorCode
     }
   }
 }
@@ -43,6 +44,7 @@ subscription {
     tags {
       id
       label
+      colorCode
     }
   }
 }

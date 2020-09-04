@@ -33,6 +33,7 @@ import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer
 import { ContactProfile } from './containers/Profile/Contact/ContactProfile';
 import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 import { UserProfile } from './containers/Profile/User/UserProfile';
+import { BlockContactList } from './containers/BlockContact/BlockContactList/BlockContactList';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
@@ -87,6 +88,7 @@ const App = () => {
             <Route path="/template/:id/edit" exact component={HSM} />
 
             <Route path="/settings" exact component={OrganisationSettings} />
+            <Route path="/blocked-contacts" exact component={BlockContactList} />
 
             <Route path="/logout" exact component={LogoutService} />
 

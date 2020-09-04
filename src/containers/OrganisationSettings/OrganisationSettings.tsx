@@ -215,6 +215,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   return (
     <FormLayout
       {...queries}
+      title="Settings"
       match={{ params: { id: organizationId } }}
       states={states}
       setStates={setStates}

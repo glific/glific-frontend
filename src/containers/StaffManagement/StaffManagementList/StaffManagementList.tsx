@@ -2,7 +2,7 @@ import React from 'react';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
 import { DELETE_USER } from '../../../graphql/mutations/User';
 import styles from './StaffManagementList.module.css';
-import { ReactComponent as StaffIcon } from '../../../assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
 
@@ -11,7 +11,7 @@ export interface StaffManagementProps {}
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['NAME', 'PHONE NO.', 'GROUPS', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
-  const staffIcon = <StaffIcon />;
+  const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 
   const getColumns = ({ name, phone, groups, roles, contact }: any) => ({
     name: getName(name, roles),
