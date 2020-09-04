@@ -5,7 +5,6 @@ import {
   makeStyles,
   createStyles,
   Theme,
-  Divider,
   Toolbar,
   Typography,
 } from '@material-ui/core';
@@ -140,7 +139,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           </IconButton>
         )}
       </Toolbar>
-      <Divider />
       <SideMenus opened={fullOpen} />
     </div>
   );
