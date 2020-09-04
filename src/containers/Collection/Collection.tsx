@@ -189,7 +189,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     if (value) {
       let found = [];
       let error;
-      if (Collections) {
+      if (collections) {
         found = Collections.savedSearches.filter((search: any) => search.shortcode === value);
         if (match.params.id && found.length > 0) {
           found = found.filter((search: any) => search.id !== match.params.id);
