@@ -21,10 +21,12 @@ export const contactGroupsQuery = {
             {
               id: '1',
               label: 'Default Group',
+              users: [],
             },
             {
               id: '2',
               label: 'Staff Group',
+              users: [],
             },
           ],
         },
