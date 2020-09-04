@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import clsx from 'clsx';
 
@@ -12,7 +12,7 @@ export interface SideMenusProps {
 }
 
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
-  const [selectedItem, setSelectedItem] = useState('');
+  const location = useLocation();
 
   // This may not be the best way to implement this functionality (especially if the endpoints change in the URL),
   // but I couldn't find a better way to do this atm.
@@ -22,12 +22,8 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     return '/'.concat(pathName);
   };
 
-  useEffect(() => {
-    setSelectedItem(getCurrMenuItem());
-  }, []);
-
   const menuList = sideDrawerMenus.map((menu, i) => {
-    let isSelected = menu.path === selectedItem;
+    let isSelected = location.pathname.startsWith(menu.path);
     return (
       <ListItem
         button
@@ -44,10 +40,9 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         key={menu.icon}
         component={NavLink}
         to={menu.path}
-        onClick={() => setSelectedItem(menu.path)}
       >
         <ListItemIcon className={styles.ListItemIcon}>
-          <ListIcon icon={menu.icon} selected={isSelected} />
+          <ListIcon icon={menu.icon} />
         </ListItemIcon>
         {props.opened ? (
           <ListItemText

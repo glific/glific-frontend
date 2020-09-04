@@ -9,6 +9,7 @@ import automationIcon from '../../../assets/images/icons/Automations/Unselected.
 import collectionsIcon from '../../../assets/images/icons/Collections/Unselected.svg';
 import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
 import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
+import { MemoryRouter } from 'react-router';
 
 describe('list icon tests', () => {
   const iconList: { [iconName: string]: string } = {
@@ -21,7 +22,11 @@ describe('list icon tests', () => {
     analytics: analyticsIcon,
   };
   const createIcon = (type: string, selected: boolean) => {
-    return <ListIcon icon={type} selected={selected} />;
+    return (
+      <MemoryRouter>
+        <ListIcon icon={type} />
+      </MemoryRouter>
+    );
   };
 
   const capitalize = (str: string) => {
@@ -36,7 +41,7 @@ describe('list icon tests', () => {
   it('renders appropriate icons', () => {
     let keys = Object.keys(iconList);
     for (let i = 0; i < keys.length; i++) {
-      const wrapper = shallow(createIcon(keys[i], false));
+      const wrapper = mount(createIcon(keys[i], false));
       expect(wrapper.find('img').props().src).toEqual('Unselected.svg');
     }
   });
