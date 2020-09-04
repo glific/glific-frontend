@@ -15,6 +15,10 @@
   height: unset !important;
 }
 
+.Dialogbox Form {
+  max-height: 500px;
+}
+
 .DialogActions {
   padding-left: 24px !important;
   padding-bottom: 24px !important;
