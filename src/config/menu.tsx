@@ -12,7 +12,7 @@ export const sideDrawerMenus = [
   {
     title: 'Speed sends',
     path: '/speed-send',
-    icon: 'speedSend',
+    icon: 'speed-send',
   },
   {
     title: 'Automations',
