@@ -1,7 +1,7 @@
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { GET_CONTACT_DETAILS } from '../../graphql/queries/Contact';
 
-const contactDetailsQuery = {
+const getContactDetailsQuery = {
   request: {
     query: GET_CONTACT_DETAILS,
     variables: { id: '1' },
@@ -18,12 +18,13 @@ const contactDetailsQuery = {
             },
           ],
           fields: {},
-          lastMessageAt: '',
+          lastMessageAt: new Date(),
         },
       },
     },
   },
 };
+
 export const LOGGED_IN_USER_MOCK = [
   {
     request: {
@@ -45,6 +46,6 @@ export const LOGGED_IN_USER_MOCK = [
       },
     },
   },
-  contactDetailsQuery,
-  contactDetailsQuery,
+  getContactDetailsQuery,
+  getContactDetailsQuery,
 ];
