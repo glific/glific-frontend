@@ -15,17 +15,25 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
   groups,
   lastMessage,
 }: ContactDescriptionProps) => {
+  let assignedToGroup: any = Array.from(
+    new Set(
+      [].concat(
+        ...groups.map((group: any) => group.users.map((user: any) => user.name.split(' ')[0]))
+      )
+    )
+  );
+  if (assignedToGroup.length > 2) {
+    assignedToGroup =
+      assignedToGroup.slice(0, 2).join(', ') + ' +' + (assignedToGroup.length - 2).toString();
+  } else {
+    assignedToGroup = assignedToGroup.join(', ');
+  }
+
   const groupDetails = [
     { label: 'Groups', value: groups.map((group: any) => group.label).join(', ') },
     {
       label: 'Assigned to',
-      value: Array.from(
-        new Set(
-          [].concat(
-            ...groups.map((group: any) => group.users.map((user: any) => user.name.split(' ')[0]))
-          )
-        )
-      ).join(', '),
+      value: assignedToGroup,
     },
   ];
 
