@@ -263,7 +263,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const sessionTimer = (
+  const sesssionAndGroupAssignedTo = (
     <div className={styles.Container}>
       <div className={styles.SessionTimer} data-testid="sessionTimer">
         <span>Session Timer</span>
@@ -291,7 +291,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         </div>
         {contactGroups}
       </div>
-      {sessionTimer}
+      {sesssionAndGroupAssignedTo}
       {popper}
       {dialogBox}
     </Toolbar>
