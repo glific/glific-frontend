@@ -172,7 +172,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const { data: dataT } = useQuery(GET_TAGS);
   const { data } = useQuery(GET_GROUPS);
   const { data: dataUser } = useQuery(GET_USERS);
-  const { data: Collections } = useQuery(COLLECTION_QUERY, {
+  const { data: collections } = useQuery(COLLECTION_QUERY, {
     variables: {
       filter: {},
       opts: {
