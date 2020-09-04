@@ -234,7 +234,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
-        // required: true,
         variant: 'outlined',
       },
       icon: <TagIcon className={styles.TagIcon} />,
@@ -278,14 +277,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const setPayload = (payload: any) => {
     if (search) search(payload);
-    if (props.searchParam) {
-      // payload.term = props.searchParam.term;
-      // payload.includeTags = props.searchParam.includeTags;
-      // payload.includeGroups = props.searchParam.includeGroups;
-      // payload.includeUsers = props.searchParam.includeUsers;
-      // payload.dateTo = props.searchParam.dateTo;
-      // payload.dateFrom = props.searchParam.dateFrom;
-    }
     let args = {
       messageOpts: {
         offset: 0,
