@@ -112,6 +112,33 @@ export const LIST_ITEM_MOCKS = [
   },
   {
     request: {
+      query: COLLECTION_QUERY,
+      variables: {
+        filter: {},
+        opts: {
+          limit: 100,
+          offset: 0,
+          order: 'ASC',
+        },
+      },
+    },
+    result: {
+      data: {
+        savedSearches: [
+          {
+            count: 4,
+            args:
+              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            id: '8',
+            label: 'Test collection',
+            shortcode: 'Save Search collection',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
       query: GET_COLLECTION,
       variables: {
         id: 1,
