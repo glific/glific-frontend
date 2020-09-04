@@ -19,11 +19,13 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     { label: 'Groups', value: groups.map((group: any) => group.label).join(', ') },
     {
       label: 'Assigned to',
-      value:
-        groups
-          .map((group: any) => group.users.map((user: any) => user.name).join(','))
-          .join(', ')
-          .slice(0, 22) + '...',
+      value: Array.from(
+        new Set(
+          [].concat(
+            ...groups.map((group: any) => group.users.map((user: any) => user.name.split(' ')[0]))
+          )
+        )
+      ).join(', '),
     },
   ];
 

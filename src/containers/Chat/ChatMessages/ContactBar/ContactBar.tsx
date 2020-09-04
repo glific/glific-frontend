@@ -79,14 +79,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let automationOptions = [];
   let initialSelectedGroupIds: Array<any> = [];
   let selectedGroupsName = [];
-  let assignedTo = '';
+  let assignedToGroup: any = [];
 
   if (data) {
     initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
     selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
-    assignedTo = data.contact.contact.groups
-      .map((group: any) => group.users.map((user: any) => user.name)[0])
-      .join(', ');
+    assignedToGroup = data.contact.contact.groups.map((group: any) =>
+      group.users.map((user: any) => user.name.split(' ')[0])
+    );
+    assignedToGroup = Array.from(new Set([].concat(...assignedToGroup))).join(', ');
   }
   if (groupsData) {
     groupOptions = groupsData.groups;
@@ -271,7 +272,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </div>
       <div>
         <span className={styles.GroupHeading}>Assigned to</span>
-        <span className={styles.GroupsName}>{assignedTo}</span>
+        <span className={styles.GroupsName}>{assignedToGroup}</span>
       </div>
     </div>
   );
