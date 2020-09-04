@@ -185,7 +185,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   if (!data || !dataT || !dataUser) return <Loading />;
 
-  const Validate = (value: any) => {
+  const validateTitle = (value: any) => {
     if (value) {
       let found = [];
       let error;
