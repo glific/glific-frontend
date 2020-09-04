@@ -85,7 +85,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // create collection
   let dialogBox;
   if (dialog) {
-    let match = { params: { id: collectionMethod === 'update' ? savedSearchCriteriaId : null } };
+    let match = { params: collectionMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
     let collection = (
       <Collection
         match={match}

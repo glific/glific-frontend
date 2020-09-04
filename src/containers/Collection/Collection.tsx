@@ -6,7 +6,7 @@ import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Collection.module.css';
-import { GET_COLLECTION } from '../../graphql/queries/Collection';
+import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
   UPDATE_COLLECTION,
@@ -172,8 +172,35 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const { data: dataT } = useQuery(GET_TAGS);
   const { data } = useQuery(GET_GROUPS);
   const { data: dataUser } = useQuery(GET_USERS);
+  const { data: Collections } = useQuery(COLLECTION_QUERY, {
+    variables: {
+      filter: {},
+      opts: {
+        limit: 100,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  });
 
   if (!data || !dataT || !dataUser) return <Loading />;
+
+  const Validate = (value: any) => {
+    if (value) {
+      let found = [];
+      let error;
+      if (Collections) {
+        found = Collections.savedSearches.filter((search: any) => search.shortcode === value);
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Title already exists.';
+      }
+      return error;
+    }
+  };
 
   const DataFields = [
     {
@@ -181,6 +208,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       name: 'shortcode',
       type: 'text',
       placeholder: 'Collection Title',
+      validate: Validate,
     },
     {
       component: Input,
