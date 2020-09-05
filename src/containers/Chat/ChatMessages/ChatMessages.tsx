@@ -62,7 +62,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const client = useApolloClient();
 
   const message = useQuery(NOTIFICATION);
-  const [loadAllTags, AllTags] = useLazyQuery(GET_TAGS);
+  const [loadAllTags, allTags] = useLazyQuery(GET_TAGS);
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -232,7 +232,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
 
-  const tags = AllTags.data ? AllTags.data.tags : [];
+  const tags = allTags.data ? allTags.data.tags : [];
 
   if (dialog) {
     dialogBox = (
