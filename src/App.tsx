@@ -33,6 +33,7 @@ import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer
 import { ContactProfile } from './containers/Profile/Contact/ContactProfile';
 import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 import { UserProfile } from './containers/Profile/User/UserProfile';
+import { MyAccount } from './containers/MyAccount/MyAccount';
 import { BlockContactList } from './containers/BlockContact/BlockContactList/BlockContactList';
 
 const App = () => {
@@ -82,6 +83,8 @@ const App = () => {
             <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
             <Route path="/contact-profile/:id" exact component={ContactProfile} />
             <Route path="/user-profile" exact component={UserProfile} />
+
+            <Route path="/myaccount" exact component={MyAccount} />
 
             <Route path="/template" exact component={HSMPage} />
             <Route path="/template/add" exact component={HSM} />
