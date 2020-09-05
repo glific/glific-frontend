@@ -27,8 +27,11 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set redirection to chat
   const [redirectToChat, setRedirectToChat] = useState(false);
 
+  // handle visibility for the password field
+  const [showPassword, setShowPassword] = useState(false);
+
   // get the information on current user
-  const { data: userData, loading: userDataLoading, client } = useQuery(GET_CURRENT_USER);
+  const { data: userData, loading: userDataLoading } = useQuery(GET_CURRENT_USER);
 
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
@@ -78,6 +81,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     });
   };
 
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   // callback function when close icon is clicked
   const closeToastMessage = () => {
     // reset toast information
@@ -120,6 +127,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       name: 'password',
       type: 'password',
       placeholder: 'Change Password',
+      endAdornmentCallback: handlePasswordVisibility,
+      togglePassword: showPassword,
     },
   ];
 
