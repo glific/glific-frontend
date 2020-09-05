@@ -70,7 +70,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   };
 
   //toast
-  const closeToastMessage = () => {};
+  const closeToastMessage = () => {
+    // reset toast information
+    setToastMessageInfo({ message: '', severity: '' });
+  };
 
   let displayToastMessage: any;
   if (toastMessageInfo.message.length > 0) {
