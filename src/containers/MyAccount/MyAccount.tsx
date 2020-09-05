@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation } from '@apollo/client';
+import { Redirect } from 'react-router';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -22,6 +23,9 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // set the trigger to show next step
   const [showOTPButton, setShowOTPButton] = useState(true);
+
+  // set redirection to chat
+  const [redirectToChat, setRedirectToChat] = useState(false);
 
   // get the information on current user
   const { data: userData, loading: userDataLoading, client } = useQuery(GET_CURRENT_USER);
@@ -64,7 +68,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // cancel handler if cancel is clicked
   const cancelHandler = () => {
-    setShowOTPButton(true);
+    setRedirectToChat(true);
   };
 
   // save the form if data is valid
@@ -119,6 +123,11 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     },
   ];
 
+  // redirect to chat
+  if (redirectToChat) {
+    return <Redirect to="/chat" />;
+  }
+
   // build form fields
   let formFieldLayout: any;
   if (!showOTPButton) {
@@ -143,8 +152,9 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         enableReinitialize
         initialValues={{ otp: '', password: '' }}
         validationSchema={FormSchema}
-        onSubmit={(item) => {
-          saveHandler(item);
+        onSubmit={(values, { resetForm }) => {
+          saveHandler(values);
+          resetForm();
         }}
       >
         {({ submitForm }) => (
