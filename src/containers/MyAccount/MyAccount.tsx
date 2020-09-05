@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
+import { useQuery, useMutation, ApolloError } from '@apollo/client';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -9,25 +10,81 @@ import { ReactComponent as UserIcon } from '../../assets/images/icons/Contact/Pr
 import { UPDATE_CURRENT_USER } from '../../graphql/mutations/User';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { Button } from '../../components/UI/Form/Button/Button';
+import Loading from '../../components/UI/Layout/Loading/Loading';
+import { sendOTP } from '../../services/AuthService';
+import { setNotification } from '../../common/notification';
+import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 
 export interface MyAccountProps {}
 
 export const MyAccount: React.SFC<MyAccountProps> = () => {
+  // set the validation / errors / success message
+  const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
+
+  // get the information on current user
+  const { data: userData, loading: userDataLoading, client } = useQuery(GET_CURRENT_USER);
+
+  const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
+    onCompleted: (data) => {
+      if (data['updateCurrentUser'].errors) {
+        if (data['updateCurrentUser'].errors[0]['message'] === 'incorrect_code') {
+          setToastMessageInfo({ severity: 'error', message: 'Please enter a valid OTP' });
+        } else {
+          setToastMessageInfo({
+            severity: 'error',
+            message: 'Too many attempts, please retry after sometime.',
+          });
+        }
+      } else {
+        setShowOTPButton(true);
+        setToastMessageInfo({ severity: 'success', message: 'Password updated successfully!' });
+      }
+    },
+  });
+
   const [showOTPButton, setShowOTPButton] = useState(true);
-  const [password, setPassword] = useState('');
 
-  const resendOTPHandler = () => {};
+  if (userDataLoading) return <Loading />;
 
-  // send otp
+  const loggedInUserPhone = userData.currentUser.user.phone;
+
+  // send otp to the logged user
   const sendOTPHandler = () => {
-    setShowOTPButton(false);
+    sendOTP(loggedInUserPhone)
+      .then((response) => {
+        setShowOTPButton(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const cancelHandler = () => {};
-  const saveHandler = (item: any) => {};
+  const cancelHandler = () => {
+    setShowOTPButton(true);
+  };
+
+  const saveHandler = (item: any) => {
+    updateCurrentUser({
+      variables: { input: item },
+    });
+  };
+
+  //toast
+  const closeToastMessage = () => {};
+
+  let displayToastMessage: any;
+  if (toastMessageInfo.message.length > 0) {
+    displayToastMessage = (
+      <ToastMessage
+        message={toastMessageInfo.message}
+        severity={toastMessageInfo.severity === 'success' ? 'success' : 'error'}
+        handleClose={closeToastMessage}
+      />
+    );
+  }
 
   const FormSchema = Yup.object().shape({
-    OTP: Yup.string().required('Input required'),
+    otp: Yup.string().required('Input required'),
     password: Yup.string()
       .min(6, 'Password must be at least 8 characters long.')
       .required('Input required'),
@@ -37,10 +94,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     {
       component: Input,
       type: 'otp',
-      name: 'OTP',
+      name: 'otp',
       placeholder: 'OTP',
       helperText: 'Please confirm the OTP received at your whatsapp number.',
-      endAdornmentCallback: resendOTPHandler,
+      endAdornmentCallback: sendOTPHandler,
     },
     {
       component: Input,
@@ -70,18 +127,15 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     <>
       <Formik
         enableReinitialize
-        initialValues={{
-          password,
-        }}
+        initialValues={{}}
         validationSchema={FormSchema}
         onSubmit={(item) => {
-          console.log('submitted');
           saveHandler(item);
         }}
       >
         {({ submitForm }) => (
           <Form className={styles.Form}>
-            {/* {toastMessage} */}
+            {displayToastMessage}
             {formFieldLayout}
             <div className={styles.Buttons}>
               {showOTPButton ? (
