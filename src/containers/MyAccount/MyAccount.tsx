@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { useQuery, useMutation, ApolloError } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -12,7 +12,6 @@ import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { Button } from '../../components/UI/Form/Button/Button';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { sendOTP } from '../../services/AuthService';
-import { setNotification } from '../../common/notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 
 export interface MyAccountProps {}
@@ -21,9 +20,13 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
 
+  // set the trigger to show next step
+  const [showOTPButton, setShowOTPButton] = useState(true);
+
   // get the information on current user
   const { data: userData, loading: userDataLoading, client } = useQuery(GET_CURRENT_USER);
 
+  // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
       if (data['updateCurrentUser'].errors) {
@@ -42,13 +45,13 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     },
   });
 
-  const [showOTPButton, setShowOTPButton] = useState(true);
-
+  // return loading till we fetch the data
   if (userDataLoading) return <Loading />;
 
+  // set the phone of logged in user that will be used to send the OTP
   const loggedInUserPhone = userData.currentUser.user.phone;
 
-  // send otp to the logged user
+  // callback function to send otp to the logged user
   const sendOTPHandler = () => {
     sendOTP(loggedInUserPhone)
       .then((response) => {
@@ -59,22 +62,26 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       });
   };
 
+  // cancel handler if cancel is clicked
   const cancelHandler = () => {
     setShowOTPButton(true);
   };
 
+  // save the form if data is valid
   const saveHandler = (item: any) => {
     updateCurrentUser({
       variables: { input: item },
     });
   };
 
-  //toast
+  // callback function when close icon is clicked
   const closeToastMessage = () => {
     // reset toast information
     setToastMessageInfo({ message: '', severity: '' });
   };
 
+  // set up toast message display, we use this for showing backend validation errors like
+  // invalid OTP and also display success message on password updat
   let displayToastMessage: any;
   if (toastMessageInfo.message.length > 0) {
     displayToastMessage = (
@@ -86,6 +93,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     );
   }
 
+  // setup form schema base on Yup
   const FormSchema = Yup.object().shape({
     otp: Yup.string().required('Input required'),
     password: Yup.string()
@@ -93,6 +101,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       .required('Input required'),
   });
 
+  // for configuration that needs to be rendered
   const formFields = [
     {
       component: Input,
@@ -110,7 +119,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     },
   ];
 
-  // form fields
+  // build form fields
   let formFieldLayout: any;
   if (!showOTPButton) {
     formFieldLayout = formFields.map((field: any, index) => {
@@ -126,11 +135,13 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       );
     });
   }
+
+  // form component
   let form = (
     <>
       <Formik
         enableReinitialize
-        initialValues={{}}
+        initialValues={{ otp: '', password: '' }}
         validationSchema={FormSchema}
         onSubmit={(item) => {
           saveHandler(item);
