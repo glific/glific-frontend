@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import axios from 'axios';
 import * as Yup from 'yup';
 
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Auth } from '../Auth';
 import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface RegistrationProps {}
 
@@ -63,12 +62,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const initialFormValues = { userName: '', phone: '', password: '' };
 
   const onSubmitRegistration = (values: any) => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: values.phone,
-        },
-      })
+    sendOTP(values.phone)
       .then((response) => {
         setUser(values);
         setRedirect(true);

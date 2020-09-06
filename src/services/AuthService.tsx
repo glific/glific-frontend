@@ -64,6 +64,7 @@ export const checkAuthStatusService = () => {
   return authStatus;
 };
 
+// service to sent the OTP based on the phone number
 export const sendOTP = (phoneNumber: string) => {
   return axios
     .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
@@ -76,6 +77,6 @@ export const sendOTP = (phoneNumber: string) => {
       return response;
     })
     .catch((error) => {
-      return error;
+      throw error;
     });
 };
