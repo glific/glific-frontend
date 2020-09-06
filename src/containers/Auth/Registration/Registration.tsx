@@ -62,7 +62,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const initialFormValues = { userName: '', phone: '', password: '' };
 
   const onSubmitRegistration = (values: any) => {
-    sendOTP(values.phone)
+    sendOTP(values.phone, 'true')
       .then((response) => {
         setUser(values);
         setRedirect(true);

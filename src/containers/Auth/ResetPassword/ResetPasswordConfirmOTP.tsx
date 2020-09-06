@@ -56,7 +56,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   const FormSchema = Yup.object().shape({
     OTP: Yup.string().required('Input required'),
     password: Yup.string()
-      .min(6, 'Password must be at least 8 characters long.')
+      .min(8, 'Password must be at least 8 characters long.')
       .required('Input required'),
   });
 
