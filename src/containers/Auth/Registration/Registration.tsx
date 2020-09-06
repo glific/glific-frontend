@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Auth } from '../Auth';
-import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from '../../../services/AuthService';
 
 export interface RegistrationProps {}
