@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
-import { Input } from '../../../components/UI/Form/Input/Input';
+
 import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
-import Auth from '../Auth';
+import { Input } from '../../../components/UI/Form/Input/Input';
+import { Auth } from '../Auth';
 import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
 
 export interface RegistrationProps {}

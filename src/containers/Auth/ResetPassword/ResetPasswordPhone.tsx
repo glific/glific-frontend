@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import Auth from '../Auth';
+import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from '../../../services/AuthService';
 

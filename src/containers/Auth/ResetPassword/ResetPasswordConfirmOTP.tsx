@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as Yup from 'yup';
 
 import { RESET_PASSWORD } from '../../../common/constants';
-import Auth from '../Auth';
+import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from '../../../services/AuthService';
