@@ -92,7 +92,7 @@ export const Auth: React.SFC<AuthProps> = ({
   };
 
   return (
-    <div className={styles.Container}>
+    <div className={styles.Container} data-testid="AuthContainer">
       <div className={styles.Auth}>
         <div className={styles.GlificLogo}>Glific</div>
         <div className={boxClass.join(' ')}>
