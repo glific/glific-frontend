@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Auth from '../Auth';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
-import axios from 'axios';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
+import Auth from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface ResetPasswordPhoneProps {}
 
@@ -26,17 +27,10 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   }
 
   const onSubmitPhone = (values: any) => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: values.phoneNumber,
-          registration: 'false',
-        },
-      })
-      .then((response) => {
-        setValues(values);
-        setRedirect(true);
-      });
+    sendOTP(values.phoneNumber).then((response) => {
+      setValues(values);
+      setRedirect(true);
+    });
   };
 
   const formFields = [
