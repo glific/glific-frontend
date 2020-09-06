@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Auth from '../Auth';
-import { RESET_PASSWORD, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
 import axios from 'axios';
 import * as Yup from 'yup';
+
+import { RESET_PASSWORD } from '../../../common/constants';
+import Auth from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;
@@ -23,21 +25,8 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
     return <Redirect to="/login" />;
   }
 
-  // TODO: Refactor this when we centralize axios calls
   const handleResend = () => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: props.location.state.phoneNumber,
-          registration: 'false',
-        },
-      })
-      .then((response: any) => {
-        console.log(response);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
+    sendOTP(props.location.state.phoneNumber);
   };
 
   const formFields = [
