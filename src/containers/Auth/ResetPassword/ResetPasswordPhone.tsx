@@ -11,6 +11,7 @@ export interface ResetPasswordPhoneProps {}
 export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   if (redirect) {
     return (
@@ -26,10 +27,14 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   }
 
   const onSubmitPhone = (values: any) => {
-    sendOTP(values.phoneNumber).then((response) => {
-      setValues(values);
-      setRedirect(true);
-    });
+    sendOTP(values.phoneNumber)
+      .then((response) => {
+        setValues(values);
+        setRedirect(true);
+      })
+      .catch((error: any) => {
+        setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
+      });
   };
 
   const formFields = [
@@ -60,6 +65,7 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       validationSchema={FormSchema}
       saveHandler={onSubmitPhone}
       initialFormValues={initialFormValues}
+      errorMessage={authError}
     />
   );
 };
