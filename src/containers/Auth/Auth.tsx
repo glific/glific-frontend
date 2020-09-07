@@ -25,7 +25,7 @@ export interface AuthProps {
   errorMessage?: string;
 }
 
-const Auth: React.SFC<AuthProps> = ({
+export const Auth: React.SFC<AuthProps> = ({
   pageTitle,
   buttonText,
   alternateLink,
@@ -92,7 +92,7 @@ const Auth: React.SFC<AuthProps> = ({
   };
 
   return (
-    <div className={styles.Container}>
+    <div className={styles.Container} data-testid="AuthContainer">
       <div className={styles.Auth}>
         <div className={styles.GlificLogo}>Glific</div>
         <div className={boxClass.join(' ')}>
@@ -158,5 +158,3 @@ const Auth: React.SFC<AuthProps> = ({
     </div>
   );
 };
-
-export default Auth;

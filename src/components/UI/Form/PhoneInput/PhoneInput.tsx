@@ -53,5 +53,3 @@ export const PhoneInput: React.SFC<InputProps> = ({
     </div>
   );
 };
-
-export default PhoneInput;

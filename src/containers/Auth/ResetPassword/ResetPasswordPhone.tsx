@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Auth from '../Auth';
-import { REACT_APP_GLIFIC_AUTHENTICATION_API } from '../../../common/constants';
-import axios from 'axios';
 import * as Yup from 'yup';
+
+import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface ResetPasswordPhoneProps {}
 
 export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   const [values, setValues] = useState({ phoneNumber: '' });
   const [redirect, setRedirect] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   if (redirect) {
     return (
@@ -26,16 +27,13 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
   }
 
   const onSubmitPhone = (values: any) => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: values.phoneNumber,
-          registration: 'false',
-        },
-      })
+    sendOTP(values.phoneNumber)
       .then((response) => {
         setValues(values);
         setRedirect(true);
+      })
+      .catch((error: any) => {
+        setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });
   };
 
@@ -67,6 +65,7 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
       validationSchema={FormSchema}
       saveHandler={onSubmitPhone}
       initialFormValues={initialFormValues}
+      errorMessage={authError}
     />
   );
 };
