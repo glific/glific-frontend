@@ -13,6 +13,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/W
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
+import { convertToWhatsApp } from '../../common/RichEditor';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
@@ -213,6 +214,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     formFields.map((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
+      }
+      if (field.convertToWhatsApp) {
+        payload[field.name] = convertToWhatsApp(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];

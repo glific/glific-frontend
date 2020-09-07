@@ -49,9 +49,6 @@ describe('Save Button', () => {
     fireEvent.change(container.querySelector('input[name="label"]'), {
       target: { value: 'new Template' },
     });
-    fireEvent.change(container.querySelector('textarea[name="body"]'), {
-      target: { value: 'new Template body' },
-    });
 
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },

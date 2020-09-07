@@ -62,7 +62,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const client = useApolloClient();
 
   const message = useQuery(NOTIFICATION);
-  const [loadAllTags, AllTags] = useLazyQuery(FILTER_TAGS_NAME, {
+  const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: {
       filter: {},
       opts: {
@@ -239,7 +239,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   let dialogBox;
 
-  const tags = AllTags.data ? AllTags.data.tags : [];
+  const tags = allTags.data ? allTags.data.tags : [];
 
   if (dialog) {
     dialogBox = (

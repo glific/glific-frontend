@@ -2,10 +2,11 @@ import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
+
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
-import Auth from '../Auth';
-import PhoneInput from '../../../components/UI/Form/PhoneInput/PhoneInput';
+import { Auth } from '../Auth';
+import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
 
 export interface LoginProps {}

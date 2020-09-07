@@ -3,6 +3,7 @@ import { List } from '../../List/List';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import styles from './Template.module.css';
+import { WhatsAppToJsx } from '../../../common/RichEditor';
 
 const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
 const columnStyles = [styles.Label, styles.Body, styles.Actions];
@@ -14,7 +15,7 @@ const getColumns = ({ label, body }: any) => ({
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
-const getBody = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
 const queries = {
   countQuery: GET_TEMPLATES_COUNT,

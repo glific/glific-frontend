@@ -1,8 +1,7 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import { OutlinedInput, Button } from '@material-ui/core';
+import { shallow } from 'enzyme';
 import axios from 'axios';
-import Auth from '../Auth';
+import { Auth } from '../Auth';
 import { wait } from '@testing-library/react';
 
 import { ConfirmOTP } from './ConfirmOTP';

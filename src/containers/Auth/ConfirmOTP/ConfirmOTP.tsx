@@ -2,13 +2,12 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
-import {
-  REACT_APP_GLIFIC_REGISTRATION_API,
-  REACT_APP_GLIFIC_AUTHENTICATION_API,
-} from '../../../common/constants';
+
+import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
-import Auth from '../Auth';
+import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface ConfirmOTPProps {
   location: any;
@@ -20,19 +19,10 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState('');
 
-  // TODO: Refactor this when we centralize axios calls
   const handleResend = () => {
-    axios
-      .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
-        user: {
-          phone: props.location.state.phoneNumber,
-          registration: 'false',
-        },
-      })
-      .then((response: any) => {})
-      .catch((error: any) => {
-        setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
-      });
+    sendOTP(props.location.state.phoneNumber, 'true').catch((error: any) => {
+      setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
+    });
   };
 
   // Let's not allow direct navigation to this page

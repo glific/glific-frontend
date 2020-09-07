@@ -24,6 +24,11 @@
   padding-bottom: 35px !important;
 }
 
+.OutlineInput > div:first-child {
+  width: inherit !important;
+  height: 100px;
+  overflow: auto;
+}
 .Resend {
   color: #119656;
   font-weight: bold;
@@ -36,4 +41,8 @@
 
 .Visibility {
   color: #93a29b;
+}
+
+.OutlineInput :global(.public-DraftEditor-content) {
+  padding-bottom: 81px;
 }
