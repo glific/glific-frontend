@@ -29,6 +29,7 @@ test('it should render ConversationsList properly', async () => {
 test('it shows a conversation on clicking a contact', async () => {
   const { getAllByTestId, getByText } = render(conversationList);
   await wait();
+  await wait();
   fireEvent.click(getAllByTestId('list')[0]);
   expect(getByText('Hi')).toBeInTheDocument();
 });

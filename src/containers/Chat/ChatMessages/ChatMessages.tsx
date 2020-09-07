@@ -18,7 +18,7 @@ import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
-import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { Redirect } from 'react-router';
 
 export interface ChatMessagesProps {
@@ -62,7 +62,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const client = useApolloClient();
 
   const message = useQuery(NOTIFICATION);
-  const [loadAllTags, allTags] = useLazyQuery(GET_TAGS);
+  const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
+    variables: {
+      filter: {},
+      opts: {
+        order: 'ASC',
+      },
+    },
+  });
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);

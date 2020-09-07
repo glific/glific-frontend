@@ -19,7 +19,7 @@ const getContactDetailsQuery = {
             },
           ],
           fields: {},
-          lastMessageAt: new Date(),
+          lastMessageAt: new Date().toISOString(),
         },
       },
     },
