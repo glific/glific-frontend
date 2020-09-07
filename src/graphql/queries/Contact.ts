@@ -28,6 +28,9 @@ export const GET_CONTACT_GROUPS = gql`
         groups {
           id
           label
+          users {
+            name
+          }
         }
       }
     }
@@ -89,6 +92,9 @@ export const GET_CONTACT_DETAILS = gql`
         groups {
           id
           label
+          users {
+            name
+          }
         }
         fields
       }

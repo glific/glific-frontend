@@ -15,6 +15,7 @@ const getContactDetailsQuery = {
             {
               id: '1',
               label: 'Default group',
+              users: [],
             },
           ],
           fields: {},
