@@ -1,14 +1,18 @@
 import { gql } from '@apollo/client';
 
 export const GET_TAGS = gql`
-  {
-    tags {
+  query tags($filter: TagFilter, $opts: Opts) {
+    tags(filter: $filter, opts: $opts) {
       id
       label
       description
       colorCode
       parent {
         id
+      }
+      language {
+        id
+        label
       }
     }
   }

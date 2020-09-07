@@ -23,6 +23,10 @@ export const CREATE_TAG = gql`
           id
         }
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;

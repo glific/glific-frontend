@@ -244,6 +244,7 @@ const mocks = [
             description: 'Hey There',
             colorCode: '#0C976D',
             parent: null,
+            language: { id: '1', label: 'Hindi' },
           },
           {
             id: '1',
@@ -251,6 +252,7 @@ const mocks = [
             description: 'some description',
             colorCode: '#0C976D',
             parent: { id: '2' },
+            language: { id: '1', label: 'Hindi' },
           },
         ],
       },
