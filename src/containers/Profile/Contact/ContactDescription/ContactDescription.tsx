@@ -29,7 +29,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     { label: 'Groups', value: groups.map((group: any) => group.label).join(', ') },
     {
       label: 'Assigned to',
-      value: assignedToGroup,
+      value: assignedToGroup ? assignedToGroup : 'None',
     },
   ];
 

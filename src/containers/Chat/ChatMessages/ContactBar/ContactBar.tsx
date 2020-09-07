@@ -278,8 +278,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <Timer time={props.lastMessageTime} />
       </div>
       <div>
-        <span className={styles.GroupHeading}>Assigned to</span>
-        <span className={styles.GroupsName}>{assignedToGroup}</span>
+        {assignedToGroup ? (
+          <>
+            <span className={styles.GroupHeading}>Assigned to</span>
+            <span className={styles.GroupsName}>{assignedToGroup}</span>
+          </>
+        ) : null}
       </div>
     </div>
   );
