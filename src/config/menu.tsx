@@ -53,7 +53,7 @@ export const userAccountMenus = [
   },
   {
     title: 'My Account',
-    path: '#',
+    path: '/myaccount',
   },
   {
     title: 'Logout',

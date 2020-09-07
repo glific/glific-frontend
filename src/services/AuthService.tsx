@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import axios from 'axios';
 
 import { SessionContext } from '../context/session';
-import { RENEW_TOKEN } from '../common/constants';
+import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/constants';
 
 export interface LogoutServiceProps {}
 
@@ -62,4 +62,20 @@ export const checkAuthStatusService = () => {
     }
   }
   return authStatus;
+};
+
+export const sendOTP = (phoneNumber: string) => {
+  return axios
+    .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
+      user: {
+        phone: phoneNumber,
+        registration: 'false',
+      },
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return error;
+    });
 };

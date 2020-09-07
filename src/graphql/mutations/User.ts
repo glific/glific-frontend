@@ -32,3 +32,17 @@ export const UPDATE_USER = gql`
   }
 `;
 
+export const UPDATE_CURRENT_USER = gql`
+  mutation updateCurrentUser($input:CurrentUserInput!) {
+    updateCurrentUser(input: $input) {
+      user {
+        id
+        name
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

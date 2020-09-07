@@ -1,5 +1,5 @@
 .Card {
-  width: 310px;
+  width: 31%;
   position: relative !important;
   margin-right: 24px;
   margin-bottom: 24px;
@@ -32,7 +32,7 @@
 
 .CardActions {
   position: absolute !important;
-  width: inherit;
+  width: 100%;
   bottom: 0px !important;
 }
 

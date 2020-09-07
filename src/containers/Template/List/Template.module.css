@@ -1,13 +1,13 @@
 .Label {
-  width: 235px;
+  width: 25%;
 }
 
 .Body {
-  width: 600px;
+  width: 50%;
 }
 
 .Actions {
-  width: 100px;
+  width: 25%;
   justify-content: flex-end;
   margin-left: auto;
 }

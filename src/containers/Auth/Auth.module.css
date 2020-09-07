@@ -157,6 +157,7 @@
 
 .AuthButton {
   width: 334px;
+  margin-right: 0px !important;
 }
 
 .ErrorMessage {
