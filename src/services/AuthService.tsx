@@ -1,17 +1,6 @@
-import React, { useContext } from 'react';
 import axios from 'axios';
 
-import { SessionContext } from '../context/session';
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/constants';
-
-export interface LogoutServiceProps {}
-
-export const LogoutService: React.SFC<LogoutServiceProps> = () => {
-  const { setAuthenticated } = useContext(SessionContext);
-  localStorage.removeItem('glific_session');
-  setAuthenticated(false);
-  return null;
-};
 
 export const renewAuthToken = () => {
   const session = localStorage.getItem('glific_session');

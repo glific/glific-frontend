@@ -28,13 +28,14 @@ import { Collection } from './containers/Collection/Collection';
 import { GroupList } from './containers/Group/GroupList/GroupList';
 import { GroupContact } from './containers/Group/GroupContact/GroupContact';
 import { Group } from './containers/Group/Group';
-import { LogoutService, checkAuthStatusService } from './services/AuthService';
+import { checkAuthStatusService } from './services/AuthService';
 import { FlowEditorContainer } from './components/floweditor/FlowEditorContainer/FlowEditorContainer';
 import { ContactProfile } from './containers/Profile/Contact/ContactProfile';
 import { OrganisationSettings } from './containers/OrganisationSettings/OrganisationSettings';
 import { UserProfile } from './containers/Profile/User/UserProfile';
 import { MyAccount } from './containers/MyAccount/MyAccount';
 import { BlockContactList } from './containers/BlockContact/BlockContactList/BlockContactList';
+import { Logout } from './containers/Auth/Logout/Logout';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
@@ -93,7 +94,7 @@ const App = () => {
             <Route path="/settings" exact component={OrganisationSettings} />
             <Route path="/blocked-contacts" exact component={BlockContactList} />
 
-            <Route path="/logout" exact component={LogoutService} />
+            <Route path="/logout" exact component={Logout} />
 
             <Route
               exact
