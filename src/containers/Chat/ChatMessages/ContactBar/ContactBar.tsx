@@ -85,7 +85,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
     selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
     assignedToGroup = data.contact.contact.groups.map((group: any) =>
-      group.users.map((user: any) => user.name.split(' ')[0])
+      group.users.map((user: any) => user.name)
     );
 
     assignedToGroup = Array.from(new Set([].concat(...assignedToGroup)));

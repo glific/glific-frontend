@@ -16,11 +16,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
   lastMessage,
 }: ContactDescriptionProps) => {
   let assignedToGroup: any = Array.from(
-    new Set(
-      [].concat(
-        ...groups.map((group: any) => group.users.map((user: any) => user.name.split(' ')[0]))
-      )
-    )
+    new Set([].concat(...groups.map((group: any) => group.users.map((user: any) => user.name))))
   );
   if (assignedToGroup.length > 2) {
     assignedToGroup =
