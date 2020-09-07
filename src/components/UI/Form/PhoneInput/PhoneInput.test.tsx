@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import PhoneInput from './PhoneInput';
+import { PhoneInput } from './PhoneInput';
 
 describe('<PhoneInput />', () => {
   const props = {

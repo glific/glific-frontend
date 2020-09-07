@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
+import { useLazyQuery } from '@apollo/client';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
-import { GET_TEMPLATE } from '../../../graphql/queries/Template';
+import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import {
   CREATE_TEMPLATE,
   UPDATE_TEMPLATE,
@@ -16,11 +17,6 @@ const FormSchema = Yup.object().shape({
 });
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
-
-const formFields = [
-  { component: Input, name: 'label', placeholder: 'Title' },
-  { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
-];
 
 const defaultAttribute = {
   type: 'TEXT',
@@ -44,6 +40,8 @@ export interface TemplateProps {
 const Template: React.SFC<TemplateProps> = (props) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState('');
+  const [filterLabel, setFilterLabel] = useState('');
+  const [languageId, setLanguageId] = useState('');
 
   const states = { label, body };
   const setStates = ({ label, body }: any) => {
@@ -55,6 +53,49 @@ const Template: React.SFC<TemplateProps> = (props) => {
   if (props.defaultAttribute) {
     attributesObject = { ...attributesObject, ...props.defaultAttribute };
   }
+
+  useEffect(() => {
+    if (filterLabel && languageId) getSessionTemplates();
+  }, [filterLabel, languageId]);
+
+  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
+    variables: {
+      filter: { label: filterLabel, languageId: parseInt(languageId) },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  });
+
+  const validateTitle = (value: any) => {
+    if (value) {
+      setFilterLabel(value);
+      let found = [];
+      let error;
+      if (sessionTemplates) {
+        // need to check exact title
+        found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
+        if (props.match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== props.match.params.id);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Title already exists.';
+      }
+      return error;
+    }
+  };
+
+  const getLanguageId = (value: any) => {
+    setLanguageId(value);
+  };
+
+  const formFields = [
+    { component: Input, name: 'label', placeholder: 'Title', validate: validateTitle },
+    { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
+  ];
 
   return (
     <FormLayout
@@ -70,6 +111,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       listItem="sessionTemplate"
       icon={props.icon}
       defaultAttribute={attributesObject}
+      getLanguageId={getLanguageId}
     />
   );
 };

@@ -1,5 +1,9 @@
 import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES, GET_TEMPLATE } from '../../graphql/queries/Template';
+import {
+  GET_TEMPLATES_COUNT,
+  FILTER_TEMPLATES,
+  GET_TEMPLATE,
+} from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 
 const count = {
@@ -65,7 +69,7 @@ const HSMTemplatecount = {
       countSessionTemplates: 2,
     },
   },
-}
+};
 
 const HSMTemplate = {
   request: {
@@ -125,6 +129,34 @@ const filterByBody = (body: string) => ({
     },
   },
 });
+
+const speedSendValidation = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: {
+        label:
+          'We are not allowing a really long title, and we should trigger validation for this.',
+        languageId: 1,
+      },
+      opts: { order: 'ASC', limit: null, offset: 0 },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          body: 'This is HSM template',
+          id: '98',
+          isHsm: true,
+          label:
+            'We are not allowing a really long title, and we should trigger validation for this',
+          isReserved: false,
+        },
+      ],
+    },
+  },
+};
 
 export const TEMPLATE_MOCKS = [
   {
@@ -208,10 +240,33 @@ export const TEMPLATE_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { label: 'new Template', languageId: 1 },
+        opts: { order: 'ASC', limit: null, offset: 0 },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          {
+            body: 'This is HSM template',
+            id: '98',
+            isHsm: true,
+            label: 'new Template',
+            isReserved: false,
+          },
+        ],
+      },
+    },
+  },
   count,
   speedSend,
   HSMTemplatecount,
   HSMTemplate,
   filterByBody('hi'),
   filterByBody(''),
+  speedSendValidation,
 ];
