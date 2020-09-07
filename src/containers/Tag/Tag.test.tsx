@@ -27,7 +27,7 @@ test('should load tag edit form', async () => {
   expect(formLayout).toHaveTextContent('Keywords');
 });
 
-test('save button should add a new tag', async () => {
+test('should be able to submit the data on save', async () => {
   const { container, getByText, findByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Tag match={{ params: {} }} />
