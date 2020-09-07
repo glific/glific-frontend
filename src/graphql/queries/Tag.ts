@@ -59,3 +59,12 @@ export const FILTER_TAGS = gql`
     }
   }
 `;
+
+export const FILTER_TAGS_NAME = gql`
+  query tags($filter: TagFilter!, $opts: Opts!) {
+    tags(filter: $filter, opts: $opts) {
+      id
+      label
+    }
+  }
+`;

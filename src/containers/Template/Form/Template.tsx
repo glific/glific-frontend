@@ -10,10 +10,15 @@ import {
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
-
+import { EditorState, ContentState } from 'draft-js';
+import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
-  body: Yup.string().required('Message is required.'),
+  body: Yup.string()
+    .transform((current, original) => {
+      return original.getCurrentContent().getPlainText();
+    })
+    .required('Message is required.'),
 });
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
@@ -39,14 +44,14 @@ export interface TemplateProps {
 
 const Template: React.SFC<TemplateProps> = (props) => {
   const [label, setLabel] = useState('');
-  const [body, setBody] = useState('');
+  const [body, setBody] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, body };
   const setStates = ({ label, body }: any) => {
     setLabel(label);
-    setBody(body);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(body)));
   };
 
   let attributesObject = defaultAttribute;

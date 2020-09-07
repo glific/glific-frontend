@@ -6,7 +6,7 @@ const date = new Date();
 const defaultProps = {
   fields: {},
   phoneNo: '9987399299',
-  groups: [{ id: 1, label: 'Default Group' }],
+  groups: [{ id: 1, label: 'Default Group', users: [{ name: 'Glific' }] }],
   lastMessage: date.toString(),
 };
 

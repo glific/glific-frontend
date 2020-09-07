@@ -17,12 +17,13 @@ export interface InputProps {
   type?: any;
   field: any;
   disabled?: any;
+  editor?: any;
   label: string;
   form: any;
   placeholder: any;
   rows: number;
   helperText?: string;
-  emojiPicker?: boolean | null;
+  emojiPicker?: any;
   textArea?: boolean;
   togglePassword?: boolean;
   endAdornmentCallback?: any;
@@ -77,12 +78,15 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {props.placeholder}
         </InputLabel>
         <OutlinedInput
+          inputComponent={props.editor ? props.editor.inputComponent : undefined}
+          inputProps={props.editor ? props.editor.inputProps : undefined}
           type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
           error={error[name] && touched[name] ? true : false}
           multiline={textArea}
           rows={props.rows}
+          className={styles.OutlineInput}
           label={props.placeholder}
           fullWidth
           {...props.field}

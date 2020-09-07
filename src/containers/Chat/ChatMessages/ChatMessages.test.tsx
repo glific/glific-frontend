@@ -4,11 +4,7 @@ import { render, wait, act, within } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ChatMessages } from './ChatMessages';
-import {
-  mocksWithConversation,
-  mocksWithMultipleMessages,
-  mocksWithNoMessages,
-} from './ChatMessages.test.helper';
+import { mocksWithConversation, mocksWithMultipleMessages } from './ChatMessages.test.helper';
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({
@@ -53,13 +49,14 @@ it('should contain the mock message', async () => {
 });
 
 test('click on assign tag should open a dialog box with already assigned tags', async () => {
-  const { getByTestId } = render(chatMessages);
+  const { getByTestId, getByText } = render(chatMessages);
   await wait();
   fireEvent.click(getByTestId('messageOptions'));
   await wait();
-  act(() => {
-    fireEvent.click(getByTestId('dialogButton'));
-  });
+
+  fireEvent.click(getByTestId('dialogButton'));
+  await wait();
+
   await wait();
   expect(getByTestId('dialogBox')).toHaveTextContent('important');
 });
@@ -71,6 +68,7 @@ test('assigned tags should be shown in searchbox', async () => {
   await wait();
   fireEvent.click(getByTestId('dialogButton'));
   await wait();
+
   const searchBox = within(getByTestId('dialogInput'));
   expect(searchBox.getByText('important')).toBeInTheDOM();
 });

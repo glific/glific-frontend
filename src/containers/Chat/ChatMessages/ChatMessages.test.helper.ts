@@ -3,7 +3,7 @@ import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
-import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { GET_CONTACT_GROUPS } from '../../../graphql/queries/Contact';
 
 export const contactGroupsQuery = {
@@ -21,10 +21,12 @@ export const contactGroupsQuery = {
             {
               id: '1',
               label: 'Default Group',
+              users: [],
             },
             {
               id: '2',
               label: 'Staff Group',
+              users: [],
             },
           ],
         },
@@ -233,7 +235,13 @@ const mocks = [
 
   {
     request: {
-      query: GET_TAGS,
+      query: FILTER_TAGS_NAME,
+      variables: {
+        filter: {},
+        opts: {
+          order: 'ASC',
+        },
+      },
     },
     result: {
       data: {
@@ -241,18 +249,10 @@ const mocks = [
           {
             id: '87',
             label: 'Good message',
-            description: 'Hey There',
-            colorCode: '#0C976D',
-            parent: null,
-            language: { id: '1', label: 'Hindi' },
           },
           {
             id: '1',
             label: 'important',
-            description: 'some description',
-            colorCode: '#0C976D',
-            parent: { id: '2' },
-            language: { id: '1', label: 'Hindi' },
           },
         ],
       },

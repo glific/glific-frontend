@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
@@ -11,8 +11,9 @@ import {
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
 
-import { GET_AUTOMATION } from '../../graphql/queries/Automation';
+import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
+import { useLazyQuery } from '@apollo/client/react';
 
 export interface AutomationProps {
   match: any;
@@ -20,37 +21,10 @@ export interface AutomationProps {
 
 const FormSchema = Yup.object().shape({
   shortcode: Yup.string().required('Shortcode is required.'),
+  name: Yup.string().required('Name is required.'),
 });
 
 const dialogMessage = "You won't be able to use this automation again.";
-
-const formFields = [
-  {
-    component: Input,
-    name: 'shortcode',
-    type: 'text',
-    placeholder: 'Shortcode',
-  },
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'Name',
-  },
-  {
-    component: Input,
-    name: 'keywords',
-    type: 'text',
-    placeholder: 'Keywords',
-    helperText: 'Enter comma separated keywords that trigger this automation',
-  },
-
-  {
-    component: Checkbox,
-    name: 'ignoreKeywords',
-    title: 'Ignore Keywords',
-  },
-];
 
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
@@ -66,6 +40,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
+  const [filterKeywords, setFilterKeywords] = useState('');
 
   const states = { shortcode, name, keywords, ignoreKeywords };
 
@@ -77,6 +52,71 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   };
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
+
+  useEffect(() => {
+    if (filterKeywords) getAutomations();
+  }, [filterKeywords]);
+
+  const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_AUTOMATION, {
+    variables: {
+      filter: { keyword: filterKeywords },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  });
+
+  const validateKeywords = (value: any) => {
+    if (value) {
+      setFilterKeywords(value);
+      let found = [];
+      let error;
+      if (automation) {
+        // need to check exact keywords
+        found = automation.flows.filter((search: any) =>
+          search.keywords.filter((keyword: any) => keyword === value)
+        );
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Keyword already exists.';
+      }
+      return error;
+    }
+  };
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'shortcode',
+      type: 'text',
+      placeholder: 'Shortcode',
+    },
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Name',
+    },
+    {
+      component: Input,
+      name: 'keywords',
+      type: 'text',
+      placeholder: 'Keywords',
+      helperText: 'Enter comma separated keywords that trigger this automation',
+      validate: validateKeywords,
+    },
+
+    {
+      component: Checkbox,
+      name: 'ignoreKeywords',
+      title: 'Ignore Keywords',
+    },
+  ];
 
   return (
     <FormLayout

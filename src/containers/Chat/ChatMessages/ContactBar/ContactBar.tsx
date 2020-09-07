@@ -79,10 +79,22 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let automationOptions = [];
   let initialSelectedGroupIds: Array<any> = [];
   let selectedGroupsName = [];
+  let assignedToGroup: any = [];
 
   if (data) {
     initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
     selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
+    assignedToGroup = data.contact.contact.groups.map((group: any) =>
+      group.users.map((user: any) => user.name)
+    );
+
+    assignedToGroup = Array.from(new Set([].concat(...assignedToGroup)));
+    if (assignedToGroup.length > 2) {
+      assignedToGroup =
+        assignedToGroup.slice(0, 2).join(', ') + ' +' + (assignedToGroup.length - 2).toString();
+    } else {
+      assignedToGroup = assignedToGroup.join(', ');
+    }
   }
   if (groupsData) {
     groupOptions = groupsData.groups;
@@ -259,10 +271,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const sessionTimer = (
-    <div className={styles.SessionTimer} data-testid="sessionTimer">
-      <span>Session Timer</span>
-      <Timer time={props.lastMessageTime} />
+  const sesssionAndGroupAssignedTo = (
+    <div className={styles.Container}>
+      <div className={styles.SessionTimer} data-testid="sessionTimer">
+        <span>Session Timer</span>
+        <Timer time={props.lastMessageTime} />
+      </div>
+      <div>
+        {assignedToGroup ? (
+          <>
+            <span className={styles.GroupHeading}>Assigned to</span>
+            <span className={styles.GroupsName}>{assignedToGroup}</span>
+          </>
+        ) : null}
+      </div>
     </div>
   );
   return (
@@ -281,7 +303,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         </div>
         {contactGroups}
       </div>
-      {sessionTimer}
+      {sesssionAndGroupAssignedTo}
       {popper}
       {dialogBox}
     </Toolbar>

@@ -15,10 +15,11 @@ const getContactDetailsQuery = {
             {
               id: '1',
               label: 'Default group',
+              users: [],
             },
           ],
           fields: {},
-          lastMessageAt: new Date(),
+          lastMessageAt: new Date().toISOString(),
         },
       },
     },
