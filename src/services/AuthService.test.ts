@@ -10,7 +10,19 @@ describe('AuthService', () => {
 
   });
 
-  test('testing checkAuthStatusService', () => {
+  test('testing checkAuthStatusService with empty session', () => {
+    const response = checkAuthStatusService();
+    expect(response).toBeFalsy();
+  });
+
+  test('testing checkAuthStatusService with valid token', () => {
+    // set the session
+    setAuthSession(session);
+    const response = checkAuthStatusService();
+    expect(response).toBeTruthy();
+  });
+
+  test('testing checkAuthStatusService with expired token and valid refresh token', () => {
 
   });
 
