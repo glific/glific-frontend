@@ -1,14 +1,26 @@
-import { renewAuthToken, checkAuthStatusService, sendOTP, setAuthSession, clearAuthSession, getAuthSession } from "./AuthService";
+import axios from 'axios';
+
+import {
+  renewAuthToken,
+  checkAuthStatusService,
+  sendOTP,
+  setAuthSession,
+  clearAuthSession,
+  getAuthSession,
+} from './AuthService';
+
+jest.mock('axios');
 
 describe('AuthService', () => {
   // let's create token expiry date for tomorrow
   const tokenExpiryDate = new Date();
   tokenExpiryDate.setDate(new Date().getDate() + 1);
-  const session = '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' + tokenExpiryDate + '"}';
+  const session =
+    '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+    tokenExpiryDate +
+    '"}';
 
-  test('testing renewAuthToken', () => {
-
-  });
+  test('testing renewAuthToken', () => { });
 
   test('testing checkAuthStatusService with empty session', () => {
     const response = checkAuthStatusService();
@@ -22,9 +34,7 @@ describe('AuthService', () => {
     expect(response).toBeTruthy();
   });
 
-  test('testing checkAuthStatusService with expired token and valid refresh token', () => {
-
-  });
+  test('testing checkAuthStatusService with expired token and valid refresh token', () => { });
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session
@@ -42,8 +52,17 @@ describe('AuthService', () => {
     expect(getAuthSession()).toBeFalsy();
   });
 
-  test('testing sendOTP', () => {
-
+  test('testing successful sendOTP', async () => {
+    const data = {
+      data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
+    };
+    axios.post.mockImplementationOnce(() => Promise.resolve(data));
+    await expect(sendOTP('919967665667')).resolves.toEqual(data);
   });
 
+  test('testing sendOTP failure', async () => {
+    const errorMessage = 'Cannot send the otp to 919967665667';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    await expect(sendOTP('919967665667')).rejects.toThrow(errorMessage);
+  });
 });
