@@ -27,6 +27,7 @@ export const listItemProps = {
   createItemQuery: CREATE_TAG,
   updateItemQuery: UPDATE_TAG,
   icon: null,
+  getLanguageId: Function,
 };
 
 export const LIST_ITEM_MOCKS = [
@@ -251,6 +252,27 @@ export const LIST_ITEM_MOCKS = [
             description: null,
             colorCode: '#0C976D',
             parent: { id: '2' },
+            language: { id: '1', label: 'Hindi' },
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TAGS,
+      variables: { filter: { label: 'new Tag', languageId: 1 } },
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '1',
+            label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
+            language: { id: '1', label: 'Hindi' },
           },
         ],
       },

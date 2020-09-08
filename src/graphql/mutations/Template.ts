@@ -19,6 +19,10 @@ export const CREATE_TEMPLATE = gql`
         body
         label
       }
+      errors {
+        key
+        message
+      }
     }
   }
 `;

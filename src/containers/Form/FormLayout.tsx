@@ -50,6 +50,7 @@ export interface FormLayoutProps {
   refetchQueries?: any;
   redirect?: boolean;
   title?: string;
+  getLanguageId?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -83,6 +84,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   afterDelete,
   refetchQueries,
   redirect = true,
+  getLanguageId,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -278,6 +280,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
 
+  const validateLanguage = (value: any) => {
+    if (value && getLanguageId) {
+      getLanguageId(value);
+    }
+  };
+
   const languageOptions = languages.data ? languages.data.languages : null;
   const language = languageSupport
     ? {
@@ -285,6 +293,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         name: 'languageId',
         placeholder: 'Language',
         options: languageOptions,
+        validate: validateLanguage,
       }
     : null;
 
