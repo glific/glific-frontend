@@ -8,6 +8,7 @@ import { SessionContext } from '../../../context/session';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
+import { setAuthSession } from '../../../services/AuthService';
 
 export interface LoginProps {}
 
@@ -63,12 +64,11 @@ export const Login: React.SFC<LoginProps> = () => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('glific_session', responseString);
+        setAuthSession(responseString);
         setAuthenticated(true);
         setSessionToken(responseString);
       })
       .catch((error: any) => {
-        console.log('error', error);
         setAuthError('Invalid phone or password.');
       });
   };

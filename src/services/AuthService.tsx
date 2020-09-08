@@ -69,3 +69,11 @@ export const sendOTP = (phoneNumber: string, registration = 'false') => {
       throw error;
     });
 };
+
+export const setAuthSession = (session: string) => {
+  localStorage.setItem('glific_session', session);
+};
+
+export const clearAuthSession = () => {
+  localStorage.removeItem('glific_session');
+};
