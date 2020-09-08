@@ -4,13 +4,11 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import styles from './Automation.module.css';
-
 import {
   CREATE_AUTOMATION,
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
-
 import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { useLazyQuery } from '@apollo/client/react';
@@ -40,7 +38,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
-  const [filterKeywords, setFilterKeywords] = useState('');
+  const [filterKeywords, setFilterKeywords] = useState<any>();
 
   const states = { shortcode, name, keywords, ignoreKeywords };
 
@@ -59,7 +57,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_AUTOMATION, {
     variables: {
-      filter: { keyword: filterKeywords },
+      filter: filterKeywords,
       opts: {
         order: 'ASC',
         limit: null,
@@ -68,25 +66,49 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     },
   });
 
-  const validateKeywords = (value: any) => {
+  const validateShortcode = (value: string) => {
     if (value) {
-      setFilterKeywords(value);
-      let found = [];
-      let error;
-      if (automation) {
-        // need to check exact keywords
+      // setFilterKeywords({ shortcode: value }); // need shortcode filter
+      setFilterKeywords({});
+      return validateFields(value, 'shortcode', 'Shortcode already exists.', false);
+    }
+  };
+
+  const validateName = (value: string) => {
+    if (value) {
+      setFilterKeywords({ name: value });
+      return validateFields(value, 'name', 'Name already exists.', false);
+    }
+  };
+
+  const validateKeywords = (value: string) => {
+    if (value) {
+      setFilterKeywords({ keyword: value });
+      return validateFields(value, 'keywords', 'Keyword already exists.', true);
+    }
+  };
+
+  const validateFields = (value: string, key: string, errorMsg: string, deepFilter: boolean) => {
+    let found = [];
+    let error;
+    if (automation) {
+      // need to check exact keywords
+      if (deepFilter) {
         found = automation.flows.filter((search: any) =>
           search.keywords.filter((keyword: any) => keyword === value)
         );
-        if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
-        }
+      } else {
+        found = automation.flows.filter((search: any) => search[key] === value);
       }
-      if (found.length > 0) {
-        error = 'Keyword already exists.';
+
+      if (match.params.id && found.length > 0) {
+        found = found.filter((search: any) => search.id !== match.params.id);
       }
-      return error;
     }
+    if (found.length > 0) {
+      error = errorMsg;
+    }
+    return error;
   };
 
   const formFields = [
@@ -95,12 +117,14 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       name: 'shortcode',
       type: 'text',
       placeholder: 'Shortcode',
+      validate: validateShortcode,
     },
     {
       component: Input,
       name: 'name',
       type: 'text',
       placeholder: 'Name',
+      validate: validateName,
     },
     {
       component: Input,
