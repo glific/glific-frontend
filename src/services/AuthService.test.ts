@@ -14,16 +14,11 @@ describe('AuthService', () => {
 
   });
 
-  test('testing sendOTP', () => {
-
-  });
-
-  test('testing setAuthSession', () => {
-
-  });
-
-  test('testing getAuthSession', () => {
-
+  test('testing setAuthSession & getAuthSession', () => {
+    // set the session
+    setAuthSession(session);
+    // expect get get the session object
+    expect(getAuthSession()).toBeTruthy();
   });
 
   test('testing clearAuthSession', () => {
@@ -33,6 +28,10 @@ describe('AuthService', () => {
     clearAuthSession();
     // expect get session to be empty
     expect(getAuthSession()).toBeFalsy();
+  });
+
+  test('testing sendOTP', () => {
+
   });
 
 });
