@@ -258,4 +258,24 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: GET_TAGS,
+      variables: { filter: { label: 'new Tag', languageId: 1 } },
+    },
+    result: {
+      data: {
+        tags: [
+          {
+            id: '1',
+            label: 'Messages',
+            description: null,
+            colorCode: '#0C976D',
+            parent: { id: '2' },
+            language: { id: '1', label: 'Hindi' },
+          },
+        ],
+      },
+    },
+  },
 ];

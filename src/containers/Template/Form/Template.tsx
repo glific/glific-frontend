@@ -98,8 +98,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
   };
 
   const formFields = [
-    { component: Input, name: 'label', placeholder: 'Title', validate: validateTitle },
-    { component: EmojiInput, name: 'body', placeholder: 'Message', rows: 5, textArea: true },
+    {
+      component: Input,
+      name: 'label',
+      placeholder: 'Title',
+      validate: validateTitle,
+    },
+    {
+      component: EmojiInput,
+      name: 'body',
+      placeholder: 'Message',
+      rows: 5,
+      convertToWhatsApp: true,
+      textArea: true,
+    },
   ];
 
   return (
