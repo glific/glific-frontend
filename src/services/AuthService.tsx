@@ -2,8 +2,9 @@ import axios from 'axios';
 
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/constants';
 
+// service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {
-  const session = localStorage.getItem('glific_session');
+  const session = getAuthSession();
   // if session object does not exist then just return false
   if (!session) {
     return new Promise((res) => {
@@ -29,9 +30,10 @@ export const renewAuthToken = () => {
     });
 };
 
+// service to check the validity of the auth / token  status
 export const checkAuthStatusService = () => {
   let authStatus = false;
-  const session = localStorage.getItem('glific_session');
+  const session = getAuthSession();
   if (!session) {
     authStatus = false;
   } else {
@@ -53,6 +55,21 @@ export const checkAuthStatusService = () => {
   return authStatus;
 };
 
+// set authentication session
+export const setAuthSession = (session: string) => {
+  localStorage.setItem('glific_session', session);
+};
+
+// get the current authentication session
+export const getAuthSession = () => {
+  return localStorage.getItem('glific_session');
+};
+
+// clear the authentication session
+export const clearAuthSession = () => {
+  localStorage.removeItem('glific_session');
+};
+
 // service to sent the OTP based on the phone number
 export const sendOTP = (phoneNumber: string, registration = 'false') => {
   return axios
@@ -68,12 +85,4 @@ export const sendOTP = (phoneNumber: string, registration = 'false') => {
     .catch((error) => {
       throw error;
     });
-};
-
-export const setAuthSession = (session: string) => {
-  localStorage.setItem('glific_session', session);
-};
-
-export const clearAuthSession = () => {
-  localStorage.removeItem('glific_session');
 };
