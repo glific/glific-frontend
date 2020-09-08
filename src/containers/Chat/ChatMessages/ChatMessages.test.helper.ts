@@ -185,6 +185,32 @@ const getConversationQuery = (data: any) => {
   };
 };
 
+export const getTagsQuery = {
+  request: {
+    query: GET_TAGS,
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          id: '87',
+          label: 'Good message',
+          description: 'Hey There',
+          colorCode: '#0C976D',
+          parent: null,
+        },
+        {
+          id: '1',
+          label: 'important',
+          description: 'some description',
+          colorCode: '#0C976D',
+          parent: { id: '2' },
+        },
+      ],
+    },
+  },
+};
+
 const mocks = [
   contactGroupsQuery,
   updateMessageTagsQuery,
@@ -231,31 +257,7 @@ const mocks = [
     },
   },
 
-  {
-    request: {
-      query: GET_TAGS,
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            id: '87',
-            label: 'Good message',
-            description: 'Hey There',
-            colorCode: '#0C976D',
-            parent: null,
-          },
-          {
-            id: '1',
-            label: 'important',
-            description: 'some description',
-            colorCode: '#0C976D',
-            parent: { id: '2' },
-          },
-        ],
-      },
-    },
-  },
+  getTagsQuery,
 
   {
     request: {

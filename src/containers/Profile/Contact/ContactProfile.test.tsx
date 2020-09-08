@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, wait, within, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ContactProfile } from './ContactProfile';
@@ -11,16 +11,40 @@ const defaultProps = {
   match: { params: { id: 1 } },
 };
 
-describe('<ContactProfile />', () => {
-  test('it should mount', () => {
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
-      </MockedProvider>
-    );
+global.document.createRange = () => ({
+  setStart: () => {},
+  setEnd: () => {},
+  commonAncestorContainer: {
+    nodeName: 'BODY',
+    ownerDocument: document,
+  },
+});
 
-    const contactProfile = screen.getByTestId('ContactProfile');
+test('contact profile should mount', async () => {
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ContactProfile {...defaultProps} />
+    </MockedProvider>
+  );
+  await wait();
+  await wait();
 
-    expect(contactProfile).toBeInTheDocument();
-  });
+  expect(getByTestId('ContactProfile')).toBeInTheDocument();
+});
+
+test('add tags to profile', async () => {
+  const { getByTestId, getByText, getAllByRole } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ContactProfile {...defaultProps} />
+    </MockedProvider>
+  );
+  await wait();
+
+  const autocomplete = getByTestId('autocomplete-element');
+  fireEvent.click(autocomplete.querySelector('.MuiAutocomplete-popupIndicator'));
+  fireEvent.click(getAllByRole('option')[1]);
+  await wait();
+  fireEvent.click(getByText('Save'));
+  await wait();
+  expect(getByText('dd')).toBeInTheDocument();
 });
