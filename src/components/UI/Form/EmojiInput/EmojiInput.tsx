@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { Editor, RichUtils, Modifier } from 'draft-js';
-import { InputAdornment, IconButton } from '@material-ui/core';
+import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { Input } from '../Input/Input';
@@ -75,28 +75,36 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
       onSelect={updateValue}
     />
-  ) : null;
+  ) : (
+    <></>
+  );
 
   const draftJsChange = (editorState: any) => {
     props.form.setFieldValue(rest.name, editorState);
   };
 
-  const picker = (
-    <InputAdornment position="end" className={Styles.EmojiPosition}>
-      <IconButton
-        color="primary"
-        aria-label="pick emoji"
-        component="span"
-        className={Styles.Emoji}
-        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-      >
-        <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
-          😀
-        </span>
-      </IconButton>
+  const handleClickAway = () => {
+    setShowEmojiPicker(false);
+  };
 
-      {emojiPicker}
-    </InputAdornment>
+  const picker = (
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <InputAdornment position="end" className={Styles.EmojiPosition}>
+        <IconButton
+          color="primary"
+          aria-label="pick emoji"
+          component="span"
+          className={Styles.Emoji}
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        >
+          <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
+            😀
+          </span>
+        </IconButton>
+
+        {emojiPicker}
+      </InputAdornment>
+    </ClickAwayListener>
   );
 
   const input = (
