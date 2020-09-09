@@ -9,6 +9,7 @@ import { RoleContext, setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
+import { setAuthSession } from '../../../services/AuthService';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 
@@ -92,9 +93,9 @@ export const Login: React.SFC<LoginProps> = () => {
         localStorage.setItem('glific_session', responseString);
         // fetch login user data to check user role
         getCurrentUser();
+        setAuthSession(responseString);
       })
       .catch((error: any) => {
-        console.log('error', error);
         setAuthError('Invalid phone or password.');
       });
   };

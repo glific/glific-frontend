@@ -10,6 +10,7 @@ export const RoleContext = React.createContext({
 
 let role: any[] = [];
 const setUserRole = (type: any) => {
+  console.log('set', type);
   role = type;
   getRoleBasedAccess();
 };
@@ -21,6 +22,7 @@ const getUserRole = () => {
 let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
 let settingMenu: boolean = false;
+let advanceSearch: boolean = false;
 
 const getRoleBasedAccess = () => {
   if (role.includes('Staff')) {
@@ -44,6 +46,8 @@ const getRoleBasedAccess = () => {
     settingMenu = true;
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
+
+    advanceSearch = true;
   }
 
   return sideDrawerMenu;
@@ -53,4 +57,4 @@ export const getStaffManagementMenus = () => {
   return staffManagementMenu;
 };
 
-export { setUserRole, getUserRole, getRoleBasedAccess, settingMenu };
+export { setUserRole, getUserRole, getRoleBasedAccess, settingMenu, advanceSearch };

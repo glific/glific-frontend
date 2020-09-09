@@ -7,7 +7,7 @@ import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
 import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
-import { sendOTP } from '../../../services/AuthService';
+import { sendOTP, setAuthSession } from '../../../services/AuthService';
 
 export interface ConfirmOTPProps {
   location: any;
@@ -34,7 +34,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     return (
       <Redirect
         to={{
-          pathname: '/chat',
+          pathname: '/login',
           state: {
             tokens: tokenResponse,
           },
@@ -77,8 +77,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('glific_session', responseString);
-        setAuthenticated(true);
+        // localStorage.setItem('glific_session', responseString);
+        // setAuthenticated(true);
         setTokenResponse(responseString);
       })
       .catch((error: any) => {
