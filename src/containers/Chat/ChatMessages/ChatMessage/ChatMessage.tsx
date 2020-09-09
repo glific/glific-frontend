@@ -168,6 +168,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     messageBody = (
       <>
         <img
+          data-testid="imageMessage"
           src={props.media.url}
           alt="sds"
           onClick={() => setShowViewer(true)}
@@ -186,7 +187,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     );
   } else if (type === 'AUDIO') {
     messageBody = (
-      <audio controls>
+      <audio controls data-testid="audioMessage">
         <source src={props.media.url} type="audio/ogg"></source>
       </audio>
     );

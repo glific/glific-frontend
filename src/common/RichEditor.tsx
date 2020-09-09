@@ -10,7 +10,7 @@ export const TextReplacements: any = [
       char: '*',
       tag: 'b',
       replace: (text: string) => {
-        return <b>{text}</b>;
+        return <b key={text}>{text}</b>;
       },
     },
   },
