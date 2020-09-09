@@ -28,6 +28,9 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       props.sendMessage(convertToWhatsApp(editorState));
       return 'handled';
     }
+    if (command === 'underline') {
+      return 'handled';
+    }
 
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {

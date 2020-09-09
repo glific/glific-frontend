@@ -4,7 +4,7 @@ import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 
-import { convertToWhatsApp } from '../../../../common/RichEditor';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
@@ -54,12 +54,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleSelectText = (obj: any) => {
     // Conversion from HTML text to EditorState
-    const blocksFromHTML = convertFromHTML(obj.body);
-    const state = ContentState.createFromBlockArray(
-      blocksFromHTML.contentBlocks,
-      blocksFromHTML.entityMap
-    );
-    setEditorState(EditorState.createWithContent(state));
+    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
   };
 
   const handleSearch = (e: any) => {

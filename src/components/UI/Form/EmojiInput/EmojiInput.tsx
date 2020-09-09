@@ -1,10 +1,10 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState } from 'react';
 import { Editor, RichUtils, Modifier } from 'draft-js';
-import { InputAdornment, IconButton } from '@material-ui/core';
+import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { Input } from '../Input/Input';
-import { EditorState, ContentState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
@@ -23,6 +23,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleKeyCommand = (command: any, editorState: any) => {
+    if (command === 'underline') {
+      return 'handled';
+    }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       props.form.setFieldValue(rest.name, newState);
@@ -56,13 +59,16 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
     return <Component ref={ref} {...other} />;
   };
-
+  const draftJsChange = (editorState: any) => {
+    props.form.setFieldValue(rest.name, editorState);
+  };
   const inputComponent = InputWrapper;
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
     handleKeyCommand: handleKeyCommand,
     onBlur: props.form.handleBlur,
+    onChange: draftJsChange,
   };
 
   const editor = { inputComponent: inputComponent, inputProps: inputProps };
@@ -75,38 +81,35 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
       onSelect={updateValue}
     />
-  ) : null;
+  ) : (
+    <></>
+  );
 
-  const draftJsChange = (editorState: any) => {
-    props.form.setFieldValue(rest.name, editorState);
+  const handleClickAway = () => {
+    setShowEmojiPicker(false);
   };
 
   const picker = (
-    <InputAdornment position="end" className={Styles.EmojiPosition}>
-      <IconButton
-        color="primary"
-        aria-label="pick emoji"
-        component="span"
-        className={Styles.Emoji}
-        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-      >
-        <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
-          😀
-        </span>
-      </IconButton>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <InputAdornment position="end" className={Styles.EmojiPosition}>
+        <IconButton
+          color="primary"
+          aria-label="pick emoji"
+          component="span"
+          className={Styles.Emoji}
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        >
+          <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
+            😀
+          </span>
+        </IconButton>
 
-      {emojiPicker}
-    </InputAdornment>
+        {emojiPicker}
+      </InputAdornment>
+    </ClickAwayListener>
   );
 
-  const input = (
-    <Input
-      field={{ onChange: draftJsChange, ...rest }}
-      {...props}
-      editor={editor}
-      emojiPicker={picker}
-    />
-  );
+  const input = <Input field={{ ...rest }} {...props} editor={editor} emojiPicker={picker} />;
 
   return input;
 };
