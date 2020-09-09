@@ -34,8 +34,8 @@ const mocks = [
 ];
 
 global.document.createRange = () => ({
-  setStart: () => { },
-  setEnd: () => { },
+  setStart: () => {},
+  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
@@ -66,6 +66,8 @@ describe('<ChatMessage />', () => {
         label: 'important',
       },
     ],
+    type: 'TEXT',
+    media: null,
   };
 
   const chatMessage = (
@@ -77,7 +79,9 @@ describe('<ChatMessage />', () => {
   const wrapper = mount(chatMessage);
 
   test('it should render the message content correctly', () => {
-    expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there! visit google.com');
+    expect(wrapper.find('[data-testid="content"]').text()).toEqual(
+      'Hello there! visit google.com '
+    );
   });
 
   test('it should apply the correct styling', () => {
@@ -120,6 +124,6 @@ describe('<ChatMessage />', () => {
 
   test('it should detect a link in messsage', async () => {
     const { getByTestId } = render(chatMessage);
-    expect(getByTestId('messageLink').getAttribute("href")).toBe('http://google.com');
+    expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
   });
 });

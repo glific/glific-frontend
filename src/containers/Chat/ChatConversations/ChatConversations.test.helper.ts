@@ -32,6 +32,8 @@ const withResult = {
                 parent: null,
               },
             ],
+            type: 'TEXT',
+            media: null,
           },
         ],
       },
