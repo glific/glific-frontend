@@ -171,3 +171,13 @@
   margin-left: 4px;
   cursor: pointer;
 }
+
+.Image {
+  margin: 5px 0px;
+  max-width: 280px;
+  min-width: 200px;
+  min-height: 200px;
+  cursor: pointer;
+  max-height: 200px;
+  background-color: aliceblue;
+}

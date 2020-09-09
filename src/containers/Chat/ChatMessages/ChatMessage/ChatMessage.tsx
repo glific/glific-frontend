@@ -5,6 +5,8 @@ import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
+import Viewer from 'react-viewer';
+import ReactPlayer from 'react-player';
 
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
@@ -27,6 +29,8 @@ export interface ChatMessageProps {
   sender: {
     id: number;
   };
+  type: string;
+  media: any;
   insertedAt: string;
   onClick?: any;
   tags: Array<any>;
@@ -37,9 +41,11 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+  let type = props.type;
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
+  const [showViewer, setShowViewer] = useState(false);
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -156,18 +162,57 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  let messageBody;
+
+  if (type === 'IMAGE') {
+    messageBody = (
+      <>
+        <img
+          src={props.media.url}
+          alt="sds"
+          onClick={() => setShowViewer(true)}
+          className={styles.Image}
+        />
+        <Viewer
+          visible={showViewer}
+          onClose={() => {
+            setShowViewer(false);
+          }}
+          images={[{ src: props.media.url, alt: '' }]}
+        />
+        <br />
+        <MessagesWithLinks message={props.media.caption} />
+      </>
+    );
+  } else if (type === 'AUDIO') {
+    messageBody = (
+      <audio controls>
+        <source src={props.media.url} type="audio/ogg"></source>
+      </audio>
+    );
+  } else if (type === 'VIDEO') {
+    messageBody = (
+      <div className={styles.Image}>
+        <ReactPlayer className={styles.Image} url={props.media.url} controls={true} light={true} />
+      </div>
+    );
+  } else {
+    messageBody = (
+      <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
+        <MessagesWithLinks message={props.body} />{' '}
+      </Tooltip>
+    );
+  }
+
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
-            <div className={styles.Content} data-testid="content">
-              <div>
-                <MessagesWithLinks message={props.body} />
-              </div>
-            </div>
-          </Tooltip>
+          <div className={styles.Content} data-testid="content">
+            <div>{messageBody}</div>
+          </div>
+
           <Popper
             id={popperId}
             open={open}

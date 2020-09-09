@@ -25,6 +25,11 @@ export const SEARCH_QUERY = gql`
           label
           colorCode
         }
+        type
+        media {
+          url
+          caption
+        }
       }
     }
   }
