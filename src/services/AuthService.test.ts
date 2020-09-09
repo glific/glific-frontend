@@ -20,9 +20,33 @@ describe('AuthService', () => {
     tokenExpiryDate +
     '"}';
 
-  test('testing renewAuthToken', () => { });
+  test('testing renewAuthToken with empty session', async () => {
+    const data = {
+      data: { renewStatus: false },
+    };
+
+    return renewAuthToken().then((response) => {
+      console.log('response', response);
+      expect(response).toBe(data);
+    });
+
+    // jest.fn().mockImplementationOnce(() => Promise.resolve(data));
+    // await expect(renewAuthToken()).resolves.toEqual(data);
+  });
+
+  test('testing renewAuthToken with valid session', async () => {
+    // set the session
+    setAuthSession(session);
+    const data = {
+      data: { renewStatus: true },
+    };
+    axios.post.mockImplementationOnce(() => Promise.resolve(data));
+    await expect(renewAuthToken()).resolves.toEqual(data);
+  });
 
   test('testing checkAuthStatusService with empty session', () => {
+    // clear the session
+    clearAuthSession();
     const response = checkAuthStatusService();
     expect(response).toBeFalsy();
   });
@@ -34,7 +58,7 @@ describe('AuthService', () => {
     expect(response).toBeTruthy();
   });
 
-  test('testing checkAuthStatusService with expired token and valid refresh token', () => { });
+  test('testing checkAuthStatusService with expired token and valid refresh token', () => {});
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session
