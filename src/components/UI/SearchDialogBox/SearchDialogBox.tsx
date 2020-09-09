@@ -11,9 +11,10 @@ export interface SearchDialogBoxProps {
   handleCancel: Function;
   options: any;
   selectedOptions: any;
+  disableCloseOnSelect?:boolean;
 }
 
-export const SearchDialogBox = (props: any) => {
+export const SearchDialogBox = ({disableCloseOnSelect=false,...props}: any) => {
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export const SearchDialogBox = (props: any) => {
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
+          disableCloseOnSelect={disableCloseOnSelect}
             className={styles.Autocomplete}
             PaperComponent={({ className, ...props }) => (
               <Paper
