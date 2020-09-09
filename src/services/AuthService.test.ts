@@ -21,27 +21,21 @@ describe('AuthService', () => {
     '"}';
 
   test('testing renewAuthToken with empty session', async () => {
-    const data = {
-      data: { renewStatus: false },
-    };
+    const responseData = { renewStatus: false };
 
-    return renewAuthToken().then((response) => {
-      console.log('response', response);
-      expect(response).toBe(data);
-    });
-
-    // jest.fn().mockImplementationOnce(() => Promise.resolve(data));
-    // await expect(renewAuthToken()).resolves.toEqual(data);
+    jest.fn().mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(renewAuthToken()).resolves.toEqual(responseData);
   });
 
   test('testing renewAuthToken with valid session', async () => {
     // set the session
     setAuthSession(session);
-    const data = {
+
+    const responseData = {
       data: { renewStatus: true },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(data));
-    await expect(renewAuthToken()).resolves.toEqual(data);
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(renewAuthToken()).resolves.toEqual(responseData);
   });
 
   test('testing checkAuthStatusService with empty session', () => {
@@ -77,11 +71,11 @@ describe('AuthService', () => {
   });
 
   test('testing successful sendOTP', async () => {
-    const data = {
+    const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(data));
-    await expect(sendOTP('919967665667')).resolves.toEqual(data);
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(sendOTP('919967665667')).resolves.toEqual(responseData);
   });
 
   test('testing sendOTP failure', async () => {

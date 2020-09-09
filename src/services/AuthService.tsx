@@ -7,8 +7,8 @@ export const renewAuthToken = () => {
   const session = getAuthSession();
   // if session object does not exist then just return false
   if (!session) {
-    return new Promise((res) => {
-      return { renewStatus: false };
+    return new Promise((resolve) => {
+      resolve({ renewStatus: false });
     });
   }
   // get the renewal token from session
