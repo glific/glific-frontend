@@ -36,9 +36,11 @@ import { UserProfile } from './containers/Profile/User/UserProfile';
 import { MyAccount } from './containers/MyAccount/MyAccount';
 import { BlockContactList } from './containers/BlockContact/BlockContactList/BlockContactList';
 import { Logout } from './containers/Auth/Logout/Logout';
+import { getUserRole } from './context/role';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
+  const [userRole, setRole] = useState(getUserRole());
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
@@ -48,6 +50,13 @@ const App = () => {
     authenticated: authenticated,
     setAuthenticated: (value: any) => {
       setAuthenticated(value);
+    },
+  };
+
+  const role = {
+    role: getUserRole(),
+    setRole: (value: any) => {
+      setRole(value);
     },
   };
 

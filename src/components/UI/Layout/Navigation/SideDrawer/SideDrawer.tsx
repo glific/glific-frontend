@@ -22,8 +22,9 @@ import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.p
 import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
 import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
-import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
+import { userAccountMenus } from '../../../../../config/menu';
 import { Link, useLocation } from 'react-router-dom';
+import { getStaffManagementMenus, settingMenu } from '../../../../../context/role';
 
 export interface SideDrawerProps {}
 
@@ -110,6 +111,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const [fullOpen, setFullOpen] = React.useState(true);
   const [active, setActive] = React.useState(false);
 
+  const staffManagementMenus: any[] = getStaffManagementMenus() ? getStaffManagementMenus() : [];
+
   const drawer = (
     <div>
       <Toolbar className={classes.anotherToolBar}>
@@ -148,6 +151,20 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const handleClick = () => {
     setActive(!active);
   };
+
+  const settingMenus = settingMenu ? (
+    <div>
+      <Link to={'/settings'} onClick={handleClick}>
+        <IconButton>
+          <img
+            src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
+            className={styles.UserIcon}
+            alt="settings"
+          />
+        </IconButton>
+      </Link>
+    </div>
+  ) : null;
 
   return (
     <nav
@@ -217,17 +234,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                 </IconButton>
               </Menu>
             </div>
-            <div>
-              <Link to={'/settings'} onClick={handleClick}>
-                <IconButton>
-                  <img
-                    src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
-                    className={styles.UserIcon}
-                    alt="settings"
-                  />
-                </IconButton>
-              </Link>
-            </div>
+            {settingMenus}
           </div>
           {drawer}
         </Drawer>
