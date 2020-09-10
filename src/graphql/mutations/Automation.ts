@@ -17,7 +17,6 @@ export const CREATE_AUTOMATION = gql`
       flow {
         id
         name
-        shortcode
         uuid
       }
       errors {
@@ -34,7 +33,6 @@ export const UPDATE_AUTOMATION = gql`
       flow {
         id
         name
-        shortcode
       }
       errors {
         key
