@@ -12,6 +12,10 @@ import {
 jest.mock('axios');
 
 describe('AuthService', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   // let's create token expiry date for tomorrow
   const tokenExpiryDate = new Date();
   tokenExpiryDate.setDate(new Date().getDate() + 1);
@@ -31,11 +35,24 @@ describe('AuthService', () => {
     // set the session
     setAuthSession(session);
 
-    const responseData = {
-      data: { renewStatus: true },
-    };
+    // let's mock the axios call
+    const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    await expect(renewAuthToken()).resolves.toEqual(responseData);
+
+    // lets mock the reponse returned by the actual function
+    const renewResponseData = { renewStatus: true };
+    await expect(renewAuthToken()).resolves.toEqual(renewResponseData);
+  });
+
+  test('testing renewAuthToken with error while renewing', async () => {
+    // set the session
+    setAuthSession(session);
+
+    // let's mock the axios call
+    const invalidErrorMessage = 'Invalid token';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
+    // since we redirect there is no need to add assert
+    // await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
   });
 
   test('testing checkAuthStatusService with empty session', () => {
