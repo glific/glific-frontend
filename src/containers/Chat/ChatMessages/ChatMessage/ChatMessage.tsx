@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
-import Download from '@axetroy/react-download';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
