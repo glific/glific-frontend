@@ -19,7 +19,7 @@ export interface AutomationProps {
 }
 
 const FormSchema = Yup.object().shape({
-  shortcode: Yup.string().required('Shortcode is required.'),
+  name: Yup.string().required('Name is required.'),
 });
 
 const dialogMessage = "You won't be able to use this automation again.";
