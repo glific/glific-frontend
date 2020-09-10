@@ -43,9 +43,9 @@ const getRoleBasedAccess = () => {
   }
 
   if (role.includes('Manager') || role.includes('Admin')) {
-    settingMenu = true;
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
+    if (role.includes('Admin')) settingMenu = true;
 
     advanceSearch = true;
   }

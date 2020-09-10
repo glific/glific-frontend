@@ -28,12 +28,14 @@ export const Login: React.SFC<LoginProps> = () => {
 
   useEffect(() => {
     if (userData) {
-      if (userData.currentUser.user.roles.includes('none')) {
+      let roles = userData.currentUser.user.roles;
+      // check for user role none or empty
+      if (roles.includes('none') || roles.length === 0) {
         setAuthError(NotApprovedMsg);
         localStorage.removeItem('glific_session');
       } else {
-        setRole(userData.currentUser.user.roles);
-        setUserRole(userData.currentUser.user.roles);
+        setRole(roles);
+        setUserRole(roles);
 
         // needed to redirect after login
         setAuthenticated(true);

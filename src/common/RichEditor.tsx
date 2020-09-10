@@ -1,7 +1,7 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
 import { convertToRaw, convertFromRaw } from 'draft-js';
-import { markdownToDraft } from 'markdown-draft-js';
+const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
 export const TextReplacements: any = [
@@ -10,7 +10,7 @@ export const TextReplacements: any = [
       char: '*',
       tag: 'b',
       replace: (text: string) => {
-        return <b>{text}</b>;
+        return <b key={text}>{text}</b>;
       },
     },
   },
@@ -34,7 +34,7 @@ export const TextReplacements: any = [
   },
   {
     codeBlock: {
-      char: '```',
+      char: '``',
       tag: 'code',
       replace: (text: string) => {
         return <code>{text}</code>;
@@ -83,11 +83,14 @@ export const convertToWhatsApp = (editorState: any) => {
 
 export const WhatsAppToDraftEditor = (text: string) => {
   const regexforBold = /[*][^*]*[*]/gi;
+
   const addedBold = text.replace(regexforBold, function (str: any) {
     return '*' + str + '*';
   });
 
-  const rawData = markdownToDraft(addedBold);
+  const rawData = MarkDownConvertor.markdownToDraft(addedBold, {
+    preserveNewlines: true,
+  });
   const contentState = convertFromRaw(rawData);
   return contentState;
 };
