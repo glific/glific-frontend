@@ -46,7 +46,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
             >
               <p className={styles.Text}>
                 <b style={{ marginRight: '5px' }}>{obj.label}:</b>
-                {WhatsAppToJsx(obj.body)}
+                <span>{WhatsAppToJsx(obj.body)}</span>
               </p>
             </ListItem>
             <Divider light />

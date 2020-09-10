@@ -3,6 +3,7 @@ import { onError } from "@apollo/link-error";
 import absinthe from './absinthe';
 import { URI } from '.';
 import { setContext } from '@apollo/link-context';
+import { getAuthSession } from '../services/AuthService';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -10,7 +11,7 @@ const gqlClient = () => {
   // build authentication link
   const authLink = setContext((_, { headers }) => {
     // get the session object from local storage if it exists
-    const session = localStorage.getItem('glific_session');
+    const session = getAuthSession();
     // parse the token and send it to backend
     const accessToken = session ? JSON.parse(session).access_token : null;
 

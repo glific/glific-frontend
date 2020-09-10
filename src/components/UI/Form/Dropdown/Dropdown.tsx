@@ -13,6 +13,7 @@ export interface DropdownProps {
   placeholder: string;
   helperText?: string;
   disabled?: boolean;
+  validate?: any;
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
