@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
@@ -38,6 +38,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [keywords, setKeywords] = useState('');
   const [colorCode, setColorcode] = useState('#0C976D');
   const [parentId, setParentId] = useState<any>([]);
+  const [filterLabel, setFilterLabel] = useState('');
+  const [languageId, setLanguageId] = useState('');
 
   const states = { label, description, keywords, colorCode, parentId };
   const setStates = ({ label, description, keywords, colorCode, parent }: any) => {
@@ -50,7 +52,16 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
+  useEffect(() => {
+    if (filterLabel && languageId) getTags();
+  }, [filterLabel, languageId]);
+
   const { data } = useQuery(GET_TAGS);
+  const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
+    variables: {
+      filter: { label: filterLabel, languageId: parseInt(languageId) },
+    },
+  });
 
   if (!data) return <Loading />;
 
@@ -75,12 +86,36 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
+  const validateTitle = (value: any) => {
+    if (value) {
+      setFilterLabel(value);
+      let found = [];
+      let error;
+      if (dataTag) {
+        // need to check exact title
+        found = dataTag.tags.filter((search: any) => search.label === value);
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Title already exists.';
+      }
+      return error;
+    }
+  };
+
+  const getLanguageId = (value: any) => {
+    setLanguageId(value);
+  };
+
   const formFields = [
     {
       component: Input,
       name: 'label',
       type: 'text',
       placeholder: 'Title',
+      validate: validateTitle,
     },
     {
       component: Input,
@@ -140,6 +175,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       redirectionLink="tag"
       listItem="tag"
       icon={tagIcon}
+      getLanguageId={getLanguageId}
     />
   );
 };

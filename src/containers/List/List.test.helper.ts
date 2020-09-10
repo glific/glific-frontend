@@ -134,6 +134,7 @@ const getTags = {
           id: '1',
           label: 'Messages',
           parent: null,
+          language: { id: '1', label: 'Hindi' },
         },
         {
           colorCode: '#0C976D',
@@ -141,6 +142,7 @@ const getTags = {
           id: '2',
           label: 'Contacts',
           parent: null,
+          language: { id: '1', label: 'Hindi' },
         },
       ],
     },
