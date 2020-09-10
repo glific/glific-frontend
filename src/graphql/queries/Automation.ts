@@ -5,7 +5,6 @@ export const GET_AUTOMATIONS = gql`
     flows {
       id
       name
-      shortcode
       uuid
     }
   }
@@ -17,7 +16,6 @@ export const GET_AUTOMATION = gql`
       flow {
         id
         name
-        shortcode
         uuid
         keywords
         ignoreKeywords
@@ -37,7 +35,6 @@ export const FILTER_AUTOMATION = gql`
     flows(filter: $filter, opts: $opts) {
       id
       name
-      shortcode
       uuid
       keywords
       ignoreKeywords
