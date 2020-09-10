@@ -8,6 +8,7 @@ import { Login } from './containers/Auth/Login/Login';
 import App from './App';
 import { Chat } from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';
+import { setUserRole } from './context/role';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -40,6 +41,7 @@ describe('<App /> ', () => {
         tokenExpiryDate +
         '"}'
     );
+    setUserRole(['Staff']);
 
     const wrapper = mount(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -51,5 +53,29 @@ describe('<App /> ', () => {
 
     await wait();
     expect(wrapper.find(Chat)).toHaveLength(1);
+  });
+
+  test('it should not render <Chat /> component if session is active and User Role "None"', async () => {
+    // let's create token expiry date for tomorrow
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() + 1);
+    localStorage.setItem(
+      'glific_session',
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        tokenExpiryDate +
+        '"}'
+    );
+    setUserRole(['None']);
+
+    const wrapper = mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await wait();
+    expect(wrapper.find(Chat)).toHaveLength(0);
   });
 });

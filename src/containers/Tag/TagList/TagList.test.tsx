@@ -4,8 +4,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { TagList } from './TagList';
 import { LIST_MOCKS } from '../../List/List.test.helper';
+import { setUserRole } from '../../../context/role';
 
 const mocks = LIST_MOCKS;
+setUserRole(['Admin']);
 
 const tagList = (
   <MockedProvider mocks={mocks} addTypename={false}>

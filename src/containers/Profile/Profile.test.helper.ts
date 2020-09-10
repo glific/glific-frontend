@@ -46,6 +46,7 @@ export const LOGGED_IN_USER_MOCK = [
               {
                 id: '1',
                 label: 'Default Group',
+                description: '',
               },
             ],
           },

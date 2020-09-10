@@ -20,6 +20,7 @@ export const MY_ACCOUNT_MOCKS = [
               {
                 id: '1',
                 label: 'Default Group',
+                description: '',
               },
             ],
           },

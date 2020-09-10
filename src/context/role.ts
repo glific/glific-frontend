@@ -8,7 +8,6 @@ export const RoleContext = React.createContext({
 
 let role: any[] = [];
 const setUserRole = (type: any) => {
-  console.log('set', type);
   role = type;
   getRoleBasedAccess();
 };
