@@ -42,6 +42,12 @@ export const LOGGED_IN_USER_MOCK = [
             contact: {
               id: '1',
             },
+            groups: [
+              {
+                id: '1',
+                label: 'Default Group',
+              },
+            ],
           },
         },
       },

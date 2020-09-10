@@ -9,7 +9,7 @@ import { RoleContext, setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
-import { setAuthSession } from '../../../services/AuthService';
+import { setAuthSession, clearAuthSession, getAuthSession } from '../../../services/AuthService';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 
@@ -30,16 +30,16 @@ export const Login: React.SFC<LoginProps> = () => {
     if (userData) {
       let roles = userData.currentUser.user.roles;
       // check for user role none or empty
-      if (roles.includes('none') || roles.length === 0) {
+      if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
         setAuthError(NotApprovedMsg);
-        localStorage.removeItem('glific_session');
+        clearAuthSession();
       } else {
         setRole(roles);
         setUserRole(roles);
 
         // needed to redirect after login
         setAuthenticated(true);
-        const token: any = localStorage.getItem('glific_session');
+        const token: any = getAuthSession();
         setSessionToken(token);
       }
     }
@@ -92,8 +92,6 @@ export const Login: React.SFC<LoginProps> = () => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        localStorage.setItem('glific_session', responseString);
-        // fetch login user data to check user role
         getCurrentUser();
         setAuthSession(responseString);
       })

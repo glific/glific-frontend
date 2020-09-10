@@ -10,6 +10,7 @@ import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
 import { setNotification } from '../../../common/notification';
+import { displayUserGroups } from '../../../context/role';
 
 export interface GroupListProps {}
 
@@ -109,7 +110,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         listItem="groups"
         listItemName="group"
         displayListType="card"
-        button={{ show: true, label: '+ CREATE GROUP' }}
+        button={{ show: displayUserGroups, label: '+ CREATE GROUP' }}
         pageLink="group"
         listIcon={groupIcon}
         dialogMessage={dialogMessage}

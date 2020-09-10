@@ -3,9 +3,7 @@ import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
 
 export const RoleContext = React.createContext({
   role: [],
-  setRole: (value: any) => {
-    console.log('Setrole', value);
-  },
+  setRole: (value: any) => {},
 });
 
 let role: any[] = [];
@@ -23,6 +21,7 @@ let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
 let settingMenu: boolean = false;
 let advanceSearch: boolean = false;
+let displayUserGroups: boolean = false;
 
 const getRoleBasedAccess = () => {
   if (role.includes('Staff')) {
@@ -45,9 +44,12 @@ const getRoleBasedAccess = () => {
   if (role.includes('Manager') || role.includes('Admin')) {
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
+
     if (role.includes('Admin')) settingMenu = true;
 
     advanceSearch = true;
+
+    displayUserGroups = true;
   }
 
   return sideDrawerMenu;
@@ -57,4 +59,11 @@ export const getStaffManagementMenus = () => {
   return staffManagementMenu;
 };
 
-export { setUserRole, getUserRole, getRoleBasedAccess, settingMenu, advanceSearch };
+export {
+  setUserRole,
+  getUserRole,
+  getRoleBasedAccess,
+  settingMenu,
+  advanceSearch,
+  displayUserGroups,
+};

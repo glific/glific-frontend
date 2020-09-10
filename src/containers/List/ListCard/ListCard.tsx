@@ -6,9 +6,10 @@ import { Link } from 'react-router-dom';
 interface ListCardProps {
   data: any;
   link: any;
+  actions?: boolean;
 }
 
-export const ListCard: React.SFC<ListCardProps> = (props) => {
+export const ListCard: React.SFC<ListCardProps> = ({ actions = true, ...props }) => {
   const link = (id: any) => {
     return `/${props.link.start}/${id}/${props.link.end}`;
   };
@@ -29,10 +30,12 @@ export const ListCard: React.SFC<ListCardProps> = (props) => {
                 {data.description}
               </Typography>
             </CardContent>
-            <CardActions className={styles.CardActions}>
-              {viewDetails(data.id)}
-              {data.operations}
-            </CardActions>
+            {actions ? (
+              <CardActions className={styles.CardActions}>
+                {viewDetails(data.id)}
+                {data.operations}
+              </CardActions>
+            ) : null}
           </Card>
         );
       })}
