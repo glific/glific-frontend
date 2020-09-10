@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
+import Download from '@axetroy/react-download';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
@@ -18,6 +20,7 @@ import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
+import Thumbnail from '../../../../assets/images/videoThumbnail.jpeg';
 
 export interface ChatMessageProps {
   id: number;
@@ -42,6 +45,8 @@ export interface ChatMessageProps {
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let type = props.type;
+  console.log(type);
+  console.log(props.media);
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
@@ -167,13 +172,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (type === 'IMAGE') {
     messageBody = (
       <>
-        <img
+        <div
           data-testid="imageMessage"
-          src={props.media.url}
-          alt="sds"
+          style={{ background: `url("${props.media.url}") no-repeat`, backgroundSize: 'cover' }}
           onClick={() => setShowViewer(true)}
           className={styles.Image}
-        />
+        ></div>
         <Viewer
           visible={showViewer}
           onClose={() => {
@@ -194,8 +198,21 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   } else if (type === 'VIDEO') {
     messageBody = (
       <div className={styles.Image}>
-        <ReactPlayer className={styles.Image} url={props.media.url} controls={true} light={true} />
+        <ReactPlayer
+          className={styles.Image}
+          url={props.media.url}
+          controls={true}
+          light={Thumbnail}
+        />
       </div>
+    );
+  } else if (type === 'DOCUMENT') {
+    messageBody = (
+      <a href={props.media.url}>
+        <Button startIcon={<GetAppIcon />} variant="contained" color="primary">
+          {props.media.caption}
+        </Button>
+      </a>
     );
   } else {
     messageBody = (
