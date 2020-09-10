@@ -160,7 +160,7 @@ export const List: React.SFC<ListProps> = ({
     setUserRole(role);
   };
 
-  if (userRole.length == 0) {
+  if (userRole.length === 0) {
     // wait to get role on page refresh
     setTimeout(() => {
       checkUserRole();
@@ -173,7 +173,7 @@ export const List: React.SFC<ListProps> = ({
   }, [filterPayload, searchVal]);
 
   useEffect(() => {
-    if (userRole.length == 0) {
+    if (userRole.length === 0) {
       checkUserRole();
     } else {
       if (displayUserGroups) {
