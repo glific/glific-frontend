@@ -23,28 +23,6 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = "You won't be able to use this automation again.";
 
-const formFields = [
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'Name',
-  },
-  {
-    component: Input,
-    name: 'keywords',
-    type: 'text',
-    placeholder: 'Keywords',
-    helperText: 'Enter comma separated keywords that trigger this automation',
-  },
-
-  {
-    component: Checkbox,
-    name: 'ignoreKeywords',
-    title: 'Ignore Keywords',
-  },
-];
-
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
@@ -85,14 +63,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     },
   });
 
-  const validateShortcode = (value: string) => {
-    if (value) {
-      // setFilterKeywords({ shortcode: value }); // need shortcode filter
-      setFilterKeywords({});
-      return validateFields(value, 'shortcode', 'Shortcode already exists.', false);
-    }
-  };
-
   const validateName = (value: string) => {
     if (value) {
       setFilterKeywords({ name: value });
@@ -131,13 +101,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   };
 
   const formFields = [
-    {
-      component: Input,
-      name: 'shortcode',
-      type: 'text',
-      placeholder: 'Shortcode',
-      validate: validateShortcode,
-    },
     {
       component: Input,
       name: 'name',
