@@ -27,12 +27,6 @@ const dialogMessage = "You won't be able to use this automation again.";
 const formFields = [
   {
     component: Input,
-    name: 'shortcode',
-    type: 'text',
-    placeholder: 'Shortcode',
-  },
-  {
-    component: Input,
     name: 'name',
     type: 'text',
     placeholder: 'Name',
@@ -62,15 +56,13 @@ const queries = {
 };
 
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
-  const [shortcode, setShortcode] = useState('');
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
 
-  const states = { shortcode, name, keywords, ignoreKeywords };
+  const states = { name, keywords, ignoreKeywords };
 
-  const setStates = ({ shortcode, name, keywords, ignoreKeywords }: any) => {
-    setShortcode(shortcode);
+  const setStates = ({ name, keywords, ignoreKeywords }: any) => {
     setName(name);
     setKeywords(keywords);
     setIgnoreKeywords(ignoreKeywords);
