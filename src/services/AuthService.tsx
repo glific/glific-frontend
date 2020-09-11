@@ -14,7 +14,6 @@ export const renewAuthToken = () => {
     })
     .catch((error: any) => {
       // if we are not able to renew the token for some wierd reason or if refresh token
-      console.log('error while renewing');
       throw error;
     });
 };
