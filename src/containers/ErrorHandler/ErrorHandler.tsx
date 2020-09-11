@@ -40,14 +40,21 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
     // the token / session
     if (data.errorMessage.networkError.statusCode === 401) {
       attemptTokenRenewal = true;
-      renewAuthToken().then((response: any) => {
-        console.log('renewal', response);
-        if (response?.renewStatus) {
+      renewAuthToken()
+        .then((response: any) => {
+          if (response?.renewStatus) {
+            attemptTokenRenewal = false;
+            // this is hack to reload the page after token as been renewed
+            console.log('relaod the page');
+            //window.location.reload();
+          }
+        })
+        .catch((error: any) => {
+          // for some reason token renewal fails then gracefully logout and it will send the user to login
           attemptTokenRenewal = false;
-          // this is hack to reload the page after token as been renewed
-          window.location.reload();
-        }
-      });
+          console.log('logout the user');
+          //window.location.href = '/logout';
+        });
     }
   }
 

@@ -17,16 +17,16 @@ export const renewAuthToken = () => {
   return axios
     .post(RENEW_TOKEN, {})
     .then((response: any) => {
+      console.log('success with renewing');
       // set the new session object
       const responseString = JSON.stringify(response.data.data);
-      localStorage.setItem('glific_session', responseString);
+      setAuthSession(responseString);
       return { renewStatus: true };
     })
     .catch((error: any) => {
-      console.log('Renewal Error', error);
       // if we are not able to renew the token for some wierd reason or if refresh token
-      // is invalid then gracefully logout and it will send the user to login
-      window.location.href = '/logout';
+      console.log('error while renewing');
+      throw error;
     });
 };
 
@@ -41,15 +41,8 @@ export const checkAuthStatusService = () => {
     if (tokenExpiryTime > new Date()) {
       authStatus = true;
     } else {
-      // this mean token has expired and we should try to auto renew it
-      renewAuthToken().then((response: any) => {
-        // let's set auth status to true if we are able to successfully renew the token
-        if (response?.renewStatus) {
-          authStatus = true;
-        } else {
-          authStatus = false;
-        }
-      });
+      // this means token has expired and let's return false
+      authStatus = false;
     }
   }
   return authStatus;
