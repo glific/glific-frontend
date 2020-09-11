@@ -29,7 +29,13 @@ const gqlClient = () => {
       tokenResponse[accessTokenField] = response.data.data.access_token;
       return tokenResponse;
     },
-    //handleError?: (err: Error) => void,
+    handleError: (err: Error) => {
+      // full control over handling token fetch Error
+      console.warn('Your refresh token is invalid. Try to relogin');
+      console.error(err);
+      // gracefully logout
+      window.location.href = '/logout';
+    },
   });
 
   // build authentication link
@@ -59,7 +65,7 @@ const gqlClient = () => {
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    errorLink.concat(refreshTokenLink.concat(authLink.concat(httpLink) as any) as any)
+    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)) as any) as any
   );
 
   return new ApolloClient({
