@@ -58,7 +58,18 @@ describe('AuthService', () => {
     expect(response).toBeTruthy();
   });
 
-  test('testing checkAuthStatusService with expired token and valid refresh token', () => {});
+  test('testing checkAuthStatusService with expired token', () => {
+    // set the session
+    const expiredTokenDate = new Date();
+    expiredTokenDate.setDate(new Date().getDate() - 1);
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        expiredTokenDate +
+        '"}'
+    );
+    const response = checkAuthStatusService();
+    expect(response).toBeFalsy();
+  });
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session
