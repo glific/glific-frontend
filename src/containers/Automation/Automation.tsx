@@ -11,7 +11,7 @@ import {
 } from '../../graphql/mutations/Automation';
 import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery } from '@apollo/client';
 
 export interface AutomationProps {
   match: any;
