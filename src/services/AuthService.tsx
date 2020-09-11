@@ -4,24 +4,21 @@ import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/cons
 
 // service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {
-  const session = getAuthSession();
-  // if session object does not exist then just return false
-  if (!session) {
-    return new Promise((resolve) => {
-      resolve({ renewStatus: false });
-    });
-  }
+  // get the current session
+  const session: any = getAuthSession();
+
   // get the renewal token from session
   axios.defaults.headers.common['Authorization'] = JSON.parse(session).renewal_token;
 
   return axios
-    .post(RENEW_TOKEN, {})
+    .post(RENEW_TOKEN)
     .then((response: any) => {
       console.log('success with renewing');
+      return response;
       // set the new session object
-      const responseString = JSON.stringify(response.data.data);
-      setAuthSession(responseString);
-      return { renewStatus: true };
+      // const responseString = JSON.stringify(response.data.data);
+      // setAuthSession(responseString);
+      // return { renewStatus: true };
     })
     .catch((error: any) => {
       // if we are not able to renew the token for some wierd reason or if refresh token
