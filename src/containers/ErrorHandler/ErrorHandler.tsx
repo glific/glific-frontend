@@ -6,7 +6,6 @@ import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from '../../common/notification';
-import { renewAuthToken } from '../../services/AuthService';
 
 export interface ErrorHandlerProps {}
 
@@ -31,35 +30,9 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   // Handle type of error message
   let title = 'An error has occured!';
 
-  let attemptTokenRenewal = false;
   if (data.errorMessage.networkError) {
     // set specific message for network error
     title = 'A network error has occured!';
-
-    // if we get 401 authentication error then let's attempt to auto renew
-    // the token / session
-    if (data.errorMessage.networkError.statusCode === 401) {
-      attemptTokenRenewal = true;
-      renewAuthToken()
-        .then((response: any) => {
-          if (response?.renewStatus) {
-            attemptTokenRenewal = false;
-            // this is hack to reload the page after token as been renewed
-            console.log('relaod the page');
-            //window.location.reload();
-          }
-        })
-        .catch((error: any) => {
-          // for some reason token renewal fails then gracefully logout and it will send the user to login
-          attemptTokenRenewal = false;
-          console.log('logout the user');
-          //window.location.href = '/logout';
-        });
-    }
-  }
-
-  if (attemptTokenRenewal) {
-    return <Loading />;
   }
 
   return (
