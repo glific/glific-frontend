@@ -6,6 +6,7 @@ export const GET_ORGANIZATION = gql`
       organization {
         id
         shortcode
+        name
         provider {
           apiEndPoint
           id
