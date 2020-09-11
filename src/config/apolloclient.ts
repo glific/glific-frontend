@@ -5,19 +5,30 @@ import absinthe from './absinthe';
 
 import { URI } from '.';
 import { setContext } from '@apollo/link-context';
-import { checkAuthStatusService, renewAuthToken, getAuthSession } from '../services/AuthService';
+import {
+  checkAuthStatusService,
+  renewAuthToken,
+  getAuthSession,
+  setAuthSession,
+} from '../services/AuthService';
 
 const subscribe = require('@jumpn/utils-graphql');
 
 const gqlClient = () => {
   const refreshTokenLink = new TokenRefreshLink({
-    //accessTokenField: 'access_token',
+    accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
     fetchAccessToken: () => renewAuthToken(),
-    handleFetch: (accessToken: string) => {
-      console.log('accessToken', accessToken);
+    handleFetch: (accessToken: any) => {},
+    handleResponse: (operation, accessTokenField) => (response: any) => {
+      // lets set the session
+      setAuthSession(JSON.stringify(response.data.data));
+
+      // we need to return below as handleFetch expects it
+      const tokenResponse: any = [];
+      tokenResponse[accessTokenField] = response.data.data.access_token;
+      return tokenResponse;
     },
-    //handleResponse?: (operation, accessTokenField) => response => any,
     //handleError?: (err: Error) => void,
   });
 
@@ -48,7 +59,7 @@ const gqlClient = () => {
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    errorLink.concat(authLink.concat(httpLink))
+    errorLink.concat(refreshTokenLink.concat(authLink.concat(httpLink) as any) as any)
   );
 
   return new ApolloClient({

@@ -10,12 +10,7 @@ export const renewAuthToken = () => {
   return axios
     .post(RENEW_TOKEN)
     .then((response: any) => {
-      console.log('success with renewing');
       return response;
-      // set the new session object
-      // const responseString = JSON.stringify(response.data.data);
-      // setAuthSession(responseString);
-      // return { renewStatus: true };
     })
     .catch((error: any) => {
       // if we are not able to renew the token for some wierd reason or if refresh token
