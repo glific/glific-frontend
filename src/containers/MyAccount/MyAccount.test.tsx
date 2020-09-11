@@ -1,13 +1,11 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { MyAccount } from './MyAccount';
 import { MY_ACCOUNT_MOCKS } from './MyAccount.test.helper';
-import { setUserRole } from '../../context/role';
 
 const mocks = MY_ACCOUNT_MOCKS;
-setUserRole(['Admin']);
 
 describe('<MyAccount />', () => {
   test('it should mount', async () => {

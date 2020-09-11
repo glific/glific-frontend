@@ -112,13 +112,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const [active, setActive] = React.useState(false);
   const [staffManagementMenus, setStaffManagementMenus] = React.useState<any>([]);
 
-  // on page reload check menus for user role
-  if (staffManagementMenus.length === 0) {
-    // Need to wait before you get the role from API
-    setTimeout(() => {
-      setStaffManagementMenus(getStaffManagementMenus());
-    }, 1000);
-  }
+  // get menu for role
+  const getMenus = () => {
+    setStaffManagementMenus(getStaffManagementMenus());
+  };
 
   const drawer = (
     <div>
@@ -212,7 +209,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           }}
           variant="permanent"
         >
-          <div className={classes.BottomMenus}>
+          <div className={classes.BottomMenus} onClick={() => getMenus()}>
             <div>
               <Menu menus={staffManagementMenus}>
                 <IconButton>
