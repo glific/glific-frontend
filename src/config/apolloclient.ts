@@ -23,10 +23,8 @@ const gqlClient = () => {
 
   // build authentication link
   const authLink = setContext((_, { headers }) => {
-    // get the session object from local storage if it exists
-    const session = getAuthSession();
-    // parse the token and send it to backend
-    const accessToken = session ? JSON.parse(session).access_token : null;
+    // get auth token
+    const accessToken = getAuthSession('access_token');
 
     return {
       headers: {

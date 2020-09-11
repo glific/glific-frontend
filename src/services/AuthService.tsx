@@ -4,11 +4,8 @@ import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/cons
 
 // service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {
-  // get the current session
-  const session: any = getAuthSession();
-
   // get the renewal token from session
-  axios.defaults.headers.common['Authorization'] = JSON.parse(session).renewal_token;
+  axios.defaults.headers.common['Authorization'] = getAuthSession('renewal_token');
 
   return axios
     .post(RENEW_TOKEN)
@@ -30,12 +27,15 @@ export const renewAuthToken = () => {
 // service to check the validity of the auth / token  status
 export const checkAuthStatusService = () => {
   let authStatus = false;
-  const session = getAuthSession();
-  if (!session) {
+  const tokenExpiryTimeFromSession = getAuthSession('token_expiry_time');
+  // return false if there is no session on local
+  if (!tokenExpiryTimeFromSession) {
     authStatus = false;
   } else {
-    const tokenExpiryTime = new Date(JSON.parse(session).token_expiry_time);
+    const tokenExpiryTime = new Date(tokenExpiryTimeFromSession);
+    // compare the session token with the current time
     if (tokenExpiryTime > new Date()) {
+      // token is still valid return true
       authStatus = true;
     } else {
       // this means token has expired and let's return false
@@ -51,8 +51,28 @@ export const setAuthSession = (session: string) => {
 };
 
 // get the current authentication session
-export const getAuthSession = () => {
-  return localStorage.getItem('glific_session');
+export const getAuthSession = (element?: string) => {
+  const session = localStorage.getItem('glific_session');
+
+  // let's early if there is no session on local
+  if (!session) return null;
+
+  // we should retun as requested
+  let returnValue: any;
+  switch (element) {
+    case 'token_expiry_time':
+      returnValue = JSON.parse(session).token_expiry_time;
+      break;
+    case 'renewal_token':
+      returnValue = JSON.parse(session).renewal_token;
+      break;
+    case 'access_token':
+      returnValue = JSON.parse(session).access_token;
+      break;
+    default:
+      returnValue = session;
+  }
+  return returnValue;
 };
 
 // clear the authentication session
