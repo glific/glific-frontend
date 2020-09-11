@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import clsx from 'clsx';
 
 import ListIcon from '../../../ListIcon/ListIcon';
 import styles from './SideMenus.module.css';
-import { getUserRole, setUserRole, getRoleBasedAccess } from '../../../../../context/role';
+import {
+  getUserRole,
+  setUserRole,
+  getRoleBasedAccess,
+  RoleContext,
+} from '../../../../../context/role';
 import { GET_CURRENT_USER } from '../../../../../graphql/queries/User';
 import { useLazyQuery } from '@apollo/client';
 
@@ -24,10 +29,15 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     return '/'.concat(pathName);
   };
 
+  const { setRole } = useContext(RoleContext);
+
   // get the information on current user
   const [getCurrentUser, { data: userData }] = useLazyQuery(GET_CURRENT_USER);
 
-  if (userData) setUserRole(userData.currentUser.user.roles);
+  if (userData) {
+    setUserRole(userData.currentUser.user.roles);
+    setRole(userData.currentUser.user.roles);
+  }
 
   const role: any = getUserRole() ? getUserRole() : [];
 
@@ -35,7 +45,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     if (role.length === 0) getCurrentUser();
   }, []);
 
-  const menu: any[] = getRoleBasedAccess() ? getRoleBasedAccess() : [];
+  const menu: any[] = getRoleBasedAccess();
 
   const menuList = menu.map((menu, i) => {
     let isSelected = location.pathname.startsWith(menu.path);

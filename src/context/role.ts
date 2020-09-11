@@ -3,7 +3,9 @@ import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
 
 export const RoleContext = React.createContext({
   role: [],
-  setRole: (value: any) => {},
+  setRole: (value: any) => {
+    setUserRole(value);
+  },
 });
 
 let role: any[] = [];
