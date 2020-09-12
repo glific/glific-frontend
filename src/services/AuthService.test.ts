@@ -24,24 +24,14 @@ describe('AuthService', () => {
     tokenExpiryDate +
     '"}';
 
-  test('testing renewAuthToken with empty session', async () => {
-    const responseData = { renewStatus: false };
-
-    jest.fn().mockImplementationOnce(() => Promise.resolve(responseData));
-    await expect(renewAuthToken()).resolves.toEqual(responseData);
-  });
-
-  test('testing renewAuthToken with valid session', async () => {
+  test('testing renewAuthToken', async () => {
     // set the session
     setAuthSession(session);
 
     // let's mock the axios call
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-
-    // lets mock the reponse returned by the actual function
-    const renewResponseData = { renewStatus: true };
-    await expect(renewAuthToken()).resolves.toEqual(renewResponseData);
+    await expect(renewAuthToken()).resolves.toEqual(responseData);
   });
 
   test('testing renewAuthToken with error while renewing', async () => {
@@ -51,8 +41,7 @@ describe('AuthService', () => {
     // let's mock the axios call
     const invalidErrorMessage = 'Invalid token';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
-    // since we redirect there is no need to add assert
-    // await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
+    await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
   });
 
   test('testing checkAuthStatusService with empty session', () => {
@@ -69,7 +58,18 @@ describe('AuthService', () => {
     expect(response).toBeTruthy();
   });
 
-  test('testing checkAuthStatusService with expired token and valid refresh token', () => {});
+  test('testing checkAuthStatusService with expired token', () => {
+    // set the session
+    const expiredTokenDate = new Date();
+    expiredTokenDate.setDate(new Date().getDate() - 1);
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        expiredTokenDate +
+        '"}'
+    );
+    const response = checkAuthStatusService();
+    expect(response).toBeFalsy();
+  });
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session

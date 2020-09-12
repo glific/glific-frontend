@@ -36,6 +36,7 @@
     "@types/styled-components": "^5.1.1",
     "@types/yup": "^0.29.4",
     "ajv-keywords": "^3.5.0",
+    "apollo-link-token-refresh": "^0.3.2",
     "axios": "^0.19.2",
     "date-fns": "^2.15.0",
     "draft-js": "^0.11.6",
