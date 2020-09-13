@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import axios from 'axios';
 
 import { ConfirmOTP } from './ConfirmOTP';
@@ -7,14 +7,18 @@ import { MemoryRouter } from 'react-router';
 
 jest.mock('axios');
 
+const defaultProps = { location: { state: { name: '', phoneNumber: '', password: '' } } };
+
 describe('<ConfirmOTP />', () => {
-  it('renders component properly', () => {
-    const { getByText, findByTestId } = render(
+  it('renders component properly', async () => {
+    const { findByTestId } = render(
       <MemoryRouter>
-        <ConfirmOTP location={undefined} />
+        <ConfirmOTP {...defaultProps} />
       </MemoryRouter>
     );
-    const authContainer = findByTestId('AuthContainer');
-    expect(authContainer).toHaveTextContent('Create your new account');
+    const authContainer = await findByTestId('AuthContainer');
+    expect(authContainer).toHaveTextContent(
+      'Please confirm the OTP received at your whatsapp number.'
+    );
   });
 });
