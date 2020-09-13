@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { IconButton, Typography, DialogTitle } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';

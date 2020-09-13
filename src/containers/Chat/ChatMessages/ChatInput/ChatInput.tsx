@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
