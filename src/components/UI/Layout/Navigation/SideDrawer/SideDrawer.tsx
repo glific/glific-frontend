@@ -22,8 +22,9 @@ import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.p
 import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
 import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
-import { staffManagementMenus, userAccountMenus } from '../../../../../config/menu';
+import { userAccountMenus } from '../../../../../config/menu';
 import { Link, useLocation } from 'react-router-dom';
+import { getStaffManagementMenus, settingMenu } from '../../../../../context/role';
 
 export interface SideDrawerProps {}
 
@@ -109,6 +110,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
   const [active, setActive] = React.useState(false);
+  const [staffManagementMenus, setStaffManagementMenus] = React.useState<any>([]);
+
+  // get menu for role
+  const getMenus = () => {
+    setStaffManagementMenus(getStaffManagementMenus());
+  };
 
   const drawer = (
     <div>
@@ -149,6 +156,20 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
     setActive(!active);
   };
 
+  const settingMenus = settingMenu ? (
+    <div>
+      <Link to={'/settings'} onClick={handleClick}>
+        <IconButton>
+          <img
+            src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
+            className={styles.UserIcon}
+            alt="settings"
+          />
+        </IconButton>
+      </Link>
+    </div>
+  ) : null;
+
   return (
     <nav
       className={clsx({
@@ -188,7 +209,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           }}
           variant="permanent"
         >
-          <div className={classes.BottomMenus}>
+          <div className={classes.BottomMenus} onClick={() => getMenus()}>
             <div>
               <Menu menus={staffManagementMenus}>
                 <IconButton>
@@ -217,17 +238,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                 </IconButton>
               </Menu>
             </div>
-            <div>
-              <Link to={'/settings'} onClick={handleClick}>
-                <IconButton>
-                  <img
-                    src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
-                    className={styles.UserIcon}
-                    alt="settings"
-                  />
-                </IconButton>
-              </Link>
-            </div>
+            {settingMenus}
           </div>
           {drawer}
         </Drawer>

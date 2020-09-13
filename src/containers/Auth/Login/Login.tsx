@@ -1,21 +1,49 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 
 import { USER_SESSION } from '../../../common/constants';
 import { SessionContext } from '../../../context/session';
+import { RoleContext, setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
-import { setAuthSession } from '../../../services/AuthService';
+import { setAuthSession, clearAuthSession, getAuthSession } from '../../../services/AuthService';
+import { useLazyQuery } from '@apollo/client';
+import { GET_CURRENT_USER } from '../../../graphql/queries/User';
+
+const NotApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
+  const { setRole } = useContext(RoleContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
+
+  // get the information on current user
+  const [getCurrentUser, { data: userData }] = useLazyQuery(GET_CURRENT_USER);
+
+  useEffect(() => {
+    if (userData) {
+      let roles = userData.currentUser.user.roles;
+      // check for user role none or empty
+      if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
+        setAuthError(NotApprovedMsg);
+        clearAuthSession();
+      } else {
+        setRole(roles);
+        setUserRole(roles);
+
+        // needed to redirect after login
+        setAuthenticated(true);
+        const token: any = getAuthSession();
+        setSessionToken(token);
+      }
+    }
+  }, [userData]);
 
   if (sessionToken) {
     return (
@@ -64,9 +92,8 @@ export const Login: React.SFC<LoginProps> = () => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
+        getCurrentUser();
         setAuthSession(responseString);
-        setAuthenticated(true);
-        setSessionToken(responseString);
       })
       .catch((error: any) => {
         setAuthError('Invalid phone or password.');

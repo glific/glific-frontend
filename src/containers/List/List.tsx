@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { useQuery, useMutation, DocumentNode } from '@apollo/client';
+import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { IconButton, Typography, DialogTitle } from '@material-ui/core';
@@ -17,6 +17,8 @@ import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { ListCard } from './ListCard/ListCard';
+import { GET_CURRENT_USER } from '../../graphql/queries/User';
+import { getUserRole, displayUserGroups } from '../../context/role';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -110,6 +112,8 @@ export const List: React.SFC<ListProps> = ({
     sortDirection: 'asc',
   });
 
+  const [userRole, setUserRole] = useState<any>([]);
+
   const handleTableChange = (attribute: string, newVal: number | string) => {
     // To handle sorting by columns that are not Name (currently don't support this functionality)
     if (attribute === 'sortCol' && newVal !== 'Name') {
@@ -141,17 +145,45 @@ export const List: React.SFC<ListProps> = ({
   });
 
   // Get item data here
-  const { loading, error, data, refetch } = useQuery(filterItemsQuery, {
+  const [fetchQuery, { loading, error, data }] = useLazyQuery(filterItemsQuery, {
     variables: filterPayload(),
   });
+
+  // Get item data here
+  const [fetchUserGroups, { data: userGroups }] = useLazyQuery(GET_CURRENT_USER);
 
   const message = useQuery(NOTIFICATION);
   let toastMessage;
 
+  const checkUserRole = () => {
+    let role: any = getUserRole();
+    setUserRole(role);
+  };
+
+  if (userRole.length === 0) {
+    // wait to get role on page refresh
+    setTimeout(() => {
+      checkUserRole();
+    }, 100);
+  }
+
   useEffect(() => {
-    refetch();
+    checkUserRole();
     refetchCount();
-  }, [refetch, filterPayload, searchVal]);
+  }, [filterPayload, searchVal]);
+
+  useEffect(() => {
+    if (userRole.length === 0) {
+      checkUserRole();
+    } else {
+      if (displayUserGroups) {
+        fetchQuery();
+      } else {
+        // if user role staff then display groups related to login user
+        fetchUserGroups();
+      }
+    }
+  }, [userRole]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
 
@@ -163,7 +195,7 @@ export const List: React.SFC<ListProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      refetch();
+      checkUserRole();
       refetchCount();
     },
     refetchQueries: () => {
@@ -332,9 +364,17 @@ export const List: React.SFC<ListProps> = ({
   };
 
   // Get item data and total number of items.
-  let itemList: any;
+  let itemList: any = [];
   if (data) {
     itemList = formatList(data[listItem]);
+  }
+
+  let actions = true;
+  if (userGroups) {
+    actions = false;
+    if (listItem === 'groups') {
+      itemList = formatList(userGroups.currentUser.user['groups']);
+    }
   }
 
   let itemCount: number = tableVals.pageRows;
@@ -356,7 +396,7 @@ export const List: React.SFC<ListProps> = ({
       />
     );
   } else if (displayListType === 'card') {
-    displayList = <ListCard data={itemList} link={cardLink} />;
+    displayList = <ListCard data={itemList} link={cardLink} actions={actions} />;
   }
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
