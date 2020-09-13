@@ -1,47 +1,20 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import axios from 'axios';
-import { Auth } from '../Auth';
-import { wait } from '@testing-library/react';
 
 import { ConfirmOTP } from './ConfirmOTP';
+import { MemoryRouter } from 'react-router';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('ConfirmOTP test', () => {
-  const createConfirmOTP = () => <ConfirmOTP location={undefined} />;
-
+describe('<ConfirmOTP />', () => {
   it('renders component properly', () => {
-    const wrapper = shallow(createConfirmOTP());
-    expect(wrapper).toBeTruthy();
+    const { getByText, findByTestId } = render(
+      <MemoryRouter>
+        <ConfirmOTP location={undefined} />
+      </MemoryRouter>
+    );
+    const authContainer = findByTestId('AuthContainer');
+    expect(authContainer).toHaveTextContent('Create your new account');
   });
-
-  it('renders auth', async () => {
-    const wrapper = shallow(createConfirmOTP());
-    expect(wrapper.find(Auth)).toBeTruthy;
-  });
-  // TODO: New API is being implemented in the backend that will change this hence commenting it for now
-  // it('shows error that says phone number already exists', () => {
-  //   jest.mock('axios');
-  //   const wrapper = mount(
-  //     <ConfirmOTP
-  //       location={{
-  //         state: {
-  //           phoneNumber: '1231231234',
-  //           password: 'pass12345',
-  //         },
-  //       }}
-  //     />
-  //   );
-  //   const response = {
-  //     error: { errors: ['does_not_exist'], message: "Couldn't create user", status: 500 },
-  //   };
-
-  //   mockedAxios.post.mockRejectedValue(response);
-  //   wrapper.find('Button').simulate('click');
-  //   expect(wrapper.find(FormHelperText).prop('children')).toEqual(
-  //     'An account already exists with this phone number.'
-  //   );
-  // });
 });
