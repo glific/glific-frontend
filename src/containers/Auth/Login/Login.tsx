@@ -13,7 +13,7 @@ import { setAuthSession, clearAuthSession, getAuthSession } from '../../../servi
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 
-const NotApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
+const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
 export interface LoginProps {}
 
@@ -31,7 +31,7 @@ export const Login: React.SFC<LoginProps> = () => {
       let roles = userData.currentUser.user.roles;
       // check for user role none or empty
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
-        setAuthError(NotApprovedMsg);
+        setAuthError(notApprovedMsg);
         clearAuthSession();
       } else {
         setRole(roles);
