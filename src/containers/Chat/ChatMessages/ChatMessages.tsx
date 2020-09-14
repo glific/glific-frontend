@@ -20,6 +20,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { Redirect } from 'react-router';
+import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -249,6 +250,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         handleOk={handleSubmit}
         handleCancel={closeDialogBox}
         options={tags}
+        icon={<TagIcon />}
       ></SearchDialogBox>
     );
   }

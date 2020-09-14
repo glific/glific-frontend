@@ -8,7 +8,7 @@ const defaultProps = {
   title: 'Search Box',
   handleOk: jest.fn(),
   handleCancel: jest.fn(),
-  options: [{ id: 1, label: 'something' }],
+  options: [{ id: '1', label: 'something' }],
   selectedOptions: ['1'],
 };
 const wrapper = mount(
