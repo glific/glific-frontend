@@ -79,8 +79,6 @@ describe('<ChatMessage />', () => {
   );
 
   const chatMessageText = chatMessage('TEXT');
-  const chatMessageImage = chatMessage('IMAGE');
-  const chatMessageAudio = chatMessage('AUDIO');
 
   const wrapper = mount(chatMessageText);
 
