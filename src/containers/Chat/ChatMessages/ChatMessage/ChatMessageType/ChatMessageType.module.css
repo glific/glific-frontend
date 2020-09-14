@@ -6,7 +6,7 @@
   height: 200px;
   cursor: pointer;
   max-height: 200px;
-  background-color: aliceblue;
+  background-size: cover !important;
 }
 
 .Document {

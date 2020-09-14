@@ -35,7 +35,6 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             data-testid="imageMessage"
             style={{
               background: `url("${media.url}"), url('${ImageThumbnail}') no-repeat`,
-              backgroundSize: 'cover',
             }}
             onClick={() => setShowViewer(true)}
             className={styles.Image}
@@ -79,8 +78,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         <>
           <div
             data-testid="documentMessage"
-            style={{ background: `url("${DocumentThumbnail}") no-repeat`, backgroundSize: 'cover' }}
-            onClick={() => setShowViewer(true)}
+            style={{ background: `url("${DocumentThumbnail}") no-repeat` }}
             className={styles.Document}
           ></div>
           <a href={media.url} className={styles.DocumentText}>
