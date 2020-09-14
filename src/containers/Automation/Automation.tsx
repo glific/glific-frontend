@@ -11,14 +11,13 @@ import {
 } from '../../graphql/mutations/Automation';
 import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery } from '@apollo/client';
 
 export interface AutomationProps {
   match: any;
 }
 
 const FormSchema = Yup.object().shape({
-  shortcode: Yup.string().required('Shortcode is required.'),
   name: Yup.string().required('Name is required.'),
 });
 
@@ -34,16 +33,14 @@ const queries = {
 };
 
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
-  const [shortcode, setShortcode] = useState('');
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const [filterKeywords, setFilterKeywords] = useState<any>();
 
-  const states = { shortcode, name, keywords, ignoreKeywords };
+  const states = { name, keywords, ignoreKeywords };
 
-  const setStates = ({ shortcode, name, keywords, ignoreKeywords }: any) => {
-    setShortcode(shortcode);
+  const setStates = ({ name, keywords, ignoreKeywords }: any) => {
     setName(name);
     setKeywords(keywords);
     setIgnoreKeywords(ignoreKeywords);
@@ -65,14 +62,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       },
     },
   });
-
-  const validateShortcode = (value: string) => {
-    if (value) {
-      // setFilterKeywords({ shortcode: value }); // need shortcode filter
-      setFilterKeywords({});
-      return validateFields(value, 'shortcode', 'Shortcode already exists.', false);
-    }
-  };
 
   const validateName = (value: string) => {
     if (value) {
@@ -112,13 +101,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   };
 
   const formFields = [
-    {
-      component: Input,
-      name: 'shortcode',
-      type: 'text',
-      placeholder: 'Shortcode',
-      validate: validateShortcode,
-    },
     {
       component: Input,
       name: 'name',

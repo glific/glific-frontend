@@ -1,4 +1,4 @@
-import { GET_CURRENT_USER } from "../../graphql/queries/User";
+import { GET_CURRENT_USER } from '../../graphql/queries/User';
 
 export const MY_ACCOUNT_MOCKS = [
   {
@@ -16,10 +16,16 @@ export const MY_ACCOUNT_MOCKS = [
             contact: {
               id: '1',
             },
+            groups: [
+              {
+                id: '1',
+                label: 'Default Group',
+                description: '',
+              },
+            ],
           },
         },
       },
     },
   },
-
 ];

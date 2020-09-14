@@ -8,17 +8,15 @@ import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
 
 export interface AutomationListProps {}
 
-const getColumns = ({ shortcode, name }: any) => ({
-  shortcode: getShortcode(shortcode),
+const getColumns = ({ name }: any) => ({
   name: getName(name),
 });
 
-const getShortcode = (label: string) => <p className={styles.LabelText}>{label}</p>;
 const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-const columnNames = ['SHORTCODE', 'NAME', 'ACTIONS'];
+const columnNames = ['NAME', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this automation.";
-const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
+const columnStyles = [styles.Name, styles.Actions];
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {

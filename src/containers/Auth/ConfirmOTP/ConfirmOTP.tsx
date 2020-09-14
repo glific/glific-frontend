@@ -1,20 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
-import { SessionContext } from '../../../context/session';
 import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
-import { sendOTP, setAuthSession } from '../../../services/AuthService';
+import { sendOTP } from '../../../services/AuthService';
 
 export interface ConfirmOTPProps {
   location: any;
 }
 
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
-  const { setAuthenticated } = useContext(SessionContext);
   const [OTP, setOTP] = useState('');
   const [tokenResponse, setTokenResponse] = useState('');
   const [authError, setAuthError] = useState('');
@@ -34,7 +32,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
     return (
       <Redirect
         to={{
-          pathname: '/chat',
+          pathname: '/login',
           state: {
             tokens: tokenResponse,
           },
@@ -77,8 +75,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       })
       .then((response: any) => {
         const responseString = JSON.stringify(response.data.data);
-        setAuthSession(responseString);
-        setAuthenticated(true);
         setTokenResponse(responseString);
       })
       .catch((error: any) => {

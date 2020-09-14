@@ -67,6 +67,11 @@ export const GET_CURRENT_USER = gql`
         contact {
           id
         }
+        groups {
+          id
+          label
+          description
+        }
       }
     }
   }

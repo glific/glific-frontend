@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import SideMenus from '../SideMenus/SideMenus';
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
+import { getRoleBasedAccess } from '../../../../../context/role';
 
 import { shallow, mount } from 'enzyme';
 
@@ -25,7 +26,7 @@ describe('side drawer testing', () => {
     const wrapper = mount(component);
     expect(wrapper).toBeTruthy();
     // Use Hidden at index 0 because there's two Drawer components.
-    expect(wrapper.find(Drawer).at(0).find(ListItem).length).toEqual(sideDrawerMenus.length);
+    expect(wrapper.find(Drawer).at(0).find(ListItem).length).toEqual(getRoleBasedAccess().length);
   });
 
   it('callback is working', () => {

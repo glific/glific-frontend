@@ -23,7 +23,7 @@ export interface SettingsProps {
 }
 
 const FormSchema = Yup.object().shape({
-  shortcode: Yup.string().required('Organisation name is required.'),
+  name: Yup.string().required('Organisation name is required.'),
   providerKey: Yup.string().required('Gupshup API key is required.'),
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 });
@@ -48,7 +48,7 @@ const dayList = [
 ];
 
 export const OrganisationSettings: React.SFC<SettingsProps> = () => {
-  const [shortcode, setShortcode] = useState('');
+  const [name, setName] = useState('');
   const [providerKey, setProviderKey] = useState('');
   const [providerPhone, setProviderNumber] = useState('');
   const [hours, setHours] = useState(true);
@@ -60,7 +60,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [organizationId, setOrganizationId] = useState(null);
 
   const states = {
-    shortcode,
+    name,
     providerKey,
     providerPhone,
     hours,
@@ -70,8 +70,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     flowId,
   };
 
-  const setStates = ({ shortcode, providerKey, providerPhone, outOfOffice }: any) => {
-    setShortcode(shortcode);
+  const setStates = ({ name, providerKey, providerPhone, outOfOffice }: any) => {
+    setName(name);
     setProviderKey(providerKey);
     setProviderNumber(providerPhone);
     setHours(outOfOffice.enabled);
@@ -119,7 +119,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const formFields = [
     {
       component: Input,
-      name: 'shortcode',
+      name: 'name',
       type: 'text',
       placeholder: 'Organisation name',
     },
@@ -199,7 +199,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
 
   const setPayload = (payload: any) => {
     return {
-      shortcode: payload.shortcode,
+      name: payload.name,
       providerKey: payload.providerKey,
       providerPhone: payload.providerPhone,
       outOfOffice: {

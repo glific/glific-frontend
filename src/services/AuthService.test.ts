@@ -12,6 +12,10 @@ import {
 jest.mock('axios');
 
 describe('AuthService', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   // let's create token expiry date for tomorrow
   const tokenExpiryDate = new Date();
   tokenExpiryDate.setDate(new Date().getDate() + 1);
@@ -20,9 +24,29 @@ describe('AuthService', () => {
     tokenExpiryDate +
     '"}';
 
-  test('testing renewAuthToken', () => { });
+  test('testing renewAuthToken', async () => {
+    // set the session
+    setAuthSession(session);
+
+    // let's mock the axios call
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(renewAuthToken()).resolves.toEqual(responseData);
+  });
+
+  test('testing renewAuthToken with error while renewing', async () => {
+    // set the session
+    setAuthSession(session);
+
+    // let's mock the axios call
+    const invalidErrorMessage = 'Invalid token';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
+    await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
+  });
 
   test('testing checkAuthStatusService with empty session', () => {
+    // clear the session
+    clearAuthSession();
     const response = checkAuthStatusService();
     expect(response).toBeFalsy();
   });
@@ -34,7 +58,18 @@ describe('AuthService', () => {
     expect(response).toBeTruthy();
   });
 
-  test('testing checkAuthStatusService with expired token and valid refresh token', () => { });
+  test('testing checkAuthStatusService with expired token', () => {
+    // set the session
+    const expiredTokenDate = new Date();
+    expiredTokenDate.setDate(new Date().getDate() - 1);
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        expiredTokenDate +
+        '"}'
+    );
+    const response = checkAuthStatusService();
+    expect(response).toBeFalsy();
+  });
 
   test('testing setAuthSession & getAuthSession', () => {
     // set the session
@@ -53,11 +88,11 @@ describe('AuthService', () => {
   });
 
   test('testing successful sendOTP', async () => {
-    const data = {
+    const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(data));
-    await expect(sendOTP('919967665667')).resolves.toEqual(data);
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(sendOTP('919967665667')).resolves.toEqual(responseData);
   });
 
   test('testing sendOTP failure', async () => {

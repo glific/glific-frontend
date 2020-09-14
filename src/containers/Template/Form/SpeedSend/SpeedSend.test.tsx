@@ -7,9 +7,11 @@ import { SpeedSend } from './SpeedSend';
 import { Switch, Route } from 'react-router-dom';
 import { SpeedSendList } from '../../List/SpeedSendList/SpeedSendList';
 import { TEMPLATE_MOCKS } from '../../Template.test.helper';
+import { setUserRole } from '../../../../context/role';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
+setUserRole(['Admin']);
 
 test('cancel button should redirect to SpeedSendlist page', async () => {
   const { container, getByText, unmount } = render(
