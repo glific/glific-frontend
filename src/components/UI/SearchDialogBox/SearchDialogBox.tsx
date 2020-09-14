@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { DialogBox } from '../DialogBox/DialogBox';
 import { FormControl, Paper, Chip, TextField } from '@material-ui/core';
 import styles from './SearchDialogBox.module.css';
-
 import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
 export interface SearchDialogBoxProps {
@@ -11,11 +10,10 @@ export interface SearchDialogBoxProps {
   handleCancel: Function;
   options: any;
   selectedOptions: any;
-  disableCloseOnSelect?: boolean;
   icon?: any;
 }
 
-export const SearchDialogBox = ({ disableCloseOnSelect = false, ...props }: any) => {
+export const SearchDialogBox = (props: any) => {
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
 
   useEffect(() => {

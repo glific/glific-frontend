@@ -248,7 +248,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         selectedOptions={selectedMessageTags}
         title="Assign tag to message"
         handleOk={handleSubmit}
-        disableCloseOnSelect={true}
         handleCancel={closeDialogBox}
         options={tags}
         icon={<TagIcon />}
