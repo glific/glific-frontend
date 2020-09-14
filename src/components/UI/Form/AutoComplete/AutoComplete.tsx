@@ -4,17 +4,19 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
 import { getIn } from 'formik';
 import styles from './AutoComplete.module.css';
+import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Close.svg';
 
 export interface AutocompleteProps {
   options: any;
   optionLabel: string;
   field: any;
   icon?: any;
-  form: { dirty: any; touched: any; errors: any; setFieldValue: any };
+  form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
   helperText?: string;
   multiple?: boolean;
   disabled?: boolean;
+  chipIcon?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -22,6 +24,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   optionLabel,
   field,
   icon,
+  chipIcon,
   form: { dirty, touched, errors, setFieldValue },
   textFieldProps,
   helperText,
@@ -35,7 +38,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   return (
     <div className={styles.Input}>
-      <FormControl fullWidth error={errors[field.name] && touched[field.name] ? true : false}>
+      <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
         <Autocomplete
           multiple={multiple}
           data-testid="autocomplete-element"
@@ -58,9 +61,10 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               <Chip
                 style={{ backgroundColor: '#e2f1ea' }}
                 className={styles.Chip}
-                icon={icon}
+                icon={chipIcon}
                 label={option[optionLabel]}
                 {...getTagProps({ index })}
+                deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
               />
             ))
           }

@@ -26,11 +26,6 @@
   border-color: #eaedec !important;
 }
 
-.DeleteIcon {
-  width: 8px !important;
-  margin-right: 13px !important;
-}
-
 .Paper > ul > li:hover {
   background-color: #edf6f2 !important;
 }

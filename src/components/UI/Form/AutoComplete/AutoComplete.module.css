@@ -10,3 +10,8 @@
 .HelperText {
   margin-left: 16px !important;
 }
+
+.DeleteIcon {
+  width: 8px !important;
+  margin-right: 13px !important;
+}
