@@ -57,4 +57,19 @@ describe('<ConfirmOTP />', () => {
     const errorMessage = 'We are unable to register, kindly contact your technical team.';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
   });
+
+  it('test successful resend functionality', async () => {
+    render(wrapper);
+
+    // click on resend button
+    const resendButton = screen.getByText('resend');
+    UserEvent.click(resendButton);
+
+    // let's mock resend otp submission
+    const responseData = {
+      data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
+    };
+    const responseValues = axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await expect(responseValues).resolves.toEqual(responseData);
+  });
 });
