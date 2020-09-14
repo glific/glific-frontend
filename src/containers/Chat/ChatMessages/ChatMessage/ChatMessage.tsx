@@ -5,21 +5,17 @@ import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
-import Viewer from 'react-viewer';
-import ReactPlayer from 'react-player';
-import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
-import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
+import { TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
-import Thumbnail from '../../../../assets/images/videoThumbnail.jpeg';
+
+import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 
 export interface ChatMessageProps {
   id: number;
@@ -44,12 +40,10 @@ export interface ChatMessageProps {
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let type = props.type;
-  console.log(type);
-  console.log(props.media);
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
-  const [showViewer, setShowViewer] = useState(false);
+
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -166,68 +160,20 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
-  let messageBody;
-
-  if (type === 'IMAGE') {
-    messageBody = (
-      <>
-        <div
-          data-testid="imageMessage"
-          style={{ background: `url("${props.media.url}") no-repeat`, backgroundSize: 'cover' }}
-          onClick={() => setShowViewer(true)}
-          className={styles.Image}
-        ></div>
-        <Viewer
-          visible={showViewer}
-          onClose={() => {
-            setShowViewer(false);
-          }}
-          images={[{ src: props.media.url, alt: '' }]}
-        />
-        <br />
-        <MessagesWithLinks message={props.media.caption} />
-      </>
-    );
-  } else if (type === 'AUDIO') {
-    messageBody = (
-      <audio controls data-testid="audioMessage">
-        <source src={props.media.url} type="audio/ogg"></source>
-      </audio>
-    );
-  } else if (type === 'VIDEO') {
-    messageBody = (
-      <div className={styles.Image}>
-        <ReactPlayer
-          className={styles.Image}
-          url={props.media.url}
-          controls={true}
-          light={Thumbnail}
-        />
-      </div>
-    );
-  } else if (type === 'DOCUMENT') {
-    messageBody = (
-      <a href={props.media.url}>
-        <Button startIcon={<GetAppIcon />} variant="contained" color="primary">
-          {props.media.caption}
-        </Button>
-      </a>
-    );
-  } else {
-    messageBody = (
-      <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
-        <MessagesWithLinks message={props.body} />{' '}
-      </Tooltip>
-    );
-  }
-
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message">
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <div className={styles.Content} data-testid="content">
-            <div>{messageBody}</div>
+            <div>
+              <ChatMessageType
+                type={props.type}
+                media={props.media}
+                body={props.body}
+                insertedAt={props.insertedAt}
+              />
+            </div>
           </div>
 
           <Popper

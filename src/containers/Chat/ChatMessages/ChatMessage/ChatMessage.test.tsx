@@ -85,9 +85,7 @@ describe('<ChatMessage />', () => {
   const wrapper = mount(chatMessageText);
 
   test('it should render the message content correctly', () => {
-    expect(wrapper.find('[data-testid="content"]').text()).toEqual(
-      'Hello there! visit google.com '
-    );
+    expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there! visit google.com');
   });
 
   test('it should apply the correct styling', () => {
@@ -131,15 +129,5 @@ describe('<ChatMessage />', () => {
   test('it should detect a link in messsage', async () => {
     const { getByTestId } = render(chatMessageText);
     expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
-  });
-
-  test('it shows image when type of message is image', () => {
-    const wrapper = mount(chatMessageImage);
-    expect(wrapper.find('[data-testid="imageMessage"]').exists()).toBe(true);
-  });
-
-  test('it loads audio when type of message is audio', () => {
-    const wrapper = mount(chatMessageAudio);
-    expect(wrapper.find('[data-testid="audioMessage"]').exists()).toBe(true);
   });
 });

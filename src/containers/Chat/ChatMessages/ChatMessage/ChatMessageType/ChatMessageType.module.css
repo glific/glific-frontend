@@ -1,0 +1,30 @@
+.Image {
+  margin: 5px 0px;
+  max-width: 280px;
+  min-width: 200px;
+  min-height: unset;
+  height: 200px;
+  cursor: pointer;
+  max-height: 200px;
+  background-color: aliceblue;
+}
+
+.Document {
+  composes: Image;
+  height: 100px;
+}
+
+.DocumentText {
+  display: flex;
+  align-items: center;
+}
+
+.DocumentText svg {
+  margin-right: 4px;
+}
+
+.DocumentText {
+  color: #073f24;
+  text-decoration: none;
+  font-weight: 700;
+}
