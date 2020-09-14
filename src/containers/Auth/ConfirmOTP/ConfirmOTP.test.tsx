@@ -18,6 +18,10 @@ const wrapper = (
 );
 
 describe('<ConfirmOTP />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('renders component properly', async () => {
     const { findByTestId } = render(wrapper);
     const authContainer = await findByTestId('AuthContainer');
@@ -61,15 +65,26 @@ describe('<ConfirmOTP />', () => {
   it('test successful resend functionality', async () => {
     render(wrapper);
 
-    // click on resend button
-    const resendButton = screen.getByText('resend');
-    UserEvent.click(resendButton);
-
-    // let's mock resend otp submission
+    // set the mock
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    const responseValues = axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    await expect(responseValues).resolves.toEqual(responseData);
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
+  });
+
+  it('test unsuccessful resend functionality', async () => {
+    render(wrapper);
+
+    // set the mock
+    const errorMessage = 'Cannot send the otp to 919967665667';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
   });
 });

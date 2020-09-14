@@ -63,7 +63,12 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
-        <IconButton aria-label="resend password" onClick={props.endAdornmentCallback} edge="end">
+        <IconButton
+          aria-label="resend otp"
+          data-testid="resendOtp"
+          onClick={props.endAdornmentCallback}
+          edge="end"
+        >
           <p className={styles.Resend}>resend</p>{' '}
           <RefreshIcon classes={{ root: styles.ResendButton }} />
         </IconButton>
