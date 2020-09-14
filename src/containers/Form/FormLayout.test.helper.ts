@@ -30,6 +30,26 @@ export const listItemProps = {
   getLanguageId: Function,
 };
 
+export const getLanguagesQuery = {
+  request: {
+    query: GET_LANGUAGES,
+  },
+  result: {
+    data: {
+      languages: [
+        {
+          id: '1',
+          label: 'English (United States)',
+        },
+        {
+          id: '2',
+          label: 'Hindi (India)',
+        },
+      ],
+    },
+  },
+};
+
 export const LIST_ITEM_MOCKS = [
   {
     request: {
@@ -145,25 +165,7 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-  {
-    request: {
-      query: GET_LANGUAGES,
-    },
-    result: {
-      data: {
-        languages: [
-          {
-            id: '1',
-            label: 'English (United States)',
-          },
-          {
-            id: '2',
-            label: 'Hindi (India)',
-          },
-        ],
-      },
-    },
-  },
+  getLanguagesQuery,
   {
     request: {
       query: GET_TAG,
