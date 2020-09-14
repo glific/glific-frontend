@@ -26,14 +26,6 @@
   border-color: #eaedec !important;
 }
 
-.Paper > ul > li:hover {
-  background-color: #edf6f2 !important;
-}
-
 .Autocomplete {
   margin-bottom: 10px !important;
-}
-
-.Paper > ul > li {
-  color: #073f24;
 }

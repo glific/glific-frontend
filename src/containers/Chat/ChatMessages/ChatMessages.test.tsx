@@ -69,7 +69,7 @@ test('assigned tags should be shown in searchbox', async () => {
   fireEvent.click(getByTestId('dialogButton'));
   await wait();
 
-  const searchBox = within(getByTestId('dialogInput'));
+  const searchBox = within(getByTestId('AutocompleteInput'));
   expect(searchBox.getByText('important')).toBeInTheDOM();
 });
 
@@ -80,7 +80,7 @@ test('remove already assigned tags', async () => {
   await wait();
   fireEvent.click(getByTestId('dialogButton'));
   await wait();
-  const searchBox = within(getByTestId('dialogInput'));
+  const searchBox = within(getByTestId('AutocompleteInput'));
   fireEvent.click(searchBox.getByTestId('deleteIcon'));
 });
 

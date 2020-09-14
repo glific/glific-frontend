@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
+import { Chip, FormHelperText, FormControl, Checkbox, Paper } from '@material-ui/core';
 import { getIn } from 'formik';
 import styles from './AutoComplete.module.css';
 import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Close.svg';
@@ -40,6 +40,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
         <Autocomplete
+          PaperComponent={({ className, ...props }) => (
+            <Paper className={`${styles.Paper} ${className}`} {...props} />
+          )}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
@@ -81,6 +84,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               error={hasError}
               helperText={hasError ? errorText : ''}
               {...textFieldProps}
+              data-testid="AutocompleteInput"
             />
           )}
         />
