@@ -59,6 +59,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           renderTags={(value: any, getTagProps) =>
             value.map((option: any, index: number) => (
               <Chip
+                data-testid="searchChip"
                 style={{ backgroundColor: '#e2f1ea' }}
                 className={styles.Chip}
                 icon={chipIcon}
