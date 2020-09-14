@@ -81,13 +81,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const name = contactName.length > 20 ? contactName.slice(0, 20) + '...' : contactName;
 
-  let message = lastMessage.body;
-  if (lastMessage.type === 'AUDIO') {
-    message = 'Audio';
-  } else if (lastMessage.type === 'VIDEO') {
-    message = 'Video';
-  } else if (lastMessage.type === 'IMAGE') {
-    message = 'Image';
+  let message;
+  if (lastMessage.type === 'TEXT') {
+    message = lastMessage.body;
+  } else {
+    message = lastMessage.type;
   }
   return (
     <ListItem
