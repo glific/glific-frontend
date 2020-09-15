@@ -10,12 +10,12 @@ import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessage.module.css';
-import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
+import { TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
+
+import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 
 export interface ChatMessageProps {
   id: number;
@@ -27,6 +27,8 @@ export interface ChatMessageProps {
   sender: {
     id: number;
   };
+  type: string;
+  media: any;
   insertedAt: string;
   onClick?: any;
   tags: Array<any>;
@@ -37,9 +39,11 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
+  let type = props.type;
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
+
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -161,13 +165,17 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <Tooltip title={moment(props.insertedAt).format(DATE_FORMAT)} placement="right">
-            <div className={styles.Content} data-testid="content">
-              <div>
-                <MessagesWithLinks message={props.body} />
-              </div>
+          <div className={styles.Content} data-testid="content">
+            <div>
+              <ChatMessageType
+                type={props.type}
+                media={props.media}
+                body={props.body}
+                insertedAt={props.insertedAt}
+              />
             </div>
-          </Tooltip>
+          </div>
+
           <Popper
             id={popperId}
             open={open}

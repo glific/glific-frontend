@@ -5,7 +5,7 @@ import { ContactDescription } from './ContactDescription/ContactDescription';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-import { GET_TAGS } from '../../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
 
 export interface ContactProfileProps {
@@ -14,7 +14,14 @@ export interface ContactProfileProps {
 
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: props.match.params.id } });
-  const { data: tagsData } = useQuery(GET_TAGS);
+  const { data: tagsData } = useQuery(FILTER_TAGS_NAME, {
+    variables: {
+      filter: {},
+      opts: {
+        order: 'ASC',
+      },
+    },
+  });
   const [updateContactTags] = useMutation(UPDATE_CONTACT_TAGS);
   const [tags, setTags] = useState([]);
   const [selected, setSelected] = useState([]);

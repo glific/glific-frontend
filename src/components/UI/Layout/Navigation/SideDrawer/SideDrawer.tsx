@@ -43,6 +43,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
+      zIndex: 0,
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
