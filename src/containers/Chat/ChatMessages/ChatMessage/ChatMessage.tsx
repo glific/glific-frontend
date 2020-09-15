@@ -14,7 +14,6 @@ import styles from './ChatMessage.module.css';
 import { TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 
