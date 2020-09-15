@@ -46,6 +46,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
       <InputAdornment position="end">
         <IconButton
           aria-label="toggle password visibility"
+          data-testid="passwordToggle"
           onClick={props.endAdornmentCallback}
           edge="end"
         >

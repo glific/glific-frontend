@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-
+import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { ConfirmOTP } from './ConfirmOTP';
-import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('axios');
 

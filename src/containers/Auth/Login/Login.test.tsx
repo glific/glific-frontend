@@ -1,25 +1,35 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
 import axios from 'axios';
 
 import { Login } from './Login';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('Login test', () => {
-  const createLogin = () => <Login />;
-  const createLoginMount = () => (
-    <MemoryRouter>
-      <Login />
-    </MemoryRouter>
-  );
+const wrapper = (
+  <MemoryRouter>
+    <Login />
+  </MemoryRouter>
+);
 
-  it('renders component properly', () => {
-    const wrapper = shallow(createLogin());
-    expect(wrapper).toBeTruthy();
+describe('<Login />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('renders component properly', async () => {
+    const { findByTestId } = render(wrapper);
+    const authContainer = await findByTestId('AuthContainer');
+    expect(authContainer).toHaveTextContent('Login to your account');
+  });
+
+  it('test the login form submission with correct creds', async () => {
+    render(wrapper);
+  });
+
+  it('test the login form submission with incorrect creds', async () => {
+    render(wrapper);
   });
 });
