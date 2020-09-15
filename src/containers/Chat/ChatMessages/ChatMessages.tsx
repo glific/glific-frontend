@@ -18,7 +18,7 @@ import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
-import { FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { Redirect } from 'react-router';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 

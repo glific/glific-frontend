@@ -17,7 +17,6 @@ import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
-import styles from './ListIcon.module.css';
 import { useLocation } from 'react-router';
 
 export interface ListIconProps {

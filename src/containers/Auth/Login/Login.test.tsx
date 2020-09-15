@@ -1,25 +1,67 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
 import axios from 'axios';
+import { MockedProvider } from '@apollo/client/testing';
 
 import { Login } from './Login';
+import { MY_ACCOUNT_MOCKS } from '../../MyAccount/MyAccount.test.helper';
+
+const mocks = MY_ACCOUNT_MOCKS;
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('Login test', () => {
-  const createLogin = () => <Login />;
-  const createLoginMount = () => (
+const wrapper = (
+  <MockedProvider mocks={mocks}>
     <MemoryRouter>
       <Login />
     </MemoryRouter>
-  );
+  </MockedProvider>
+);
 
-  it('renders component properly', () => {
-    const wrapper = shallow(createLogin());
-    expect(wrapper).toBeTruthy();
+describe('<Login />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('renders component properly', async () => {
+    const { findByTestId } = render(wrapper);
+    const authContainer = await findByTestId('AuthContainer');
+    expect(authContainer).toHaveTextContent('Login to your account');
+  });
+
+  it('test the login form submission with correct creds', async () => {
+    const { container } = render(wrapper);
+    const phone = screen.getByRole('textbox');
+    UserEvent.type(phone, '+919978776554');
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on login
+    const loginButton = screen.getByText('LOGIN');
+    UserEvent.click(loginButton);
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
+
+  it('test the login form submission with incorrect creds', async () => {
+    const { container } = render(wrapper);
+    const phone = screen.getByRole('textbox');
+    UserEvent.type(phone, '+919978776554');
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on login
+    const loginButton = screen.getByText('LOGIN');
+    UserEvent.click(loginButton);
+
+    // set the mock error case while login
+    const errorMessage = 'Cannot login';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
   });
 });

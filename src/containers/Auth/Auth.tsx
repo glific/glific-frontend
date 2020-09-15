@@ -132,6 +132,7 @@ export const Auth: React.SFC<AuthProps> = ({
                       color="primary"
                       onClick={submitForm}
                       className={styles.AuthButton}
+                      data-testid="SubmitButton"
                     >
                       {buttonText}
                     </Button>

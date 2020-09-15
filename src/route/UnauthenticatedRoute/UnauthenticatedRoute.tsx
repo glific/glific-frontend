@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import Login from '../../containers/Auth/Login/Login';
-import Registration from '../../containers/Auth/Registration/Registration';
-import ConfirmOTP from '../../containers/Auth/ConfirmOTP/ConfirmOTP';
+import { Login } from '../../containers/Auth/Login/Login';
+import { Registration } from '../../containers/Auth/Registration/Registration';
+import { ConfirmOTP } from '../../containers/Auth/ConfirmOTP/ConfirmOTP';
 import { ResetPasswordPhone } from '../../containers/Auth/ResetPassword/ResetPasswordPhone';
 import { ResetPasswordConfirmOTP } from '../../containers/Auth/ResetPassword/ResetPasswordConfirmOTP';
 

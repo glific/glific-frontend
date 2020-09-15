@@ -1,21 +1,64 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Registration } from './Registration';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const createRegistration = () => <Registration />;
-const createRegistrationMount = () => (
+const wrapper = (
   <MemoryRouter>
     <Registration />
   </MemoryRouter>
 );
 
-it('renders component properly', () => {
-  const wrapper = shallow(createRegistration());
-  expect(wrapper).toBeTruthy();
+describe('<Registration />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('it should render correctly', async () => {
+    const { findByTestId } = render(wrapper);
+
+    const registration = await findByTestId('AuthContainer');
+    expect(registration).toHaveTextContent('Create your new account');
+  });
+
+  test('it should submit the form correctly', async () => {
+    const { container } = render(wrapper);
+    const inputElements = screen.getAllByRole('textbox');
+    UserEvent.type(inputElements[0], 'JaneDoe');
+    UserEvent.type(inputElements[1], '+919978776554');
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on continue
+    const continueButton = screen.getByText('CONTINUE');
+    UserEvent.click(continueButton);
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
+
+  test('it should submit the form correctly and give error', async () => {
+    const { container } = render(wrapper);
+    const inputElements = screen.getAllByRole('textbox');
+    UserEvent.type(inputElements[0], 'JaneDoe');
+    UserEvent.type(inputElements[1], '+919978776554');
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on continue
+    const continueButton = screen.getByText('CONTINUE');
+    UserEvent.click(continueButton);
+
+    // set the mock error case while registration
+    const errorMessage = 'Cannot register 919978776554';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+  });
 });

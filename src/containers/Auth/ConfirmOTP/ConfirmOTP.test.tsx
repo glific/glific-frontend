@@ -1,47 +1,89 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
-import { Auth } from '../Auth';
-import { wait } from '@testing-library/react';
 
 import { ConfirmOTP } from './ConfirmOTP';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('ConfirmOTP test', () => {
-  const createConfirmOTP = () => <ConfirmOTP location={undefined} />;
+const defaultProps = { location: { state: { name: '', phoneNumber: '', password: '' } } };
 
-  it('renders component properly', () => {
-    const wrapper = shallow(createConfirmOTP());
-    expect(wrapper).toBeTruthy();
+const wrapper = (
+  <MemoryRouter>
+    <ConfirmOTP {...defaultProps} />
+  </MemoryRouter>
+);
+
+describe('<ConfirmOTP />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
 
-  it('renders auth', async () => {
-    const wrapper = shallow(createConfirmOTP());
-    expect(wrapper.find(Auth)).toBeTruthy;
+  it('renders component properly', async () => {
+    const { findByTestId } = render(wrapper);
+    const authContainer = await findByTestId('AuthContainer');
+    expect(authContainer).toHaveTextContent(
+      'Please confirm the OTP received at your whatsapp number.'
+    );
   });
-  // TODO: New API is being implemented in the backend that will change this hence commenting it for now
-  // it('shows error that says phone number already exists', () => {
-  //   jest.mock('axios');
-  //   const wrapper = mount(
-  //     <ConfirmOTP
-  //       location={{
-  //         state: {
-  //           phoneNumber: '1231231234',
-  //           password: 'pass12345',
-  //         },
-  //       }}
-  //     />
-  //   );
-  //   const response = {
-  //     error: { errors: ['does_not_exist'], message: "Couldn't create user", status: 500 },
-  //   };
 
-  //   mockedAxios.post.mockRejectedValue(response);
-  //   wrapper.find('Button').simulate('click');
-  //   expect(wrapper.find(FormHelperText).prop('children')).toEqual(
-  //     'An account already exists with this phone number.'
-  //   );
-  // });
+  it('test the OTP form submission with correct OTP', async () => {
+    render(wrapper);
+
+    // enter the otp
+    const input = screen.getByRole('textbox');
+    UserEvent.type(input, '12345');
+
+    // click on continue
+    const continueButton = screen.getByText('CONTINUE');
+    UserEvent.click(continueButton);
+
+    // let's mock successful otp submission
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  });
+
+  it('test the OTP form submission with incorrect OTP', async () => {
+    render(wrapper);
+
+    // enter the otp
+    const input = screen.getByRole('textbox');
+    UserEvent.type(input, '12345');
+
+    // click on continue
+    const continueButton = screen.getByText('CONTINUE');
+    UserEvent.click(continueButton);
+
+    // let's mock error response on otp submission
+    const errorMessage = 'We are unable to register, kindly contact your technical team.';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+  });
+
+  it('test successful resend functionality', async () => {
+    render(wrapper);
+
+    // set the mock
+    const responseData = {
+      data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
+    };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
+  });
+
+  it('test unsuccessful resend functionality', async () => {
+    render(wrapper);
+
+    // set the mock
+    const errorMessage = 'Cannot send the otp to 919967665667';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
+  });
 });

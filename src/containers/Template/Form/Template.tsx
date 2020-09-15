@@ -10,7 +10,7 @@ import {
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
-import { EditorState, ContentState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
