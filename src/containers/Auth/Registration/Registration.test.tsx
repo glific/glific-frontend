@@ -1,21 +1,28 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Registration } from './Registration';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const createRegistration = () => <Registration />;
-const createRegistrationMount = () => (
+const wrapper = (
   <MemoryRouter>
     <Registration />
   </MemoryRouter>
 );
 
-it('renders component properly', () => {
-  const wrapper = shallow(createRegistration());
-  expect(wrapper).toBeTruthy();
+describe('<Registration />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('it should mount', async () => {
+    const { findByTestId } = render(wrapper);
+
+    const registration = await findByTestId('AuthContainer');
+    expect(registration).toHaveTextContent('Create your new account');
+  });
 });
