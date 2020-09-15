@@ -1,6 +1,7 @@
 .DialogContainer {
   height: fit-content;
   min-width: 300px;
+  max-width: 347px;
 }
 
 .Message {
@@ -8,6 +9,7 @@
   font-size: 16px;
   color: #93a29b;
   margin-bottom: 8px;
+  white-space: pre-wrap;
 }
 
 .InputBorder {

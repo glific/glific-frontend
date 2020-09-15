@@ -16,6 +16,7 @@ import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { MessagesWithLinks } from '../MessagesWithLinks/MessagesWithLinks';
+import { WhatsAppToJsx } from '../../../../common/RichEditor';
 
 export interface ChatMessageProps {
   id: number;
@@ -101,7 +102,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     saveTemplateMessage = (
       <AddToMessageTemplate
         id={props.id}
-        message={props.body}
+        message={WhatsAppToJsx(props.body)}
         changeDisplay={saveMessageTemplate}
       />
     );
