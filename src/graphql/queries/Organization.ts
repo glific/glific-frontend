@@ -12,7 +12,7 @@ export const GET_ORGANIZATION = gql`
           name
           url
         }
-        providerKey
+        providerAppname
         providerPhone
         outOfOffice {
           enabled

@@ -24,7 +24,7 @@ export interface SettingsProps {
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Organisation name is required.'),
-  providerKey: Yup.string().required('Gupshup API key is required.'),
+  providerAppname: Yup.string().required('Gupshup API key is required.'),
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 });
 
@@ -49,7 +49,7 @@ const dayList = [
 
 export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [name, setName] = useState('');
-  const [providerKey, setProviderKey] = useState('');
+  const [providerAppname, setProviderAppname] = useState('');
   const [providerPhone, setProviderNumber] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
@@ -61,7 +61,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
 
   const states = {
     name,
-    providerKey,
+    providerAppname,
     providerPhone,
     hours,
     startTime,
@@ -70,9 +70,9 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     flowId,
   };
 
-  const setStates = ({ name, providerKey, providerPhone, outOfOffice }: any) => {
+  const setStates = ({ name, providerAppname, providerPhone, outOfOffice }: any) => {
     setName(name);
-    setProviderKey(providerKey);
+    setProviderAppname(providerAppname);
     setProviderNumber(providerPhone);
     setHours(outOfOffice.enabled);
     setIsDisable(!outOfOffice.enabled);
@@ -125,7 +125,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     },
     {
       component: Input,
-      name: 'providerKey',
+      name: 'providerAppname',
       type: 'text',
       placeholder: 'Gupshup API key',
     },
@@ -200,7 +200,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const setPayload = (payload: any) => {
     return {
       name: payload.name,
-      providerKey: payload.providerKey,
+      providerAppname: payload.providerAppname,
       providerPhone: payload.providerPhone,
       outOfOffice: {
         enabled: payload.hours,

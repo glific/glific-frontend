@@ -34,8 +34,8 @@ const mocks = [
 ];
 
 global.document.createRange = () => ({
-  setStart: () => { },
-  setEnd: () => { },
+  setStart: () => {},
+  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
@@ -46,35 +46,41 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 describe('<ChatMessage />', () => {
   const insertedAt = '2020-06-19T18:44:02Z';
-  const defaultProps = {
-    id: 1,
-    body: '*Hello there!* visit google.com',
-    contactId: 2,
-    receiver: {
+  const Props = (link: any) => {
+    return {
       id: 1,
-    },
-    sender: {
-      id: 2,
-    },
-    showMessage: true,
-    popup: 1,
-    open: true,
-    insertedAt,
-    tags: [
-      {
+      body: '*Hello there!* visit google.com',
+      contactId: 2,
+      receiver: {
         id: 1,
-        label: 'important',
       },
-    ],
+      sender: {
+        id: 2,
+      },
+      showMessage: true,
+      popup: 1,
+      open: true,
+      insertedAt,
+      tags: [
+        {
+          id: 1,
+          label: 'important',
+        },
+      ],
+      type: link,
+      media: { url: 'http://glific.com' },
+    };
   };
 
-  const chatMessage = (
+  const chatMessage = (type: any) => (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ChatMessage {...defaultProps} />
+      <ChatMessage {...Props(type)} />
     </MockedProvider>
   );
 
-  const wrapper = mount(chatMessage);
+  const chatMessageText = chatMessage('TEXT');
+
+  const wrapper = mount(chatMessageText);
 
   test('it should render the message content correctly', () => {
     expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there! visit google.com');
@@ -95,23 +101,23 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the tags correctly', () => {
-    const { getByTestId } = render(chatMessage);
+    const { getByTestId } = render(chatMessageText);
     const tags = within(getByTestId('tags'));
     expect(tags.getByText('important')).toBeInTheDocument();
   });
 
   test('it should render the down arrow icon', () => {
-    const { getAllByTestId } = render(chatMessage);
+    const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('messageOptions')[0]).toBeInTheDocument();
   });
 
   test('it should render popup', async () => {
-    const { getAllByTestId } = render(chatMessage);
+    const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
 
   test('click on delete icon should call the delete query', async () => {
-    const { getAllByTestId } = render(chatMessage);
+    const { getAllByTestId } = render(chatMessageText);
     fireEvent.click(getAllByTestId('deleteIcon')[0]);
     await wait();
 
@@ -119,7 +125,7 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should detect a link in messsage', async () => {
-    const { getByTestId } = render(chatMessage);
-    expect(getByTestId('messageLink').getAttribute("href")).toBe('http://google.com');
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
   });
 });

@@ -1,10 +1,36 @@
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
-import { GET_CONTACT_DETAILS } from '../../graphql/queries/Contact';
+import { GET_CONTACT_DETAILS, GET_CONTACT } from '../../graphql/queries/Contact';
+import { filterTagsQuery } from '../Chat/ChatMessages/ChatMessages.test.helper';
+import { getLanguagesQuery } from '../Form/FormLayout.test.helper';
+
+const getContactQuery = {
+  request: {
+    query: GET_CONTACT,
+    variables: { id: 1 },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          id: '1',
+          name: 'Default User',
+          phone: '+919820198765',
+          language: [],
+          status: 'VALID',
+          providerStatus: '',
+          settings: {},
+          tags: [],
+        },
+      },
+    },
+  },
+};
+const date = new Date();
 
 const getContactDetailsQuery = {
   request: {
     query: GET_CONTACT_DETAILS,
-    variables: { id: '1' },
+    variables: { id: 1 },
   },
   result: {
     data: {
@@ -19,7 +45,7 @@ const getContactDetailsQuery = {
             },
           ],
           fields: {},
-          lastMessageAt: new Date().toISOString(),
+          lastMessageAt: date.toISOString(),
         },
       },
     },
@@ -55,5 +81,8 @@ export const LOGGED_IN_USER_MOCK = [
     },
   },
   getContactDetailsQuery,
+  filterTagsQuery,
+  getLanguagesQuery,
+  getContactQuery,
   getContactDetailsQuery,
 ];

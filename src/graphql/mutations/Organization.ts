@@ -7,7 +7,7 @@ export const UPDATE_ORGANIZATION = gql`
         id
         shortcode
         name
-        providerKey
+        providerAppname
         providerPhone
         outOfOffice {
           enabled
@@ -41,7 +41,7 @@ export const CREATE_ORGANIZATION = gql`
           id
           name
         }
-        providerKey
+        providerAppname
         providerPhone
         defaultLanguage {
           id
