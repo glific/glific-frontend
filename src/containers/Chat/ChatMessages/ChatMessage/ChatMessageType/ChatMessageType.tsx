@@ -7,7 +7,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { Tooltip } from '../../../../../components/UI/Tooltip/Tooltip';
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
-import VideoThumbnail from '../../../../../assets/images/videoThumbnail.jpeg';
+import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 
