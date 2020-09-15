@@ -19,10 +19,25 @@ describe('<Registration />', () => {
     jest.resetAllMocks();
   });
 
-  test('it should mount', async () => {
+  test('it should render correctly', async () => {
     const { findByTestId } = render(wrapper);
 
     const registration = await findByTestId('AuthContainer');
     expect(registration).toHaveTextContent('Create your new account');
+  });
+
+  test('it should submit the form correctly', async () => {
+    render(wrapper);
+    const inputElements = screen.getAllByRole('textbox');
+    UserEvent.type(inputElements[0], 'JaneDoe');
+    UserEvent.type(inputElements[1], '+919978776554');
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    // click on continue
+    const continueButton = screen.getByText('CONTINUE');
+    UserEvent.click(continueButton);
   });
 });

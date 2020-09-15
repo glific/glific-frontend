@@ -19,7 +19,7 @@ describe('<ResetPasswordPhone />', () => {
     jest.resetAllMocks();
   });
 
-  test('it should mount', async () => {
+  test('it should render correctly', async () => {
     const { findByTestId } = render(wrapper);
 
     const resetPassword = await findByTestId('AuthContainer');
@@ -50,7 +50,7 @@ describe('<ResetPasswordPhone />', () => {
     const input = screen.getByRole('textbox');
     UserEvent.type(input, '+919978776554');
 
-    // click on continue
+    // click on GENERATE button
     const continueButton = screen.getByText('GENERATE OTP TO CONFIRM');
     UserEvent.click(continueButton);
 
