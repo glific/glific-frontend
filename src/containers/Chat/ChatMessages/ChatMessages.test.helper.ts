@@ -3,7 +3,7 @@ import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
-import { FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
+import { FILTER_TAGS, FILTER_TAGS_NAME, GET_TAGS } from '../../../graphql/queries/Tag';
 import { GET_CONTACT_GROUPS } from '../../../graphql/queries/Contact';
 
 export const contactGroupsQuery = {
@@ -121,6 +121,8 @@ const conversation = {
               parent: null,
             },
           ],
+          type: 'TEXT',
+          media: null,
         },
       ],
     },
@@ -149,6 +151,8 @@ const conversationWithMultipleMessages = {
             id: '2',
           },
           tags: [],
+          type: 'TEXT',
+          media: null,
         },
         {
           body: 'Yo',
@@ -161,6 +165,8 @@ const conversationWithMultipleMessages = {
             id: '2',
           },
           tags: [],
+          type: 'TEXT',
+          media: null,
         },
       ],
     },
@@ -185,6 +191,64 @@ const getConversationQuery = (data: any) => {
       data: data,
     },
   };
+};
+
+export const getTagsQuery = {
+  request: {
+    query: GET_TAGS,
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          id: '87',
+          label: 'Good message',
+          description: 'Hey There',
+          colorCode: '#0C976D',
+          parent: null,
+          language: {
+            id: '1',
+          },
+        },
+        {
+          id: '1',
+          label: 'important',
+          description: 'some description',
+          colorCode: '#0C976D',
+          parent: { id: '2' },
+          language: {
+            id: '1',
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const filterTagsQuery = {
+  request: {
+    query: FILTER_TAGS_NAME,
+    variables: {
+      filter: {},
+      opts: {
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      tags: [
+        {
+          id: '87',
+          label: 'Good message',
+        },
+        {
+          id: '1',
+          label: 'important',
+        },
+      ],
+    },
+  },
 };
 
 const mocks = [
@@ -225,6 +289,8 @@ const mocks = [
                     parent: null,
                   },
                 ],
+                type: 'TEXT',
+                media: null,
               },
             ],
           },
@@ -233,31 +299,8 @@ const mocks = [
     },
   },
 
-  {
-    request: {
-      query: FILTER_TAGS_NAME,
-      variables: {
-        filter: {},
-        opts: {
-          order: 'ASC',
-        },
-      },
-    },
-    result: {
-      data: {
-        tags: [
-          {
-            id: '87',
-            label: 'Good message',
-          },
-          {
-            id: '1',
-            label: 'important',
-          },
-        ],
-      },
-    },
-  },
+  filterTagsQuery,
+  getTagsQuery,
 
   {
     request: {

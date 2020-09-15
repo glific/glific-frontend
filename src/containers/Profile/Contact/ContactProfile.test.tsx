@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ContactProfile } from './ContactProfile';
@@ -11,16 +11,23 @@ const defaultProps = {
   match: { params: { id: 1 } },
 };
 
-describe('<ContactProfile />', () => {
-  test('it should mount', () => {
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ContactProfile {...defaultProps} />
-      </MockedProvider>
-    );
+global.document.createRange = () => ({
+  setStart: () => {},
+  setEnd: () => {},
+  commonAncestorContainer: {
+    nodeName: 'BODY',
+    ownerDocument: document,
+  },
+});
 
-    const contactProfile = screen.getByTestId('ContactProfile');
+test('contact profile should mount', async () => {
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ContactProfile {...defaultProps} />
+    </MockedProvider>
+  );
+  await wait();
+  await wait();
 
-    expect(contactProfile).toBeInTheDocument();
-  });
+  expect(getByTestId('ContactProfile')).toBeInTheDocument();
 });

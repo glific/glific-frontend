@@ -20,6 +20,8 @@ export interface ChatConversationProps {
   lastMessage: {
     body: string;
     insertedAt: string;
+    type: string;
+    media: any;
     tags: Array<{
       id: number;
       label: string;
@@ -79,6 +81,15 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const name = contactName.length > 20 ? contactName.slice(0, 20) + '...' : contactName;
 
+  let message;
+
+  // checking if the last message type is text and displaying the message below the contact name
+  // else displaying the type of message
+  if (lastMessage.type === 'TEXT') {
+    message = lastMessage.body;
+  } else {
+    message = lastMessage.type;
+  }
   return (
     <ListItem
       data-testid="list"
@@ -101,7 +112,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {WhatsAppToJsx(lastMessage.body)}
+          {WhatsAppToJsx(message)}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}

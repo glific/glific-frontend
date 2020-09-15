@@ -39,6 +39,7 @@ const defaultProps = {
   lastMessage: {
     body: 'Hello there!',
     insertedAt,
+    type: 'TEXT',
     tags: [
       {
         id: 1,
