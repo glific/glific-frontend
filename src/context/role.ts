@@ -23,6 +23,7 @@ let staffManagementMenu: any = [];
 let settingMenu: boolean = false;
 let advanceSearch: boolean = false;
 let displayUserGroups: boolean = false;
+let isManagerRole: boolean = false;
 
 const getRoleBasedAccess = () => {
   if (role.includes('Staff')) {
@@ -47,10 +48,18 @@ const getRoleBasedAccess = () => {
     staffManagementMenu = staffManagementMenus;
 
     if (role.includes('Admin')) settingMenu = true;
+    if (role.includes('Manager')) isManagerRole = true;
 
     advanceSearch = true;
-
     displayUserGroups = true;
+  }
+
+  // reset on logout
+  if (role.length === 0) {
+    settingMenu = false;
+    advanceSearch = false;
+    displayUserGroups = false;
+    isManagerRole = false;
   }
 
   return sideDrawerMenu;
@@ -67,4 +76,5 @@ export {
   settingMenu,
   advanceSearch,
   displayUserGroups,
+  isManagerRole,
 };

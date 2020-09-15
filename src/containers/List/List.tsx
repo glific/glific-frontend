@@ -311,16 +311,19 @@ export const List: React.SFC<ListProps> = ({
             </IconButton>
           ) : null}
 
-          {editButton}
-
-          <IconButton
-            aria-label="Delete"
-            color="default"
-            data-testid="DeleteIcon"
-            onClick={() => showDialogHandler(id!, label)}
-          >
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-          </IconButton>
+          {displayUserGroups ? (
+            <>
+              {editButton}
+              <IconButton
+                aria-label="Delete"
+                color="default"
+                data-testid="DeleteIcon"
+                onClick={() => showDialogHandler(id!, label)}
+              >
+                {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+              </IconButton>{' '}
+            </>
+          ) : null}
         </div>
       );
     }
@@ -369,9 +372,7 @@ export const List: React.SFC<ListProps> = ({
     itemList = formatList(data[listItem]);
   }
 
-  let actions = true;
   if (userGroups) {
-    actions = false;
     if (listItem === 'groups') {
       itemList = formatList(userGroups.currentUser.user['groups']);
     }
@@ -396,7 +397,7 @@ export const List: React.SFC<ListProps> = ({
       />
     );
   } else if (displayListType === 'card') {
-    displayList = <ListCard data={itemList} link={cardLink} actions={actions} />;
+    displayList = <ListCard data={itemList} link={cardLink} />;
   }
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
