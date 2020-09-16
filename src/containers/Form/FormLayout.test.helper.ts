@@ -2,6 +2,7 @@ import { GET_TAG, GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/qu
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag';
 import { Input } from '../../components/UI/Form/Input/Input';
+import { getTagsQuery } from '../Chat/ChatMessages/ChatMessages.test.helper';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_TAG,
@@ -280,4 +281,5 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
+  getTagsQuery,
 ];

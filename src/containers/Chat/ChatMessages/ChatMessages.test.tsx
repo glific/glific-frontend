@@ -24,14 +24,18 @@ const chatMessages = (
   </MockedProvider>
 );
 
+const multipleUpdates = async () => {};
+
 it('should have loading state', async () => {
   const { getByText } = render(chatMessages);
   expect(getByText('Loading...')).toBeInTheDocument();
+  await wait();
   await wait();
 });
 
 it('should have title as contact name', async () => {
   const { getByTestId } = render(chatMessages);
+  await wait();
   await wait();
   expect(getByTestId('beneficiaryName')).toHaveTextContent('Effie Cormier');
 });
@@ -39,11 +43,13 @@ it('should have title as contact name', async () => {
 it('should have an emoji picker', async () => {
   const { getByTestId } = render(chatMessages);
   await wait();
+  await wait();
   expect(getByTestId('emoji-picker')).toBeInTheDocument();
 });
 
 it('should contain the mock message', async () => {
   const { getByText } = render(chatMessages);
+  await wait();
   await wait();
   expect(getByText('Hey')).toBeInTheDocument();
 });
@@ -51,12 +57,13 @@ it('should contain the mock message', async () => {
 test('click on assign tag should open a dialog box with already assigned tags', async () => {
   const { getByTestId, getByText } = render(chatMessages);
   await wait();
+  await wait();
+
   fireEvent.click(getByTestId('messageOptions'));
   await wait();
-
-  fireEvent.click(getByTestId('dialogButton'));
-  await wait();
-
+  act(() => {
+    fireEvent.click(getByTestId('dialogButton'));
+  });
   await wait();
   expect(getByTestId('dialogBox')).toHaveTextContent('important');
 });
@@ -64,28 +71,34 @@ test('click on assign tag should open a dialog box with already assigned tags', 
 test('assigned tags should be shown in searchbox', async () => {
   const { getByTestId } = render(chatMessages);
   await wait();
+  await wait();
   fireEvent.click(getByTestId('messageOptions'));
   await wait();
-  fireEvent.click(getByTestId('dialogButton'));
+  act(() => {
+    fireEvent.click(getByTestId('dialogButton'));
+  });
   await wait();
-
   const searchBox = within(getByTestId('AutocompleteInput'));
-  expect(searchBox.getByText('important')).toBeInTheDOM();
+  expect(searchBox.getByText('important')).toBeInTheDocument();
 });
 
 test('remove already assigned tags', async () => {
-  const { getAllByTestId, getByTestId, getByText } = render(chatMessages);
+  const { getByTestId } = render(chatMessages);
+  await wait();
   await wait();
   fireEvent.click(getByTestId('messageOptions'));
   await wait();
-  fireEvent.click(getByTestId('dialogButton'));
+  act(() => {
+    fireEvent.click(getByTestId('dialogButton'));
+  });
   await wait();
   const searchBox = within(getByTestId('AutocompleteInput'));
   fireEvent.click(searchBox.getByTestId('deleteIcon'));
 });
 
 test('focus on the latest message', async () => {
-  const { container, getByTestId, getByText } = render(chatMessages);
+  const { getByTestId } = render(chatMessages);
+  await wait();
   await wait();
   const message = getByTestId('message');
   expect(message.scrollIntoView).toBeCalled();
@@ -97,6 +110,7 @@ test('chat having multiple messages', async () => {
       <ChatMessages contactId={'2'} />
     </MockedProvider>
   );
+  await wait();
   await wait();
   expect(getByText('Yo')).toBeInTheDocument();
 });

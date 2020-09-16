@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { Tag } from './Tag';
@@ -14,28 +14,21 @@ const wrapper = (
 );
 
 test('should load tag edit form', async () => {
-  const { getByText, findByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Tag match={{ params: { id: 1 } }} />
-    </MockedProvider>
-  );
+  const { getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-
+  await wait();
   const formLayout = await findByTestId('formLayout');
   expect(formLayout).toHaveTextContent('Keywords');
 });
 
 test('should be able to submit the data on save', async () => {
-  const { container, getByText, findByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Tag match={{ params: {} }} />
-    </MockedProvider>
-  );
+  const { container, getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
+  await wait();
   const formLayout = await findByTestId('formLayout');
   expect(formLayout).toHaveTextContent('Keywords');
 
@@ -53,4 +46,5 @@ test('should be able to submit the data on save', async () => {
 
   const button = getByText('Save');
   fireEvent.click(button);
+  await wait();
 });

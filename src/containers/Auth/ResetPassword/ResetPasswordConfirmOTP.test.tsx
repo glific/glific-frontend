@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
@@ -39,6 +39,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     // let's mock successful reset password
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
   });
 
   it('test successful resend functionality', async () => {
@@ -49,6 +50,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
 
     // click on resend button
     const resendButton = screen.getByTestId('resendOtp');

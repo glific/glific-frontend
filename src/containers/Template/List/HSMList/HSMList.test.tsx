@@ -19,5 +19,7 @@ test('HSMList is rendered correctly', async () => {
   const { getByText } = render(template);
 
   await wait();
+
   expect(getByText('Templates')).toBeInTheDocument();
+  await wait();
 });

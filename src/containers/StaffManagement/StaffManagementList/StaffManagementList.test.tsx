@@ -19,5 +19,7 @@ test('StaffManagementList is rendered correctly', async () => {
   const { getByText } = render(staffManagement);
 
   await wait();
+
   expect(getByText('Staff Management')).toBeInTheDocument();
+  await wait();
 });
