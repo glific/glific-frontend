@@ -166,6 +166,17 @@
   width: 333px;
 }
 
+.SuccessMessage {
+  font-size: 16px;
+  margin-top: 100px;
+  color: #93a29b;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: bolder;
+  padding: 15px 44px;
+}
+
 .ForgotPassword {
   font-size: 16px;
   color: #93a29b;

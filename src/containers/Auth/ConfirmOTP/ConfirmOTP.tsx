@@ -8,13 +8,20 @@ import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { sendOTP } from '../../../services/AuthService';
 
+// let's define registration success message
+const successMessage = (
+  <div>
+    Your account is registration successfully. Please contact your organisation admin for the
+    approval. Click <a href="/login">here</a> for login.
+  </div>
+);
 export interface ConfirmOTPProps {
   location: any;
 }
 
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [OTP, setOTP] = useState('');
-  const [tokenResponse, setTokenResponse] = useState('');
+  const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');
 
   const handleResend = () => {
@@ -30,19 +37,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
     return <Redirect to={'/registration'} />;
-  }
-
-  if (tokenResponse) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/login',
-          state: {
-            tokens: tokenResponse,
-          },
-        }}
-      />
-    );
   }
 
   const states = { OTP };
@@ -78,8 +72,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         },
       })
       .then((response: any) => {
-        const responseString = JSON.stringify(response.data.data);
-        setTokenResponse(responseString);
+        setAuthSuccess(successMessage);
       })
       .catch((error: any) => {
         setAuthError('We are unable to register, kindly contact your technical team.');
@@ -98,6 +91,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}
       errorMessage={authError}
+      successMessage={authSuccess}
     />
   );
 };
