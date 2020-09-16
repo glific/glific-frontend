@@ -4,7 +4,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 import { ReactComponent as AdvancedSearch } from '../../../assets/images/icons/AdvancedSearch.svg';
-import { advanceSearch } from '../../../context/role';
 
 export interface SearchBarProps {
   handleChange?: (event: any) => void;
@@ -48,7 +47,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
 
   let endAdornment;
   if (props.endAdornment) {
-    endAdornment = advanceSearch ? (
+    endAdornment = (
       <InputAdornment position="end">
         <IconButton
           aria-label="toggle password visibility"
@@ -59,7 +58,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
           <AdvancedSearch />
         </IconButton>
       </InputAdornment>
-    ) : null;
+    );
   }
 
   return (
