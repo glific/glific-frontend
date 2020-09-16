@@ -35,12 +35,9 @@ const getRoleBasedAccess = () => {
       },
     ];
 
-    staffManagementMenu = [
-      {
-        title: 'Groups',
-        path: '/group',
-      },
-    ];
+    staffManagementMenu = staffManagementMenus.filter(
+      (obj: { path: string }) => obj.path !== '/staff-management'
+    );
   }
 
   if (role.includes('Manager') || role.includes('Admin')) {

@@ -150,7 +150,9 @@ export const List: React.SFC<ListProps> = ({
   });
 
   // Get item data here
-  const [fetchUserGroups, { data: userGroups }] = useLazyQuery(GET_CURRENT_USER);
+  const [fetchUserGroups, { loading: loadingGroups, data: userGroups }] = useLazyQuery(
+    GET_CURRENT_USER
+  );
 
   const message = useQuery(NOTIFICATION);
   let toastMessage;
@@ -176,11 +178,11 @@ export const List: React.SFC<ListProps> = ({
     if (userRole.length === 0) {
       checkUserRole();
     } else {
-      if (displayUserGroups) {
-        fetchQuery();
-      } else {
+      if (!displayUserGroups && listItem === 'groups') {
         // if user role staff then display groups related to login user
         fetchUserGroups();
+      } else {
+        fetchQuery();
       }
     }
   }, [userRole]);
@@ -251,7 +253,7 @@ export const List: React.SFC<ListProps> = ({
     return <Redirect to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l) return <Loading />;
+  if (loading || l || loadingGroups) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(client, error);
@@ -310,8 +312,8 @@ export const List: React.SFC<ListProps> = ({
               {additionalAction.icon}
             </IconButton>
           ) : null}
-
-          {displayUserGroups ? (
+          {/* do not display edit & delete for staff role in group */}
+          {displayUserGroups || listItem !== 'groups' ? (
             <>
               {editButton}
               <IconButton
