@@ -14,7 +14,7 @@ import styles from './ChatMessage.module.css';
 import { TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-
+import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 
 export interface ChatMessageProps {
@@ -105,7 +105,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     saveTemplateMessage = (
       <AddToMessageTemplate
         id={props.id}
-        message={props.body}
+        message={WhatsAppToJsx(props.body)}
         changeDisplay={saveMessageTemplate}
       />
     );
