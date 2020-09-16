@@ -12,7 +12,7 @@ describe('<AutoComplete />', () => {
   ];
   const props = {
     label: 'Example',
-    options: { option },
+    options: option,
     optionLabel: 'label',
     field: { name: 'example', value: [] },
     form: { dirty: false, touched: false, errors: false, setFieldValue: null },

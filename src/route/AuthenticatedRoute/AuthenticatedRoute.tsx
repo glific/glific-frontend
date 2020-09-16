@@ -61,7 +61,10 @@ export const AuthenticatedRoute: React.SFC = () => {
           )}
         />
         <Route path="/group" exact component={GroupList} />
+        <Route path="/group/:id/contacts" exact component={GroupContact} />
         <Route path="/user-profile" exact component={UserProfile} />
+        <Route path="/contact-profile/:id" exact component={ContactProfile} />
+        <Route path="/blocked-contacts" exact component={BlockContactList} />
         <Route path="/myaccount" exact component={MyAccount} />
         <Route path="/logout" exact component={Logout} />
         <Route path="/" render={defaultRedirect} />

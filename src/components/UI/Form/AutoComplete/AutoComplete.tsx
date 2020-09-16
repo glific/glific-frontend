@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox, Paper } from '@material-ui/core';
@@ -17,6 +17,7 @@ export interface AutocompleteProps {
   multiple?: boolean;
   disabled?: boolean;
   chipIcon?: any;
+  getOptions?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -30,11 +31,25 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   helperText,
   multiple = true,
   disabled = false,
+  getOptions,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
-  const optionValue = options.length > 0 ? options : [];
+  const [optionValue, setOptionValue] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const loading = open && options.length === 0;
+
+  if (optionValue.length === 0 && options.length > 0) {
+    setOptionValue(options);
+  }
+
+  useEffect(() => {
+    if (getOptions && getOptions()) {
+      let options = getOptions();
+      if (options.length > 0) setOptionValue(options);
+    }
+  }, [open]);
 
   return (
     <div className={styles.Input}>
@@ -87,6 +102,14 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               data-testid="AutocompleteInput"
             />
           )}
+          open={open}
+          onOpen={() => {
+            setOpen(true);
+          }}
+          onClose={() => {
+            setOpen(false);
+          }}
+          loading={loading}
         />
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>

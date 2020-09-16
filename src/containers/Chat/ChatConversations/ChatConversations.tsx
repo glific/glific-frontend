@@ -10,6 +10,7 @@ import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Collection } from '../../Collection/Collection';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
+import { advanceSearch } from '../../../context/role';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -166,7 +167,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   let saveCollectionButton;
 
   if (Object.keys(searchParam).length !== 0)
-    saveCollectionButton = (
+    saveCollectionButton = advanceSearch ? (
       <div className={styles.SaveCollection}>
         <div className={styles.container}>
           {btnUpdate}
@@ -174,7 +175,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           {btnCancel}
         </div>
       </div>
-    );
+    ) : null;
 
   return (
     <Container className={styles.ChatConversations} disableGutters>

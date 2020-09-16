@@ -10,6 +10,7 @@ import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_GROUPS } from '../../graphql/queries/Group';
+import { isManagerRole } from '../../context/role';
 
 export interface StaffManagementProps {
   match: any;
@@ -65,6 +66,19 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     });
   }
 
+  const getOptions = () => {
+    if (rolesList) {
+      let options: any = [];
+      if (isManagerRole) {
+        // check if manager
+        let IsManager = roles.filter((item: any) => item.label === 'Manager');
+        // should not display Admin role to manager.
+        if (IsManager.length > 0) options = rolesList.filter((item: any) => item.label !== 'Admin');
+      }
+      return options;
+    }
+  };
+
   const formFields = [
     {
       component: Input,
@@ -84,6 +98,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'roles',
       placeholder: 'Roles',
       options: rolesList,
+      getOptions: getOptions,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Roles',
