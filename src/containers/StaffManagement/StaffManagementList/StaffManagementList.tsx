@@ -5,6 +5,7 @@ import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
+import { isManagerRole } from '../../../context/role';
 
 export interface StaffManagementProps {}
 
@@ -60,6 +61,15 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const chatIcon = <ChatIcon></ChatIcon>;
   const additionalAction = { icon: chatIcon, parameter: 'contact.id', link: '/chat' };
 
+  const getRestrictedAction = (param: any) => {
+    let action: any = { chat: true, edit: true, delete: true };
+    if (isManagerRole && param.roles.includes('Admin')) {
+      action['edit'] = false;
+      action['delete'] = false;
+    }
+    return action;
+  };
+
   return (
     <div>
       <List
@@ -74,6 +84,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         button={{ show: true, label: '+ Groups' }}
         searchParameter="name"
         additionalAction={additionalAction}
+        restrictedAction={getRestrictedAction}
       />
     </div>
   );
