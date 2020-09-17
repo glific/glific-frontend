@@ -49,7 +49,7 @@ test('inputs should have mock values', async () => {
 });
 
 test('cancel button should redirect to taglist page', async () => {
-  const { container, getByText, unmount } = render(
+  const { container, getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <Router>
         <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
@@ -58,6 +58,7 @@ test('cancel button should redirect to taglist page', async () => {
     </MockedProvider>
   );
   await wait();
+  await wait();
   const { queryByText } = within(container.querySelector('form'));
   const button = queryByText('Cancel');
 
@@ -65,7 +66,6 @@ test('cancel button should redirect to taglist page', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
   await wait();
   expect(getByText('Tags')).toBeInTheDocument();
-  unmount();
 });
 
 test('save button should add a new tag', async () => {
@@ -84,5 +84,6 @@ test('save button should add a new tag', async () => {
 
   const button = getByText('Save');
   fireEvent.click(button);
-  await wait(() => expect(getByText('Important')).toBeInTheDocument());
+  await wait();
+  expect(getByText('Important')).toBeInTheDocument();
 });

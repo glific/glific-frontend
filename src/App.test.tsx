@@ -12,6 +12,14 @@ import { setUserRole } from './context/role';
 
 const mocks = CONVERSATION_MOCKS;
 
+const app = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  </MockedProvider>
+);
+
 describe('<App /> ', () => {
   test('it should render <App /> component correctly', () => {
     const wrapper = shallow(<App />);
@@ -43,15 +51,10 @@ describe('<App /> ', () => {
     );
     setUserRole(['Staff']);
 
-    const wrapper = mount(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <MemoryRouter>
-          <App />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    const wrapper = mount(app);
 
     await wait();
+
     expect(wrapper.find(Chat)).toHaveLength(1);
   });
 
@@ -67,15 +70,11 @@ describe('<App /> ', () => {
     );
     setUserRole(['None']);
 
-    const wrapper = mount(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <MemoryRouter>
-          <App />
-        </MemoryRouter>
-      </MockedProvider>
-    );
+    const wrapper = mount(app);
 
     await wait();
+
     expect(wrapper.find(Chat)).toHaveLength(0);
+    await wait();
   });
 });

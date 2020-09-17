@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Timer.module.css';
 import moment from 'moment';
+import { is } from 'date-fns/locale';
 export interface TimerProps {
   time: any;
 }
@@ -17,7 +18,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   var lastMessageTime = moment(props.time);
   var duration = moment.duration(currentTime.diff(lastMessageTime));
   var hours: string | number = Math.floor(duration.asHours());
-  if (hours < 0) {
+  if (hours < 0 || isNaN(hours)) {
     hours = 0;
   }
   hours = hours > 24 ? 0 : 24 - hours;

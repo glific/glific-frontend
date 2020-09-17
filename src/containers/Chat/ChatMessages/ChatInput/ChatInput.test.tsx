@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, wait, fireEvent } from '@testing-library/react';
+import { render, wait, act, fireEvent } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../ChatTemplates/ChatTemplates.test.helper';
 
 const mocks = TEMPLATE_MOCKS;
@@ -61,7 +61,9 @@ describe('<ChatInput />', () => {
 
   test('submit message callback working properly', () => {
     const editor = wrapper.find('[data-testid="message-input"]');
-    editor.props().sendMessage('This is a test message.');
+    act(() => {
+      editor.props().sendMessage('This is a test message.');
+    });
     expect(inputSubmitted).toBeTruthy();
   });
 

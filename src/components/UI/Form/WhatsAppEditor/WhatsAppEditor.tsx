@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import Editor from 'draft-js-plugins-editor';
 import { Picker } from 'emoji-mart';
-import { RichUtils, getDefaultKeyBinding, Modifier, EditorState } from 'draft-js';
+import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import ReactResizeDetector from 'react-resize-detector';
 import styles from './WhatsAppEditor.module.css';

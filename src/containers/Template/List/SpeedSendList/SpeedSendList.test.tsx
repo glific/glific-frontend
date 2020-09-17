@@ -21,10 +21,12 @@ test('SpeedSendList has proper headers', async () => {
   const { getByText, container } = render(speedSend);
 
   await wait();
+
   expect(getByText('Speed sends')).toBeInTheDocument();
 
   const { getByText: getByTextTableheader } = within(container.querySelector('thead'));
   expect(getByTextTableheader('LABEL')).toBeInTheDocument();
   expect(getByTextTableheader('BODY')).toBeInTheDocument();
   expect(getByTextTableheader('ACTIONS')).toBeInTheDocument();
+  await wait();
 });
