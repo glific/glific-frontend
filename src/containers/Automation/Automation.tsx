@@ -42,7 +42,12 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const setStates = ({ name, keywords, ignoreKeywords }: any) => {
     setName(name);
-    setKeywords(keywords);
+
+    // we are recieving keywords as an array object
+    if (keywords.length > 0) {
+      // lets display it comma separated
+      setKeywords(keywords.join(','));
+    }
     setIgnoreKeywords(ignoreKeywords);
   };
 
@@ -124,12 +129,29 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     },
   ];
 
+  const setPayload = (payload: any) => {
+    let formattedKeywords;
+    if (payload.keywords) {
+      // remove white spaces
+      const keywords = payload.keywords.replace(/[\s]+/g, '');
+      // conver to array
+      formattedKeywords = keywords.split(',');
+    }
+
+    // return modified payload
+    return {
+      ...payload,
+      keywords: formattedKeywords,
+    };
+  };
+
   return (
     <FormLayout
       {...queries}
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName="automation"
       dialogMessage={dialogMessage}
