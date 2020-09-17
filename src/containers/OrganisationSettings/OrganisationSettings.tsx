@@ -133,18 +133,18 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const validateActiveLanguages = (value: any) => {
     activeLanguage = value;
     if (!value || value.length === 0) {
-      return 'Active languages is required.';
+      return 'Active language is required.';
     }
   };
 
   const validateDefaultLanguage = (value: any) => {
     let error;
     if (!value) {
-      error = 'Default languages is required.';
+      error = 'Default language is required.';
     }
     if (value) {
       const IsPresent = activeLanguage.filter((language: any) => language.id === value.id);
-      if (IsPresent.length === 0) error = 'Default Language needs to be an active Language.';
+      if (IsPresent.length === 0) error = 'Default language needs to be an active language.';
     }
     return error;
   };
@@ -175,7 +175,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       optionLabel: 'label',
       textFieldProps: {
         variant: 'outlined',
-        label: 'Select active languages',
+        label: 'Active language(s)',
       },
       validate: validateActiveLanguages,
     },
@@ -187,7 +187,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Default languages',
+        label: 'Default language',
       },
       validate: validateDefaultLanguage,
     },
