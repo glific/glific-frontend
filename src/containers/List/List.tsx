@@ -56,6 +56,7 @@ export interface ListProps {
   refetchQueries?: any;
   dialogTitle?: string;
   backLinkButton?: any;
+  restrictedAction?: any;
 }
 
 interface TableVals {
@@ -93,6 +94,7 @@ export const List: React.SFC<ListProps> = ({
   additionalAction = null,
   refetchQueries,
   backLinkButton,
+  restrictedAction,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -275,7 +277,8 @@ export const List: React.SFC<ListProps> = ({
     id: number | undefined,
     label: string,
     isReserved: boolean | null,
-    additionalActionParameter: string
+    additionalActionParameter: string,
+    allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
@@ -284,14 +287,29 @@ export const List: React.SFC<ListProps> = ({
     }
     let editButton = null;
     if (editSupport) {
-      editButton = (
+      editButton = allowedAction.edit ? (
         <Link to={`/${pageLink}/` + id + '/edit'}>
           <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
             <EditIcon />
           </IconButton>
         </Link>
-      );
+      ) : null;
     }
+
+    const deleteButton = (id: any, label: string) => {
+      return allowedAction.delete ? (
+        <>
+          <IconButton
+            aria-label="Delete"
+            color="default"
+            data-testid="DeleteIcon"
+            onClick={() => showDialogHandler(id!, label)}
+          >
+            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+          </IconButton>{' '}
+        </>
+      ) : null;
+    };
 
     if (id) {
       return (
@@ -317,14 +335,7 @@ export const List: React.SFC<ListProps> = ({
           {displayUserGroups || listItem !== 'groups' ? (
             <>
               {editButton}
-              <IconButton
-                aria-label="Delete"
-                color="default"
-                data-testid="DeleteIcon"
-                onClick={() => showDialogHandler(id!, label)}
-              >
-                {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-              </IconButton>{' '}
+              {deleteButton(id!, label)}
             </>
           ) : null}
         </div>
@@ -336,6 +347,10 @@ export const List: React.SFC<ListProps> = ({
     return listItems.map(({ ...listItem }) => {
       const label = listItem.label ? listItem.label : listItem.name;
       const isReserved = listItem.isReserved ? listItem.isReserved : null;
+      // display only actions allowed to the user
+      const allowedAction = restrictedAction
+        ? restrictedAction(listItem)
+        : { chat: true, edit: true, delete: true };
       let action: any;
       if (additionalAction) {
         // check if we are dealing with nested element
@@ -348,7 +363,7 @@ export const List: React.SFC<ListProps> = ({
       }
       return {
         ...columns(listItem),
-        operations: getIcons(listItem.id, label, isReserved, action),
+        operations: getIcons(listItem.id, label, isReserved, action, allowedAction),
       };
     });
   }
