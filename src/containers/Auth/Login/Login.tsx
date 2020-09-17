@@ -23,16 +23,21 @@ export const Login: React.SFC<LoginProps> = () => {
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
 
+  // function to unauthorize access
+  const accessDenied = () => {
+    setAuthError(notApprovedMsg);
+    clearAuthSession();
+  };
+
   // get the information on current user
-  const [getCurrentUser, { data: userData }] = useLazyQuery(GET_CURRENT_USER);
+  const [getCurrentUser, { data: userData, error: userError }] = useLazyQuery(GET_CURRENT_USER);
 
   useEffect(() => {
     if (userData) {
       let roles = userData.currentUser.user.roles;
       // check for user role none or empty
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
-        setAuthError(notApprovedMsg);
-        clearAuthSession();
+        accessDenied();
       } else {
         setRole(roles);
         setUserRole(roles);
@@ -43,7 +48,10 @@ export const Login: React.SFC<LoginProps> = () => {
         setSessionToken(token);
       }
     }
-  }, [userData]);
+    if (userError) {
+      accessDenied();
+    }
+  }, [userData, userError]);
 
   if (sessionToken) {
     return (

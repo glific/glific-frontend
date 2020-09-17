@@ -23,6 +23,7 @@ export interface AuthProps {
   linkText?: string;
   linkURL?: string;
   errorMessage?: string;
+  successMessage?: string;
 }
 
 export const Auth: React.SFC<AuthProps> = ({
@@ -39,6 +40,7 @@ export const Auth: React.SFC<AuthProps> = ({
   linkText,
   linkURL,
   errorMessage,
+  successMessage,
 }) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
@@ -91,58 +93,69 @@ export const Auth: React.SFC<AuthProps> = ({
     initialFormValues['phone'] = value;
   };
 
+  let formElements;
+  // we should not render form elements when displaying success message
+  if (!successMessage) {
+    formElements = (
+      <>
+        <div className={boxTitleClass.join(' ')}>
+          <Typography variant="h4" classes={{ root: styles.TitleText }}>
+            {pageTitle}
+          </Typography>
+        </div>
+        <div className={styles.SubText}>{titleSubText}</div>
+
+        <Formik
+          initialValues={initialFormValues}
+          validationSchema={validationSchema}
+          onSubmit={(item) => {
+            saveHandler(item);
+          }}
+        >
+          {({ submitForm }) => (
+            <div className={styles.CenterBox}>
+              <Form className={styles.Form}>
+                {formFields.map((field, index) => {
+                  let fieldInfo = { ...field };
+                  if (field.type === 'password') {
+                    fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
+                  }
+                  if (field.type === 'phone') {
+                    fieldInfo = { ...field, handlePhone };
+                  }
+                  return <Field className={styles.Form} key={index} {...fieldInfo} />;
+                })}
+
+                <div className={styles.Link}>
+                  <Link to={'/' + linkURL}>{linkText} </Link>
+                </div>
+                <div className={styles.CenterButton}>
+                  <Button
+                    variant={buttonContainedVariant ? 'contained' : 'outlined'}
+                    color="primary"
+                    onClick={submitForm}
+                    className={styles.AuthButton}
+                    data-testid="SubmitButton"
+                  >
+                    {buttonText}
+                  </Button>
+                </div>
+              </Form>
+              {displayErrorMessage}
+            </div>
+          )}
+        </Formik>
+      </>
+    );
+  } else {
+    formElements = <div className={styles.SuccessMessage}>{successMessage}</div>;
+  }
+
   return (
     <div className={styles.Container} data-testid="AuthContainer">
       <div className={styles.Auth}>
         <div className={styles.GlificLogo}>Glific</div>
-        <div className={boxClass.join(' ')}>
-          <div className={boxTitleClass.join(' ')}>
-            <Typography variant="h4" classes={{ root: styles.TitleText }}>
-              {pageTitle}
-            </Typography>
-          </div>
-          <div className={styles.SubText}>{titleSubText}</div>
-          <Formik
-            initialValues={initialFormValues}
-            validationSchema={validationSchema}
-            onSubmit={(item) => {
-              saveHandler(item);
-            }}
-          >
-            {({ submitForm }) => (
-              <div className={styles.CenterBox}>
-                <Form className={styles.Form}>
-                  {formFields.map((field, index) => {
-                    let fieldInfo = { ...field };
-                    if (field.type === 'password') {
-                      fieldInfo = { ...field, ...passwordFieldAdditionalInfo };
-                    }
-                    if (field.type === 'phone') {
-                      fieldInfo = { ...field, handlePhone };
-                    }
-                    return <Field className={styles.Form} key={index} {...fieldInfo} />;
-                  })}
-
-                  <div className={styles.Link}>
-                    <Link to={'/' + linkURL}>{linkText} </Link>
-                  </div>
-                  <div className={styles.CenterButton}>
-                    <Button
-                      variant={buttonContainedVariant ? 'contained' : 'outlined'}
-                      color="primary"
-                      onClick={submitForm}
-                      className={styles.AuthButton}
-                      data-testid="SubmitButton"
-                    >
-                      {buttonText}
-                    </Button>
-                  </div>
-                </Form>
-                {displayErrorMessage}
-              </div>
-            )}
-          </Formik>
-        </div>
+        <div className={boxClass.join(' ')}>{formElements}</div>
         {alternateText ? (
           <>
             <div className={styles.Or}>
