@@ -11,7 +11,7 @@ import { sendOTP } from '../../../services/AuthService';
 // let's define registration success message
 const successMessage = (
   <div>
-    Your account is registration successfully. Please contact your organisation admin for the
+    Your account is registered successfully. Please contact your organisation admin for the
     approval. Click <a href="/login">here</a> for login.
   </div>
 );
