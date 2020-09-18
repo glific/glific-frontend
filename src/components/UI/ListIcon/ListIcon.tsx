@@ -1,4 +1,6 @@
 import React from 'react';
+import { useLocation } from 'react-router';
+
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
 import broadcastIcon from '../../../assets/images/icons/Broadcast/Unselected.svg';
@@ -17,7 +19,6 @@ import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
-import { useLocation } from 'react-router';
 
 export interface ListIconProps {
   icon: string;
