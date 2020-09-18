@@ -15,6 +15,7 @@ export interface ChatInputProps {
   onSendMessage(content: string): any;
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
+  contactProviderStatus: string;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
@@ -62,9 +63,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSearchVal(e.target.value);
   };
 
-  const quickSendButtons = () => {
-    let types = [speedSends, templates];
-    let buttons = types.map((type: string) => {
+  const quickSendButtons = (quickSendTypes: any) => {
+    console.log('quickSendTypes', quickSendTypes);
+    const buttons = quickSendTypes.map((type: string) => {
       return (
         <div
           key={type}
@@ -80,6 +81,22 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     });
     return <div className={styles.QuickSendButtons}>{buttons}</div>;
   };
+
+  // determine what kind of messages we should display
+  let quickSendTypes: any = [];
+  if (props.contactProviderStatus) {
+    switch (props.contactProviderStatus) {
+      case 'SESSION':
+        quickSendTypes = [speedSends];
+        break;
+      case 'SESSION_AND_HSM':
+        quickSendTypes = [speedSends, templates];
+        break;
+      case 'HSM':
+        quickSendTypes = [templates];
+        break;
+    }
+  }
 
   if (props.contactStatus && props.contactStatus === 'INVALID') {
     return (
@@ -110,7 +127,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               </div>
             </Fade>
           ) : null}
-          {quickSendButtons()}
+          {quickSendButtons(quickSendTypes)}
         </div>
       </ClickAwayListener>
       <div
