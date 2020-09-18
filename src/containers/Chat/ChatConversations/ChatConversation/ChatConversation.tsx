@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+
 import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
 import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
@@ -13,6 +14,7 @@ import { Timer } from '../../../../components/UI/Timer/Timer';
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
+  contactStatus: string;
   selected: boolean;
   senderLastMessage: any;
   onClick: (i: any) => void;
@@ -104,7 +106,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       <div>
         <div className={chatBubble.join(' ')} />
         <div className={styles.Timer}>
-          <Timer time={props.senderLastMessage} />
+          <Timer time={props.senderLastMessage} contactStatus={props.contactStatus} />
         </div>
       </div>
       <div className={chatInfoClass.join(' ')}>

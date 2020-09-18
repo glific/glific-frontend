@@ -8,32 +8,34 @@ import {
   Button,
   ClickAwayListener,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
+
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
-import { Link } from 'react-router-dom';
 import styles from './ContactBar.module.css';
-import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
-import { setNotification } from '../../../../common/notification';
-import { Timer } from '../../../../components/UI/Timer/Timer';
 import { GET_AUTOMATIONS } from '../../../../graphql/queries/Automation';
-import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Automation';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { setNotification } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import { Timer } from '../../../../components/UI/Timer/Timer';
+import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 
 export interface ContactBarProps {
   contactName: string;
   contactId: string;
   lastMessageTime: any;
+  contactStatus: string;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -275,7 +277,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     <div className={styles.Container}>
       <div className={styles.SessionTimer} data-testid="sessionTimer">
         <span>Session Timer</span>
-        <Timer time={props.lastMessageTime} />
+        <Timer time={props.lastMessageTime} contactStatus={props.contactStatus} />
       </div>
       <div>
         {assignedToGroup ? (

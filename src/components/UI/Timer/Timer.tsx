@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Timer.module.css';
 import moment from 'moment';
-import { is } from 'date-fns/locale';
+
+import { ReactComponent as ContactOptOutIcon } from '../../../assets/images/icons/ContactOptOut.svg';
+import styles from './Timer.module.css';
+
 export interface TimerProps {
   time: any;
+  contactStatus?: string;
 }
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
@@ -31,6 +34,10 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
 
   if (hours < 10 && hours > 0) {
     hours = '0' + hours.toString();
+  }
+
+  if (props.contactStatus && props.contactStatus === 'INVALID') {
+    return <ContactOptOutIcon />;
   }
 
   return (

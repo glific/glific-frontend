@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { List, Container } from '@material-ui/core';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import moment from 'moment';
+
 import ChatConversation from '../ChatConversation/ChatConversation';
-import styles from './ConversationList.module.css';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { setErrorMessage } from '../../../../common/notification';
-import moment from 'moment';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import styles from './ConversationList.module.css';
 
 interface ConversationListProps {
   searchVal: string;
@@ -119,6 +120,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           }
           lastMessage={lastMessage}
           senderLastMessage={conversation.contact.lastMessageAt}
+          contactStatus={conversation.contact.status}
         />
       );
     });
