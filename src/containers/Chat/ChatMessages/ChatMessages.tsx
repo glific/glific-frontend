@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
 import { Container } from '@material-ui/core';
 import moment from 'moment';
 
@@ -84,7 +84,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let toastMessage;
 
   // create message mutation
-  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
+    onError: (error: ApolloError) => {
+      setNotification(
+        client,
+        'Sorry! 24 hrs window closed. Your message cannot be sent at this time. ',
+        'warning'
+      );
+      return null;
+    },
+  });
 
   useEffect(() => {
     if (editTagsMessageId) {
@@ -204,11 +213,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   //toast
   const closeToastMessage = () => {
-    setNotification(client, null);
+    setNotification(client, null, null);
   };
 
   if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+    console.log('mm', message);
+    toastMessage = (
+      <ToastMessage
+        message={message.data.message}
+        severity={message.data.severity ? message.data.severity : ''}
+        handleClose={closeToastMessage}
+      />
+    );
   }
 
   const closeDialogBox = () => {

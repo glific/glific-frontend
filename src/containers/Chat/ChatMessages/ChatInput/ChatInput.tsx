@@ -64,7 +64,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const quickSendButtons = (quickSendTypes: any) => {
-    console.log('quickSendTypes', quickSendTypes);
     const buttons = quickSendTypes.map((type: string) => {
       return (
         <div
