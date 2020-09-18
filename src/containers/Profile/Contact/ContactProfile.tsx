@@ -71,12 +71,14 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   let groups = [];
   let lastMessage = '';
   let fields = {};
+  let settings = {};
   if (data) {
     const contact = data.contact.contact;
     phoneNo = contact.phone;
     groups = contact.groups;
     lastMessage = contact.lastMessageAt;
     fields = contact.fields;
+    settings = contact.settings;
   }
 
   const additonalStates = { name: 'tags', state: tags, setState: setTags };
@@ -102,6 +104,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
         <ContactDescription
           phoneNo={phoneNo}
           fields={fields}
+          settings={settings}
           groups={groups}
           lastMessage={lastMessage}
         ></ContactDescription>

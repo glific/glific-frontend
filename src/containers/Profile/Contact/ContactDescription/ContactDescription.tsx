@@ -4,6 +4,7 @@ import { Timer } from '../../../../components/UI/Timer/Timer';
 
 export interface ContactDescriptionProps {
   fields: any;
+  settings: any;
   phoneNo: string;
   groups: any;
   lastMessage: string;
@@ -11,6 +12,7 @@ export interface ContactDescriptionProps {
 
 export const ContactDescription: React.FC<ContactDescriptionProps> = ({
   fields,
+  settings,
   phoneNo,
   groups,
   lastMessage,
@@ -33,17 +35,14 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     },
   ];
 
-  const otherDetails = [
-    { label: 'Actitvity preference', value: '' },
-    {
-      label: 'Location',
-      value: '',
-    },
-    {
-      label: 'Status',
-      value: '',
-    },
-  ];
+  if (typeof settings === "string") {
+    settings = JSON.parse(settings);
+  }
+
+  if (typeof fields === "string") {
+    fields = JSON.parse(fields);
+  }
+
   return (
     <div className={styles.DescriptionContainer}>
       <h2 className={styles.Title}>Details</h2>
@@ -59,19 +58,29 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
       <div className={styles.DetailBlock}>
         {groupDetails.map((groupItem: any, index) => (
           <div key={index}>
-            <span className={styles.DescriptionItem}>{groupItem.label}</span>
-            <span className={styles.DescriptionItemValue} data-testid="groups">
+            <div className={styles.DescriptionItem}>{groupItem.label}</div>
+            <div className={styles.DescriptionItemValue} data-testid="groups">
               {groupItem.value}
-            </span>
+            </div>
           </div>
         ))}
       </div>
 
       <div className={styles.DetailBlock}>
-        {otherDetails.map((detail: any, index) => (
-          <div key={index}>
-            <span className={styles.DescriptionItem}>{detail.label}</span>
-            <span className={styles.DescriptionItemValue}>{detail.value}</span>
+        {typeof settings === "object" && Object.keys(settings).map((key) => (
+          <div key={key}>
+            <div className={styles.DescriptionItem}>{key}</div>
+            <div className={styles.DescriptionItemValue}>
+              {Object.keys(settings[key]).filter((settingKey) => {
+                return settings[key][settingKey] == true;
+              }).join(', ')}
+            </div>
+          </div>
+        ))}
+        {typeof fields === "object" && Object.keys(fields).map((key) => (
+          <div key={key}>
+            <div className={styles.DescriptionItem}>{fields[key].label ? fields[key].label : key.replace('_', ' ')}</div>
+            <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
           </div>
         ))}
       </div>
