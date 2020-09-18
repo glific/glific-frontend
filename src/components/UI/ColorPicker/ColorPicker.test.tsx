@@ -1,7 +1,7 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
-import { ColorPicker } from './ColorPicker';
 import { render, screen, fireEvent } from '@testing-library/react';
+
+import { ColorPicker } from './ColorPicker';
 
 describe('<ColorPicker />', () => {
   const props = {
