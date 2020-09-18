@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -23,6 +23,7 @@ describe('<ConfirmOTP />', () => {
 
   it('renders component properly', async () => {
     const { findByTestId } = render(wrapper);
+
     const authContainer = await findByTestId('AuthContainer');
     expect(authContainer).toHaveTextContent(
       'Please confirm the OTP received at your whatsapp number.'
@@ -43,6 +44,7 @@ describe('<ConfirmOTP />', () => {
     // let's mock successful otp submission
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
   });
 
   it('test the OTP form submission with incorrect OTP', async () => {
@@ -59,6 +61,7 @@ describe('<ConfirmOTP />', () => {
     // let's mock error response on otp submission
     const errorMessage = 'We are unable to register, kindly contact your technical team.';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    await wait();
   });
 
   it('test successful resend functionality', async () => {
@@ -69,6 +72,7 @@ describe('<ConfirmOTP />', () => {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
 
     // click on resend button
     const resendButton = screen.getByTestId('resendOtp');
@@ -81,9 +85,11 @@ describe('<ConfirmOTP />', () => {
     // set the mock
     const errorMessage = 'Cannot send the otp to 919967665667';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    await wait();
 
     // click on resend button
     const resendButton = screen.getByTestId('resendOtp');
     UserEvent.click(resendButton);
+    await wait();
   });
 });

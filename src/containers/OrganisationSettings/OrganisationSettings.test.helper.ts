@@ -54,6 +54,12 @@ export const LIST_ITEM_MOCKS = [
         organization: {
           organization: {
             defaultLanguage: { id: '2', label: 'English (United States)' },
+            activeLanguages: [
+              {
+                id: '2',
+                label: 'English (United States)',
+              },
+            ],
             id: '1',
             outOfOffice: {
               enabled: true,
@@ -94,6 +100,12 @@ export const LIST_ITEM_MOCKS = [
         organization: {
           organization: {
             defaultLanguage: { id: '2', label: 'English (United States)' },
+            activeLanguages: [
+              {
+                id: '2',
+                label: 'English (United States)',
+              },
+            ],
             id: '1',
             outOfOffice: {
               enabled: true,

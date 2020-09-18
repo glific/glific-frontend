@@ -1,8 +1,6 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
-import { render } from '@testing-library/react';
-import { fireEvent } from '@testing-library/dom';
-
+import { render, wait, act, fireEvent } from '@testing-library/react';
 import SavedSearchToolbar from './SavedSearchToolbar';
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 
@@ -44,13 +42,17 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
+    await wait();
 
     // check if Unread Saved search is rendered
     const unreadButton = await findByText('Unread');
     expect(unreadButton).toBeInTheDocument();
 
     // simulate saves search is selected
-    fireEvent.click(unreadButton);
+    act(() => {
+      fireEvent.click(unreadButton);
+    });
+
     expect(container.querySelector('.SavedSearchItemSelected')).toBeInTheDocument();
   });
 });

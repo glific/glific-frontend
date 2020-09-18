@@ -17,6 +17,7 @@ import { useQuery, useLazyQuery } from '@apollo/client';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import Typography from '@material-ui/core/Typography/Typography';
+import { GET_LANGUAGES } from '../../graphql/queries/List';
 
 export interface SettingsProps {
   match: any;
@@ -58,6 +59,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
   const [organizationId, setOrganizationId] = useState(null);
+  const [activeLanguages, setActiveLanguages] = useState([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
   const states = {
     name,
@@ -68,9 +71,18 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     endTime,
     enabledDays,
     flowId,
+    activeLanguages,
+    defaultLanguage,
   };
 
-  const setStates = ({ name, providerAppname, providerPhone, outOfOffice }: any) => {
+  const setStates = ({
+    name,
+    providerAppname,
+    providerPhone,
+    outOfOffice,
+    activeLanguages,
+    defaultLanguage,
+  }: any) => {
     setName(name);
     setProviderAppname(providerAppname);
     setProviderNumber(providerPhone);
@@ -78,6 +90,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     setIsDisable(!outOfOffice.enabled);
     setOutOfOffice(outOfOffice);
     setFlowId(getFlow(outOfOffice.flowId));
+    if (activeLanguages) setActiveLanguages(activeLanguages);
+    if (defaultLanguage) setDefaultLanguage(defaultLanguage);
   };
 
   const setOutOfOffice = (data: any) => {
@@ -99,7 +113,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   }, []);
 
   const { data } = useQuery(GET_AUTOMATIONS);
-
+  const { data: languages } = useQuery(GET_LANGUAGES);
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
@@ -110,10 +124,29 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     }
   }, [orgData]);
 
-  if (!data || !orgData) return <Loading />;
+  if (!data || !orgData || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
+  };
+  let activeLanguage: any = [];
+  const validateActiveLanguages = (value: any) => {
+    activeLanguage = value;
+    if (!value || value.length === 0) {
+      return 'Active language is required.';
+    }
+  };
+
+  const validateDefaultLanguage = (value: any) => {
+    let error;
+    if (!value) {
+      error = 'Default language is required.';
+    }
+    if (value) {
+      const IsPresent = activeLanguage.filter((language: any) => language.id === value.id);
+      if (IsPresent.length === 0) error = 'Default language needs to be an active language.';
+    }
+    return error;
   };
 
   const formFields = [
@@ -134,6 +167,29 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       name: 'providerPhone',
       type: 'text',
       placeholder: 'Gupshup WhatsApp number',
+    },
+    {
+      component: AutoComplete,
+      name: 'activeLanguages',
+      options: languages.languages,
+      optionLabel: 'label',
+      textFieldProps: {
+        variant: 'outlined',
+        label: 'Active language(s)',
+      },
+      validate: validateActiveLanguages,
+    },
+    {
+      component: AutoComplete,
+      name: 'defaultLanguage',
+      options: languages.languages,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: 'Default language',
+      },
+      validate: validateDefaultLanguage,
     },
     {
       component: Checkbox,
@@ -198,6 +254,17 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const setPayload = (payload: any) => {
+    // set active Language Ids
+    let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
+      return activeLanguage.id;
+    });
+    // remove activeLanguages from the payload
+    delete payload['activeLanguages'];
+    // set default Language Id
+    let defaultLanguageId = payload.defaultLanguage.id;
+    // remove defaultLanguage from the payload
+    delete payload['defaultLanguage'];
+
     return {
       name: payload.name,
       providerAppname: payload.providerAppname,
@@ -209,6 +276,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
         flowId: payload.flowId ? payload.flowId.id : null,
         startTime: payload.startTime,
       },
+      defaultLanguageId: defaultLanguageId,
+      activeLanguageIds: activeLanguageIds,
     };
   };
 

@@ -15,6 +15,7 @@ test('HSM form is loaded correctly in edit mode', async () => {
     </MockedProvider>
   );
   await wait();
+
   expect(getByText('Edit HSM Template')).toBeInTheDocument();
 });
 
@@ -41,8 +42,8 @@ test('check for validations for the HSM form', async () => {
       value: 'We are not allowing a really long title, and we should trigger validation for this.',
     },
   });
-
   // we should still have 2 errors
   expect(queryByText('Title is required.')).toBeInTheDocument();
   expect(queryByText('Message is required.')).toBeInTheDocument();
+  await wait();
 });

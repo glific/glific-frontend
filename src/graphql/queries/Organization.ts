@@ -28,6 +28,10 @@ export const GET_ORGANIZATION = gql`
           id
           label
         }
+        activeLanguages {
+          id
+          label
+        }
       }
     }
   }

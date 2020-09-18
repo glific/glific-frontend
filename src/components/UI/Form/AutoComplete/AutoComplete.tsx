@@ -18,6 +18,7 @@ export interface AutocompleteProps {
   disabled?: boolean;
   chipIcon?: any;
   getOptions?: any;
+  validate?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({

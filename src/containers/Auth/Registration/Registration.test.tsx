@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -42,6 +42,7 @@ describe('<Registration />', () => {
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
   });
 
   test('it should submit the form correctly and give error', async () => {
@@ -60,5 +61,6 @@ describe('<Registration />', () => {
     // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    await wait();
   });
 });
