@@ -2,30 +2,9 @@ import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, wait, act, fireEvent } from '@testing-library/react';
 import SavedSearchToolbar from './SavedSearchToolbar';
-import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { savedSearchQuery } from '../../../mocks/Chat';
 
-export const mocks = [
-  {
-    request: {
-      query: SAVED_SEARCH_QUERY,
-      variables: { filter: {}, opts: { limit: 10 } },
-    },
-    result: {
-      data: {
-        savedSearches: [
-          {
-            id: '1',
-            args:
-              '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
-            label: 'All unread conversations',
-            shortcode: 'Unread',
-            count: 10,
-          },
-        ],
-      },
-    },
-  },
-];
+const mocks = [savedSearchQuery];
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {

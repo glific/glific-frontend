@@ -1,7 +1,6 @@
 import React from 'react';
 import { Checkbox } from './Checkbox';
 import { render, screen, fireEvent } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
 
 describe('<Calendar />', () => {
   const props = {
@@ -19,10 +18,16 @@ describe('<Calendar />', () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it('test for check', async () => {
+  it('test for check and uncheck', async () => {
     render(wrapper);
     const checkbox = screen.getByRole('checkbox');
+    fireEvent.change(checkbox, { target: { value: 'true' } });
+    expect(checkbox.value).toBe('true');
+
+    fireEvent.change(checkbox, { target: { value: 'false' } });
+    expect(checkbox.value).toBe('false');
+
     fireEvent.click(checkbox);
-    expect(checkbox).not.toBeChecked();
+    expect(wrapper.props.field.value).toBe(false);
   });
 });

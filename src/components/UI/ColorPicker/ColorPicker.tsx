@@ -38,6 +38,7 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
         <ClickAwayListener onClickAway={onClickAway}>
           <div className={styles.ContainListener}>
             <div
+              data-testid="ChooseColor"
               className={styles.ChooseColor}
               style={{
                 backgroundColor: colorCode,

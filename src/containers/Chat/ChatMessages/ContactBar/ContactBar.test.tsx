@@ -3,7 +3,7 @@ import { render, screen, wait } from '@testing-library/react';
 
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
-import { contactGroupsQuery } from '../ChatMessages.test.helper';
+import { contactGroupsQuery } from '../../../../mocks/Contact';
 
 const mocks = [contactGroupsQuery];
 

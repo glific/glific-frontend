@@ -2,9 +2,8 @@ import React from 'react';
 import { render, wait, act, within } from '@testing-library/react';
 
 import { MockedProvider } from '@apollo/client/testing';
-
 import { ChatMessages } from './ChatMessages';
-import { mocksWithConversation, mocksWithMultipleMessages } from './ChatMessages.test.helper';
+import { mocksWithConversation, mocksWithMultipleMessages } from '../../../mocks/Chat';
 import { fireEvent } from '@testing-library/dom';
 
 global.document.createRange = () => ({

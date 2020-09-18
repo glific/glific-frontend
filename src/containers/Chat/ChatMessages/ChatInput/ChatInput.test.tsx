@@ -4,7 +4,7 @@ import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, wait, act, fireEvent } from '@testing-library/react';
-import { TEMPLATE_MOCKS } from '../ChatTemplates/ChatTemplates.test.helper';
+import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
 
