@@ -1,18 +1,33 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Checkbox as CheckboxElement } from '@material-ui/core';
 import { Checkbox } from './Checkbox';
+import { render, screen, fireEvent } from '@testing-library/react';
 
-describe('<Checkbox />', () => {
+describe('<Calendar />', () => {
   const props = {
-    fieldLabel: 'Example',
-    field: { name: 'example', value: null },
+    title: 'Example',
+    field: { name: 'example', value: false },
     form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
+    handleChange: function () {},
   };
 
-  const wrapper = shallow(<Checkbox {...props} />);
+  const wrapper = <Checkbox {...props} />;
 
-  it('renders <Checkbox /> component', () => {
-    expect(wrapper).toBeTruthy();
+  it('test for dafault value', async () => {
+    render(wrapper);
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).not.toBeChecked();
+  });
+
+  it('test for check and uncheck', async () => {
+    render(wrapper);
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.change(checkbox, { target: { value: 'true' } });
+    expect(checkbox.value).toBe('true');
+
+    fireEvent.change(checkbox, { target: { value: 'false' } });
+    expect(checkbox.value).toBe('false');
+
+    fireEvent.click(checkbox);
+    expect(wrapper.props.field.value).toBe(false);
   });
 });
