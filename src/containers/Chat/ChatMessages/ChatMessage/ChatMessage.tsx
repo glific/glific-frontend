@@ -100,6 +100,17 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     setShowSaveMessageDialog(display);
   };
 
+  const downloadMedia = () => {
+    const link = document.createElement('a');
+    link.href = props.media.url;
+    link.setAttribute('download', 'sample.mp4');
+    document.body.appendChild(link);
+    link.click();
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+  }
+
   let saveTemplateMessage;
   if (showSaveMessageDialog) {
     saveTemplateMessage = (
@@ -209,6 +220,18 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     Add to speed sends
                   </Button>
+                  {props.type != 'TEXT' &&
+                    <span>
+                      <br />
+                      <Button
+                        className={styles.Popper}
+                        color="primary"
+                        onClick={() => downloadMedia()}
+                      >
+                        Download media
+                      </Button>
+                    </span>
+                    }
                 </Paper>
               </Fade>
             )}
