@@ -79,7 +79,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
         ))}
         {typeof fields === "object" && Object.keys(fields).map((key) => (
           <div key={key}>
-            <div className={styles.DescriptionItem}>{fields[key].label}</div>
+            <div className={styles.DescriptionItem}>{fields[key].label ? fields[key].label : key.replace('_', ' ')}</div>
             <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
           </div>
         ))}
