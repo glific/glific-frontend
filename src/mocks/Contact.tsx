@@ -1,9 +1,38 @@
-import { GET_CURRENT_USER } from '../../graphql/queries/User';
-import { GET_CONTACT_DETAILS, GET_CONTACT } from '../../graphql/queries/Contact';
-import { filterTagsQuery } from '../Chat/ChatMessages/ChatMessages.test.helper';
-import { getLanguagesQuery } from '../Form/FormLayout.test.helper';
+import { GET_CONTACT_GROUPS, GET_CONTACT, GET_CONTACT_DETAILS } from '../graphql/queries/Contact';
+import { getCurrentUserQuery } from './User';
+import { filterTagsQuery } from './Tag';
+import { getLanguagesQuery } from '../containers/Form/FormLayout.test.helper';
 
-const getContactQuery = {
+export const contactGroupsQuery = {
+  request: {
+    query: GET_CONTACT_GROUPS,
+    variables: {
+      id: '2',
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        contact: {
+          groups: [
+            {
+              id: '1',
+              label: 'Default Group',
+              users: [],
+            },
+            {
+              id: '2',
+              label: 'Staff Group',
+              users: [],
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const getContactQuery = {
   request: {
     query: GET_CONTACT,
     variables: { id: 1 },
@@ -25,9 +54,10 @@ const getContactQuery = {
     },
   },
 };
+
 const date = new Date();
 
-const getContactDetailsQuery = {
+export const getContactDetailsQuery = {
   request: {
     query: GET_CONTACT_DETAILS,
     variables: { id: 1 },
@@ -53,33 +83,7 @@ const getContactDetailsQuery = {
 };
 
 export const LOGGED_IN_USER_MOCK = [
-  {
-    request: {
-      query: GET_CURRENT_USER,
-    },
-    result: {
-      data: {
-        currentUser: {
-          user: {
-            id: '1',
-            name: 'John Doe',
-            phone: '+919820198765',
-            roles: ['admin'],
-            contact: {
-              id: '1',
-            },
-            groups: [
-              {
-                id: '1',
-                label: 'Default Group',
-                description: '',
-              },
-            ],
-          },
-        },
-      },
-    },
-  },
+  getCurrentUserQuery,
   getContactDetailsQuery,
   filterTagsQuery,
   getLanguagesQuery,

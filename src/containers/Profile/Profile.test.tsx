@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Profile } from './Profile';
-import { LOGGED_IN_USER_MOCK } from './Profile.test.helper';
+import { LOGGED_IN_USER_MOCK } from '../../mocks/Contact';
 import { MockedProvider } from '@apollo/client/testing';
 
 const mocks = LOGGED_IN_USER_MOCK;

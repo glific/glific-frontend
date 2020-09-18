@@ -7,7 +7,7 @@ import { wait } from '@testing-library/react';
 import { Login } from './containers/Auth/Login/Login';
 import App from './App';
 import { Chat } from './containers/Chat/Chat';
-import { CONVERSATION_MOCKS } from './containers/Chat/Chat.test.helper';
+import { CONVERSATION_MOCKS } from './mocks/Chat';
 import { setUserRole } from './context/role';
 
 const mocks = CONVERSATION_MOCKS;

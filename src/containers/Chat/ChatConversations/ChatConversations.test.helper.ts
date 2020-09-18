@@ -1,4 +1,4 @@
-import { mocks as SAVED_SEARCH_MOCK } from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar.test';
+import { savedSearchQuery } from '../../../mocks/Chat';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 const withResult = {
@@ -72,7 +72,7 @@ export const chatConversationsMocks = [
 export const ChatConversationMocks = [
   ...chatConversationsMocks,
   ...chatConversationsMocks,
-  ...SAVED_SEARCH_MOCK,
+  savedSearchQuery,
 ];
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });
