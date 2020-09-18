@@ -14,6 +14,7 @@ import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsA
 export interface ChatInputProps {
   onSendMessage(content: string): any;
   handleHeightChange(newHeight: number): void;
+  contactStatus: string;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
@@ -79,6 +80,15 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     });
     return <div className={styles.QuickSendButtons}>{buttons}</div>;
   };
+
+  if (props.contactStatus && props.contactStatus === 'INVALID') {
+    return (
+      <div className={styles.ContactOptOutMessage}>
+        Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to
+        your number.
+      </div>
+    );
+  }
 
   return (
     <Container className={styles.ChatInput}>

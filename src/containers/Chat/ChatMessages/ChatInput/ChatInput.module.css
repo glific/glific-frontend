@@ -122,7 +122,6 @@
   color: #edf6f2;
   padding: 5px 12px 5px 12px;
   border-radius: 15px 15px 0px 0px;
-  font-family: 'Heebo', sans-serif;
   cursor: pointer;
   position: relative;
   z-index: 100;
@@ -192,4 +191,12 @@
   bottom: 0;
   height: 30px;
   display: flex;
+}
+
+.ContactOptOutMessage {
+  color: #93a29b;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
 }

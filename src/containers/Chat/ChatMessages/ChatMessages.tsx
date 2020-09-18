@@ -345,7 +345,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactStatus={conversationInfo.contact.status}
       />
       {messageListContainer}
-      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
+      <ChatInput
+        handleHeightChange={handleHeightChange}
+        onSendMessage={sendMessageHandler}
+        contactStatus={conversationInfo.contact.status}
+      />
     </Container>
   );
 };
