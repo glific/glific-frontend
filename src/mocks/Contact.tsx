@@ -46,7 +46,7 @@ export const getContactQuery = {
           phone: '+919820198765',
           language: [],
           status: 'VALID',
-          providerStatus: '',
+          providerStatus: 'SESSION_AND_HSM',
           settings: {},
           tags: [],
         },
