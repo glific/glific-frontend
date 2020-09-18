@@ -1,6 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FLOW_EDITOR_API } from '../../config/index';
+
+import { useMutation } from '@apollo/client';
+import styles from './FlowEditor.module.css';
+import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
+import { Button } from '../UI/Form/Button/Button';
+import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
+import { Redirect } from 'react-router';
+import { FLOW_EDITOR_CONFIGURE_LINK } from '../../common/constants';
 
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
@@ -62,9 +70,9 @@ const setConfig = (uuid: any) => {
       'split_by_run_result',
       'split_by_random',
       'split_by_groups',
-      'split_by_scheme'
+      'split_by_scheme',
     ],
-    
+
     excludeOperators: [
       'has_beginning',
       'has_text',
@@ -96,7 +104,7 @@ const setConfig = (uuid: any) => {
       'has_ward',
       'has_error',
       'has_value',
-      'has_pattern'
+      'has_pattern',
     ],
     help: {
       legacy_extra: 'help.html',
@@ -123,17 +131,19 @@ const setConfig = (uuid: any) => {
       flows: base_glific + 'flows',
       revisions: base_glific + 'revisions/' + uuid,
       functions: base_glific + 'functions',
-      editor: '/',
+      editor: FLOW_EDITOR_CONFIGURE_LINK,
     },
   };
 };
 
 export interface FlowEditorProps {
-  uuid: string;
+  match: any;
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
-  const config = setConfig(props.uuid);
+  const config = setConfig(props.match.params.uuid);
+  const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
+  const [published, setPublished] = useState(false);
 
   useEffect(() => {
     const files = loadfiles();
@@ -153,5 +163,36 @@ export const FlowEditor = (props: FlowEditorProps) => {
     }
   }, []);
 
-  return <div id="flow"></div>;
+  const handlePublishFlow = () => {
+    publishFlow({ variables: { uuid: props.match.params.uuid } });
+    setPublished(true);
+  };
+
+  if (published) {
+    return <Redirect to="/automation" />;
+  }
+
+  return (
+    <>
+      <a
+        href="https://app.rapidpro.io/video/"
+        className={styles.Link}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="helpButton"
+      >
+        <HelpIcon className={styles.HelpIcon} />
+      </a>
+      <Button
+        variant="contained"
+        color="primary"
+        className={styles.Button}
+        data-testid="button"
+        onClick={handlePublishFlow}
+      >
+        Done
+      </Button>
+      <div id="flow"></div>
+    </>
+  );
 };

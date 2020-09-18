@@ -43,8 +43,8 @@ export const UPDATE_AUTOMATION = gql`
 `;
 
 export const PUBLISH_AUTOMATION = gql`
-  mutation publishFlow($id: ID!) {
-    publishFlow(id: $id) {
+  mutation publishFlow($uuid: UUID4!) {
+    publishFlow(uuid: $uuid) {
       success
     }
   }
