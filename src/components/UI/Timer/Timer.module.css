@@ -20,7 +20,3 @@
   composes: Timer;
   color: #93a29b;
 }
-
-.OtpOutContact {
-  color: #00572f;
-}
