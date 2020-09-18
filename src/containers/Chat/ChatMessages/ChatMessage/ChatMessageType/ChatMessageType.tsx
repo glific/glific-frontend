@@ -54,7 +54,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
 
     case 'AUDIO':
       messageBody = (
-        <audio controls data-testid="audioMessage">
+        <audio controls data-testid="audioMessage" controlsList="nodownload">
           <source src={media.url} type="audio/ogg"></source>
         </audio>
       );
@@ -68,6 +68,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             url={media.url}
             controls={true}
             light={VideoThumbnail}
+            config={{ file: { attributes: { controlsList: 'nodownload' } } }}
           />
         </div>
       );

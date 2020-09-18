@@ -100,10 +100,19 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     setShowSaveMessageDialog(display);
   };
 
+  const downloadExtension = () => {
+    switch(props.type) {
+      case 'VIDEO': return '.mp4';
+      case 'AUDIO': return '.mp3';
+      case 'IMAGE': return '.png';
+    }
+    return '';
+  }
+
   const downloadMedia = () => {
     const link = document.createElement('a');
-    link.href = props.media.url;
-    link.setAttribute('download', 'sample.mp4');
+    link.href = props.media.url + downloadExtension();
+    link.setAttribute('download', link.href);
     document.body.appendChild(link);
     link.click();
     if (link.parentNode) {
