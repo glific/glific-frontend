@@ -10,7 +10,7 @@ import { Automation } from '../../containers/Automation/Automation';
 import { GroupList } from '../../containers/Group/GroupList/GroupList';
 import { Group } from '../../containers/Group/Group';
 import { GroupContact } from '../../containers/Group/GroupContact/GroupContact';
-import { FlowEditorContainer } from '../../components/floweditor/FlowEditorContainer/FlowEditorContainer';
+import { FlowEditor } from '../../components/floweditor/FlowEditor';
 import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
 import { Collection } from '../../containers/Collection/Collection';
 import { Chat } from '../../containers/Chat/Chat';
@@ -88,7 +88,7 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/group/:id/edit" exact component={Group} />
         <Route path="/group/:id/contacts" exact component={GroupContact} />
 
-        <Route path="/automation/configure/:id" exact component={FlowEditorContainer} />
+        <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
 
         <Route path="/collection" exact component={CollectionList} />
         <Route path="/collection/add" exact component={Collection} />
