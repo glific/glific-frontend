@@ -36,6 +36,7 @@ export interface ListProps {
   button?: {
     show: boolean;
     label: string;
+    link?: string;
   };
   showCheckbox?: boolean;
   searchParameter?: string;
@@ -425,6 +426,28 @@ export const List: React.SFC<ListProps> = ({
       </Link>
     </div>
   ) : null;
+
+  let buttonDisplay;
+  if (button.show) {
+    let buttonContent;
+    if (!button.link) {
+      buttonContent = (
+        <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
+          {button.label}
+        </Button>
+      );
+    } else {
+      buttonContent = (
+        <Link to={button.link}>
+          <Button color="primary" variant="contained">
+            {button.label}
+          </Button>
+        </Link>
+      );
+    }
+    buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
+  }
+
   return (
     <>
       <div className={styles.Header}>
@@ -447,13 +470,7 @@ export const List: React.SFC<ListProps> = ({
         <div>
           {toastMessage}
           {dialogBox}
-          {button.show ? (
-            <div className={styles.AddButton}>
-              <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
-                {button.label}
-              </Button>
-            </div>
-          ) : null}
+          {buttonDisplay}
         </div>
       </div>
 
