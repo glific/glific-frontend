@@ -44,6 +44,7 @@
 .DescriptionItem {
   font-size: 16px;
   color: #cacaca;
+  text-transform: capitalize;
 }
 
 .DescriptionItemValue {

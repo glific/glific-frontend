@@ -35,13 +35,12 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     },
   ];
 
-  if (settings.length && typeof settings === "string") {
+  if (typeof settings === "string") {
     settings = JSON.parse(settings);
   }
 
-  if (fields.length && typeof fields === "string") {
+  if (typeof fields === "string") {
     fields = JSON.parse(fields);
-    console.log(fields);
   }
 
   return (
@@ -80,7 +79,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
         ))}
         {typeof fields === "object" && Object.keys(fields).map((key) => (
           <div key={key}>
-            <div className={styles.DescriptionItem}>{key}</div>
+            <div className={styles.DescriptionItem}>{fields[key].label}</div>
             <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
           </div>
         ))}

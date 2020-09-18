@@ -70,8 +70,8 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   let phoneNo = '';
   let groups = [];
   let lastMessage = '';
-  let fields = '';
-  let settings = '';
+  let fields = {};
+  let settings = {};
   if (data) {
     const contact = data.contact.contact;
     phoneNo = contact.phone;
