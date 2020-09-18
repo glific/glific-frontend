@@ -97,6 +97,7 @@ export const GET_CONTACT_DETAILS = gql`
           }
         }
         fields
+        settings
       }
     }
   }
