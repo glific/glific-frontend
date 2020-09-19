@@ -76,6 +76,8 @@ export const getContactDetailsQuery = {
           ],
           fields: {},
           lastMessageAt: date.toISOString(),
+          status: 'VALID',
+          providerStatus: 'SESSION_AND_HSM',
         },
       },
     },

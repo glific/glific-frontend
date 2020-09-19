@@ -217,7 +217,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   if (message.data && message.data.message) {
-    console.log('mm', message);
     toastMessage = (
       <ToastMessage
         message={message.data.message}
