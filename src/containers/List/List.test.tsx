@@ -23,55 +23,56 @@ const list = (
 );
 
 afterEach(cleanup);
-
-it('should have loading', async () => {
-  const { getByText } = render(list);
-  expect(getByText('Loading...')).toBeInTheDocument();
-  await wait();
-});
-
-it('should have add new button', async () => {
-  const { container } = render(list);
-
-  await wait();
-  expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
-});
-
-it('should have a table, search and reset', async () => {
-  const { container, getByTestId } = render(list);
-
-  await wait();
-  expect(container.querySelector('table')).toBeInTheDocument();
-
-  fireEvent.change(getByTestId('searchInput').querySelector('input'), {
-    target: { value: 'Unread' },
+describe('<List />', () => {
+  test('should have loading', async () => {
+    const { getByText } = render(list);
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await wait();
   });
-  await wait();
-  fireEvent.submit(getByTestId('searchForm'));
-  await wait();
 
-  fireEvent.click(getByTestId('resetButton'));
-});
+  test('should have add new button', async () => {
+    const { container } = render(list);
 
-test('list has proper headers', async () => {
-  const { container } = render(list);
-  await wait();
-  const tableHead = container.querySelector('thead');
-  const { getByText } = within(tableHead);
-  expect(getByText('label')).toBeInTheDocument();
-  expect(getByText('description')).toBeInTheDocument();
-  expect(getByText('keywords')).toBeInTheDocument();
-  expect(getByText('actions')).toBeInTheDocument();
-});
+    await wait();
+    expect(container.querySelector('button.MuiButton-containedPrimary')).toBeInTheDocument();
+  });
 
-test('A row in the table should have an edit and delete button', async () => {
-  const { container } = render(list);
+  test('should have a table, search and reset', async () => {
+    const { container, getByTestId } = render(list);
 
-  await wait();
-  const tableRow = container.querySelector('tbody tr');
-  const { getByLabelText } = within(tableRow);
-  expect(getByLabelText('Edit')).toBeInTheDocument();
-  expect(getByLabelText('Delete')).toBeInTheDocument();
+    await wait();
+    expect(container.querySelector('table')).toBeInTheDocument();
+
+    fireEvent.change(getByTestId('searchInput').querySelector('input'), {
+      target: { value: 'Unread' },
+    });
+    await wait();
+    fireEvent.submit(getByTestId('searchForm'));
+    await wait();
+
+    fireEvent.click(getByTestId('resetButton'));
+  });
+
+  test('list has proper headers', async () => {
+    const { container } = render(list);
+    await wait();
+    const tableHead = container.querySelector('thead');
+    const { getByText } = within(tableHead);
+    expect(getByText('label')).toBeInTheDocument();
+    expect(getByText('description')).toBeInTheDocument();
+    expect(getByText('keywords')).toBeInTheDocument();
+    expect(getByText('actions')).toBeInTheDocument();
+  });
+
+  test('A row in the table should have an edit and delete button', async () => {
+    const { container } = render(list);
+
+    await wait();
+    const tableRow = container.querySelector('tbody tr');
+    const { getByLabelText } = within(tableRow);
+    expect(getByLabelText('Edit')).toBeInTheDocument();
+    expect(getByLabelText('Delete')).toBeInTheDocument();
+  });
 });
 
 const listButtons = (
@@ -85,37 +86,39 @@ const listButtons = (
   </MockedProvider>
 );
 
-test('add new Button contains a route to add new page', async () => {
-  const { container } = render(listButtons);
-  await wait();
-  const button = container.querySelector('button.MuiButton-containedPrimary');
-  fireEvent.click(button);
-  await wait();
-  expect(container.querySelector('div.ItemAdd')).toBeInTheDocument();
-});
+describe('<List /> actions', () => {
+  test('add new Button contains a route to add new page', async () => {
+    const { container } = render(listButtons);
+    await wait();
+    const button = container.querySelector('button.MuiButton-containedPrimary');
+    fireEvent.click(button);
+    await wait();
+    expect(container.querySelector('div.ItemAdd')).toBeInTheDocument();
+  });
 
-test('click on delete button opens dialog box', async () => {
-  const { container } = render(list);
+  test('click on delete button opens dialog box', async () => {
+    const { container } = render(list);
 
-  await wait();
-  const { queryByLabelText } = within(container.querySelector('tbody tr'));
-  const button = queryByLabelText('Delete');
-  fireEvent.click(button);
-  await wait();
-  expect(screen.queryByRole('dialog')).toBeInTheDocument();
-});
+    await wait();
+    const { queryByLabelText } = within(container.querySelector('tbody tr'));
+    const button = queryByLabelText('Delete');
+    fireEvent.click(button);
+    await wait();
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+  });
 
-test('click on agree button shows alert', async () => {
-  const { getAllByTestId } = render(list);
+  test('click on agree button shows alert', async () => {
+    const { getAllByTestId } = render(list);
 
-  await wait();
-  const button = getAllByTestId('DeleteIcon')[0];
-  fireEvent.click(button);
-  await wait();
-  const agreeButton = screen
-    .queryByRole('dialog')
-    ?.querySelector('button.MuiButton-containedSecondary');
-  fireEvent.click(agreeButton);
-  await wait();
-  expect(screen.queryByRole('alert')).toBeInTheDocument();
+    await wait();
+    const button = getAllByTestId('DeleteIcon')[0];
+    fireEvent.click(button);
+    await wait();
+    const agreeButton = screen
+      .queryByRole('dialog')
+      ?.querySelector('button.MuiButton-containedSecondary');
+    fireEvent.click(agreeButton);
+    await wait();
+    expect(screen.queryByRole('alert')).toBeInTheDocument();
+  });
 });
