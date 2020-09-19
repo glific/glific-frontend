@@ -43,10 +43,10 @@ const speedSend = {
     data: {
       sessionTemplates: [
         {
-          body: 'Hey There',
           id: '87',
-          isHsm: false,
+          body: 'Hey There',
           label: 'Good message',
+          isHsm: false,
           isReserved: false,
         },
       ],
@@ -91,10 +91,10 @@ const HSMTemplate = {
     data: {
       sessionTemplates: [
         {
-          body: 'This is HSM template',
           id: '98',
-          isHsm: true,
+          body: 'This is HSM template',
           label: 'Good message',
+          isHsm: true,
           isReserved: false,
         },
       ],
@@ -109,7 +109,6 @@ const filterByBody = (body: string) => ({
       filter: {
         body: body,
       },
-
       opts: {
         order: 'ASC',
       },
@@ -119,10 +118,10 @@ const filterByBody = (body: string) => ({
     data: {
       sessionTemplates: [
         {
-          body: 'Hi',
           id: '87',
-          isHsm: false,
+          body: 'Hi',
           label: 'Hello',
+          isHsm: false,
           isReserved: false,
         },
       ],
@@ -146,11 +145,11 @@ const speedSendValidation = {
     data: {
       sessionTemplates: [
         {
-          body: 'This is HSM template',
           id: '98',
-          isHsm: true,
+          body: 'This is HSM template',
           label:
             'We are not allowing a really long title, and we should trigger validation for this',
+          isHsm: true,
           isReserved: false,
         },
       ],
@@ -252,10 +251,10 @@ export const TEMPLATE_MOCKS = [
       data: {
         sessionTemplates: [
           {
-            body: 'This is HSM template',
             id: '98',
-            isHsm: true,
+            body: 'This is HSM template',
             label: 'new Template',
+            isHsm: true,
             isReserved: false,
           },
         ],

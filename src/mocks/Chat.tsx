@@ -377,7 +377,6 @@ const createAndSendMessageMutation = {
           sender: {
             id: '1',
           },
-
           tags: [
             {
               id: 1,
@@ -402,6 +401,7 @@ export const searchQuerywithFilter = {
           contact: {
             id: '2',
             name: 'Vaibhav',
+            lastMessageAt: '2020-06-29T09:31:47Z',
             status: 'VALID',
             providerStatus: 'SESSION_AND_HSM',
           },
