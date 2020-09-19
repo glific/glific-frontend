@@ -66,6 +66,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         return cachedConversations;
       }
 
+      // let's return early incase we don't have cached conversations
+      // TODO: Need to investigate why this happens
+      if (!cachedConversations) {
+        return;
+      }
+
       let newMessage: any;
       let contactId: number = 0;
       let tagData: any;

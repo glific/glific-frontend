@@ -22,6 +22,8 @@ describe('<ChatInput />', () => {
   const defaultProps = {
     onSendMessage: onSendMessageHandler,
     handleHeightChange: handleHeightChange,
+    contactStatus: 'VALID',
+    contactProviderStatus: 'SESSION_AND_HSM',
   };
 
   const chatInput = (

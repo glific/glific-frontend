@@ -44,6 +44,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
             phone: contactNumber,
             lastMessageAt: '2020-06-25T13:36:43Z',
             status: 'VALID',
+            providerStatus: 'SESSION_AND_HSM',
           },
           messages: [
             {
@@ -158,6 +159,7 @@ export const conversationQuery = getConversationQuery({
         phone: '919090909009',
         lastMessageAt: '2020-06-25T13:36:43Z',
         status: 'VALID',
+        providerStatus: 'SESSION_AND_HSM',
       },
       messages: [
         {
@@ -263,6 +265,7 @@ const conversation = {
         phone: '9044222334',
         lastMessageAt: '2020-06-29T09:31:47Z',
         status: 'VALID',
+        providerStatus: 'SESSION_AND_HSM',
       },
       messages: [
         {
@@ -312,6 +315,7 @@ const conversationWithMultipleMessages = {
         phone: '9044222334',
         lastMessageAt: '2020-06-29T09:31:47Z',
         status: 'VALID',
+        providerStatus: 'SESSION_AND_HSM',
       },
       messages: [
         {
@@ -373,7 +377,6 @@ const createAndSendMessageMutation = {
           sender: {
             id: '1',
           },
-
           tags: [
             {
               id: 1,
@@ -398,7 +401,9 @@ export const searchQuerywithFilter = {
           contact: {
             id: '2',
             name: 'Vaibhav',
+            lastMessageAt: '2020-06-29T09:31:47Z',
             status: 'VALID',
+            providerStatus: 'SESSION_AND_HSM',
           },
           messages: [
             {

@@ -1,16 +1,17 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
 import { Container } from '@material-ui/core';
 import moment from 'moment';
+import { Redirect } from 'react-router';
 
+import styles from './ChatMessages.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { setNotification, setErrorMessage } from '../../../common/notification';
+import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
-import styles from './ChatMessages.module.css';
-import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
+import { setNotification, setErrorMessage } from '../../../common/notification';
 import { TIME_FORMAT, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
@@ -19,7 +20,6 @@ import {
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
-import { Redirect } from 'react-router';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 
 export interface ChatMessagesProps {
@@ -84,7 +84,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   let toastMessage;
 
   // create message mutation
-  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+  const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
+    onError: (error: ApolloError) => {
+      setNotification(
+        client,
+        'Sorry! 24 hrs window closed. Your message cannot be sent at this time. ',
+        'warning'
+      );
+      return null;
+    },
+  });
 
   useEffect(() => {
     if (editTagsMessageId) {
@@ -204,11 +213,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   //toast
   const closeToastMessage = () => {
-    setNotification(client, null);
+    setNotification(client, null, null);
   };
 
   if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
+    toastMessage = (
+      <ToastMessage
+        message={message.data.message}
+        severity={message.data.severity ? message.data.severity : ''}
+        handleClose={closeToastMessage}
+      />
+    );
   }
 
   const closeDialogBox = () => {
@@ -349,6 +364,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
         contactStatus={conversationInfo.contact.status}
+        contactProviderStatus={conversationInfo.contact.providerStatus}
       />
     </Container>
   );

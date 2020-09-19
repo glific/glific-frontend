@@ -13,28 +13,28 @@ afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
 setUserRole(['Admin']);
 
-test('cancel button should redirect to SpeedSendlist page', async () => {
-  const { container, getByText, unmount } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <Switch>
-          <Route path="/speed-send" exact component={SpeedSendList} />
-        </Switch>
-        <SpeedSend match={{ params: { id: 1 } }} />
-      </Router>
-    </MockedProvider>
-  );
-  await wait();
-  const { queryByText } = within(container.querySelector('form'));
-  const button = queryByText('Cancel');
-  fireEvent.click(button);
-  expect(getByText('Loading...')).toBeInTheDocument();
-  await wait();
-  expect(getByText('Speed sends')).toBeInTheDocument();
-  unmount();
-});
+describe('SpeedSend', () => {
+  test('cancel button should redirect to SpeedSendlist page', async () => {
+    const { container, getByText, unmount } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Router>
+          <Switch>
+            <Route path="/speed-send" exact component={SpeedSendList} />
+          </Switch>
+          <SpeedSend match={{ params: { id: 1 } }} />
+        </Router>
+      </MockedProvider>
+    );
+    await wait();
+    const { queryByText } = within(container.querySelector('form'));
+    const button = queryByText('Cancel');
+    fireEvent.click(button);
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await wait();
+    expect(getByText('Speed sends')).toBeInTheDocument();
+    unmount();
+  });
 
-describe('Save Button', () => {
   test('save button should add a new template', async () => {
     const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>

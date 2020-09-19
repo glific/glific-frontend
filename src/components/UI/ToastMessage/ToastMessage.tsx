@@ -1,7 +1,8 @@
 import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import Styles from './ToastMessage.module.css';
+
+import styles from './ToastMessage.module.css';
 import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
 
 interface Props {
@@ -25,13 +26,14 @@ export const ToastMessage: React.SFC<Props> = ({
   const handleCloseButton = (event?: React.SyntheticEvent) => {
     handleClose(false);
   };
+
   return (
     <Snackbar
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'center',
       }}
-      classes={{ anchorOriginTopCenter: Styles.SnackBar }}
+      classes={{ anchorOriginTopCenter: styles.SnackBar }}
       open={open}
       onClose={handleCloseButton}
     >
@@ -40,9 +42,10 @@ export const ToastMessage: React.SFC<Props> = ({
         icon={false}
         action={<CrossIcon onClick={handleCloseButton} data-testid="crossIcon" />}
         classes={{
-          standardSuccess: Styles.Success,
-          action: Styles.Action,
-          message: Styles.Message,
+          standardSuccess: styles.Success,
+          standardWarning: styles.Warning,
+          action: styles.Action,
+          message: styles.Message,
         }}
       >
         {message}
