@@ -160,13 +160,13 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       component: Input,
       name: 'providerAppname',
       type: 'text',
-      placeholder: 'Gupshup API key',
+      placeholder: 'Provider App Name',
     },
     {
       component: Input,
       name: 'providerPhone',
       type: 'text',
-      placeholder: 'Gupshup WhatsApp number',
+      placeholder: 'Provider WhatsApp number',
     },
     {
       component: AutoComplete,
