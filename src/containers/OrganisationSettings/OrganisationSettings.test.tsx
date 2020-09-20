@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, wait, findByText } from '@testing-library/react';
+import { render, screen, fireEvent, wait } from '@testing-library/react';
 import { OrganisationSettings } from './OrganisationSettings';
 import { MockedProvider } from '@apollo/client/testing';
 import { LIST_ITEM_MOCKS } from './OrganisationSettings.test.helper';
@@ -41,8 +41,8 @@ describe('Check form fields <OrganisationSettings />', () => {
     await wait();
     const container = await findByTestId('formLayout');
     expect(container).toHaveTextContent('Organisation name');
-    expect(container).toHaveTextContent('Gupshup API key');
-    expect(container).toHaveTextContent('Gupshup WhatsApp number');
+    expect(container).toHaveTextContent('Provider App name');
+    expect(container).toHaveTextContent('Provider WhatsApp number');
     expect(container).toHaveTextContent('Active language(s)');
     expect(container).toHaveTextContent('Default language');
     expect(container).toHaveTextContent('Hours of operations');

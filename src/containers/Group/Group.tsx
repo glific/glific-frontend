@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
+
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../components/UI/Form/Input/Input';
+import { FormLayout } from '../Form/FormLayout';
 import { GET_GROUP, GET_GROUP_USERS, GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
-
 import {
   UPDATE_GROUP,
   CREATE_GROUP,
   DELETE_GROUP,
   UPDATE_GROUP_USERS,
 } from '../../graphql/mutations/Group';
-
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import styles from './Group.module.css';
+import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 
 export interface GroupProps {
   match: any;
@@ -24,7 +23,6 @@ export interface GroupProps {
 
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-  description: Yup.string().required('Description is required.'),
 });
 
 const dialogMessage = "You won't be able to use this group again.";

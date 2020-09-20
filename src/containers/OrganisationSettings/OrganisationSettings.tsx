@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import styles from './OrganisationSettings.module.css';
+import { useQuery, useLazyQuery } from '@apollo/client';
+import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
+
+import styles from './OrganisationSettings.module.css';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
+import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
@@ -10,14 +17,8 @@ import {
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
 } from '../../graphql/mutations/Organization';
-import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import Typography from '@material-ui/core/Typography/Typography';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 
 export interface SettingsProps {
   match: any;
@@ -160,13 +161,13 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       component: Input,
       name: 'providerAppname',
       type: 'text',
-      placeholder: 'Gupshup API key',
+      placeholder: 'Provider App name',
     },
     {
       component: Input,
       name: 'providerPhone',
       type: 'text',
-      placeholder: 'Gupshup WhatsApp number',
+      placeholder: 'Provider WhatsApp number',
     },
     {
       component: AutoComplete,
