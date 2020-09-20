@@ -24,7 +24,6 @@ export interface GroupProps {
 
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-  description: Yup.string().required('Description is required.'),
 });
 
 const dialogMessage = "You won't be able to use this group again.";
