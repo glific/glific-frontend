@@ -105,6 +105,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
         default:
           break;
       }
+      return null;
     });
   };
 

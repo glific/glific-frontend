@@ -108,13 +108,13 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     return data.flows.filter((option: any) => option.id === id)[0];
   };
 
-  useEffect(() => {
-    getOrg();
-  }, []);
-
   const { data } = useQuery(GET_AUTOMATIONS);
   const { data: languages } = useQuery(GET_LANGUAGES);
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
+
+  useEffect(() => {
+    getOrg();
+  }, [getOrg]);
 
   useEffect(() => {
     if (orgData) {
