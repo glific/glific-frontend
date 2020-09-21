@@ -202,6 +202,10 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   };
 
+  const getOptions = () => {
+    return dataUser.users;
+  };
+
   const DataFields = [
     {
       component: Input,
@@ -234,7 +238,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
-        // required: true,
         variant: 'outlined',
       },
       icon: <TagIcon className={styles.TagIcon} />,
@@ -255,11 +258,12 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       name: 'includeUsers',
       placeholder: 'Includes users',
       label: 'Includes users',
-      options: dataUser.users ? dataUser.users : [],
+      options: dataUser.users,
       optionLabel: 'name',
       textFieldProps: {
         variant: 'outlined',
       },
+      getOptions: getOptions, // Added for now, not understanding why its taking tags as an option
     },
     {
       component: Calendar,
