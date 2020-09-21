@@ -15,7 +15,7 @@ import tagSelectedIcon from '../../../assets/images/icons/Tags/Selected.svg';
 import broadcastSelectedIcon from '../../../assets/images/icons/Broadcast/Selected.svg';
 import automationSelectedIcon from '../../../assets/images/icons/Automations/Selected.svg';
 import collectionsSelectedIcon from '../../../assets/images/icons/Collections/Selected.svg';
-import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
+//import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';

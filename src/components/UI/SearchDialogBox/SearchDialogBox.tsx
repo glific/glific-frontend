@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DialogBox } from '../DialogBox/DialogBox';
-import { FormControl, Paper, Chip, TextField } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import styles from './SearchDialogBox.module.css';
 import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
