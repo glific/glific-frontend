@@ -101,9 +101,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   };
 
   const downloadExtension = () => {
+    /**
+     * The code below is only to add extension to the media file so that the default application
+     * in desktop/PCs gets detected and it doesn't throw an error with invalid file type.
+     */
     switch(props.type) {
       case 'VIDEO': return '.mp4';
-      case 'AUDIO': return '.mp3';
+      case 'AUDIO': return '.m4a';
       case 'IMAGE': return '.png';
     }
     return '';

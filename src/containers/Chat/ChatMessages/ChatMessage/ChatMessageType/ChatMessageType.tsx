@@ -46,7 +46,6 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             }}
             images={[{ src: media.url, alt: '' }]}
           />
-          <br />
           <MessagesWithLinks message={media.caption} />
         </>
       );
@@ -54,22 +53,28 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
 
     case 'AUDIO':
       messageBody = (
-        <audio controls data-testid="audioMessage" controlsList="nodownload">
-          <source src={media.url} type="audio/ogg"></source>
-        </audio>
+        <div>
+          <audio controls data-testid="audioMessage" controlsList="nodownload">
+            <source src={media.url} type="audio/ogg"></source>
+          </audio>
+          {media.caption}
+        </div>
       );
       break;
 
     case 'VIDEO':
       messageBody = (
-        <div className={styles.Image} data-testid="videoMessage">
-          <ReactPlayer
-            className={styles.Image}
-            url={media.url}
-            controls={true}
-            light={VideoThumbnail}
-            config={{ file: { attributes: { controlsList: 'nodownload' } } }}
-          />
+        <div>
+          <div className={styles.Image} data-testid="videoMessage">
+            <ReactPlayer
+              className={styles.Image}
+              url={media.url}
+              controls={true}
+              light={VideoThumbnail}
+              config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+            />
+          </div>
+          {media.caption}
         </div>
       );
       break;
