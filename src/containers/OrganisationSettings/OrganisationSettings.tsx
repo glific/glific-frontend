@@ -114,7 +114,9 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   }, []);
 
   const { data } = useQuery(GET_AUTOMATIONS);
-  const { data: languages } = useQuery(GET_LANGUAGES);
+  const { data: languages } = useQuery(GET_LANGUAGES, {
+    variables: { opts: {order: 'ASC'} },
+  });
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
