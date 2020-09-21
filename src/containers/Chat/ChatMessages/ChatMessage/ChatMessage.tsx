@@ -39,7 +39,6 @@ export interface ChatMessageProps {
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
-  let type = props.type;
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);

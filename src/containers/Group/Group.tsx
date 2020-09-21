@@ -114,7 +114,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     if (groupId) {
       selectedUsers({ variables: { id: groupId } });
     }
-  }, []);
+  }, [selectedUsers, groupId]);
 
   useEffect(() => {
     if (groupUsers) setUsers(groupUsers.group.group.users);

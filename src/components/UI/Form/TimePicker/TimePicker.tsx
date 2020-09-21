@@ -4,7 +4,6 @@ import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
-import { getIn } from 'formik';
 import moment from 'moment';
 
 export interface TimePickerProps {
@@ -24,9 +23,6 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   placeholder,
   disabled = false,
 }) => {
-  const errorText = getIn(errors, field.name);
-  const touchedVal = getIn(touched, field.name);
-  const hasError = dirty && touchedVal && errorText !== undefined;
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
 

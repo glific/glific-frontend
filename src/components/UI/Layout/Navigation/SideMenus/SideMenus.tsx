@@ -20,15 +20,6 @@ export interface SideMenusProps {
 
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
-
-  // This may not be the best way to implement this functionality (especially if the endpoints change in the URL),
-  // but I couldn't find a better way to do this atm.
-  const getCurrMenuItem = () => {
-    let currUrl = window.location.pathname;
-    let pathName = currUrl.split('/')[1]; // Gets the first part of the pathname.
-    return '/'.concat(pathName);
-  };
-
   const { setRole } = useContext(RoleContext);
 
   // get the information on current user
