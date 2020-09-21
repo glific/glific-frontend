@@ -79,15 +79,16 @@ describe('<ChatMessage />', () => {
   );
 
   const chatMessageText = chatMessage('TEXT');
-
-  const wrapper = mount(chatMessageText);
+  let wrapper = mount(chatMessageText);
 
   test('it should render the message content correctly', () => {
-    expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there! visit google.com');
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('content').textContent).toEqual('Hello there! visit google.com');
   });
 
   test('it should apply the correct styling', () => {
-    expect(wrapper.find('[data-testid="content"]').contains(<b>Hello there!</b>)).toBe(true);
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
   });
 
   test('it should render the message date  correctly', () => {
@@ -127,5 +128,37 @@ describe('<ChatMessage />', () => {
   test('it should detect a link in messsage', async () => {
     const { getByTestId } = render(chatMessageText);
     expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
+  });
+
+  const chatMessageVideo = chatMessage('VIDEO');
+  wrapper = mount(chatMessageVideo);
+  test('it should show the download media option when clicked on down arrow and message type is video', async () => {
+    const { getAllByTestId } = render(chatMessageVideo);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+  });
+
+  const chatMessageAudio = chatMessage('AUDIO');
+  wrapper = mount(chatMessageAudio);
+  test('it should show the download media option when clicked on down arrow and message type is audio', async () => {
+    const { getAllByTestId } = render(chatMessageAudio);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+  });
+
+  const chatMessageImage = chatMessage('IMAGE');
+  wrapper = mount(chatMessageImage);
+  test('it should show the download media option when clicked on down arrow and message type is image', async () => {
+    const { getAllByTestId } = render(chatMessageImage);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+  });
+
+  const chatMessageDoc = chatMessage('DOCUMENT');
+  wrapper = mount(chatMessageDoc);
+  test('it should show the download media option when clicked on down arrow and message type is document', async () => {
+    const { getAllByTestId } = render(chatMessageDoc);
+    fireEvent.click(getAllByTestId('popup')[0]);
+    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
   });
 });

@@ -233,13 +233,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     Add to speed sends
                   </Button>
-                  {props.type != 'TEXT' &&
+                  {props.type !== 'TEXT' &&
                     <span>
                       <br />
                       <Button
                         className={styles.Popper}
                         color="primary"
                         onClick={() => downloadMedia()}
+                        data-testid="downloadMedia"
                       >
                         Download media
                       </Button>
