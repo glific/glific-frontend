@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './PhoneInput.module.css';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import { getIn } from 'formik';
+import styles from './PhoneInput.module.css';
 
 export interface InputProps {
   enableSearch?: boolean;
@@ -25,8 +25,6 @@ export const PhoneInput: React.SFC<InputProps> = ({
   ...props
 }) => {
   const errorText = getIn(errors, field.name);
-  const touchedVal = getIn(touched, field.name);
-  const hasError = dirty && touchedVal && errorText !== undefined;
 
   return (
     <div className={styles.Input}>

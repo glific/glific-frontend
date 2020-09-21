@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-
-import { FLOW_EDITOR_API } from '../../config/index';
-
 import { useMutation } from '@apollo/client';
+import { Redirect } from 'react-router';
+
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { Redirect } from 'react-router';
 import { FLOW_EDITOR_CONFIGURE_LINK } from '../../common/constants';
-
+import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 declare function showFlowEditor(node: any, config: any): void;
@@ -161,7 +159,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         showFlowEditor(document.getElementById('flow'), config);
       };
     }
-  }, []);
+  }, [config]);
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });

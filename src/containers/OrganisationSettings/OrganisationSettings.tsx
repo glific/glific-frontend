@@ -3,7 +3,6 @@ import { useQuery, useLazyQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
 
-import styles from './OrganisationSettings.module.css';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
