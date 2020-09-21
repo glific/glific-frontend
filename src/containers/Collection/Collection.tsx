@@ -263,7 +263,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       textFieldProps: {
         variant: 'outlined',
       },
-      getOptions: getOptions, // Added for now, not understanding why its taking tags as an option
     },
     {
       component: Calendar,

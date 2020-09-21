@@ -41,9 +41,11 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   const [open, setOpen] = React.useState(false);
   const loading = open && options.length === 0;
 
-  if (optionValue.length === 0 && options.length > 0) {
-    setOptionValue(options);
-  }
+  useEffect(() => {
+    if (options.length > 0) {
+      setOptionValue(options);
+    }
+  }, [options]);
 
   useEffect(() => {
     if (getOptions && getOptions()) {
