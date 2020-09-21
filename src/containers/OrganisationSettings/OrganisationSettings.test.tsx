@@ -43,7 +43,7 @@ describe('Check form fields <OrganisationSettings />', () => {
     expect(container).toHaveTextContent('Organisation name');
     expect(container).toHaveTextContent('Provider App name');
     expect(container).toHaveTextContent('Provider WhatsApp number');
-    expect(container).toHaveTextContent('Active language(s)');
+    expect(container).toHaveTextContent('Supported languages');
     expect(container).toHaveTextContent('Default language');
     expect(container).toHaveTextContent('Hours of operations');
     expect(container).toHaveTextContent('Opens');

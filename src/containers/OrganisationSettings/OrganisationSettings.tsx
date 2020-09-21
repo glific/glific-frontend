@@ -134,7 +134,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const validateActiveLanguages = (value: any) => {
     activeLanguage = value;
     if (!value || value.length === 0) {
-      return 'Active language is required.';
+      return 'Supported language is required.';
     }
   };
 
@@ -176,7 +176,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       optionLabel: 'label',
       textFieldProps: {
         variant: 'outlined',
-        label: 'Active language(s)',
+        label: 'Supported languages',
       },
       validate: validateActiveLanguages,
     },
