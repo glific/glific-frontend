@@ -112,11 +112,12 @@
 }
 
 .Popper {
-  padding: 10px 30px 10px 10px !important;
-  font-weight: bolder !important;
+  padding: 6px 16px !important;
+  font-weight: 400 !important;
   width: 100% !important;
   justify-content: left !important;
   text-transform: none !important;
+  color: #073F24 !important;
 }
 
 .Inline {
