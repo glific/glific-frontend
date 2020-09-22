@@ -465,6 +465,10 @@ export const List: React.SFC<ListProps> = ({
               resetTableVals();
             }}
             searchVal={searchVal}
+            handleChange={(e: any) => {
+              // reset value only if empty
+              if (!e.target.value) setSearchVal('');
+            }}
           />
         </div>
         <div>
