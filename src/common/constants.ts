@@ -29,10 +29,12 @@ export const CONTACT_STATUS = [
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
+    offset: 0,
     limit: 50,
   },
   filter: {},
   messageOpts: {
+    offset: 0,
     limit: 50,
   },
 };

@@ -20,6 +20,7 @@ import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { Typography } from '@material-ui/core';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 
 export interface CollectionProps {
   match?: any;
@@ -122,27 +123,18 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   };
 
   const restoreSearch = () => {
-    let args = {
-      messageOpts: {
-        offset: 0,
-        limit: 10,
-      },
-      filter: {
-        term: props.searchParam.term,
-        includeTags: props.searchParam.includeTags
-          ? props.searchParam.includeTags.map((option: any) => option.id)
-          : [],
-        includeGroups: props.searchParam.includeGroups
-          ? props.searchParam.includeGroups.map((option: any) => option.id)
-          : [],
-        includeUsers: props.searchParam.includeUsers
-          ? props.searchParam.includeUsers.map((option: any) => option.id)
-          : [],
-      },
-      contactOpts: {
-        offset: 0,
-        limit: 20,
-      },
+    let args = SEARCH_QUERY_VARIABLES;
+    args['filter'] = {
+      term: props.searchParam.term,
+      includeTags: props.searchParam.includeTags
+        ? props.searchParam.includeTags.map((option: any) => option.id)
+        : [],
+      includeGroups: props.searchParam.includeGroups
+        ? props.searchParam.includeGroups.map((option: any) => option.id)
+        : [],
+      includeUsers: props.searchParam.includeUsers
+        ? props.searchParam.includeUsers.map((option: any) => option.id)
+        : [],
     };
 
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
@@ -201,10 +193,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       }
       return error;
     }
-  };
-
-  const getOptions = () => {
-    return dataUser.users;
   };
 
   const DataFields = [
@@ -282,33 +270,17 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const setPayload = (payload: any) => {
     if (search) search(payload);
-    if (props.searchParam) {
-      // payload.term = props.searchParam.term;
-      // payload.includeTags = props.searchParam.includeTags;
-      // payload.includeGroups = props.searchParam.includeGroups;
-      // payload.includeUsers = props.searchParam.includeUsers;
-      // payload.dateTo = props.searchParam.dateTo;
-      // payload.dateFrom = props.searchParam.dateFrom;
-    }
-    let args = {
-      messageOpts: {
-        offset: 0,
-        limit: 10,
-      },
-      filter: {
-        term: payload.term,
-        includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
-        includeGroups: payload.includeGroups
-          ? payload.includeGroups.map((option: any) => option.id)
-          : [],
-        includeUsers: payload.includeUsers
-          ? payload.includeUsers.map((option: any) => option.id)
-          : [],
-      },
-      contactOpts: {
-        offset: 0,
-        limit: 20,
-      },
+
+    let args = SEARCH_QUERY_VARIABLES;
+    args['filter'] = {
+      term: payload.term,
+      includeTags: payload.includeTags ? payload.includeTags.map((option: any) => option.id) : [],
+      includeGroups: payload.includeGroups
+        ? payload.includeGroups.map((option: any) => option.id)
+        : [],
+      includeUsers: payload.includeUsers
+        ? payload.includeUsers.map((option: any) => option.id)
+        : [],
     };
 
     if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
