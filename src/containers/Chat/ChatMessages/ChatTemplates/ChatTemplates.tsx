@@ -3,7 +3,6 @@ import styles from './ChatTemplates.module.css';
 import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
-import { WhatsAppToJsx } from '../../../../common/RichEditor';
 
 interface ChatTemplatesProps {
   searchVal: string;
@@ -46,7 +45,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
             >
               <p className={styles.Text}>
                 <b style={{ marginRight: '5px' }}>{obj.label}:</b>
-                <span>{WhatsAppToJsx(obj.body)}</span>
+                {obj.body}
               </p>
             </ListItem>
             <Divider light />
