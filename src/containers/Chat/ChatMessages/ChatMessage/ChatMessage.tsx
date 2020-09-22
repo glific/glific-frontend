@@ -99,6 +99,30 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     setShowSaveMessageDialog(display);
   };
 
+  const downloadExtension = () => {
+    /**
+     * The code below is only to add extension to the media file so that the default application
+     * in desktop/PCs gets detected and it doesn't throw an error with invalid file type.
+     */
+    switch(props.type) {
+      case 'VIDEO': return '.mp4';
+      case 'AUDIO': return '.m4a';
+      case 'IMAGE': return '.png';
+    }
+    return '';
+  }
+
+  const downloadMedia = () => {
+    const link = document.createElement('a');
+    link.href = props.media.url + downloadExtension();
+    link.setAttribute('download', link.href);
+    document.body.appendChild(link);
+    link.click();
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+  }
+
   let saveTemplateMessage;
   if (showSaveMessageDialog) {
     saveTemplateMessage = (
@@ -208,6 +232,19 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     Add to speed sends
                   </Button>
+                  {props.type !== 'TEXT' &&
+                    <span>
+                      <br />
+                      <Button
+                        className={styles.Popper}
+                        color="primary"
+                        onClick={() => downloadMedia()}
+                        data-testid="downloadMedia"
+                      >
+                        Download media
+                      </Button>
+                    </span>
+                    }
                 </Paper>
               </Fade>
             )}
