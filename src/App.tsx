@@ -10,7 +10,6 @@ import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRout
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
-
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
   }, []);
