@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
@@ -18,6 +18,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
+import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
 
 export interface FormLayoutProps {
   match: any;
@@ -109,9 +110,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const message = useQuery(NOTIFICATION);
   let toastMessage: {} | null | undefined;
 
-  const languages = useQuery(GET_LANGUAGES, {
+  // get the organization for current user and have languages option set to that.
+  const organization = useQuery(GET_ORGANIZATION, {
     onCompleted: (data) => {
-      setLanguageId(data.languages[0].id);
+      setLanguageId(data.organization.organization.activeLanguages[0].id);
     },
   });
 
@@ -286,7 +288,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     }
   };
 
-  const languageOptions = languages.data ? languages.data.languages : null;
+  const languageOptions = organization.data ? organization.data.organization.organization.activeLanguages : [];
+  console.log("languageOptions", languageOptions);
   const language = languageSupport
     ? {
         component: Dropdown,
