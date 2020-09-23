@@ -222,7 +222,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   useEffect(() => {
     getMessageResponse();
     // we should call useEffect only once hence []
-  }, []);
+  }, [getMessageResponse]);
 
   if (loading) return <Loading />;
   if (error) {
