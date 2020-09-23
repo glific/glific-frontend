@@ -36,6 +36,7 @@ export interface ContactBarProps {
   contactId: string;
   lastMessageTime: any;
   contactStatus: string;
+  contactProviderStatus: string;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -98,6 +99,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       assignedToGroup = assignedToGroup.join(', ');
     }
   }
+
   if (groupsData) {
     groupOptions = groupsData.groups;
   }
@@ -222,16 +224,19 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 View contact profile
               </Button>
             </Link>
-            <Button
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getAutomations();
-                setShowAutomationDialog(true);
-              }}
-            >
-              <AutomationIcon className={styles.Icon} />
-              Start automation flow
-            </Button>
+            {props.contactProviderStatus === 'SESSION' ||
+            props.contactProviderStatus === 'SESSION_AND_HSM' ? (
+              <Button
+                className={styles.ListButtonPrimary}
+                onClick={() => {
+                  getAutomations();
+                  setShowAutomationDialog(true);
+                }}
+              >
+                <AutomationIcon className={styles.Icon} />
+                Start automation flow
+              </Button>
+            ) : null}
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
