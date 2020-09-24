@@ -12,15 +12,12 @@ import { Input } from '../../../components/UI/Form/Input/Input';
 import { setAuthSession, clearAuthSession, getAuthSession } from '../../../services/AuthService';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
-import { getOrganizationQuery } from '../../../mocks/Organization';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
 export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
-  console.log("getOrganizationQuery", typeof getOrganizationQuery, getOrganizationQuery);
-
   const { setAuthenticated } = useContext(SessionContext);
   const { setRole } = useContext(RoleContext);
   const [sessionToken, setSessionToken] = useState('');
