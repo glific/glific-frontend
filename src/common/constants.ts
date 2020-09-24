@@ -1,12 +1,18 @@
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
-export const REACT_APP_GLIFIC_REGISTRATION_API =
-  process.env.REACT_APP_GLIFIC_API + '/v1/registration';
-export const REACT_APP_GLIFIC_AUTHENTICATION_API =
-  process.env.REACT_APP_GLIFIC_API + '/v1/registration/send-otp';
-export const USER_SESSION = process.env.REACT_APP_GLIFIC_API + '/v1/session';
-export const RESET_PASSWORD = process.env.REACT_APP_GLIFIC_API + '/v1/registration/reset-password';
+
+const API_PORT = process.env.REACT_APP_GLIFIC_API_PORT;
+const API_PREFIX = process.env.REACT_APP_GLIFIC_API_PREFIX || '';
+const PROTOCOL = window.location.protocol;
+const HOSTNAME = window.location.hostname;
+
+export const GLIFIC_API_URL = API_PORT ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/${API_PREFIX}` : `${PROTOCOL}//${HOSTNAME}/${API_PREFIX}`;
+export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
+export const REACT_APP_GLIFIC_AUTHENTICATION_API = GLIFIC_API_URL + '/v1/registration/send-otp';
+export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
+console.log(USER_SESSION);
+export const RESET_PASSWORD = GLIFIC_API_URL + '/v1/registration/reset-password';
 export const RENEW_TOKEN = USER_SESSION + '/renew';
 export const FLOW_EDITOR_CONFIGURE_LINK = `${window.location.protocol}//${window.location.host}/automation/configure`;
 
