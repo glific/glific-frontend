@@ -34,7 +34,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
 
   useEffect(() => {
     if (role.length === 0) getCurrentUser();
-  }, []);
+  }, [role, getCurrentUser]);
 
   const menu: any[] = getRoleBasedAccess();
 
