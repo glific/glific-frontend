@@ -10,10 +10,9 @@ export const GLIFIC_API_URL = API_PORT ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/a
 export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
 export const REACT_APP_GLIFIC_AUTHENTICATION_API = GLIFIC_API_URL + '/v1/registration/send-otp';
 export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
-console.log(USER_SESSION);
 export const RESET_PASSWORD = GLIFIC_API_URL + '/v1/registration/reset-password';
 export const RENEW_TOKEN = USER_SESSION + '/renew';
-export const FLOW_EDITOR_CONFIGURE_LINK = `${window.location.protocol}//${window.location.host}/automation/configure`;
+export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/automation/configure`;
 
 // const enums
 // provider status against the contact
