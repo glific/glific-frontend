@@ -67,17 +67,17 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
       </div>
 
       <div className={styles.DetailBlock}>
-        {typeof settings === "object" && Object.keys(settings).map((key) => (
+        {settings && typeof settings === "object" && Object.keys(settings).map((key) => (
           <div key={key}>
             <div className={styles.DescriptionItem}>{key}</div>
             <div className={styles.DescriptionItemValue}>
               {Object.keys(settings[key]).filter((settingKey) => {
-                return settings[key][settingKey] == true;
+                return settings[key][settingKey] === true;
               }).join(', ')}
             </div>
           </div>
         ))}
-        {typeof fields === "object" && Object.keys(fields).map((key) => (
+        {fields && typeof fields === "object" && Object.keys(fields).map((key) => (
           <div key={key}>
             <div className={styles.DescriptionItem}>{fields[key].label ? fields[key].label : key.replace('_', ' ')}</div>
             <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
