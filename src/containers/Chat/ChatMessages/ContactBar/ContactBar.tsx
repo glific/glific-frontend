@@ -30,6 +30,7 @@ import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ContactBarProps {
   contactName: string;
@@ -208,12 +209,40 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  let disableAutmationFlow = true;
+  let automationButton: any;
   if (
     props.contactProviderStatus === 'SESSION' ||
     props.contactProviderStatus === 'SESSION_AND_HSM'
   ) {
-    disableAutmationFlow = false;
+    automationButton = (
+      <Button
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getAutomations();
+          setShowAutomationDialog(true);
+        }}
+      >
+        <AutomationIcon className={styles.Icon} />
+        Start automation flow
+      </Button>
+    );
+  } else {
+    const toolTip = 'Option disabled because the 24hr window expired';
+    automationButton = (
+      <Tooltip title={toolTip} placement="right">
+        <Button
+          className={styles.ListButtonPrimary}
+          onClick={() => {
+            getAutomations();
+            setShowAutomationDialog(true);
+          }}
+          disabled
+        >
+          <AutomationIcon className={styles.Icon} />
+          Start automation flow
+        </Button>
+      </Tooltip>
+    );
   }
 
   const popper = (
@@ -233,17 +262,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 View contact profile
               </Button>
             </Link>
-            <Button
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getAutomations();
-                setShowAutomationDialog(true);
-              }}
-              disabled={disableAutmationFlow}
-            >
-              <AutomationIcon className={styles.Icon} />
-              Start automation flow
-            </Button>
+            {automationButton}
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
