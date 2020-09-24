@@ -32,8 +32,7 @@ describe('<MyAccount />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     // click on generate OTP
-    screen.debug();
-    const generateOTPButton = findByTestId('generateOTP');
+    const generateOTPButton = await findByTestId('generateOTP');
     UserEvent.click(generateOTPButton);
   });
 });

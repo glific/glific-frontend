@@ -66,6 +66,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       })
       .catch((error) => {
         console.log(error);
+        setToastMessageInfo({
+          severity: 'error',
+          message: `Enable to send an OTP to ${loggedInUserPhone}.`,
+        });
       });
   };
 
