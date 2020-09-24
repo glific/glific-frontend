@@ -53,10 +53,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
 
-  useEffect(() => {
-    if (filterKeywords) getAutomations();
-  }, [filterKeywords]);
-
   const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_AUTOMATION, {
     variables: {
       filter: filterKeywords,
@@ -67,6 +63,10 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       },
     },
   });
+
+  useEffect(() => {
+    if (filterKeywords) getAutomations();
+  }, [filterKeywords, getAutomations]);
 
   const validateName = (value: string) => {
     if (value) {

@@ -19,6 +19,10 @@ export const UPDATE_ORGANIZATION = gql`
             enabled
           }
         }
+        activeLanguages {
+          id
+          label
+        }
       }
       errors {
         key

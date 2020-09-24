@@ -1,6 +1,7 @@
 import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
+import { getOrganizationQuery } from '../../mocks/Organization';
 
 export const defaultProps = {
   columnNames: ['label', 'description', 'keywords', 'actions'],
@@ -192,4 +193,5 @@ export const LIST_MOCKS = [
   search,
   searchCount,
   getTags,
+  ...getOrganizationQuery
 ];
