@@ -45,7 +45,7 @@ test('inputs should have mock values', async () => {
 
   await wait();
   expect(container.querySelector('input[name="label"]')?.value).toBe('important');
-  expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
+  expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('2');
 });
 
 test('cancel button should redirect to taglist page', async () => {

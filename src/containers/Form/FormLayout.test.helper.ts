@@ -40,7 +40,7 @@ export const LIST_ITEM_MOCKS = [
         input: {
           label: 'important',
           description: 'important label',
-          languageId: 1,
+          languageId: 2,
           colorCode: '#0C976D',
           parentId: '1',
         },
@@ -69,7 +69,7 @@ export const LIST_ITEM_MOCKS = [
           label: 'new Tag',
           description: 'new Tag description',
           keywords: '',
-          languageId: 1,
+          languageId: 2,
           colorCode: '#0C976D',
           parentId: '1',
         },
@@ -163,7 +163,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'important label',
             keywords: ['hi'],
             language: {
-              id: 1,
+              id: 2,
             },
             colorCode: '#00d084',
             parent: { id: '2' },
@@ -186,7 +186,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'important label',
             keywords: ['hi'],
             language: {
-              id: 1,
+              id: 2,
             },
             colorCode: '#00d084',
             parent: { id: '2' },
@@ -209,7 +209,7 @@ export const LIST_ITEM_MOCKS = [
             description: 'important label',
             keywords: ['hi'],
             language: {
-              id: 1,
+              id: 2,
             },
             colorCode: '#00d084',
             parent: {
@@ -235,7 +235,7 @@ export const LIST_ITEM_MOCKS = [
             description: null,
             colorCode: '#0C976D',
             parent: { id: '2' },
-            language: { id: '1', label: 'Hindi' },
+            language: { id: '2', label: 'Hindi' },
           },
         ],
       },
@@ -244,7 +244,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_TAGS,
-      variables: { filter: { label: 'new Tag', languageId: 1 } },
+      variables: { filter: { label: 'new Tag', languageId: 2 } },
     },
     result: {
       data: {
@@ -255,7 +255,7 @@ export const LIST_ITEM_MOCKS = [
             description: null,
             colorCode: '#0C976D',
             parent: { id: '2' },
-            language: { id: '1', label: 'Hindi' },
+            language: { id: '2', label: 'Hindi' },
           },
         ],
       },
