@@ -207,6 +207,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </DialogBox>
     );
   }
+
+  let disableAutmationFlow = true;
+  if (
+    props.contactProviderStatus === 'SESSION' ||
+    props.contactProviderStatus === 'SESSION_AND_HSM'
+  ) {
+    disableAutmationFlow = false;
+  }
+
   const popper = (
     <Popper
       open={open}
@@ -224,19 +233,17 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 View contact profile
               </Button>
             </Link>
-            {props.contactProviderStatus === 'SESSION' ||
-            props.contactProviderStatus === 'SESSION_AND_HSM' ? (
-              <Button
-                className={styles.ListButtonPrimary}
-                onClick={() => {
-                  getAutomations();
-                  setShowAutomationDialog(true);
-                }}
-              >
-                <AutomationIcon className={styles.Icon} />
-                Start automation flow
-              </Button>
-            ) : null}
+            <Button
+              className={styles.ListButtonPrimary}
+              onClick={() => {
+                getAutomations();
+                setShowAutomationDialog(true);
+              }}
+              disabled={disableAutmationFlow}
+            >
+              <AutomationIcon className={styles.Icon} />
+              Start automation flow
+            </Button>
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {
