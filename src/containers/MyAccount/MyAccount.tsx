@@ -178,6 +178,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     color="primary"
                     onClick={sendOTPHandler}
                     className={styles.Button}
+                    data-testid="generateOTP"
                   >
                     Generate OTP
                   </Button>
