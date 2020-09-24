@@ -1,7 +1,7 @@
 import { GET_CONTACT_GROUPS, GET_CONTACT, GET_CONTACT_DETAILS } from '../graphql/queries/Contact';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
-import { getLanguagesQuery } from '../containers/Form/FormLayout.test.helper';
+import { getOrganizationQuery } from '../mocks/Organization';
 
 export const contactGroupsQuery = {
   request: {
@@ -88,7 +88,7 @@ export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getContactDetailsQuery,
   filterTagsQuery,
-  getLanguagesQuery,
   getContactQuery,
   getContactDetailsQuery,
+  ...getOrganizationQuery,
 ];
