@@ -8,7 +8,8 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 export interface Props {
   colorCode: string;
   name: string;
-  form?: any;
+  form: { setFieldValue: any };
+  field?: any;
   helperText: string;
 }
 
@@ -22,7 +23,7 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
 
   const handleChangeComplete = (color: any) => {
     setColorCode(color.hex);
-    props.form.values.colorCode = color.hex;
+    props.form.setFieldValue(props.field.name, color.hex);
   };
 
   const onClickAway = () => {

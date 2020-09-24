@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-
 import { ColorPicker } from './ColorPicker';
 
+const props = {
+  name: 'colorCode',
+  colorCode: '#0C976D',
+  helperText: 'Tag color',
+  form: { setFieldValue: Function },
+};
+
+const wrapper = <ColorPicker {...props} />;
+
 describe('<ColorPicker />', () => {
-  const props = {
-    name: 'colorCode',
-    colorCode: '#0C976D',
-    helperText: 'Tag color',
-  };
-
-  const wrapper = <ColorPicker {...props} />;
-
   it('renders <Calendar /> component', async () => {
     const { findByTestId } = render(wrapper);
     const container = await findByTestId('ColorPicker');
@@ -35,5 +35,15 @@ describe('<ColorPicker />', () => {
     const { findByTestId } = render(wrapper);
     const container = await findByTestId('ChooseColor');
     fireEvent.click(container);
+  });
+});
+
+describe('Test choose color', () => {
+  it('chose color', async () => {
+    const { findByTestId } = render(wrapper);
+    const container = await findByTestId('ChooseColor');
+    fireEvent.click(container);
+    const color = await screen.findByDisplayValue('22194D');
+    fireEvent.change(color, { target: { value: '9900EF' } });
   });
 });
