@@ -52,16 +52,16 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
-  useEffect(() => {
-    if (filterLabel && languageId) getTags();
-  }, [filterLabel, languageId]);
-
   const { data } = useQuery(GET_TAGS);
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
       filter: { label: filterLabel, languageId: parseInt(languageId) },
     },
   });
+
+  useEffect(() => {
+    if (filterLabel && languageId) getTags();
+  }, [filterLabel, languageId, getTags]);
 
   if (!data) return <Loading />;
 
