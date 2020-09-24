@@ -137,7 +137,7 @@ const speedSendValidation = {
       filter: {
         label:
           'We are not allowing a really long title, and we should trigger validation for this.',
-        languageId: 2,
+        languageId: 1,
       },
       opts: { order: 'ASC', limit: null, offset: 0 },
     },
@@ -166,7 +166,7 @@ export const TEMPLATE_MOCKS = [
         input: {
           body: 'new Template body',
           label: 'new Template',
-          languageId: 2,
+          languageId: 1,
           type: 'TEXT',
         },
       },
@@ -199,7 +199,7 @@ export const TEMPLATE_MOCKS = [
             body: 'important template',
             isActive: true,
             language: {
-              id: 2,
+              id: 1,
             },
           },
         },
@@ -244,7 +244,7 @@ export const TEMPLATE_MOCKS = [
     request: {
       query: FILTER_TEMPLATES,
       variables: {
-        filter: { label: 'new Template', languageId: 2 },
+        filter: { label: 'new Template', languageId: 1 },
         opts: { order: 'ASC', limit: null, offset: 0 },
       },
     },

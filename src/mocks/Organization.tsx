@@ -9,10 +9,10 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '2', label: 'English (United States)' },
+            defaultLanguage: { id: '1', label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '2',
+                id: '1',
                 label: 'English (United States)',
               },
             ],
@@ -55,10 +55,10 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '2', label: 'English (United States)' },
+            defaultLanguage: { id: '1', label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '2',
+                id: '1',
                 label: 'English (United States)',
               },
             ],
@@ -101,10 +101,10 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '2', label: 'English (United States)' },
+            defaultLanguage: { id: '1', label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '2',
+                id: '1',
                 label: 'English (United States)',
               },
             ],
