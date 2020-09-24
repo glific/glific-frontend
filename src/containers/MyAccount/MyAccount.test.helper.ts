@@ -32,6 +32,7 @@ export const MY_ACCOUNT_MOCKS = [
   {
     request: {
       query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '76554', password: 'pass123456' } },
     },
     result: {
       data: {
