@@ -85,5 +85,6 @@ test('save button should add a new tag', async () => {
   const button = getByText('Save');
   fireEvent.click(button);
   await wait();
+  await wait();
   expect(getByText('Important')).toBeInTheDocument();
 });
