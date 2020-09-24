@@ -38,7 +38,7 @@ export const AuthenticatedRoute: React.SFC = () => {
     if (userRole.length === 0) {
       getCurrentUser();
     }
-  }, []);
+  }, [userRole, getCurrentUser]);
 
   if (loading) return null;
 

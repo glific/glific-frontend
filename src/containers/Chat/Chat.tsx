@@ -177,7 +177,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       return returnConversations;
     },
-    []
+    [getContactQuery]
   );
 
   // handle subscription for message received and sent

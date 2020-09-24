@@ -51,7 +51,7 @@ export const Login: React.SFC<LoginProps> = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError]);
+  }, [userData, userError, setAuthenticated, setRole]);
 
   if (sessionToken) {
     return (
