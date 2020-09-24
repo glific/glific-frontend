@@ -3,11 +3,10 @@ export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
 
 const API_PORT = process.env.REACT_APP_GLIFIC_API_PORT;
-const API_PREFIX = process.env.REACT_APP_GLIFIC_API_PREFIX || '';
 const PROTOCOL = window.location.protocol;
 const HOSTNAME = window.location.hostname;
 
-export const GLIFIC_API_URL = API_PORT ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/${API_PREFIX}` : `${PROTOCOL}//${HOSTNAME}/${API_PREFIX}`;
+export const GLIFIC_API_URL = API_PORT ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/api` : `${PROTOCOL}//${HOSTNAME}/api`;
 export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
 export const REACT_APP_GLIFIC_AUTHENTICATION_API = GLIFIC_API_URL + '/v1/registration/send-otp';
 export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
