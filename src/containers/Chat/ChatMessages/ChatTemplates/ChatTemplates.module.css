@@ -29,8 +29,6 @@
 
 .Text {
   margin: 0;
-  display: flex;
-  white-space: pre-line;
 }
 
 .PopperListItem {
