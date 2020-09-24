@@ -17,6 +17,7 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
 import styles from './ContactBar.module.css';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
@@ -238,7 +239,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           }}
           disabled
         >
-          <AutomationIcon className={styles.Icon} />
+          <AutomationUnselectedIcon className={styles.Icon} />
           Start automation flow
         </Button>
       </Tooltip>
