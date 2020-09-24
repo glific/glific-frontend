@@ -59,10 +59,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     attributesObject = { ...attributesObject, ...props.defaultAttribute };
   }
 
-  useEffect(() => {
-    if (filterLabel && languageId) getSessionTemplates();
-  }, [filterLabel, languageId]);
-
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
     variables: {
       filter: { label: filterLabel, languageId: parseInt(languageId) },
@@ -73,6 +69,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
       },
     },
   });
+
+  useEffect(() => {
+    if (filterLabel && languageId) getSessionTemplates();
+  }, [filterLabel, languageId, getSessionTemplates]);
 
   const validateTitle = (value: any) => {
     if (value) {
