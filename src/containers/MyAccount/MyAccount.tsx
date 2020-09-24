@@ -184,7 +184,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     className={styles.Button}
                     data-testid="generateOTP"
                   >
-                    Generate OTP
+                    GENERATE OTP
                   </Button>
                   <div className={styles.HelperText}>To change first please generate OTP</div>
                 </>
@@ -196,10 +196,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     onClick={submitForm}
                     className={styles.Button}
                   >
-                    Save
+                    SAVE
                   </Button>
                   <Button variant="contained" color="default" onClick={cancelHandler}>
-                    Cancel
+                    CANCEL
                   </Button>
                 </>
               )}

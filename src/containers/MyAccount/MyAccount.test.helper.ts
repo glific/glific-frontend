@@ -1,3 +1,4 @@
+import { UPDATE_CURRENT_USER } from '../../graphql/mutations/User';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 
 export const MY_ACCOUNT_MOCKS = [
@@ -23,6 +24,22 @@ export const MY_ACCOUNT_MOCKS = [
                 description: '',
               },
             ],
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {
+            id: '2',
+            name: 'Updated Name',
           },
         },
       },
