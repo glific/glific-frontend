@@ -1,8 +1,8 @@
 import { GET_TAG, GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { getTagsQuery } from '../../mocks/Tag';
+import { getOrganizationQuery } from '../../mocks/Organization';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_TAG,
@@ -29,26 +29,6 @@ export const listItemProps = {
   updateItemQuery: UPDATE_TAG,
   icon: null,
   getLanguageId: Function,
-};
-
-export const getLanguagesQuery = {
-  request: {
-    query: GET_LANGUAGES,
-  },
-  result: {
-    data: {
-      languages: [
-        {
-          id: '1',
-          label: 'English (United States)',
-        },
-        {
-          id: '2',
-          label: 'Hindi (India)',
-        },
-      ],
-    },
-  },
 };
 
 export const LIST_ITEM_MOCKS = [
@@ -79,7 +59,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-
   {
     request: {
       query: CREATE_TAG,
@@ -110,7 +89,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-
   {
     request: {
       query: GET_TAGS_COUNT,
@@ -126,7 +104,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-
   {
     request: {
       query: FILTER_TAGS,
@@ -166,7 +143,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-  getLanguagesQuery,
   {
     request: {
       query: GET_TAG,
@@ -240,7 +216,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-
   {
     request: {
       query: GET_TAGS,
@@ -282,4 +257,5 @@ export const LIST_ITEM_MOCKS = [
     },
   },
   getTagsQuery,
+  ...getOrganizationQuery
 ];

@@ -52,7 +52,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
       let options = getOptions();
       if (options.length > 0) setOptionValue(options);
     }
-  }, [open]);
+  }, [open, getOptions]);
 
   return (
     <div className={styles.Input}>

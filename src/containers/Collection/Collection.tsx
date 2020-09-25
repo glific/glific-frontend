@@ -381,7 +381,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   };
 
   const saveHandler = (data: any) => {
-    if (props.handleSave) props.handleSave(data);
+    if (props.handleSave && data.updateSavedSearch) props.handleSave(data.updateSavedSearch);
   };
 
   return (

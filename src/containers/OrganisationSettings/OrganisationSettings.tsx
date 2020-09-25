@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
 
@@ -49,6 +49,7 @@ const dayList = [
 ];
 
 export const OrganisationSettings: React.SFC<SettingsProps> = () => {
+  const client = useApolloClient();
   const [name, setName] = useState('');
   const [providerAppname, setProviderAppname] = useState('');
   const [providerPhone, setProviderNumber] = useState('');
@@ -255,11 +256,20 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     return array;
   };
 
+  const saveHandler = (data: any) => {
+    // update organization details in the cache
+    client.writeQuery({
+      query: GET_ORGANIZATION,
+      data: data.updateOrganization,
+    });
+  };
+
   const setPayload = (payload: any) => {
     // set active Language Ids
     let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
       return activeLanguage.id;
     });
+
     // remove activeLanguages from the payload
     delete payload['activeLanguages'];
     // set default Language Id
@@ -303,6 +313,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       languageSupport={false}
       type={'settings'}
       redirect={false}
+      afterSave={saveHandler}
     />
   );
 };

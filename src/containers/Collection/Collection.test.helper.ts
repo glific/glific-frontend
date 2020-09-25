@@ -13,6 +13,7 @@ import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
+import { getOrganizationQuery } from '../../mocks/Organization';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_COLLECTION,
@@ -232,7 +233,6 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-
   {
     request: {
       query: GET_USERS,
@@ -243,4 +243,5 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
+  ...getOrganizationQuery
 ];
