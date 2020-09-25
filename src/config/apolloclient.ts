@@ -3,7 +3,7 @@ import { onError } from '@apollo/link-error';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import absinthe from './absinthe';
 
-import { URI } from '.';
+import { GLIFIC_API_URL } from '.';
 import { setContext } from '@apollo/link-context';
 import {
   checkAuthStatusService,
@@ -60,7 +60,7 @@ const gqlClient = () => {
     if (networkError) console.log(`[Network error]: ${networkError}`);
   });
 
-  const httpLink = createHttpLink({ uri: URI });
+  const httpLink = createHttpLink({ uri: GLIFIC_API_URL });
 
   const link = split(
     (operation) => subscribe.hasSubscription(operation.query),
