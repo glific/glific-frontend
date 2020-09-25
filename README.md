@@ -52,9 +52,7 @@ Your app is ready to be deployed!
 ## Docker image for production
 ```
 docker build \
---build-arg REACT_APP_GLIFIC_API=API-URL \
---build-arg REACT_APP_WEB_SOCKET=WEB-SOCKET-URL \
---build-arg REACT_APP_FLOW_EDITOR_API=FLOW-EDITOR-URL \
+--build-arg REACT_APP_GLIFIC_API_PORT=API-PORT \
 --no-cache -t .
 ```
 

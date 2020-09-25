@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../common/constants';
+import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../config/index';
 import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { sendOTP } from '../../../services/AuthService';

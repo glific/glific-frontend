@@ -70,7 +70,7 @@
     "yup": "^0.29.2"
   },
   "scripts": {
-    "setup": "yarn install  && yarn run floweditor",
+    "setup": "yarn install && yarn run floweditor",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
