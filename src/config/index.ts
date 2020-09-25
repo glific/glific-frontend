@@ -7,13 +7,13 @@ const GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-export const URI = `${GLIFIC_BACKEND_URL}/api`;
 export const SOCKET = API_PORT ? `ws://${HOSTNAME}:${API_PORT}/socket` : `ws://${HOSTNAME}/socket`;
 export const SENTRY_DSN = envVariables.SENTRY_DSN;
 export const FLOW_EDITOR_API = GLIFIC_BACKEND_URL + '/flow-editor/';
 export const GLIFIC_API_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/api`
   : `${PROTOCOL}//${HOSTNAME}/api`;
+export const URI = GLIFIC_API_URL;
 export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
 export const REACT_APP_GLIFIC_AUTHENTICATION_API = GLIFIC_API_URL + '/v1/registration/send-otp';
 export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
