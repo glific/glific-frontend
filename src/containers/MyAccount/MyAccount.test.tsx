@@ -3,6 +3,7 @@ import { render, screen, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
+import { MemoryRouter } from 'react-router';
 
 import { MyAccount } from './MyAccount';
 import { MY_ACCOUNT_MOCKS } from './MyAccount.test.helper';
@@ -12,7 +13,9 @@ const mocks = MY_ACCOUNT_MOCKS;
 jest.mock('axios');
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <MyAccount />
+    <MemoryRouter>
+      <MyAccount />
+    </MemoryRouter>
   </MockedProvider>
 );
 
@@ -92,6 +95,27 @@ describe('<MyAccount />', () => {
     // close the alert
     const closeAlert = await findByTestId('crossIcon');
     UserEvent.click(closeAlert);
+    await wait();
+  });
+
+  test('generate OTP success flow with cancel', async () => {
+    render(wrapper);
+
+    await wait();
+
+    // let's mock successful sending of OTP
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
+
+    // click on generate OTP
+    const generateOTPButton = screen.getByText('GENERATE OTP');
+    UserEvent.click(generateOTPButton);
+    await wait();
+
+    // click on CANCEL button
+    const cancelButton = screen.getByText('CANCEL');
+    UserEvent.click(cancelButton);
     await wait();
   });
 });
