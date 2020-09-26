@@ -118,4 +118,66 @@ describe('<MyAccount />', () => {
     UserEvent.click(cancelButton);
     await wait();
   });
+
+  test('generate OTP error with incorrect OTP', async () => {
+    const { container } = render(wrapper);
+
+    await wait();
+
+    // let's mock successful sending of OTP
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
+
+    // click on generate OTP
+    const generateOTPButton = screen.getByText('GENERATE OTP');
+    UserEvent.click(generateOTPButton);
+    await wait();
+
+    // enter otp
+    const input = container.querySelector('input[type="text"]');
+    UserEvent.type(input, '1234');
+    await wait();
+
+    // enter password
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+    await wait();
+
+    // click on save button
+    const saveButton = screen.getByText('SAVE');
+    UserEvent.click(saveButton);
+    await wait();
+  });
+
+  test('generate OTP error with too many attempts', async () => {
+    const { container } = render(wrapper);
+
+    await wait();
+
+    // let's mock successful sending of OTP
+    const responseData = { data: { data: { data: {} } } };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    await wait();
+
+    // click on generate OTP
+    const generateOTPButton = screen.getByText('GENERATE OTP');
+    UserEvent.click(generateOTPButton);
+    await wait();
+
+    // enter otp
+    const input = container.querySelector('input[type="text"]');
+    UserEvent.type(input, '4567');
+    await wait();
+
+    // enter password
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+    await wait();
+
+    // click on save button
+    const saveButton = screen.getByText('SAVE');
+    UserEvent.click(saveButton);
+    await wait();
+  });
 });

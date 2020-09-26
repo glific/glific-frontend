@@ -46,4 +46,30 @@ export const MY_ACCOUNT_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '1234', password: 'pass123456' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'incorrect_code' }],
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '4567', password: 'pass123456' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'Too many attempts' }],
+        },
+      },
+    },
+  },
 ];

@@ -146,11 +146,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     formFieldLayout = formFields.map((field: any, index) => {
       return (
         <React.Fragment key={index}>
-          {field.label ? (
-            <Typography variant="h5" className={styles.Title}>
-              {field.label}
-            </Typography>
-          ) : null}
           <Field key={index} {...field}></Field>
         </React.Fragment>
       );
