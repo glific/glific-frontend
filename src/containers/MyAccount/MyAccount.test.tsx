@@ -28,7 +28,7 @@ describe('<MyAccount />', () => {
   });
 
   test('generate OTP', async () => {
-    const { container } = render(wrapper);
+    const { container, findByTestId } = render(wrapper);
 
     await wait();
 
@@ -42,17 +42,35 @@ describe('<MyAccount />', () => {
     UserEvent.click(generateOTPButton);
     await wait();
 
+    // set the mock
+    const resendPasswordResponse = {
+      data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
+    };
+    axios.post.mockImplementationOnce(() => Promise.resolve(resendPasswordResponse));
+    await wait();
+
+    // click on resend button
+    const resendButton = screen.getByTestId('resendOtp');
+    UserEvent.click(resendButton);
+
+    // enter otp
     const input = container.querySelector('input[type="text"]');
     UserEvent.type(input, '76554');
     await wait();
 
+    // enter password
     const password = container.querySelector('input[type="password"]');
     UserEvent.type(password, 'pass123456');
     await wait();
 
+    // view password
+    const passwordToggle = await findByTestId('passwordToggle');
+    UserEvent.click(passwordToggle);
+    await wait();
+
     // click on save button
     const saveButton = screen.getByText('SAVE');
-    UserEvent.click(saveButton);
+    UserEvent.click(passwordToggle);
     await wait();
   });
 });
