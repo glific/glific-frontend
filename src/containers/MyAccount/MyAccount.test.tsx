@@ -27,7 +27,7 @@ describe('<MyAccount />', () => {
     expect(myAccount).toHaveTextContent('Change Password');
   });
 
-  test('generate OTP', async () => {
+  test('generate OTP success flow', async () => {
     const { container, findByTestId } = render(wrapper);
 
     await wait();
@@ -70,7 +70,28 @@ describe('<MyAccount />', () => {
 
     // click on save button
     const saveButton = screen.getByText('SAVE');
-    UserEvent.click(passwordToggle);
+    UserEvent.click(saveButton);
+    await wait();
+  });
+
+  test('generate OTP error response', async () => {
+    const { findByTestId } = render(wrapper);
+
+    await wait();
+
+    // let's mock error case sending of OTP
+    const errorMessage = 'Cannot register 919967665667';
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    await wait();
+
+    // click on generate OTP
+    const generateOTPButton = screen.getByText('GENERATE OTP');
+    UserEvent.click(generateOTPButton);
+    await wait();
+
+    // close the alert
+    const closeAlert = await findByTestId('crossIcon');
+    UserEvent.click(closeAlert);
     await wait();
   });
 });
