@@ -59,6 +59,7 @@ describe('SpeedSend', () => {
     const button = queryByText('Save');
     fireEvent.click(button);
     await wait();
+    await wait();
     const { getByText } = within(container.querySelector('tbody'));
     expect(getByText('Good message')).toBeInTheDocument();
   });

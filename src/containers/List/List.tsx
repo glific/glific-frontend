@@ -150,7 +150,7 @@ export const List: React.SFC<ListProps> = ({
   // Get item data here
   const [fetchQuery, { loading, error, data }] = useLazyQuery(filterItemsQuery, {
     variables: filterPayload(),
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'cache-and-network',
   });
 
   // Get item data here
@@ -207,7 +207,7 @@ export const List: React.SFC<ListProps> = ({
     refetchQueries: () => {
       if (refetchQueries && refetchQueries.onDelete) {
         return [{ query: refetchQueries.onDelete }];
-      } else return [];
+      } else return [{ query: filterItemsQuery, variables: filterPayload() }];
     },
   });
 
