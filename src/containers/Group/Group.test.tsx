@@ -1,33 +1,29 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { Group } from './Group';
-import { GET_GROUPS } from '../../graphql/queries/Group';
+import { render, screen, wait } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
-const mocks = [
-  {
-    request: {
-      query: GET_GROUPS,
-    },
-    result: {
-      data: [
-        {
-          groups: {
-            label: 'Staff group',
-            description: 'Only for staff members',
-          },
-        },
-      ],
-    },
-  },
-];
+import { Group } from './Group';
+import { getGroupsQuery } from '../../mocks/Group';
+import { getUsersQuery } from '../../mocks/User';
 
-const wrapper = shallow(
+const mocks = [getGroupsQuery, getUsersQuery];
+
+const wrapper = (
   <MockedProvider mocks={mocks}>
     <Group match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
-it('should render Group', () => {
-  expect(wrapper.exists()).toBe(true);
+describe('<Group />', () => {
+  test('should render Group', async () => {
+    const { getByText } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await wait();
+    screen.debug();
+    expect(getByText('Groups')).toBeInTheDocument();
+  });
 });

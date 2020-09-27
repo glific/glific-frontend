@@ -1,4 +1,4 @@
-import { GET_CURRENT_USER } from '../graphql/queries/User';
+import { GET_CURRENT_USER, GET_USERS } from '../graphql/queries/User';
 
 export const getCurrentUserQuery = {
   request: {
@@ -24,6 +24,22 @@ export const getCurrentUserQuery = {
           ],
         },
       },
+    },
+  },
+};
+
+export const getUsersQuery = {
+  request: {
+    query: GET_USERS,
+  },
+  result: {
+    data: {
+      users: [
+        {
+          id: '1',
+          name: 'John Doe',
+        },
+      ],
     },
   },
 };
