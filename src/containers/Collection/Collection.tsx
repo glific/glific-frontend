@@ -257,8 +257,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     {
       component: AutoComplete,
       name: 'includeUsers',
-      placeholder: 'Includes users',
-      label: 'Includes users',
+      placeholder: 'Includes staff',
+      label: 'Includes staff',
       options: dataUser.users,
       optionLabel: 'name',
       textFieldProps: {
