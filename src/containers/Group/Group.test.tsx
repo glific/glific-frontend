@@ -24,7 +24,7 @@ const wrapper = (
 );
 
 describe('<Group />', () => {
-  test('should render Group', async () => {
+  test('should render Group and hit save', async () => {
     const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
