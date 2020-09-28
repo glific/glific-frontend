@@ -1,36 +1,32 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { GroupContact } from './GroupContact';
-import { GET_GROUP } from '../../../graphql/queries/Group';
+import { render, screen, wait } from '@testing-library/react';
+import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
+import { MemoryRouter } from 'react-router';
 
-const mocks = [
-  {
-    request: {
-      query: GET_GROUP,
-      variables: {
-        id: 1,
-      },
-    },
-    result: {
-      data: {
-        groups: [
-          {
-            id: 1,
-            label: 'Staff Group',
-          },
-        ],
-      },
-    },
-  },
-];
+import { GroupContact } from './GroupContact';
+import { countGroupContactsQuery } from '../../../mocks/Contact';
+import { getGroupQuery } from '../../../mocks/Group';
 
-const wrapper = shallow(
+const mocks = [countGroupContactsQuery, getGroupQuery];
+
+const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <GroupContact match={{ params: { id: 1 } }} />
+    <MemoryRouter>
+      <GroupContact match={{ params: { id: 1 } }} />
+    </MemoryRouter>
   </MockedProvider>
 );
 
-it('should render GroupContact', () => {
-  expect(wrapper.exists()).toBe(true);
+describe('<GroupContact />', () => {
+  test('should render GroupContact', async () => {
+    const { getByText } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await wait();
+    await wait();
+    expect(getByText('Back to all groups')).toBeInTheDocument();
+  });
 });
