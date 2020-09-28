@@ -22,6 +22,7 @@ import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.p
 import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
 import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
+import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { userAccountMenus } from '../../../../../config/menu';
 import { Link, useLocation } from 'react-router-dom';
 import { getStaffManagementMenus, settingMenu } from '../../../../../context/role';
@@ -125,7 +126,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <div className={classes.outerBox}>
             <ThemeProvider theme={theme}>
               <Typography variant="h6" className={classes.title}>
-                Glific
+                <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
               </Typography>
             </ThemeProvider>
             <IconButton
