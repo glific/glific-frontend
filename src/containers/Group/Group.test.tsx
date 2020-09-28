@@ -25,12 +25,21 @@ const wrapper = (
 
 describe('<Group />', () => {
   test('should render Group', async () => {
-    const { getByText } = render(wrapper);
+    const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await wait();
     expect(getByText('Edit group')).toBeInTheDocument();
+
+    // remove first user
+    const removeUser = getAllByTestId('deleteIcon');
+    UserEvent.click(removeUser[0]);
+
+    // click on SAVE
+    const saveButton = screen.getByText('Save');
+    UserEvent.click(saveButton);
+    await wait();
   });
 });

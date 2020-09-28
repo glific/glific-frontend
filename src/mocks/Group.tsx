@@ -17,6 +17,10 @@ export const getGroupQuery = {
               id: '1',
               name: 'John Doe',
             },
+            {
+              id: '2',
+              name: 'Jane Doe',
+            },
           ],
         },
       },
@@ -54,6 +58,10 @@ export const getGroupUsersQuery = {
             {
               id: '1',
               name: 'John Doe',
+            },
+            {
+              id: '2',
+              name: 'Jane Doe',
             },
           ],
         },
