@@ -115,7 +115,7 @@ export const List: React.SFC<ListProps> = ({
     sortDirection: 'asc',
   });
 
-  const [userRole, setUserRole] = useState<any>([]);
+  let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: number | string) => {
     // To handle sorting by columns that are not Name (currently don't support this functionality)
@@ -162,19 +162,10 @@ export const List: React.SFC<ListProps> = ({
   let toastMessage;
 
   const checkUserRole = () => {
-    let role: any = getUserRole();
-    setUserRole(role);
+    userRole = getUserRole();
   };
 
-  if (userRole.length === 0) {
-    // wait to get role on page refresh
-    setTimeout(() => {
-      checkUserRole();
-    }, 100);
-  }
-
   useEffect(() => {
-    checkUserRole();
     refetchCount();
   }, [filterPayload, searchVal]);
 
