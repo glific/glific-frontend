@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
