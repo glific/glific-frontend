@@ -2,6 +2,7 @@ import { GET_CONTACT_GROUPS, GET_CONTACT, GET_CONTACT_DETAILS } from '../graphql
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
 import { getOrganizationQuery } from '../mocks/Organization';
+import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
 
 export const contactGroupsQuery = {
   request: {
@@ -92,3 +93,24 @@ export const LOGGED_IN_USER_MOCK = [
   getContactDetailsQuery,
   ...getOrganizationQuery,
 ];
+
+export const updateContactStatusQuery = {
+  request: {
+    query: UPDATE_CONTACT,
+    variables: {
+      id: '1',
+      input: {
+        status: 'VALID',
+      },
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        id: '1',
+        name: 'Default Receiver',
+        phone: '99399393303',
+      },
+    },
+  },
+};
