@@ -317,7 +317,11 @@ export const List: React.SFC<ListProps> = ({
         <div className={styles.Icons}>
           {additionalAction && additionalAction.link ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
-              <IconButton color="default" className={styles.additonalButton}>
+              <IconButton
+                color="default"
+                className={styles.additonalButton}
+                data-testid="additionalButton"
+              >
                 {additionalAction.icon}
               </IconButton>
             </Link>
@@ -326,6 +330,7 @@ export const List: React.SFC<ListProps> = ({
           {additionalAction && additionalAction.dialog ? (
             <IconButton
               color="default"
+              data-testid="additionalButton"
               className={styles.additonalButton}
               onClick={() => additionalAction.dialog(additionalActionParameter)}
             >

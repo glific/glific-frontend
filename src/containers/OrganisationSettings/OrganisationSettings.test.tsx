@@ -28,6 +28,7 @@ describe('should load the <OrganisationSettings />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await wait();
+    await wait();
     expect(getByText('Settings')).toBeInTheDocument();
   });
 });
