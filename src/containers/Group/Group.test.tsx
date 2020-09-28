@@ -4,11 +4,17 @@ import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { Group } from './Group';
-import { getGroupQuery, getGroupUsers } from '../../mocks/Group';
+import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
 import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationQuery } from '../../mocks/Organization';
 
-const mocks = [...getGroupQuery, getUsersQuery, ...getOrganizationQuery, ...getGroupUsers];
+const mocks = [
+  ...getGroupQuery,
+  ...getGroupsQuery,
+  getUsersQuery,
+  ...getOrganizationQuery,
+  ...getGroupUsersQuery,
+];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
