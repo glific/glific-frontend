@@ -9,11 +9,11 @@ import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationQuery } from '../../mocks/Organization';
 
 const mocks = [
-  ...getGroupQuery,
-  ...getGroupsQuery,
   getUsersQuery,
   ...getOrganizationQuery,
-  ...getGroupUsersQuery,
+  getGroupQuery,
+  getGroupUsersQuery,
+  getGroupsQuery,
 ];
 
 const wrapper = (
