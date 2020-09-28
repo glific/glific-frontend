@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../common/constants';
+import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../config/index';
 
 // service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {

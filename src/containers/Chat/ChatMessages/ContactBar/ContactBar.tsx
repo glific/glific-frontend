@@ -17,6 +17,7 @@ import { ReactComponent as AddContactIcon } from '../../../../assets/images/icon
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
 import styles from './ContactBar.module.css';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
@@ -30,12 +31,14 @@ import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ContactBarProps {
   contactName: string;
   contactId: string;
   lastMessageTime: any;
   contactStatus: string;
+  contactProviderStatus: string;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -98,6 +101,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       assignedToGroup = assignedToGroup.join(', ');
     }
   }
+
   if (groupsData) {
     groupOptions = groupsData.groups;
   }
@@ -205,6 +209,43 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </DialogBox>
     );
   }
+
+  let automationButton: any;
+  if (
+    props.contactProviderStatus === 'SESSION' ||
+    props.contactProviderStatus === 'SESSION_AND_HSM'
+  ) {
+    automationButton = (
+      <Button
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getAutomations();
+          setShowAutomationDialog(true);
+        }}
+      >
+        <AutomationIcon className={styles.Icon} />
+        Start automation flow
+      </Button>
+    );
+  } else {
+    const toolTip = 'Option disabled because the 24hr window expired';
+    automationButton = (
+      <Tooltip title={toolTip} placement="right">
+        <Button
+          className={styles.ListButtonPrimary}
+          onClick={() => {
+            getAutomations();
+            setShowAutomationDialog(true);
+          }}
+          disabled
+        >
+          <AutomationUnselectedIcon className={styles.Icon} />
+          Start automation flow
+        </Button>
+      </Tooltip>
+    );
+  }
+
   const popper = (
     <Popper
       open={open}
@@ -222,16 +263,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 View contact profile
               </Button>
             </Link>
-            <Button
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getAutomations();
-                setShowAutomationDialog(true);
-              }}
-            >
-              <AutomationIcon className={styles.Icon} />
-              Start automation flow
-            </Button>
+            {automationButton}
             <Button
               className={styles.ListButtonPrimary}
               onClick={() => {

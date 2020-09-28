@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 
-import { USER_SESSION } from '../../../common/constants';
+import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
 import { RoleContext, setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';

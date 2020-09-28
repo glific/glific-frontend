@@ -54,6 +54,11 @@
   background-color: #edf6f2 !important;
 }
 
+.ListButton:disabled {
+  color: #93a29b !important;
+  pointer-events: auto !important;
+}
+
 .Link {
   text-decoration: none;
 }
