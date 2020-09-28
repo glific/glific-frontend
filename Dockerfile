@@ -14,7 +14,6 @@ WORKDIR /app
 COPY . .
 RUN npm install react-scripts -g --silent
 RUN yarn install
-RUN yarn run floweditor
 RUN yarn run build
 
 FROM node:12.18.3-alpine
