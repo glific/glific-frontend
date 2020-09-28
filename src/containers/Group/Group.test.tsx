@@ -9,9 +9,9 @@ import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationQuery } from '../../mocks/Organization';
 
 const mocks = [...getGroupQuery, getUsersQuery, ...getOrganizationQuery, ...getGroupUsers];
-console.log(mocks);
+
 const wrapper = (
-  <MockedProvider mocks={mocks}>
+  <MockedProvider mocks={mocks} addTypename={false}>
     <Group match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
@@ -24,6 +24,6 @@ describe('<Group />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await wait();
-    expect(getByText('Add a new group')).toBeInTheDocument();
+    expect(getByText('Edit group')).toBeInTheDocument();
   });
 });
