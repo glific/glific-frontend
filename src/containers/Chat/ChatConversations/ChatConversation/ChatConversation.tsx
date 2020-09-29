@@ -15,7 +15,7 @@ export interface ChatConversationProps {
   contactId: number;
   contactName: string;
   contactStatus: string;
-  providerStatus: string;
+  contactProviderStatus: string;
   selected: boolean;
   senderLastMessage: any;
   onClick: (i: any) => void;
@@ -110,7 +110,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           <Timer
             time={props.senderLastMessage}
             contactStatus={props.contactStatus}
-            providerStatus={props.providerStatus}
+            contactProviderStatus={props.contactProviderStatus}
           />
         </div>
       </div>
