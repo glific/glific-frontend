@@ -29,7 +29,7 @@ import { getUserRole } from '../../context/role';
 
 export const AuthenticatedRoute: React.SFC = () => {
   let userRole: any[] = [];
-  let route;
+  let route = <Route path="/logout" exact component={Logout} />;
 
   if (getUserRole()) {
     userRole = getUserRole();
