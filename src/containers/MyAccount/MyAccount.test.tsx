@@ -6,9 +6,9 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 
 import { MyAccount } from './MyAccount';
-import { MY_ACCOUNT_MOCKS } from './MyAccount.test.helper';
+import { getCurrentUserQuery, updateUserQuery } from '../../mocks/User';
 
-const mocks = MY_ACCOUNT_MOCKS;
+const mocks = [getCurrentUserQuery, ...updateUserQuery];
 
 jest.mock('axios');
 const wrapper = (
