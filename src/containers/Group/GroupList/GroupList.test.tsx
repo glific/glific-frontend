@@ -26,6 +26,6 @@ describe('<GroupList />', () => {
 
     // test automation
 
-    // test delete
+    // TODO: test delete
   });
 });
