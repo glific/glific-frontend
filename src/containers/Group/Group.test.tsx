@@ -12,7 +12,7 @@ const mocks = [
   getUsersQuery,
   ...getOrganizationQuery,
   getGroupQuery,
-  getGroupQuery, // if you refetch then you need to include same mock twice, learnt it hard way
+  getGroupQuery, // if you refetch then you need to include same mock twice
   getGroupUsersQuery,
   getGroupsQuery,
 ];
