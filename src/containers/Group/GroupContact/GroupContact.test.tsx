@@ -7,7 +7,7 @@ import { GroupContact } from './GroupContact';
 import { countGroupContactsQuery } from '../../../mocks/Contact';
 import { getGroupQuery } from '../../../mocks/Group';
 
-const mocks = [countGroupContactsQuery, getGroupQuery];
+const mocks = [countGroupContactsQuery, getGroupQuery, getGroupQuery];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
