@@ -1,4 +1,5 @@
-import { GET_CURRENT_USER } from '../graphql/queries/User';
+import { UPDATE_CURRENT_USER } from '../graphql/mutations/User';
+import { GET_CURRENT_USER, GET_USERS } from '../graphql/queries/User';
 
 export const getCurrentUserQuery = {
   request: {
@@ -27,3 +28,65 @@ export const getCurrentUserQuery = {
     },
   },
 };
+
+export const getUsersQuery = {
+  request: {
+    query: GET_USERS,
+  },
+  result: {
+    data: {
+      users: [
+        {
+          id: '1',
+          name: 'John Doe',
+        },
+      ],
+    },
+  },
+};
+
+export const updateUserQuery = [
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '76554', password: 'pass123456' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {
+            id: '2',
+            name: 'Updated Name',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '1234', password: 'pass123456' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'incorrect_code' }],
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { otp: '4567', password: 'pass123456' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: [{ message: 'Too many attempts' }],
+        },
+      },
+    },
+  },
+];

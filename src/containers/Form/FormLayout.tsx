@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
@@ -11,7 +11,6 @@ import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
@@ -292,7 +291,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     }
   };
 
-  let languageOptions = organization.data ? organization.data.organization.organization.activeLanguages.slice() : [];
+  let languageOptions = organization.data
+    ? organization.data.organization.organization.activeLanguages.slice()
+    : [];
   // sort languages by their name
   languageOptions.sort((first: any, second: any) => {
     return first.label > second.label ? 1 : -1;
