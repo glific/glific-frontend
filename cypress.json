@@ -1,1 +1,3 @@
-{}
+{
+  "baseUrl": "http://glific.test:3000/"
+}
