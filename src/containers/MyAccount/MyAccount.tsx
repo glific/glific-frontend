@@ -65,7 +65,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         setShowOTPButton(false);
       })
       .catch((error) => {
-        console.log(error);
+        setToastMessageInfo({
+          severity: 'error',
+          message: `Unable to send an OTP to ${loggedInUserPhone}.`,
+        });
       });
   };
 
@@ -143,11 +146,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     formFieldLayout = formFields.map((field: any, index) => {
       return (
         <React.Fragment key={index}>
-          {field.label ? (
-            <Typography variant="h5" className={styles.Title}>
-              {field.label}
-            </Typography>
-          ) : null}
           <Field key={index} {...field}></Field>
         </React.Fragment>
       );
@@ -178,8 +176,9 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     color="primary"
                     onClick={sendOTPHandler}
                     className={styles.Button}
+                    data-testid="generateOTP"
                   >
-                    Generate OTP
+                    GENERATE OTP
                   </Button>
                   <div className={styles.HelperText}>To change first please generate OTP</div>
                 </>
@@ -191,10 +190,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     onClick={submitForm}
                     className={styles.Button}
                   >
-                    Save
+                    SAVE
                   </Button>
                   <Button variant="contained" color="default" onClick={cancelHandler}>
-                    Cancel
+                    CANCEL
                   </Button>
                 </>
               )}

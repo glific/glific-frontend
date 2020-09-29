@@ -2,15 +2,15 @@ import React from 'react';
 import { Drawer, ListItem } from '@material-ui/core';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import SideMenus from '../SideMenus/SideMenus';
+import { mount } from 'enzyme';
+import { wait } from '@testing-library/react';
+
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
 import { getRoleBasedAccess } from '../../../../../context/role';
-import { wait } from '@testing-library/react';
-import { shallow, mount } from 'enzyme';
-import { MY_ACCOUNT_MOCKS } from '../../../../../containers/MyAccount/MyAccount.test.helper';
+import { getCurrentUserQuery } from '../../../../../mocks/User';
 
-const mocks = MY_ACCOUNT_MOCKS;
+const mocks = [getCurrentUserQuery];
 
 describe('side drawer testing', () => {
   let isToggled = false;
