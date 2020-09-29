@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import styles from './Auth.module.css';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+
+import styles from './Auth.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
+import GlificLogo from '../../assets/images/logo/Logo.svg';
 
 export interface AuthProps {
   pageTitle: string;
@@ -154,7 +156,9 @@ export const Auth: React.SFC<AuthProps> = ({
   return (
     <div className={styles.Container} data-testid="AuthContainer">
       <div className={styles.Auth}>
-        <div className={styles.GlificLogo}>Glific</div>
+        <div className={styles.GlificLogo}>
+          <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+        </div>
         <div className={boxClass.join(' ')}>{formElements}</div>
         {alternateText ? (
           <>
