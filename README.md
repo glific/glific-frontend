@@ -41,6 +41,10 @@ Launches the test runner in the interactive watch mode.<br />
 
 Launches the test runner in the interactive watch mode and code coverage stats.<br />
 
+### `yarn run cypress open`
+
+Launches cypress test runner. <br />
+
 ### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
@@ -50,6 +54,7 @@ The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
 ## Docker image for production
+
 ```
 docker build \
 --build-arg REACT_APP_GLIFIC_API_PORT=API-PORT \
