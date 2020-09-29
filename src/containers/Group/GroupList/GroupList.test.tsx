@@ -24,7 +24,7 @@ describe('<GroupList />', () => {
     await wait();
     expect(getByText('Groups')).toBeInTheDocument();
 
-    // test automation
+    // TODO: test automation
 
     // TODO: test delete
   });
