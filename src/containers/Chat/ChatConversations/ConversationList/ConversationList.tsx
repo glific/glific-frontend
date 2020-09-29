@@ -121,6 +121,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           lastMessage={lastMessage}
           senderLastMessage={conversation.contact.lastMessageAt}
           contactStatus={conversation.contact.status}
+          providerStatus={conversation.contact.providerStatus}
         />
       );
     });
