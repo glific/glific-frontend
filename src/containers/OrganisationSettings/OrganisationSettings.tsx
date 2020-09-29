@@ -10,7 +10,7 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION, GET_PROVIDERS } from '../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
@@ -63,7 +63,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  const states = {
+  let states = {
     name,
     providerAppname,
     providerPhone,
@@ -110,8 +110,9 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
+  const { data: providerData } = useQuery(GET_PROVIDERS);
   const { data: languages } = useQuery(GET_LANGUAGES, {
-    variables: { opts: {order: 'ASC'} },
+    variables: { opts: { order: 'ASC' } },
   });
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
@@ -127,7 +128,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     }
   }, [orgData]);
 
-  if (!data || !orgData || !languages) return <Loading />;
+  if (!data || !orgData || !languages || !providerData) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -152,7 +153,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     return error;
   };
 
-  const formFields = [
+  let formFields: any = [
     {
       component: Input,
       name: 'name',
@@ -292,6 +293,35 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       activeLanguageIds: activeLanguageIds,
     };
   };
+
+  const addField = (keys: any, provider: any) => {
+    Object.keys(keys).map((key) => {
+      let field = {
+        component: Input,
+        name: key,
+        type: 'text',
+        placeholder: keys[key].label,
+        disabled: keys[key].view_only,
+        label:
+          formFields.filter((field: any) => field.label === provider.name).length === 0
+            ? provider.name
+            : null,
+      };
+      formFields.push(field);
+
+      // add dafault value for the field
+      Object.assign(states, { [key]: keys[key].default });
+    });
+  };
+
+  if (providerData) {
+    providerData.providers.map((provider: any) => {
+      let keys = JSON.parse(provider.keys);
+      let secrets = JSON.parse(provider.secrets);
+      Object.assign(keys, secrets);
+      addField(keys, provider);
+    });
+  }
 
   return (
     <FormLayout

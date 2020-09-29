@@ -7,10 +7,8 @@ export const GET_ORGANIZATION = gql`
         id
         name
         provider {
-          apiEndPoint
           id
           name
-          url
         }
         providerAppname
         providerPhone
@@ -33,6 +31,20 @@ export const GET_ORGANIZATION = gql`
           label
         }
       }
+    }
+  }
+`;
+
+export const GET_PROVIDERS = gql`
+  query providers($filter: ProviderFilter, $opts: Opts) {
+    providers(filter: $filter, opts: $opts) {
+      id
+      name
+      shortcode
+      keys
+      secrets
+      group
+      isRequired
     }
   }
 `;
