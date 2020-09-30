@@ -3,20 +3,34 @@
   bottom: 0;
   right: 0;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 5px 0 0 0;
+  width: 35px;
+  height: 45px;
 }
 
-.sim_container {
+.SimulatorIconNormal {
+  composes: SimulatorIcon;
+  background-color: #119656;
+}
+
+.SimulatorIconClicked {
+  composes: SimulatorIcon;
+  background-color: #073f24;
+}
+
+.SimContainer {
   position: fixed;
   right: 0;
   top: 100px;
   z-index: 1000;
 }
-.simulator.sim_hidden {
+.Simulator.sim_hidden {
   left: 0px !important;
   transition: all 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
   transition-delay: 100ms;
 }
-.simulator {
+.Simulator {
   background: #444;
   border-radius: 12px;
   left: -300px;
@@ -29,45 +43,45 @@
   transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
   transition-delay: 100ms;
 }
-.simulator img {
+.Simulator img {
   height: auto;
   max-width: 100%;
   vertical-align: middle;
   border: 0;
 }
-.simulator input:focus {
+.Simulator input:focus {
   outline-color: transparent;
   outline-style: none;
 }
-.simulator input::-webkit-input-placeholder {
+.Simulator input::-webkit-input-placeholder {
   color: #e6e6e6;
 }
-.simulator input::-moz-placeholder {
+.Simulator input::-moz-placeholder {
   color: #e6e6e6;
 }
-.simulator input:-ms-input-placeholder {
+.Simulator input:-ms-input-placeholder {
   color: #e6e6e6;
 }
-.simulator input:-moz-placeholder {
+.Simulator input:-moz-placeholder {
   color: #e6e6e6;
 }
-.simulator input:disabled {
+.Simulator input:disabled {
   background: #f3f3f3;
   cursor: not-allowed;
 }
-.simulator input:disabled::-webkit-input-placeholder {
+.Simulator input:disabled::-webkit-input-placeholder {
   color: #d9d9d9;
 }
-.simulator input:disabled::-moz-placeholder {
+.Simulator input:disabled::-moz-placeholder {
   color: #d9d9d9;
 }
-.simulator input:disabled:-ms-input-placeholder {
+.Simulator input:disabled:-ms-input-placeholder {
   color: #d9d9d9;
 }
-.simulator input:disabled:-moz-placeholder {
+.Simulator input:disabled:-moz-placeholder {
   color: #d9d9d9;
 }
-.simulator .screen {
+.Simulator .Screen {
   top: 6px;
   height: 488px;
   border-radius: 10px;
@@ -75,13 +89,26 @@
   position: relative;
   margin: 0px 5px;
   cursor: default;
+  background-image: url('../../assets/images/whatsappBackground.jpg');
+  background-size: cover;
 }
-.simulator .screen .header {
+.Simulator .Screen .Header {
   color: #eee;
-  background: #555;
-  height: 32px;
+  background: #2c6157;
+  height: 38px;
+  display: flex;
+  align-items: center;
 }
-.simulator .screen .header .close {
+
+.Simulator .Screen .Header img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 6px;
+  margin-left: 4px;
+}
+
+.Simulator .Screen .Header .close {
   font-size: 20px;
   width: 25px;
   height: 25px;
@@ -91,27 +118,27 @@
   color: #ddd;
   cursor: pointer;
 }
-.simulator .screen .header .close:hover {
+.Simulator .Screen .Header .close:hover {
   color: #fff;
 }
-.simulator .screen .header .time {
+.Simulator .Screen .Header .time {
   display: inline-block;
   visibility: hidden;
 }
-.simulator .screen .header .battery {
+.Simulator .Screen .Header .battery {
   display: inline-block;
   visibility: hidden;
   right: 12px;
   position: absolute;
   font-size: 13px;
 }
-.simulator .screen .header .wifi {
+.Simulator .Screen .Header .wifi {
   visibility: hidden;
   display: inline-block;
   right: 38px;
   position: absolute;
 }
-.simulator .screen .footer {
+.Simulator .Screen .Footer {
   color: #eee;
   background: #555;
   height: 35px;
@@ -120,15 +147,15 @@
   bottom: 0;
   width: 100%;
 }
-.simulator .screen .footer .show_context_button {
+.Simulator .Screen .Footer .show_context_button {
   display: inline-block;
   padding: 12px;
   cursor: pointer;
 }
-.simulator .screen .footer .show_context_button:hover {
+.Simulator .Screen .Footer .show_context_button:hover {
   color: #ddd;
 }
-.simulator .screen .footer .reset {
+.Simulator .Screen .Footer .reset {
   background-color: #666;
   border: 2px solid #787878;
   -webkit-border-radius: 20px;
@@ -141,19 +168,19 @@
   left: 94px;
   margin: 8px 0px;
 }
-.simulator .screen .footer .reset:hover {
+.Simulator .Screen .Footer .reset:hover {
   background-color: #787878;
   border: 2px solid #858585;
 }
-.simulator .screen .footer .reset .inactive {
+.Simulator .Screen .Footer .reset .inactive {
   background-color: #666;
   border: 2px solid #787878;
 }
-.simulator .screen .footer .reset .active {
+.Simulator .Screen .Footer .reset .active {
   background-color: #666;
   border: 2px solid #787878;
 }
-.simulator .screen .messages {
+.Simulator .Screen .messages {
   background-color: #fff;
   user-select: none;
   padding: 10px;
@@ -163,36 +190,34 @@
   position: relative;
   transition: height 0.3s linear;
 }
-.simulator .screen .controls {
+.Simulator .Screen .Controls {
   z-index: 100;
-  background: #444;
+  display: flex;
   bottom: 0px;
-  width: 240px;
-  padding: 5px 5px;
+
+  padding: 5px;
   bottom: 35px;
   position: absolute;
 }
-.simulator .screen .controls input {
-  border-radius: 4px;
+.Simulator .Screen .Controls input {
+  width: calc(100% - 30px);
   border: none;
+  border-radius: 999px;
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 13px;
   outline: none;
-  box-shadow: none;
-  font-size: 12px !important;
-  font-weight: 300;
-  height: 13px;
-  width: 195px;
-  padding: 6px 8px;
-  padding-right: 36px;
-  color: #333;
-  display: inline-block;
-  margin: 0;
+  box-shadow: 0 1px silver;
+
+  line-height: 5px;
 }
-.simulator .screen .controls input:focus {
+.Simulator .Screen .Controls input:focus {
   outline: none;
   box-shadow: none;
   border: none;
 }
-.simulator .screen .show_attachments_button {
+.Simulator .Screen .show_attachments_button {
   display: inline-block;
   vertical-align: sub;
   padding: 0px 5px;
@@ -203,11 +228,11 @@
   transform: rotate(20deg);
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.075);
 }
-.simulator .screen .show_attachments_button:hover {
+.Simulator .Screen .show_attachments_button:hover {
   transform: rotate(0deg) scale(1.1);
   color: #333;
 }
-.simulator .screen .attachment_buttons {
+.Simulator .Screen .attachment_buttons {
   bottom: -100px;
   position: absolute;
   transition: bottom 200ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
@@ -218,10 +243,10 @@
   z-index: 100;
   text-align: center;
 }
-.simulator .screen .attachment_buttons.visible {
+.Simulator .Screen .attachment_buttons.visible {
   bottom: 30px;
 }
-.simulator .screen .attachment_buttons div {
+.Simulator .Screen .attachment_buttons div {
   display: inline-block;
   cursor: pointer;
   padding-left: 7px;
@@ -229,7 +254,7 @@
   padding-top: 10px;
   font-size: 15px;
 }
-.simulator .screen .attachment_buttons div:hover {
+.Simulator .Screen .attachment_buttons div:hover {
   color: #ccc;
 }
 .drawer {
@@ -244,7 +269,7 @@
 .drawer.drawer_visible.forced {
   background: #666;
 }
-.drawer .drawer_header {
+.drawer .drawer_Header {
   height: 10px;
   background: #555;
   color: #e6e6e6;
@@ -322,12 +347,12 @@
 .drawer .drawer_items .drawer_item:hover {
   transform: scale(1.05);
 }
-.simulator_tab.tab_hidden,
-.simulator_tab:hover.tab_hidden {
+.Simulator_tab.tab_hidden,
+.Simulator_tab:hover.tab_hidden {
   right: -130px;
   transition: right 100ms;
 }
-.simulator_tab {
+.Simulator_tab {
   background-color: #2db379;
   width: 130px;
   height: 50px;
@@ -341,14 +366,14 @@
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
-.simulator_tab .simulator_tab_icon {
+.Simulator_tab .Simulator_tab_icon {
   position: absolute;
   font-size: 34px;
   color: white;
   padding: 8px 0px;
   margin-left: 3px;
 }
-.simulator_tab .simulator_tab_text {
+.Simulator_tab .Simulator_tab_text {
   position: absolute;
   left: 40px;
   top: 10px;
@@ -358,11 +383,11 @@
   transition: opacity 500ms;
   transition-delay: 1000ms;
 }
-.simulator_tab:hover {
+.Simulator_tab:hover {
   right: -10px;
   transition: right 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.simulator_tab:hover .simulator_tab_text {
+.Simulator_tab:hover .Simulator_tab_text {
   opacity: 0.99;
   transition: opacity 500ms;
 }
@@ -388,4 +413,16 @@
 .quick_replies .quick_reply:hover {
   background: #333;
   transform: scale(1.05);
+}
+
+.SendButton {
+  border-radius: 50% !important;
+  min-width: unset !important;
+  padding: 6px !important;
+  margin-left: 4px !important;
+}
+
+.SendButton svg {
+  width: 15px;
+  height: 15px;
 }

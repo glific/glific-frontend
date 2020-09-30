@@ -1,51 +1,50 @@
 import React, { useState } from 'react';
 import styles from './Simulator.module.css';
-import { ReactComponent as Icon } from '../../assets/images/icons/Contact/Add.svg';
+import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
+import SendIcon from '@material-ui/icons/Send';
+import { Button } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 
 export const Simulator: React.FC = (props) => {
   const [showSimulator, setShowSimulator] = useState(false);
   const contextExplorerVisible = false;
   const simulator = (
-    <div id="sim_container" className={styles.sim_container}>
+    <div className={styles.SimContainer}>
       <div>
-        <div id="simulator" className={styles.simulator} key={'sim'}>
+        <div id="simulator" className={styles.Simulator}>
           {/* {this.getContextExplorer()} */}
 
-          <div className={styles.screen}>
-            <div className={styles.header}>
-              <div className={styles.close + ' fe-x'} />
+          <div className={styles.Screen}>
+            <div className={styles.Header}>
+              <ArrowBackIcon />
+              <img src={DefaultWhatsappImage} alt="default Image" />
+              Simulated Beneficiary
             </div>
-            <div className={styles.messages}>
-              {/* {messages} */}
-              <div
+            {/* <div className={styles.messages}> */}
+            {/* {messages} */}
+            {/* <div
                 id="bottom"
                 style={{ float: 'left', clear: 'both', marginTop: 20 }}
                 // ref={this.bottomRef}
-              />
-            </div>
-            <div className={styles.controls}>
+              /> */}
+            {/* </div> */}
+            <div className={styles.Controls}>
               <input
                 // ref={this.inputBoxRef}
                 type="text"
                 // onKeyUp={this.onKeyUp}
                 // disabled={this.state.sprinting}
-                // placeholder={this.state.active ? 'Enter message' : 'Press home to start again'}
+                placeholder={'Type a message'}
               />
-              <div className={styles.show_attachments_button}>
-                <div
-                  className="fe-paperclip"
-                  // onClick={() => {
-                  //   this.setState({
-                  //     attachmentOptionsVisible: true,
-                  //     drawerOpen: false,
-                  //   });
-                  // }}
-                />
-              </div>
+
+              <Button variant="contained" color="primary" className={styles.SendButton}>
+                <SendIcon />
+              </Button>
             </div>
             {/* {this.getAttachmentOptions()}
             {this.getDrawer()} */}
-            <div className={styles.footer}>
+            <div className={styles.Footer}>
               {!contextExplorerVisible ? (
                 <div className={styles.show_context_button}>
                   <div
@@ -75,7 +74,7 @@ export const Simulator: React.FC = (props) => {
               )}
 
               <span
-                className={styles.reset + ' ' + (true ? styles.active : styles.inactive)}
+                className={styles.Reset + ' ' + (true ? styles.active : styles.inactive)}
                 // onClick={this.onReset}
               />
             </div>
@@ -87,10 +86,10 @@ export const Simulator: React.FC = (props) => {
   return (
     <>
       {showSimulator ? simulator : null}
-      <Icon
-        className={styles.SimulatorIcon}
+      <SimulatorIcon
+        className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
         onClick={() => setShowSimulator(!showSimulator)}
-      ></Icon>
+      ></SimulatorIcon>
     </>
   );
 };
