@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './AuthenticatedRoute.module.css';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { TagPage } from '../../components/pages/TagPage/TagPage';
@@ -26,28 +26,16 @@ import { BlockContactList } from '../../containers/BlockContact/BlockContactList
 import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
-import { useLazyQuery } from '@apollo/client';
-import { GET_CURRENT_USER } from '../../graphql/queries/User';
 
 export const AuthenticatedRoute: React.SFC = () => {
-  const [userRole, setRole] = useState(getUserRole());
+  let userRole: any[] = [];
+  let route = <Route path="/logout" exact component={Logout} />;
 
-  const [getCurrentUser, { loading, data }] = useLazyQuery(GET_CURRENT_USER);
-
-  useEffect(() => {
-    if (userRole.length === 0) {
-      getCurrentUser();
-    }
-  }, [userRole, getCurrentUser]);
-
-  if (loading) return null;
-
-  if (data && userRole.length === 0) {
-    setRole(data.currentUser.user.roles);
+  if (getUserRole()) {
+    userRole = getUserRole();
   }
 
   const defaultRedirect = () => <Redirect to="/chat" />;
-  let route;
 
   if (userRole.includes('Staff')) {
     route = (

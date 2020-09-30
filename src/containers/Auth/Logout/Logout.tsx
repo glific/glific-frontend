@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Redirect } from 'react-router';
 
 import { SessionContext } from '../../../context/session';
 import { clearAuthSession } from '../../../services/AuthService';
@@ -12,5 +13,5 @@ export const Logout: React.SFC<LogoutProps> = () => {
   setAuthenticated(false);
   // reset user role
   setUserRole([]);
-  return null;
+  return <Redirect to="/login" />;
 };

@@ -25,7 +25,11 @@ import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.s
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { userAccountMenus } from '../../../../../config/menu';
 import { Link, useLocation } from 'react-router-dom';
-import { getStaffManagementMenus, settingMenu } from '../../../../../context/role';
+import {
+  getStaffManagementMenus,
+  settingMenu,
+  getRoleBasedAccess,
+} from '../../../../../context/role';
 
 export interface SideDrawerProps {}
 
@@ -157,6 +161,11 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const handleClick = () => {
     setActive(!active);
   };
+
+  // check access for settings on page reload
+  if (!settingMenu) {
+    getRoleBasedAccess();
+  }
 
   const settingMenus = settingMenu ? (
     <div>

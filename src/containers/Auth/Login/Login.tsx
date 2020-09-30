@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
-import { RoleContext, setUserRole } from '../../../context/role';
+import { setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -19,7 +19,6 @@ export interface LoginProps {}
 
 export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
-  const { setRole } = useContext(RoleContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
 
@@ -39,7 +38,6 @@ export const Login: React.SFC<LoginProps> = () => {
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
         accessDenied();
       } else {
-        setRole(roles);
         setUserRole(roles);
 
         // needed to redirect after login
@@ -51,7 +49,7 @@ export const Login: React.SFC<LoginProps> = () => {
     if (userError) {
       accessDenied();
     }
-  }, [userData, userError, setAuthenticated, setRole]);
+  }, [userData, userError, setAuthenticated]);
 
   if (sessionToken) {
     return (
