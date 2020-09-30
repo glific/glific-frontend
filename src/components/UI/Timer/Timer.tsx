@@ -19,27 +19,36 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     }, 60000);
   }, []);
 
-  var lastMessageTime = moment(props.time);
-  var duration = moment.duration(currentTime.diff(lastMessageTime));
-  var hours: string | number = Math.floor(duration.asHours());
-  if (hours < 0 || isNaN(hours)) {
-    hours = 0;
-  }
-  hours = hours > 24 ? 0 : 24 - hours;
+  let validTime = false;
   let timerStyle = styles.TimerNormal;
-  if (hours === 0) {
-    timerStyle = styles.TimerEnd;
-  } else if (hours < 5) {
-    timerStyle = styles.TimerApproachEnd;
-  }
+  let hours;
+  if (props.time) {
+    validTime = true;
+    let lastMessageTime = moment(props.time);
+    let duration = moment.duration(currentTime.diff(lastMessageTime));
+    let hours: string | number = Math.floor(duration.asHours());
 
-  if (hours < 10 && hours > 0) {
-    hours = '0' + hours.toString();
+    if (hours < 0 || isNaN(hours)) {
+      hours = 0;
+    }
+
+    hours = hours > 24 ? 0 : 24 - hours;
+
+    if (hours === 0) {
+      timerStyle = styles.TimerEnd;
+    } else if (hours < 5) {
+      timerStyle = styles.TimerApproachEnd;
+    }
+
+    if (hours < 10 && hours > 0) {
+      hours = '0' + hours.toString();
+    }
   }
 
   if (
     (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactProviderStatus === 'NONE'
+    props.contactProviderStatus === 'NONE' ||
+    !validTime
   ) {
     return <ContactOptOutIcon />;
   }
