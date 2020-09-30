@@ -153,8 +153,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       // Add new message and move the conversation to the top
       if (newMessage) {
-        console.log(newMessage);
-
         newMessage.sender.id = '2';
         newMessage.receiver.id = '1';
         newMessage.flow = 'INBOUND';
