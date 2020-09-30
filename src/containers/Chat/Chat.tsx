@@ -255,33 +255,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     );
   }
 
-  Axios({
-    method: 'POST',
-    url: 'https://api.gupshup.io/sm/api/v1/msg',
-    data: {
-      channel: 'whatsapp',
-      source: '917384811114',
-      destination: '918979120220',
-      'src.name': 'GlificShamoon',
-      message: {
-        isHSM: 'false',
-        type: 'text',
-        text: 'jdnnsc',
-      },
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
-      apikey: '640bd5f200274937c959c80830edfa15',
-    },
-  })
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
   return (
     <Paper>
       <div className={styles.Chat}>{chatInterface}</div>
