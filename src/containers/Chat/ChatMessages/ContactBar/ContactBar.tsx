@@ -309,7 +309,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     <div className={styles.Container}>
       <div className={styles.SessionTimer} data-testid="sessionTimer">
         <span>Session Timer</span>
-        <Timer time={props.lastMessageTime} contactStatus={props.contactStatus} />
+        <Timer
+          time={props.lastMessageTime}
+          contactStatus={props.contactStatus}
+          contactProviderStatus={props.contactProviderStatus}
+        />
       </div>
       <div>
         {assignedToGroup ? (
@@ -328,7 +332,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
             {props.contactName}
           </Typography>
-
           <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
             <div className={styles.Configure}>
               <DropdownIcon onClick={handleConfigureIconClick} />
