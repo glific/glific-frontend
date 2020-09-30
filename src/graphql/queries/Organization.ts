@@ -48,3 +48,18 @@ export const GET_PROVIDERS = gql`
     }
   }
 `;
+
+export const GET_CREDENTIAL = gql`
+  query credential($shortcode: String!) {
+    credential(shortcode: $shortcode) {
+      credential {
+        id
+        keys
+        secrets
+        provider {
+          shortcode
+        }
+      }
+    }
+  }
+`;

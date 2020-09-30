@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
@@ -18,6 +18,7 @@ import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 
 export interface FormLayoutProps {
   match: any;
@@ -51,6 +52,7 @@ export interface FormLayoutProps {
   redirect?: boolean;
   title?: string;
   getLanguageId?: any;
+  backLinkButton?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -85,6 +87,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   refetchQueries,
   redirect = true,
   getLanguageId,
+  backLinkButton,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -122,16 +125,24 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
-  const itemId = match.params.id ? match.params.id : false;
+  let itemId = match.params.id ? match.params.id : false;
+  let variables: any = itemId ? { id: itemId } : false;
+  if (listItem === 'credential') {
+    variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
+    itemId = true;
+  }
+  console.log('variables', variables, match, itemId);
   const { loading, error } = useQuery(getItemQuery, {
-    variables: { id: itemId },
+    variables: variables,
     skip: !itemId,
     onCompleted: (data) => {
       if (itemId && data) {
         item = data[listItem][listItem];
+        itemId = item.id;
         setLink(data[listItem][listItem][linkParameter]);
         setStates(item);
         setLanguageId(languageSupport ? item.language.id : null);
+        console.log('itemId------', itemId, item);
       }
     },
   });
@@ -163,7 +174,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
-
+      console.log('DATA-', data, itemCreated);
       if (data[itemCreated].errors) {
         setErrorMessage(client, data[itemCreated].errors[0]);
       } else {
@@ -415,10 +426,20 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     if (data && data.heading) heading = data.heading;
   }
 
+  const backLink = backLinkButton ? (
+    <div className={styles.BackLink}>
+      <Link to={backLinkButton.link}>
+        <BackIcon />
+        {backLinkButton.text}
+      </Link>
+    </div>
+  ) : null;
+
   return (
     <div className={styles.ItemAdd}>
       {dialogBox}
       {heading}
+      {backLink}
       {form}
     </div>
   );

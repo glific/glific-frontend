@@ -1,43 +1,57 @@
 import React, { useState, useEffect } from 'react';
+import styles from './settings.module.css';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
-import styles from './OrganisationSettings.module.css';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION, GET_PROVIDERS } from '../../graphql/queries/Organization';
+import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+import { TimePicker } from '../../../components/UI/Form/TimePicker/TimePicker';
+import { Loading } from '../../../components/UI/Layout/Loading/Loading';
+import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from '../../../components/UI/Form/Input/Input';
+import { FormLayout } from '../../Form/FormLayout';
+import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
+import {
+  GET_ORGANIZATION,
+  GET_PROVIDERS,
+  GET_CREDENTIAL,
+} from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
-} from '../../graphql/mutations/Organization';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
+  CREATE_CREDENTIAL,
+  UPDATE_CREDENTIAL,
+} from '../../../graphql/mutations/Organization';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
+import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
 import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
-import { listItemProps } from '../Collection/Collection.test.helper';
+import { listItemProps } from '../../Collection/Collection.test.helper';
 import { Link } from 'react-router-dom';
 
 export interface SettingsProps {
   match: any;
 }
 
-const FormSchema = Yup.object().shape({
+const validation = {
   name: Yup.string().required('Organisation name is required.'),
   providerAppname: Yup.string().required('Gupshup API key is required.'),
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
-});
+};
+let FormSchema = Yup.object().shape({});
 
 const SettingIcon = <Settingicon />;
 
-const queries = {
+const org_queries = {
   getItemQuery: GET_ORGANIZATION,
   createItemQuery: CREATE_ORGANIZATION,
   updateItemQuery: UPDATE_ORGANIZATION,
+  deleteItemQuery: DELETE_ORGANIZATION,
+};
+
+const credential_queries = {
+  getItemQuery: GET_CREDENTIAL,
+  createItemQuery: CREATE_CREDENTIAL,
+  updateItemQuery: UPDATE_CREDENTIAL,
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
@@ -51,9 +65,12 @@ const dayList = [
   { id: 7, label: 'Sunday' },
 ];
 
-let CardList = [{ label: 'Organisation', shortcode: 'organisation' }];
+let CardList = [{ label: 'Organisation', shortcode: '' }];
 
-export const OrganisationSettings: React.SFC<SettingsProps> = () => {
+export const Settings: React.SFC<SettingsProps> = ({ match }) => {
+  console.log('match', match);
+  const type = match.params.type ? match.params.type : null;
+  console.log('Setting', match);
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [providerAppname, setProviderAppname] = useState('');
@@ -67,8 +84,14 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [organizationId, setOrganizationId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
+  // const [states, setState] = useState<any>({});
+  let queries;
+  let param;
+  let states: any = {};
+  let keys: any = {};
+  let secrets: any = {};
 
-  let states = {
+  const orgStates = {
     name,
     providerAppname,
     providerPhone,
@@ -81,6 +104,16 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     defaultLanguage,
   };
 
+  if (type === 'organisation') {
+    queries = org_queries;
+    param = { params: { id: organizationId } };
+    FormSchema = Yup.object().shape(validation);
+    states = orgStates;
+  } else {
+    queries = credential_queries;
+    param = { params: { shortcode: type } };
+  }
+
   const setStates = ({
     name,
     providerAppname,
@@ -89,15 +122,17 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     activeLanguages,
     defaultLanguage,
   }: any) => {
-    setName(name);
-    setProviderAppname(providerAppname);
-    setProviderNumber(providerPhone);
-    setHours(outOfOffice.enabled);
-    setIsDisable(!outOfOffice.enabled);
-    setOutOfOffice(outOfOffice);
-    setFlowId(getFlow(outOfOffice.flowId));
-    if (activeLanguages) setActiveLanguages(activeLanguages);
-    if (defaultLanguage) setDefaultLanguage(defaultLanguage);
+    if (type === 'organisation') {
+      setName(name);
+      setProviderAppname(providerAppname);
+      setProviderNumber(providerPhone);
+      setHours(outOfOffice.enabled);
+      setIsDisable(!outOfOffice.enabled);
+      setOutOfOffice(outOfOffice);
+      setFlowId(getFlow(outOfOffice.flowId));
+      if (activeLanguages) setActiveLanguages(activeLanguages);
+      if (defaultLanguage) setDefaultLanguage(defaultLanguage);
+    }
   };
 
   const setOutOfOffice = (data: any) => {
@@ -115,7 +150,9 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
-  const { data: providerData } = useQuery(GET_PROVIDERS);
+  const { data: providerData } = useQuery(GET_PROVIDERS, {
+    variables: { filter: { shortcode: type } },
+  });
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
@@ -271,103 +308,119 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const setPayload = (payload: any) => {
-    // set active Language Ids
-    let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
-      return activeLanguage.id;
-    });
+    console.log('payload', payload);
 
-    // remove activeLanguages from the payload
-    delete payload['activeLanguages'];
-    // set default Language Id
-    let defaultLanguageId = payload.defaultLanguage.id;
-    // remove defaultLanguage from the payload
-    delete payload['defaultLanguage'];
+    let object: any = {};
+    if (type === 'organisation') {
+      // set active Language Ids
+      let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
+        return activeLanguage.id;
+      });
 
-    return {
-      name: payload.name,
-      providerAppname: payload.providerAppname,
-      providerPhone: payload.providerPhone,
-      outOfOffice: {
-        enabled: payload.hours,
-        enabledDays: assignDays(payload.enabledDays),
-        endTime: payload.endTime,
-        flowId: payload.flowId ? payload.flowId.id : null,
-        startTime: payload.startTime,
-      },
-      defaultLanguageId: defaultLanguageId,
-      activeLanguageIds: activeLanguageIds,
-    };
+      // remove activeLanguages from the payload
+      delete payload['activeLanguages'];
+      // set default Language Id
+      let defaultLanguageId = payload.defaultLanguage.id;
+      // remove defaultLanguage from the payload
+      delete payload['defaultLanguage'];
+
+      object = {
+        name: payload.name,
+        providerAppname: payload.providerAppname,
+        providerPhone: payload.providerPhone,
+        outOfOffice: {
+          enabled: payload.hours,
+          enabledDays: assignDays(payload.enabledDays),
+          endTime: payload.endTime,
+          flowId: payload.flowId ? payload.flowId.id : null,
+          startTime: payload.startTime,
+        },
+        defaultLanguageId: defaultLanguageId,
+        activeLanguageIds: activeLanguageIds,
+      };
+    } else {
+      let secretsObj: any = {};
+      let keysObj: any = {};
+      Object.keys(secrets).map((key) => {
+        if (payload[key]) {
+          secretsObj[key] = payload[key];
+        }
+      });
+      Object.keys(keys).map((key) => {
+        if (payload[key]) {
+          keysObj[key] = payload[key];
+        }
+      });
+      object = {
+        shortcode: type,
+        keys: JSON.stringify(keysObj),
+        secrets: JSON.stringify(secretsObj),
+      };
+    }
+
+    return object;
   };
 
-  const addField = (keys: any, provider: any) => {
-    Object.keys(keys).map((key) => {
+  const addField = (fields: any, provider: any) => {
+    let formField: any = [];
+    let defaultStates: any = {};
+
+    Object.keys(fields).map((key) => {
+      // add dafault value for the field
+      states[key] = fields[key].default;
+      Object.assign(defaultStates, { [key]: fields[key].default });
       let field = {
         component: Input,
         name: key,
         type: 'text',
-        placeholder: keys[key].label,
-        disabled: keys[key].view_only,
-        label:
-          formFields.filter((field: any) => field.label === provider.name).length === 0
-            ? provider.name
-            : null,
+        placeholder: fields[key].label,
+        disabled: fields[key].view_only,
+        // label:
+        //   formFields.filter((field: any) => field.label === provider.name).length === 0
+        //     ? provider.name
+        //     : null,
       };
-      formFields.push(field);
-
-      // add dafault value for the field
-      Object.assign(states, { [key]: keys[key].default });
+      formField.push(field);
     });
+    formFields = formField;
   };
 
-  if (providerData) {
+  if (providerData && type !== 'organisation') {
     providerData.providers.map((provider: any) => {
-      let keys = JSON.parse(provider.keys);
-      let secrets = JSON.parse(provider.secrets);
-      Object.assign(keys, secrets);
-      addField(keys, provider);
+      keys = JSON.parse(provider.keys);
+      secrets = JSON.parse(provider.secrets);
+      let fields = {};
+      Object.assign(fields, keys);
+      Object.assign(fields, secrets);
+      addField(fields, provider);
       //create list
       if (CardList.filter((list: any) => list.label === provider.name).length <= 0)
         CardList.push({ label: provider.name, shortcode: provider.shortcode });
     });
   }
 
-  let heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled={true} className={styles.Icon}>
-        {SettingIcon}
-      </IconButton>
-      Settings
-    </Typography>
-  );
-
   return (
-    <>
-      {heading}
-      <div className={styles.CardContainer}>
-        {CardList.map((data: any) => {
-          return (
-            <Card variant="outlined" className={styles.Card}>
-              <CardContent className={styles.CardContent}>
-                <div data-testid="label" className={styles.Label}>
-                  {data.label}
-                </div>
-              </CardContent>
-              <CardActions className={styles.CardActions}>
-                {/* {viewDetails(data.id)} */}
-                {/* {data.operations} */}
-                <Link
-                  to={{
-                    pathname: 'settings/' + data.shortcode,
-                  }}
-                  className={styles.Link}
-                >
-                  <p>View Details</p>
-                </Link>
-              </CardActions>
-            </Card>
-          );
-        })}
-      </div>
-    </>
+    <FormLayout
+      backLinkButton={{ text: 'Back to settings', link: '/settings' }}
+      {...queries}
+      title={type}
+      match={param}
+      states={states}
+      setStates={setStates}
+      validationSchema={FormSchema}
+      setPayload={setPayload}
+      listItemName="Settings"
+      dialogMessage={''}
+      formFields={formFields}
+      redirectionLink=""
+      cancelLink="settings"
+      linkParameter="id"
+      listItem={type === 'organization' ? 'organization' : 'credential'}
+      icon={SettingIcon}
+      languageSupport={false}
+      type={'settings'}
+      redirect={false}
+      afterSave={saveHandler}
+    />
   );
 };

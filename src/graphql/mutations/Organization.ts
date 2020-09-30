@@ -70,3 +70,37 @@ export const DELETE_ORGANIZATION = gql`
     }
   }
 `;
+
+export const CREATE_CREDENTIAL = gql`
+  mutation createCredential($input: CredentialInput!) {
+    createCredential(input: $input) {
+      credential {
+        keys
+        secrets
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const UPDATE_CREDENTIAL = gql`
+  mutation updateCredential($id: ID!, $input: CredentialInput!) {
+    updateCredential(id: $id, input: $input) {
+      credential {
+        id
+        provider {
+          shortcode
+        }
+        keys
+        secrets
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

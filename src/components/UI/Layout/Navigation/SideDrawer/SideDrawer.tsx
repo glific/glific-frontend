@@ -220,8 +220,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           }}
           variant="permanent"
         >
-          <div className={classes.BottomMenus} onClick={() => getMenus()}>
-            <div>
+          <div className={classes.BottomMenus}>
+            {settingMenus}
+            <div onClick={() => getMenus()}>
               <Menu menus={staffManagementMenus}>
                 <IconButton>
                   <img
@@ -249,7 +250,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                 </IconButton>
               </Menu>
             </div>
-            {settingMenus}
           </div>
           {drawer}
         </Drawer>
