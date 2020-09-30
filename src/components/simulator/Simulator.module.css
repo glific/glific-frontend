@@ -1,3 +1,31 @@
+.msg_text {
+  padding: 4px 16px;
+  width: auto;
+}
+
+.send_msg {
+  border-radius: 7px;
+  margin-right: 24px;
+  color: #333;
+  overflow: auto;
+  background: white;
+  width: fit-content;
+  margin-bottom: 5px;
+  max-width: 200px;
+}
+
+.msg_received {
+  text-align: right;
+  border-radius: 7px;
+  margin-left: auto;
+  overflow: auto;
+  background: #dbf4c6;
+  width: fit-content;
+  max-width: 200px;
+
+  margin-bottom: 5px;
+}
+
 .SimulatorIcon {
   position: fixed;
   bottom: 0;
@@ -155,7 +183,7 @@
 .Simulator .Screen .Footer .show_context_button:hover {
   color: #ddd;
 }
-.Simulator .Screen .Footer .reset {
+.Simulator .Screen .Footer .Reset {
   background-color: #666;
   border: 2px solid #787878;
   -webkit-border-radius: 20px;
@@ -168,20 +196,20 @@
   left: 94px;
   margin: 8px 0px;
 }
-.Simulator .Screen .Footer .reset:hover {
+.Simulator .Screen .Footer .Reset:hover {
   background-color: #787878;
   border: 2px solid #858585;
 }
-.Simulator .Screen .Footer .reset .inactive {
+.Simulator .Screen .Footer .Reset .inactive {
   background-color: #666;
   border: 2px solid #787878;
 }
-.Simulator .Screen .Footer .reset .active {
+.Simulator .Screen .Footer .Reset .active {
   background-color: #666;
   border: 2px solid #787878;
 }
-.Simulator .Screen .messages {
-  background-color: #fff;
+.Simulator .Screen .Messages {
+  height: 381px;
   user-select: none;
   padding: 10px;
   overflow-y: auto;
@@ -194,20 +222,33 @@
   z-index: 100;
   display: flex;
   bottom: 0px;
-
   padding: 5px;
   bottom: 35px;
   position: absolute;
 }
+
 .Simulator .Screen .Controls input {
-  width: calc(100% - 30px);
   border: none;
+  outline: none;
+  width: 100%;
+}
+
+.Simulator .Screen .Controls svg {
+  width: 20px;
+  height: 20px;
+}
+
+.Simulator .Screen .Controls div {
+  border: none;
+
   border-radius: 999px;
   padding: 5px;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 10px;
   font-size: 13px;
   outline: none;
+  background-color: white;
+  display: flex;
   box-shadow: 0 1px silver;
 
   line-height: 5px;

@@ -63,6 +63,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
       // if there is no message data then return previous conversations
+
       if (!subscriptionData.data) {
         return cachedConversations;
       }
@@ -81,6 +82,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           // set the receiver contact id
           newMessage = subscriptionData.data.sentMessage;
           contactId = subscriptionData.data.sentMessage.receiver.id;
+
           break;
         case 'RECEIVED':
           // set the sender contact id
@@ -151,6 +153,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
       // Add new message and move the conversation to the top
       if (newMessage) {
+        console.log(newMessage);
+
+        newMessage.sender.id = '2';
+        newMessage.receiver.id = '1';
+        newMessage.flow = 'INBOUND';
+        console.log(newMessage);
+
         updatedConversation[0].messages.unshift(newMessage);
       } else {
         // let's add/delete tags for the message
