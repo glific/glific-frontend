@@ -7,6 +7,7 @@ import styles from './Timer.module.css';
 export interface TimerProps {
   time: any;
   contactStatus?: string;
+  contactProviderStatus?: string;
 }
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
@@ -36,7 +37,10 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     hours = '0' + hours.toString();
   }
 
-  if (props.contactStatus && props.contactStatus === 'INVALID') {
+  if (
+    (props.contactStatus && props.contactStatus === 'INVALID') ||
+    props.contactProviderStatus === 'NONE'
+  ) {
     return <ContactOptOutIcon />;
   }
 
