@@ -60,7 +60,7 @@ docker build \
 
 ## Deploying release on ECS with CD
 1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
-2. For using and alternative repository like docker hub, you just need to make some changes in the pre_build phase (REPOSITORY_URI and authentications), rest of the phases will remains same.
+2. For using and alternative repository like docker hub, click the link to see how we can [build and push docker](https://github.com/marketplace/actions/build-and-push-docker-images) images to docker hub.
 
 ## Learn More
 
