@@ -7,10 +7,8 @@ export const GET_ORGANIZATION = gql`
         id
         name
         provider {
-          apiEndPoint
           id
           name
-          url
         }
         providerAppname
         providerPhone
@@ -31,6 +29,21 @@ export const GET_ORGANIZATION = gql`
         activeLanguages {
           id
           label
+        }
+      }
+    }
+  }
+`;
+
+export const ORGANIZATION_LANGUAGES = gql`
+  query currentUserOrganisationLanguages {
+    currentUser {
+      user {
+        organization {
+          activeLanguages {
+            id
+            label
+          }
         }
       }
     }
