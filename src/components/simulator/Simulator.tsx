@@ -115,8 +115,8 @@ export const Simulator: React.FC = (props) => {
               <div>
                 <input
                   type="text"
-                  onKeyPress={(e: any) => {
-                    if (e.key === 'Enter') {
+                  onKeyPress={(event: any) => {
+                    if (event.key === 'Enter') {
                       sendMessage();
                     }
                   }}
