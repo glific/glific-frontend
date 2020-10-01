@@ -1,9 +1,9 @@
-.msg_text {
+.MessageText {
   padding: 4px 16px;
   width: auto;
 }
 
-.send_msg {
+.SendMessage {
   border-radius: 7px;
   margin-right: 24px;
   color: #333;
@@ -14,7 +14,7 @@
   max-width: 200px;
 }
 
-.msg_received {
+.ReceivedMessage {
   text-align: right;
   border-radius: 7px;
   margin-left: auto;
@@ -22,7 +22,6 @@
   background: #dbf4c6;
   width: fit-content;
   max-width: 200px;
-
   margin-bottom: 5px;
 }
 
@@ -53,11 +52,7 @@
   top: 100px;
   z-index: 1000;
 }
-.Simulator.sim_hidden {
-  left: 0px !important;
-  transition: all 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
-  transition-delay: 100ms;
-}
+
 .Simulator {
   background: #444;
   border-radius: 12px;
@@ -71,12 +66,7 @@
   transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
   transition-delay: 100ms;
 }
-.Simulator img {
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-  border: 0;
-}
+
 .Simulator input:focus {
   outline-color: transparent;
   outline-style: none;
@@ -93,22 +83,7 @@
 .Simulator input:-moz-placeholder {
   color: #e6e6e6;
 }
-.Simulator input:disabled {
-  background: #f3f3f3;
-  cursor: not-allowed;
-}
-.Simulator input:disabled::-webkit-input-placeholder {
-  color: #d9d9d9;
-}
-.Simulator input:disabled::-moz-placeholder {
-  color: #d9d9d9;
-}
-.Simulator input:disabled:-ms-input-placeholder {
-  color: #d9d9d9;
-}
-.Simulator input:disabled:-moz-placeholder {
-  color: #d9d9d9;
-}
+
 .Simulator .Screen {
   top: 6px;
   height: 488px;
@@ -136,36 +111,6 @@
   margin-left: 4px;
 }
 
-.Simulator .Screen .Header .close {
-  font-size: 20px;
-  width: 25px;
-  height: 25px;
-  right: 5px;
-  top: 5px;
-  position: absolute;
-  color: #ddd;
-  cursor: pointer;
-}
-.Simulator .Screen .Header .close:hover {
-  color: #fff;
-}
-.Simulator .Screen .Header .time {
-  display: inline-block;
-  visibility: hidden;
-}
-.Simulator .Screen .Header .battery {
-  display: inline-block;
-  visibility: hidden;
-  right: 12px;
-  position: absolute;
-  font-size: 13px;
-}
-.Simulator .Screen .Header .wifi {
-  visibility: hidden;
-  display: inline-block;
-  right: 38px;
-  position: absolute;
-}
 .Simulator .Screen .Footer {
   color: #eee;
   background: #555;
@@ -175,14 +120,7 @@
   bottom: 0;
   width: 100%;
 }
-.Simulator .Screen .Footer .show_context_button {
-  display: inline-block;
-  padding: 12px;
-  cursor: pointer;
-}
-.Simulator .Screen .Footer .show_context_button:hover {
-  color: #ddd;
-}
+
 .Simulator .Screen .Footer .Reset {
   background-color: #666;
   border: 2px solid #787878;
@@ -257,203 +195,6 @@
   outline: none;
   box-shadow: none;
   border: none;
-}
-.Simulator .Screen .show_attachments_button {
-  display: inline-block;
-  vertical-align: sub;
-  padding: 0px 5px;
-  position: absolute;
-  top: 11px;
-  right: 4px;
-  cursor: pointer;
-  transform: rotate(20deg);
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.075);
-}
-.Simulator .Screen .show_attachments_button:hover {
-  transform: rotate(0deg) scale(1.1);
-  color: #333;
-}
-.Simulator .Screen .attachment_buttons {
-  bottom: -100px;
-  position: absolute;
-  transition: bottom 200ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
-  width: 100%;
-  background: #666;
-  height: 40px;
-  color: #e6e6e6;
-  z-index: 100;
-  text-align: center;
-}
-.Simulator .Screen .attachment_buttons.visible {
-  bottom: 30px;
-}
-.Simulator .Screen .attachment_buttons div {
-  display: inline-block;
-  cursor: pointer;
-  padding-left: 7px;
-  padding-right: 7px;
-  padding-top: 10px;
-  font-size: 15px;
-}
-.Simulator .Screen .attachment_buttons div:hover {
-  color: #ccc;
-}
-.drawer {
-  width: 100%;
-  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  z-index: 50;
-  background: #555;
-  transition: bottom 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  padding-bottom: 20px;
-}
-.drawer.drawer_visible.forced {
-  background: #666;
-}
-.drawer .drawer_Header {
-  height: 10px;
-  background: #555;
-  color: #e6e6e6;
-  width: 100%;
-}
-.drawer .map_thumb {
-  height: 74px;
-  width: 100%;
-  cursor: pointer;
-}
-.drawer .audio_picker {
-  padding: 20px;
-  color: #e6e6e6;
-  cursor: pointer;
-  text-align: center;
-}
-.drawer .audio_picker:hover {
-  background: #777;
-}
-.drawer .audio_picker .audio_icon {
-  display: inline;
-  font-size: 26px;
-}
-.drawer .audio_picker .audio_message {
-  display: inline;
-  font-size: 15px;
-  padding-left: 3px;
-  vertical-align: super;
-}
-.drawer .keypad .keypad_entry {
-  background: #555;
-  color: #e6e6e6;
-  font-size: 18px;
-  padding: 5px;
-  text-align: center;
-  letter-spacing: 4px;
-}
-.drawer .keypad .keys {
-  color: #e6e6e6;
-  padding: 5px;
-}
-.drawer .keypad .keys .row {
-  width: 100%;
-  margin: 0;
-  text-align: center;
-}
-.drawer .keypad .keys .row .key {
-  padding: 4px 13px;
-  background: #777;
-  border-radius: 6px;
-  font-weight: bold;
-  border: 1px solid #e6e6e6;
-  display: inline-block;
-  text-align: center;
-  margin: 2px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.drawer .keypad .keys .row .key:hover {
-  background: #999;
-}
-.drawer .drawer_items {
-  display: flex;
-  flex-direction: row;
-  padding: 10px 0;
-  padding-right: 10px;
-}
-.drawer .drawer_items .drawer_item {
-  width: 70px;
-  padding-left: 10px;
-  flex: 1 1 auto;
-  cursor: pointer;
-  transition: transform 0.1s linear;
-}
-.drawer .drawer_items .drawer_item:hover {
-  transform: scale(1.05);
-}
-.Simulator_tab.tab_hidden,
-.Simulator_tab:hover.tab_hidden {
-  right: -130px;
-  transition: right 100ms;
-}
-.Simulator_tab {
-  background-color: #2db379;
-  width: 130px;
-  height: 50px;
-  position: fixed;
-  right: -92px;
-  top: 300px;
-  cursor: pointer;
-  z-index: 1000;
-  transition: right 200ms, opacity 300ms;
-  transition-delay: 300ms;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
-.Simulator_tab .Simulator_tab_icon {
-  position: absolute;
-  font-size: 34px;
-  color: white;
-  padding: 8px 0px;
-  margin-left: 3px;
-}
-.Simulator_tab .Simulator_tab_text {
-  position: absolute;
-  left: 40px;
-  top: 10px;
-  color: white;
-  opacity: 0.01;
-  font-weight: 400;
-  transition: opacity 500ms;
-  transition-delay: 1000ms;
-}
-.Simulator_tab:hover {
-  right: -10px;
-  transition: right 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.Simulator_tab:hover .Simulator_tab_text {
-  opacity: 0.99;
-  transition: opacity 500ms;
-}
-.detail_webhook_called {
-  background: #e68628;
-}
-.quick_replies {
-  text-align: center;
-  padding: 5px;
-}
-.quick_replies .quick_reply {
-  display: inline-block;
-  color: #e6e6e6;
-  text-align: center;
-  padding: 5px 16px;
-  border: 1px solid #666;
-  margin: 3px 6px;
-  border-radius: 14px;
-  cursor: pointer;
-  background: #444;
-  transition: transform 0.1s linear;
-}
-.quick_replies .quick_reply:hover {
-  background: #333;
-  transform: scale(1.05);
 }
 
 .SendButton {

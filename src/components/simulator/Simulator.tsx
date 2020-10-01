@@ -1,31 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './Simulator.module.css';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import SendIcon from '@material-ui/icons/Send';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
-import { useMutation } from '@apollo/client';
-import { CREATE_AND_SEND_MESSAGE_MUTATION } from '../../graphql/mutations/Chat';
+import { useQuery } from '@apollo/client';
+
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import Axios from 'axios';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
+import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 
 export const Simulator: React.FC = (props) => {
   const [showSimulator, setShowSimulator] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
+  const messageRef: any = useRef<HTMLDivElement>();
 
-  const [SendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION);
+  let messages = [];
+
+  const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
+    variables: SEARCH_QUERY_VARIABLES,
+    fetchPolicy: 'cache-first',
+  });
+
+  if (allConversations) {
+    messages = allConversations.search.filter((item: any) => item.contact.id === '2')[0].messages;
+  }
 
   const getStyleForDirection = (direction: string): string => {
-    return direction === 'send' ? styles.send_msg : styles.msg_received;
+    return direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
   };
 
-  const renderMessage = (text: string, direction: string): JSX.Element => {
+  const renderMessage = (text: string, direction: string, index: number): JSX.Element => {
     return (
-      <div className={getStyleForDirection(direction)} key={text}>
+      <div className={getStyleForDirection(direction)} key={index}>
         {text
           ? text.split('\n').map((item, key) => {
               return (
-                <div key={key} className={styles.msg_text}>
+                <div key={key} className={styles.MessageText}>
                   {item}
                 </div>
               );
@@ -35,59 +48,74 @@ export const Simulator: React.FC = (props) => {
     );
   };
 
-  const message = [
-    renderMessage('hey there what is up', 'received'),
-    renderMessage('Nothing much what about you', 'send'),
-    renderMessage('Just chilling in the garden', 'received'),
-    renderMessage(
-      'Have you heard about glific the supercool open source application for NGO',
-      'send'
-    ),
-  ];
+  const message = messages
+    .map((simulatorMessage: any, index: number) => {
+      if (simulatorMessage.receiver.id === '2') {
+        return renderMessage(simulatorMessage.body, 'send', index);
+      } else {
+        return renderMessage(simulatorMessage.body, 'received', index);
+      }
+    })
+    .reverse();
 
   const sendMessage = () => {
-    SendMessage({
-      variables: {
-        input: {
-          body: inputMessage,
-          flow: 'INBOUND',
-          receiverId: '2',
-          senderId: '1',
-          type: 'TEXT',
+    Axios({
+      method: 'POST',
+      url: 'http://localhost:4000/gupshup',
+      data: {
+        app: 'Glific',
+        timestamp: 1580227766370,
+        version: 2,
+        type: 'message',
+        payload: {
+          id: 'ABEGkYaYVSEEAhAL3SLAWwHKeKrt6s3FKB0c',
+          source: '917834811231',
+          type: 'text',
+          payload: {
+            text: inputMessage,
+          },
+          sender: {
+            phone: '917834811231',
+            name: 'Default receiver',
+            country_code: '91',
+            dial_code: '7834811231',
+          },
         },
       },
     });
     setInputMessage('');
   };
 
-  const contextExplorerVisible = false;
+  useEffect(() => {
+    const messageContainer: any = messageRef.current;
+    if (messageContainer) {
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+  }, [messages]);
+
   const simulator = (
     <div className={styles.SimContainer}>
       <div>
         <div id="simulator" className={styles.Simulator}>
-          {/* {this.getContextExplorer()} */}
-
           <div className={styles.Screen}>
             <div className={styles.Header}>
               <ArrowBackIcon />
               <img src={DefaultWhatsappImage} alt="default Image" />
               Simulated Beneficiary
             </div>
-            <div className={styles.Messages}>
+            <div className={styles.Messages} ref={messageRef}>
               {message}
-              <div
-                id="bottom"
-                style={{ float: 'left', clear: 'both', marginTop: 20 }}
-                // ref={this.bottomRef}
-              />
+              <div id="bottom" style={{ float: 'left', clear: 'both', marginTop: 20 }} />
             </div>
             <div className={styles.Controls}>
               <div>
                 <input
-                  // ref={this.inputBoxRef}
                   type="text"
-                  // onKeyUp={this.onKeyUp}
-                  // disabled={this.state.sprinting}
+                  onKeyPress={(e: any) => {
+                    if (e.key === 'Enter') {
+                      sendMessage();
+                    }
+                  }}
                   value={inputMessage}
                   placeholder={'Type a message'}
                   onChange={(event) => setInputMessage(event.target.value)}
@@ -104,41 +132,15 @@ export const Simulator: React.FC = (props) => {
                 <SendIcon />
               </Button>
             </div>
-            {/* {this.getAttachmentOptions()}
-            {this.getDrawer()} */}
-            <div className={styles.Footer}>
-              {!contextExplorerVisible ? (
-                <div className={styles.show_context_button}>
-                  <div
-                    className="context-button"
-                    // onClick={() => {
-                    //   this.setState({
-                    //     contextExplorerVisible: true,
-                    //   });
-                    // }}
-                  >
-                    <span className="fe-at-sign"></span>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.show_context_button}>
-                  <div
-                    className="context-button"
-                    // onClick={() => {
-                    //   this.setState({
-                    //     contextExplorerVisible: false,
-                    //   });
-                    // }}
-                  >
-                    <span className="fe-x"></span>
-                  </div>
-                </div>
-              )}
 
-              <span
-                className={styles.Reset + ' ' + (true ? styles.active : styles.inactive)}
-                // onClick={this.onReset}
-              />
+            <div className={styles.Footer}>
+              <div className={styles.show_context_button}>
+                <div className="context-button">
+                  <span className="fe-x"></span>
+                </div>
+              </div>
+
+              <span className={styles.Reset + ' ' + (true ? styles.active : styles.inactive)} />
             </div>
           </div>
         </div>
@@ -149,6 +151,7 @@ export const Simulator: React.FC = (props) => {
   const handleSimulator = () => {
     setShowSimulator(!showSimulator);
   };
+
   return (
     <>
       {showSimulator ? simulator : null}
