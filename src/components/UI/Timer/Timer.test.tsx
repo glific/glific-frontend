@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { Timer } from './Timer';
 
@@ -11,13 +11,15 @@ test('it should render timer component', () => {
 });
 
 test('it should display the remaining time', async () => {
+  // get current date time
   const date = new Date();
+
+  // substract 2 hours
   date.setHours(date.getHours() - 2);
 
-  const { findByTestId } = render(timer(date));
+  // render timer
+  render(timer(date));
 
-  await wait();
-  const timerElement = await findByTestId('timerCount');
-  screen.debug();
+  const timerElement = screen.getByTestId('timerCount');
   expect(timerElement).toHaveTextContent('22');
 });
