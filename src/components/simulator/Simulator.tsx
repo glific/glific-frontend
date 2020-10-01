@@ -25,7 +25,11 @@ export const Simulator: React.FC = (props) => {
   });
 
   if (allConversations) {
-    messages = allConversations.search.filter((item: any) => item.contact.id === '2')[0].messages;
+    //currently setting the simulated contact as the default receiver
+    const simulatedContact = allConversations.search.filter((item: any) => item.contact.id === '2');
+    if (simulatedContact.length > 0) {
+      messages = simulatedContact[0].messages;
+    }
   }
 
   const getStyleForDirection = (direction: string): string => {
@@ -48,7 +52,7 @@ export const Simulator: React.FC = (props) => {
     );
   };
 
-  const message = messages
+  const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
       if (simulatorMessage.receiver.id === '2') {
         return renderMessage(simulatorMessage.body, 'send', index);
@@ -104,7 +108,7 @@ export const Simulator: React.FC = (props) => {
               Simulated Beneficiary
             </div>
             <div className={styles.Messages} ref={messageRef}>
-              {message}
+              {simulatedMessages}
               <div id="bottom" style={{ float: 'left', clear: 'both', marginTop: 20 }} />
             </div>
             <div className={styles.Controls}>
