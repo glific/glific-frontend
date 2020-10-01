@@ -1,6 +1,14 @@
 .MessageText {
   padding: 4px 16px;
   width: auto;
+
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.3;
+}
+
+.ReceivedMessage .MessageText {
+  margin-right: 25px;
 }
 
 .SendMessage {
@@ -12,14 +20,42 @@
   width: fit-content;
   margin-bottom: 5px;
   max-width: 200px;
+  position: relative;
+}
+
+.SendMessage span {
+  font-size: 8px;
+  color: #868181;
+  position: absolute;
+  right: 5px;
+  bottom: 3px;
+}
+
+.ReceivedMessage svg {
+  width: 10px;
+  height: 10px;
+  color: #5ec3db;
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+}
+
+.ReceivedMessage span {
+  font-size: 8px;
+  color: #868181;
+  position: absolute;
+  right: 15px;
+  bottom: 2px;
 }
 
 .ReceivedMessage {
   text-align: right;
+  position: relative;
+  display: flex;
   border-radius: 7px;
   margin-left: auto;
   overflow: auto;
-  background: #dbf4c6;
+  background: #e1f4c9;
   width: fit-content;
   max-width: 200px;
   margin-bottom: 5px;
@@ -54,13 +90,17 @@
 }
 
 .Simulator {
-  background: #444;
+  background-image: url('../../assets/images/phone.png');
+  background-repeat: no-repeat;
+  -webkit-filter: drop-shadow(0px 0px 10px #222);
+  filter: drop-shadow(0px 0px 10px #222);
   border-radius: 12px;
-  left: -300px;
-  top: 0px;
+  left: -325px;
+  top: -50px;
   position: absolute;
-  height: 500px;
-  width: 260px;
+  height: 576px;
+  width: 304px;
+  padding: 0px 16px;
   cursor: pointer;
   z-index: 1000;
   transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
@@ -85,22 +125,23 @@
 }
 
 .Simulator .Screen {
-  top: 6px;
-  height: 488px;
-  border-radius: 10px;
+  top: 53px;
+  height: 464px;
+  border: 1px solid black;
   overflow: hidden;
   position: relative;
   margin: 0px 5px;
   cursor: default;
   background-image: url('../../assets/images/whatsappBackground.jpg');
-  background-size: cover;
+  background-size: contain;
 }
 .Simulator .Screen .Header {
   color: #eee;
   background: #2c6157;
-  height: 38px;
+  height: 50px;
   display: flex;
   align-items: center;
+  border-top: 10px solid black;
 }
 
 .Simulator .Screen .Header img {
@@ -109,6 +150,23 @@
   border-radius: 50%;
   margin-right: 6px;
   margin-left: 4px;
+}
+
+.Header svg {
+  width: 18px;
+  height: 18px;
+  margin-left: 7px;
+}
+
+.Header span {
+  font-weight: bold;
+}
+
+.Header div {
+  margin-left: auto;
+  margin-right: 5px;
+  align-items: center;
+  display: flex;
 }
 
 .Simulator .Screen .Footer {
@@ -147,7 +205,7 @@
   border: 2px solid #787878;
 }
 .Simulator .Screen .Messages {
-  height: 381px;
+  height: 368px;
   user-select: none;
   padding: 10px;
   overflow-y: auto;
@@ -161,8 +219,17 @@
   display: flex;
   bottom: 0px;
   padding: 5px;
-  bottom: 35px;
   position: absolute;
+}
+
+.Icon {
+  color: #a4a7ab;
+}
+
+.AttachFileIcon {
+  color: #a4a7ab;
+  transform: rotate(-40deg);
+  margin-right: 4px;
 }
 
 .Simulator .Screen .Controls input {
@@ -181,7 +248,7 @@
 
   border-radius: 999px;
   padding: 5px;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-right: 10px;
   font-size: 13px;
   outline: none;
