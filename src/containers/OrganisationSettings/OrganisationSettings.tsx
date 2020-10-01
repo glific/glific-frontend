@@ -47,7 +47,7 @@ export const OrganisationSettings: React.SFC = () => {
       <div className={styles.CardContainer}>
         {CardList.map((data: any) => {
           return (
-            <Card variant="outlined" className={styles.Card}>
+            <Card variant="outlined" className={styles.Card} key={data.shortcode}>
               <CardContent className={styles.CardContent}>
                 <div data-testid="label" className={styles.Label}>
                   {data.label}

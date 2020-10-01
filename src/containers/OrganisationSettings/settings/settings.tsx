@@ -312,8 +312,6 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const setPayload = (payload: any) => {
-    console.log('payload', payload);
-
     let object: any = {};
     if (type === 'organization') {
       // set active Language Ids
