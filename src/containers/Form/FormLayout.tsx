@@ -131,18 +131,19 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
     itemId = true;
   }
-  console.log('variables', variables, match, itemId);
+
   const { loading, error } = useQuery(getItemQuery, {
     variables: variables,
     skip: !itemId,
     onCompleted: (data) => {
       if (itemId && data) {
         item = data[listItem][listItem];
-        itemId = item.id;
-        setLink(data[listItem][listItem][linkParameter]);
-        setStates(item);
-        setLanguageId(languageSupport ? item.language.id : null);
-        console.log('itemId------', itemId, item);
+        itemId = item ? item.id : false;
+        if (item) {
+          setLink(data[listItem][listItem][linkParameter]);
+          setStates(item);
+          setLanguageId(languageSupport ? item.language.id : null);
+        }
       }
     },
   });
@@ -174,7 +175,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
-      console.log('DATA-', data, itemCreated);
       if (data[itemCreated].errors) {
         setErrorMessage(client, data[itemCreated].errors[0]);
       } else {

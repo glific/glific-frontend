@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styles from './settings.module.css';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
@@ -24,9 +23,6 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
-import { listItemProps } from '../../Collection/Collection.test.helper';
-import { Link } from 'react-router-dom';
 
 export interface SettingsProps {
   match: any;
@@ -65,12 +61,10 @@ const dayList = [
   { id: 7, label: 'Sunday' },
 ];
 
-let CardList = [{ label: 'Organisation', shortcode: '' }];
+let CardList = [{ label: 'Organisation', shortcode: 'organization' }];
 
 export const Settings: React.SFC<SettingsProps> = ({ match }) => {
-  console.log('match', match);
   const type = match.params.type ? match.params.type : null;
-  console.log('Setting', match);
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [providerAppname, setProviderAppname] = useState('');
@@ -84,7 +78,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   const [organizationId, setOrganizationId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
-  // const [states, setState] = useState<any>({});
+
   let queries;
   let param;
   let states: any = {};
@@ -104,7 +98,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     defaultLanguage,
   };
 
-  if (type === 'organisation') {
+  if (type === 'organization') {
     queries = org_queries;
     param = { params: { id: organizationId } };
     FormSchema = Yup.object().shape(validation);
@@ -122,17 +116,27 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     activeLanguages,
     defaultLanguage,
   }: any) => {
-    if (type === 'organisation') {
-      setName(name);
-      setProviderAppname(providerAppname);
-      setProviderNumber(providerPhone);
-      setHours(outOfOffice.enabled);
-      setIsDisable(!outOfOffice.enabled);
-      setOutOfOffice(outOfOffice);
-      setFlowId(getFlow(outOfOffice.flowId));
-      if (activeLanguages) setActiveLanguages(activeLanguages);
-      if (defaultLanguage) setDefaultLanguage(defaultLanguage);
-    }
+    setName(name);
+    setProviderAppname(providerAppname);
+    setProviderNumber(providerPhone);
+    setHours(outOfOffice.enabled);
+    setIsDisable(!outOfOffice.enabled);
+    setOutOfOffice(outOfOffice);
+    setFlowId(getFlow(outOfOffice.flowId));
+    if (activeLanguages) setActiveLanguages(activeLanguages);
+    if (defaultLanguage) setDefaultLanguage(defaultLanguage);
+  };
+
+  const setCredential = (item: any) => {
+    keys = JSON.parse(item.keys);
+    secrets = JSON.parse(item.secrets);
+    let fields: any = {};
+    Object.assign(fields, keys);
+    Object.assign(fields, secrets);
+    Object.keys(fields).map((key) => {
+      // restore value for the field
+      states[key] = fields[key];
+    });
   };
 
   const setOutOfOffice = (data: any) => {
@@ -311,7 +315,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     console.log('payload', payload);
 
     let object: any = {};
-    if (type === 'organisation') {
+    if (type === 'organization') {
       // set active Language Ids
       let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
         return activeLanguage.id;
@@ -361,7 +365,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     return object;
   };
 
-  const addField = (fields: any, provider: any) => {
+  const addField = (fields: any) => {
     let formField: any = [];
     let defaultStates: any = {};
 
@@ -375,24 +379,20 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
         type: 'text',
         placeholder: fields[key].label,
         disabled: fields[key].view_only,
-        // label:
-        //   formFields.filter((field: any) => field.label === provider.name).length === 0
-        //     ? provider.name
-        //     : null,
       };
       formField.push(field);
     });
     formFields = formField;
   };
 
-  if (providerData && type !== 'organisation') {
+  if (providerData && type !== 'organization') {
     providerData.providers.map((provider: any) => {
       keys = JSON.parse(provider.keys);
       secrets = JSON.parse(provider.secrets);
       let fields = {};
       Object.assign(fields, keys);
       Object.assign(fields, secrets);
-      addField(fields, provider);
+      addField(fields);
       //create list
       if (CardList.filter((list: any) => list.label === provider.name).length <= 0)
         CardList.push({ label: provider.name, shortcode: provider.shortcode });
@@ -406,7 +406,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
       title={type}
       match={param}
       states={states}
-      setStates={setStates}
+      setStates={type === 'organization' ? setStates : setCredential}
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
