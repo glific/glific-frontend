@@ -63,3 +63,18 @@ export const GET_CREDENTIAL = gql`
     }
   }
 `;
+
+export const GET_CREDENTIAL_ID = gql`
+  query credential($ID: String!) {
+    credential(id: $ID) {
+      credential {
+        id
+        keys
+        secrets
+        provider {
+          shortcode
+        }
+      }
+    }
+  }
+`;

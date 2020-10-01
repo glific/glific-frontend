@@ -13,6 +13,7 @@ import {
   GET_ORGANIZATION,
   GET_PROVIDERS,
   GET_CREDENTIAL,
+  GET_CREDENTIAL_ID,
 } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
@@ -76,6 +77,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
   const [organizationId, setOrganizationId] = useState(null);
+  const [credentialId, setCredentialId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
@@ -105,7 +107,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     states = orgStates;
   } else {
     queries = credential_queries;
-    param = { params: { shortcode: type } };
+    param = { params: { id: credentialId, shortcode: type } };
   }
 
   const setStates = ({
@@ -154,6 +156,9 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
+  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
+    variables: { shortcode: type },
+  });
   const { data: providerData } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: type } },
   });
@@ -174,7 +179,15 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     }
   }, [orgData]);
 
-  if (!data || !orgData || !languages || !providerData) return <Loading />;
+  useEffect(() => {
+    if (credential) {
+      let data = credential.credential.credential;
+      //get login OrganizationId
+      setCredentialId(data.id);
+    }
+  }, [credential]);
+
+  if (!data || !orgData || !languages || !providerData || loading) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
