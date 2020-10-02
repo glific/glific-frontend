@@ -9,8 +9,24 @@
 // ***********************************************
 //
 //
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
+// -- login command --
+Cypress.Commands.add('login', (phone = '917834811114', password = 'secret1234') => {
+  return cy
+    .request({
+      method: 'POST',
+      url: 'http://glific.test:4000/api/v1/session',
+      body: {
+        user: {
+          phone: phone,
+          password: password,
+        },
+      },
+    })
+    .then((response) => {
+      const session = JSON.stringify(response.data);
+      localStorage.setItem('glific_session', session);
+    });
+});
 //
 //
 // -- This is a child command --
