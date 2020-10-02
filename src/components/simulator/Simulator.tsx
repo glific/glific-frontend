@@ -6,6 +6,7 @@ import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { useQuery } from '@apollo/client';
+import Draggable from 'react-draggable';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
@@ -93,6 +94,7 @@ export const Simulator: React.FC = (props) => {
           sender: {
             //this number will be the simulated contact number
             phone: '917834811231',
+            name: 'Simulator',
           },
         },
       },
@@ -108,55 +110,57 @@ export const Simulator: React.FC = (props) => {
   }, [messages]);
 
   const simulator = (
-    <div className={styles.SimContainer}>
-      <div>
-        <div id="simulator" className={styles.Simulator}>
-          <ClearIcon className={styles.ClearIcon} onClick={() => setShowSimulator(false)} />
-          <div className={styles.Screen}>
-            <div className={styles.Header}>
-              <ArrowBackIcon />
-              <img src={DefaultWhatsappImage} alt="default Image" />
-              <span>Beneficiary</span>
-              <div>
-                <VideocamIcon />
-                <CallIcon />
-                <MoreVertIcon />
+    <Draggable>
+      <div className={styles.SimContainer}>
+        <div>
+          <div id="simulator" className={styles.Simulator}>
+            <ClearIcon className={styles.ClearIcon} onClick={() => setShowSimulator(false)} />
+            <div className={styles.Screen}>
+              <div className={styles.Header}>
+                <ArrowBackIcon />
+                <img src={DefaultWhatsappImage} alt="default Image" />
+                <span>Beneficiary</span>
+                <div>
+                  <VideocamIcon />
+                  <CallIcon />
+                  <MoreVertIcon />
+                </div>
               </div>
-            </div>
-            <div className={styles.Messages} ref={messageRef}>
-              {simulatedMessages}
-            </div>
-            <div className={styles.Controls}>
-              <div>
-                <InsertEmoticonIcon className={styles.Icon} />
-                <input
-                  type="text"
-                  onKeyPress={(event: any) => {
-                    if (event.key === 'Enter') {
-                      sendMessage();
-                    }
-                  }}
-                  value={inputMessage}
-                  placeholder={'Type a message'}
-                  onChange={(event) => setInputMessage(event.target.value)}
-                />
-                <AttachFileIcon className={styles.AttachFileIcon} />
-                <CameraAltIcon className={styles.Icon} />
+              <div className={styles.Messages} ref={messageRef}>
+                {simulatedMessages}
               </div>
+              <div className={styles.Controls}>
+                <div>
+                  <InsertEmoticonIcon className={styles.Icon} />
+                  <input
+                    type="text"
+                    onKeyPress={(event: any) => {
+                      if (event.key === 'Enter') {
+                        sendMessage();
+                      }
+                    }}
+                    value={inputMessage}
+                    placeholder={'Type a message'}
+                    onChange={(event) => setInputMessage(event.target.value)}
+                  />
+                  <AttachFileIcon className={styles.AttachFileIcon} />
+                  <CameraAltIcon className={styles.Icon} />
+                </div>
 
-              <Button
-                variant="contained"
-                color="primary"
-                className={styles.SendButton}
-                onClick={() => sendMessage()}
-              >
-                <MicIcon />
-              </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={styles.SendButton}
+                  onClick={() => sendMessage()}
+                >
+                  <MicIcon />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Draggable>
   );
 
   const handleSimulator = () => {
