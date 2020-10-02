@@ -1,6 +1,10 @@
 describe('Tag', () => {
-  it('Load Tag listing', () => {
-    // let's login
+  beforeEach(function () {
+    // login before each test
     cy.login();
+  });
+
+  it('Load Tag listing', () => {
+    cy.visit('/tag');
   });
 });
