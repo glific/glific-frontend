@@ -101,7 +101,7 @@
   height: 576px;
   width: 304px;
   padding: 0px 16px;
-  cursor: pointer;
+
   z-index: 1000;
   transition: right 400ms cubic-bezier(0.175, 0.885, 0.32, 1.075);
   transition-delay: 100ms;
@@ -169,41 +169,6 @@
   display: flex;
 }
 
-.Simulator .Screen .Footer {
-  color: #eee;
-  background: #555;
-  height: 35px;
-  position: absolute;
-  z-index: 200;
-  bottom: 0;
-  width: 100%;
-}
-
-.Simulator .Screen .Footer .Reset {
-  background-color: #666;
-  border: 2px solid #787878;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  border-radius: 16px;
-  cursor: pointer;
-  width: 60px;
-  height: 15px;
-  position: absolute;
-  left: 94px;
-  margin: 8px 0px;
-}
-.Simulator .Screen .Footer .Reset:hover {
-  background-color: #787878;
-  border: 2px solid #858585;
-}
-.Simulator .Screen .Footer .Reset .inactive {
-  background-color: #666;
-  border: 2px solid #787878;
-}
-.Simulator .Screen .Footer .Reset .active {
-  background-color: #666;
-  border: 2px solid #787878;
-}
 .Simulator .Screen .Messages {
   height: 368px;
   user-select: none;
@@ -274,4 +239,11 @@
 .SendButton svg {
   width: 15px;
   height: 15px;
+}
+
+.ClearIcon {
+  position: absolute;
+  top: -7px;
+  right: 0px;
+  cursor: pointer;
 }

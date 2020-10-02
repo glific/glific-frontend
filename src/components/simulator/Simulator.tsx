@@ -18,6 +18,8 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import moment from 'moment';
 import { TIME_FORMAT } from '../../common/constants';
+import ClearIcon from '@material-ui/icons/Clear';
+import { GUPSHUP_CALLBACK_URL } from '../../config';
 
 export const Simulator: React.FC = (props) => {
   const [showSimulator, setShowSimulator] = useState(false);
@@ -80,24 +82,17 @@ export const Simulator: React.FC = (props) => {
   const sendMessage = () => {
     Axios({
       method: 'POST',
-      url: 'http://localhost:4000/gupshup',
+      url: GUPSHUP_CALLBACK_URL,
       data: {
-        app: 'Glific',
-        timestamp: 1580227766370,
-        version: 2,
         type: 'message',
         payload: {
-          id: 'ABEGkYaYVSEEAhAL3SLAWwHKeKrt6s3FKB0c',
-          source: '917834811231',
           type: 'text',
           payload: {
             text: inputMessage,
           },
           sender: {
+            //this number will be the simulated contact number
             phone: '917834811231',
-            name: 'Default receiver',
-            country_code: '91',
-            dial_code: '7834811231',
           },
         },
       },
@@ -116,6 +111,7 @@ export const Simulator: React.FC = (props) => {
     <div className={styles.SimContainer}>
       <div>
         <div id="simulator" className={styles.Simulator}>
+          <ClearIcon className={styles.ClearIcon} onClick={() => setShowSimulator(false)} />
           <div className={styles.Screen}>
             <div className={styles.Header}>
               <ArrowBackIcon />
