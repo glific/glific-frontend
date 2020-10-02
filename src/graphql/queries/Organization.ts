@@ -44,6 +44,10 @@ export const ORGANIZATION_LANGUAGES = gql`
             id
             label
           }
+          defaultLanguage {
+            id
+            label
+          }
         }
       }
     }

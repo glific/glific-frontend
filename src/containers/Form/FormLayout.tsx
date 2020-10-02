@@ -110,7 +110,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   let toastMessage: {} | null | undefined;
 
   // get the organization for current user and have languages option set to that.
-  const organization = useQuery(ORGANIZATION_LANGUAGES);
+  const organization = useQuery(ORGANIZATION_LANGUAGES, {
+    onCompleted: (data: any) => {
+      setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
+    },
+  });
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
@@ -126,7 +130,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setLanguageId(languageSupport ? item.language.id : null);
       }
     },
-    fetchPolicy: 'cache-and-network',
   });
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 

@@ -149,6 +149,10 @@ export const getOrganizationLanguagesQuery = {
                 label: 'English',
               },
             ],
+            defaultLanguage: {
+              id: '1',
+              label: 'English',
+            },
           },
         },
       },
