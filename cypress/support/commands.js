@@ -23,9 +23,9 @@ Cypress.Commands.add('login', (phone = '917834811114', password = 'secret1234') 
       },
     })
     .then((response) => {
-      const session = JSON.stringify(response.data);
+      const session = JSON.stringify(response.body.data);
       localStorage.setItem('glific_session', session);
-      localStorage.setItem('role', JSON.stringify('Admin'));
+      localStorage.setItem('role', JSON.stringify(['Admin']));
     });
 });
 //
