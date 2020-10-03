@@ -14,7 +14,7 @@ Cypress.Commands.add('login', (phone = '917834811114', password = 'secret1234') 
   return cy
     .request({
       method: 'POST',
-      url: 'http://glific.test:4000/api/v1/session#q=cypress.io+cors',
+      url: Cypress.env('backendUrl') + '#q=cypress.io+cors',
       body: {
         user: {
           phone: phone,
