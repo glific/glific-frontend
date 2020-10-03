@@ -20,6 +20,20 @@ describe('Tag', () => {
     //cy.get('div').should('contain', tagName);
   });
 
-  it('should edit tag', () => {});
-  it('should delete tag', () => {});
+  it('should edit tag', () => {
+    //cy.get('input[name=searchInput]').type(tagName + '{enter}');
+    cy.get('input[name=searchInput]').type('testing{enter}');
+    cy.get('[data-testid=EditIcon]').click();
+    cy.contains('Save').click();
+    cy.get('div').should('contain', 'Tag edited successfully');
+  });
+
+  it('should delete tag', () => {
+    //cy.get('input[name=searchInput]').type(tagName + '{enter}');
+    cy.get('input[name=searchInput]').type('testing{enter}');
+    cy.get('[data-testid=DeleteIcon]').click();
+    cy.contains('Cancel').click();
+    //cy.contains('Confirm').click();
+    //cy.get('div').should('contain', 'Tag deleted successfully');
+  });
 });
