@@ -33,6 +33,10 @@ export const UPDATE_AUTOMATION = gql`
       flow {
         id
         name
+        language {
+          id
+          label
+        }
       }
       errors {
         key
