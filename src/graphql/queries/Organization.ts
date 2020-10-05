@@ -35,7 +35,7 @@ export const GET_ORGANIZATION = gql`
   }
 `;
 
-export const ORGANIZATION_LANGUAGES = gql`
+export const USER_LANGUAGES = gql`
   query currentUserOrganisationLanguages {
     currentUser {
       user {

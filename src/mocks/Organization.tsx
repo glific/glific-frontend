@@ -1,4 +1,4 @@
-import { GET_ORGANIZATION, ORGANIZATION_LANGUAGES } from '../graphql/queries/Organization';
+import { GET_ORGANIZATION, USER_LANGUAGES } from '../graphql/queries/Organization';
 
 export const getOrganizationQuery = [
   {
@@ -136,7 +136,7 @@ export const getOrganizationQuery = [
 
 export const getOrganizationLanguagesQuery = {
   request: {
-    query: ORGANIZATION_LANGUAGES,
+    query: USER_LANGUAGES,
   },
   result: {
     data: {

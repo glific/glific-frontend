@@ -17,7 +17,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { ORGANIZATION_LANGUAGES } from '../../graphql/queries/Organization';
+import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 
 export interface FormLayoutProps {
   match: any;
@@ -110,7 +110,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   let toastMessage: {} | null | undefined;
 
   // get the organization for current user and have languages option set to that.
-  const organization = useQuery(ORGANIZATION_LANGUAGES, {
+  const organization = useQuery(USER_LANGUAGES, {
     onCompleted: (data: any) => {
       setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
     },

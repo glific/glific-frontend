@@ -10,7 +10,7 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION, ORGANIZATION_LANGUAGES } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION, USER_LANGUAGES } from '../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
@@ -305,7 +305,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
-      refetchQueries={{ onUpdate: ORGANIZATION_LANGUAGES }}
+      refetchQueries={{ onUpdate: USER_LANGUAGES }}
       redirectionLink=""
       cancelLink="chat"
       linkParameter="id"
