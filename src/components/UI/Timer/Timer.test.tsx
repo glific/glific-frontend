@@ -14,7 +14,7 @@ test('it should display the remaining time', async () => {
   // get current date time
   const date = new Date();
 
-  // substract 2 hours
+  // subtract 2 hours
   date.setHours(date.getHours() - 2);
 
   // render timer
