@@ -13,6 +13,6 @@ describe('Login page', () => {
     cy.get('input[type=tel]').type('7834811114');
     cy.get('input[type=password]').type('secret1234');
     cy.contains('LOGIN').click();
-    cy.get('h6').should('contain', 'Chats');
+    cy.get('div').should('contain', 'Chats');
   });
 });

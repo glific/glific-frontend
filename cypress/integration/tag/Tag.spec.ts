@@ -17,23 +17,21 @@ describe('Tag', () => {
     cy.get('textarea:first').type('This is random tag description');
     cy.contains('Save').click();
     cy.get('div').should('contain', 'Tag created successfully');
-    //cy.get('div').should('contain', tagName);
+    cy.get('input[name=searchInput]').type(tagName + '{enter}');
+    cy.get('div').should('contain', tagName);
   });
 
   it('should edit tag', () => {
-    //cy.get('input[name=searchInput]').type(tagName + '{enter}');
-    cy.get('input[name=searchInput]').type('testing{enter}');
+    cy.get('input[name=searchInput]').type(tagName + '{enter}');
     cy.get('[data-testid=EditIcon]').click();
     cy.contains('Save').click();
     cy.get('div').should('contain', 'Tag edited successfully');
   });
 
   it('should delete tag', () => {
-    //cy.get('input[name=searchInput]').type(tagName + '{enter}');
-    cy.get('input[name=searchInput]').type('testing{enter}');
+    cy.get('input[name=searchInput]').type(tagName + '{enter}');
     cy.get('[data-testid=DeleteIcon]').click();
-    cy.contains('Cancel').click();
-    //cy.contains('Confirm').click();
-    //cy.get('div').should('contain', 'Tag deleted successfully');
+    cy.contains('Confirm').click();
+    cy.get('div').should('contain', 'Tag deleted successfully');
   });
 });
