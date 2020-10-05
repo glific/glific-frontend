@@ -3,7 +3,7 @@ const envVariables = process.env;
 const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
 const PROTOCOL = window.location.protocol;
 const HOSTNAME = window.location.hostname;
-const API_PREFIX = envVariables.REACT_APP_HOST_PREFIX;
+const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
 let GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
