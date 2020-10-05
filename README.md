@@ -56,6 +56,10 @@ docker build \
 --no-cache -t .
 ```
 
+## Deploying release on ECS with CD
+1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
+2. For using and alternative repository like docker hub, click the link to see how we can [build and push docker](https://github.com/marketplace/actions/build-and-push-docker-images) images to docker hub.
+
 ## Learn More
 
 ### Glific
