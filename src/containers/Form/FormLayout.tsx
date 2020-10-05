@@ -17,7 +17,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 
 export interface FormLayoutProps {
   match: any;
@@ -110,13 +110,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   let toastMessage: {} | null | undefined;
 
   // get the organization for current user and have languages option set to that.
-  const organization = useQuery(GET_ORGANIZATION, {
-    onCompleted: (data) => {
-      setLanguageId(data.organization.organization.activeLanguages[0].id);
-      client.writeQuery({
-        query: GET_ORGANIZATION,
-        data: data.organization,
-      });
+  const organization = useQuery(USER_LANGUAGES, {
+    onCompleted: (data: any) => {
+      setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
     },
   });
 
@@ -157,6 +153,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     onError: (error: ApolloError) => {
       setErrorMessage(client, error);
       return null;
+    },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onUpdate) {
+        return [{ query: refetchQueries.onUpdate }];
+      } else return [];
     },
   });
 
@@ -292,7 +293,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   let languageOptions = organization.data
-    ? organization.data.organization.organization.activeLanguages.slice()
+    ? organization.data.currentUser.user.organization.activeLanguages.slice()
     : [];
   // sort languages by their name
   languageOptions.sort((first: any, second: any) => {

@@ -1,4 +1,4 @@
-import { GET_ORGANIZATION } from '../graphql/queries/Organization';
+import { GET_ORGANIZATION, USER_LANGUAGES } from '../graphql/queries/Organization';
 
 export const getOrganizationQuery = [
   {
@@ -33,10 +33,8 @@ export const getOrganizationQuery = [
               startTime: '12:31:27',
             },
             provider: {
-              apiEndPoint: 'https://api.gupshup.io/sm/api/v1',
               id: '1',
               name: 'Gupshup',
-              url: 'https://gupshup.io/',
             },
             providerAppname: 'ADD_PROVIDER_API_KEY',
             providerPhone: '917834811114',
@@ -79,10 +77,8 @@ export const getOrganizationQuery = [
               startTime: '12:31:27',
             },
             provider: {
-              apiEndPoint: 'https://api.gupshup.io/sm/api/v1',
               id: '1',
               name: 'Gupshup',
-              url: 'https://gupshup.io/',
             },
             providerAppname: 'ADD_PROVIDER_API_KEY',
             providerPhone: '917834811114',
@@ -125,10 +121,8 @@ export const getOrganizationQuery = [
               startTime: '12:31:27',
             },
             provider: {
-              apiEndPoint: 'https://api.gupshup.io/sm/api/v1',
               id: '1',
               name: 'Gupshup',
-              url: 'https://gupshup.io/',
             },
             providerAppname: 'ADD_PROVIDER_API_KEY',
             providerPhone: '917834811114',
@@ -137,5 +131,31 @@ export const getOrganizationQuery = [
         },
       },
     },
-  }
+  },
 ];
+
+export const getOrganizationLanguagesQuery = {
+  request: {
+    query: USER_LANGUAGES,
+  },
+  result: {
+    data: {
+      currentUser: {
+        user: {
+          organization: {
+            activeLanguages: [
+              {
+                id: '1',
+                label: 'English',
+              },
+            ],
+            defaultLanguage: {
+              id: '1',
+              label: 'English',
+            },
+          },
+        },
+      },
+    },
+  },
+};
