@@ -30,6 +30,7 @@ import {
   settingMenu,
   getRoleBasedAccess,
 } from '../../../../../context/role';
+import { Tooltip } from '../../../Tooltip/Tooltip';
 
 export interface SideDrawerProps {}
 
@@ -169,15 +170,17 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const settingMenus = settingMenu ? (
     <div>
-      <Link to={'/settings'} onClick={handleClick}>
-        <IconButton>
-          <img
-            src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
-            className={styles.UserIcon}
-            alt="settings"
-          />
-        </IconButton>
-      </Link>
+      <Tooltip title="Settings" placement="top" tooltipClass={styles.tooltipClass}>
+        <Link to={'/settings'} onClick={handleClick}>
+          <IconButton>
+            <img
+              src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
+              className={styles.UserIcon}
+              alt="settings"
+            />
+          </IconButton>
+        </Link>
+      </Tooltip>
     </div>
   ) : null;
 
@@ -223,32 +226,38 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <div className={classes.BottomMenus}>
             {settingMenus}
             <div onClick={() => getMenus()}>
-              <Menu menus={staffManagementMenus}>
-                <IconButton>
-                  <img
-                    src={
-                      ['/group', '/staff-management', '/blocked-contacts'].includes(
-                        location.pathname
-                      )
-                        ? ActiveStaffIcon
-                        : InactiveStaffIcon
-                    }
-                    className={styles.StaffIcon}
-                    alt="staff icon"
-                  />
-                </IconButton>
-              </Menu>
+              <Tooltip title="Management" placement="top" tooltipClass={styles.tooltipClass}>
+                <Menu menus={staffManagementMenus}>
+                  <IconButton>
+                    <img
+                      src={
+                        ['/group', '/staff-management', '/blocked-contacts'].includes(
+                          location.pathname
+                        )
+                          ? ActiveStaffIcon
+                          : InactiveStaffIcon
+                      }
+                      className={styles.StaffIcon}
+                      alt="staff icon"
+                    />
+                  </IconButton>
+                </Menu>
+              </Tooltip>
             </div>
             <div>
-              <Menu menus={userAccountMenus}>
-                <IconButton>
-                  <img
-                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
-                    className={styles.UserIcon}
-                    alt="user icon"
-                  />
-                </IconButton>
-              </Menu>
+              <Tooltip title="Profile" placement="top" tooltipClass={styles.tooltipClass}>
+                <Menu menus={userAccountMenus}>
+                  <IconButton>
+                    <img
+                      src={
+                        location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
+                      }
+                      className={styles.UserIcon}
+                      alt="user icon"
+                    />
+                  </IconButton>
+                </Menu>
+              </Tooltip>
             </div>
           </div>
           {drawer}

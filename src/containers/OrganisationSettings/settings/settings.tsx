@@ -13,7 +13,6 @@ import {
   GET_ORGANIZATION,
   GET_PROVIDERS,
   GET_CREDENTIAL,
-  GET_CREDENTIAL_ID,
 } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
@@ -34,6 +33,7 @@ const validation = {
   providerAppname: Yup.string().required('Gupshup API key is required.'),
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 };
+
 let FormSchema = Yup.object().shape({});
 
 const SettingIcon = <Settingicon />;
@@ -108,6 +108,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   } else {
     queries = credential_queries;
     param = { params: { id: credentialId, shortcode: type } };
+    FormSchema = Yup.object().shape({});
   }
 
   const setStates = ({
@@ -156,11 +157,11 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
-  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
-    variables: { shortcode: type },
-  });
   const { data: providerData } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: type } },
+  });
+  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
+    variables: { shortcode: type },
   });
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
@@ -168,7 +169,9 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
-    getOrg();
+    if (type === 'organization') {
+      getOrg();
+    }
   }, [getOrg]);
 
   useEffect(() => {
@@ -179,15 +182,15 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     }
   }, [orgData]);
 
-  useEffect(() => {
-    if (credential) {
-      let data = credential.credential.credential;
-      //get login OrganizationId
+  if (credential && !credentialId) {
+    let data = credential.credential.credential;
+    if (data) {
+      //get credential data
       setCredentialId(data.id);
     }
-  }, [credential]);
+  }
 
-  if (!data || !orgData || !languages || !providerData || loading) return <Loading />;
+  if (!data || !languages || !providerData || loading) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
