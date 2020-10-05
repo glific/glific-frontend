@@ -13,6 +13,7 @@ import {
   GET_ORGANIZATION,
   GET_PROVIDERS,
   GET_CREDENTIAL,
+  USER_LANGUAGES,
 } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
@@ -428,6 +429,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
+      refetchQueries={{ onUpdate: USER_LANGUAGES }}
       redirectionLink=""
       cancelLink="settings"
       linkParameter="id"
