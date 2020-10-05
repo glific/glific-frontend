@@ -320,11 +320,13 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const saveHandler = (data: any) => {
-    // update organization details in the cache
-    client.writeQuery({
-      query: GET_ORGANIZATION,
-      data: data.updateOrganization,
-    });
+    if (type === 'organization') {
+      // update organization details in the cache
+      client.writeQuery({
+        query: GET_ORGANIZATION,
+        data: data.updateOrganization,
+      });
+    }
   };
 
   const setPayload = (payload: any) => {

@@ -1,6 +1,11 @@
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { getOrganizationQuery, getProvidersQuery, getCredential } from '../../mocks/Organization';
+import {
+  getOrganizationLanguagesQuery,
+  getOrganizationQuery,
+  getProvidersQuery,
+  getCredential,
+} from '../../mocks/Organization';
 
 export const LIST_ITEM_MOCKS = [
   {
@@ -68,4 +73,5 @@ export const LIST_ITEM_MOCKS = [
   ...getOrganizationQuery,
   ...getProvidersQuery,
   ...getCredential,
+  getOrganizationLanguagesQuery,
 ];

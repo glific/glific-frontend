@@ -6,13 +6,16 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Group } from './Group';
 import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
 import { getUsersQuery } from '../../mocks/User';
-import { getOrganizationQuery } from '../../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 
 const mocks = [
   getUsersQuery,
   ...getOrganizationQuery,
   getGroupQuery,
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQuery,
   getGroupQuery, // if you refetch then you need to include same mock twice
+  getGroupUsersQuery,
   getGroupUsersQuery,
   getGroupsQuery,
 ];

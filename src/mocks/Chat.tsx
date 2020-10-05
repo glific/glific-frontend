@@ -10,6 +10,7 @@ import { filterTagsQuery, getTagsQuery } from './Tag';
 import { contactGroupsQuery } from './Contact';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
 import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
+import { getOrganizationLanguagesQuery } from './Organization';
 
 const getConversationQuery = (data: any) => {
   return {
@@ -220,6 +221,7 @@ export const CONVERSATION_MOCKS = [
   addMessageTagSubscription,
   deleteMessageTagSubscription,
   savedSearchQuery,
+  getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
 ];

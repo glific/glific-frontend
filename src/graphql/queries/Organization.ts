@@ -63,3 +63,22 @@ export const GET_CREDENTIAL = gql`
     }
   }
 `;
+
+export const USER_LANGUAGES = gql`
+  query currentUserOrganisationLanguages {
+    currentUser {
+      user {
+        organization {
+          activeLanguages {
+            id
+            label
+          }
+          defaultLanguage {
+            id
+            label
+          }
+        }
+      }
+    }
+  }
+`;
