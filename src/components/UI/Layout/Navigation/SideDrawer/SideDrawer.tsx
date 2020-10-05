@@ -226,8 +226,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <div className={classes.BottomMenus}>
             {settingMenus}
             <div onClick={() => getMenus()}>
-              <Tooltip title="Management" placement="top" tooltipClass={styles.tooltipClass}>
-                <Menu menus={staffManagementMenus}>
+              <Menu menus={staffManagementMenus}>
+                <Tooltip
+                  title="Staff Management"
+                  placement="top"
+                  tooltipClass={styles.tooltipClass}
+                >
                   <IconButton>
                     <img
                       src={
@@ -241,12 +245,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                       alt="staff icon"
                     />
                   </IconButton>
-                </Menu>
-              </Tooltip>
+                </Tooltip>
+              </Menu>
             </div>
             <div>
-              <Tooltip title="Profile" placement="top" tooltipClass={styles.tooltipClass}>
-                <Menu menus={userAccountMenus}>
+              <Menu menus={userAccountMenus}>
+                <Tooltip title="Profile" placement="top" tooltipClass={styles.tooltipClass}>
                   <IconButton>
                     <img
                       src={
@@ -256,8 +260,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                       alt="user icon"
                     />
                   </IconButton>
-                </Menu>
-              </Tooltip>
+                </Tooltip>
+              </Menu>
             </div>
           </div>
           {drawer}
