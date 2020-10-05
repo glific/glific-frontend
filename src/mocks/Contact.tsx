@@ -6,7 +6,7 @@ import {
 } from '../graphql/queries/Contact';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
-import { getOrganizationQuery } from '../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
 
 export const contactGroupsQuery = {
@@ -93,7 +93,9 @@ export const getContactDetailsQuery = {
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getContactDetailsQuery,
+  getOrganizationLanguagesQuery,
   filterTagsQuery,
+  getCurrentUserQuery,
   getContactQuery,
   getContactDetailsQuery,
   ...getOrganizationQuery,
