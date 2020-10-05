@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
-import styles from './OrganisationSettings.module.css';
+import styles from './SettingList.module.css';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from '../../graphql/queries/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
@@ -19,7 +19,7 @@ let CardList = [
   },
 ];
 
-export const OrganisationSettings: React.SFC = () => {
+export const SettingList: React.SFC = () => {
   const { data: providerData } = useQuery(GET_PROVIDERS);
 
   if (!providerData) return <Loading />;

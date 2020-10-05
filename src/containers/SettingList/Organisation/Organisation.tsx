@@ -9,25 +9,14 @@ import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoCompl
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
-import {
-  GET_ORGANIZATION,
-  GET_PROVIDERS,
-  GET_CREDENTIAL,
-  USER_LANGUAGES,
-} from '../../../graphql/queries/Organization';
+import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
-  CREATE_CREDENTIAL,
-  UPDATE_CREDENTIAL,
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-
-export interface SettingsProps {
-  match: any;
-}
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -35,21 +24,14 @@ const validation = {
   providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 };
 
-let FormSchema = Yup.object().shape({});
+const FormSchema = Yup.object().shape(validation);
 
 const SettingIcon = <Settingicon />;
 
-const org_queries = {
+const queries = {
   getItemQuery: GET_ORGANIZATION,
   createItemQuery: CREATE_ORGANIZATION,
   updateItemQuery: UPDATE_ORGANIZATION,
-  deleteItemQuery: DELETE_ORGANIZATION,
-};
-
-const credential_queries = {
-  getItemQuery: GET_CREDENTIAL,
-  createItemQuery: CREATE_CREDENTIAL,
-  updateItemQuery: UPDATE_CREDENTIAL,
   deleteItemQuery: DELETE_ORGANIZATION,
 };
 
@@ -63,10 +45,7 @@ const dayList = [
   { id: 7, label: 'Sunday' },
 ];
 
-let CardList = [{ label: 'Organisation', shortcode: 'organization' }];
-
-export const Settings: React.SFC<SettingsProps> = ({ match }) => {
-  const type = match.params.type ? match.params.type : null;
+export const Organisation: React.SFC = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
   const [providerAppname, setProviderAppname] = useState('');
@@ -78,17 +57,10 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
   const [organizationId, setOrganizationId] = useState(null);
-  const [credentialId, setCredentialId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  let queries;
-  let param;
-  let states: any = {};
-  let keys: any = {};
-  let secrets: any = {};
-
-  const orgStates = {
+  const States = {
     name,
     providerAppname,
     providerPhone,
@@ -100,17 +72,6 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     activeLanguages,
     defaultLanguage,
   };
-
-  if (type === 'organization') {
-    queries = org_queries;
-    param = { params: { id: organizationId } };
-    FormSchema = Yup.object().shape(validation);
-    states = orgStates;
-  } else {
-    queries = credential_queries;
-    param = { params: { id: credentialId, shortcode: type } };
-    FormSchema = Yup.object().shape({});
-  }
 
   const setStates = ({
     name,
@@ -131,18 +92,6 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     if (defaultLanguage) setDefaultLanguage(defaultLanguage);
   };
 
-  const setCredential = (item: any) => {
-    keys = JSON.parse(item.keys);
-    secrets = JSON.parse(item.secrets);
-    let fields: any = {};
-    Object.assign(fields, keys);
-    Object.assign(fields, secrets);
-    Object.keys(fields).map((key) => {
-      // restore value for the field
-      states[key] = fields[key];
-    });
-  };
-
   const setOutOfOffice = (data: any) => {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
@@ -158,21 +107,13 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS);
-  const { data: providerData } = useQuery(GET_PROVIDERS, {
-    variables: { filter: { shortcode: type } },
-  });
-  const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
-    variables: { shortcode: type },
-  });
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
-    if (type === 'organization') {
-      getOrg();
-    }
+    getOrg();
   }, [getOrg]);
 
   useEffect(() => {
@@ -183,15 +124,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     }
   }, [orgData]);
 
-  if (credential && !credentialId) {
-    let data = credential.credential.credential;
-    if (data) {
-      //get credential data
-      setCredentialId(data.id);
-    }
-  }
-
-  if (!data || !languages || !providerData || loading) return <Loading />;
+  if (!data || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -216,7 +149,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
     return error;
   };
 
-  let formFields: any = [
+  const formFields: any = [
     {
       component: Input,
       name: 'name',
@@ -321,109 +254,53 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
   };
 
   const saveHandler = (data: any) => {
-    if (type === 'organization') {
-      // update organization details in the cache
-      client.writeQuery({
-        query: GET_ORGANIZATION,
-        data: data.updateOrganization,
-      });
-    }
+    // update organization details in the cache
+    client.writeQuery({
+      query: GET_ORGANIZATION,
+      data: data.updateOrganization,
+    });
   };
 
   const setPayload = (payload: any) => {
     let object: any = {};
-    if (type === 'organization') {
-      // set active Language Ids
-      let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
-        return activeLanguage.id;
-      });
+    // set active Language Ids
+    let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
+      return activeLanguage.id;
+    });
 
-      // remove activeLanguages from the payload
-      delete payload['activeLanguages'];
-      // set default Language Id
-      let defaultLanguageId = payload.defaultLanguage.id;
-      // remove defaultLanguage from the payload
-      delete payload['defaultLanguage'];
+    // remove activeLanguages from the payload
+    delete payload['activeLanguages'];
+    // set default Language Id
+    let defaultLanguageId = payload.defaultLanguage.id;
+    // remove defaultLanguage from the payload
+    delete payload['defaultLanguage'];
 
-      object = {
-        name: payload.name,
-        providerAppname: payload.providerAppname,
-        providerPhone: payload.providerPhone,
-        outOfOffice: {
-          enabled: payload.hours,
-          enabledDays: assignDays(payload.enabledDays),
-          endTime: payload.endTime,
-          flowId: payload.flowId ? payload.flowId.id : null,
-          startTime: payload.startTime,
-        },
-        defaultLanguageId: defaultLanguageId,
-        activeLanguageIds: activeLanguageIds,
-      };
-    } else {
-      let secretsObj: any = {};
-      let keysObj: any = {};
-      Object.keys(secrets).map((key) => {
-        if (payload[key]) {
-          secretsObj[key] = payload[key];
-        }
-      });
-      Object.keys(keys).map((key) => {
-        if (payload[key]) {
-          keysObj[key] = payload[key];
-        }
-      });
-      object = {
-        shortcode: type,
-        keys: JSON.stringify(keysObj),
-        secrets: JSON.stringify(secretsObj),
-      };
-    }
+    object = {
+      name: payload.name,
+      providerAppname: payload.providerAppname,
+      providerPhone: payload.providerPhone,
+      outOfOffice: {
+        enabled: payload.hours,
+        enabledDays: assignDays(payload.enabledDays),
+        endTime: payload.endTime,
+        flowId: payload.flowId ? payload.flowId.id : null,
+        startTime: payload.startTime,
+      },
+      defaultLanguageId: defaultLanguageId,
+      activeLanguageIds: activeLanguageIds,
+    };
 
     return object;
   };
-
-  const addField = (fields: any) => {
-    let formField: any = [];
-    let defaultStates: any = {};
-
-    Object.keys(fields).map((key) => {
-      // add dafault value for the field
-      states[key] = fields[key].default;
-      Object.assign(defaultStates, { [key]: fields[key].default });
-      let field = {
-        component: Input,
-        name: key,
-        type: 'text',
-        placeholder: fields[key].label,
-        disabled: fields[key].view_only,
-      };
-      formField.push(field);
-    });
-    formFields = formField;
-  };
-
-  if (providerData && type !== 'organization') {
-    providerData.providers.map((provider: any) => {
-      keys = JSON.parse(provider.keys);
-      secrets = JSON.parse(provider.secrets);
-      let fields = {};
-      Object.assign(fields, keys);
-      Object.assign(fields, secrets);
-      addField(fields);
-      //create list
-      if (CardList.filter((list: any) => list.label === provider.name).length <= 0)
-        CardList.push({ label: provider.name, shortcode: provider.shortcode });
-    });
-  }
 
   return (
     <FormLayout
       backLinkButton={{ text: 'Back to settings', link: '/settings' }}
       {...queries}
-      title={type}
-      match={param}
-      states={states}
-      setStates={type === 'organization' ? setStates : setCredential}
+      title={'organization'}
+      match={{ params: { id: organizationId } }}
+      states={States}
+      setStates={setStates}
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
@@ -433,7 +310,7 @@ export const Settings: React.SFC<SettingsProps> = ({ match }) => {
       redirectionLink=""
       cancelLink="settings"
       linkParameter="id"
-      listItem={type === 'organization' ? 'organization' : 'credential'}
+      listItem={'organization'}
       icon={SettingIcon}
       languageSupport={false}
       type={'settings'}

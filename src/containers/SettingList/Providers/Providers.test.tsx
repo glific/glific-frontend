@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { Settings } from './settings';
+import { Providers } from './Providers';
 import { MockedProvider } from '@apollo/client/testing';
-import { LIST_ITEM_MOCKS } from '../OrganisationSettings.test.helper';
+import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 const mocks = LIST_ITEM_MOCKS;
@@ -11,12 +11,12 @@ const mocks = LIST_ITEM_MOCKS;
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <Settings match={{ params: { id: 1 } }} />
+      <Providers match={{ params: { id: 1 } }} />
     </Router>
   </MockedProvider>
 );
 
-describe('<settings />', () => {
+describe('<Providers />', () => {
   it('renders component properly', async () => {
     const { getByText } = render(wrapper);
     // loading is show initially
@@ -26,12 +26,12 @@ describe('<settings />', () => {
   });
 });
 
-describe('<settings />', () => {
+describe('<Providers />', () => {
   it('SAVE component properly', async () => {
     const wrapper = (
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <Settings match={{ params: { type: 'gupshup' } }} />
+          <Providers match={{ params: { type: 'gupshup' } }} />
         </Router>
       </MockedProvider>
     );
@@ -47,12 +47,12 @@ describe('<settings />', () => {
   });
 });
 
-describe('<settings />', () => {
+describe('<Providers />', () => {
   it('Click on Cancel button', async () => {
     const wrapper = (
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
-          <Settings match={{ params: { type: 'gupshup' } }} />
+          <Providers match={{ params: { type: 'gupshup' } }} />
         </Router>
       </MockedProvider>
     );
