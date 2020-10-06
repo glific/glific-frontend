@@ -15,10 +15,18 @@ describe('Chats', () => {
     cy.get('.DraftEditor-editorContainer').click({ force: true });
     cy.get('.DraftEditor-editorContainer').type(messageText);
     cy.contains('Send').click();
-    cy.get('div').should('contain', messageText);
+    cy.get('[data-testid="message"]').should('contain', messageText);
   });
 
-  // it('should tag the message correctly', () => {});
+  it('should tag the message correctly', () => {
+    // find options next to the recently added message
+    cy.contains('[data-testid="message"]', messageText).find('svg').click();
+    cy.contains('Assign tag').click();
+    cy.get('h2').should('contain', 'Assign tag to message');
+    cy.get('[data-testid="autocomplete-element"]').click().type('Import');
+    cy.contains('Important').click();
+    cy.get('[data-testid="ok-button"]').click();
+  });
 
   // it('should remove message tag correctly', () => {});
 
