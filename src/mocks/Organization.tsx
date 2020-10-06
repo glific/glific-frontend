@@ -304,6 +304,28 @@ export const getCredential = [
   {
     request: {
       query: GET_CREDENTIAL,
+      variables: { shortcode: 'gupshup' },
+    },
+    result: {
+      data: {
+        credential: {
+          credential: {
+            id: '1',
+            keys:
+              '{"worker":"Glific.Providers.Gupshup.Worker","url":"https://gupshup.io/","handler":"Glific.Providers.Gupshup.Message","api_end_point":"https://api.gupshup.io/sm/api/v1"}',
+            provider: {
+              shortcode: 'gupshup',
+            },
+            secrets:
+              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_CREDENTIAL,
       variables: { filter: { shortcode: 'organization' } },
     },
     result: {
