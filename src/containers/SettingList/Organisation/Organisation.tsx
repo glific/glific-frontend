@@ -20,8 +20,6 @@ import { ReactComponent as Settingicon } from '../../../assets/images/icons/Sett
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
-  providerAppname: Yup.string().required('Gupshup API key is required.'),
-  providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
 };
 
 const FormSchema = Yup.object().shape(validation);
@@ -48,8 +46,6 @@ const dayList = [
 export const Organisation: React.SFC = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
-  const [providerAppname, setProviderAppname] = useState('');
-  const [providerPhone, setProviderNumber] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState();
@@ -62,8 +58,6 @@ export const Organisation: React.SFC = () => {
 
   const States = {
     name,
-    providerAppname,
-    providerPhone,
     hours,
     startTime,
     endTime,
@@ -73,17 +67,8 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
   };
 
-  const setStates = ({
-    name,
-    providerAppname,
-    providerPhone,
-    outOfOffice,
-    activeLanguages,
-    defaultLanguage,
-  }: any) => {
+  const setStates = ({ name, outOfOffice, activeLanguages, defaultLanguage }: any) => {
     setName(name);
-    setProviderAppname(providerAppname);
-    setProviderNumber(providerPhone);
     setHours(outOfOffice.enabled);
     setIsDisable(!outOfOffice.enabled);
     setOutOfOffice(outOfOffice);
@@ -155,18 +140,6 @@ export const Organisation: React.SFC = () => {
       name: 'name',
       type: 'text',
       placeholder: 'Organisation name',
-    },
-    {
-      component: Input,
-      name: 'providerAppname',
-      type: 'text',
-      placeholder: 'Provider App name',
-    },
-    {
-      component: Input,
-      name: 'providerPhone',
-      type: 'text',
-      placeholder: 'Provider WhatsApp number',
     },
     {
       component: AutoComplete,
@@ -277,8 +250,6 @@ export const Organisation: React.SFC = () => {
 
     object = {
       name: payload.name,
-      providerAppname: payload.providerAppname,
-      providerPhone: payload.providerPhone,
       outOfOffice: {
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),

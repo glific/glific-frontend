@@ -10,8 +10,6 @@ export const GET_ORGANIZATION = gql`
           id
           name
         }
-        providerAppname
-        providerPhone
         outOfOffice {
           enabled
           enabledDays {

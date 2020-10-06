@@ -53,6 +53,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   });
   const { data: credential, loading } = useQuery(GET_CREDENTIAL, {
     variables: { shortcode: type },
+    fetchPolicy: 'no-cache', // This is required to restore the data after save
   });
 
   if (credential && !credentialId) {
