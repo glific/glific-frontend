@@ -21,11 +21,13 @@ import { UserProfile } from '../../containers/Profile/User/UserProfile';
 import { MyAccount } from '../../containers/MyAccount/MyAccount';
 import { HSMPage } from '../../components/pages/Template/HSMPage/HSMPage';
 import { HSM } from '../../containers/Template/Form/HSM/HSM';
-import { OrganisationSettings } from '../../containers/OrganisationSettings/OrganisationSettings';
+import { SettingList } from '../../containers/SettingList/SettingList';
+import { Providers } from '../../containers/SettingList/Providers/Providers';
 import { BlockContactList } from '../../containers/BlockContact/BlockContactList/BlockContactList';
 import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
+import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
 
 export const AuthenticatedRoute: React.SFC = () => {
   let userRole: any[] = [];
@@ -94,7 +96,9 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/template/add" exact component={HSM} />
         <Route path="/template/:id/edit" exact component={HSM} />
 
-        <Route path="/settings" exact component={OrganisationSettings} />
+        <Route path="/settings" exact component={SettingList} />
+        <Route path="/settings/organization" exact component={Organisation} />
+        <Route path="/settings/:type" exact component={Providers} />
         <Route path="/blocked-contacts" exact component={BlockContactList} />
 
         <Route path="/logout" exact component={Logout} />
