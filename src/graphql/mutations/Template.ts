@@ -34,6 +34,10 @@ export const UPDATE_TEMPLATE = gql`
         id
         label
         body
+        language {
+          id
+          label
+        }
       }
     }
   }
