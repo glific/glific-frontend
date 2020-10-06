@@ -4,11 +4,12 @@ const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
 const PROTOCOL = window.location.protocol;
 const HOSTNAME = window.location.hostname;
 const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
-let GLIFIC_BACKEND_URL = API_PORT
-  ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
+
+let GLIFIC_BACKEND_URL = API_PREFIX
+  ? `${PROTOCOL}//${API_PREFIX}.${HOSTNAME}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-GLIFIC_BACKEND_URL = API_PREFIX ? `${API_PREFIX}.${GLIFIC_BACKEND_URL}` : GLIFIC_BACKEND_URL;
+GLIFIC_BACKEND_URL = API_PORT ? `${GLIFIC_BACKEND_URL}:${API_PORT}` : `${GLIFIC_BACKEND_URL}`;
 
 export const SOCKET = API_PORT ? `ws://${HOSTNAME}:${API_PORT}/socket` : `ws://${HOSTNAME}/socket`;
 export const SENTRY_DSN = envVariables.SENTRY_DSN;
