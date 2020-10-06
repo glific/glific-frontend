@@ -8,6 +8,8 @@ import { checkAuthStatusService } from './services/AuthService';
 import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
 
+
+
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
 
