@@ -11,9 +11,11 @@ const GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-const SOCKET_URL = PROTOCOL === 'http:' ? `ws://${HOSTNAME}` : `wss://${HOSTNAME}`;
+const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HOSTNAME}`;
 
-export const SOCKET = API_PORT ? `${SOCKET_URL}:${API_PORT}/socket` : `${SOCKET_URL}/socket`;
+export const SOCKET = API_PORT
+  ? `${SOCKET_PROTOCOL}:${API_PORT}/socket`
+  : `${SOCKET_PROTOCOL}/socket`;
 export const SENTRY_DSN = envVariables.SENTRY_DSN;
 export const FLOW_EDITOR_API = GLIFIC_BACKEND_URL + '/flow-editor/';
 export const GLIFIC_API_URL = GLIFIC_BACKEND_URL + '/api';
