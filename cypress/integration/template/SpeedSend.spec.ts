@@ -1,5 +1,5 @@
 describe('Speed Send', () => {
-  const speedSendName = 'Random Speed Send ' + Math.random();
+  const speedSendName = 'Sample SpeedSend_' + +new Date();
 
   beforeEach(function () {
     // login before each test
@@ -14,7 +14,7 @@ describe('Speed Send', () => {
   it('should create new speed send', () => {
     cy.contains('CREATE SPEED SEND').click();
     cy.get('input[name=label]').type(speedSendName);
-    cy.get('[contenteditable="true"]').click({ force: true }).type('Test speed send message');
+    cy.get('.public-DraftEditor-content').click({ force: true }).type('Test speed send message');
     cy.contains('Save').click();
     cy.get('div').should('contain', 'Speed send created successfully');
   });
