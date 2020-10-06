@@ -22,6 +22,7 @@ describe('<Providers />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
+    await wait();
     expect(getByText('Back to settings')).toBeInTheDocument();
   });
 });
@@ -39,9 +40,11 @@ describe('<Providers />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
+    await wait();
     // click on SAVE
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
+    await wait();
     await wait();
     expect(getByText('Settings edited successfully!')).toBeInTheDocument();
   });
@@ -59,6 +62,7 @@ describe('<Providers />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
+    await wait();
     await wait();
     // click on Cancel
     const cancelButton = screen.getByText('Cancel');

@@ -114,9 +114,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   let item: any = null;
 
   // get the organization for current user and have languages option set to that.
+
   const organization = useQuery(USER_LANGUAGES, {
     onCompleted: (data: any) => {
-      setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
+      if (!itemId) {
+        setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
+      }
     },
   });
 
