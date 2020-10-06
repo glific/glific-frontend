@@ -14,8 +14,7 @@ describe('Speed Send', () => {
   it('should create new speed send', () => {
     cy.contains('CREATE SPEED SEND').click();
     cy.get('input[name=label]').type(speedSendName);
-    cy.get('[contenteditable]').click();
-    cy.get('[contenteditable]').type('Test speed send message');
+    cy.get('[contenteditable="true"]').click({ force: true }).type('Test speed send message');
     cy.contains('Save').click();
     cy.get('div').should('contain', 'Speed send created successfully');
   });
