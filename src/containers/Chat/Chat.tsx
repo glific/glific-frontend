@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
@@ -19,6 +19,7 @@ import {
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import Axios from 'axios';
+import { SIMULATOR_CONTACT } from '../../config';
 
 export interface ChatProps {
   contactId: number;
@@ -27,6 +28,8 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   // fetch the default conversations
   // default queryvariables
+  const [showSimulator, setShowSimulator] = useState(false);
+  let simulatorId: string | null = null;
 
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
@@ -245,13 +248,22 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       </Typography>
     );
   } else {
+    const simulatedContact = data.search.filter(
+      (item: any) => item.contact.phone === SIMULATOR_CONTACT
+    );
+    if (simulatedContact.length > 0) {
+      simulatorId = simulatedContact[0].contact.id;
+    }
     chatInterface = (
       <>
         <div className={styles.ChatMessages}>
-          <ChatMessages contactId={contactId} />
+          <ChatMessages contactId={showSimulator && simulatorId ? simulatorId : contactId} />
         </div>
         <div className={styles.ChatConversations}>
-          <ChatConversations contactId={contactId} />
+          <ChatConversations
+            contactId={showSimulator && simulatorId ? parseInt(simulatorId) : contactId}
+            simulator={{ simulatorId, setShowSimulator }}
+          />
         </div>
       </>
     );
@@ -260,7 +272,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   return (
     <Paper>
       <div className={styles.Chat}>{chatInterface}</div>
-      <Simulator />
+      <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
     </Paper>
   );
 };

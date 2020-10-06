@@ -20,14 +20,22 @@ import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import moment from 'moment';
 import { TIME_FORMAT } from '../../common/constants';
 import ClearIcon from '@material-ui/icons/Clear';
-import { GUPSHUP_CALLBACK_URL } from '../../config';
+import { GUPSHUP_CALLBACK_URL, SIMULATOR_CONTACT } from '../../config';
 
-export const Simulator: React.FC = (props) => {
-  const [showSimulator, setShowSimulator] = useState(false);
+export interface SimulatorProps {
+  showSimulator: boolean;
+  setShowSimulator: any;
+}
+
+export const Simulator: React.FC<SimulatorProps> = ({
+  showSimulator,
+  setShowSimulator,
+}: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const messageRef: any = useRef<HTMLDivElement>();
 
   let messages = [];
+  let simulatorId = '';
 
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
@@ -36,9 +44,12 @@ export const Simulator: React.FC = (props) => {
 
   if (allConversations) {
     //currently setting the simulated contact as the default receiver
-    const simulatedContact = allConversations.search.filter((item: any) => item.contact.id === '2');
+    const simulatedContact = allConversations.search.filter(
+      (item: any) => item.contact.phone === SIMULATOR_CONTACT
+    );
     if (simulatedContact.length > 0) {
       messages = simulatedContact[0].messages;
+      simulatorId = simulatedContact[0].contact.id;
     }
   }
 
@@ -72,7 +83,7 @@ export const Simulator: React.FC = (props) => {
 
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
-      if (simulatorMessage.receiver.id === '2') {
+      if (simulatorMessage.receiver.id === simulatorId) {
         return renderMessage(simulatorMessage.body, 'send', index, simulatorMessage.insertedAt);
       } else {
         return renderMessage(simulatorMessage.body, 'received', index, simulatorMessage.insertedAt);
@@ -93,7 +104,7 @@ export const Simulator: React.FC = (props) => {
           },
           sender: {
             //this number will be the simulated contact number
-            phone: '917834811231',
+            phone: SIMULATOR_CONTACT,
             name: 'Simulator',
           },
         },
