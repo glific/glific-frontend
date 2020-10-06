@@ -1,17 +1,25 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+
 import { Timer } from './Timer';
 
 const timer = (time: Date) => <Timer time={time}></Timer>;
 
 test('it should render timer component', () => {
-  const wrapper = mount(timer(new Date()));
-  expect(wrapper.exists()).toBe(true);
+  render(timer(new Date()));
+  expect(screen.getByTestId('timerCount')).toBeInTheDocument();
 });
 
-test('it should display the remaining time', () => {
+test('it should display the remaining time', async () => {
+  // get current date time
   const date = new Date();
+
+  // subtract 2 hours
   date.setHours(date.getHours() - 2);
-  const wrapper = mount(timer(date));
-  expect(wrapper.find('[data-testid="timerCount"]').text()).toBe('22');
+
+  // render timer
+  render(timer(date));
+
+  const timerElement = screen.getByTestId('timerCount');
+  expect(timerElement).toHaveTextContent('22');
 });

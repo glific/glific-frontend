@@ -18,6 +18,10 @@ export const CREATE_CONTACT = gql`
         id
         name
         phone
+        language {
+          id
+          label
+        }
       }
     }
   }
@@ -30,6 +34,10 @@ export const UPDATE_CONTACT = gql`
         id
         name
         phone
+        language {
+          id
+          label
+        }
       }
     }
   }
