@@ -13,7 +13,7 @@ Frontend interface built using React.
 
 **Note: First you will need to setup the backend application from this repo: https://github.com/glific/glific**
 
-1. Create a new file `.env` in the projecct root directory and copy the contents from `.env.example`.
+1. Create a new file `.env` in the project root directory and copy the contents from `.env.example`.
 2. Update the `.env` file with relevant configurations.
 3. Run `yarn setup`
 
@@ -41,6 +41,15 @@ Launches the test runner in the interactive watch mode.<br />
 
 Launches the test runner in the interactive watch mode and code coverage stats.<br />
 
+### `yarn run cypress open`
+
+Launches cypress test runner. <br />
+
+##### Cypress Configuraion
+
+1. Create a new file `cypress.json` in the project root directory and copy the contents from `cypress.json.example`.
+2. Update the `cypress.json` file with relevant configurations.
+
 ### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
@@ -50,6 +59,7 @@ The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
 ## Docker image for production
+
 ```
 docker build \
 --build-arg REACT_APP_GLIFIC_API_PORT=API-PORT \

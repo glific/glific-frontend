@@ -24,3 +24,5 @@ yarn.lock
 
 public/static
 public/sitestatic
+
+cypress.json
