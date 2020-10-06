@@ -11,7 +11,7 @@ const GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `ws://${HOSTNAME}` : `ws://${HOSTNAME}`;
+const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HOSTNAME}`;
 
 export const SOCKET = API_PORT
   ? `${SOCKET_PROTOCOL}:${API_PORT}/socket`
