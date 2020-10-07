@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
@@ -134,6 +134,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const { loading, error } = useQuery(getItemQuery, {
     variables: variables,
     skip: !itemId,
+    fetchPolicy: 'no-cache', // This is required to restore the data after save
     onCompleted: (data) => {
       if (data) {
         item = data[listItem][listItem];
@@ -204,6 +205,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   });
 
   const client = useApolloClient();
+
+  // using it as component unmount
+  useEffect(() => {
+    return () => setNotification(client, null);
+  }, []);
 
   if (loading) return <Loading />;
   if (error) {
