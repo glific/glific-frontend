@@ -18,8 +18,7 @@ import {
 } from '../../graphql/subscriptions/Tag';
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import Axios from 'axios';
-import { SIMULATOR_CONTACT } from '../../config';
+import { SIMULATOR_CONTACT } from '../../common/constants';
 
 export interface ChatProps {
   contactId: number;

@@ -14,13 +14,14 @@ import CallIcon from '@material-ui/icons/Call';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import Axios from 'axios';
+import axios from 'axios';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import moment from 'moment';
 import { TIME_FORMAT } from '../../common/constants';
 import ClearIcon from '@material-ui/icons/Clear';
-import { GUPSHUP_CALLBACK_URL, SIMULATOR_CONTACT } from '../../config';
+import { GUPSHUP_CALLBACK_URL } from '../../config';
+import { SIMULATOR_CONTACT } from '../../common/constants';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -92,7 +93,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .reverse();
 
   const sendMessage = () => {
-    Axios({
+    axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
       data: {
