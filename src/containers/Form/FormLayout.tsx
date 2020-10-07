@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client';
@@ -11,14 +11,14 @@ import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
 import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
+import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 
 export interface FormLayoutProps {
   match: any;
@@ -52,6 +52,7 @@ export interface FormLayoutProps {
   redirect?: boolean;
   title?: string;
   getLanguageId?: any;
+  backLinkButton?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -86,6 +87,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   refetchQueries,
   redirect = true,
   getLanguageId,
+  backLinkButton,
 }: FormLayoutProps) => {
   const [showDialog, setShowDialog] = useState(false);
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -109,30 +111,37 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [deleted, setDeleted] = useState(false);
   const message = useQuery(NOTIFICATION);
   let toastMessage: {} | null | undefined;
+  let item: any = null;
 
   // get the organization for current user and have languages option set to that.
-  const organization = useQuery(GET_ORGANIZATION, {
-    onCompleted: (data) => {
-      setLanguageId(data.organization.organization.activeLanguages[0].id);
-      client.writeQuery({
-        query: GET_ORGANIZATION,
-        data: data.organization,
-      });
+
+  const organization = useQuery(USER_LANGUAGES, {
+    onCompleted: (data: any) => {
+      if (!itemId) {
+        setLanguageId(data.currentUser.user.organization.defaultLanguage.id);
+      }
     },
   });
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  let itemId = match.params.id ? match.params.id : false;
+  let variables: any = itemId ? { id: itemId } : false;
 
-  const itemId = match.params.id ? match.params.id : false;
+  if (listItem === 'credential') {
+    variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
+  }
+
   const { loading, error } = useQuery(getItemQuery, {
-    variables: { id: itemId },
+    variables: variables,
     skip: !itemId,
     onCompleted: (data) => {
-      if (itemId && data) {
+      if (data) {
         item = data[listItem][listItem];
-        setLink(data[listItem][listItem][linkParameter]);
-        setStates(item);
-        setLanguageId(languageSupport ? item.language.id : null);
+        if (item) {
+          setLink(data[listItem][listItem][linkParameter]);
+          setStates(item);
+          setLanguageId(languageSupport ? item.language.id : null);
+        }
       }
     },
   });
@@ -159,12 +168,16 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       setErrorMessage(client, error);
       return null;
     },
+    refetchQueries: () => {
+      if (refetchQueries && refetchQueries.onUpdate) {
+        return [{ query: refetchQueries.onUpdate }];
+      } else return [];
+    },
   });
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
-
       if (data[itemCreated].errors) {
         setErrorMessage(client, data[itemCreated].errors[0]);
       } else {
@@ -191,8 +204,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   });
 
   const client = useApolloClient();
-
-  let item: any = null;
 
   if (loading) return <Loading />;
   if (error) {
@@ -292,7 +303,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     }
   };
 
-  let languageOptions = organization.data ? organization.data.organization.organization.activeLanguages.slice() : [];
+  let languageOptions = organization.data
+    ? organization.data.currentUser.user.organization.activeLanguages.slice()
+    : [];
   // sort languages by their name
   languageOptions.sort((first: any, second: any) => {
     return first.label > second.label ? 1 : -1;
@@ -414,10 +427,20 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     if (data && data.heading) heading = data.heading;
   }
 
+  const backLink = backLinkButton ? (
+    <div className={styles.BackLink}>
+      <Link to={backLinkButton.link}>
+        <BackIcon />
+        {backLinkButton.text}
+      </Link>
+    </div>
+  ) : null;
+
   return (
     <div className={styles.ItemAdd}>
       {dialogBox}
       {heading}
+      {backLink}
       {form}
     </div>
   );

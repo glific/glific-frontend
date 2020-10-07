@@ -39,6 +39,10 @@ export const UPDATE_TAG = gql`
         label
         description
         colorCode
+        language {
+          id
+          label
+        }
         parent {
           id
         }

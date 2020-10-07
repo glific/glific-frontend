@@ -1,7 +1,12 @@
-import { GET_CONTACT_GROUPS, GET_CONTACT, GET_CONTACT_DETAILS } from '../graphql/queries/Contact';
+import {
+  GET_CONTACT_GROUPS,
+  GET_CONTACT,
+  GET_CONTACT_DETAILS,
+  GET_CONTACT_COUNT,
+} from '../graphql/queries/Contact';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
-import { getOrganizationQuery } from '../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
 
 export const contactGroupsQuery = {
@@ -88,7 +93,9 @@ export const getContactDetailsQuery = {
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getContactDetailsQuery,
+  getOrganizationLanguagesQuery,
   filterTagsQuery,
+  getCurrentUserQuery,
   getContactQuery,
   getContactDetailsQuery,
   ...getOrganizationQuery,
@@ -111,6 +118,18 @@ export const updateContactStatusQuery = {
         name: 'Default Receiver',
         phone: '99399393303',
       },
+    },
+  },
+};
+
+export const countGroupContactsQuery = {
+  request: {
+    query: GET_CONTACT_COUNT,
+    variables: { filter: { name: '', includeGroups: 1 } },
+  },
+  result: {
+    data: {
+      countContacts: 1,
     },
   },
 };

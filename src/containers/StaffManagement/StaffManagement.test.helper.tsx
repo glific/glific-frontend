@@ -6,7 +6,7 @@ import {
 } from '../../graphql/queries/User';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_GROUPS } from '../../graphql/queries/Group';
-import { getOrganizationQuery } from '../../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 
 export const STAFF_MANAGEMENT_MOCKS = [
   {
@@ -126,5 +126,6 @@ export const STAFF_MANAGEMENT_MOCKS = [
       },
     },
   },
-  ...getOrganizationQuery
+  ...getOrganizationQuery,
+  getOrganizationLanguagesQuery,
 ];

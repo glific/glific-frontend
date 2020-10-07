@@ -3,10 +3,15 @@ import React from 'react';
 import { Automation } from './Automation';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, wait, fireEvent } from '@testing-library/react';
-import { getOrganizationQuery } from '../../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { getAutomationQuery, filterAutomationQuery } from '../../mocks/Automation';
 
-const mocks = [...getOrganizationQuery, getAutomationQuery, filterAutomationQuery];
+const mocks = [
+  ...getOrganizationQuery,
+  getAutomationQuery,
+  filterAutomationQuery,
+  getOrganizationLanguagesQuery,
+];
 const automation = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Automation match={{ params: { id: 1 } }} />

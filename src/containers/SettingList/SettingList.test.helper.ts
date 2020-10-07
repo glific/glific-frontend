@@ -1,12 +1,17 @@
 import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { getOrganizationQuery } from '../../mocks/Organization';
+import {
+  getOrganizationLanguagesQuery,
+  getOrganizationQuery,
+  getProvidersQuery,
+  getCredential,
+} from '../../mocks/Organization';
 
 export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_LANGUAGES,
-      variables: { opts: {order: 'ASC'} },
+      variables: { opts: { order: 'ASC' } },
     },
     result: {
       data: {
@@ -65,5 +70,8 @@ export const LIST_ITEM_MOCKS = [
       },
     },
   },
-  ...getOrganizationQuery
+  ...getOrganizationQuery,
+  ...getProvidersQuery,
+  ...getCredential,
+  getOrganizationLanguagesQuery,
 ];

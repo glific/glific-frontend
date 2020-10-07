@@ -5,7 +5,7 @@ import {
   GET_TEMPLATE,
 } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { getOrganizationQuery } from '../../mocks/Organization';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 
 const count = {
   request: {
@@ -293,4 +293,5 @@ export const TEMPLATE_MOCKS = [
   filterByBody(''),
   speedSendValidation,
   ...getOrganizationQuery,
+  getOrganizationLanguagesQuery,
 ];

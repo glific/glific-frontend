@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
+import { render, wait, within, fireEvent, cleanup, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -52,15 +52,21 @@ describe('SpeedSend', () => {
       target: { value: 'new Template' },
     });
 
+    //TODO: add case to fill the draftjs input
+
     fireEvent.change(container.querySelector('input[name="languageId"]'), {
       target: { value: 1 },
     });
+
     const { queryByText } = within(container.querySelector('form'));
     const button = queryByText('Save');
     fireEvent.click(button);
     await wait();
     await wait();
-    const { getByText } = within(container.querySelector('tbody'));
-    expect(getByText('Good message')).toBeInTheDocument();
+
+    expect(queryByText('Message is required.')).toBeInTheDocument();
+
+    // const { getByText } = within(container.querySelector('tbody'));
+    // expect(getByText('Good message')).toBeInTheDocument();
   });
 });

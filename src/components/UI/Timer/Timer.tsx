@@ -7,6 +7,7 @@ import styles from './Timer.module.css';
 export interface TimerProps {
   time: any;
   contactStatus?: string;
+  contactProviderStatus?: string;
 }
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
@@ -18,14 +19,25 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     }, 60000);
   }, []);
 
-  var lastMessageTime = moment(props.time);
-  var duration = moment.duration(currentTime.diff(lastMessageTime));
-  var hours: string | number = Math.floor(duration.asHours());
+  if (
+    (props.contactStatus && props.contactStatus === 'INVALID') ||
+    props.contactProviderStatus === 'NONE' ||
+    !props.time
+  ) {
+    return <ContactOptOutIcon />;
+  }
+
+  let timerStyle = styles.TimerNormal;
+  let lastMessageTime = moment(props.time);
+  let duration = moment.duration(currentTime.diff(lastMessageTime));
+  let hours: string | number = Math.floor(duration.asHours());
+
   if (hours < 0 || isNaN(hours)) {
     hours = 0;
   }
+
   hours = hours > 24 ? 0 : 24 - hours;
-  let timerStyle = styles.TimerNormal;
+
   if (hours === 0) {
     timerStyle = styles.TimerEnd;
   } else if (hours < 5) {
@@ -34,10 +46,6 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
 
   if (hours < 10 && hours > 0) {
     hours = '0' + hours.toString();
-  }
-
-  if (props.contactStatus && props.contactStatus === 'INVALID') {
-    return <ContactOptOutIcon />;
   }
 
   return (

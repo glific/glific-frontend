@@ -2,32 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
-
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
-import { GET_ORGANIZATION } from '../../graphql/queries/Organization';
+import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+import { TimePicker } from '../../../components/UI/Form/TimePicker/TimePicker';
+import { Loading } from '../../../components/UI/Layout/Loading/Loading';
+import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from '../../../components/UI/Form/Input/Input';
+import { FormLayout } from '../../Form/FormLayout';
+import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
+import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
-} from '../../graphql/mutations/Organization';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
+} from '../../../graphql/mutations/Organization';
+import { GET_LANGUAGES } from '../../../graphql/queries/List';
+import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
 
-export interface SettingsProps {
-  match: any;
-}
-
-const FormSchema = Yup.object().shape({
+const validation = {
   name: Yup.string().required('Organisation name is required.'),
-  providerAppname: Yup.string().required('Gupshup API key is required.'),
-  providerPhone: Yup.string().required('Gupshup WhatsApp number is required.'),
-});
+};
+
+const FormSchema = Yup.object().shape(validation);
 
 const SettingIcon = <Settingicon />;
 
@@ -48,11 +43,9 @@ const dayList = [
   { id: 7, label: 'Sunday' },
 ];
 
-export const OrganisationSettings: React.SFC<SettingsProps> = () => {
+export const Organisation: React.SFC = () => {
   const client = useApolloClient();
   const [name, setName] = useState('');
-  const [providerAppname, setProviderAppname] = useState('');
-  const [providerPhone, setProviderNumber] = useState('');
   const [hours, setHours] = useState(true);
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState();
@@ -63,10 +56,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  const states = {
+  const States = {
     name,
-    providerAppname,
-    providerPhone,
     hours,
     startTime,
     endTime,
@@ -76,17 +67,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     defaultLanguage,
   };
 
-  const setStates = ({
-    name,
-    providerAppname,
-    providerPhone,
-    outOfOffice,
-    activeLanguages,
-    defaultLanguage,
-  }: any) => {
+  const setStates = ({ name, outOfOffice, activeLanguages, defaultLanguage }: any) => {
     setName(name);
-    setProviderAppname(providerAppname);
-    setProviderNumber(providerPhone);
     setHours(outOfOffice.enabled);
     setIsDisable(!outOfOffice.enabled);
     setOutOfOffice(outOfOffice);
@@ -111,7 +93,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
 
   const { data } = useQuery(GET_AUTOMATIONS);
   const { data: languages } = useQuery(GET_LANGUAGES, {
-    variables: { opts: {order: 'ASC'} },
+    variables: { opts: { order: 'ASC' } },
   });
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
@@ -127,7 +109,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     }
   }, [orgData]);
 
-  if (!data || !orgData || !languages) return <Loading />;
+  if (!data || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -152,24 +134,12 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     return error;
   };
 
-  const formFields = [
+  const formFields: any = [
     {
       component: Input,
       name: 'name',
       type: 'text',
       placeholder: 'Organisation name',
-    },
-    {
-      component: Input,
-      name: 'providerAppname',
-      type: 'text',
-      placeholder: 'Provider App name',
-    },
-    {
-      component: Input,
-      name: 'providerPhone',
-      type: 'text',
-      placeholder: 'Provider WhatsApp number',
     },
     {
       component: AutoComplete,
@@ -265,6 +235,7 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
   };
 
   const setPayload = (payload: any) => {
+    let object: any = {};
     // set active Language Ids
     let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
       return activeLanguage.id;
@@ -277,10 +248,8 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
     // remove defaultLanguage from the payload
     delete payload['defaultLanguage'];
 
-    return {
+    object = {
       name: payload.name,
-      providerAppname: payload.providerAppname,
-      providerPhone: payload.providerPhone,
       outOfOffice: {
         enabled: payload.hours,
         enabledDays: assignDays(payload.enabledDays),
@@ -291,24 +260,28 @@ export const OrganisationSettings: React.SFC<SettingsProps> = () => {
       defaultLanguageId: defaultLanguageId,
       activeLanguageIds: activeLanguageIds,
     };
+
+    return object;
   };
 
   return (
     <FormLayout
+      backLinkButton={{ text: 'Back to settings', link: '/settings' }}
       {...queries}
-      title="Settings"
+      title={'organization'}
       match={{ params: { id: organizationId } }}
-      states={states}
+      states={States}
       setStates={setStates}
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
+      refetchQueries={{ onUpdate: USER_LANGUAGES }}
       redirectionLink=""
-      cancelLink="chat"
+      cancelLink="settings"
       linkParameter="id"
-      listItem="organization"
+      listItem={'organization'}
       icon={SettingIcon}
       languageSupport={false}
       type={'settings'}

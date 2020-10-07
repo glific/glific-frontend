@@ -97,7 +97,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     }
   }
 
-  if (props.contactStatus && props.contactStatus === 'INVALID') {
+  if (
+    (props.contactStatus && props.contactStatus === 'INVALID') ||
+    props.contactProviderStatus === 'NONE'
+  ) {
     return (
       <div className={styles.ContactOptOutMessage}>
         Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to

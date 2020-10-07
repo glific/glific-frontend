@@ -1,32 +1,35 @@
-import React from 'react';
 import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
-
-export const RoleContext = React.createContext({
-  role: [],
-  setRole: (value: any) => {
-    setUserRole(value);
-  },
-});
 
 let role: any[] = [];
 const setUserRole = (type: any) => {
+  localStorage.setItem('role', JSON.stringify(type));
   role = type;
   getRoleBasedAccess();
 };
 
 const getUserRole = () => {
+  if (!role || role.length === 0) {
+    let userRole: any = localStorage.getItem('role');
+    if (userRole) {
+      role = userRole;
+    }
+  }
   return role;
 };
 
 let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
-let settingMenu: boolean = false;
+let settingMenu: boolean;
 let advanceSearch: boolean = false;
 let displayUserGroups: boolean = false;
 let isManagerRole: boolean = false;
 
 const getRoleBasedAccess = () => {
-  if (role.includes('Staff')) {
+  // if role not present get role
+  if (!role) {
+    getUserRole();
+  }
+  if (role && role.includes('Staff')) {
     sideDrawerMenu = [
       {
         title: 'Chats',
@@ -38,11 +41,14 @@ const getRoleBasedAccess = () => {
     staffManagementMenu = staffManagementMenus.filter(
       (obj: { path: string }) => obj.path !== '/staff-management'
     );
+
+    settingMenu = false;
   }
 
   if (role.includes('Manager') || role.includes('Admin')) {
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
+    settingMenu = false;
 
     if (role.includes('Admin')) settingMenu = true;
     if (role.includes('Manager')) isManagerRole = true;

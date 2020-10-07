@@ -2,17 +2,23 @@ const envVariables = process.env;
 
 const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
 const PROTOCOL = window.location.protocol;
-const HOSTNAME = window.location.hostname;
+const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
+const HOSTNAME = API_PREFIX
+  ? `${API_PREFIX}.${window.location.hostname}`
+  : window.location.hostname;
+
 const GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-export const SOCKET = API_PORT ? `ws://${HOSTNAME}:${API_PORT}/socket` : `ws://${HOSTNAME}/socket`;
+const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HOSTNAME}`;
+
+export const SOCKET = API_PORT
+  ? `${SOCKET_PROTOCOL}:${API_PORT}/socket`
+  : `${SOCKET_PROTOCOL}/socket`;
 export const SENTRY_DSN = envVariables.SENTRY_DSN;
 export const FLOW_EDITOR_API = GLIFIC_BACKEND_URL + '/flow-editor/';
-export const GLIFIC_API_URL = API_PORT
-  ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}/api`
-  : `${PROTOCOL}//${HOSTNAME}/api`;
+export const GLIFIC_API_URL = GLIFIC_BACKEND_URL + '/api';
 export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
 export const REACT_APP_GLIFIC_AUTHENTICATION_API = GLIFIC_API_URL + '/v1/registration/send-otp';
 export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
