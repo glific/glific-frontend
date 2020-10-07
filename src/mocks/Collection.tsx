@@ -1,5 +1,9 @@
 import { CREATE_COLLECTION } from '../graphql/mutations/Collection';
-import { COLLECTION_QUERY, COLLECTION_QUERY_COUNT } from '../graphql/queries/Collection';
+import {
+  COLLECTION_QUERY,
+  COLLECTION_QUERY_COUNT,
+  GET_COLLECTION,
+} from '../graphql/queries/Collection';
 
 export const createCollectionQuery = {
   request: {
@@ -43,32 +47,76 @@ export const countCollectionsQuery = {
   },
 };
 
-export const getCollectionsQuery = {
-  request: {
+const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
+  return {
     query: COLLECTION_QUERY,
     variables: {
-      filter: {
-        label: '',
-      },
+      filter: filter,
       opts: {
-        limit: 10,
-        offset: 0,
-        order: 'ASC',
+        limit: limit,
+        offset: offset,
+        order: order,
       },
+    },
+  };
+};
+
+export const getCollectionsQuery = [
+  {
+    request: collectionQuery(COLLECTION_QUERY, { label: '' }, 10, 0, 'ASC'),
+    result: {
+      data: {
+        savedSearches: [
+          {
+            count: 4,
+            args:
+              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            id: '8',
+            label: 'Test collection',
+            shortcode: 'Save Search collection',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: collectionQuery(COLLECTION_QUERY, {}, 100, 0, 'ASC'),
+    result: {
+      data: {
+        savedSearches: [
+          {
+            count: 4,
+            args:
+              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            id: '8',
+            label: 'Test collection',
+            shortcode: 'Save Search collection',
+          },
+        ],
+      },
+    },
+  },
+];
+
+export const getCollection = {
+  request: {
+    query: GET_COLLECTION,
+    variables: {
+      id: 1,
     },
   },
   result: {
     data: {
-      savedSearches: [
-        {
-          count: 4,
+      savedSearch: {
+        savedSearch: {
           args:
             '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-          id: '8',
+          count: 0,
+          id: '1',
           label: 'Test collection',
           shortcode: 'Save Search collection',
         },
-      ],
+      },
     },
   },
 };
