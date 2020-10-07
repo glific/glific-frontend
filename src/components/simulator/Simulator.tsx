@@ -125,7 +125,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
-            <ClearIcon className={styles.ClearIcon} onClick={() => setShowSimulator(false)} />
+            <ClearIcon
+              className={styles.ClearIcon}
+              onClick={() => setShowSimulator(false)}
+              data-testid="clearIcon"
+            />
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
@@ -145,6 +149,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   <InsertEmoticonIcon className={styles.Icon} />
                   <input
                     type="text"
+                    data-testid="simulatorInput"
                     onKeyPress={(event: any) => {
                       if (event.key === 'Enter') {
                         sendMessage();
@@ -182,6 +187,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     <>
       {showSimulator ? simulator : null}
       <SimulatorIcon
+        data-testid="simulatorIcon"
         className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
         onClick={() => handleSimulator()}
       ></SimulatorIcon>
