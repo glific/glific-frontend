@@ -57,7 +57,7 @@ describe('<Organisation />', () => {
 
 describe('Checked Hours of operations', () => {
   test('Checked Hours of operations', async () => {
-    const { getByText, findByTestId } = render(wrapper);
+    const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 

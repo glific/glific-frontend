@@ -245,6 +245,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -267,6 +268,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -289,6 +291,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -311,6 +314,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
