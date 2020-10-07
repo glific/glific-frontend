@@ -3,6 +3,9 @@ import { render, screen, wait, fireEvent, act } from '@testing-library/react';
 import { Simulator } from './Simulator';
 import { MockedProvider } from '@apollo/client/testing';
 import { conversationQuery } from '../../mocks/Chat';
+import axios from 'axios';
+
+jest.mock('axios');
 
 const mockSetShowSimulator = jest.fn();
 
@@ -31,6 +34,9 @@ test('send a message from the simulator', async () => {
 
   fireEvent.change(input, { target: { value: 'something' } });
   fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+  const responseData = { data: {} };
+  axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  await wait();
 
   expect(input).toHaveTextContent('');
 });
