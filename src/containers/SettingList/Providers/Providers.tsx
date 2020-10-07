@@ -11,12 +11,15 @@ import {
   UPDATE_CREDENTIAL,
 } from '../../../graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
+import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+import Typography from '@material-ui/core/Typography';
 
 export interface ProvidersProps {
   match: any;
 }
 
-const FormSchema = Yup.object().shape({});
+let validation: any = {};
+let FormSchema = Yup.object().shape(validation);
 const SettingIcon = <Settingicon />;
 
 const queries = {
@@ -37,15 +40,16 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   let formFields: any = [];
 
   const setCredential = (item: any) => {
-    keys = JSON.parse(item.keys);
-    secrets = JSON.parse(item.secrets);
+    let keys = JSON.parse(item.keys);
+    let secrets = JSON.parse(item.secrets);
     let fields: any = {};
     Object.assign(fields, keys);
     Object.assign(fields, secrets);
     Object.keys(fields).map((key) => {
-      // restore value for the field
+      // restore value of the field
       states[key] = fields[key];
     });
+    states['isActive'] = item.isActive;
   };
 
   const { data: providerData } = useQuery(GET_PROVIDERS, {
@@ -59,7 +63,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   if (credential && !credentialId) {
     let data = credential.credential.credential;
     if (data) {
-      //get credential data
+      // to get credential data
       setCredentialId(data.id);
     }
   }
@@ -82,6 +86,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     });
     object = {
       shortcode: type,
+      isActive: payload.isActive,
       keys: JSON.stringify(keysObj),
       secrets: JSON.stringify(secretsObj),
     };
@@ -89,12 +94,19 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   };
 
   const addField = (fields: any) => {
-    let formField: any = [];
+    let formField: any = [
+      {
+        component: Checkbox,
+        name: 'isActive',
+        title: (
+          <Typography variant="h6" style={{ color: '#073f24' }}>
+            Is active?
+          </Typography>
+        ),
+      },
+    ];
     let defaultStates: any = {};
-
     Object.keys(fields).map((key) => {
-      // add dafault value for the field
-      states[key] = fields[key].default;
       Object.assign(defaultStates, { [key]: fields[key].default });
       let field = {
         component: Input,
@@ -104,8 +116,27 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
         disabled: fields[key].view_only,
       };
       formField.push(field);
+
+      // create validation object for field
+      addValidation(fields, key);
+
+      // add dafault value for the field
+      states[key] = fields[key].default;
     });
     formFields = formField;
+  };
+
+  const addValidation = (fields: any, key: string) => {
+    validation[key] = Yup.string()
+      .nullable()
+      .when('isActive', {
+        is: true,
+        then: Yup.string()
+          .nullable()
+          .required(fields[key].label + ` is required.`),
+      });
+
+    FormSchema = Yup.object().shape(validation);
   };
 
   if (providerData) {

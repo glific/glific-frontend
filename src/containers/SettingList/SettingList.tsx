@@ -11,25 +11,23 @@ import { Link } from 'react-router-dom';
 
 const SettingIcon = <Settingicon />;
 
-let CardList = [
+const List = [
   {
-    label: 'Organisation',
+    name: 'Organisation',
     shortcode: 'organization',
     description: 'Manage organisation name, supported languages, hours of operations.',
   },
 ];
 
 export const SettingList: React.SFC = () => {
-  const { data: providerData } = useQuery(GET_PROVIDERS);
+  const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
-  if (!providerData) return <Loading />;
+  if (loading) return <Loading />;
 
+  let CardList: any = [];
   if (providerData) {
-    providerData.providers.map((provider: any) => {
-      //create list
-      if (CardList.filter((list: any) => list.label === provider.name).length <= 0)
-        CardList.push({ label: provider.name, shortcode: provider.shortcode, description: '' });
-    });
+    //create setting list of Organisation & providers
+    CardList = [...List, ...providerData.providers];
   }
 
   let heading = (
@@ -50,7 +48,7 @@ export const SettingList: React.SFC = () => {
             <Card variant="outlined" className={styles.Card} key={data.shortcode}>
               <CardContent className={styles.CardContent}>
                 <div data-testid="label" className={styles.Label}>
-                  {data.label}
+                  {data.name}
                 </div>
                 <Typography variant="body2" component="div" data-testid="description">
                   {data.description}

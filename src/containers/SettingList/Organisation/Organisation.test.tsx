@@ -37,6 +37,7 @@ describe('<Organisation />', () => {
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
+    await wait();
     expect(getByText('Settings edited successfully!')).toBeInTheDocument();
   });
 });
