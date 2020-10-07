@@ -26,6 +26,7 @@ describe('Chats', () => {
     cy.get('[data-testid="autocomplete-element"]').click().type('Import');
     cy.contains('Important').click();
     cy.get('[data-testid="ok-button"]').click();
+    cy.get('div').should('contain', 'Tags added succesfully');
   });
 
   // it('should remove message tag correctly', () => {});
