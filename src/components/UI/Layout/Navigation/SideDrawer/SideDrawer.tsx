@@ -172,7 +172,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
     <div>
       <Tooltip title="Settings" placement="top" tooltipClass={styles.tooltipClass}>
         <Link to={'/settings'} onClick={handleClick}>
-          <IconButton>
+          <IconButton data-testid="settingsMenu">
             <img
               src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
               className={styles.UserIcon}
@@ -232,7 +232,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
                   placement="top"
                   tooltipClass={styles.tooltipClass}
                 >
-                  <IconButton>
+                  <IconButton data-testid="staffManagementMenu">
                     <img
                       src={
                         ['/group', '/staff-management', '/blocked-contacts'].includes(
@@ -251,7 +251,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
             <div>
               <Menu menus={userAccountMenus}>
                 <Tooltip title="Profile" placement="top" tooltipClass={styles.tooltipClass}>
-                  <IconButton>
+                  <IconButton data-testid="profileMenu">
                     <img
                       src={
                         location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
