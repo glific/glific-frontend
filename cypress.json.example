@@ -1,0 +1,5 @@
+{
+  "baseUrl": "http://glific.test:3000/",
+  "$schema": "https://on.cypress.io/cypress.schema.json",
+  "env": { "backendUrl": "http://api.glific.test:4000/api/v1/session" }
+}
