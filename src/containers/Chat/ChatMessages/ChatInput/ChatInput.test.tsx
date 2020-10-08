@@ -55,7 +55,7 @@ describe('<ChatInput />', () => {
   });
 
   test('it should not be able to submit without any message', () => {
-    const submit = wrapper.find('button[data-testid="send-button"]');
+    const submit = wrapper.find('button[data-testid="sendButton"]');
     expect(submit.prop('disabled')).toBeTruthy();
     submit.simulate('click');
     expect(inputSubmitted).toBeFalsy();
