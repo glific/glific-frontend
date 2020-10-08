@@ -148,7 +148,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
-            data-testid="send-button"
+            data-testid="sendButton"
             variant="contained"
             color="primary"
             disableElevation

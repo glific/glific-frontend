@@ -7,14 +7,14 @@ describe('Chats', () => {
     cy.visit('/chat');
   });
   it('should load the correct message', () => {
-    cy.contains('Default receiver').click();
+    cy.contains('[data-testid="list"]', 'Default receiver').click();
     cy.get('div').should('contain', 'Default message body');
   });
 
   it('should send the message correctly', () => {
     cy.get('.DraftEditor-editorContainer').click({ force: true });
     cy.get('.DraftEditor-editorContainer').type(messageText);
-    cy.contains('Send').click();
+    cy.get('[data-testid="sendButton"]').click();
     cy.get('[data-testid="message"]').should('contain', messageText);
   });
 
@@ -25,7 +25,7 @@ describe('Chats', () => {
     cy.get('h2').should('contain', 'Assign tag to message');
     cy.get('[data-testid="autocomplete-element"]').click().type('Import');
     cy.contains('Important').click();
-    cy.get('[data-testid="ok-button"]').click();
+    cy.get('[data-testid="ok-button"]').click({ force: true });
     cy.get('div').should('contain', 'Tags added succesfully');
   });
 

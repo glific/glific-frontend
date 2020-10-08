@@ -12,18 +12,18 @@ describe('Speed Send', () => {
   });
 
   it('should create new speed send', () => {
-    cy.contains('CREATE SPEED SEND').click();
+    cy.get('[data-testid="newItemButton"]').click();
     cy.get('input[name=label]').type(speedSendName);
     cy.get('.DraftEditor-editorContainer').click({ force: true });
     cy.get('.DraftEditor-editorContainer').type('Test speed send message');
-    cy.contains('Save').click();
+    cy.get('[data-testid="submitActionButton"]').click();
     cy.get('div').should('contain', 'Speed send created successfully');
   });
 
   it('should edit speed send', () => {
     cy.get('input[name=searchInput]').type(speedSendName + '{enter}');
     cy.get('[data-testid=EditIcon]').click();
-    cy.contains('Save').click();
+    cy.get('[data-testid="submitActionButton"]').click();
     cy.get('div').should('contain', 'Speed send edited successfully');
   });
 
