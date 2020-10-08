@@ -71,7 +71,7 @@ export const GET_CONTACT = gql`
           label
         }
         status
-        providerStatus
+        bspStatus
         settings
         fields
         tags {

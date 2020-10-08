@@ -38,7 +38,7 @@ export interface ContactBarProps {
   contactId: string;
   lastMessageTime: any;
   contactStatus: string;
-  contactProviderStatus: string;
+  contactBspStatus: string;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -211,10 +211,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let automationButton: any;
-  if (
-    props.contactProviderStatus === 'SESSION' ||
-    props.contactProviderStatus === 'SESSION_AND_HSM'
-  ) {
+  if (props.contactBspStatus === 'SESSION' || props.contactBspStatus === 'SESSION_AND_HSM') {
     automationButton = (
       <Button
         className={styles.ListButtonPrimary}
@@ -312,7 +309,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <Timer
           time={props.lastMessageTime}
           contactStatus={props.contactStatus}
-          contactProviderStatus={props.contactProviderStatus}
+          contactBspStatus={props.contactBspStatus}
         />
       </div>
       <div>
