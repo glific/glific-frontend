@@ -206,11 +206,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const client = useApolloClient();
 
-  // using it as component unmount
-  useEffect(() => {
-    return () => setNotification(client, null);
-  }, []);
-
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);

@@ -33,6 +33,7 @@ describe('<Organisation />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
+    await wait();
     // click on SAVE
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);

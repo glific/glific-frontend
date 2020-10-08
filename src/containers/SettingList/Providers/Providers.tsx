@@ -163,14 +163,14 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       listItemName="Settings"
       dialogMessage={''}
       formFields={formFields}
-      redirectionLink=""
+      redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"
       listItem={'credential'}
       icon={SettingIcon}
       languageSupport={false}
       type={'settings'}
-      redirect={false}
+      redirect={true}
     />
   );
 };
