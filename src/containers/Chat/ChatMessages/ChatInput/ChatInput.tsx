@@ -68,7 +68,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       return (
         <div
           key={type}
-          data-testid="shortcut-button"
+          data-testid="shortcutButton"
           onClick={() => handleClick(type)}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
@@ -148,7 +148,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
-            data-testid="send-button"
+            data-testid="sendButton"
             variant="contained"
             color="primary"
             disableElevation

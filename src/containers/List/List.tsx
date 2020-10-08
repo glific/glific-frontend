@@ -428,14 +428,19 @@ export const List: React.SFC<ListProps> = ({
     let buttonContent;
     if (!button.link) {
       buttonContent = (
-        <Button color="primary" variant="contained" onClick={() => setNewItem(true)}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => setNewItem(true)}
+          data-testid="newItemButton"
+        >
           {button.label}
         </Button>
       );
     } else {
       buttonContent = (
         <Link to={button.link}>
-          <Button color="primary" variant="contained">
+          <Button color="primary" variant="contained" data-testid="newItemLink">
             {button.label}
           </Button>
         </Link>

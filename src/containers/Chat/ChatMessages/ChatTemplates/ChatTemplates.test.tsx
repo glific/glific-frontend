@@ -38,7 +38,7 @@ describe('<ChatTemplates />', () => {
     // Check isHsm is false
     const { getByText: getByTextSpeedSend, getByTestId } = render(chatTemplates());
     await wait();
-    expect(getByTestId('list-item')).toBeTruthy();
+    expect(getByTestId('templateItem')).toBeTruthy();
     expect(getByTextSpeedSend('Message:')).toBeInTheDocument();
     expect(getByTextSpeedSend('some description')).toBeInTheDocument();
 
@@ -60,7 +60,7 @@ describe('<ChatTemplates />', () => {
   test('onClick of text should trigger handleSelectText', async () => {
     const wrapper = render(chatTemplates());
     await wait();
-    const shortcutItem = wrapper.getByTestId('list-item');
+    const shortcutItem = wrapper.getByTestId('templateItem');
     fireEvent.click(shortcutItem);
     expect(defaultProps.handleSelectText).toHaveBeenCalled();
   });
