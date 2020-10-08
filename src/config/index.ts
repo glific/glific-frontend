@@ -25,3 +25,4 @@ export const USER_SESSION = GLIFIC_API_URL + '/v1/session';
 export const RESET_PASSWORD = GLIFIC_API_URL + '/v1/registration/reset-password';
 export const RENEW_TOKEN = USER_SESSION + '/renew';
 export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/automation/configure`;
+export const GUPSHUP_CALLBACK_URL = GLIFIC_BACKEND_URL + '/gupshup';
