@@ -203,10 +203,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   };
 
-  const getOptions = () => {
-    return dataUser.users;
-  };
-
   const DataFields = [
     {
       component: Input,
@@ -282,14 +278,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   const setPayload = (payload: any) => {
     if (search) search(payload);
-    if (props.searchParam) {
-      // payload.term = props.searchParam.term;
-      // payload.includeTags = props.searchParam.includeTags;
-      // payload.includeGroups = props.searchParam.includeGroups;
-      // payload.includeUsers = props.searchParam.includeUsers;
-      // payload.dateTo = props.searchParam.dateTo;
-      // payload.dateFrom = props.searchParam.dateFrom;
-    }
+
     let args = {
       messageOpts: {
         offset: 0,

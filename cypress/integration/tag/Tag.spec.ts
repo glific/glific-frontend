@@ -1,5 +1,5 @@
 describe('Tag', () => {
-  const tagName = 'Random Tag ' + Math.random();
+  const tagName = 'Sample Tag_' + +new Date();
 
   beforeEach(function () {
     // login before each test

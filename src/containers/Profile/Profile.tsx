@@ -47,7 +47,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
-  const [providerStatus, setProviderStatus] = useState('');
+  const [bspStatus, setBspStatus] = useState('');
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
@@ -63,13 +63,13 @@ export const Profile: React.SFC<ProfileProps> = ({
     currentContactId = match.params.id;
   }
 
-  let states: any = { name, phone, status, providerStatus };
+  let states: any = { name, phone, status, bspStatus };
 
-  const setStates = ({ name, phone, status, providerStatus, ...rest }: any) => {
+  const setStates = ({ name, phone, status, bspStatus, ...rest }: any) => {
     setName(name);
     setPhone(phone);
     setStatus(status);
-    setProviderStatus(providerStatus);
+    setBspStatus(bspStatus);
     if (additionalProfileStates) {
       additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
@@ -104,7 +104,7 @@ export const Profile: React.SFC<ProfileProps> = ({
 
     {
       component: Dropdown,
-      name: 'providerStatus',
+      name: 'bspStatus',
       placeholder: 'Provider status',
       options: PROVIDER_STATUS,
       disabled: true,

@@ -15,7 +15,7 @@ export interface ChatInputProps {
   onSendMessage(content: string): any;
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
-  contactProviderStatus: string;
+  contactBspStatus: string;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
@@ -83,8 +83,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   // determine what kind of messages we should display
   let quickSendTypes: any = [];
-  if (props.contactProviderStatus) {
-    switch (props.contactProviderStatus) {
+  if (props.contactBspStatus) {
+    switch (props.contactBspStatus) {
       case 'SESSION':
         quickSendTypes = [speedSends];
         break;
@@ -99,7 +99,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   if (
     (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactProviderStatus === 'NONE'
+    props.contactBspStatus === 'NONE'
   ) {
     return (
       <div className={styles.ContactOptOutMessage}>

@@ -1,5 +1,5 @@
 describe('Speed Send', () => {
-  const speedSendName = 'Random Speed Send ' + Math.random();
+  const speedSendName = 'Sample SpeedSend_' + +new Date();
 
   beforeEach(function () {
     // login before each test
@@ -14,12 +14,23 @@ describe('Speed Send', () => {
   it('should create new speed send', () => {
     cy.contains('CREATE SPEED SEND').click();
     cy.get('input[name=label]').type(speedSendName);
-    cy.get('[contenteditable="true"]').click({ force: true }).type('Test speed send message');
+    cy.get('.DraftEditor-editorContainer').click({ force: true });
+    cy.get('.DraftEditor-editorContainer').type('Test speed send message');
     cy.contains('Save').click();
     cy.get('div').should('contain', 'Speed send created successfully');
   });
 
-  it('should edit speed send', () => {});
+  it('should edit speed send', () => {
+    cy.get('input[name=searchInput]').type(speedSendName + '{enter}');
+    cy.get('[data-testid=EditIcon]').click();
+    cy.contains('Save').click();
+    cy.get('div').should('contain', 'Speed send edited successfully');
+  });
 
-  it('should delete speed send', () => {});
+  it('should delete speed send', () => {
+    cy.get('input[name=searchInput]').type(speedSendName + '{enter}');
+    cy.get('[data-testid=DeleteIcon]').click();
+    cy.contains('Confirm').click();
+    cy.get('div').should('contain', 'Speed send deleted successfully');
+  });
 });

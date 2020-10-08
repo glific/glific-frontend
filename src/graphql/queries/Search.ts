@@ -9,7 +9,7 @@ export const SEARCH_QUERY = gql`
         phone
         lastMessageAt
         status
-        providerStatus
+        bspStatus
       }
       messages {
         id

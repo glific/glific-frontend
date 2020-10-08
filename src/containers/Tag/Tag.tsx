@@ -165,6 +165,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     <FormLayout
       {...queries}
       match={match}
+      refetchQueries={{ onCreate: GET_TAGS }}
       states={states}
       setStates={setStates}
       setPayload={setPayload}
