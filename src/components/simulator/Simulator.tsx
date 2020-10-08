@@ -20,7 +20,8 @@ import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import moment from 'moment';
 import { TIME_FORMAT } from '../../common/constants';
 import ClearIcon from '@material-ui/icons/Clear';
-import { GUPSHUP_CALLBACK_URL, SIMULATOR_CONTACT } from '../../config';
+import { GUPSHUP_CALLBACK_URL } from '../../config';
+import { SIMULATOR_CONTACT } from '../../common/constants';
 
 export interface SimulatorProps {
   showSimulator: boolean;
