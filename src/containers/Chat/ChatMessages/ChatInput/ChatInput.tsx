@@ -68,7 +68,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       return (
         <div
           key={type}
-          data-testid="shortcut-button"
+          data-testid="shortcutButton"
           onClick={() => handleClick(type)}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,

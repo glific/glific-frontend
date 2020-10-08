@@ -136,7 +136,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: () => {
-      setNotification(client, 'Tags added succesfully');
+      setNotification(client, 'Tags added successfully');
       setDialogbox(false);
     },
   });
