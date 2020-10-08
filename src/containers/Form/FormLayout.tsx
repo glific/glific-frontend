@@ -368,6 +368,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 color="primary"
                 onClick={submitForm}
                 className={styles.Button}
+                data-testid="submitActionButton"
               >
                 {button}
               </Button>
@@ -379,11 +380,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                     submitForm();
                     setAction(true);
                   }}
+                  data-testid="additionalActionButton"
                 >
                   {additionalAction.label}
                 </Button>
               ) : null}
-              <Button variant="contained" color="default" onClick={cancelHandler}>
+              <Button
+                variant="contained"
+                color="default"
+                onClick={cancelHandler}
+                data-testid="cancelActionButton"
+              >
                 Cancel
               </Button>
               {deleteButton}
