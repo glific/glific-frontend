@@ -358,14 +358,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
-        contactProviderStatus={conversationInfo.contact.providerStatus}
+        contactBspStatus={conversationInfo.contact.bspStatus}
       />
       {messageListContainer}
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
         contactStatus={conversationInfo.contact.status}
-        contactProviderStatus={conversationInfo.contact.providerStatus}
+        contactBspStatus={conversationInfo.contact.bspStatus}
       />
     </Container>
   );

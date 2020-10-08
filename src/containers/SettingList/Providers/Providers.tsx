@@ -98,6 +98,9 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   };
 
   const addField = (fields: any) => {
+    // reset validation to empty
+    resetValidation();
+
     let formField: any = [
       {
         component: Checkbox,
@@ -140,7 +143,11 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
           .nullable()
           .required(fields[key].label + ` is required.`),
       });
+    FormSchema = Yup.object().shape(validation);
+  };
 
+  const resetValidation = () => {
+    validation = {};
     FormSchema = Yup.object().shape(validation);
   };
 
