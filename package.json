@@ -55,6 +55,7 @@
     "react-color": "^2.18.1",
     "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-linkify": "^1.0.0-alpha",
     "react-phone-input-2": "^2.13.7",
     "react-player": "^2.6.1",
