@@ -75,6 +75,7 @@
     "build": "npm run floweditor && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
+    "cy:run": "cypress run",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"

@@ -26,3 +26,5 @@ public/static
 public/sitestatic
 
 cypress.json
+cypress/screenshots
+cypress/videos
