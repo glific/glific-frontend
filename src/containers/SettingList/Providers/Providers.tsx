@@ -93,6 +93,10 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     return object;
   };
 
+  const handleChange = (value: any) => {
+    states['isActive'] = value;
+  };
+
   const addField = (fields: any) => {
     let formField: any = [
       {
@@ -103,6 +107,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
             Is active?
           </Typography>
         ),
+        handleChange: handleChange,
       },
     ];
     let defaultStates: any = {};
