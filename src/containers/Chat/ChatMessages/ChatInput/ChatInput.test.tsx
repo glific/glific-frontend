@@ -23,7 +23,7 @@ describe('<ChatInput />', () => {
     onSendMessage: onSendMessageHandler,
     handleHeightChange: handleHeightChange,
     contactStatus: 'VALID',
-    contactProviderStatus: 'SESSION_AND_HSM',
+    contactBspStatus: 'SESSION_AND_HSM',
   };
 
   const chatInput = (
