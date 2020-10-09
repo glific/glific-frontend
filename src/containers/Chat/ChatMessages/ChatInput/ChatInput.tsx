@@ -15,7 +15,7 @@ export interface ChatInputProps {
   onSendMessage(content: string): any;
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
-  contactProviderStatus: string;
+  contactBspStatus: string;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
@@ -68,7 +68,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       return (
         <div
           key={type}
-          data-testid="shortcut-button"
+          data-testid="shortcutButton"
           onClick={() => handleClick(type)}
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
@@ -83,8 +83,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   // determine what kind of messages we should display
   let quickSendTypes: any = [];
-  if (props.contactProviderStatus) {
-    switch (props.contactProviderStatus) {
+  if (props.contactBspStatus) {
+    switch (props.contactBspStatus) {
       case 'SESSION':
         quickSendTypes = [speedSends];
         break;
@@ -99,7 +99,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   if (
     (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactProviderStatus === 'NONE'
+    props.contactBspStatus === 'NONE'
   ) {
     return (
       <div className={styles.ContactOptOutMessage}>
@@ -148,7 +148,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
-            data-testid="send-button"
+            data-testid="sendButton"
             variant="contained"
             color="primary"
             disableElevation

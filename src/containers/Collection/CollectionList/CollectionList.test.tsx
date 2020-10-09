@@ -1,15 +1,22 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen, wait } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
 import { CollectionList } from './CollectionList';
+import { LIST_ITEM_MOCKS } from '../Collection.test.helper';
 
-describe('<CollectionList />', () => {
-  let component;
+const mocks = LIST_ITEM_MOCKS;
 
-  beforeEach(() => {
-    component = shallow(<CollectionList />);
-  });
+const wrapper = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <CollectionList />
+  </MockedProvider>
+);
 
-  test('It should mount', () => {
-    expect(component.length).toBe(1);
-  });
+test('should load the collection list', async () => {
+  const { getByText } = render(wrapper);
+
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await wait();
+  expect(getByText('Collections')).toBeInTheDocument();
 });

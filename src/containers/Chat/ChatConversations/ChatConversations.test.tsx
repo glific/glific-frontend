@@ -11,7 +11,10 @@ afterEach(cleanup);
 const chatConversation = (
   <MockedProvider mocks={mocks}>
     <Router>
-      <ChatConversations contactId={6} />
+      <ChatConversations
+        contactId={6}
+        simulator={{ simulatorId: '1', setShowSimulator: jest.fn() }}
+      />
     </Router>
   </MockedProvider>
 );

@@ -55,6 +55,7 @@
     "react-color": "^2.18.1",
     "react-data-table-component": "^6.9.3",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-linkify": "^1.0.0-alpha",
     "react-phone-input-2": "^2.13.7",
     "react-player": "^2.6.1",
@@ -75,6 +76,7 @@
     "build": "npm run floweditor && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
+    "cy:run": "cypress run",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"

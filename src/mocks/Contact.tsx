@@ -52,7 +52,7 @@ export const getContactQuery = {
           phone: '+919820198765',
           language: [],
           status: 'VALID',
-          providerStatus: 'SESSION_AND_HSM',
+          bspStatus: 'SESSION_AND_HSM',
           settings: {},
           fields: {},
           tags: [],

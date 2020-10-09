@@ -1,8 +1,4 @@
-import {
-  COLLECTION_QUERY,
-  GET_COLLECTION,
-  COLLECTION_QUERY_COUNT,
-} from '../../graphql/queries/Collection';
+import { GET_COLLECTION } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
   DELETE_COLLECTION,
@@ -14,6 +10,12 @@ import { GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import {
+  createCollectionQuery,
+  countCollectionsQuery,
+  getCollectionsQuery,
+  getCollection,
+} from '../../mocks/Collection';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_COLLECTION,
@@ -42,124 +44,11 @@ export const listItemProps = {
 };
 
 export const LIST_ITEM_MOCKS = [
-  {
-    request: {
-      query: CREATE_COLLECTION,
-      variables: {
-        input: {
-          label: 'new Collection description',
-          shortcode: 'new Collection',
-          args:
-            '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-        },
-      },
-    },
-    result: {
-      data: {
-        createSavedSearch: {
-          errors: null,
-          savedSearch: {
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-            id: '11',
-            label: 'new Collection description',
-            shortcode: 'new Collection',
-          },
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: COLLECTION_QUERY_COUNT,
-      variables: {
-        filter: { label: '' },
-      },
-    },
-    result: {
-      data: {
-        countTags: 1,
-      },
-    },
-  },
-  {
-    request: {
-      query: COLLECTION_QUERY,
-      variables: {
-        filter: {
-          label: '',
-        },
-        opts: {
-          limit: 10,
-          offset: 0,
-          order: 'ASC',
-        },
-      },
-    },
-    result: {
-      data: {
-        savedSearches: [
-          {
-            count: 4,
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-            id: '8',
-            label: 'Test collection',
-            shortcode: 'Save Search collection',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: COLLECTION_QUERY,
-      variables: {
-        filter: {},
-        opts: {
-          limit: 100,
-          offset: 0,
-          order: 'ASC',
-        },
-      },
-    },
-    result: {
-      data: {
-        savedSearches: [
-          {
-            count: 4,
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-            id: '8',
-            label: 'Test collection',
-            shortcode: 'Save Search collection',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_COLLECTION,
-      variables: {
-        id: 1,
-      },
-    },
-    result: {
-      data: {
-        savedSearch: {
-          savedSearch: {
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-            count: 0,
-            id: '1',
-            label: 'Test collection',
-            shortcode: 'Save Search collection',
-          },
-        },
-      },
-    },
-  },
+  createCollectionQuery,
+  countCollectionsQuery,
+  countCollectionsQuery,
+  ...getCollectionsQuery,
+  getCollection,
   {
     request: {
       query: GET_GROUPS,

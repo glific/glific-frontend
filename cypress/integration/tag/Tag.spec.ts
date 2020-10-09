@@ -1,5 +1,5 @@
 describe('Tag', () => {
-  const tagName = 'Random Tag ' + Math.random();
+  const tagName = 'Sample Tag_' + +new Date();
 
   beforeEach(function () {
     // login before each test
@@ -12,10 +12,10 @@ describe('Tag', () => {
   });
 
   it('should create new tag', () => {
-    cy.contains('CREATE TAG').click();
+    cy.get('[data-testid="newItemButton"]').click();
     cy.get('input[name=label]').type(tagName);
     cy.get('textarea:first').type('This is random tag description');
-    cy.contains('Save').click();
+    cy.get('[data-testid="submitActionButton"]').click();
     cy.get('div').should('contain', 'Tag created successfully');
     cy.get('input[name=searchInput]').type(tagName + '{enter}');
     cy.get('div').should('contain', tagName);
@@ -24,7 +24,7 @@ describe('Tag', () => {
   it('should edit tag', () => {
     cy.get('input[name=searchInput]').type(tagName + '{enter}');
     cy.get('[data-testid=EditIcon]').click();
-    cy.contains('Save').click();
+    cy.get('[data-testid="submitActionButton"]').click();
     cy.get('div').should('contain', 'Tag edited successfully');
   });
 

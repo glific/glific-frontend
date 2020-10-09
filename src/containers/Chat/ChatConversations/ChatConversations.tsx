@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
@@ -14,19 +14,30 @@ import { advanceSearch } from '../../../context/role';
 
 export interface ChatConversationsProps {
   contactId: number;
+  simulator: any;
 }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
   const [searchParam, setSearchParam] = useState<any>({});
-  const [selectedContactId, setSelectedContactId] = useState(props.contactId);
+  const [selectedContactId, setSelectedContactId] = useState<any>(props.contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearchCollection, setSavedSearchCollection] = useState(null);
   const [collectionMethod, setCollectionMethod] = useState('');
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
+
+  useEffect(() => {
+    setSelectedContactId(props.contactId.toString());
+  }, [props.contactId]);
+
+  useEffect(() => {
+    if (selectedContactId === props.simulator.simulatorId) {
+      props.simulator.setShowSimulator(true);
+    }
+  }, [selectedContactId]);
 
   const handleChange = (event: any) => {
     if (event.target.param) {

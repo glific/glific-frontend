@@ -1,6 +1,7 @@
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
+export const SIMULATOR_CONTACT = '9876543210';
 
 // const enums
 // provider status against the contact
