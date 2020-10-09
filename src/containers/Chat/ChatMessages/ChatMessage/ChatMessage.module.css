@@ -3,7 +3,7 @@
   position: relative;
   max-width: 100%;
   border-radius: 12px;
-  font-family: 'Heebo', sans-serif;
+  font-family: 'Heebo', sans-serif, emoji;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 
   clear: both;
@@ -117,7 +117,7 @@
   width: 100% !important;
   justify-content: left !important;
   text-transform: none !important;
-  color: #073F24 !important;
+  color: #073f24 !important;
 }
 
 .Inline {
