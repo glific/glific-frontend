@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
@@ -134,7 +134,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const { loading, error } = useQuery(getItemQuery, {
     variables: variables,
     skip: !itemId,
-    fetchPolicy: 'no-cache', // This is required to restore the data after save
     onCompleted: (data) => {
       if (data) {
         item = data[listItem][listItem];
@@ -369,6 +368,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 color="primary"
                 onClick={submitForm}
                 className={styles.Button}
+                data-testid="submitActionButton"
               >
                 {button}
               </Button>
@@ -380,11 +380,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                     submitForm();
                     setAction(true);
                   }}
+                  data-testid="additionalActionButton"
                 >
                   {additionalAction.label}
                 </Button>
               ) : null}
-              <Button variant="contained" color="default" onClick={cancelHandler}>
+              <Button
+                variant="contained"
+                color="default"
+                onClick={cancelHandler}
+                data-testid="cancelActionButton"
+              >
                 Cancel
               </Button>
               {deleteButton}
