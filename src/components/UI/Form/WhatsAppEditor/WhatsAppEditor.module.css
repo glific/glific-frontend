@@ -10,21 +10,8 @@
 }
 
 .Editor :global(.public-DraftEditor-content) > div {
-  height: 40px;
-  overflow: auto;
-}
-
-.Editor :global(.public-DraftEditor-content) > div::-webkit-scrollbar {
-  width: 22px;
-}
-
-.Editor :global(.public-DraftEditor-content) > div::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background: lightgray;
-  height: 30px;
-  border: 0.5em solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  -webkit-border-radius: 1em;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /* TODO: Override emoji-mart-emoji font-size to make it medium. */
