@@ -11,7 +11,7 @@ import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
-import { SET_VARIABLES } from '../../common/constants';
+import { setVariables } from '../../common/constants';
 
 export interface TagProps {
   match: any;
@@ -54,7 +54,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   };
 
   const { data } = useQuery(GET_TAGS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {

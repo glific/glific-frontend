@@ -20,7 +20,7 @@ import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { Typography } from '@material-ui/core';
-import { SET_VARIABLES } from '../../common/constants';
+import { setVariables } from '../../common/constants';
 
 export interface CollectionProps {
   match?: any;
@@ -172,16 +172,16 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   }, [props.searchParam]);
 
   const { data: dataT } = useQuery(GET_TAGS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   const { data } = useQuery(GET_GROUPS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   const { data: dataUser } = useQuery(GET_USERS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   const { data: collections } = useQuery(COLLECTION_QUERY, {
-    variables: SET_VARIABLES({}, 100, 0, 'ASC'),
+    variables: setVariables({}, 100, 0, 'ASC'),
   });
 
   if (!data || !dataT || !dataUser) return <Loading />;

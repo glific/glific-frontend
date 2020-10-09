@@ -17,7 +17,7 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { SET_VARIABLES } from '../../../common/constants';
+import { setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -93,7 +93,7 @@ export const Organisation: React.SFC = () => {
   };
 
   const { data } = useQuery(GET_AUTOMATIONS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },

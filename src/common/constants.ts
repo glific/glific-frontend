@@ -30,7 +30,12 @@ export const SEARCH_QUERY_VARIABLES = {
   },
 };
 
-export const SET_VARIABLES = (filter: any, limit: any, offset: any, order: string) => {
+export const setVariables = (
+  filter: any = {},
+  limit: any = null,
+  offset: number = 0,
+  order: string = 'ASC'
+) => {
   return {
     filter: filter,
     opts: {

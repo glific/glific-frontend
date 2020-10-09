@@ -1,6 +1,6 @@
 import { UPDATE_CURRENT_USER } from '../graphql/mutations/User';
 import { GET_CURRENT_USER, GET_USERS } from '../graphql/queries/User';
-import { SET_VARIABLES } from '../common/constants';
+import { setVariables } from '../common/constants';
 
 export const getCurrentUserQuery = {
   request: {
@@ -33,7 +33,7 @@ export const getCurrentUserQuery = {
 export const getUsersQuery = {
   request: {
     query: GET_USERS,
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   },
   result: {
     data: {

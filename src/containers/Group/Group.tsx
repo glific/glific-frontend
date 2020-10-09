@@ -16,7 +16,7 @@ import {
 import styles from './Group.module.css';
 import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
-import { SET_VARIABLES } from '../../common/constants';
+import { setVariables } from '../../common/constants';
 
 export interface GroupProps {
   match: any;
@@ -106,7 +106,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   };
 
   const { data } = useQuery(GET_USERS, {
-    variables: SET_VARIABLES({}, null, 0, 'ASC'),
+    variables: setVariables(),
   });
   let options = [];
   if (data) {
