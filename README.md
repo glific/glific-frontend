@@ -47,7 +47,7 @@ Launches cypress test runner. <br />
 
 ### `yarn cy:run`
 
-Command line without opening browser (headless)
+Command line without opening a browser (headless mode)
 
 ##### Cypress Configuraion
 
