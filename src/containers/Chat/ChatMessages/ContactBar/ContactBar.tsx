@@ -27,7 +27,7 @@ import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Automat
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
-import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import { SEARCH_QUERY_VARIABLES, setVariables } from '../../../../common/constants';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -50,10 +50,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showBlockDialog, setShowBlockDialog] = useState(false);
 
   // get group list
-  const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS);
+  const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
+    variables: setVariables(),
+  });
 
   // get automation list
-  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS);
+  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS, {
+    variables: setVariables(),
+  });
 
   // get contact groups
   const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {

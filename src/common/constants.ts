@@ -29,3 +29,19 @@ export const SEARCH_QUERY_VARIABLES = {
     limit: 50,
   },
 };
+
+export const setVariables = (
+  filter: any = {},
+  limit: any = null,
+  offset: number = 0,
+  order: string = 'ASC'
+) => {
+  return {
+    filter: filter,
+    opts: {
+      limit: limit,
+      offset: offset,
+      order: order,
+    },
+  };
+};

@@ -11,6 +11,7 @@ import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
+import { setVariables } from '../../common/constants';
 
 export interface TagProps {
   match: any;
@@ -52,7 +53,9 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
-  const { data } = useQuery(GET_TAGS);
+  const { data } = useQuery(GET_TAGS, {
+    variables: setVariables(),
+  });
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
       filter: { label: filterLabel, languageId: parseInt(languageId) },
