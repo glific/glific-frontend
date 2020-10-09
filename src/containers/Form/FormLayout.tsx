@@ -134,7 +134,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const { loading, error } = useQuery(getItemQuery, {
     variables: variables,
     skip: !itemId,
-    fetchPolicy: 'no-cache', // This is required to restore the data after save
     onCompleted: (data) => {
       if (data) {
         item = data[listItem][listItem];

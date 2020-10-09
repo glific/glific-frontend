@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useApolloClient } from '@apollo/client';
 import * as Yup from 'yup';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -32,7 +32,7 @@ const queries = {
 export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   const type = match.params.type ? match.params.type : null;
   const [credentialId, setCredentialId] = useState(null);
-
+  const client = useApolloClient();
   let param = { params: { id: credentialId, shortcode: type } };
   let states: any = {};
   let keys: any = {};
@@ -162,6 +162,15 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     });
   }
 
+  const saveHandler = (data: any) => {
+    // Update the details of the cache. This is required at the time of restoration
+    client.writeQuery({
+      query: GET_CREDENTIAL,
+      variables: { shortcode: type },
+      data: data.updateCredential,
+    });
+  };
+
   return (
     <FormLayout
       backLinkButton={{ text: 'Back to settings', link: '/settings' }}
@@ -183,6 +192,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       languageSupport={false}
       type={'settings'}
       redirect={true}
+      afterSave={saveHandler}
     />
   );
 };
