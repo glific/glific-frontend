@@ -24,7 +24,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
             className={styles.CheckboxColor}
             {...props.field}
             color="primary"
-            checked={props.field.value}
+            checked={props.field.value ? props.field.value : false}
             onChange={handleChange}
           />
         }

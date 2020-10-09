@@ -278,14 +278,14 @@ export const Organisation: React.SFC = () => {
       dialogMessage={''}
       formFields={formFields}
       refetchQueries={{ onUpdate: USER_LANGUAGES }}
-      redirectionLink=""
+      redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"
       listItem={'organization'}
       icon={SettingIcon}
       languageSupport={false}
       type={'settings'}
-      redirect={false}
+      redirect={true}
       afterSave={saveHandler}
     />
   );

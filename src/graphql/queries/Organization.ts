@@ -6,10 +6,6 @@ export const GET_ORGANIZATION = gql`
       organization {
         id
         name
-        provider {
-          id
-          name
-        }
         outOfOffice {
           enabled
           enabledDays {
@@ -39,6 +35,7 @@ export const GET_PROVIDERS = gql`
       id
       name
       shortcode
+      description
       keys
       secrets
       group
@@ -52,6 +49,7 @@ export const GET_CREDENTIAL = gql`
     credential(shortcode: $shortcode) {
       credential {
         id
+        isActive
         keys
         secrets
         provider {

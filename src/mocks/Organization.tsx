@@ -37,10 +37,6 @@ export const getOrganizationQuery = [
               flowId: '6',
               startTime: '12:31:27',
             },
-            provider: {
-              id: '1',
-              name: 'Gupshup',
-            },
             name: 'Glific',
           },
         },
@@ -78,10 +74,6 @@ export const getOrganizationQuery = [
               endTime: '12:30:27',
               flowId: '6',
               startTime: '12:31:27',
-            },
-            provider: {
-              id: '1',
-              name: 'Gupshup',
             },
             name: 'Glific',
           },
@@ -121,10 +113,6 @@ export const getOrganizationQuery = [
               flowId: '6',
               startTime: '12:31:27',
             },
-            provider: {
-              id: '1',
-              name: 'Gupshup',
-            },
             name: 'Glific',
           },
         },
@@ -151,6 +139,7 @@ export const getProvidersQuery = [
             secrets:
               '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
             shortcode: 'gupshup',
+            description: 'sample description',
           },
           {
             group: 'bsp',
@@ -161,6 +150,7 @@ export const getProvidersQuery = [
             name: 'Glifproxy',
             secrets: '{}',
             shortcode: 'glifproxy',
+            description: 'sample description',
           },
         ],
       },
@@ -184,6 +174,7 @@ export const getProvidersQuery = [
             secrets:
               '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
             shortcode: 'gupshup',
+            description: 'sample description',
           },
           {
             group: 'bsp',
@@ -194,6 +185,7 @@ export const getProvidersQuery = [
             name: 'Glifproxy',
             secrets: '{}',
             shortcode: 'glifproxy',
+            description: 'sample description',
           },
         ],
       },
@@ -217,6 +209,7 @@ export const getProvidersQuery = [
             secrets:
               '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
             shortcode: 'gupshup',
+            description: 'sample description',
           },
         ],
       },
@@ -252,6 +245,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -274,6 +268,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -296,6 +291,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
@@ -318,6 +314,7 @@ export const getCredential = [
             },
             secrets:
               '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+            isActive: true,
           },
         },
       },
