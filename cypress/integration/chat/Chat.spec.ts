@@ -1,5 +1,6 @@
 describe('Chats', () => {
   const messageText = 'Sample Message for testing ' + +new Date();
+  const speedSendTitle = 'Speed Send saved from chat ' + +new Date();
 
   beforeEach(function () {
     // login before each test
@@ -36,10 +37,16 @@ describe('Chats', () => {
 
   it('should send the speed send', () => {
     cy.get('[data-testid="shortcutButton"]').click();
-    cy.get('[data-testid="templateItem"]').click();
+    cy.get('[data-testid="templateItem"] :first').click();
     cy.get('[data-testid="sendButton"]').click();
     cy.get('div').should('contain', 'Please click on the link');
   });
 
-  // it('should send add to speed send', () => {});
+  it('should send add to speed send', () => {
+    cy.contains('[data-testid="message"]', messageText).find('svg').click();
+    cy.contains('Add to speed sends').click();
+    cy.get('[data-testid="templateInput"]').type(speedSendTitle);
+    cy.get('[data-testid="ok-button"]').click({ force: true });
+    cy.get('div').should('contain', 'Message has been successfully added to speed sends.');
+  });
 });
