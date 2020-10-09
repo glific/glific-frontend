@@ -16,6 +16,7 @@ import {
   getCollectionsQuery,
   getCollection,
 } from '../../mocks/Collection';
+import { SET_VARIABLES } from '../../common/constants';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_COLLECTION,
@@ -52,6 +53,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_GROUPS,
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {
@@ -68,6 +70,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_TAGS,
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {
@@ -87,6 +90,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_TAGS,
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {
@@ -125,6 +129,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_USERS,
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {

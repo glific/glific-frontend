@@ -7,6 +7,7 @@ import {
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import { SET_VARIABLES } from '../../common/constants';
 
 export const STAFF_MANAGEMENT_MOCKS = [
   {
@@ -81,6 +82,7 @@ export const STAFF_MANAGEMENT_MOCKS = [
   {
     request: {
       query: GET_GROUPS,
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_AUTOMATIONS = gql`
-  {
-    flows {
+  query flows($filter: FlowFilter, $opts: Opts) {
+    flows(filter: $filter, opts: $opts) {
       id
       name
       uuid

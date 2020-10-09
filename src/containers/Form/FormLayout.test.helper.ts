@@ -3,6 +3,7 @@ import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag'
 import { Input } from '../../components/UI/Form/Input/Input';
 import { getTagsQuery } from '../../mocks/Tag';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import { SET_VARIABLES } from '../../common/constants';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_TAG,
@@ -219,7 +220,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_TAGS,
-      variables: {},
+      variables: SET_VARIABLES({}, null, 0, 'ASC'),
     },
     result: {
       data: {
