@@ -33,9 +33,11 @@ describe('<Organisation />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
+    await wait();
     // click on SAVE
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
+    await wait();
     await wait();
     expect(getByText('Settings edited successfully!')).toBeInTheDocument();
   });
@@ -56,7 +58,7 @@ describe('<Organisation />', () => {
 
 describe('Checked Hours of operations', () => {
   test('Checked Hours of operations', async () => {
-    const { getByText, findByTestId } = render(wrapper);
+    const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
