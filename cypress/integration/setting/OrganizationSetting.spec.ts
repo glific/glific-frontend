@@ -7,10 +7,13 @@ describe('Organization Settings', () => {
 
   it('should navigate to settings list', () => {
     cy.get('h5').should('contain', 'Settings');
-    cy.get('div').contains('Organization').find('[data-testid="EditIcon"]').click();
   });
 
   it('should update languages in organization settings', () => {
-    cy.get('div').contains('Organization').find('[data-testid="EditIcon"]').click();
+    cy.get('[data-testid="organization"]').find('[data-testid="EditIcon"]').click();
+    cy.get('[data-testid="AutocompleteInput"]').first().click().type('Hind');
+    cy.contains('Hindi').click();
+    cy.get('[data-testid="submitActionButton"]').click();
+    cy.get('div').should('contain', 'Settings edited successfully!');
   });
 });
