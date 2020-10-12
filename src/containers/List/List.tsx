@@ -19,6 +19,7 @@ import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { ListCard } from './ListCard/ListCard';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { getUserRole, displayUserGroups } from '../../context/role';
+import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -280,17 +281,19 @@ export const List: React.SFC<ListProps> = ({
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit ? (
-        <Link to={`/${pageLink}/` + id + '/edit'}>
-          <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-            <EditIcon />
-          </IconButton>
-        </Link>
+        <Tooltip title="Edit" placement="top">
+          <Link to={`/${pageLink}/` + id + '/edit'}>
+            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+              <EditIcon />
+            </IconButton>
+          </Link>
+        </Tooltip>
       ) : null;
     }
 
     const deleteButton = (id: any, label: string) => {
       return allowedAction.delete ? (
-        <>
+        <Tooltip title="Delete" placement="top">
           <IconButton
             aria-label="Delete"
             color="default"
@@ -299,7 +302,7 @@ export const List: React.SFC<ListProps> = ({
           >
             {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>{' '}
-        </>
+        </Tooltip>
       ) : null;
     };
 
@@ -307,15 +310,17 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction && additionalAction.link ? (
-            <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
-              <IconButton
-                color="default"
-                className={styles.additonalButton}
-                data-testid="additionalButton"
-              >
-                {additionalAction.icon}
-              </IconButton>
-            </Link>
+            <Tooltip title="Edit" placement="top">
+              <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
+                <IconButton
+                  color="default"
+                  className={styles.additonalButton}
+                  data-testid="additionalButton"
+                >
+                  {additionalAction.icon}
+                </IconButton>
+              </Link>
+            </Tooltip>
           ) : null}
 
           {additionalAction && additionalAction.dialog ? (
