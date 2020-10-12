@@ -48,7 +48,7 @@ export const staffManagementMenus = [
 
 export const userAccountMenus = [
   {
-    title: 'Profile',
+    title: 'My Profile',
     path: '/user-profile',
   },
   {

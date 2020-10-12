@@ -118,8 +118,10 @@ export const Profile: React.SFC<ProfileProps> = ({
   }
 
   let type: any;
+  let pageTitle = 'Contact Profile';
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {
     type = 'UserProfile';
+    pageTitle = 'My Profile';
   }
 
   return (
@@ -139,6 +141,7 @@ export const Profile: React.SFC<ProfileProps> = ({
       icon={profileIcon}
       afterDelete={afterDelete}
       type={type}
+      title={pageTitle}
     />
   );
 };
