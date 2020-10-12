@@ -17,6 +17,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
   groups,
   lastMessage,
 }: ContactDescriptionProps) => {
+  // list of groups that the contact is assigned
   let assignedToGroup: any = Array.from(
     new Set([].concat(...groups.map((group: any) => group.users.map((user: any) => user.name))))
   );
@@ -27,19 +28,22 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
     assignedToGroup = assignedToGroup.join(', ');
   }
 
+  // list of groups that the contact belongs
+  let groupList = groups.map((group: any) => group.label).join(', ');
+
   const groupDetails = [
-    { label: 'Groups', value: groups.map((group: any) => group.label).join(', ') },
+    { label: 'Groups', value: groupList ? groupList : 'None' },
     {
       label: 'Assigned to',
       value: assignedToGroup ? assignedToGroup : 'None',
     },
   ];
 
-  if (typeof settings === "string") {
+  if (typeof settings === 'string') {
     settings = JSON.parse(settings);
   }
 
-  if (typeof fields === "string") {
+  if (typeof fields === 'string') {
     fields = JSON.parse(fields);
   }
 
@@ -67,22 +71,30 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
       </div>
 
       <div className={styles.DetailBlock}>
-        {settings && typeof settings === "object" && Object.keys(settings).map((key) => (
-          <div key={key}>
-            <div className={styles.DescriptionItem}>{key}</div>
-            <div className={styles.DescriptionItemValue}>
-              {Object.keys(settings[key]).filter((settingKey) => {
-                return settings[key][settingKey] === true;
-              }).join(', ')}
+        {settings &&
+          typeof settings === 'object' &&
+          Object.keys(settings).map((key) => (
+            <div key={key}>
+              <div className={styles.DescriptionItem}>{key}</div>
+              <div className={styles.DescriptionItemValue}>
+                {Object.keys(settings[key])
+                  .filter((settingKey) => {
+                    return settings[key][settingKey] === true;
+                  })
+                  .join(', ')}
+              </div>
             </div>
-          </div>
-        ))}
-        {fields && typeof fields === "object" && Object.keys(fields).map((key) => (
-          <div key={key}>
-            <div className={styles.DescriptionItem}>{fields[key].label ? fields[key].label : key.replace('_', ' ')}</div>
-            <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
-          </div>
-        ))}
+          ))}
+        {fields &&
+          typeof fields === 'object' &&
+          Object.keys(fields).map((key) => (
+            <div key={key}>
+              <div className={styles.DescriptionItem}>
+                {fields[key].label ? fields[key].label : key.replace('_', ' ')}
+              </div>
+              <div className={styles.DescriptionItemValue}>{fields[key].value}</div>
+            </div>
+          ))}
       </div>
     </div>
   );
