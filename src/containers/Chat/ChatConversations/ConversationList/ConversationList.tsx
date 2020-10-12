@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { List, Container } from '@material-ui/core';
+import { List, Container, CircularProgress } from '@material-ui/core';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 
@@ -9,6 +9,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import styles from './ConversationList.module.css';
+import { Button } from '../../../../components/UI/Form/Button/Button';
 
 interface ConversationListProps {
   searchVal: string;
@@ -129,6 +130,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
+  const loadMoreMessages = () => {};
+
   return (
     <Container className={styles.ListingContainer} disableGutters>
       {conversationList ? (
@@ -136,6 +139,15 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       ) : (
         { conversationList }
       )}
+      <div className={styles.LoadMore}>
+        {called && loading ? (
+          <CircularProgress />
+        ) : (
+          <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
+            Load More
+          </Button>
+        )}
+      </div>
     </Container>
   );
 };
