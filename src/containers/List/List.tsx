@@ -50,6 +50,7 @@ export interface ListProps {
     parameter: string;
     link?: string;
     dialog?: any;
+    label?: string;
   } | null;
   deleteModifier?: {
     icon: string;
@@ -310,7 +311,7 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction && additionalAction.link ? (
-            <Tooltip title="Edit" placement="top">
+            <Tooltip title={`${additionalAction.label}`} placement="top">
               <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
                 <IconButton
                   color="default"
