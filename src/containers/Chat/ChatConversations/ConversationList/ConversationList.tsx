@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { List, Container, CircularProgress } from '@material-ui/core';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
@@ -22,6 +22,7 @@ interface ConversationListProps {
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
   const queryVariables = SEARCH_QUERY_VARIABLES;
+  const [loadingOffset, setLoadingOffset] = useState(50);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -73,6 +74,32 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       variables: filterVariables(),
     });
   }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
+
+  const [loadMoreConversations, { loading: contactsLoad }] = useLazyQuery<any>(SEARCH_QUERY, {
+    onCompleted: (data) => {
+      if (data) {
+        if (data) {
+          const conversations = client.readQuery({
+            query: SEARCH_QUERY,
+            variables: queryVariables,
+          });
+
+          const conversationCopy = JSON.parse(JSON.stringify(data));
+
+          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
+
+          client.writeQuery({
+            query: SEARCH_QUERY,
+            variables: queryVariables,
+            data: conversationsCopy,
+          });
+
+          setLoadingOffset(loadingOffset + 10);
+        }
+      }
+    },
+  });
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY
@@ -130,24 +157,39 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
-  const loadMoreMessages = () => {};
+  const loadMoreMessages = () => {
+    loadMoreConversations({
+      variables: {
+        contactOpts: {
+          limit: 10,
+          offset: loadingOffset,
+        },
+        filter: {},
+        messageOpts: {
+          limit: 50,
+        },
+      },
+    });
+  };
 
   return (
     <Container className={styles.ListingContainer} disableGutters>
       {conversationList ? (
-        <List className={styles.StyledList}>{conversationList}</List>
+        <List className={styles.StyledList}>
+          {conversationList}
+          <div className={styles.LoadMore}>
+            {contactsLoad ? (
+              <CircularProgress />
+            ) : (
+              <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
+                Load More
+              </Button>
+            )}
+          </div>
+        </List>
       ) : (
         { conversationList }
       )}
-      <div className={styles.LoadMore}>
-        {called && loading ? (
-          <CircularProgress />
-        ) : (
-          <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
-            Load More
-          </Button>
-        )}
-      </div>
     </Container>
   );
 };
