@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
-import { Container } from '@material-ui/core';
+import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router';
 
@@ -21,6 +21,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { Button } from '../../../components/UI/Form/Button/Button';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -120,14 +121,35 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: {
-      contactOpts: {
-        limit: 50,
-      },
-      filter: { id: contactId ? contactId.toString() : '0' },
-      messageOpts: {
-        limit: 50,
-      },
+    onCompleted: (data) => {
+      if (data) {
+        const conversations = client.readQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+        });
+        const conversationCopy = JSON.parse(JSON.stringify(data));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+        let conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          if (conversation.contact.id === contactId.toString()) {
+            conversation.messages = [
+              ...conversation.messages,
+              ...conversationCopy.search[0].messages,
+            ];
+          }
+          return conversation;
+        });
+        console.log(conversationsCopy);
+        client.writeQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
+      }
     },
   });
 
@@ -166,9 +188,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   // Run through these cases to ensure data always exists
-  if ((called && loading) || conversationLoad) {
-    return <Loading />;
-  }
 
   if (called && error) {
     setErrorMessage(client, error);
@@ -194,20 +213,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         return null;
       });
 
-    // this means we didn't find the contact in the cached converation,
-    // time to get the conversation for this contact from server and then
-    // store it in the cached object too.
     if (conversationIndex < 0) {
-      if (!called) {
-        getSearchQuery();
-        return <Loading />;
-      }
-      conversationIndex = 0;
-      conversationInfo = data ? data.search[0] : null;
-
-      // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
-      // allConversations.conversations.splice(0, 0, data.conversation);
-      // allConversations.conversations.unshift(data.conversation);
+      return <Loading />;
     }
   }
 
@@ -320,6 +327,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       .reverse();
   }
 
+  const loadMoreMessages = () => {
+    getSearchQuery({
+      variables: {
+        filter: { id: contactId.toString() },
+        messageOpts: { limit: 50, offset: 50 },
+        contactOpts: { limit: 1 },
+      },
+    });
+  };
+
   let messageListContainer;
   // Check if there are conversation messages else display no messages
   if (messageList) {
@@ -330,6 +347,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         maxWidth={false}
         data-testid="messageContainer"
       >
+        <div className={styles.LoadMore}>
+          {(called && loading) || conversationLoad ? (
+            <CircularProgress />
+          ) : (
+            <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
+              Load More
+            </Button>
+          )}
+        </div>
         {messageList}
       </Container>
     );
