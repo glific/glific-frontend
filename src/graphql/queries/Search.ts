@@ -47,3 +47,93 @@ export const SAVED_SEARCH_QUERY = gql`
     }
   }
 `;
+
+export const SEARCH_MULTI_QUERY = gql`
+  query searchMulti($searchFilter: SearchFilter!, $contactOpts: Opts!, $messageOpts: Opts!) {
+    searchMulti(filter: $searchFilter, contactOpts: $contactOpts, messageOpts: $messageOpts) {
+      contacts {
+        id
+        body
+        insertedAt
+        contact {
+          id
+          name
+          lastMessageAt
+          status
+          bspStatus
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+          colorCode
+        }
+        type
+        media {
+          url
+          caption
+        }
+      }
+      messages {
+        id
+        body
+        insertedAt
+        contact {
+          id
+          name
+          lastMessageAt
+          status
+          bspStatus
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+          colorCode
+        }
+        type
+        media {
+          url
+          caption
+        }
+      }
+      tags {
+        body
+        insertedAt
+        contact {
+          id
+          name
+          lastMessageAt
+          status
+          bspStatus
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+          colorCode
+        }
+        type
+        media {
+          url
+          caption
+        }
+      }
+    }
+  }
+`;

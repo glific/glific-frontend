@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { List, Container } from '@material-ui/core';
+import { List, Container, Typography } from '@material-ui/core';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 
 import ChatConversation from '../ChatConversation/ChatConversation';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import styles from './ConversationList.module.css';
@@ -67,9 +67,29 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     };
   };
 
+  const filterSearch = () => {
+    return {
+      searchFilter: {
+        term: props.searchVal,
+      },
+      messageOpts: {
+        limit: 50,
+        order: 'ASC',
+      },
+      contactOpts: {
+        order: 'DESC',
+        limit: 50,
+      },
+    };
+  };
+
   useEffect(() => {
     getFilterConvos({
       variables: filterVariables(),
+    });
+
+    getFilterSearch({
+      variables: filterSearch(),
     });
   }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
 
@@ -77,8 +97,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     SEARCH_QUERY
   );
 
+  const [getFilterSearch, { loading: loadingSearch, data: searchMultiData }] = useLazyQuery<any>(
+    SEARCH_MULTI_QUERY
+  );
+
   // Other cases
-  if ((called && loading) || conversationLoading) return <Loading />;
+  if ((called && loading) || conversationLoading || loadingSearch) return <Loading />;
 
   if ((called && error) || conversationError) {
     if (error) {
@@ -90,7 +114,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     return null;
   }
 
-  let conversations = null;
+  let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
     conversations = data.search;
@@ -100,9 +124,58 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
   }
 
-  // build the conversation list only if there are conversations
   let conversationList;
-  if (conversations && conversations.length > 0) {
+
+  if (props.searchVal !== '' && searchMultiData) {
+    conversations = searchMultiData.searchMulti;
+
+    // let searchArray = { contacts: [], tags: [], messages: [] };
+    let searchArray = { messages: [] };
+    conversationList = Object.keys(conversations).map((dataArray: any, mindex) => {
+      if (dataArray !== '__typename') {
+        let header = (
+          <div className={styles.Title}>
+            <Typography className={styles.TitleText} variant="h6">
+              {dataArray}
+            </Typography>
+          </div>
+        );
+        return conversations[dataArray].map((conversation: any, index: number) => {
+          let lastMessage = [];
+          lastMessage = conversation;
+
+          return (
+            <>
+              {mindex ? (
+                <div className={styles.Title}>
+                  <Typography className={styles.TitleText} variant="h6">
+                    {dataArray}
+                  </Typography>
+                </div>
+              ) : null}
+              <ChatConversation
+                key={conversation.contact.id}
+                selected={props.selectedContactId === conversation.contact.id}
+                onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
+                index={index}
+                contactId={conversation.contact.id}
+                contactName={
+                  conversation.contact.name ? conversation.contact.name : conversation.contact.phone
+                }
+                lastMessage={lastMessage}
+                senderLastMessage={conversation.contact.lastMessageAt}
+                contactStatus={conversation.contact.status}
+                contactBspStatus={conversation.contact.bspStatus}
+              />
+            </>
+          );
+        });
+      }
+    });
+  }
+
+  // build the conversation list only if there are conversations
+  if (conversations && conversations.length > 0 && props.searchVal === '') {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {
@@ -125,7 +198,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         />
       );
     });
-  } else {
+  }
+
+  if (!conversationList) {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
