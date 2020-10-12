@@ -1,3 +1,7 @@
 .Tooltip {
   background-color: #073f24 !important;
 }
+
+.TooltipArrow {
+  color: #073f24 !important;
+}
