@@ -52,8 +52,3 @@
   display: flex;
   justify-content: center;
 }
-
-.TooltipClass {
-  background-color: #073f24 !important;
-  width: 150px !important;
-}

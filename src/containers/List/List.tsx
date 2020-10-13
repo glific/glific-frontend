@@ -282,13 +282,13 @@ export const List: React.SFC<ListProps> = ({
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit ? (
-        <Tooltip title="Edit" placement="top">
-          <Link to={`/${pageLink}/` + id + '/edit'}>
+        <Link to={`/${pageLink}/` + id + '/edit'}>
+          <Tooltip title="Edit" placement="top">
             <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
               <EditIcon />
             </IconButton>
-          </Link>
-        </Tooltip>
+          </Tooltip>
+        </Link>
       ) : null;
     }
 
@@ -311,8 +311,8 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction && additionalAction.link ? (
-            <Tooltip title={`${additionalAction.label}`} placement="top">
-              <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
+            <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
+              <Tooltip title={`${additionalAction.label}`} placement="top">
                 <IconButton
                   color="default"
                   className={styles.additonalButton}
@@ -320,8 +320,8 @@ export const List: React.SFC<ListProps> = ({
                 >
                   {additionalAction.icon}
                 </IconButton>
-              </Link>
-            </Tooltip>
+              </Tooltip>
+            </Link>
           ) : null}
 
           {additionalAction && additionalAction.dialog ? (
