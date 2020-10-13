@@ -16,7 +16,6 @@ import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
-import { useParams } from 'react-router-dom';
 
 export interface ChatMessageProps {
   id: number;

@@ -1,5 +1,5 @@
 import { savedSearchQuery } from '../../../mocks/Chat';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../../../graphql/queries/Search';
 
 const withResult = {
   data: {
@@ -70,10 +70,58 @@ export const chatConversationsMocks = [
   searchQuery(5, 10, { includeTags: ['12'] }, false),
 ];
 
+export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
+  return {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: {
+        searchFilter: { term: term },
+        messageOpts: { limit: limit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit: limit },
+      },
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [
+            {
+              body: 'hola',
+              contact: {
+                name: 'Default receiver',
+              },
+              id: '7',
+            },
+          ],
+          messages: [
+            {
+              body: 'Default message body',
+              bspStatus: 'ENQUEUED',
+              contact: {
+                name: 'Default receiver',
+                status: 'VALID',
+              },
+              sendAt: null,
+            },
+          ],
+          tags: [],
+        },
+      },
+    },
+  };
+};
+
+export const SearchConversationsMocks = [
+  SearchMultiQuery(),
+  SearchMultiQuery(),
+  SearchMultiQuery('a'),
+];
+
 export const ChatConversationMocks = [
   ...chatConversationsMocks,
   ...chatConversationsMocks,
   savedSearchQuery,
+  ...SearchConversationsMocks,
+  ...SearchConversationsMocks,
 ];
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });

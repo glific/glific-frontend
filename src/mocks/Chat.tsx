@@ -2,7 +2,7 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
@@ -210,6 +210,46 @@ export const conversationQuery = getConversationQuery({
   ],
 });
 
+export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
+  return {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: {
+        searchFilter: { term: term },
+        messageOpts: { limit: limit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit: limit },
+      },
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [
+            {
+              body: 'hola',
+              contact: {
+                name: 'Default receiver',
+              },
+              id: '7',
+            },
+          ],
+          messages: [
+            {
+              body: 'Default message body',
+              bspStatus: 'ENQUEUED',
+              contact: {
+                name: 'Default receiver',
+                status: 'VALID',
+              },
+              sendAt: null,
+            },
+          ],
+          tags: [],
+        },
+      },
+    },
+  };
+};
+
 export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
@@ -224,6 +264,7 @@ export const CONVERSATION_MOCKS = [
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
+  SearchMultiQuery(),
 ];
 
 const updateMessageTagsQuery = {
