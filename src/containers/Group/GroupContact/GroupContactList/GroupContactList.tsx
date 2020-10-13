@@ -70,7 +70,11 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
       button={{ show: false, label: '' }}
       pageLink="contact"
       listIcon={groupIcon}
-      deleteModifier={{ icon: 'cross', variables: getDeleteQueryVariables }}
+      deleteModifier={{
+        icon: 'cross',
+        variables: getDeleteQueryVariables,
+        label: 'Remove from this group',
+      }}
       editSupport={false}
       dialogMessage={dialogMessage}
       {...queries}

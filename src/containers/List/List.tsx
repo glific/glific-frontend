@@ -55,6 +55,7 @@ export interface ListProps {
   deleteModifier?: {
     icon: string;
     variables: any;
+    label?: string;
   };
   refetchQueries?: any;
   dialogTitle?: string;
@@ -88,7 +89,7 @@ export const List: React.SFC<ListProps> = ({
     label: 'Add New',
   },
   showCheckbox,
-  deleteModifier = { icon: 'normal', variables: null },
+  deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
   searchParameter = 'label',
   filters = null,
@@ -294,7 +295,7 @@ export const List: React.SFC<ListProps> = ({
 
     const deleteButton = (id: any, label: string) => {
       return allowedAction.delete ? (
-        <Tooltip title="Delete" placement="top">
+        <Tooltip title={`${deleteModifier.label}`} placement="top">
           <IconButton
             aria-label="Delete"
             color="default"
@@ -325,14 +326,16 @@ export const List: React.SFC<ListProps> = ({
           ) : null}
 
           {additionalAction && additionalAction.dialog ? (
-            <IconButton
-              color="default"
-              data-testid="additionalButton"
-              className={styles.additonalButton}
-              onClick={() => additionalAction.dialog(additionalActionParameter)}
-            >
-              {additionalAction.icon}
-            </IconButton>
+            <Tooltip title={`${additionalAction.label}`} placement="top">
+              <IconButton
+                color="default"
+                data-testid="additionalButton"
+                className={styles.additonalButton}
+                onClick={() => additionalAction.dialog(additionalActionParameter)}
+              >
+                {additionalAction.icon}
+              </IconButton>
+            </Tooltip>
           ) : null}
           {/* do not display edit & delete for staff role in group */}
           {displayUserGroups || listItem !== 'groups' ? (
