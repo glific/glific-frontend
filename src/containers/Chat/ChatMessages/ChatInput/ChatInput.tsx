@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
@@ -21,10 +21,23 @@ export interface ChatInputProps {
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+
+  useEffect(() => {
+    const container: any = document.querySelector('.messageContainer');
+    container.addEventListener('scroll', (e: any) => {
+      const target = e.target;
+      if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
+        setShowJumpToLatest(false);
+      } else if (showJumpToLatest === false) {
+        setShowJumpToLatest(true);
+      }
+    });
+  }, []);
 
   const submitMessage = (message: string) => {
     if (!message) return;
@@ -109,6 +122,19 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
+  const showLatestMessage = () => {
+    const container: any = document.querySelector('.messageContainer');
+    if (container) {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
+  };
+
+  const jumpToLatest = (
+    <div className={styles.JumpToLatest} onClick={() => showLatestMessage()}>
+      Jump to latest
+    </div>
+  );
+
   return (
     <Container className={styles.ChatInput}>
       <ClickAwayListener onClickAway={handleClickAway}>
@@ -130,6 +156,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             </Fade>
           ) : null}
           {quickSendButtons(quickSendTypes)}
+          {showJumpToLatest === true ? jumpToLatest : null}
         </div>
       </ClickAwayListener>
       <div

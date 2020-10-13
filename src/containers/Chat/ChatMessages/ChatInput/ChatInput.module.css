@@ -200,3 +200,13 @@
   justify-content: center;
   padding-top: 20px;
 }
+
+.JumpToLatest {
+  cursor: pointer;
+  margin: 0 auto;
+  background-color: #073f24;
+  padding: 6px 8px;
+  color: #edf6f2;
+  border-radius: 12px 12px 0 0;
+  z-index: 100;
+}

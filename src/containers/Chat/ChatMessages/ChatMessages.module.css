@@ -69,6 +69,20 @@
 }
 
 .LoadMore {
+  display: flex;
+  margin-top: -11.5px;
+}
+
+.LoadMoreButton {
   margin-bottom: 10px !important;
-  text-align: center;
+  margin: 0 auto;
+  cursor: pointer;
+  background-color: #073f24;
+  padding: 6px 8px;
+  color: #edf6f2;
+  border-radius: 0 0 12px 12px;
+}
+
+.Loading {
+  margin: 0 auto;
 }

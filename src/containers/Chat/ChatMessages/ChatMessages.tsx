@@ -78,6 +78,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
+  const [lastScrollHeight, setLastScrollHeight] = useState(0);
+  const [messageOffset, setMessageOffset] = useState(50);
+  const [showLoadMore, setShowLoadMore] = useState(true);
+
+  useEffect(() => {
+    setShowLoadMore(true);
+  }, [contactId]);
 
   // Instantiate these to be used later.
 
@@ -123,35 +130,50 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (data) => {
       if (data) {
-        const conversations = client.readQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-        });
-        const conversationCopy = JSON.parse(JSON.stringify(data));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
-          .reverse();
-        let conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          if (conversation.contact.id === contactId.toString()) {
-            conversation.messages = [
-              ...conversation.messages,
-              ...conversationCopy.search[0].messages,
-            ];
-          }
-          return conversation;
-        });
-        console.log(conversationsCopy);
-        client.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: conversationsCopy,
-        });
+        console.log(data);
+        if (data.search[0].messages.length === 0) {
+          setShowLoadMore(false);
+        } else {
+          const conversations = client.readQuery({
+            query: SEARCH_QUERY,
+            variables: queryVariables,
+          });
+          const conversationCopy = JSON.parse(JSON.stringify(data));
+          conversationCopy.search[0].messages
+            .sort((currentMessage: any, nextMessage: any) => {
+              return currentMessage.id - nextMessage.id;
+            })
+            .reverse();
+          let conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+            if (conversation.contact.id === contactId.toString()) {
+              conversation.messages = [
+                ...conversation.messages,
+                ...conversationCopy.search[0].messages,
+              ];
+            }
+            return conversation;
+          });
+
+          client.writeQuery({
+            query: SEARCH_QUERY,
+            variables: queryVariables,
+            data: conversationsCopy,
+          });
+          setMessageOffset(messageOffset + 50);
+        }
       }
     },
   });
+  let messageList: any;
+
+  useEffect(() => {
+    const el: any = document.querySelector('.messageContainer');
+    if (el) {
+      console.log(el.scrollHeight, lastScrollHeight);
+      el.scrollTop += el.scrollHeight - lastScrollHeight;
+    }
+  }, [allConversations]);
 
   let unselectedTags: Array<any> = [];
 
@@ -282,7 +304,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setShowDropdown(id);
   };
 
-  let messageList: any;
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -331,10 +352,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     getSearchQuery({
       variables: {
         filter: { id: contactId.toString() },
-        messageOpts: { limit: 50, offset: 50 },
+        messageOpts: { limit: 50, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
     });
+    const el = document.querySelector('.messageContainer');
+    if (el) {
+      setLastScrollHeight(el.scrollHeight);
+    }
   };
 
   let messageListContainer;
@@ -342,20 +367,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (messageList) {
     messageListContainer = (
       <Container
-        className={styles.MessageList}
+        className={`${styles.MessageList} messageContainer `}
         style={{ height: `calc(100% - 175px - ${reducedHeight}px)` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
-        <div className={styles.LoadMore}>
-          {(called && loading) || conversationLoad ? (
-            <CircularProgress />
-          ) : (
-            <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
-              Load More
-            </Button>
-          )}
-        </div>
+        {showLoadMore && conversationInfo.messages.length > 49 ? (
+          <div className={styles.LoadMore}>
+            {(called && loading) || conversationLoad ? (
+              <CircularProgress className={styles.Loading} />
+            ) : (
+              <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                Load more messages
+              </div>
+            )}
+          </div>
+        ) : null}
         {messageList}
       </Container>
     );
