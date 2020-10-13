@@ -203,10 +203,18 @@
 
 .JumpToLatest {
   cursor: pointer;
+  position: absolute;
+  display: flex;
+  font-weight: 500;
+  line-height: 1;
+  align-items: center;
   margin: 0 auto;
   background-color: #073f24;
-  padding: 6px 8px;
+  padding: 4px 8px;
   color: #edf6f2;
   border-radius: 12px 12px 0 0;
   z-index: 100;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
 }

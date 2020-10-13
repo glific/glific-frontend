@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -131,7 +131,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const jumpToLatest = (
     <div className={styles.JumpToLatest} onClick={() => showLatestMessage()}>
-      Jump to latest
+      Jump to latest <ExpandMoreIcon />
     </div>
   );
 
@@ -156,7 +156,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             </Fade>
           ) : null}
           {quickSendButtons(quickSendTypes)}
-          {showJumpToLatest === true ? jumpToLatest : null}
         </div>
       </ClickAwayListener>
       <div
@@ -165,6 +164,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           [styles.Rounded]: selectedTab === '',
         })}
       >
+        {showJumpToLatest === true ? jumpToLatest : null}
+
         <WhatsAppEditor
           data-testid="message-input"
           editorState={editorState}
@@ -172,6 +173,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           sendMessage={submitMessage}
           handleHeightChange={props.handleHeightChange}
         />
+
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
