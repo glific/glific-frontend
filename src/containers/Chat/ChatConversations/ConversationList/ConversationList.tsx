@@ -24,6 +24,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const [loadingOffset, setLoadingOffset] = useState(50);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
     const container: any = document.querySelector('.contactsContainer');
@@ -94,7 +95,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [loadMoreConversations, { loading: contactsLoad }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (data) => {
       if (data) {
-        if (data) {
+        if (data.search.length === 0) {
+          setShowLoadMore(false);
+        } else {
           const conversations = client.readQuery({
             query: SEARCH_QUERY,
             variables: queryVariables,
@@ -207,16 +210,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-
-          <div className={styles.LoadMore}>
-            {contactsLoad ? (
-              <CircularProgress className={styles.Progress} />
-            ) : (
-              <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
-                Load more chats
-              </div>
-            )}
-          </div>
+          {showLoadMore && conversations.length > 49 ? (
+            <div className={styles.LoadMore}>
+              {contactsLoad ? (
+                <CircularProgress className={styles.Progress} />
+              ) : (
+                <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                  Load more chats
+                </div>
+              )}
+            </div>
+          ) : null}
         </List>
       ) : (
         { conversationList }
