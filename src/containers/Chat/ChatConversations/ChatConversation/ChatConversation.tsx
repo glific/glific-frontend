@@ -21,6 +21,7 @@ export interface ChatConversationProps {
   onClick: (i: any) => void;
   index: number;
   lastMessage: {
+    id: number;
     body: string;
     insertedAt: string;
     type: string;
@@ -30,6 +31,7 @@ export interface ChatConversationProps {
       label: string;
     }>;
   };
+  highlightSearch?: string;
 }
 
 const updateMessageCache = (client: any, data: any) => {
@@ -54,8 +56,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
-  const { lastMessage, selected, contactId, contactName, index } = props;
-
+  const { lastMessage, selected, contactId, contactName, index, highlightSearch } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (mydata) => {
@@ -73,6 +74,25 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       unread = true;
     }
   }
+
+  // display highlighted search message
+  const BoldedText = (text: string, shouldBeBold: string | undefined) => {
+    shouldBeBold = shouldBeBold ? shouldBeBold : '';
+    const textArray = text.split(shouldBeBold);
+
+    return (
+      <span>
+        {textArray.map((item, index) => (
+          <>
+            {item}
+            {index !== textArray.length - 1 && (
+              <span className={styles.TitleText}>{shouldBeBold}</span>
+            )}
+          </>
+        ))}
+      </span>
+    );
+  };
 
   useEffect(() => {
     if (unread && selected) {
@@ -93,6 +113,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   } else {
     message = lastMessage.type;
   }
+  let displayMSG = WhatsAppToJsx(message);
+
   return (
     <ListItem
       data-testid="list"
@@ -102,7 +124,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       onClick={() => props.onClick(index)}
-      to={'/chat/' + contactId}
+      to={'/chat/' + contactId + '/#search' + props.lastMessage.id}
     >
       <div>
         <div className={chatBubble.join(' ')} />
@@ -119,7 +141,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {WhatsAppToJsx(message)}
+          {BoldedText(displayMSG[0], highlightSearch)}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}

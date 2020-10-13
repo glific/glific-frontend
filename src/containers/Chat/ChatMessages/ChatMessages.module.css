@@ -67,3 +67,17 @@
 .Paper > ul > li {
   color: #073f24;
 }
+
+.Jump {
+  background-color: #073f24;
+  color: #edf6f2;
+  padding: 5px 12px 5px 12px;
+  border-radius: 15px 15px 0px 0px;
+  cursor: pointer;
+  position: relative;
+  z-index: 100;
+  width: fit-content;
+  float: right;
+  margin-right: 60px;
+  margin-top: 4px;
+}

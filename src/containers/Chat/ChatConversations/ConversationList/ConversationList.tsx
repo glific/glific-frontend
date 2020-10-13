@@ -129,48 +129,39 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   if (props.searchVal !== '' && searchMultiData) {
     conversations = searchMultiData.searchMulti;
 
-    // let searchArray = { contacts: [], tags: [], messages: [] };
-    let searchArray = { messages: [] };
-    conversationList = Object.keys(conversations).map((dataArray: any, mindex) => {
-      if (dataArray !== '__typename') {
-        let header = (
-          <div className={styles.Title}>
-            <Typography className={styles.TitleText} variant="h6">
-              {dataArray}
-            </Typography>
-          </div>
-        );
-        return conversations[dataArray].map((conversation: any, index: number) => {
-          let lastMessage = [];
-          lastMessage = conversation;
+    // to set search response sequence
+    let searchArray = { contacts: [], tags: [], messages: [] };
+    conversationList = Object.keys(searchArray).map((dataArray: any) => {
+      let header = (
+        <div className={styles.Title}>
+          <Typography className={styles.TitleText}>{dataArray}</Typography>
+        </div>
+      );
+      return conversations[dataArray].map((conversation: any, index: number) => {
+        let lastMessage = [];
+        lastMessage = conversation;
 
-          return (
-            <>
-              {mindex ? (
-                <div className={styles.Title}>
-                  <Typography className={styles.TitleText} variant="h6">
-                    {dataArray}
-                  </Typography>
-                </div>
-              ) : null}
-              <ChatConversation
-                key={conversation.contact.id}
-                selected={props.selectedContactId === conversation.contact.id}
-                onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
-                index={index}
-                contactId={conversation.contact.id}
-                contactName={
-                  conversation.contact.name ? conversation.contact.name : conversation.contact.phone
-                }
-                lastMessage={lastMessage}
-                senderLastMessage={conversation.contact.lastMessageAt}
-                contactStatus={conversation.contact.status}
-                contactBspStatus={conversation.contact.bspStatus}
-              />
-            </>
-          );
-        });
-      }
+        return (
+          <>
+            {index === 0 ? header : null}
+            <ChatConversation
+              key={conversation.contact.id}
+              selected={props.selectedContactId === conversation.contact.id}
+              onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
+              index={index}
+              contactId={conversation.contact.id}
+              contactName={
+                conversation.contact.name ? conversation.contact.name : conversation.contact.phone
+              }
+              lastMessage={lastMessage}
+              senderLastMessage={conversation.contact.lastMessageAt}
+              contactStatus={conversation.contact.status}
+              contactBspStatus={conversation.contact.bspStatus}
+              highlightSearch={props.searchVal}
+            />
+          </>
+        );
+      });
     });
   }
 

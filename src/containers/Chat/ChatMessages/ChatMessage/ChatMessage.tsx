@@ -16,6 +16,7 @@ import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
+import { useParams } from 'react-router-dom';
 
 export interface ChatMessageProps {
   id: number;
@@ -186,8 +187,15 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  // get id from the url & assign it to the message
+  const getID = () => {
+    let searchId: any = window.location.hash.split('#search').pop();
+    let ID = props.id == parseInt(searchId) ? window.location.hash : '';
+    return ID;
+  };
+
   return (
-    <div className={additionalClass} ref={messageRef} data-testid="message">
+    <div className={additionalClass} ref={messageRef} data-testid="message" id={getID()}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>

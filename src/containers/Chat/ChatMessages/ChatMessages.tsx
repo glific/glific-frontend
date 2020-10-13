@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, SyntheticEvent, useRef } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
 import { Container } from '@material-ui/core';
 import moment from 'moment';
@@ -77,6 +77,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
+  const [jumpToValue, setJumpToValue] = useState(false);
 
   // Instantiate these to be used later.
 
@@ -345,8 +346,44 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
+  // scroll to message after click from search
+  const element = document.getElementById(window.location.hash);
+  if (element) {
+    element.scrollIntoView();
+  }
+
+  let target: HTMLTextAreaElement;
+
+  const scrollEvent = (e: SyntheticEvent) => {
+    target = e.target as HTMLTextAreaElement;
+    if (target)
+      console.log(
+        'Current scroll position:',
+        target.scrollTop,
+        target.scrollHeight,
+        (target.scrollHeight + 118) / 2
+      );
+
+    if (!jumpToValue && target && target.scrollTop !== (target.scrollHeight + 118) / 2) {
+      setJumpToValue(true);
+    }
+    // if (jumpToValue && target && target.scrollTop === (target.scrollHeight + 118) / 2) {
+    //   setJumpToValue(false);
+    // }
+  };
+
+  const scrollToBottom = () => {
+    target.scrollTop = target.scrollHeight;
+    setJumpToValue(false);
+  };
+
   return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+    <Container
+      className={styles.ChatMessages}
+      maxWidth={false}
+      disableGutters
+      onScroll={scrollEvent}
+    >
       {dialogBox}
       {toastMessage}
       <ContactBar
@@ -361,6 +398,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
       {messageListContainer}
+      {jumpToValue ? (
+        <div className={styles.Jump} onClick={scrollToBottom}>
+          Jump to latest
+        </div>
+      ) : null}
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
