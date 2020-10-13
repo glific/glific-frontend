@@ -19,6 +19,7 @@ export interface AutocompleteProps {
   chipIcon?: any;
   getOptions?: any;
   validate?: any;
+  noOptionsText?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -33,13 +34,13 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   multiple = true,
   disabled = false,
   getOptions,
+  noOptionsText = 'No options available',
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
   const [optionValue, setOptionValue] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const loading = open && options.length === 0;
 
   useEffect(() => {
     if (options.length > 0) {
@@ -112,7 +113,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           onClose={() => {
             setOpen(false);
           }}
-          loading={loading}
+          noOptionsText={noOptionsText}
         />
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>

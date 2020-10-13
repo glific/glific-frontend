@@ -246,6 +246,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       label: 'Includes groups',
       options: data.groups,
       optionLabel: 'label',
+      noOptionsText: 'No groups available',
       textFieldProps: {
         variant: 'outlined',
       },
