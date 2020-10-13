@@ -1,5 +1,5 @@
 .ListingContainer {
-  height: calc(100% - 190px);
+  height: calc(100% - 165px);
   overflow-y: auto;
   padding: 0px !important;
 }
@@ -12,5 +12,37 @@
 
 .LoadMore {
   margin-top: 10px !important;
-  text-align: center;
+  display: flex;
+}
+
+.Progress {
+  margin: 0 auto;
+}
+
+.LoadMoreButton {
+  background-color: #073f24;
+  padding: 6px 8px;
+  margin: 0 auto;
+  border-radius: 12px 12px 0 0;
+  color: #edf6f2;
+  cursor: pointer;
+  font-weight: 500;
+  z-index: 101;
+}
+
+.ScrollToTopButton {
+  display: flex;
+  align-items: center;
+  background-color: #073f24;
+  font-weight: 500;
+  padding: 4px 8px;
+  margin: 0 auto;
+  border-radius: 12px 12px 0 0;
+  color: #edf6f2;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 100;
+  transform: translateX(-50%);
 }

@@ -9,7 +9,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import styles from './ConversationList.module.css';
-import { Button } from '../../../../components/UI/Form/Button/Button';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 interface ConversationListProps {
   searchVal: string;
@@ -23,6 +23,22 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const [loadingOffset, setLoadingOffset] = useState(50);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+
+  useEffect(() => {
+    const container: any = document.querySelector('.contactsContainer');
+    container.addEventListener('scroll', (e: any) => {
+      const target = e.target;
+      if (
+        target.scrollTop === 0 ||
+        target.scrollTop === target.scrollHeight - target.offsetHeight
+      ) {
+        setShowJumpToLatest(false);
+      } else if (showJumpToLatest === false) {
+        setShowJumpToLatest(true);
+      }
+    });
+  }, []);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -172,18 +188,33 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     });
   };
 
+  const showLatestContact = () => {
+    const container: any = document.querySelector('.contactsContainer');
+    if (container) {
+      container.scrollTop = 0;
+    }
+  };
+
+  const scrollToTop = (
+    <div className={styles.ScrollToTopButton} onClick={showLatestContact}>
+      Go to top <KeyboardArrowUpIcon />
+    </div>
+  );
+
   return (
-    <Container className={styles.ListingContainer} disableGutters>
+    <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
+      {showJumpToLatest ? scrollToTop : null}
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
+
           <div className={styles.LoadMore}>
             {contactsLoad ? (
-              <CircularProgress />
+              <CircularProgress className={styles.Progress} />
             ) : (
-              <Button color="primary" variant="outlined" onClick={loadMoreMessages}>
-                Load More
-              </Button>
+              <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                Load more chats
+              </div>
             )}
           </div>
         </List>
