@@ -33,7 +33,7 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
       arrow
       classes={{ tooltip: toolTipStyling.join(','), arrow: toolTipArrowStyling.join(',') }}
     >
-      <div>{props.children}</div>
+      <span>{props.children}</span>
     </TooltipElement.default>
   );
 };
