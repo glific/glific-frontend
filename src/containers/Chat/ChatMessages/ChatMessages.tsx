@@ -22,6 +22,7 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { Button } from '../../../components/UI/Form/Button/Button';
+import { type } from 'os';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -129,49 +130,45 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (data) => {
-      if (data) {
-        console.log(data);
-        if (data.search[0].messages.length === 0) {
-          setShowLoadMore(false);
-        } else {
-          const conversations = client.readQuery({
-            query: SEARCH_QUERY,
-            variables: queryVariables,
-          });
-          const conversationCopy = JSON.parse(JSON.stringify(data));
-          conversationCopy.search[0].messages
-            .sort((currentMessage: any, nextMessage: any) => {
-              return currentMessage.id - nextMessage.id;
-            })
-            .reverse();
-          let conversationsCopy = JSON.parse(JSON.stringify(conversations));
-          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-            if (conversation.contact.id === contactId.toString()) {
-              conversation.messages = [
-                ...conversation.messages,
-                ...conversationCopy.search[0].messages,
-              ];
-            }
-            return conversation;
-          });
+      if (data.search[0].messages.length === 0) {
+        setShowLoadMore(false);
+      } else {
+        const conversations = client.readQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+        });
+        const conversationCopy = JSON.parse(JSON.stringify(data));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+        let conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          if (conversation.contact.id === contactId.toString()) {
+            conversation.messages = [
+              ...conversation.messages,
+              ...conversationCopy.search[0].messages,
+            ];
+          }
+          return conversation;
+        });
 
-          client.writeQuery({
-            query: SEARCH_QUERY,
-            variables: queryVariables,
-            data: conversationsCopy,
-          });
-          setMessageOffset(messageOffset + 50);
-        }
+        client.writeQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
+        setMessageOffset(messageOffset + 50);
       }
     },
   });
   let messageList: any;
 
   useEffect(() => {
-    const el: any = document.querySelector('.messageContainer');
-    if (el) {
-      console.log(el.scrollHeight, lastScrollHeight);
-      el.scrollTop += el.scrollHeight - lastScrollHeight;
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.scrollTop += messageContainer.scrollHeight - lastScrollHeight;
     }
   }, [allConversations]);
 
@@ -228,7 +225,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // loop through the cached conversations and find if contact exists
     if (allConversations && allConversations.search)
       allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
+        if (conversation.contact.id === contactId.toString()) {
           conversationIndex = index;
           conversationInfo = conversation;
         }
@@ -356,9 +353,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactOpts: { limit: 1 },
       },
     });
-    const el = document.querySelector('.messageContainer');
-    if (el) {
-      setLastScrollHeight(el.scrollHeight);
+    const messageContainer = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      setLastScrollHeight(messageContainer.scrollHeight);
     }
   };
 

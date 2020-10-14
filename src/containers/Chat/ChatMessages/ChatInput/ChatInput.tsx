@@ -28,15 +28,20 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const templates = 'Templates';
 
   useEffect(() => {
-    const container: any = document.querySelector('.messageContainer');
-    container.addEventListener('scroll', (e: any) => {
-      const target = e.target;
-      if (target.scrollTop === target.scrollHeight - target.offsetHeight) {
-        setShowJumpToLatest(false);
-      } else if (showJumpToLatest === false) {
-        setShowJumpToLatest(true);
-      }
-    });
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.addEventListener('scroll', (event: any) => {
+        const messageContainer = event.target;
+        if (
+          messageContainer.scrollTop ===
+          messageContainer.scrollHeight - messageContainer.offsetHeight
+        ) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
   }, []);
 
   const submitMessage = (message: string) => {
