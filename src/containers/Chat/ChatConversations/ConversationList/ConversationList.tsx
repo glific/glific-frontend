@@ -27,18 +27,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
-    const container: any = document.querySelector('.contactsContainer');
-    container.addEventListener('scroll', (e: any) => {
-      const target = e.target;
-      if (
-        target.scrollTop === 0 ||
-        target.scrollTop === target.scrollHeight - target.offsetHeight
-      ) {
-        setShowJumpToLatest(false);
-      } else if (showJumpToLatest === false) {
-        setShowJumpToLatest(true);
-      }
-    });
+    const contactsContainer: any = document.querySelector('.contactsContainer');
+    if (contactsContainer) {
+      contactsContainer.addEventListener('scroll', (event: any) => {
+        const contactsContainer = event.target;
+        if (contactsContainer.scrollTop === 0) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
   }, []);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
@@ -94,28 +93,26 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   const [loadMoreConversations, { loading: contactsLoad }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (data) => {
-      if (data) {
-        if (data.search.length === 0) {
-          setShowLoadMore(false);
-        } else {
-          const conversations = client.readQuery({
-            query: SEARCH_QUERY,
-            variables: queryVariables,
-          });
+      if (data && data.search.length === 0) {
+        setShowLoadMore(false);
+      } else {
+        const conversations = client.readQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+        });
 
-          const conversationCopy = JSON.parse(JSON.stringify(data));
+        const conversationCopy = JSON.parse(JSON.stringify(data));
 
-          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-          conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
 
-          client.writeQuery({
-            query: SEARCH_QUERY,
-            variables: queryVariables,
-            data: conversationsCopy,
-          });
+        client.writeQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
 
-          setLoadingOffset(loadingOffset + 10);
-        }
+        setLoadingOffset(loadingOffset + 10);
       }
     },
   });
@@ -206,7 +203,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   return (
     <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
-      {showJumpToLatest ? scrollToTop : null}
+      {showJumpToLatest && !contactsLoad ? scrollToTop : null}
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}

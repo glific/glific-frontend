@@ -21,7 +21,7 @@
 
 .LoadMoreButton {
   background-color: #073f24;
-  padding: 6px 8px;
+  padding: 4px 8px;
   margin: 0 auto;
   border-radius: 12px 12px 0 0;
   color: #edf6f2;
@@ -35,7 +35,7 @@
   align-items: center;
   background-color: #073f24;
   font-weight: 500;
-  padding: 4px 8px;
+  padding: 1px 8px;
   margin: 0 auto;
   border-radius: 12px 12px 0 0;
   color: #edf6f2;
