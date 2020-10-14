@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import styles from './ChatInput.module.css';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -21,10 +21,28 @@ export interface ChatInputProps {
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+
+  useEffect(() => {
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.addEventListener('scroll', (event: any) => {
+        const messageContainer = event.target;
+        if (
+          messageContainer.scrollTop ===
+          messageContainer.scrollHeight - messageContainer.offsetHeight
+        ) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
+  }, []);
 
   const submitMessage = (message: string) => {
     if (!message) return;
@@ -109,6 +127,19 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
+  const showLatestMessage = () => {
+    const container: any = document.querySelector('.messageContainer');
+    if (container) {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
+  };
+
+  const jumpToLatest = (
+    <div className={styles.JumpToLatest} onClick={() => showLatestMessage()}>
+      Jump to latest <ExpandMoreIcon />
+    </div>
+  );
+
   return (
     <Container className={styles.ChatInput}>
       <ClickAwayListener onClickAway={handleClickAway}>
@@ -138,6 +169,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           [styles.Rounded]: selectedTab === '',
         })}
       >
+        {showJumpToLatest === true ? jumpToLatest : null}
+
         <WhatsAppEditor
           data-testid="message-input"
           editorState={editorState}
@@ -145,6 +178,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           sendMessage={submitMessage}
           handleHeightChange={props.handleHeightChange}
         />
+
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}

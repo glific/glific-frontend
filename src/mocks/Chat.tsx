@@ -213,6 +213,7 @@ export const conversationQuery = getConversationQuery({
 export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
+  contactGroupsQuery,
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
