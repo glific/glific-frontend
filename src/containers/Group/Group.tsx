@@ -133,7 +133,12 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     setSelected(user);
   };
 
-  const refetchQueries = { onCreate: GET_GROUPS };
+  const refetchQueries = {
+    onCreate: {
+      query: GET_GROUPS,
+      variables: setVariables(),
+    },
+  };
 
   return (
     <FormLayout
