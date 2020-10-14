@@ -25,6 +25,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [loadingOffset, setLoadingOffset] = useState(50);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     const contactsContainer: any = document.querySelector('.contactsContainer');
@@ -91,7 +92,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     });
   }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
 
-  const [loadMoreConversations, { loading: contactsLoad }] = useLazyQuery<any>(SEARCH_QUERY, {
+  const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (data) => {
       if (data && data.search.length === 0) {
         setShowLoadMore(false);
@@ -116,6 +117,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (contactsData) {
+      setShowLoading(false);
+    }
+  }, [contactsData]);
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY
@@ -186,6 +193,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         },
       },
     });
+    setShowLoading(true);
   };
 
   const showLatestContact = () => {
@@ -203,13 +211,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   return (
     <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
-      {showJumpToLatest && !contactsLoad ? scrollToTop : null}
+      {showJumpToLatest && !showLoading ? scrollToTop : null}
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
           {showLoadMore && conversations.length > 49 ? (
             <div className={styles.LoadMore}>
-              {contactsLoad ? (
+              {showLoading ? (
                 <CircularProgress className={styles.Progress} />
               ) : (
                 <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
