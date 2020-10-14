@@ -137,7 +137,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const toolTip = 'The collection will be updated as per new filters';
 
   const btnUpdate = savedSearchCriteriaId ? (
-    <Tooltip title={toolTip} placement="left" tooltipClass={styles.tooltipClass}>
+    <Tooltip title={toolTip} placement="top">
       <Button
         color="primary"
         variant="outlined"
@@ -151,20 +151,22 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   ) : null;
 
   const btnCreate = (
-    <Button
-      color="primary"
-      variant="outlined"
-      onClick={(e: any) => {
-        handleClick(e, 'saveSearch', 'new');
-      }}
-    >
-      Create new
-    </Button>
+    <Tooltip title="Create a new collection" placement="top">
+      <Button
+        color="primary"
+        variant="outlined"
+        onClick={(e: any) => {
+          handleClick(e, 'saveSearch', 'new');
+        }}
+      >
+        Create new
+      </Button>
+    </Tooltip>
   );
 
   const btnCancel = (
     <IconButton
-      className={styles.cancelButton}
+      className={styles.CancelButton}
       aria-label="cancel"
       onClick={(e: any) => {
         setSearchParam({});
@@ -180,7 +182,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   if (Object.keys(searchParam).length !== 0)
     saveCollectionButton = advanceSearch ? (
       <div className={styles.SaveCollection}>
-        <div className={styles.container}>
+        <div className={styles.Container}>
           {btnUpdate}
           {btnCreate}
           {btnCancel}
