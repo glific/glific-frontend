@@ -197,9 +197,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = data.search;
   }
 
-  if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
-    conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
-  }
+  // Not sure if this is relvent any more as backend endpoint has changed significantly
+  // if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
+  //   conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
+  // }
 
   let conversationList;
 
@@ -243,7 +244,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   // build the conversation list only if there are conversations
-  if (conversations && conversations.length > 0) {
+  if (!conversationList && conversations && conversations.length > 0) {
+    // TODO: Need to check why test is not returing correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {

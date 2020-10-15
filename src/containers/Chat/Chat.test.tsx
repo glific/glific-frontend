@@ -35,7 +35,6 @@ describe('<Chat />', () => {
 
     // check if tags are displayed in the ChatMessages
     const ConversationTag = await findAllByText('Unread');
-    screen.debug();
     expect(ConversationTag).toHaveLength(2);
   });
 
