@@ -1,7 +1,7 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { Chat } from './Chat';
 import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 
@@ -35,6 +35,7 @@ describe('<Chat />', () => {
 
     // check if tags are displayed in the ChatMessages
     const ConversationTag = await findAllByText('Unread');
+    screen.debug();
     expect(ConversationTag).toHaveLength(2);
   });
 

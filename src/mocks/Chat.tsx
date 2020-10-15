@@ -210,7 +210,7 @@ export const conversationQuery = getConversationQuery({
   ],
 });
 
-export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
+export const searchMultiQuery = (term: string = '', limit: number = 50) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
@@ -265,7 +265,7 @@ export const CONVERSATION_MOCKS = [
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-  SearchMultiQuery(),
+  searchMultiQuery(),
 ];
 
 const updateMessageTagsQuery = {
