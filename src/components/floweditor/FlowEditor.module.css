@@ -17,3 +17,17 @@
   width: 28px !important;
   height: 28px;
 }
+
+.AutomationName {
+  position: absolute !important;
+  top: 15px;
+  left: 20px;
+  z-index: 1000;
+  color: #379757;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.FlowContainer {
+  position: relative;
+}
