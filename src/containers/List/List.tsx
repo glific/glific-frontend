@@ -199,8 +199,8 @@ export const List: React.SFC<ListProps> = ({
       refetchCount();
     },
     refetchQueries: () => {
-      if (refetchQueries && refetchQueries.onDelete) {
-        return [{ query: refetchQueries.onDelete }];
+      if (refetchQueries) {
+        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
       } else return [{ query: filterItemsQuery, variables: filterPayload() }];
     },
   });

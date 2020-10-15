@@ -7,6 +7,7 @@ import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
+import { setVariables } from '../../../common/constants';
 
 export interface ContactProfileProps {
   match: any;
@@ -15,12 +16,7 @@ export interface ContactProfileProps {
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: props.match.params.id } });
   const { data: tagsData } = useQuery(FILTER_TAGS_NAME, {
-    variables: {
-      filter: {},
-      opts: {
-        order: 'ASC',
-      },
-    },
+    variables: setVariables(),
   });
   const [updateContactTags] = useMutation(UPDATE_CONTACT_TAGS);
   const [tags, setTags] = useState([]);

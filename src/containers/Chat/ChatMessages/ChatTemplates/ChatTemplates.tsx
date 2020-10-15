@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
+import { setVariables } from '../../../../common/constants';
 
 interface ChatTemplatesProps {
   searchVal: string;
@@ -13,14 +14,7 @@ interface ChatTemplatesProps {
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const filterVariables = () => {
-    return {
-      filter: {
-        term: props.searchVal,
-      },
-      opts: {
-        order: 'ASC',
-      },
-    };
+    return setVariables({ term: props.searchVal });
   };
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),

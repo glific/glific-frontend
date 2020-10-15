@@ -12,7 +12,7 @@ import {
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
-import { GET_TAGS } from '../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
@@ -171,7 +171,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   }, [props.searchParam]);
 
-  const { data: dataT } = useQuery(GET_TAGS, {
+  const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
   const { data } = useQuery(GET_GROUPS, {

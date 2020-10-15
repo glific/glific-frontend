@@ -134,10 +134,8 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   };
 
   const refetchQueries = {
-    onCreate: {
-      query: GET_GROUPS,
-      variables: setVariables(),
-    },
+    query: GET_GROUPS,
+    variables: setVariables(),
   };
 
   return (
