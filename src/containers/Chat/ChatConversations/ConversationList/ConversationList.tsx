@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { List, Container } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { List, Container, CircularProgress } from '@material-ui/core';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 
@@ -9,6 +9,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import styles from './ConversationList.module.css';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 interface ConversationListProps {
   searchVal: string;
@@ -21,6 +22,24 @@ interface ConversationListProps {
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const client = useApolloClient();
   const queryVariables = SEARCH_QUERY_VARIABLES;
+  const [loadingOffset, setLoadingOffset] = useState(50);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const [showLoadMore, setShowLoadMore] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
+
+  useEffect(() => {
+    const contactsContainer: any = document.querySelector('.contactsContainer');
+    if (contactsContainer) {
+      contactsContainer.addEventListener('scroll', (event: any) => {
+        const contactsContainer = event.target;
+        if (contactsContainer.scrollTop === 0) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
+  }, []);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -72,6 +91,38 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       variables: filterVariables(),
     });
   }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
+
+  const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
+    onCompleted: (data) => {
+      if (data && data.search.length === 0) {
+        setShowLoadMore(false);
+      } else {
+        const conversations = client.readQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+        });
+
+        const conversationCopy = JSON.parse(JSON.stringify(data));
+
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
+
+        client.writeQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
+
+        setLoadingOffset(loadingOffset + 10);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (contactsData) {
+      setShowLoading(false);
+    }
+  }, [contactsData]);
 
   const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
     SEARCH_QUERY
@@ -129,10 +180,53 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
   }
 
+  const loadMoreMessages = () => {
+    loadMoreConversations({
+      variables: {
+        contactOpts: {
+          limit: 10,
+          offset: loadingOffset,
+        },
+        filter: {},
+        messageOpts: {
+          limit: 50,
+        },
+      },
+    });
+    setShowLoading(true);
+  };
+
+  const showLatestContact = () => {
+    const container: any = document.querySelector('.contactsContainer');
+    if (container) {
+      container.scrollTop = 0;
+    }
+  };
+
+  const scrollToTop = (
+    <div className={styles.ScrollToTopButton} onClick={showLatestContact}>
+      Go to top <KeyboardArrowUpIcon />
+    </div>
+  );
+
   return (
-    <Container className={styles.ListingContainer} disableGutters>
+    <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
+      {showJumpToLatest && !showLoading ? scrollToTop : null}
       {conversationList ? (
-        <List className={styles.StyledList}>{conversationList}</List>
+        <List className={styles.StyledList}>
+          {conversationList}
+          {showLoadMore && conversations.length > 49 ? (
+            <div className={styles.LoadMore}>
+              {showLoading ? (
+                <CircularProgress className={styles.Progress} />
+              ) : (
+                <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                  Load more chats
+                </div>
+              )}
+            </div>
+          ) : null}
+        </List>
       ) : (
         { conversationList }
       )}

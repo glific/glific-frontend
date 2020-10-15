@@ -108,6 +108,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingLeft: '8px',
     },
+    BottomMenusVertical: {
+      flexFlow: 'column',
+    },
   })
 );
 
@@ -184,6 +187,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
     </div>
   ) : null;
 
+  // set the appropriate classes to display bottom menus correctly
+  const bottonMenuClasses = [classes.BottomMenus];
+  if (!fullOpen) {
+    bottonMenuClasses.unshift(classes.BottomMenusVertical);
+  }
+
   return (
     <nav
       className={clsx({
@@ -223,7 +232,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           }}
           variant="permanent"
         >
-          <div className={classes.BottomMenus}>
+          <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
             <div onClick={() => getMenus()}>
               <Menu menus={staffManagementMenus}>
