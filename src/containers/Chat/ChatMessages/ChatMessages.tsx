@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, SyntheticEvent, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
@@ -21,8 +21,6 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { type } from 'os';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -79,7 +77,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
-  const [jumpToValue, setJumpToValue] = useState(false);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(50);
   const [showLoadMore, setShowLoadMore] = useState(true);
@@ -396,11 +393,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
-  // scroll to message after click from search
-  const element = document.getElementById(window.location.hash);
-  if (element) {
-    element.scrollIntoView();
-  }
 
   return (
     <Container

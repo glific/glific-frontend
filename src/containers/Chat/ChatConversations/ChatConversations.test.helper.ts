@@ -126,3 +126,4 @@ export const ChatConversationMocks = [
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });
 export const searchQueryEmptyMock = searchQuery(50, 50, {});
+

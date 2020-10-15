@@ -10,6 +10,7 @@ import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Ch
 import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -31,6 +32,7 @@ export interface ChatConversationProps {
       label: string;
     }>;
   };
+  messageNumber?: number;
   highlightSearch?: string;
 }
 
@@ -76,20 +78,21 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   }
 
   // display highlighted search message
-  const BoldedText = (text: string, shouldBeBold: string | undefined) => {
-    shouldBeBold = shouldBeBold ? shouldBeBold : '';
-    const textArray = text.split(shouldBeBold);
-
+  const BoldedText = (text: string, highlight: any) => {
+    highlight = highlight ? highlight : '';
+    // Split on highlight term and include term into strings, ignore case
+    const strings = text.split(new RegExp(`(${highlight})`, 'gi'));
     return (
       <span>
-        {textArray.map((item, index) => (
-          <>
-            {item}
-            {index !== textArray.length - 1 && (
-              <span className={styles.TitleText}>{shouldBeBold}</span>
-            )}
-          </>
-        ))}
+        {strings.map((string, i) =>
+          string.toLowerCase() === highlight.toLowerCase() ? (
+            <span key={i} className={styles.TitleText}>
+              {string}
+            </span>
+          ) : (
+            string
+          )
+        )}
       </span>
     );
   };
@@ -115,6 +118,14 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   }
   let displayMSG = WhatsAppToJsx(message);
 
+  // set offset to use that in chatting window to fetch that msg
+  const setSearchOffset = (client: any, offset: number = 0) => {
+    client.writeQuery({
+      query: SEARCH_OFFSET,
+      data: { offset },
+    });
+  };
+
   return (
     <ListItem
       data-testid="list"
@@ -123,7 +134,10 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
       component={Link}
       selected={selected}
-      onClick={() => props.onClick(index)}
+      onClick={() => {
+        props.onClick(index);
+        if (props.messageNumber) setSearchOffset(client, props.messageNumber);
+      }}
       to={'/chat/' + contactId + '/#search' + props.lastMessage.id}
     >
       <div>
@@ -141,7 +155,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {displayMSG[0] ? BoldedText(displayMSG[0], highlightSearch):null}
+          {displayMSG[0] ? BoldedText(displayMSG[0], highlightSearch) : null}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
