@@ -11,9 +11,11 @@ export interface SearchDialogBoxProps {
   options: any;
   selectedOptions: any;
   icon?: any;
+  optionLabel?: string;
+  onChange?: any;
 }
 
-export const SearchDialogBox = (props: any) => {
+export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
 
   useEffect(() => {
@@ -38,8 +40,9 @@ export const SearchDialogBox = (props: any) => {
         <FormControl fullWidth>
           <AutoComplete
             options={props.options}
-            optionLabel="label"
+            optionLabel={props.optionLabel ? props.optionLabel : 'label'}
             field={{ value: selectedOptions }}
+            onChange={(value: any) => props.onChange(value)}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
               label: 'Search',

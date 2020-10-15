@@ -11,6 +11,10 @@ import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDi
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
+import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
+import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
+import { CONTACT_SEARCH_QUERY } from '../../../graphql/queries/Contact';
+import { setVariables } from '../../../common/constants';
 
 export interface GroupListProps {}
 
@@ -42,9 +46,13 @@ const columnAttributes = {
 export const GroupList: React.SFC<GroupListProps> = (props) => {
   const client = useApolloClient();
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
+  const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [groupId, setGroupId] = useState();
 
   const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS);
+  const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
+    variables: setVariables({}, 30),
+  });
 
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
     onCompleted: (data: any) => {
@@ -53,8 +61,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     },
   });
   let automationOptions = [];
+  let contactOptions = [];
   if (automationData) {
     automationOptions = automationData.flows;
+  }
+  if (contactsData) {
+    contactOptions = contactsData.contacts;
   }
 
   let dialog = null;
@@ -67,6 +79,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     getAutomations();
     setGroupId(id);
     setAddAutomationDialogShow(true);
+  };
+
+  const setContactsDialog = (id: any) => {
+    getContacts();
+    setGroupId(id);
+    setAddContactsDialogShow(true);
   };
 
   const handleAutomationSubmit = (value: any) => {
@@ -91,13 +109,35 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     );
   }
 
+  if (addContactsDialogShow) {
+    dialog = (
+      <SearchDialogBox
+        title="Add contacts to the group"
+        handleOk={handleAutomationSubmit}
+        handleCancel={() => setAddContactsDialogShow(false)}
+        options={contactOptions}
+        optionLabel="name"
+        selectedOptions={[]}
+        onChange={(value: any) => console.log(value)}
+      />
+    );
+  }
+  const addContactIcon = <AddContactIcon />;
   const automationIcon = <AutomationIcon />;
-  const additionalAction = {
-    label: 'Start automation flow',
-    icon: automationIcon,
-    parameter: 'id',
-    dialog: setAutomationDialog,
-  };
+  const additionalAction = [
+    {
+      label: 'Add contacts to group',
+      icon: addContactIcon,
+      parameter: 'id',
+      dialog: setContactsDialog,
+    },
+    {
+      label: 'Start automation flow',
+      icon: automationIcon,
+      parameter: 'id',
+      dialog: setAutomationDialog,
+    },
+  ];
 
   const refetchQueries = {
     onDelete: GET_GROUPS,

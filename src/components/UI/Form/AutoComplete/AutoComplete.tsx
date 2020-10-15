@@ -20,6 +20,7 @@ export interface AutocompleteProps {
   getOptions?: any;
   validate?: any;
   noOptionsText?: any;
+  onChange?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -34,6 +35,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   multiple = true,
   disabled = false,
   getOptions,
+  onChange,
   noOptionsText = 'No options available',
 }) => {
   const errorText = getIn(errors, field.name);
@@ -100,6 +102,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
+              onChange={(event) => (onChange ? onChange(event.target.value) : null)}
               error={hasError}
               helperText={hasError ? errorText : ''}
               {...textFieldProps}
