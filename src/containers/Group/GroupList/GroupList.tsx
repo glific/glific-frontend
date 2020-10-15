@@ -93,6 +93,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   const automationIcon = <AutomationIcon />;
   const additionalAction = {
+    label: 'Start automation flow',
     icon: automationIcon,
     parameter: 'id',
     dialog: setAutomationDialog,

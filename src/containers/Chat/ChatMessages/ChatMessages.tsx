@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, SyntheticEvent, useRef } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
-import { Container } from '@material-ui/core';
+import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router';
 
@@ -21,6 +21,8 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { Button } from '../../../components/UI/Form/Button/Button';
+import { type } from 'os';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -78,6 +80,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [jumpToValue, setJumpToValue] = useState(false);
+  const [lastScrollHeight, setLastScrollHeight] = useState(0);
+  const [messageOffset, setMessageOffset] = useState(50);
+  const [showLoadMore, setShowLoadMore] = useState(true);
+
+  useEffect(() => {
+    setShowLoadMore(true);
+  }, [contactId]);
 
   // Instantiate these to be used later.
 
@@ -110,7 +119,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // get the conversations stored from the cache
   const queryVariables = SEARCH_QUERY_VARIABLES;
-
+  
   const {
     loading: conversationLoad,
     error: conversationError,
@@ -121,16 +130,48 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: {
-      contactOpts: {
-        limit: 50,
-      },
-      filter: { id: contactId ? contactId.toString() : '0' },
-      messageOpts: {
-        limit: 50,
-      },
+    onCompleted: (data) => {
+      if (data.search[0].messages.length === 0) {
+        setShowLoadMore(false);
+      } else {
+        const conversations = client.readQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+        });
+        const conversationCopy = JSON.parse(JSON.stringify(data));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+        let conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          if (conversation.contact.id === contactId.toString()) {
+            conversation.messages = [
+              ...conversation.messages,
+              ...conversationCopy.search[0].messages,
+            ];
+          }
+          return conversation;
+        });
+
+        client.writeQuery({
+          query: SEARCH_QUERY,
+          variables: queryVariables,
+          data: conversationsCopy,
+        });
+        setMessageOffset(messageOffset + 50);
+      }
     },
   });
+  let messageList: any;
+
+  useEffect(() => {
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.scrollTop += messageContainer.scrollHeight - lastScrollHeight;
+    }
+  }, [allConversations]);
 
   let unselectedTags: Array<any> = [];
 
@@ -167,9 +208,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   // Run through these cases to ensure data always exists
-  if ((called && loading) || conversationLoad) {
-    return <Loading />;
-  }
 
   if (called && error) {
     setErrorMessage(client, error);
@@ -188,27 +226,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // loop through the cached conversations and find if contact exists
     if (allConversations && allConversations.search)
       allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
+        if (conversation.contact.id === contactId.toString()) {
           conversationIndex = index;
           conversationInfo = conversation;
         }
         return null;
       });
 
-    // this means we didn't find the contact in the cached converation,
-    // time to get the conversation for this contact from server and then
-    // store it in the cached object too.
     if (conversationIndex < 0) {
-      if (!called) {
-        getSearchQuery();
-        return <Loading />;
-      }
-      conversationIndex = 0;
-      conversationInfo = data ? data.search[0] : null;
-
-      // TODO: Find a way to add the conversation to the end of the conversationList in order to cache this as well.
-      // allConversations.conversations.splice(0, 0, data.conversation);
-      // allConversations.conversations.unshift(data.conversation);
+      return <Loading />;
     }
   }
 
@@ -276,7 +302,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setShowDropdown(id);
   };
 
-  let messageList: any;
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -321,16 +346,41 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       .reverse();
   }
 
+  const loadMoreMessages = () => {
+    getSearchQuery({
+      variables: {
+        filter: { id: contactId.toString() },
+        messageOpts: { limit: 50, offset: messageOffset },
+        contactOpts: { limit: 1 },
+      },
+    });
+    const messageContainer = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      setLastScrollHeight(messageContainer.scrollHeight);
+    }
+  };
+
   let messageListContainer;
   // Check if there are conversation messages else display no messages
   if (messageList) {
     messageListContainer = (
       <Container
-        className={styles.MessageList}
+        className={`${styles.MessageList} messageContainer `}
         style={{ height: `calc(100% - 175px - ${reducedHeight}px)` }}
         maxWidth={false}
         data-testid="messageContainer"
       >
+        {showLoadMore && conversationInfo.messages.length > 49 ? (
+          <div className={styles.LoadMore}>
+            {(called && loading) || conversationLoad ? (
+              <CircularProgress className={styles.Loading} />
+            ) : (
+              <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                Load more messages
+              </div>
+            )}
+          </div>
+        ) : null}
         {messageList}
       </Container>
     );
@@ -352,37 +402,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     element.scrollIntoView();
   }
 
-  let target: HTMLTextAreaElement;
-
-  const scrollEvent = (e: SyntheticEvent) => {
-    target = e.target as HTMLTextAreaElement;
-    if (target)
-      console.log(
-        'Current scroll position:',
-        target.scrollTop,
-        target.scrollHeight,
-        (target.scrollHeight + 118) / 2
-      );
-
-    if (!jumpToValue && target && target.scrollTop !== (target.scrollHeight + 118) / 2) {
-      setJumpToValue(true);
-    }
-    // if (jumpToValue && target && target.scrollTop === (target.scrollHeight + 118) / 2) {
-    //   setJumpToValue(false);
-    // }
-  };
-
-  const scrollToBottom = () => {
-    target.scrollTop = target.scrollHeight;
-    setJumpToValue(false);
-  };
-
   return (
     <Container
       className={styles.ChatMessages}
       maxWidth={false}
       disableGutters
-      onScroll={scrollEvent}
     >
       {dialogBox}
       {toastMessage}
@@ -398,11 +422,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
       {messageListContainer}
-      {jumpToValue ? (
-        <div className={styles.Jump} onClick={scrollToBottom}>
-          Jump to latest
-        </div>
-      ) : null}
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}

@@ -54,6 +54,7 @@ export const SEARCH_MULTI_QUERY = gql`
       contacts {
         id
         body
+        messageNumber
         insertedAt
         contact {
           id
@@ -82,6 +83,7 @@ export const SEARCH_MULTI_QUERY = gql`
       messages {
         id
         body
+        messageNumber
         insertedAt
         contact {
           id
@@ -108,7 +110,9 @@ export const SEARCH_MULTI_QUERY = gql`
         }
       }
       tags {
+        id
         body
+        messageNumber
         insertedAt
         contact {
           id

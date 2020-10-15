@@ -253,6 +253,7 @@ export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
 export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
+  contactGroupsQuery,
   searchQuery,
   searchEmptyQuery,
   conversationQuery,

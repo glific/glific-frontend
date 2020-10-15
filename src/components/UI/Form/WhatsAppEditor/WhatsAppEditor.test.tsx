@@ -1,7 +1,10 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import WhatsAppEditor from './WhatsAppEditor';
+import { render, wait, fireEvent } from '@testing-library/react';
 import { EMPTY_STATE } from './EditorState.test.helper';
+import { EditorState } from 'draft-js';
+import { WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 
 describe('<WhatsAppEditor/>', () => {
   let handleHeightChange = jest.fn();
@@ -9,18 +12,17 @@ describe('<WhatsAppEditor/>', () => {
   let editorState = EMPTY_STATE;
   let setEditorState = jest.fn();
 
-  const defaultProps = {
-    handleHeightChange: handleHeightChange,
-    sendMessage: sendMessage,
-    editorState: editorState,
-    setEditorState: setEditorState,
+  const defaultProps = (editorState: any) => {
+    return {
+      handleHeightChange: handleHeightChange,
+      sendMessage: sendMessage,
+      editorState: editorState,
+      setEditorState: setEditorState,
+    };
   };
 
-  const getWrapper = (editorState: any) => {
-    let newProps = defaultProps;
-    newProps.editorState = editorState;
-    return shallow(<WhatsAppEditor {...newProps} />);
-  };
+  const getWrapper = (editorState: any) =>
+    shallow(<WhatsAppEditor {...defaultProps(editorState)} />);
 
   const wrapper = getWrapper(EMPTY_STATE);
   const editor = wrapper.find('[data-testid="editor"]');
@@ -54,5 +56,18 @@ describe('<WhatsAppEditor/>', () => {
     const resizer = wrapper.find('[data-testid="resizer"]');
     resizer.props().onResize(40, 40);
     expect(handleHeightChange).toHaveBeenCalled();
+  });
+
+  test('input an emoji in chat', () => {
+    const { container, getByTestId } = render(
+      <WhatsAppEditor
+        {...defaultProps(
+          EditorState.createWithContent(WhatsAppToDraftEditor('*this is bold* _this is italic_'))
+        )}
+      />
+    );
+    fireEvent.click(getByTestId('emoji-picker'));
+    fireEvent.click(container.querySelector('.emoji-mart-emoji'));
+    expect(setEditorState).toBeCalled();
   });
 });

@@ -141,7 +141,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {BoldedText(displayMSG[0], highlightSearch)}
+          {displayMSG[0] ? BoldedText(displayMSG[0], highlightSearch):null}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
