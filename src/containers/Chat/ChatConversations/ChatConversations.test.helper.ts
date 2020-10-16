@@ -70,7 +70,7 @@ export const chatConversationsMocks = [
   searchQuery(5, 10, { includeTags: ['12'] }, false),
 ];
 
-export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
+export const searchMultiQuery = (term: string = '', limit: number = 50) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
@@ -111,9 +111,9 @@ export const SearchMultiQuery = (term: string = '', limit: number = 50) => {
 };
 
 export const SearchConversationsMocks = [
-  SearchMultiQuery(),
-  SearchMultiQuery(),
-  SearchMultiQuery('a'),
+  searchMultiQuery(),
+  searchMultiQuery(),
+  searchMultiQuery('a'),
 ];
 
 export const ChatConversationMocks = [
@@ -126,4 +126,3 @@ export const ChatConversationMocks = [
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });
 export const searchQueryEmptyMock = searchQuery(50, 50, {});
-
