@@ -41,6 +41,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
+  const [searchTerm, setSearchTerm] = React.useState('');
   const [optionValue, setOptionValue] = React.useState([]);
   const [open, setOpen] = React.useState(false);
 
@@ -99,16 +100,22 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               {option[optionLabel]}
             </React.Fragment>
           )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              onChange={(event) => (onChange ? onChange(event.target.value) : null)}
-              error={hasError}
-              helperText={hasError ? errorText : ''}
-              {...textFieldProps}
-              data-testid="AutocompleteInput"
-            />
-          )}
+          renderInput={(params) => {
+            console.log(params);
+            return (
+              <TextField
+                {...params}
+                onChange={(event) => {
+                  setSearchTerm(event.target.value);
+                  return onChange ? onChange(event.target.value) : null;
+                }}
+                error={hasError}
+                helperText={hasError ? errorText : ''}
+                {...textFieldProps}
+                data-testid="AutocompleteInput"
+              />
+            );
+          }}
           open={open}
           onOpen={() => {
             setOpen(true);

@@ -47,11 +47,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const client = useApolloClient();
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
 
   const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS);
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({}, 30),
+    variables: setVariables({ name: contactSearchTerm }, 30),
   });
 
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
@@ -118,7 +119,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         options={contactOptions}
         optionLabel="name"
         selectedOptions={[]}
-        onChange={(value: any) => console.log(value)}
+        onChange={(value: any) => {
+          setContactSearchTerm(value);
+        }}
       />
     );
   }
