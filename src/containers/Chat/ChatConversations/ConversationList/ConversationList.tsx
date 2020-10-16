@@ -197,13 +197,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = data.search;
   }
 
-  // Not sure if this is relvent any more as backend endpoint has changed significantly
-  // if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
-  //   conversations = searchData.search.filter((n: any) => n.__typename === 'Conversation'); // Trying to only get conversation types from search query.
-  // }
+  // If no cache, assign conversations data from search query.
+  if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
+    conversations = searchData.search;
+  }
 
   let conversationList;
-
+  // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
   if (props.searchVal !== '' && searchMultiData && Object.keys(props.searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
