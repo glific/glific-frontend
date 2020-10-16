@@ -194,7 +194,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     refetchQueries: () => {
       if (refetchQueries && refetchQueries.onCreate) {
-        return [{ query: refetchQueries.onCreate }];
+        return [
+          { query: refetchQueries.onCreate.query, variables: refetchQueries.onCreate.variables },
+        ];
       } else return [];
     },
     onError: (error: ApolloError) => {
