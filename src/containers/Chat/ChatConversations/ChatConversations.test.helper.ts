@@ -85,25 +85,103 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
         searchMulti: {
           contacts: [
             {
-              body: 'hola',
+              body: null,
               contact: {
-                name: 'Default receiver',
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
               },
-              id: '7',
+              id: '66',
+              insertedAt: '2020-10-15T07:15:33.613260Z',
+              media: {
+                caption: null,
+                url:
+                  'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+              },
+              messageNumber: 0,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#9900ef',
+                  id: '30',
+                  label: 'Default',
+                },
+                {
+                  colorCode: '#0C976D',
+                  id: '15',
+                  label: 'Numeric',
+                },
+              ],
+              type: 'IMAGE',
             },
           ],
           messages: [
             {
-              body: 'Default message body',
-              bspStatus: 'ENQUEUED',
+              body: 'Hi',
               contact: {
-                name: 'Default receiver',
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
                 status: 'VALID',
               },
-              sendAt: null,
+              id: '18',
+              insertedAt: '2020-10-15T06:59:31.473314Z',
+              media: null,
+              messageNumber: 48,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#0C976D',
+                  id: '4',
+                  label: 'Greeting',
+                },
+              ],
+              type: 'TEXT',
             },
           ],
-          tags: [],
+          tags: [
+            {
+              body: 'Hi',
+              contact: {
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
+              },
+              id: '12',
+              insertedAt: '2020-10-15T06:58:34.432894Z',
+              media: null,
+              messageNumber: 54,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#0C976D',
+                  id: '4',
+                  label: 'Greeting',
+                },
+              ],
+              type: 'TEXT',
+            },
+          ],
         },
       },
     },

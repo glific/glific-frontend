@@ -116,7 +116,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // get the conversations stored from the cache
   const queryVariables = SEARCH_QUERY_VARIABLES;
-  
+
   const {
     loading: conversationLoad,
     error: conversationError,
@@ -393,13 +393,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
-
   return (
-    <Container
-      className={styles.ChatMessages}
-      maxWidth={false}
-      disableGutters
-    >
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {toastMessage}
       <ContactBar
