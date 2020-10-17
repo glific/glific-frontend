@@ -90,3 +90,35 @@ export const sendOTP = (phoneNumber: string, registration = 'false') => {
       throw error;
     });
 };
+
+// set user object
+export const setUserSession = (user: string) => {
+  localStorage.setItem('glific_user', user);
+};
+
+// clear the user session
+export const clearUserSession = () => {
+  localStorage.removeItem('glific_user');
+};
+
+// get the current user session
+export const getUserSession = (element?: string) => {
+  const user = localStorage.getItem('glific_user');
+
+  // let's early if there is no user session on local
+  if (!user) return null;
+
+  // let's return entire object if no element is sent
+  if (!element) {
+    return user;
+  }
+
+  // we should retun as requested
+  let returnValue: any;
+  switch (element) {
+    case 'organization_id':
+      returnValue = JSON.parse(user).organization.id;
+      break;
+  }
+  return returnValue;
+};
