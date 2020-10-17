@@ -19,6 +19,7 @@ import {
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { SIMULATOR_CONTACT } from '../../common/constants';
+import { getUserSession } from '../../services/AuthService';
 
 export interface ChatProps {
   contactId: number;
@@ -187,7 +188,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   // handle subscription for message received and sent
   const getMessageResponse = useCallback(() => {
-    const subscriptionVariables = { organizationId: 1 };
+    // let's map all the subscriptions to logged in user's organization
+    const subscriptionVariables = { organizationId: getUserSession('organizationId') };
     // message received subscription
     subscribeToMore({
       document: MESSAGE_RECEIVED_SUBSCRIPTION,

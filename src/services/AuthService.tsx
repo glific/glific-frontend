@@ -116,7 +116,7 @@ export const getUserSession = (element?: string) => {
   // we should retun as requested
   let returnValue: any;
   switch (element) {
-    case 'organization_id':
+    case 'organizationId':
       returnValue = JSON.parse(user).organization.id;
       break;
   }
