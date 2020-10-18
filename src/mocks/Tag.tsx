@@ -66,7 +66,7 @@ export const filterTagsQuery = {
 export const addMessageTagSubscription = {
   request: {
     query: ADD_MESSAGE_TAG_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
@@ -90,7 +90,7 @@ export const addMessageTagSubscription = {
 export const deleteMessageTagSubscription = {
   request: {
     query: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
