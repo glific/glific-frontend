@@ -1,5 +1,4 @@
 import { FILTER_TAGS_NAME, GET_TAGS } from '../graphql/queries/Tag';
-import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
