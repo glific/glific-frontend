@@ -106,7 +106,7 @@ const messageReceivedSubscription = {
 const messageSendSubscription = {
   request: {
     query: MESSAGE_SENT_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
