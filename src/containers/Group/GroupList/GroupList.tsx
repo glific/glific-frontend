@@ -13,7 +13,7 @@ import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { CONTACT_SEARCH_QUERY } from '../../../graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { setVariables } from '../../../common/constants';
 
 export interface GroupListProps {}
@@ -55,6 +55,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     variables: setVariables({ name: contactSearchTerm }, 30),
   });
 
+  const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
+
+
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
     onCompleted: (data: any) => {
       setAddAutomationDialogShow(false);
@@ -63,11 +66,15 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   });
   let automationOptions = [];
   let contactOptions = [];
+  let groupContacts=[]
   if (automationData) {
     automationOptions = automationData.flows;
   }
   if (contactsData) {
     contactOptions = contactsData.contacts;
+  }
+  if (groupContactsData) {
+    groupContacts = groupContactsData.group.group.contacts;
   }
 
   let dialog = null;
@@ -83,6 +90,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   const setContactsDialog = (id: any) => {
+    getGroupContacts({variables:{id}})
     getContacts();
     setGroupId(id);
     setAddContactsDialogShow(true);
@@ -118,7 +126,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
-        selectedOptions={[]}
+        asyncSearch={true}
+        selectedOptions={groupContacts}
         onChange={(value: any) => {
           setContactSearchTerm(value);
         }}

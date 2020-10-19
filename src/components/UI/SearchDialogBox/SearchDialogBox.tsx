@@ -13,15 +13,20 @@ export interface SearchDialogBoxProps {
   icon?: any;
   optionLabel?: string;
   onChange?: any;
+  asyncSearch?:boolean;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
 
   useEffect(() => {
+    if(props.asyncSearch===true){
+    }
+    else{
     setSelectedOptions(
       props.options.filter((option: any) => props.selectedOptions.includes(option.id))
     );
+  }
   }, [props.selectedOptions, props.options]);
 
   const changeValue = (event: any, value: any) => {
@@ -39,9 +44,11 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
+            asyncSearch={props.asyncSearch}
             options={props.options}
             optionLabel={props.optionLabel ? props.optionLabel : 'label'}
             field={{ value: selectedOptions }}
+            initialSelected={props.selectedOptions}
             onChange={(value: any) => props.onChange(value)}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
