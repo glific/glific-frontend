@@ -18,5 +18,11 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
   },
 });
 
+// watch for websocket error / close event
+socketConnection.onClose((event: any) => {
+  // don't retry as if connection is closed due to some failures and cancel automatic reconnect
+  socketConnection.reconnectTimer.reset();
+});
+
 // wrap the Phoenix socket in an AbsintheSocket and export
 export default SocketApolloLink.createAbsintheSocketLink(AbsintheSocket.create(socketConnection));
