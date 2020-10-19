@@ -49,6 +49,7 @@ describe('<SearchBar/>', () => {
 
   it('change in local search val renders change', () => {
     wrapper.find(InputBase).simulate('change', { target: { value: 'new val' } });
+    expect(wrapper.find(InputBase).props().value).toEqual('new val');
     expect(mockChange).toHaveBeenCalled();
   });
 
