@@ -169,8 +169,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       return null;
     },
     refetchQueries: () => {
-      if (refetchQueries && refetchQueries.onUpdate) {
-        return [{ query: refetchQueries.onUpdate }];
+      if (refetchQueries) {
+        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
       } else return [];
     },
   });
@@ -193,10 +193,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
     refetchQueries: () => {
-      if (refetchQueries && refetchQueries.onCreate) {
-        return [
-          { query: refetchQueries.onCreate.query, variables: refetchQueries.onCreate.variables },
-        ];
+      if (refetchQueries) {
+        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
       } else return [];
     },
     onError: (error: ApolloError) => {

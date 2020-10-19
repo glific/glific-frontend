@@ -1,5 +1,5 @@
 import { FILTER_TAGS_NAME, GET_TAGS } from '../graphql/queries/Tag';
-import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
+import { SEARCH_QUERY_VARIABLES as queryVariables, setVariables } from '../common/constants';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
@@ -40,12 +40,7 @@ export const getTagsQuery = {
 export const filterTagsQuery = {
   request: {
     query: FILTER_TAGS_NAME,
-    variables: {
-      filter: {},
-      opts: {
-        order: 'ASC',
-      },
-    },
+    variables: setVariables(),
   },
   result: {
     data: {

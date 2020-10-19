@@ -20,12 +20,26 @@
 
 .AutomationName {
   position: absolute !important;
-  top: 15px;
-  left: 20px;
+  top: 10px;
+  left: 28px;
   z-index: 1000;
-  color: #379757;
-  font-weight: 700;
+  color: #073f24;
+  font-weight: 500;
   font-size: 20px;
+}
+
+:global(.Flow_empty_flow__roKNh) {
+  margin-top: 0px !important;
+  padding-top: 60px;
+}
+
+:global(#canvas-container) > div {
+  padding-top: 80px;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
 }
 
 .FlowContainer {

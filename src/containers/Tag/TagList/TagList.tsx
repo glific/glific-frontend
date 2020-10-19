@@ -1,10 +1,11 @@
 import React from 'react';
-import { GET_TAGS_COUNT, FILTER_TAGS } from '../../../graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
 import styles from './TagList.module.css';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Dark.svg';
 import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { List } from '../../List/List';
+import { setVariables } from '../../../common/constants';
 
 export interface TagListProps {}
 
@@ -55,6 +56,10 @@ export const TagList: React.SFC<TagListProps> = (props) => (
     listIcon={tagIcon}
     button={{ show: true, label: '+ CREATE TAG' }}
     dialogMessage={dialogMessage}
+    refetchQueries={{
+      query: FILTER_TAGS_NAME,
+      variables: setVariables(),
+    }}
     {...queries}
     {...columnAttributes}
   />
