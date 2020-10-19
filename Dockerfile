@@ -9,7 +9,7 @@ ENV REACT_APP_GLIFIC_API_PORT $REACT_APP_GLIFIC_API_PORT
 WORKDIR /app
 COPY . .
 RUN npm install react-scripts -g --silent
-RUN yarn install
+RUN yarn --ignore-engines install
 RUN yarn run build
 
 FROM node:12.18.3-alpine

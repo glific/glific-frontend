@@ -1,45 +1,45 @@
 import { gql } from '@apollo/client';
 
 export const ADD_MESSAGE_TAG_SUBSCRIPTION = gql`
-subscription {
-  createdMessageTag {
-    message {
-      id
-      flow
-      receiver {
+  subscription($organizationId: ID!) {
+    createdMessageTag(organizationId: $organizationId) {
+      message {
         id
+        flow
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
       }
-      sender {
+      tag {
         id
+        label
+        colorCode
       }
-    }
-    tag {
-      id
-      label
-      colorCode
     }
   }
-}
 `;
 
 export const DELETE_MESSAGE_TAG_SUBSCRIPTION = gql`
-subscription {
-  deletedMessageTag {
-    message {
-      id
-      flow
-      receiver {
+  subscription($organizationId: ID!) {
+    deletedMessageTag(organizationId: $organizationId) {
+      message {
         id
+        flow
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
       }
-      sender {
+      tag {
         id
+        label
+        colorCode
       }
-    }
-    tag {
-      id
-      label
-      colorCode
     }
   }
-}
 `;

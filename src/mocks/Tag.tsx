@@ -1,5 +1,5 @@
 import { FILTER_TAGS_NAME, GET_TAGS } from '../graphql/queries/Tag';
-import { SEARCH_QUERY_VARIABLES as queryVariables, setVariables } from '../common/constants';
+import { setVariables } from '../common/constants';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
@@ -61,7 +61,7 @@ export const filterTagsQuery = {
 export const addMessageTagSubscription = {
   request: {
     query: ADD_MESSAGE_TAG_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
@@ -85,7 +85,7 @@ export const addMessageTagSubscription = {
 export const deleteMessageTagSubscription = {
   request: {
     query: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
