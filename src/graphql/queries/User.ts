@@ -72,6 +72,9 @@ export const GET_CURRENT_USER = gql`
           label
           description
         }
+        organization {
+          id
+        }
       }
     }
   }
