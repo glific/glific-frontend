@@ -165,6 +165,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                   className={styles.ChatSearchBar}
                   handleChange={handleSearch}
                   onReset={() => setSearchVal('')}
+                  searchMode={true}
                 />
               </div>
             </Fade>

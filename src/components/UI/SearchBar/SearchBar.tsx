@@ -15,11 +15,19 @@ export interface SearchBarProps {
   className?: any;
   handleClick?: any;
   endAdornment?: any;
-  searchMode?: boolean;
+  searchMode: boolean;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
-  let inputValue = props.searchMode ? props.searchVal : '';
+  const [localSearchValue, setLocalSearchValue] = useState('');
+  // use local state value so that we can set the defaults correctly
+  // local value is needed for list component
+  let inputValue: string | undefined = props.searchMode ? props.searchVal : '';
+  if (localSearchValue && props.searchMode) {
+    inputValue = localSearchValue;
+  } else {
+    inputValue = props.searchVal || '';
+  }
 
   // display reset button only if value is entered
   let resetButton = null;
@@ -29,6 +37,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
         data-testid="resetButton"
         className={styles.ResetSearch}
         onClick={() => {
+          setLocalSearchValue('');
           props.onReset();
         }}
       >
@@ -64,6 +73,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
             name="searchInput" // This is important for extracting the search value in parent component.
             placeholder="Search"
             onChange={(e: any) => {
+              setLocalSearchValue(e.target.value);
               if (props.handleChange) {
                 props.handleChange(e);
               }

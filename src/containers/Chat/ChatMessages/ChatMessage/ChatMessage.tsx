@@ -186,14 +186,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
-  // get id from the url & assign it to the message
-  // const getID = () => {
-  //   let searchId: any = window.location.hash.split('#search').pop();
-  //   let ID = props.id == parseInt(searchId) ? window.location.hash : '';
-  //   return ID;
-  // };
   return (
-    <div className={additionalClass} ref={messageRef} data-testid="message" id={'#search'+ props.id}>
+    <div
+      className={additionalClass}
+      ref={messageRef}
+      data-testid="message"
+      id={'#search' + props.id}
+    >
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
