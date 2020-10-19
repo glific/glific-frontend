@@ -26,7 +26,7 @@ test('it should have a done button that redirects to automation page', async () 
 
 test('it should display name of the automation', async () => {
   await wait();
-  expect(wrapper.find('[data-testid="automationName"]').text()).toBe('help workflow');
+  expect(wrapper.find('[data-testid="automationName"]').text()).toContain('help workflow');
 });
 
 test('it should have a help button that redirects to help page', () => {

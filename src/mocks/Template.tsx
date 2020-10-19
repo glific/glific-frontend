@@ -1,17 +1,11 @@
+import { setVariables } from '../common/constants';
 import { FILTER_TEMPLATES } from '../graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
   return {
     request: {
       query: FILTER_TEMPLATES,
-      variables: {
-        filter: {
-          term: term,
-        },
-        opts: {
-          order: 'ASC',
-        },
-      },
+      variables: setVariables({ term: term }),
     },
     result: {
       data: {

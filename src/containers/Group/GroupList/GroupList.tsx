@@ -11,6 +11,7 @@ import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDi
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
+import { setVariables } from '../../../common/constants';
 
 export interface GroupListProps {}
 
@@ -100,7 +101,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   const refetchQueries = {
-    onDelete: GET_GROUPS,
+    query: GET_GROUPS,
+    variables: setVariables(),
   };
   const cardLink = { start: 'group', end: 'contacts' };
   return (

@@ -10,6 +10,8 @@ import { FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
+import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
+import { IconButton } from '@material-ui/core';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -202,7 +204,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
       </Button>
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
-          {automationName ? automationName.flows[0].name : null}
+          {automationName ? (
+            <>
+              <IconButton disabled={true} className={styles.Icon}>
+                <AutomationIcon />
+              </IconButton>
+
+              {automationName.flows[0].name}
+            </>
+          ) : null}
         </div>
         <div id="flow"></div>
       </div>
