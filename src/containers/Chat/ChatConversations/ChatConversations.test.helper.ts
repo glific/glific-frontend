@@ -1,5 +1,5 @@
 import { savedSearchQuery } from '../../../mocks/Chat';
-import { SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../../../graphql/queries/Search';
+import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 const withResult = {
   data: {
@@ -68,6 +68,7 @@ export const chatConversationsMocks = [
   searchQuery(50, 50, { term: 'a' }, false),
   searchQuery(50, 50, { term: '' }),
   searchQuery(5, 10, { includeTags: ['12'] }, false),
+  searchQuery(50, 1, {}, false),
 ];
 
 export const searchMultiQuery = (term: string = '', limit: number = 50) => {
@@ -188,6 +189,18 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
   };
 };
 
+export const searchOffset = {
+  request: {
+    query: SEARCH_OFFSET,
+    variables: { offset: 0 },
+  },
+  result: {
+    data: {
+      offset: 0,
+    },
+  },
+};
+
 export const SearchConversationsMocks = [
   searchMultiQuery(),
   searchMultiQuery(),
@@ -200,6 +213,7 @@ export const ChatConversationMocks = [
   savedSearchQuery,
   ...SearchConversationsMocks,
   ...SearchConversationsMocks,
+  searchOffset,
 ];
 
 export const searchQueryMock = searchQuery(50, 50, { term: '' });

@@ -2,7 +2,12 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
+import {
+  SAVED_SEARCH_QUERY,
+  SEARCH_QUERY,
+  SEARCH_MULTI_QUERY,
+  SEARCH_OFFSET,
+} from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
@@ -328,6 +333,53 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
   };
 };
 
+const messageOptsSearch = {
+  request: {
+    query: SEARCH_QUERY,
+    variables: { contactOpts: { limit: 1 }, filter: {}, messageOpts: { limit: 50, offset: 0 } },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          __typename: 'Conversation',
+          contact: {
+            id: '6',
+            name: 'Red Sparrow',
+            phone: '919520285543',
+            lastMessageAt: '2020-08-03T07:01:36Z',
+            status: 'VALID',
+            bspStatus: 'SESSION_AND_HSM',
+          },
+          messages: [
+            {
+              id: '34',
+              body: 'Hi',
+              insertedAt: '2020-08-03T07:01:36Z',
+              receiver: {
+                id: '2',
+              },
+              sender: {
+                id: '6',
+              },
+              tags: [
+                {
+                  id: '8',
+                  label: 'Not working',
+                  colorCode: '#00d084',
+                  parent: null,
+                },
+              ],
+              type: 'TEXT',
+              media: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+};
+
 export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
@@ -343,7 +395,8 @@ export const CONVERSATION_MOCKS = [
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009'),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-  //searchMultiQuery(),
+  // searchMultiQuery(),
+  messageOptsSearch,
 ];
 
 const updateMessageTagsQuery = {
