@@ -12,7 +12,7 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { TIME_FORMAT, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
 import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -66,12 +66,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const message = useQuery(NOTIFICATION);
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
-    variables: {
-      filter: {},
-      opts: {
-        order: 'ASC',
-      },
-    },
+    variables: setVariables(),
   });
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);

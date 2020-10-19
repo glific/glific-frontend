@@ -39,12 +39,7 @@ export const getTagsQuery = {
 export const filterTagsQuery = {
   request: {
     query: FILTER_TAGS_NAME,
-    variables: {
-      filter: {},
-      opts: {
-        order: 'ASC',
-      },
-    },
+    variables: setVariables(),
   },
   result: {
     data: {
