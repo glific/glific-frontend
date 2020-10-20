@@ -78,7 +78,6 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               const filterValues = asyncValues.value.filter(
                 (val: any) => val.id !== value[value.length - 1].id
               );
-
               if (filterValues.length === value.length - 2) {
                 asyncValues.setValue(filterValues);
               } else {
