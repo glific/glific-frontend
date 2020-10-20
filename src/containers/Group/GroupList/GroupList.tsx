@@ -4,6 +4,7 @@ import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
+import AutomationIconSvg from '../../../assets/images/icons/Automations/Selected.svg';
 import { List } from '../../List/List';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
@@ -15,6 +16,8 @@ import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/C
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { setVariables } from '../../../common/constants';
+import { IconButton } from '@material-ui/core';
+import Menu from '../../../components/UI/Menu/Menu';
 
 export interface GroupListProps {}
 
@@ -106,9 +109,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   const setAutomationDialog = (id: any) => {
-    getAutomations();
-    setGroupId(id);
-    setAddAutomationDialogShow(true);
+    // getAutomations();
+    // setGroupId(id);
+    // setAddAutomationDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
@@ -179,8 +182,15 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       />
     );
   }
+
   const addContactIcon = <AddContactIcon />;
-  const automationIcon = <AutomationIcon />;
+  const automationIcon = (
+    <Menu menus={[{ title: 'Send a message' }, { title: 'Start automation flow' }]}>
+      <IconButton data-testid="staffManagementMenu">
+        <img src={AutomationIconSvg} className={styles.StaffIcon} alt="staff icon" />
+      </IconButton>
+    </Menu>
+  );
   const additionalAction = [
     {
       label: 'Add contacts to group',
