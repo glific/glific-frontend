@@ -8,8 +8,6 @@ ENV REACT_APP_GLIFIC_API_PORT $REACT_APP_GLIFIC_API_PORT
 
 WORKDIR /app
 COPY . .
-RUN ls
-COPY --from=cypress.json.example cypress.json
 RUN npm install react-scripts -g --silent
 RUN yarn --ignore-engines install
 RUN yarn run build
