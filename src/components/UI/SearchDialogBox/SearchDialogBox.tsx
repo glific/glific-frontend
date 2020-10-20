@@ -13,7 +13,7 @@ export interface SearchDialogBoxProps {
   icon?: any;
   optionLabel?: string;
   onChange?: any;
-  asyncSearch?:boolean;
+  asyncSearch?: boolean;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -21,19 +21,17 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
-    if(!props.asyncSearch){
-      
-    setSelectedOptions(
-      props.options.filter((option: any) => props.selectedOptions.includes(option.id))
-    );
-  }
+    if (!props.asyncSearch) {
+      setSelectedOptions(
+        props.options.filter((option: any) => props.selectedOptions.includes(option.id))
+      );
+    }
   }, [props.selectedOptions, props.options]);
 
   useEffect(() => {
-    if(props.asyncSearch===true){
-      setAsyncSelectedOptions(props.selectedOptions)
+    if (props.asyncSearch === true) {
+      setAsyncSelectedOptions(props.selectedOptions);
     }
-  
   }, [props.selectedOptions]);
 
   const changeValue = (event: any, value: any) => {
@@ -43,7 +41,13 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   return (
     <DialogBox
       title={props.title}
-      handleOk={() => props.handleOk(props.asyncSearch?asyncSelectedOptions.map((option: any) => option.id): selectedOptions.map((option: any) => option.id))}
+      handleOk={() =>
+        props.handleOk(
+          props.asyncSearch
+            ? asyncSelectedOptions.map((option: any) => option.id)
+            : selectedOptions.map((option: any) => option.id)
+        )
+      }
       handleCancel={props.handleCancel}
       titleAlign="left"
       buttonOk="Save"
@@ -52,7 +56,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
         <FormControl fullWidth>
           <AutoComplete
             asyncSearch={props.asyncSearch}
-            asyncValues={{value:asyncSelectedOptions,setValue:setAsyncSelectedOptions}}
+            asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
             options={props.options}
             optionLabel={props.optionLabel ? props.optionLabel : 'label'}
             field={{ value: selectedOptions }}

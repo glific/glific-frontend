@@ -56,24 +56,29 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   });
 
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
-  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS,{
+  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
     onCompleted: (data) => {
-      const numberDeleted=data.updateGroupContacts.numberDeleted
-      const numberAdded=data.updateGroupContacts.groupContacts.length
-      if(numberDeleted>0 && numberAdded>0){ 
-        setNotification(client, `${numberDeleted} contact${numberDeleted===1?'':'s  were'} removed and ${numberAdded} contact${numberAdded==1?'':'s  were'} added`);
+      const numberDeleted = data.updateGroupContacts.numberDeleted;
+      const numberAdded = data.updateGroupContacts.groupContacts.length;
+      if (numberDeleted > 0 && numberAdded > 0) {
+        setNotification(
+          client,
+          `${numberDeleted} contact${
+            numberDeleted === 1 ? '' : 's  were'
+          } removed and ${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`
+        );
+      } else if (numberDeleted > 0) {
+        setNotification(
+          client,
+          `${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`
+        );
+      } else {
+        setNotification(client, `${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`);
       }
-     else if(numberDeleted>0){ 
-      setNotification(client, `${numberDeleted} contact${numberDeleted===1?'':'s  were'} removed`);
-    }
-    else{
-      setNotification(client, `${numberAdded} contact${numberAdded==1?'':'s  were'} added`);
-    }
       setAddContactsDialogShow(false);
     },
-    refetchQueries:[{query:GET_GROUP_CONTACTS,variables:{id:groupId}}]
+    refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
   });
-
 
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
     onCompleted: (data: any) => {
@@ -83,7 +88,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   });
   let automationOptions = [];
   let contactOptions = [];
-  let groupContacts:Array<any>=[]
+  let groupContacts: Array<any> = [];
   if (automationData) {
     automationOptions = automationData.flows;
   }
@@ -107,7 +112,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   const setContactsDialog = (id: any) => {
-    getGroupContacts({variables:{id}})
+    getGroupContacts({ variables: { id } });
     getContacts();
     setGroupId(id);
     setAddContactsDialogShow(true);
@@ -135,15 +140,16 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     );
   }
 
-  const handleGroupAdd=(value:any)=>{
+  const handleGroupAdd = (value: any) => {
     const selectedContacts = value.filter(
-      (contact: any) => !groupContacts.map((groupContact:any)=>groupContact.id).includes(contact)
+      (contact: any) => !groupContacts.map((groupContact: any) => groupContact.id).includes(contact)
     );
-    const unselectedContacts = groupContacts.map((groupContact:any)=>groupContact.id).filter((contact: any) => !value.includes(contact));
-  
+    const unselectedContacts = groupContacts
+      .map((groupContact: any) => groupContact.id)
+      .filter((contact: any) => !value.includes(contact));
+
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setAddContactsDialogShow(false);
-      
     } else {
       updateGroupContacts({
         variables: {
@@ -155,8 +161,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         },
       });
     }
-   
-  }
+  };
 
   if (addContactsDialogShow) {
     dialog = (
