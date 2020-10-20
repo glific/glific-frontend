@@ -9,7 +9,13 @@ import { setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
-import { setAuthSession, clearAuthSession, getAuthSession } from '../../../services/AuthService';
+import {
+  setAuthSession,
+  clearAuthSession,
+  getAuthSession,
+  setUserSession,
+  clearUserSession,
+} from '../../../services/AuthService';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 
@@ -26,6 +32,7 @@ export const Login: React.SFC<LoginProps> = () => {
   const accessDenied = () => {
     setAuthError(notApprovedMsg);
     clearAuthSession();
+    clearUserSession();
   };
 
   // get the information on current user
@@ -33,6 +40,9 @@ export const Login: React.SFC<LoginProps> = () => {
 
   useEffect(() => {
     if (userData) {
+      // set the current user object
+      setUserSession(JSON.stringify(userData.currentUser.user));
+
       let roles = userData.currentUser.user.roles;
       // check for user role none or empty
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {

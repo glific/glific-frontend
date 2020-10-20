@@ -79,7 +79,7 @@ const conversationMessageQuery = (contactId: any, contactName: string, contactNu
 const messageReceivedSubscription = {
   request: {
     query: MESSAGE_RECEIVED_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
@@ -106,7 +106,7 @@ const messageReceivedSubscription = {
 const messageSendSubscription = {
   request: {
     query: MESSAGE_SENT_SUBSCRIPTION,
-    variables: queryVariables,
+    variables: { organizationId: '1' },
   },
   result: {
     data: {

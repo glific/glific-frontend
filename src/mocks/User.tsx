@@ -24,6 +24,9 @@ export const getCurrentUserQuery = {
               description: '',
             },
           ],
+          organization: {
+            id: '1',
+          },
         },
       },
     },

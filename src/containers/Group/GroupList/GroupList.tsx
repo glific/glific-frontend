@@ -11,9 +11,12 @@ import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDi
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
+<<<<<<< HEAD
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
+=======
+>>>>>>> master
 import { setVariables } from '../../../common/constants';
 
 export interface GroupListProps {}
@@ -152,7 +155,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   ];
 
   const refetchQueries = {
-    onDelete: GET_GROUPS,
+    query: GET_GROUPS,
+    variables: setVariables(),
   };
   const cardLink = { start: 'group', end: 'contacts' };
   return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
 import { FormLayout } from '../Form/FormLayout';
@@ -168,7 +168,10 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     <FormLayout
       {...queries}
       match={match}
-      refetchQueries={{ onCreate: GET_TAGS }}
+      refetchQueries={{
+        query: FILTER_TAGS_NAME,
+        variables: setVariables(),
+      }}
       states={states}
       setStates={setStates}
       setPayload={setPayload}
