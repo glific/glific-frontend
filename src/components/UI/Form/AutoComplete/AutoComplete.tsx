@@ -19,9 +19,9 @@ export interface AutocompleteProps {
   chipIcon?: any;
   getOptions?: any;
   validate?: any;
+  asyncValues?:any
   noOptionsText?: any;
   onChange?: any;
-  initialSelected:any;
   asyncSearch?:boolean;
 }
 
@@ -37,8 +37,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   multiple = true,
   disabled = false,
   getOptions,
+  asyncValues,
   onChange,
-  initialSelected,
   asyncSearch=false,
   noOptionsText = 'No options available',
 }) => {
@@ -48,7 +48,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [optionValue, setOptionValue] =useState([]);
   const [open, setOpen] = useState(false);
-  const [values,setValues]=useState<any>([])
+
 
   useEffect(() => {
     if (options.length > 0) {
@@ -57,12 +57,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   }, [options]);
 
   
-  useEffect(()=>{
-    
-  if(initialSelected){
-       setValues(initialSelected)
-    }
-  },[initialSelected])
+
 
   
 
@@ -85,21 +80,27 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
-            asyncSearch? setValues([...value]):
-            setFieldValue(field.name, value);
+            if(asyncSearch){
+            const filterValues=asyncValues.value.filter((val:any)=>val.id !== value[value.length-1].id)
             
-           
+            if(filterValues.length===value.length-2){
+              asyncValues.setValue(filterValues)
+            }
+            else{
+              asyncValues.setValue([...value])
+            }
+          }
+            setFieldValue(field.name, value);
           }}
-          freeSolo={true}
           inputValue={asyncSearch?  searchTerm:undefined}
-          
           value={
             multiple
-              ? asyncSearch? values: optionValue.filter((option: any) =>
+              ? asyncSearch? asyncValues.value: optionValue.filter((option: any) =>
               field.value.map((value: any) => value.id).includes(option.id)
             )
               : field.value
           }
+       
           disabled={disabled}
           disableCloseOnSelect
           renderTags={(value: any, getTagProps) =>
@@ -119,18 +120,19 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
             return(
             <React.Fragment>
-              {multiple ? <Checkbox icon={icon} checked={asyncSearch?values.map((value:any)=>value.id).includes(option.id):selected} color="primary" /> : ''}
+              {multiple ? <Checkbox icon={icon} checked={asyncSearch?asyncValues.value.map((value:any)=>value.id).includes(option.id):selected} color="primary" /> : ''}
               {option[optionLabel]}
             </React.Fragment>
           )}}
           renderInput={(params:any) => {
+            const asyncChange=asyncSearch? {onChange:(event:any) => {
+              setSearchTerm(event.target.value);
+              return onChange ? onChange(event.target.value) : null;
+            }}:null
             return (
               <TextField
                 {...params}
-                onChange={(event) => {
-                  setSearchTerm(event.target.value);
-                  return onChange ? onChange(event.target.value) : null;
-                }}
+                {...asyncChange}
                 error={hasError}
                 helperText={hasError ? errorText : ''}
                 {...textFieldProps}

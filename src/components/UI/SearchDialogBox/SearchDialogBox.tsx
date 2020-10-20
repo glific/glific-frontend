@@ -18,16 +18,23 @@ export interface SearchDialogBoxProps {
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
+  const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
-    if(props.asyncSearch===true){
-    }
-    else{
+    if(!props.asyncSearch){
+      
     setSelectedOptions(
       props.options.filter((option: any) => props.selectedOptions.includes(option.id))
     );
   }
   }, [props.selectedOptions, props.options]);
+
+  useEffect(() => {
+    if(props.asyncSearch===true){
+      setAsyncSelectedOptions(props.selectedOptions)
+    }
+  
+  }, [props.selectedOptions]);
 
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
@@ -36,7 +43,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   return (
     <DialogBox
       title={props.title}
-      handleOk={() => props.handleOk(selectedOptions.map((option: any) => option.id))}
+      handleOk={() => props.handleOk(props.asyncSearch?asyncSelectedOptions.map((option: any) => option.id): selectedOptions.map((option: any) => option.id))}
       handleCancel={props.handleCancel}
       titleAlign="left"
       buttonOk="Save"
@@ -45,10 +52,10 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
         <FormControl fullWidth>
           <AutoComplete
             asyncSearch={props.asyncSearch}
+            asyncValues={{value:asyncSelectedOptions,setValue:setAsyncSelectedOptions}}
             options={props.options}
             optionLabel={props.optionLabel ? props.optionLabel : 'label'}
             field={{ value: selectedOptions }}
-            initialSelected={props.selectedOptions}
             onChange={(value: any) => props.onChange(value)}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
