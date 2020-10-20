@@ -52,7 +52,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS);
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
-    variables: setVariables({ name: contactSearchTerm }, 30),
+    variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);

@@ -311,10 +311,10 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction.map((action: any) => {
+          {additionalAction.map((action: any, index: number) => {
             if (action.link) {
               return (
-                <Link to={`${action?.link}/${additionalActionParameter}`}>
+                <Link to={`${action?.link}/${additionalActionParameter}`} key={index}>
                   <Tooltip title={`${action.label}`} placement="top">
                     <IconButton
                       color="default"
@@ -328,7 +328,7 @@ export const List: React.SFC<ListProps> = ({
               );
             } else if (action.dialog) {
               return (
-                <Tooltip title={`${action.label}`} placement="top">
+                <Tooltip title={`${action.label}`} placement="top" key={index}>
                   <IconButton
                     color="default"
                     data-testid="additionalButton"
