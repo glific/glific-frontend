@@ -12,6 +12,7 @@ import {
   getAuthSession,
   setAuthSession,
 } from '../services/AuthService';
+import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -75,7 +76,7 @@ const gqlClient = () => {
       jitter: true,
     },
     attempts: {
-      max: 5,
+      max: CONNECTION_RECONNECT_ATTEMPTS,
       retryIf,
     },
   });
