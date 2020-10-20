@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client';
 import { onError } from '@apollo/link-error';
+import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import absinthe from './absinthe';
 
@@ -62,7 +63,24 @@ const gqlClient = () => {
 
   const httpLink = createHttpLink({ uri: GLIFIC_API_URL });
 
-  const link = split(
+  const retryIf = (error: any, operation: any) => {
+    const doNotRetryCodes = [500, 400];
+    return !!error && !doNotRetryCodes.includes(error.statusCode);
+  };
+
+  const retryLink = new RetryLink({
+    delay: {
+      initial: 300,
+      max: Infinity,
+      jitter: true,
+    },
+    attempts: {
+      max: 5,
+      retryIf,
+    },
+  });
+
+  const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)) as any) as any
