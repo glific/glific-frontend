@@ -26,6 +26,6 @@ jobs:
         run: cp cypress.json.example cypress.json
 
       - name: Cypress run
-      - uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v2
         with:
           record: true
