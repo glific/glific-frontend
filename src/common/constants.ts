@@ -45,3 +45,6 @@ export const setVariables = (
     },
   };
 };
+
+// connection retry attempt configuration
+export const CONNECTION_RECONNECT_ATTEMPTS = 5;
