@@ -18,10 +18,18 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
   },
 });
 
-// watch for websocket error / close event
-socketConnection.onClose((event: any) => {
-  // don't retry as if connection is closed due to some failures and cancel automatic reconnect
-  socketConnection.reconnectTimer.reset();
+// we should try to reconnect ws connection only finite (5) times and then abort and prevent
+// unnecessary load on the server
+// watch for websocket error event using onError
+const WEB_SOCKET_RETRY_ATTEMPTS = 5;
+let connectionFailureCounter = 0;
+socketConnection.onError((event: any) => {
+  // increment the counter when error occurs
+  connectionFailureCounter++;
+  // let's disconnect the socket connection if there are 5 failures
+  if (connectionFailureCounter >= WEB_SOCKET_RETRY_ATTEMPTS) {
+    socketConnection.disconnect();
+  }
 });
 
 // wrap the Phoenix socket in an AbsintheSocket and export
