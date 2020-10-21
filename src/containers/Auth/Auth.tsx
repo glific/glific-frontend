@@ -144,6 +144,7 @@ export const Auth: React.SFC<AuthProps> = ({
                     className={styles.AuthButton}
                     data-testid="SubmitButton"
                     loading={loading}
+                    type="submit"
                   >
                     {loading ? null : buttonText}
                   </Button>
