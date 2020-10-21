@@ -16,8 +16,9 @@ import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/C
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { setVariables } from '../../../common/constants';
-import { IconButton } from '@material-ui/core';
+import { FormControl, IconButton, InputLabel, OutlinedInput } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface GroupListProps {}
 
@@ -50,6 +51,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const client = useApolloClient();
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
+
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
 
@@ -109,9 +112,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   const setAutomationDialog = (id: any) => {
-    // getAutomations();
-    // setGroupId(id);
-    // setAddAutomationDialogShow(true);
+    getAutomations();
+    setGroupId(id);
+    setAddAutomationDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
@@ -129,6 +132,23 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       },
     });
   };
+
+  if(sendMessageDialogShow){
+    dialog=(<DialogBox title='Send the message to the group' handleOk={()=>{}} handleCancel={()=>{}}>
+      <FormControl fullWidth >
+        <InputLabel variant="outlined">Enter the message</InputLabel>
+        <OutlinedInput
+          classes={{
+            notchedOutline: styles.InputBorder,
+          }}
+          className={styles.Label}
+          label="Enter title"
+          fullWidth
+          data-testid="templateInput"  
+        ></OutlinedInput>
+       </FormControl>
+    </DialogBox>)
+  }
 
   if (addAutomationDialogShow) {
     dialog = (
@@ -185,7 +205,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   const addContactIcon = <AddContactIcon />;
   const automationIcon = (
-    <Menu menus={[{ title: 'Send a message' }, { title: 'Start automation flow' }]}>
+    <Menu menus={[{ title: 'Send a message' ,onClick:()=> setSendMessageDialogShow(true)}, { title: 'Start automation flow' ,onClick:setAutomationDialog}]}>
       <IconButton data-testid="staffManagementMenu">
         <img src={AutomationIconSvg} className={styles.StaffIcon} alt="staff icon" />
       </IconButton>
@@ -199,10 +219,10 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       dialog: setContactsDialog,
     },
     {
-      label: 'Start automation flow',
+      label: '',
       icon: automationIcon,
       parameter: 'id',
-      dialog: setAutomationDialog,
+      dialog: ()=>{},
     },
   ];
 
