@@ -354,7 +354,7 @@ export const CONVERSATION_MOCKS = [
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 1),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-  conversationMessageQuery('6', 'Jane Monroe', '919090709009', 1),
+  // conversationMessageQuery('6', 'Jane Monroe', '919090709009', 1),
 ];
 
 const updateMessageTagsQuery = {
