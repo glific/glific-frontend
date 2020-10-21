@@ -34,7 +34,7 @@ const conversationMessageQuery = (
   contactName: string,
   contactNumber: string,
   contactLimit: number = 50,
-  messageLimit: number = 50
+  messageLimit: object = { limit: 50 }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -43,7 +43,7 @@ const conversationMessageQuery = (
         limit: contactLimit,
       },
       filter: { id: contactId.toString() },
-      messageOpts: { limit: messageLimit, offset: 0 },
+      messageOpts: messageLimit,
     },
   },
   result: {
@@ -352,9 +352,9 @@ export const CONVERSATION_MOCKS = [
   deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1),
-  conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-  // conversationMessageQuery('6', 'Jane Monroe', '919090709009', 1),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
+  conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
+  conversationMessageQuery('2', 'Jane Monroe', '919090709009', 1, { limit: 50, offset: 0 }),
 ];
 
 const updateMessageTagsQuery = {

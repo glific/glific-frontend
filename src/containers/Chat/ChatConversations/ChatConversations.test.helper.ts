@@ -69,7 +69,7 @@ export const chatConversationsMocks = [
   searchQuery({ limit: 50 }, 50, { term: '' }),
   searchQuery({ limit: 5 }, 10, { includeTags: ['12'] }, false),
   searchQuery({ limit: 50 }, 1, {}, false),
-  searchQuery({ limit: 50, offset: 0 }, 1, { id: '6' }, true),
+  searchQuery({ limit: 50, offset: 0 }, 1, { id: '6' }, false),
 ];
 
 export const searchMultiQuery = (term: string = '', limit: number = 50) => {
