@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
-  subscription {
-    receivedMessage {
+  subscription($organizationId: ID!) {
+    receivedMessage(organizationId: $organizationId) {
       id
       body
       flow
@@ -30,8 +30,8 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
 `;
 
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
-  subscription {
-    sentMessage {
+  subscription($organizationId: ID!) {
+    sentMessage(organizationId: $organizationId) {
       id
       body
       flow

@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
 import { Chat } from './Chat';
 import { CONVERSATION_MOCKS } from '../../mocks/Chat';
+import { setUserSession } from '../../services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -22,6 +23,9 @@ const wrapper = (
     </MemoryRouter>
   </MockedProvider>
 );
+
+// set user session
+setUserSession(JSON.stringify({ organization: { id: '1' } }));
 
 describe('<Chat />', () => {
   test('it should render <Chat /> component correctly', async () => {
