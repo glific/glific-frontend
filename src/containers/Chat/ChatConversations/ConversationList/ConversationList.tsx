@@ -202,22 +202,22 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = searchData.search;
   }
 
-  let conversationList;
+  let conversationList: any;
   // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
   if (props.searchVal !== '' && searchMultiData && Object.keys(props.searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
     let searchArray = { contacts: [], tags: [], messages: [] };
-    conversationList = Object.keys(searchArray).map((dataArray: any) => {
+    let data;
+    Object.keys(searchArray).map((dataArray: any) => {
       let header = (
         <div className={styles.Title}>
           <Typography className={styles.TitleText}>{dataArray}</Typography>
         </div>
       );
-      return conversations[dataArray].map((conversation: any, index: number) => {
+      data = conversations[dataArray].map((conversation: any, index: number) => {
         let lastMessage = [];
         lastMessage = conversation;
-
         return (
           <>
             {index === 0 ? header : null}
@@ -240,6 +240,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           </>
         );
       });
+      // Check if its not empty
+      if (data.length > 0) {
+        if (!conversationList) conversationList = [];
+        conversationList.push(data);
+      }
     });
   }
 
