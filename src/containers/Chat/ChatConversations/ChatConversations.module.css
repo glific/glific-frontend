@@ -52,3 +52,8 @@
   display: flex;
   justify-content: center;
 }
+
+.SearchButton,
+.CancelOutlined {
+  background-color: white !important;
+}
