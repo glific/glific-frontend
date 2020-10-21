@@ -13,7 +13,7 @@ import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/Cha
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
 import { filterTagsQuery, getTagsQuery } from './Tag';
 import { contactGroupsQuery } from './Contact';
-import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
+import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS, MARK_AS_READ } from '../graphql/mutations/Chat';
 import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
 import { getOrganizationLanguagesQuery } from './Organization';
 
@@ -109,6 +109,11 @@ const messageReceivedSubscription = {
         },
         tags: [],
         type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
       },
     },
   },
@@ -136,6 +141,11 @@ const messageSendSubscription = {
         },
         tags: [],
         type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
       },
     },
   },
@@ -354,7 +364,20 @@ export const CONVERSATION_MOCKS = [
   getOrganizationLanguagesQuery,
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
-  conversationMessageQuery('2', 'Jane Monroe', '919090709009', 1, { limit: 50, offset: 0 }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
+  {
+    request: {
+      query: MARK_AS_READ,
+      variables: {
+        contactId: '2',
+      },
+    },
+    result: {
+      data: {
+        markContactMessagesAsRead: ['2'],
+      },
+    },
+  },
 ];
 
 const updateMessageTagsQuery = {
