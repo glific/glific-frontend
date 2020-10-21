@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button as ButtonElement } from '@material-ui/core';
+import { Button as ButtonElement, CircularProgress } from '@material-ui/core';
 import styles from './Button.module.css';
 
 export interface ButtonProps {
@@ -9,6 +9,7 @@ export interface ButtonProps {
   color: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   onClick?: any;
   className?: any;
+  loading?: boolean;
 }
 
 export const Button: React.SFC<ButtonProps> = (props) => {
@@ -21,8 +22,10 @@ export const Button: React.SFC<ButtonProps> = (props) => {
       onClick={props.onClick}
       data-testid={props['data-testid']}
       className={`${styles.Button} ${props.className} ${buttonColor}`}
+      disabled={props.loading}
     >
       {props.children}
+      {props.loading && <CircularProgress size={28} className={styles.buttonProgress} />}
     </ButtonElement>
   );
 };
