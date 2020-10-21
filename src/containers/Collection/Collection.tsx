@@ -12,7 +12,7 @@ import {
   UPDATE_COLLECTION,
   DELETE_COLLECTION,
 } from '../../graphql/mutations/Collection';
-import { GET_TAGS } from '../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
@@ -20,6 +20,7 @@ import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { Typography } from '@material-ui/core';
+import { setVariables } from '../../common/constants';
 
 export interface CollectionProps {
   match?: any;
@@ -170,18 +171,17 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   }, [props.searchParam]);
 
-  const { data: dataT } = useQuery(GET_TAGS);
-  const { data } = useQuery(GET_GROUPS);
-  const { data: dataUser } = useQuery(GET_USERS);
+  const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
+    variables: setVariables(),
+  });
+  const { data } = useQuery(GET_GROUPS, {
+    variables: setVariables(),
+  });
+  const { data: dataUser } = useQuery(GET_USERS, {
+    variables: setVariables(),
+  });
   const { data: collections } = useQuery(COLLECTION_QUERY, {
-    variables: {
-      filter: {},
-      opts: {
-        limit: 100,
-        offset: 0,
-        order: 'ASC',
-      },
-    },
+    variables: setVariables({}, 100, 0, 'ASC'),
   });
 
   if (!data || !dataT || !dataUser) return <Loading />;
@@ -246,6 +246,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       label: 'Includes groups',
       options: data.groups,
       optionLabel: 'label',
+      noOptionsText: 'No groups available',
       textFieldProps: {
         variant: 'outlined',
       },

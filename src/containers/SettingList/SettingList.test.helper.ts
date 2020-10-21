@@ -6,6 +6,7 @@ import {
   getProvidersQuery,
   getCredential,
 } from '../../mocks/Organization';
+import { setVariables } from '../../common/constants';
 
 export const LIST_ITEM_MOCKS = [
   {
@@ -51,7 +52,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_AUTOMATIONS,
-      variables: {},
+      variables: setVariables(),
     },
     result: {
       data: {

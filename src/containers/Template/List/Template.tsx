@@ -4,6 +4,7 @@ import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import styles from './Template.module.css';
 import { WhatsAppToJsx } from '../../../common/RichEditor';
+import { setVariables } from '../../../common/constants';
 
 const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
 const columnStyles = [styles.Label, styles.Body, styles.Actions];
@@ -51,6 +52,10 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listIcon={props.listIcon}
       dialogMessage={dialogMessage}
       filters={props.filters}
+      refetchQueries={{
+        query: FILTER_TEMPLATES,
+        variables: setVariables({ term: '' }),
+      }}
       button={{ show: true, label: props.buttonLabel }}
       {...columnAttributes}
       {...queries}

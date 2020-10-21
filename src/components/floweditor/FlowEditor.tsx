@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Redirect } from 'react-router';
 
 import styles from './FlowEditor.module.css';
@@ -9,6 +9,9 @@ import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
 import { FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
+import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
+import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
+import { IconButton } from '@material-ui/core';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -139,9 +142,18 @@ export interface FlowEditorProps {
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
-  const config = setConfig(props.match.params.uuid);
+  const uuid = props.match.params.uuid;
+  const config = setConfig(uuid);
   const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
   const [published, setPublished] = useState(false);
+  const { data: automationName } = useQuery(GET_AUTOMATION_NAME, {
+    variables: {
+      filter: {
+        uuid: uuid,
+      },
+      opts: {},
+    },
+  });
 
   useEffect(() => {
     const files = loadfiles();
@@ -190,7 +202,20 @@ export const FlowEditor = (props: FlowEditorProps) => {
       >
         Done
       </Button>
-      <div id="flow"></div>
+      <div className={styles.FlowContainer}>
+        <div className={styles.AutomationName} data-testid="automationName">
+          {automationName ? (
+            <>
+              <IconButton disabled={true} className={styles.Icon}>
+                <AutomationIcon />
+              </IconButton>
+
+              {automationName.flows[0].name}
+            </>
+          ) : null}
+        </div>
+        <div id="flow"></div>
+      </div>
     </>
   );
 };

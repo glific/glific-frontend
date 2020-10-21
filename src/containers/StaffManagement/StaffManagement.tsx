@@ -11,6 +11,7 @@ import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { isManagerRole } from '../../context/role';
+import { setVariables } from '../../common/constants';
 
 export interface StaffManagementProps {
   match: any;
@@ -51,7 +52,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
 
-  const { loading, data } = useQuery(GET_GROUPS);
+  const { loading, data } = useQuery(GET_GROUPS, {
+    variables: setVariables(),
+  });
 
   if (loading || loadingRoles) return <Loading />;
 

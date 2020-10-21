@@ -48,8 +48,8 @@ export const GET_USER_ROLES = gql`
 `;
 
 export const GET_USERS = gql`
-  {
-    users {
+  query users($filter: UserFilter, $opts: Opts) {
+    users(filter: $filter, opts: $opts) {
       id
       name
     }
@@ -71,6 +71,9 @@ export const GET_CURRENT_USER = gql`
           id
           label
           description
+        }
+        organization {
+          id
         }
       }
     }

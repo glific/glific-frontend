@@ -108,6 +108,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingLeft: '8px',
     },
+    BottomMenusVertical: {
+      flexFlow: 'column',
+    },
   })
 );
 
@@ -170,7 +173,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const settingMenus = settingMenu ? (
     <div>
-      <Tooltip title="Settings" placement="top" tooltipClass={styles.tooltipClass}>
+      <Tooltip title="Settings" placement="top">
         <Link to={'/settings'} onClick={handleClick}>
           <IconButton data-testid="settingsMenu">
             <img
@@ -183,6 +186,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       </Tooltip>
     </div>
   ) : null;
+
+  // set the appropriate classes to display bottom menus correctly
+  const bottonMenuClasses = [classes.BottomMenus];
+  if (!fullOpen) {
+    bottonMenuClasses.unshift(classes.BottomMenusVertical);
+  }
 
   return (
     <nav
@@ -223,15 +232,11 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           }}
           variant="permanent"
         >
-          <div className={classes.BottomMenus}>
+          <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
             <div onClick={() => getMenus()}>
               <Menu menus={staffManagementMenus}>
-                <Tooltip
-                  title="Staff Management"
-                  placement="top"
-                  tooltipClass={styles.tooltipClass}
-                >
+                <Tooltip title="Staff Management" placement="top">
                   <IconButton data-testid="staffManagementMenu">
                     <img
                       src={
@@ -250,7 +255,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
             </div>
             <div>
               <Menu menus={userAccountMenus}>
-                <Tooltip title="Profile" placement="top" tooltipClass={styles.tooltipClass}>
+                <Tooltip title="Profile" placement="top">
                   <IconButton data-testid="profileMenu">
                     <img
                       src={

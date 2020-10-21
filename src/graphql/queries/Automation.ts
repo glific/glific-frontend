@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_AUTOMATIONS = gql`
-  {
-    flows {
+  query flows($filter: FlowFilter, $opts: Opts) {
+    flows(filter: $filter, opts: $opts) {
       id
       name
       uuid
@@ -31,13 +31,21 @@ export const GET_AUTOMATION_COUNT = gql`
 `;
 
 export const FILTER_AUTOMATION = gql`
-  query tags($filter: FlowFilter!, $opts: Opts!) {
+  query getFlows($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
       id
       name
       uuid
       keywords
       ignoreKeywords
+    }
+  }
+`;
+
+export const GET_AUTOMATION_NAME = gql`
+  query getFlowName($filter: FlowFilter!, $opts: Opts!) {
+    flows(filter: $filter, opts: $opts) {
+      name
     }
   }
 `;

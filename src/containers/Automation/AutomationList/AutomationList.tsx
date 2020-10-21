@@ -3,8 +3,13 @@ import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
-import { FILTER_AUTOMATION, GET_AUTOMATION_COUNT } from '../../../graphql/queries/Automation';
+import {
+  FILTER_AUTOMATION,
+  GET_AUTOMATIONS,
+  GET_AUTOMATION_COUNT,
+} from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
+import { setVariables } from '../../../common/constants';
 
 export interface AutomationListProps {}
 
@@ -32,7 +37,12 @@ const columnAttributes = {
 };
 const configureIcon = <ConfigureIcon></ConfigureIcon>;
 
-const additionalAction = { icon: configureIcon, parameter: 'uuid', link: '/automation/configure' };
+const additionalAction = {
+  label: 'Configure',
+  icon: configureIcon,
+  parameter: 'uuid',
+  link: '/automation/configure',
+};
 
 export const AutomationList: React.SFC<AutomationListProps> = (props) => (
   <List
@@ -42,6 +52,7 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => (
     pageLink="automation"
     listIcon={automationIcon}
     dialogMessage={dialogMessage}
+    refetchQueries={{ query: GET_AUTOMATIONS, variables: setVariables() }}
     {...queries}
     {...columnAttributes}
     searchParameter="name"

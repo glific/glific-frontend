@@ -19,6 +19,7 @@ import {
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { SIMULATOR_CONTACT } from '../../common/constants';
+import { getUserSession } from '../../services/AuthService';
 
 export interface ChatProps {
   contactId: number;
@@ -187,10 +188,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   // handle subscription for message received and sent
   const getMessageResponse = useCallback(() => {
+    // let's map all the subscriptions to logged in user's organization
+    const subscriptionVariables = { organizationId: getUserSession('organizationId') };
     // message received subscription
     subscribeToMore({
       document: MESSAGE_RECEIVED_SUBSCRIPTION,
-      variables: queryVariables,
+      variables: subscriptionVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'RECEIVED');
       },
@@ -199,7 +202,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     // message sent subscription
     subscribeToMore({
       document: MESSAGE_SENT_SUBSCRIPTION,
-      variables: queryVariables,
+      variables: subscriptionVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'SENT');
       },
@@ -208,7 +211,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     // tag added subscription
     subscribeToMore({
       document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-      variables: queryVariables,
+      variables: subscriptionVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'TAG_ADDED');
       },
@@ -217,12 +220,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     // tag delete subscription
     subscribeToMore({
       document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-      variables: queryVariables,
+      variables: subscriptionVariables,
       updateQuery: (prev, { subscriptionData }) => {
         return updateConversations(prev, subscriptionData, 'TAG_DELETED');
       },
     });
-  }, [subscribeToMore, queryVariables, updateConversations]);
+  }, [subscribeToMore, updateConversations]);
 
   useEffect(() => {
     getMessageResponse();

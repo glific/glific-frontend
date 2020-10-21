@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
 import { DELETE_TAG } from '../../graphql/mutations/Tag';
 import { FormLayout } from '../Form/FormLayout';
@@ -11,6 +11,7 @@ import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
+import { setVariables } from '../../common/constants';
 
 export interface TagProps {
   match: any;
@@ -52,7 +53,9 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
-  const { data } = useQuery(GET_TAGS);
+  const { data } = useQuery(GET_TAGS, {
+    variables: setVariables(),
+  });
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
       filter: { label: filterLabel, languageId: parseInt(languageId) },
@@ -165,7 +168,10 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     <FormLayout
       {...queries}
       match={match}
-      refetchQueries={{ onCreate: GET_TAGS }}
+      refetchQueries={{
+        query: FILTER_TAGS_NAME,
+        variables: setVariables(),
+      }}
       states={states}
       setStates={setStates}
       setPayload={setPayload}

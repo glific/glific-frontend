@@ -41,15 +41,6 @@ Launches the test runner in the interactive watch mode.<br />
 
 Launches the test runner in the interactive watch mode and code coverage stats.<br />
 
-### `yarn run cypress open`
-
-Launches cypress test runner. <br />
-
-##### Cypress Configuraion
-
-1. Create a new file `cypress.json` in the project root directory and copy the contents from `cypress.json.example`.
-2. Update the `cypress.json` file with relevant configurations.
-
 ### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
@@ -67,6 +58,7 @@ docker build \
 ```
 
 ## Deploying release on ECS with CD
+
 1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
 2. For using and alternative repository like docker hub, click the link to see how we can [build and push docker](https://github.com/marketplace/actions/build-and-push-docker-images) images to docker hub.
 

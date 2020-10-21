@@ -6,7 +6,7 @@ import {
 } from '../../graphql/mutations/Collection';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUPS } from '../../graphql/queries/Group';
-import { GET_TAGS } from '../../graphql/queries/Tag';
+import { FILTER_TAGS_NAME, GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
@@ -16,6 +16,7 @@ import {
   getCollectionsQuery,
   getCollection,
 } from '../../mocks/Collection';
+import { setVariables } from '../../common/constants';
 
 export const listItemProps = {
   deleteItemQuery: DELETE_COLLECTION,
@@ -52,6 +53,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_GROUPS,
+      variables: setVariables(),
     },
     result: {
       data: {
@@ -67,7 +69,8 @@ export const LIST_ITEM_MOCKS = [
   },
   {
     request: {
-      query: GET_TAGS,
+      query: FILTER_TAGS_NAME,
+      variables: setVariables(),
     },
     result: {
       data: {
@@ -87,6 +90,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_TAGS,
+      variables: setVariables(),
     },
     result: {
       data: {
@@ -125,6 +129,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_USERS,
+      variables: setVariables(),
     },
     result: {
       data: {

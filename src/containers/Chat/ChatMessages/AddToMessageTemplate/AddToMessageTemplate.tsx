@@ -6,6 +6,8 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
 import styles from './AddToMessageTemplate.module.css';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
+import { setVariables } from '../../../../common/constants';
+import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 
 interface AddToMessageTemplateProps {
   id: any;
@@ -23,7 +25,14 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   const [messageTemplate, setMessageTemplate] = useState<string | null>('');
   const [required, setRequired] = useState(false);
 
-  const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION);
+  const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION, {
+    refetchQueries: [
+      {
+        query: FILTER_TEMPLATES,
+        variables: setVariables({ term: '' }),
+      },
+    ],
+  });
 
   const onChange = (event: any) => {
     setMessageTemplate(event.target.value);

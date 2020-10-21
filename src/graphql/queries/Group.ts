@@ -34,8 +34,8 @@ export const FILTER_GROUPS = gql`
 `;
 
 export const GET_GROUPS = gql`
-  {
-    groups {
+  query groups($filter: GroupFilter, $opts: Opts) {
+    groups(filter: $filter, opts: $opts) {
       id
       label
       isRestricted

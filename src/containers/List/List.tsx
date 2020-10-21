@@ -19,6 +19,7 @@ import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { ListCard } from './ListCard/ListCard';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { getUserRole, displayUserGroups } from '../../context/role';
+import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -49,10 +50,12 @@ export interface ListProps {
     parameter: string;
     link?: string;
     dialog?: any;
+    label?: string;
   } | null;
   deleteModifier?: {
     icon: string;
     variables: any;
+    label?: string;
   };
   refetchQueries?: any;
   dialogTitle?: string;
@@ -86,7 +89,7 @@ export const List: React.SFC<ListProps> = ({
     label: 'Add New',
   },
   showCheckbox,
-  deleteModifier = { icon: 'normal', variables: null },
+  deleteModifier = { icon: 'normal', variables: null, label: 'Delete' },
   editSupport = true,
   searchParameter = 'label',
   filters = null,
@@ -196,8 +199,8 @@ export const List: React.SFC<ListProps> = ({
       refetchCount();
     },
     refetchQueries: () => {
-      if (refetchQueries && refetchQueries.onDelete) {
-        return [{ query: refetchQueries.onDelete }];
+      if (refetchQueries) {
+        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
       } else return [{ query: filterItemsQuery, variables: filterPayload() }];
     },
   });
@@ -281,16 +284,18 @@ export const List: React.SFC<ListProps> = ({
     if (editSupport) {
       editButton = allowedAction.edit ? (
         <Link to={`/${pageLink}/` + id + '/edit'}>
-          <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-            <EditIcon />
-          </IconButton>
+          <Tooltip title="Edit" placement="top">
+            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
         </Link>
       ) : null;
     }
 
     const deleteButton = (id: any, label: string) => {
       return allowedAction.delete ? (
-        <>
+        <Tooltip title={`${deleteModifier.label}`} placement="top">
           <IconButton
             aria-label="Delete"
             color="default"
@@ -299,7 +304,7 @@ export const List: React.SFC<ListProps> = ({
           >
             {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>{' '}
-        </>
+        </Tooltip>
       ) : null;
     };
 
@@ -308,25 +313,29 @@ export const List: React.SFC<ListProps> = ({
         <div className={styles.Icons}>
           {additionalAction && additionalAction.link ? (
             <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
-              <IconButton
-                color="default"
-                className={styles.additonalButton}
-                data-testid="additionalButton"
-              >
-                {additionalAction.icon}
-              </IconButton>
+              <Tooltip title={`${additionalAction.label}`} placement="top">
+                <IconButton
+                  color="default"
+                  className={styles.additonalButton}
+                  data-testid="additionalButton"
+                >
+                  {additionalAction.icon}
+                </IconButton>
+              </Tooltip>
             </Link>
           ) : null}
 
           {additionalAction && additionalAction.dialog ? (
-            <IconButton
-              color="default"
-              data-testid="additionalButton"
-              className={styles.additonalButton}
-              onClick={() => additionalAction.dialog(additionalActionParameter)}
-            >
-              {additionalAction.icon}
-            </IconButton>
+            <Tooltip title={`${additionalAction.label}`} placement="top">
+              <IconButton
+                color="default"
+                data-testid="additionalButton"
+                className={styles.additonalButton}
+                onClick={() => additionalAction.dialog(additionalActionParameter)}
+              >
+                {additionalAction.icon}
+              </IconButton>
+            </Tooltip>
           ) : null}
           {/* do not display edit & delete for staff role in group */}
           {displayUserGroups || listItem !== 'groups' ? (
