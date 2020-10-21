@@ -29,15 +29,21 @@ const getConversationQuery = (data: any) => {
   };
 };
 
-const conversationMessageQuery = (contactId: any, contactName: string, contactNumber: string) => ({
+const conversationMessageQuery = (
+  contactId: any,
+  contactName: string,
+  contactNumber: string,
+  contactLimit: number = 50,
+  messageLimit: number = 50
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables: {
       contactOpts: {
-        limit: 50,
+        limit: contactLimit,
       },
       filter: { id: contactId.toString() },
-      messageOpts: { limit: 50 },
+      messageOpts: { limit: messageLimit, offset: 0 },
     },
   },
   result: {
@@ -346,9 +352,9 @@ export const CONVERSATION_MOCKS = [
   deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009'),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
-  // searchMultiQuery(),
+  conversationMessageQuery('6', 'Jane Monroe', '919090709009', 1),
 ];
 
 const updateMessageTagsQuery = {

@@ -46,23 +46,28 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   }, []);
 
+  // We are using this after the search to get selected search data.
   useEffect(() => {
+    let offsetValue = 0;
     if (offset.data) {
-      loadMoreConversations({
-        variables: {
-          contactOpts: {
-            limit: 1,
-          },
-          filter: {},
-          messageOpts: {
-            limit: 50,
-            offset: offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 25, // calculate offset
-          },
-        },
-      });
-      setShowLoading(true);
+      offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
     }
-  }, [offset]);
+    loadMoreConversations({
+      variables: {
+        contactOpts: {
+          limit: 1,
+        },
+        filter: {
+          id: props.selectedContactId,
+        },
+        messageOpts: {
+          limit: 50,
+          offset: offsetValue,
+        },
+      },
+    });
+    setShowLoading(true);
+  }, [offset, props.selectedContactId]);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
