@@ -28,6 +28,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [collectionMethod, setCollectionMethod] = useState('');
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
+  const [enableSearchMode, setEnableSearchMode] = useState(false);
 
   useEffect(() => {
     setSelectedContactId(props.contactId.toString());
@@ -44,6 +45,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       setSearchParam(event.target.param);
     }
     setSearchVal(event.target.value);
+
+    if (Object.keys(searchParam).length === 0) {
+      setEnableSearchMode(true);
+    } else {
+      setEnableSearchMode(false);
+    }
   };
 
   const handleSubmit = (event: any) => {
@@ -205,6 +212,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearchCollection }}
+        onSelect={() => {
+          // on select collection remove search value & disable search mode
+          setSearchVal('');
+          if (enableSearchMode) setEnableSearchMode(false);
+        }}
+        searchMode={enableSearchMode}
       />
       <SearchBar
         handleChange={handleChange}
@@ -213,6 +226,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         searchVal={searchVal}
         handleClick={handleClick}
         endAdornment={true}
+        searchMode={enableSearchMode}
       />
       <ConversationList
         searchVal={searchVal}

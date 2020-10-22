@@ -479,6 +479,7 @@ export const List: React.SFC<ListProps> = ({
               // reset value only if empty
               if (!e.target.value) setSearchVal('');
             }}
+            searchMode={true}
           />
         </div>
         <div>

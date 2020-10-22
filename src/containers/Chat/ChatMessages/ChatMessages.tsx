@@ -21,8 +21,6 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { type } from 'os';
 
 export interface ChatMessagesProps {
   contactId: number | string;

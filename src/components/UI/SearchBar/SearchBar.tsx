@@ -15,14 +15,15 @@ export interface SearchBarProps {
   className?: any;
   handleClick?: any;
   endAdornment?: any;
+  searchMode: boolean;
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [localSearchValue, setLocalSearchValue] = useState('');
-
   // use local state value so that we can set the defaults correctly
-  let inputValue: string = '';
-  if (localSearchValue) {
+  // local value is needed for list component
+  let inputValue: string | undefined = props.searchMode ? props.searchVal : '';
+  if (localSearchValue && props.searchMode) {
     inputValue = localSearchValue;
   } else {
     inputValue = props.searchVal || '';

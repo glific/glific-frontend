@@ -200,7 +200,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         data-testid="button"
         onClick={handlePublishFlow}
       >
-        Done
+        Update
       </Button>
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
