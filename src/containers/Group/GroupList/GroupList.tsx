@@ -4,7 +4,9 @@ import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
-import AutomationIconSvg from '../../../assets/images/icons/Automations/Selected.svg';
+import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as ChatDarkIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
+import ChatDarkIconSVG from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
@@ -53,6 +55,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
+  const [message, setMessage] = useState('');
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
@@ -62,7 +65,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION);
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+    onCompleted: () => {
+      setNotification(client, `Message successfully send to the group`);
+      setSendMessageDialogShow(false);
+    },
+  });
 
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
@@ -141,7 +149,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       variables: {
         groupId: groupId,
         input: {
-          body: 'Yo',
+          body: message,
           senderId: 1,
           type: 'TEXT',
           flow: 'OUTBOUND',
@@ -153,8 +161,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   if (sendMessageDialogShow) {
     dialog = (
       <DialogBox
-        title="Send the message to the group"
+        title="Send message to group"
         handleOk={sendMessageToGroup}
+        buttonOk="Send"
         handleCancel={() => {
           setSendMessageDialogShow(false);
         }}
@@ -165,6 +174,10 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
             className={styles.Label}
             label="Enter the message"
             fullWidth
+            value={message}
+            onChange={(event: any) => setMessage(event.target.value)}
+            multiline={true}
+            rows={3}
             data-testid="templateInput"
           ></OutlinedInput>
         </FormControl>
@@ -229,12 +242,20 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const automationIcon = (
     <Menu
       menus={[
-        { title: 'Send a message', onClick: () => setSendMessageDialogShow(true) },
-        { title: 'Start automation flow', onClick: setAutomationDialog },
+        {
+          icon: <ChatDarkIcon className={styles.Icon}  />,
+          title: 'Send a message',
+          onClick: () => setSendMessageDialogShow(true),
+        },
+        {
+          icon: <AutomationDarkIcon className={styles.Icon}  />,
+          title: 'Start automation flow',
+          onClick: setAutomationDialog,
+        },
       ]}
     >
       <IconButton data-testid="staffManagementMenu">
-        <img src={AutomationIconSvg} className={styles.StaffIcon} alt="staff icon" />
+        <img src={ChatDarkIconSVG} className={styles.StaffIcon} alt="staff icon" />
       </IconButton>
     </Menu>
   );
