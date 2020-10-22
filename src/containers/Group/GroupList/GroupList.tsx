@@ -20,6 +20,8 @@ import { FormControl, IconButton, InputLabel, OutlinedInput } from '@material-ui
 import Menu from '../../../components/UI/Menu/Menu';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import ChatInput from '../../Chat/ChatMessages/ChatInput/ChatInput';
+import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
 export interface GroupListProps {}
 
@@ -151,24 +153,28 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   if (sendMessageDialogShow) {
+    // dialog = (
+    //   <DialogBox
+    //     title="Send the message to the group"
+    //     handleOk={sendMessageToGroup}
+    //     handleCancel={() => {
+    //       setSendMessageDialogShow(false);
+    //     }}
+    //   >
+    //     <FormControl fullWidth>
+    //       <InputLabel variant="outlined">Enter the message</InputLabel>
+    //       <OutlinedInput
+    //         className={styles.Label}
+    //         label="Enter the message"
+    //         fullWidth
+    //         data-testid="templateInput"
+    //       ></OutlinedInput>
+    //     </FormControl>
+    //   </DialogBox>
+    // );
+
     dialog = (
-      <DialogBox
-        title="Send the message to the group"
-        handleOk={sendMessageToGroup}
-        handleCancel={() => {
-          setSendMessageDialogShow(false);
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel variant="outlined">Enter the message</InputLabel>
-          <OutlinedInput
-            className={styles.Label}
-            label="Enter the message"
-            fullWidth
-            data-testid="templateInput"
-          ></OutlinedInput>
-        </FormControl>
-      </DialogBox>
+      <MessageDialog title="Send message to group" ></MessageDialog>
     );
   }
 

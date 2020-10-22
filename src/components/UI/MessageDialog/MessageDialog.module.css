@@ -1,0 +1,15 @@
+.Dialog{
+  max-width:  800px !important;
+  height: 200px !important;
+  width: 800px !important;
+  background-color: rgba(0, 0, 0, 0) !important;
+  box-shadow: unset !important
+}
+
+.DialogTitle h2{
+  text-align: center !important;
+ 
+  color: white !important;
+  font-size: 32px !important;
+  font-weight: 500 !important;
+}
