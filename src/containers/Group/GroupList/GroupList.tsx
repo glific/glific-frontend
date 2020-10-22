@@ -248,7 +248,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
           onClick: () => setSendMessageDialogShow(true),
         },
         {
-          icon: <AutomationDarkIcon className={styles.Icon}  />,
+          icon: <AutomationDarkIcon className={styles.Icon} />,
           title: 'Start automation flow',
           onClick: setAutomationDialog,
         },
