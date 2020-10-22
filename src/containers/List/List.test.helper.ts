@@ -17,6 +17,7 @@ export const defaultProps = {
   listIcon: null,
   columnStyles: [],
   title: 'Tags',
+  searchMode: true,
 };
 
 const count = {
