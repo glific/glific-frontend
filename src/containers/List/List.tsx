@@ -45,13 +45,13 @@ export interface ListProps {
   displayListType?: string;
   cardLink?: any;
   editSupport?: boolean;
-  additionalAction?: {
+  additionalAction?: Array<{
     icon: any;
     parameter: string;
     link?: string;
     dialog?: any;
     label?: string;
-  } | null;
+  }>;
   deleteModifier?: {
     icon: string;
     variables: any;
@@ -95,7 +95,7 @@ export const List: React.SFC<ListProps> = ({
   filters = null,
   displayListType = 'list',
   cardLink = null,
-  additionalAction = null,
+  additionalAction = [],
   refetchQueries,
   backLinkButton,
   restrictedAction,
@@ -311,32 +311,37 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction && additionalAction.link ? (
-            <Link to={`${additionalAction?.link}/${additionalActionParameter}`}>
-              <Tooltip title={`${additionalAction.label}`} placement="top">
-                <IconButton
-                  color="default"
-                  className={styles.additonalButton}
-                  data-testid="additionalButton"
-                >
-                  {additionalAction.icon}
-                </IconButton>
-              </Tooltip>
-            </Link>
-          ) : null}
+          {additionalAction.map((action: any, index: number) => {
+            if (action.link) {
+              return (
+                <Link to={`${action?.link}/${additionalActionParameter}`} key={index}>
+                  <Tooltip title={`${action.label}`} placement="top">
+                    <IconButton
+                      color="default"
+                      className={styles.additonalButton}
+                      data-testid="additionalButton"
+                    >
+                      {action.icon}
+                    </IconButton>
+                  </Tooltip>
+                </Link>
+              );
+            } else if (action.dialog) {
+              return (
+                <Tooltip title={`${action.label}`} placement="top" key={index}>
+                  <IconButton
+                    color="default"
+                    data-testid="additionalButton"
+                    className={styles.additonalButton}
+                    onClick={() => action.dialog(additionalActionParameter)}
+                  >
+                    {action.icon}
+                  </IconButton>
+                </Tooltip>
+              );
+            }
+          })}
 
-          {additionalAction && additionalAction.dialog ? (
-            <Tooltip title={`${additionalAction.label}`} placement="top">
-              <IconButton
-                color="default"
-                data-testid="additionalButton"
-                className={styles.additonalButton}
-                onClick={() => additionalAction.dialog(additionalActionParameter)}
-              >
-                {additionalAction.icon}
-              </IconButton>
-            </Tooltip>
-          ) : null}
           {/* do not display edit & delete for staff role in group */}
           {displayUserGroups || listItem !== 'groups' ? (
             <>
@@ -358,9 +363,9 @@ export const List: React.SFC<ListProps> = ({
         ? restrictedAction(listItem)
         : { chat: true, edit: true, delete: true };
       let action: any;
-      if (additionalAction) {
+      if (additionalAction.length > 0) {
         // check if we are dealing with nested element
-        const params = additionalAction.parameter.split('.');
+        const params = additionalAction[0].parameter.split('.');
         if (params.length > 1) {
           action = listItem[params[0]][params[1]];
         } else {

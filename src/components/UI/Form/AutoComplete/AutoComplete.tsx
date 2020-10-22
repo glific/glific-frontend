@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox, Paper } from '@material-ui/core';
@@ -19,7 +19,10 @@ export interface AutocompleteProps {
   chipIcon?: any;
   getOptions?: any;
   validate?: any;
+  asyncValues?: any;
   noOptionsText?: any;
+  onChange?: any;
+  asyncSearch?: boolean;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -34,13 +37,17 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   multiple = true,
   disabled = false,
   getOptions,
+  asyncValues,
+  onChange,
+  asyncSearch = false,
   noOptionsText = 'No options available',
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
   const hasError = dirty && touchedVal && errorText !== undefined;
-  const [optionValue, setOptionValue] = React.useState([]);
-  const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [optionValue, setOptionValue] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (options.length > 0) {
@@ -67,13 +74,28 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
+            if (asyncSearch) {
+              const filterValues = asyncValues.value.filter(
+                (val: any) => val.id !== value[value.length - 1].id
+              );
+              if (filterValues.length === value.length - 2) {
+                asyncValues.setValue(filterValues);
+              } else {
+                asyncValues.setValue([...value]);
+              }
+              setSearchTerm('');
+              onChange('');
+            }
             setFieldValue(field.name, value);
           }}
+          inputValue={asyncSearch ? searchTerm : undefined}
           value={
             multiple
-              ? optionValue.filter((option: any) =>
-                  field.value.map((value: any) => value.id).includes(option.id)
-                )
+              ? asyncSearch
+                ? asyncValues.value
+                : optionValue.filter((option: any) =>
+                    field.value.map((value: any) => value.id).includes(option.id)
+                  )
               : field.value
           }
           disabled={disabled}
@@ -91,21 +113,46 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               />
             ))
           }
-          renderOption={(option, { selected }) => (
-            <React.Fragment>
-              {multiple ? <Checkbox icon={icon} checked={selected} color="primary" /> : ''}
-              {option[optionLabel]}
-            </React.Fragment>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              error={hasError}
-              helperText={hasError ? errorText : ''}
-              {...textFieldProps}
-              data-testid="AutocompleteInput"
-            />
-          )}
+          renderOption={(option, { selected }) => {
+            return (
+              <React.Fragment>
+                {multiple ? (
+                  <Checkbox
+                    icon={icon}
+                    checked={
+                      asyncSearch
+                        ? asyncValues.value.map((value: any) => value.id).includes(option.id)
+                        : selected
+                    }
+                    color="primary"
+                  />
+                ) : (
+                  ''
+                )}
+                {option[optionLabel]}
+              </React.Fragment>
+            );
+          }}
+          renderInput={(params: any) => {
+            const asyncChange = asyncSearch
+              ? {
+                  onChange: (event: any) => {
+                    setSearchTerm(event.target.value);
+                    return onChange(event.target.value);
+                  },
+                }
+              : null;
+            return (
+              <TextField
+                {...params}
+                {...asyncChange}
+                error={hasError}
+                helperText={hasError ? errorText : ''}
+                {...textFieldProps}
+                data-testid="AutocompleteInput"
+              />
+            );
+          }}
           open={open}
           onOpen={() => {
             setOpen(true);
