@@ -19,6 +19,7 @@ import { setVariables } from '../../../common/constants';
 import { FormControl, IconButton, InputLabel, OutlinedInput } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
+import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 
 export interface GroupListProps {}
 
@@ -60,6 +61,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
+
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION);
 
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
@@ -133,21 +136,40 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     });
   };
 
-  if(sendMessageDialogShow){
-    dialog=(<DialogBox title='Send the message to the group' handleOk={()=>{}} handleCancel={()=>{}}>
-      <FormControl fullWidth >
-        <InputLabel variant="outlined">Enter the message</InputLabel>
-        <OutlinedInput
-          classes={{
-            notchedOutline: styles.InputBorder,
-          }}
-          className={styles.Label}
-          label="Enter title"
-          fullWidth
-          data-testid="templateInput"  
-        ></OutlinedInput>
-       </FormControl>
-    </DialogBox>)
+  const sendMessageToGroup = () => {
+    sendMessageToGroups({
+      variables: {
+        groupId: groupId,
+        input: {
+          body: 'Yo',
+          senderId: 1,
+          type: 'TEXT',
+          flow: 'OUTBOUND',
+        },
+      },
+    });
+  };
+
+  if (sendMessageDialogShow) {
+    dialog = (
+      <DialogBox
+        title="Send the message to the group"
+        handleOk={sendMessageToGroup}
+        handleCancel={() => {
+          setSendMessageDialogShow(false);
+        }}
+      >
+        <FormControl fullWidth>
+          <InputLabel variant="outlined">Enter the message</InputLabel>
+          <OutlinedInput
+            className={styles.Label}
+            label="Enter the message"
+            fullWidth
+            data-testid="templateInput"
+          ></OutlinedInput>
+        </FormControl>
+      </DialogBox>
+    );
   }
 
   if (addAutomationDialogShow) {
@@ -205,7 +227,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   const addContactIcon = <AddContactIcon />;
   const automationIcon = (
-    <Menu menus={[{ title: 'Send a message' ,onClick:()=> setSendMessageDialogShow(true)}, { title: 'Start automation flow' ,onClick:setAutomationDialog}]}>
+    <Menu
+      menus={[
+        { title: 'Send a message', onClick: () => setSendMessageDialogShow(true) },
+        { title: 'Start automation flow', onClick: setAutomationDialog },
+      ]}
+    >
       <IconButton data-testid="staffManagementMenu">
         <img src={AutomationIconSvg} className={styles.StaffIcon} alt="staff icon" />
       </IconButton>
@@ -222,7 +249,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       label: '',
       icon: automationIcon,
       parameter: 'id',
-      dialog: ()=>{},
+      dialog: setGroupId,
     },
   ];
 

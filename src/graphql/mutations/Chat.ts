@@ -52,3 +52,12 @@ export const MARK_AS_READ = gql`
     markContactMessagesAsRead(contactId: $contactId)
   }
 `;
+
+
+export const CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION = gql`
+  mutation createAndSendMessageToGroup($groupId:ID!, $input: MessageInput!) {
+    createAndSendMessageToGroup(groupId:$groupId, input: $input) {
+      success
+    }
+  }
+`;

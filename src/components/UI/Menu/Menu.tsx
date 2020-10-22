@@ -23,7 +23,9 @@ const Menu: React.SFC<MenuProps> = (props) => {
     return (
       <div key={menu.title}>
         <MenuItem onClickHandler={()=>{
-          menu.onClick()
+          if (menu.onClick) {
+            menu.onClick();
+          }
           handleClose()}} {...menu} />
       </div>
     );
