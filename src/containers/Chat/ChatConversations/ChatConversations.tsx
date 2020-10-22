@@ -141,6 +141,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       <Button
         color="primary"
         variant="outlined"
+        className={styles.BackgroundWhite}
         onClick={(e: any) => {
           handleClick(e, 'saveSearch', 'update');
         }}
@@ -155,7 +156,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       <Button
         color="primary"
         variant="outlined"
-        className={styles.SearchButton}
+        className={styles.BackgroundWhite}
         onClick={(e: any) => {
           handleClick(e, 'saveSearch', 'new');
         }}
