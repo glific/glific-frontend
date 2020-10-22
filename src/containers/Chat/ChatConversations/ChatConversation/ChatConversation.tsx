@@ -42,15 +42,14 @@ const updateMessageCache = (client: any, data: any) => {
       id: `Message:${messageId}`,
       fragment: MESSAGE_FRAGMENT,
     });
-    if (message) {
-      const messageCopy = JSON.parse(JSON.stringify(message));
-      messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
-      client.writeFragment({
-        id: `Message:${messageId}`,
-        fragment: MESSAGE_FRAGMENT,
-        data: messageCopy,
-      });
-    }
+    const messageCopy = JSON.parse(JSON.stringify(message));
+    messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
+    client.writeFragment({
+      id: `Message:${messageId}`,
+      fragment: MESSAGE_FRAGMENT,
+      data: messageCopy,
+    });
+
     return null;
   });
 };

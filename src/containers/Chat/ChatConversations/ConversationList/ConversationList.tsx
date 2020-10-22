@@ -52,20 +52,22 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     if (offset.data) {
       offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
     }
-    loadMoreConversations({
-      variables: {
-        contactOpts: {
-          limit: 1,
+    if (props.selectedContactId && offsetValue) {
+      loadMoreConversations({
+        variables: {
+          contactOpts: {
+            limit: 1,
+          },
+          filter: {
+            id: props.selectedContactId,
+          },
+          messageOpts: {
+            limit: 50,
+            offset: offsetValue,
+          },
         },
-        filter: {
-          id: props.selectedContactId,
-        },
-        messageOpts: {
-          limit: 50,
-          offset: offsetValue,
-        },
-      },
-    });
+      });
+    }
     setShowLoading(true);
   }, [offset, props.selectedContactId]);
 

@@ -37,7 +37,6 @@ const defaultProps = {
     insertedAt,
   },
   lastMessage: {
-    id: 1,
     body: 'Hello there!',
     insertedAt,
     type: 'TEXT',
