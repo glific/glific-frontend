@@ -10,6 +10,7 @@ import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Ch
 import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -21,6 +22,7 @@ export interface ChatConversationProps {
   onClick: (i: any) => void;
   index: number;
   lastMessage: {
+    id: number;
     body: string;
     insertedAt: string;
     type: string;
@@ -30,6 +32,8 @@ export interface ChatConversationProps {
       label: string;
     }>;
   };
+  messageNumber?: number;
+  highlightSearch?: string;
 }
 
 const updateMessageCache = (client: any, data: any) => {
@@ -45,6 +49,7 @@ const updateMessageCache = (client: any, data: any) => {
       fragment: MESSAGE_FRAGMENT,
       data: messageCopy,
     });
+
     return null;
   });
 };
@@ -54,8 +59,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
-  const { lastMessage, selected, contactId, contactName, index } = props;
-
+  const { lastMessage, selected, contactId, contactName, index, highlightSearch } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (mydata) => {
@@ -73,6 +77,26 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       unread = true;
     }
   }
+
+  // display highlighted search message
+  const BoldedText = (text: string, highlight: any) => {
+    highlight = highlight ? highlight : '';
+    // Split on highlight term and include term into strings, ignore case
+    const strings = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return (
+      <span>
+        {strings.map((string, i) =>
+          string.toLowerCase() === highlight.toLowerCase() ? (
+            <span key={i} className={styles.TitleText}>
+              {string}
+            </span>
+          ) : (
+            string
+          )
+        )}
+      </span>
+    );
+  };
 
   useEffect(() => {
     if (unread && selected) {
@@ -93,6 +117,16 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   } else {
     message = lastMessage.type;
   }
+  let displayMSG = WhatsAppToJsx(message);
+
+  // set offset to use that in chatting window to fetch that msg
+  const setSearchOffset = (client: any, offset: number = 0) => {
+    client.writeQuery({
+      query: SEARCH_OFFSET,
+      data: { offset },
+    });
+  };
+
   return (
     <ListItem
       data-testid="list"
@@ -101,8 +135,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
       component={Link}
       selected={selected}
-      onClick={() => props.onClick(index)}
-      to={'/chat/' + contactId}
+      onClick={() => {
+        props.onClick(index);
+        if (props.messageNumber) setSearchOffset(client, props.messageNumber);
+      }}
+      to={'/chat/' + contactId + '/#search' + props.lastMessage.id}
     >
       <div>
         <div className={chatBubble.join(' ')} />
@@ -119,7 +156,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {WhatsAppToJsx(message)}
+          {displayMSG[0] ? BoldedText(displayMSG[0], highlightSearch) : null}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}

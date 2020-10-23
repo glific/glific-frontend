@@ -10,6 +10,7 @@ describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {
     savedSearchCriteriaCallback: jest.fn,
     refetchData: { savedSearchCollection: null },
+    onSelect: jest.fn,
   };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {

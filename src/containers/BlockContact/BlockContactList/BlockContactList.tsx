@@ -99,11 +99,13 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
     );
   }
 
-  const additionalAction = {
-    icon: unblockIcon,
-    parameter: 'id',
-    dialog: setDialog,
-  };
+  const additionalAction = [
+    {
+      icon: unblockIcon,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
   return (
     <>
       <List

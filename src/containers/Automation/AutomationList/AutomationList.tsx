@@ -37,12 +37,14 @@ const columnAttributes = {
 };
 const configureIcon = <ConfigureIcon></ConfigureIcon>;
 
-const additionalAction = {
-  label: 'Configure',
-  icon: configureIcon,
-  parameter: 'uuid',
-  link: '/automation/configure',
-};
+const additionalAction = [
+  {
+    label: 'Configure',
+    icon: configureIcon,
+    parameter: 'uuid',
+    link: '/automation/configure',
+  },
+];
 
 export const AutomationList: React.SFC<AutomationListProps> = (props) => (
   <List

@@ -10,6 +10,20 @@
   margin: auto !important;
 }
 
+.Title {
+  margin-left: 12px;
+  font-family: 'Heebo', sans-serif;
+}
+
+/* Overriding Typography styling */
+.TitleText {
+  font-family: 'Heebo', sans-serif !important;
+  font-size: 20px !important;
+  color: #073f24 !important;
+  text-transform: capitalize;
+  font-weight: bold !important;
+}
+
 .LoadMore {
   margin-top: 10px !important;
   display: flex;
