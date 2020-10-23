@@ -20,6 +20,7 @@ import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { SIMULATOR_CONTACT } from '../../common/constants';
 import { getUserSession } from '../../services/AuthService';
+import { saveConverations } from '../../services/ChatService';
 
 export interface ChatProps {
   contactId: number;
@@ -40,25 +41,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
       if (conversation) {
-        const conversations = client.readQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-        });
-
-        const conversationCopy = JSON.parse(JSON.stringify(conversation));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
-          .reverse();
-
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.search.unshift(conversationCopy.search[0]);
-        client.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: conversationsCopy,
-        });
+        saveConverations(conversation, client);
       }
     },
   });
