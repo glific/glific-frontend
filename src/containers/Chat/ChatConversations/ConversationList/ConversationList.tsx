@@ -151,23 +151,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (data && data.search.length === 0) {
         setShowLoadMore(false);
       } else {
-        console.log('data', data);
-        // const conversations = client.readQuery({
-        //   query: SEARCH_QUERY,
-        //   variables: queryVariables,
-        // });
-
-        // const conversationCopy = JSON.parse(JSON.stringify(data));
-
-        // const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        // conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
-
-        // client.writeQuery({
-        //   query: SEARCH_QUERY,
-        //   variables: queryVariables,
-        //   data: conversationsCopy,
-        // });
-
         // save the conversation and update cache
         updateConversations(data, client, queryVariables);
 

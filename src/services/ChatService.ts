@@ -7,15 +7,13 @@ export const updateConversations = (conversation: any, client: any, queryVariabl
   // get the current conversations from the cache
   const conversations = getCachedConverations(client, queryVariables);
 
-  //const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-
-  // add new conversation
-  //conversationsCopy.search.unshift(conversation);
-
+  // make a copy of current conversation
   const conversationCopy = JSON.parse(JSON.stringify(conversation));
 
   // make a copy of current conversations
   const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+  // add new conversation to conversations
   conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
 
   // update conversations
