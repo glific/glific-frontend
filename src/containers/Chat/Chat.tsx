@@ -41,7 +41,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
       if (conversation) {
-        saveConverations(conversation, client);
+        // save the conversation and update cache
+        saveConverations(conversation, client, queryVariables);
       }
     },
   });

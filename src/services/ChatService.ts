@@ -1,14 +1,11 @@
 // This service includes all the actions related to conversations storing
 
-import { SEARCH_QUERY_VARIABLES } from '../common/constants';
 import { SEARCH_QUERY } from '../graphql/queries/Search';
 
-const queryVariables = SEARCH_QUERY_VARIABLES;
-
 // write conversation to cache
-export const saveConverations = (conversation: any, client: any) => {
+export const saveConverations = (conversation: any, client: any, queryVariables: any) => {
   // get the current conversations from the cache
-  const conversations = getCachedConverations(client);
+  const conversations = getCachedConverations(client, queryVariables);
 
   // parese the conversation
   const conversationCopy = JSON.parse(JSON.stringify(conversation));
@@ -27,11 +24,11 @@ export const saveConverations = (conversation: any, client: any) => {
   conversationsCopy.search.unshift(conversationCopy.search[0]);
 
   // update conversations
-  updateConversationCache(conversationsCopy, client);
+  updateConversationCache(conversationsCopy, client, queryVariables);
 };
 
 // read the conversation from cache
-export const getCachedConverations = (client: any) => {
+export const getCachedConverations = (client: any, queryVariables: any) => {
   // fetch conversations from the cache
   const conversations = client.readQuery({
     query: SEARCH_QUERY,
@@ -42,7 +39,7 @@ export const getCachedConverations = (client: any) => {
 };
 
 // update the conversations cache
-export const updateConversationCache = (conversations: any, client: any) => {
+export const updateConversationCache = (conversations: any, client: any, queryVariables: any) => {
   // write the updated conversations to cached
   client.writeQuery({
     query: SEARCH_QUERY,
