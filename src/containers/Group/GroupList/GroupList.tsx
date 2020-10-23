@@ -222,7 +222,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   }
 
   const addContactIcon = <AddContactIcon />;
-  const automationIcon = (
+  const messageMenu = (
     <Menu
       menus={[
         {
@@ -251,7 +251,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     },
     {
       label: '',
-      icon: automationIcon,
+      icon: messageMenu,
       parameter: 'id',
       dialog: setGroupId,
     },
