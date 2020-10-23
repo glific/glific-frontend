@@ -2,14 +2,16 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import { DialogBox } from '../DialogBox/DialogBox';
 import { Dialog, FormControl, DialogTitle, DialogContent } from '@material-ui/core';
 import styles from './MessageDialog.module.css';
-import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
+import {ReactComponent as CrossDarkIcon} from "../../../assets/images/icons/CrossDark.svg"
 import ChatInput from '../../../containers/Chat/ChatMessages/ChatInput/ChatInput';
 
 export interface MessageDialogProps {
   title: string;
+  onSendMessage: any;
+  handleClose:any
 }
 
-export const MessageDialog = ({ title }: MessageDialogProps) => {
+export const MessageDialog = ({ title, onSendMessage,handleClose }: MessageDialogProps) => {
   return (
     <Dialog
       open={true}
@@ -17,14 +19,17 @@ export const MessageDialog = ({ title }: MessageDialogProps) => {
         paper: styles.Dialog,
       }}
     >
-      <DialogTitle className={styles.DialogTitle}>{title}</DialogTitle>
-      <DialogContent>
+     
+      <DialogContent className={styles.DialogContent}>
+      <div className={styles.DialogTitle}>{title}</div>
         <ChatInput
-          onSendMessage={(content: any) => {}}
+          onSendMessage={onSendMessage}
           handleHeightChange={(height: any) => {}}
           contactStatus=""
-          contactBspStatus=""
+          contactBspStatus="SESSION_AND_HSM"
+          additionalStyle={styles.ChatInput}
         />
+        <CrossDarkIcon className={styles.CloseIcon} onClick={handleClose}  />
       </DialogContent>
     </Dialog>
   );

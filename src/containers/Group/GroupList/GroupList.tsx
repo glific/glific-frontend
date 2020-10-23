@@ -64,7 +64,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION);
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+    onCompleted: () => {
+      setNotification(client, `Message send successfully`);
+      setSendMessageDialogShow(false);
+    },
+  });
 
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
@@ -138,12 +143,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     });
   };
 
-  const sendMessageToGroup = () => {
+  const sendMessageToGroup = (message: string) => {
     sendMessageToGroups({
       variables: {
         groupId: groupId,
         input: {
-          body: 'Yo',
+          body: message,
           senderId: 1,
           type: 'TEXT',
           flow: 'OUTBOUND',
@@ -153,28 +158,12 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   };
 
   if (sendMessageDialogShow) {
-    // dialog = (
-    //   <DialogBox
-    //     title="Send the message to the group"
-    //     handleOk={sendMessageToGroup}
-    //     handleCancel={() => {
-    //       setSendMessageDialogShow(false);
-    //     }}
-    //   >
-    //     <FormControl fullWidth>
-    //       <InputLabel variant="outlined">Enter the message</InputLabel>
-    //       <OutlinedInput
-    //         className={styles.Label}
-    //         label="Enter the message"
-    //         fullWidth
-    //         data-testid="templateInput"
-    //       ></OutlinedInput>
-    //     </FormControl>
-    //   </DialogBox>
-    // );
-
     dialog = (
-      <MessageDialog title="Send message to group" ></MessageDialog>
+      <MessageDialog
+        title="Send message to group"
+        onSendMessage={sendMessageToGroup}
+        handleClose={() => setSendMessageDialogShow(false)}
+      ></MessageDialog>
     );
   }
 

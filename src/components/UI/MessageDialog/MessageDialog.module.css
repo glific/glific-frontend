@@ -1,15 +1,37 @@
-.Dialog{
-  max-width:  800px !important;
-  height: 200px !important;
-  width: 800px !important;
+.Dialog {
+  max-width: 1200px !important;
+  height: 700px !important;
+  width: 1200px !important;
   background-color: rgba(0, 0, 0, 0) !important;
-  box-shadow: unset !important
+  box-shadow: unset !important;
 }
 
-.DialogTitle h2{
+.DialogTitle {
   text-align: center !important;
- 
   color: white !important;
   font-size: 32px !important;
   font-weight: 500 !important;
+  position: absolute;
+  bottom: 320px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.CloseIcon {
+  cursor: pointer;
+  height: 35px !important;
+  width: 35px !important;
+  bottom: 30px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ChatInput {
+  width: 700px !important;
+  bottom: 120px !important;
+}
+
+.ChatInput > div {
+  box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.12);
 }
