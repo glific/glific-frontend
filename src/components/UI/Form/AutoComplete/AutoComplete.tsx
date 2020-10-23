@@ -83,6 +83,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               } else {
                 asyncValues.setValue([...value]);
               }
+              setSearchTerm('');
+              onChange('');
             }
             setFieldValue(field.name, value);
           }}
@@ -136,7 +138,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               ? {
                   onChange: (event: any) => {
                     setSearchTerm(event.target.value);
-                    return onChange ? onChange(event.target.value) : null;
+                    return onChange(event.target.value);
                   },
                 }
               : null;

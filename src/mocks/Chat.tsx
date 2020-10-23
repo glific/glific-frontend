@@ -2,7 +2,7 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY } from '../graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
@@ -24,15 +24,21 @@ const getConversationQuery = (data: any) => {
   };
 };
 
-const conversationMessageQuery = (contactId: any, contactName: string, contactNumber: string) => ({
+const conversationMessageQuery = (
+  contactId: any,
+  contactName: string,
+  contactNumber: string,
+  contactLimit: number = 50,
+  messageLimit: object = { limit: 50 }
+) => ({
   request: {
     query: SEARCH_QUERY,
     variables: {
       contactOpts: {
-        limit: 50,
+        limit: contactLimit,
       },
       filter: { id: contactId.toString() },
-      messageOpts: { limit: 50 },
+      messageOpts: messageLimit,
     },
   },
   result: {
@@ -98,6 +104,11 @@ const messageReceivedSubscription = {
         },
         tags: [],
         type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
       },
     },
   },
@@ -125,6 +136,11 @@ const messageSendSubscription = {
         },
         tags: [],
         type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
       },
     },
   },
@@ -210,6 +226,124 @@ export const conversationQuery = getConversationQuery({
   ],
 });
 
+export const searchMultiQuery = (term: string = '', limit: number = 50) => {
+  return {
+    request: {
+      query: SEARCH_MULTI_QUERY,
+      variables: {
+        searchFilter: { term: term },
+        messageOpts: { limit: limit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit: limit },
+      },
+    },
+    result: {
+      data: {
+        searchMulti: {
+          contacts: [
+            {
+              body: null,
+              contact: {
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
+              },
+              id: '66',
+              insertedAt: '2020-10-15T07:15:33.613260Z',
+              media: {
+                caption: null,
+                url:
+                  'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+              },
+              messageNumber: 0,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#9900ef',
+                  id: '30',
+                  label: 'Default',
+                },
+                {
+                  colorCode: '#0C976D',
+                  id: '15',
+                  label: 'Numeric',
+                },
+              ],
+              type: 'IMAGE',
+            },
+          ],
+          messages: [
+            {
+              body: 'Hi',
+              contact: {
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
+              },
+              id: '18',
+              insertedAt: '2020-10-15T06:59:31.473314Z',
+              media: null,
+              messageNumber: 48,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#0C976D',
+                  id: '4',
+                  label: 'Greeting',
+                },
+              ],
+              type: 'TEXT',
+            },
+          ],
+          tags: [
+            {
+              body: 'Hi',
+              contact: {
+                bspStatus: 'HSM',
+                id: '8',
+                lastMessageAt: '2020-10-15T07:15:33Z',
+                name: 'Dignesh',
+                status: 'VALID',
+              },
+              id: '12',
+              insertedAt: '2020-10-15T06:58:34.432894Z',
+              media: null,
+              messageNumber: 54,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '8',
+              },
+              tags: [
+                {
+                  colorCode: '#0C976D',
+                  id: '4',
+                  label: 'Greeting',
+                },
+              ],
+              type: 'TEXT',
+            },
+          ],
+        },
+      },
+    },
+  };
+};
+
 export const CONVERSATION_MOCKS = [
   conversationQuery,
   contactGroupsQuery,
@@ -223,8 +357,9 @@ export const CONVERSATION_MOCKS = [
   deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009'),
-  conversationMessageQuery('3', 'Jane Monroe', '919090709009'),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
+  conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
 ];
 
 const updateMessageTagsQuery = {

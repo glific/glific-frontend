@@ -1,4 +1,5 @@
 import { SOCKET } from '.';
+import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
 import { getAuthSession } from '../services/AuthService';
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
@@ -16,6 +17,20 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
       return {};
     }
   },
+});
+
+// we should try to reconnect ws connection only finite (5) times and then abort and prevent
+// unnecessary load on the server
+// watch for websocket error event using onError
+
+let connectionFailureCounter = 0;
+socketConnection.onError((event: any) => {
+  // increment the counter when error occurs
+  connectionFailureCounter++;
+  // let's disconnect the socket connection if there are 5 failures
+  if (connectionFailureCounter >= CONNECTION_RECONNECT_ATTEMPTS) {
+    socketConnection.disconnect();
+  }
 });
 
 // wrap the Phoenix socket in an AbsintheSocket and export
