@@ -3,11 +3,27 @@
 import { SEARCH_QUERY } from '../graphql/queries/Search';
 
 // write conversation to cache
-export const saveConverations = (conversation: any, client: any, queryVariables: any) => {
+export const updateConversations = (conversation: any, client: any, queryVariables: any) => {
   // get the current conversations from the cache
   const conversations = getCachedConverations(client, queryVariables);
 
-  // parese the conversation
+  // make a copy of current conversations
+  const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+  // add new conversation
+  conversationsCopy.search.unshift(conversation);
+
+  // const conversationCopy = JSON.parse(JSON.stringify(data));
+
+  // const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+  // conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
+
+  // update conversations
+  updateConversationsCache(conversationsCopy, client, queryVariables);
+};
+
+export const saveConversation = (conversation: any, client: any, queryVariables: any) => {
+  // parse the conversation
   const conversationCopy = JSON.parse(JSON.stringify(conversation));
 
   // TODOS: need to check why we need this.
@@ -17,14 +33,7 @@ export const saveConverations = (conversation: any, client: any, queryVariables:
     })
     .reverse();
 
-  // make a copy of current conversations
-  const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-
-  // add new conversation
-  conversationsCopy.search.unshift(conversationCopy.search[0]);
-
-  // update conversations
-  updateConversationCache(conversationsCopy, client, queryVariables);
+  updateConversations(conversation, client, queryVariables);
 };
 
 // read the conversation from cache
@@ -39,7 +48,7 @@ export const getCachedConverations = (client: any, queryVariables: any) => {
 };
 
 // update the conversations cache
-export const updateConversationCache = (conversations: any, client: any, queryVariables: any) => {
+export const updateConversationsCache = (conversations: any, client: any, queryVariables: any) => {
   // write the updated conversations to cached
   client.writeQuery({
     query: SEARCH_QUERY,
