@@ -53,4 +53,18 @@ describe('<GroupList />', () => {
 
     expect(getByText('Add contacts to the group')).toBeInTheDocument();
   });
+
+  test('it should have send message dialog box ', async () => {
+    setUserRole(['Admin']);
+    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await wait();
+
+    expect(getByText('Send a message')).toBeInTheDocument();
+    fireEvent.click(getAllByTestId('MenuItem')[0]);
+
+    expect(getByText('Send message to group')).toBeInTheDocument();
+  });
 });
