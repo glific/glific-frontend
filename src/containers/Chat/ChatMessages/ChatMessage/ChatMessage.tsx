@@ -187,7 +187,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   );
 
   return (
-    <div className={additionalClass} ref={messageRef} data-testid="message">
+    <div
+      className={additionalClass}
+      ref={messageRef}
+      data-testid="message"
+      id={'#search' + props.id}
+    >
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>

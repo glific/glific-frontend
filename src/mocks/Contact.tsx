@@ -3,11 +3,13 @@ import {
   GET_CONTACT,
   GET_CONTACT_DETAILS,
   GET_CONTACT_COUNT,
+  CONTACT_SEARCH_QUERY,
 } from '../graphql/queries/Contact';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
+import { setVariables } from '../common/constants';
 
 export const contactGroupsQuery = {
   request: {
@@ -130,6 +132,23 @@ export const countGroupContactsQuery = {
   result: {
     data: {
       countContacts: 1,
+    },
+  },
+};
+export const getContactsQuery = {
+  request: {
+    query: CONTACT_SEARCH_QUERY,
+    variables: setVariables({ name: '' }, 50, 0, 'ASC'),
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          id: '1',
+          name: 'Glific User',
+          phone: '9876543211',
+        },
+      ],
     },
   },
 };

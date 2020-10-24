@@ -10,6 +10,8 @@ import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import { useApolloClient } from '@apollo/client';
+import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -26,6 +28,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+  const client = useApolloClient();
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -132,6 +135,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     if (container) {
       container.scrollTop = container.scrollHeight - container.clientHeight;
     }
+    // set offset to zero to fetch latest data
+    client.writeQuery({
+      query: SEARCH_OFFSET,
+      data: { offset: 0 },
+    });
+    setShowJumpToLatest(false);
   };
 
   const jumpToLatest = (
@@ -156,6 +165,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                   className={styles.ChatSearchBar}
                   handleChange={handleSearch}
                   onReset={() => setSearchVal('')}
+                  searchMode={true}
                 />
               </div>
             </Fade>

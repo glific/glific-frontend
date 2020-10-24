@@ -16,6 +16,7 @@ describe('<SearchBar/>', () => {
         handleSubmit={mockSubmit}
         onReset={mockReset}
         searchVal={searchVal}
+        searchMode={true}
       />
     );
   };
@@ -39,6 +40,7 @@ describe('<SearchBar/>', () => {
         handleSubmit={mockSubmit}
         onReset={mockReset}
         searchVal={searchVal}
+        searchMode={true}
       />
     );
     wrapper.find(IconButton).simulate('click');

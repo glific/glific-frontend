@@ -1,3 +1,5 @@
+import { setVariables } from '../common/constants';
+import { GET_GROUP_CONTACTS } from '../graphql/queries/Contact';
 import {
   FILTER_GROUPS,
   GET_GROUP,
@@ -91,18 +93,38 @@ export const countGroupQuery = {
 export const filterGroupQuery = {
   request: {
     query: FILTER_GROUPS,
-    variables: { filter: { label: '' } },
+    variables: setVariables({ label: '' }, 10, 0, 'ASC'),
+  },
+  result: {
+    data: {
+      groups: [
+        {
+          id: '1',
+          label: 'Staff group',
+          description: 'Group for staff members',
+          isRestricted: false,
+        },
+      ],
+    },
+  },
+};
+
+export const getGroupContactsQuery = {
+  request: {
+    query: GET_GROUP_CONTACTS,
+    variables: { id: '1' },
   },
   result: {
     data: {
       group: {
-        group: [
-          {
-            id: '1',
-            label: 'Staff group',
-            isRestricted: true,
-          },
-        ],
+        group: {
+          contacts: [
+            {
+              id: '1',
+              name: 'Glific User',
+            },
+          ],
+        },
       },
     },
   },

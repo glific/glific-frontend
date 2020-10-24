@@ -12,6 +12,8 @@ import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
   refetchData?: any;
+  onSelect: Function;
+  searchMode?: boolean;
 }
 
 export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
@@ -31,6 +33,11 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       limit: 10,
     },
   };
+
+  // remove selected collection on search
+  if (props.searchMode && selectedSavedSearch) {
+    setSelectedSavedSearch(null);
+  }
 
   useEffect(() => {
     // display created collection
@@ -76,7 +83,10 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         data-testid="savedSearchDiv"
         className={styles.SavedSearchItem}
         key={savedSearch.id}
-        onClick={() => handlerSavedSearchCriteria(savedSearch.args, savedSearch.id)}
+        onClick={() => {
+          handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
+          props.onSelect();
+        }}
       >
         <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
         <div className={countClass.join(' ')}>{savedSearch.count}</div>

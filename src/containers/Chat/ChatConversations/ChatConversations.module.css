@@ -52,3 +52,8 @@
   display: flex;
   justify-content: center;
 }
+
+.BackgroundWhite,
+.CancelOutlined {
+  background-color: white !important;
+}
