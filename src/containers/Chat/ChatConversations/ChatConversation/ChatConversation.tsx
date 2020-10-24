@@ -10,6 +10,9 @@ import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Ch
 import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { ReactComponent as ImageIcon } from '../../../../assets/images/icons/Image.svg';
+import { ReactComponent as VideoIcon } from '../../../../assets/images/icons/Video.svg';
+import { ReactComponent as AudioIcon } from '../../../../assets/images/icons/Audio.svg';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -88,11 +91,36 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   // checking if the last message type is text and displaying the message below the contact name
   // else displaying the type of message
-  if (lastMessage.type === 'TEXT') {
-    message = lastMessage.body;
-  } else {
-    message = lastMessage.type;
+  switch (lastMessage.type) {
+    case 'TEXT':
+      message = lastMessage.body;
+      break;
+    case 'IMAGE':
+      message = (
+        <>
+          <ImageIcon />
+          Image
+        </>
+      );
+      break;
+    case 'VIDEO':
+      message = (
+        <>
+          <VideoIcon />
+          Video
+        </>
+      );
+      break;
+    case 'AUDIO':
+      message = (
+        <>
+          <AudioIcon />
+          Audio
+        </>
+      );
+      break;
   }
+
   return (
     <ListItem
       data-testid="list"

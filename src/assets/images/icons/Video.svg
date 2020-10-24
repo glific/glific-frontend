@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Video</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(0.000000, 2.000000)">
+            <rect id="Rectangle" stroke="#93A29B" stroke-width="2" x="1" y="1" width="16" height="12" rx="3"></rect>
+            <path d="M7,5.30901699 L7,8.69098301 C7,8.96712538 7.22385763,9.19098301 7.5,9.19098301 C7.57762255,9.19098301 7.65417908,9.17291046 7.7236068,9.1381966 L11.1055728,7.4472136 C11.3525621,7.32371897 11.4526742,7.02338245 11.3291796,6.7763932 C11.2807978,6.6796295 11.2023365,6.60116826 11.1055728,6.5527864 L7.7236068,4.8618034 C7.47661755,4.73830877 7.17628103,4.83842095 7.0527864,5.0854102 C7.01807255,5.15483791 7,5.23139445 7,5.30901699 Z" id="Path-24" fill="#93A29B"></path>
+        </g>
+    </g>
+</svg>
