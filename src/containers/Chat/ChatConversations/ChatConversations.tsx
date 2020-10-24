@@ -148,6 +148,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       <Button
         color="primary"
         variant="outlined"
+        className={styles.BackgroundWhite}
         onClick={(e: any) => {
           handleClick(e, 'saveSearch', 'update');
         }}
@@ -162,6 +163,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       <Button
         color="primary"
         variant="outlined"
+        className={styles.BackgroundWhite}
         onClick={(e: any) => {
           handleClick(e, 'saveSearch', 'new');
         }}
@@ -180,7 +182,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         resetSearch();
       }}
     >
-      <CancelOutlined />
+      <CancelOutlined  className={styles.CancelOutlined}/>
     </IconButton>
   );
 

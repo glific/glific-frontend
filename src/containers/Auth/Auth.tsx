@@ -46,6 +46,7 @@ export const Auth: React.SFC<AuthProps> = ({
 }) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   let buttonContainedVariant = true;
@@ -80,6 +81,9 @@ export const Auth: React.SFC<AuthProps> = ({
     displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
   }
 
+  // Stop loading if any error
+  if (loading && displayErrorMessage) setLoading(false);
+
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -111,6 +115,7 @@ export const Auth: React.SFC<AuthProps> = ({
           initialValues={initialFormValues}
           validationSchema={validationSchema}
           onSubmit={(item) => {
+            setLoading(true);
             saveHandler(item);
           }}
         >
@@ -138,8 +143,10 @@ export const Auth: React.SFC<AuthProps> = ({
                     onClick={submitForm}
                     className={styles.AuthButton}
                     data-testid="SubmitButton"
+                    loading={loading}
+                    type="submit"
                   >
-                    {buttonText}
+                    {loading ? null : buttonText}
                   </Button>
                 </div>
               </Form>

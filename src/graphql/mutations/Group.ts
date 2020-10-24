@@ -75,6 +75,7 @@ export const UPDATE_GROUP_CONTACTS = gql`
         id
         value
       }
+      numberDeleted
     }
   }
 `;
