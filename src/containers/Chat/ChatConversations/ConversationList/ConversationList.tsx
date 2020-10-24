@@ -68,7 +68,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         },
       });
     }
-    setShowLoading(true);
   }, [offset, props.selectedContactId]);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
