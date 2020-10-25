@@ -6,6 +6,7 @@ import styles from './MenuItem.module.css';
 export interface MenuItemProps {
   title: string;
   path: string;
+  icon?: any;
   onClickHandler: any;
   className?: string;
 }
@@ -23,6 +24,7 @@ const MenuItem: React.SFC<MenuItemProps> = (props) => {
       to={props.path}
       data-testid="MenuItem"
     >
+      {props.icon ? props.icon : null}
       <div className={menuItemClass}>{props.title}</div>
     </MenuItemElement>
   );
