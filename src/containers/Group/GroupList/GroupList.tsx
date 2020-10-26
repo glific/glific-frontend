@@ -56,6 +56,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
+  const [message, setMessage] = useState('');
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
@@ -67,7 +68,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
     onCompleted: () => {
-      setNotification(client, `Message send successfully`);
+      setNotification(client, `Message successfully send to the group`);
       setSendMessageDialogShow(false);
     },
   });
@@ -82,7 +83,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
           client,
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`
+          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
         setNotification(
@@ -90,7 +91,10 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
           `${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`
         );
       } else {
-        setNotification(client, `${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`);
+        setNotification(
+          client,
+          `${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
+        );
       }
       setAddContactsDialogShow(false);
     },

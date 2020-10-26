@@ -14,6 +14,7 @@ import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import styles from './ConversationList.module.css';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import { updateConversations } from '../../../../services/ChatService';
 
 interface ConversationListProps {
   searchVal: string;
@@ -68,7 +69,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         },
       });
     }
-    setShowLoading(true);
   }, [offset, props.selectedContactId]);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
@@ -150,21 +150,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (data && data.search.length === 0) {
         setShowLoadMore(false);
       } else {
-        const conversations = client.readQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-        });
-
-        const conversationCopy = JSON.parse(JSON.stringify(data));
-
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.search = [...conversationsCopy.search, ...conversationCopy.search];
-
-        client.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: conversationsCopy,
-        });
+        // save the conversation and update cache
+        updateConversations(data, client, queryVariables);
 
         setLoadingOffset(loadingOffset + 10);
       }
