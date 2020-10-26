@@ -149,6 +149,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         </>
       );
       break;
+    default:
+      message = lastMessage.type;
   }
   let displayMSG = WhatsAppToJsx(message);
 
