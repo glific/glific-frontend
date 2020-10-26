@@ -10,6 +10,9 @@ import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Ch
 import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { ReactComponent as ImageIcon } from '../../../../assets/images/icons/Image.svg';
+import { ReactComponent as VideoIcon } from '../../../../assets/images/icons/Video.svg';
+import { ReactComponent as AudioIcon } from '../../../../assets/images/icons/Audio.svg';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatConversationProps {
@@ -82,20 +85,26 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const BoldedText = (text: string, highlight: any) => {
     highlight = highlight ? highlight : '';
     // Split on highlight term and include term into strings, ignore case
-    const strings = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return (
-      <span>
-        {strings.map((string, i) =>
-          string.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={i} className={styles.TitleText}>
-              {string}
-            </span>
-          ) : (
-            string
-          )
-        )}
-      </span>
-    );
+    const strings =
+      typeof text === 'string' ? text.split(new RegExp(`(${highlight})`, 'gi')) : null;
+
+    if (strings) {
+      return (
+        <span>
+          {strings.map((string, i) =>
+            string.toLowerCase() === highlight.toLowerCase() ? (
+              <span key={i} className={styles.TitleText}>
+                {string}
+              </span>
+            ) : (
+              string
+            )
+          )}
+        </span>
+      );
+    } else {
+      return text;
+    }
   };
 
   useEffect(() => {
@@ -112,10 +121,36 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   // checking if the last message type is text and displaying the message below the contact name
   // else displaying the type of message
-  if (lastMessage.type === 'TEXT') {
-    message = lastMessage.body;
-  } else {
-    message = lastMessage.type;
+  switch (lastMessage.type) {
+    case 'TEXT':
+      message = lastMessage.body;
+      break;
+    case 'IMAGE':
+      message = (
+        <>
+          <ImageIcon />
+          Image
+        </>
+      );
+      break;
+    case 'VIDEO':
+      message = (
+        <>
+          <VideoIcon />
+          Video
+        </>
+      );
+      break;
+    case 'AUDIO':
+      message = (
+        <>
+          <AudioIcon />
+          Audio
+        </>
+      );
+      break;
+    default:
+      message = lastMessage.type;
   }
   let displayMSG = WhatsAppToJsx(message);
 
