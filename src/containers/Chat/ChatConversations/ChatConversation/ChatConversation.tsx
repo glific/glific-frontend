@@ -85,20 +85,26 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const BoldedText = (text: string, highlight: any) => {
     highlight = highlight ? highlight : '';
     // Split on highlight term and include term into strings, ignore case
-    const strings = text.split(new RegExp(`(${highlight})`, 'gi'));
-    return (
-      <span>
-        {strings.map((string, i) =>
-          string.toLowerCase() === highlight.toLowerCase() ? (
-            <span key={i} className={styles.TitleText}>
-              {string}
-            </span>
-          ) : (
-            string
-          )
-        )}
-      </span>
-    );
+    const strings =
+      typeof text === 'string' ? text.split(new RegExp(`(${highlight})`, 'gi')) : null;
+
+    if (strings) {
+      return (
+        <span>
+          {strings.map((string, i) =>
+            string.toLowerCase() === highlight.toLowerCase() ? (
+              <span key={i} className={styles.TitleText}>
+                {string}
+              </span>
+            ) : (
+              string
+            )
+          )}
+        </span>
+      );
+    } else {
+      return text;
+    }
   };
 
   useEffect(() => {
