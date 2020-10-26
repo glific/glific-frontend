@@ -21,6 +21,8 @@ import { FormControl, IconButton, InputLabel, OutlinedInput } from '@material-ui
 import Menu from '../../../components/UI/Menu/Menu';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import ChatInput from '../../Chat/ChatMessages/ChatInput/ChatInput';
+import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
 export interface GroupListProps {}
 
@@ -146,7 +148,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     });
   };
 
-  const sendMessageToGroup = () => {
+  const sendMessageToGroup = (message: string) => {
     sendMessageToGroups({
       variables: {
         groupId: groupId,
@@ -162,28 +164,11 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
 
   if (sendMessageDialogShow) {
     dialog = (
-      <DialogBox
+      <MessageDialog
         title="Send message to group"
-        handleOk={sendMessageToGroup}
-        buttonOk="Send"
-        handleCancel={() => {
-          setSendMessageDialogShow(false);
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel variant="outlined">Enter the message</InputLabel>
-          <OutlinedInput
-            className={styles.Label}
-            label="Enter the message"
-            fullWidth
-            value={message}
-            onChange={(event: any) => setMessage(event.target.value)}
-            multiline={true}
-            rows={3}
-            data-testid="templateInput"
-          ></OutlinedInput>
-        </FormControl>
-      </DialogBox>
+        onSendMessage={sendMessageToGroup}
+        handleClose={() => setSendMessageDialogShow(false)}
+      ></MessageDialog>
     );
   }
 
@@ -241,7 +226,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   }
 
   const addContactIcon = <AddContactIcon />;
-  const automationIcon = (
+  const messageMenu = (
     <Menu
       menus={[
         {
@@ -270,7 +255,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     },
     {
       label: '',
-      icon: automationIcon,
+      icon: messageMenu,
       parameter: 'id',
       dialog: setGroupId,
     },

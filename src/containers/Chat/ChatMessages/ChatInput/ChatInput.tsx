@@ -18,6 +18,7 @@ export interface ChatInputProps {
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
   contactBspStatus: string;
+  additionalStyle?: any;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
@@ -150,7 +151,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   );
 
   return (
-    <Container className={styles.ChatInput}>
+    <Container className={`${styles.ChatInput} ${props.additionalStyle}`}>
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
