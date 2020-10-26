@@ -156,6 +156,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
   });
 
   useEffect(() => {
+    if (automationName) {
+      document.title = 'Glific: ' + automationName.flows[0].name;
+    }
+    return () => {
+      document.title = 'Glific: Two way communication platform';
+    };
+  }, [automationName]);
+
+  useEffect(() => {
     const files = loadfiles();
     return () => {
       for (const node in files) {
