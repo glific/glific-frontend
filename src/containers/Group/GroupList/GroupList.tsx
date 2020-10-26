@@ -3,7 +3,6 @@ import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/qu
 import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
-import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Selected.svg';
 import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import ChatDarkIconSVG from '../../../assets/images/icons/Chat/UnselectedDark.svg';
@@ -82,7 +81,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
           client,
           `${numberDeleted} contact${
             numberDeleted === 1 ? '' : 's  were'
-          } removed and ${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`
+          } removed and ${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
         );
       } else if (numberDeleted > 0) {
         setNotification(
@@ -90,7 +89,10 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
           `${numberDeleted} contact${numberDeleted === 1 ? '' : 's  were'} removed`
         );
       } else {
-        setNotification(client, `${numberAdded} contact${numberAdded == 1 ? '' : 's  were'} added`);
+        setNotification(
+          client,
+          `${numberAdded} contact${numberAdded === 1 ? '' : 's  were'} added`
+        );
       }
       setAddContactsDialogShow(false);
     },
@@ -243,7 +245,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     <Menu
       menus={[
         {
-          icon: <ChatDarkIcon className={styles.Icon}  />,
+          icon: <ChatDarkIcon className={styles.Icon} />,
           title: 'Send a message',
           onClick: () => setSendMessageDialogShow(true),
         },

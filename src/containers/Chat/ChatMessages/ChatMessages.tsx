@@ -21,6 +21,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
+import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
   contactId: number | string;
@@ -126,10 +127,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       if (data.search[0].messages.length === 0) {
         setShowLoadMore(false);
       } else {
-        const conversations = client.readQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-        });
+        // get the conversations from cache
+        const conversations = getCachedConverations(client, queryVariables);
+
         const conversationCopy = JSON.parse(JSON.stringify(data));
         conversationCopy.search[0].messages
           .sort((currentMessage: any, nextMessage: any) => {
@@ -147,11 +147,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           return conversation;
         });
 
-        client.writeQuery({
-          query: SEARCH_QUERY,
-          variables: queryVariables,
-          data: conversationsCopy,
-        });
+        // update the conversation cache
+        updateConversationsCache(conversationsCopy, client, queryVariables);
+
         setMessageOffset(messageOffset + 50);
       }
     },
