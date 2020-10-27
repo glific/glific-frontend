@@ -1,5 +1,8 @@
 const envVariables = process.env;
 
+let appName = envVariables.REACT_APP_APPLICATION_NAME;
+let pageTitle = envVariables.REACT_APP_PAGE_TITLE;
+
 const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
 const PROTOCOL = window.location.protocol;
 const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
@@ -26,3 +29,6 @@ export const RESET_PASSWORD = GLIFIC_API_URL + '/v1/registration/reset-password'
 export const RENEW_TOKEN = USER_SESSION + '/renew';
 export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/automation/configure`;
 export const GUPSHUP_CALLBACK_URL = GLIFIC_BACKEND_URL + '/gupshup';
+export const APP_NAME = appName ? appName : 'Glific';
+export const PAGE_TITLE = pageTitle ? pageTitle : `${APP_NAME}: Two way communication platform`;
+
