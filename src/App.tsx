@@ -7,14 +7,12 @@ import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { checkAuthStatusService } from './services/AuthService';
 import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
-import { PAGE_TITLE } from './config';
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(true);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
-    document.title = PAGE_TITLE;
   }, []);
 
   const values = {
