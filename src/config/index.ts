@@ -16,7 +16,6 @@ const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HO
 export const SOCKET = API_PORT
   ? `${SOCKET_PROTOCOL}:${API_PORT}/socket`
   : `${SOCKET_PROTOCOL}/socket`;
-export const SENTRY_DSN = envVariables.SENTRY_DSN;
 export const FLOW_EDITOR_API = GLIFIC_BACKEND_URL + '/flow-editor/';
 export const GLIFIC_API_URL = GLIFIC_BACKEND_URL + '/api';
 export const REACT_APP_GLIFIC_REGISTRATION_API = GLIFIC_API_URL + '/v1/registration';
