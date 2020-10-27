@@ -2,18 +2,33 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
+import Appsignal from '@appsignal/javascript';
+import { ErrorBoundary } from '@appsignal/react';
+
 import theme from './config/theme';
+import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+let appComponent = <App />;
+if (APPSIGNAL_API_KEY) {
+  const appsignal = new Appsignal({
+    key: APPSIGNAL_API_KEY,
+  });
+
+  appComponent = (
+    <ErrorBoundary instance={appsignal}>
+      <App />
+    </ErrorBoundary>
+  );
+}
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <BrowserRouter>{appComponent}</BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
