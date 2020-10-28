@@ -66,9 +66,6 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
         <Autocomplete
-          PaperComponent={({ className, ...props }) => (
-            <Paper className={`${styles.Paper} ${className}`} {...props} />
-          )}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
