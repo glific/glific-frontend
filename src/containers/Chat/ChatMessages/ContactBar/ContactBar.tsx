@@ -18,6 +18,7 @@ import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Blo
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
+import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import styles from './ContactBar.module.css';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
@@ -48,6 +49,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showGroupDialog, setShowGroupDialog] = useState(false);
   const [showAutomationDialog, setShowAutomationDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
+  const [showClearChatDialog, setClearChatDialog] = useState(false);
 
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
@@ -187,6 +189,31 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const handleClearChatSubmit = () => {
+    setClearChatDialog(false);
+  };
+
+  if (showClearChatDialog) {
+    let bodyContext =
+      'Since your BigQuery & Google Cloud Storage are integrated, you won’t lose any data.';
+    dialogBox = (
+      <DialogBox
+        title="Are you sure you want to clear all conversation for this contact?"
+        handleOk={handleClearChatSubmit}
+        handleCancel={() => setClearChatDialog(false)}
+        alignButtons={'center'}
+        buttonOk="YES, CLEAR"
+        colorOk="secondary"
+        buttonCancel="MAYBE LATER"
+      >
+        <p className={styles.DialogText}>
+          Currently, your BigQuery & Google Cloud Storage are not integrated. Please change that in
+          settings first to avoid loss of data.
+        </p>
+      </DialogBox>
+    );
+  }
+
   const handleBlock = () => {
     blockContact({
       variables: {
@@ -275,7 +302,16 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               <AddContactIcon className={styles.Icon} />
               Add to group
             </Button>
-
+            <Button
+              className={styles.ListButtonPrimary}
+              onClick={() => {
+                getGroups();
+                setClearChatDialog(true);
+              }}
+            >
+              <ClearConversation className={styles.Icon} />
+              Clear conversation
+            </Button>
             <Button
               className={styles.ListButtonDanger}
               color="secondary"
