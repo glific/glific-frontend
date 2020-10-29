@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Redirect } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
@@ -12,6 +12,8 @@ import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
 import { IconButton } from '@material-ui/core';
+import { Simulator } from '../simulator/Simulator';
+import { DialogBox } from '../UI/DialogBox/DialogBox';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -142,10 +144,14 @@ export interface FlowEditorProps {
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
+  const history=useHistory()
   const uuid = props.match.params.uuid;
+  const [publishDialog, setPublishDialog] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
   const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
   const [published, setPublished] = useState(false);
+  let dialog = null;
   const { data: automationName } = useQuery(GET_AUTOMATION_NAME, {
     variables: {
       filter: {
@@ -169,14 +175,33 @@ export const FlowEditor = (props: FlowEditorProps) => {
     if (lastFile) {
       lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
+        setTimeout(()=>{
+          console.log(document.querySelector('.Flow_empty_flow__roKNh'))
+        },2000)
+      
       };
     }
   }, [config]);
+
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
     setPublished(true);
   };
+
+  if (publishDialog) {
+    dialog = (
+      <DialogBox
+        title="Are you ready to publish the flow?"
+        buttonOk="Publish"
+        handleOk={() => handlePublishFlow()}
+        handleCancel={() => setPublishDialog(false)}
+        alignButtons="center"
+      >
+        <p className={styles.DialogDescription}>New changes will be activated for the users</p>
+      </DialogBox>
+    );
+  }
 
   if (published) {
     return <Redirect to="/automation" />;
@@ -184,24 +209,43 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   return (
     <>
-      <a
-        href="https://app.rapidpro.io/video/"
-        className={styles.Link}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-testid="helpButton"
-      >
-        <HelpIcon className={styles.HelpIcon} />
-      </a>
-      <Button
-        variant="contained"
-        color="primary"
-        className={styles.Button}
-        data-testid="button"
-        onClick={handlePublishFlow}
-      >
-        Update
-      </Button>
+      {dialog}
+      <div className={styles.ButtonContainer}>
+        <a
+          href="https://app.rapidpro.io/video/"
+          className={styles.Link}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="helpButton"
+        >
+          <HelpIcon className={styles.HelpIcon} />
+        </a>
+
+        <Button variant="contained" color="default" onClick={()=>history.push('/automation')}>
+          Back
+        </Button>
+
+        <Button variant="outlined" color="primary" className={styles.Button}>
+          Save as draft
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={styles.Button}
+          onClick={() => setShowSimulator(true)}
+        >
+          Preview
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          data-testid="button"
+          onClick={() => setPublishDialog(true)}
+        >
+          Publish
+        </Button>
+      </div>
+      <Simulator showSimulator={showSimulator} setShowSimulator={setShowSimulator} />
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
           {automationName ? (

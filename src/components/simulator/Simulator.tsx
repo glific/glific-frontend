@@ -26,11 +26,13 @@ import { SIMULATOR_CONTACT } from '../../common/constants';
 export interface SimulatorProps {
   showSimulator: boolean;
   setShowSimulator: any;
+  simulatorIcon?: boolean;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setShowSimulator,
+  simulatorIcon = true,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const messageRef: any = useRef<HTMLDivElement>();
@@ -187,11 +189,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
   return (
     <>
       {showSimulator ? simulator : null}
-      <SimulatorIcon
-        data-testid="simulatorIcon"
-        className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-        onClick={() => handleSimulator()}
-      ></SimulatorIcon>
+      {simulatorIcon ? (
+        <SimulatorIcon
+          data-testid="simulatorIcon"
+          className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
+          onClick={() => handleSimulator()}
+        ></SimulatorIcon>
+      ) : null}
     </>
   );
 };

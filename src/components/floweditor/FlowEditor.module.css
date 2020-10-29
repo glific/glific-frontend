@@ -1,9 +1,5 @@
 .Button {
-  position: fixed !important;
-  bottom: 20px;
-  right: 15px;
-  z-index: 1000;
-  border: 0px !important;
+  background-color: white !important;
 }
 
 .Link {
@@ -11,12 +7,9 @@
 }
 
 .HelpIcon {
-  position: fixed !important;
-  bottom: 25px;
-  right: 130px;
-  z-index: 1000;
   width: 28px !important;
   height: 28px;
+  margin-right: 10px;
 }
 
 .AutomationName {
@@ -45,4 +38,19 @@
 
 .FlowContainer {
   position: relative;
+}
+
+.ButtonContainer {
+  display: flex;
+  position: fixed !important;
+  align-items: center;
+  bottom: 25px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.DialogDescription {
+  text-align: center;
+  margin: 0;
+  color: #073f24;
 }
