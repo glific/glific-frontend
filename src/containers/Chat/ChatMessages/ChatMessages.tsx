@@ -392,12 +392,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
     allConversationsCopy.search[conversationIndex] = conversationInfoCopy;
+
     // update allConversations in the cache
-    client.writeQuery({
-      query: SEARCH_QUERY,
-      variables: queryVariables,
-      data: allConversationsCopy,
-    });
+    updateConversationsCache(allConversationsCopy, client, queryVariables);
   };
 
   return (
