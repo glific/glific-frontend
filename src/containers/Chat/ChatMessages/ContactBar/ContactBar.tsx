@@ -210,21 +210,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     clearMessages();
     setClearChatDialog(false);
 
-    // // update organization details in the cache
-    // client.writeQuery({
-    //   query: SEARCH_QUERY,
-    //   variables: {
-    //     contactOpts: {
-    //       limit: 50,
-    //     },
-    //     filter: { id: props.contactId },
-    //     messageOpts: {
-    //       limit: 50,
-    //     },
-    //   },
-    //   data: { data: [] },
-    // });
-
     const queryVariables = {
       contactOpts: {
         limit: 50,
