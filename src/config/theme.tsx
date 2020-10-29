@@ -18,7 +18,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiBackdrop: {
       root: {
-        backgroundColor: 'rgba(147,162,155,0.48)',
+        backgroundColor: 'rgba(147,162,155,0.84)',
       },
     },
     MuiButton: {
