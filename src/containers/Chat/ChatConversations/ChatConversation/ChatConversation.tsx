@@ -163,6 +163,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     });
   };
 
+  let msgID = props.searchMode ? '/#search' + props.lastMessage.id : '';
+
   return (
     <ListItem
       data-testid="list"
@@ -175,11 +177,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         props.onClick(index);
         if (props.messageNumber) setSearchOffset(client, props.messageNumber);
       }}
-      to={
-        props.searchMode
-          ? '/chat/' + contactId + '/#search' + props.lastMessage.id
-          : '/chat/' + contactId
-      }
+      to={'/chat/' + contactId + msgID}
     >
       <div>
         <div className={chatBubble.join(' ')} />
