@@ -232,6 +232,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
       />
       <ConversationList
         searchVal={searchVal}
+        searchMode={enableSearchMode}
         searchParam={searchParam}
         selectedContactId={selectedContactId}
         setSelectedContactId={(i: number) => {

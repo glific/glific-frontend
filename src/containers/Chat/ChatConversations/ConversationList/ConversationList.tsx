@@ -22,6 +22,7 @@ interface ConversationListProps {
   setSelectedContactId: (i: number) => void;
   savedSearchCriteria: string | null;
   searchParam?: any;
+  searchMode: boolean;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -230,6 +231,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
               contactBspStatus={conversation.contact.bspStatus}
               highlightSearch={props.searchVal}
               messageNumber={conversation.messageNumber}
+              searchMode={props.searchMode}
             />
           </>
         );

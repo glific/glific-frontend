@@ -37,6 +37,7 @@ export interface ChatConversationProps {
   };
   messageNumber?: number;
   highlightSearch?: string;
+  searchMode?: any;
 }
 
 const updateMessageCache = (client: any, data: any) => {
@@ -162,7 +163,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     });
   };
 
-  let msgID = props.lastMessage.id ? '/#search' + props.lastMessage.id : '';
+  let msgID = props.searchMode ? '/#search' + props.lastMessage.id : '';
 
   return (
     <ListItem
