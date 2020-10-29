@@ -175,9 +175,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     if (lastFile) {
       lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
-        setTimeout(()=>{
-          console.log(document.querySelector('.Flow_empty_flow__roKNh'))
-        },2000)
+        
       
       };
     }
