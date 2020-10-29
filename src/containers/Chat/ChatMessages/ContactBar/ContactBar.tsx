@@ -35,6 +35,7 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { GET_CREDENTIAL } from '../../../../graphql/queries/Organization';
+import { updateConversationsCache } from '../../../../services/ChatService';
 
 export interface ContactBarProps {
   contactName: string;
@@ -209,20 +210,33 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     clearMessages();
     setClearChatDialog(false);
 
-    // update organization details in the cache
-    client.writeQuery({
-      query: SEARCH_QUERY,
-      variables: {
-        contactOpts: {
-          limit: 50,
-        },
-        filter: { id: props.contactId },
-        messageOpts: {
-          limit: 50,
-        },
+    // // update organization details in the cache
+    // client.writeQuery({
+    //   query: SEARCH_QUERY,
+    //   variables: {
+    //     contactOpts: {
+    //       limit: 50,
+    //     },
+    //     filter: { id: props.contactId },
+    //     messageOpts: {
+    //       limit: 50,
+    //     },
+    //   },
+    //   data: { data: [] },
+    // });
+
+    const queryVariables = {
+      contactOpts: {
+        limit: 50,
       },
-      data: { data: [] },
-    });
+      filter: { id: props.contactId },
+      messageOpts: {
+        limit: 50,
+      },
+    };
+
+    // update allConversations in the cache
+    updateConversationsCache([], client, queryVariables);
 
     props.handleAction();
   };
