@@ -10,7 +10,6 @@ import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { setNotification } from '../../common/notification';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 
 const SettingIcon = <Settingicon />;
 
@@ -24,7 +23,6 @@ const List = [
 
 export const SettingList: React.SFC = () => {
   const message = useQuery(NOTIFICATION);
-  let toastMessage: {} | null | undefined;
   const client = useApolloClient();
 
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
@@ -46,19 +44,10 @@ export const SettingList: React.SFC = () => {
     </Typography>
   );
 
-  //toast
-  const closeToastMessage = () => {
-    setNotification(client, null);
-  };
-
-  if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
-  }
 
   return (
     <>
       {heading}
-      {toastMessage}
       <div className={styles.CardContainer}>
         {CardList.map((data: any) => {
           return (

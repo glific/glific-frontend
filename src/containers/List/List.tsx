@@ -8,7 +8,6 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './List.module.css';
 import SearchBar from '../../components/UI/SearchBar/SearchBar';
@@ -161,8 +160,6 @@ export const List: React.SFC<ListProps> = ({
     GET_CURRENT_USER
   );
 
-  const message = useQuery(NOTIFICATION);
-  let toastMessage;
 
   const checkUserRole = () => {
     userRole = getUserRole();
@@ -187,11 +184,7 @@ export const List: React.SFC<ListProps> = ({
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
 
-  useEffect(() => {
-    return () => {
-      setNotification(client, null);
-    };
-  }, [toastMessage, client]);
+ 
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
@@ -209,9 +202,7 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemName(label);
     setDeleteItemID(id);
   };
-  const closeToastMessage = () => {
-    setNotification(client, null);
-  };
+
 
   const closeDialogBox = () => {
     setDeleteItemID(null);
@@ -224,9 +215,7 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(null);
   };
 
-  if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
-  }
+ 
 
   let dialogBox;
   if (deleteItemID) {
@@ -488,7 +477,6 @@ export const List: React.SFC<ListProps> = ({
           />
         </div>
         <div>
-          {toastMessage}
           {dialogBox}
           {buttonDisplay}
         </div>

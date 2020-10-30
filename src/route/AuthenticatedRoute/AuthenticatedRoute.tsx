@@ -28,10 +28,18 @@ import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
+import { useApolloClient, useQuery } from '@apollo/client';
+import { NOTIFICATION } from '../../graphql/queries/Notification';
+import { setNotification } from '../../common/notification';
+import ToastMessage from '../../components/UI/ToastMessage/ToastMessage';
+import { useToast } from '../../services/ToastService';
 
 export const AuthenticatedRoute: React.SFC = () => {
+ const toastMessage=useToast()
   let userRole: any[] = [];
   let route = <Route path="/logout" exact component={Logout} />;
+
+ 
 
   if (getUserRole()) {
     userRole = getUserRole();
@@ -116,6 +124,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   }
   return (
     <div className={styles.App}>
+      {toastMessage}
       <Layout>{route}</Layout>
     </div>
   );
