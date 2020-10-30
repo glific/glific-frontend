@@ -6,7 +6,7 @@ import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
+import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
@@ -195,6 +195,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
       opts: {},
     },
   });
+
+  useEffect(() => {
+    if (automationName) {
+      document.title = automationName.flows[0].name;
+    }
+    return () => {
+      document.title = APP_NAME;
+    };
+  }, [automationName]);
 
   useEffect(() => {
     const files = loadfiles();
