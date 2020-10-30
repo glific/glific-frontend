@@ -21,7 +21,7 @@ export interface ChatSubscriptionProps {}
 export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
-  const { loading, error, data, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
+  const { loading, error, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
   });
 
