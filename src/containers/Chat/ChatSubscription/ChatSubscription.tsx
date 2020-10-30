@@ -13,6 +13,8 @@ import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
 } from '../../../graphql/subscriptions/Tag';
+import { Loading } from '../../../components/UI/Layout/Loading/Loading';
+import { setErrorMessage } from '../../../common/notification';
 
 export interface ChatSubscriptionProps {}
 
@@ -200,6 +202,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
     getMessageResponse();
     // we should call useEffect only once hence []
   }, [getMessageResponse]);
+
+  if (loading) return <Loading />;
+  if (error) {
+    setErrorMessage(client, error);
+    return null;
+  }
 
   return null;
 };
