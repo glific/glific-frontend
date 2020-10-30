@@ -28,6 +28,7 @@ import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
+import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 export const AuthenticatedRoute: React.SFC = () => {
   let userRole: any[] = [];
@@ -114,8 +115,12 @@ export const AuthenticatedRoute: React.SFC = () => {
       </Switch>
     );
   }
+
+  // let's call chat subscriptions at this level so that we can listen to actions which are not performed
+  // on chat screen, for eg: send message to group
   return (
     <div className={styles.App}>
+      <ChatSubscription />
       <Layout>{route}</Layout>
     </div>
   );

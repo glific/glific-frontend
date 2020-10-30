@@ -12,7 +12,6 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { SIMULATOR_CONTACT } from '../../common/constants';
-import { ChatSubscription } from './ChatSubscription/ChatSubscription';
 
 export interface ChatProps {
   contactId: number;
@@ -72,7 +71,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   return (
     <Paper>
-      <ChatSubscription />
       <div className={styles.Chat}>{chatInterface}</div>
       <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
     </Paper>
