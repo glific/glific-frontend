@@ -70,6 +70,13 @@ export const GET_CONTACT = gql`
           id
           label
         }
+        groups {
+          id
+          label
+          users {
+            name
+          }
+        }
         status
         bspStatus
         settings

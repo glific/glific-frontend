@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Redirect } from 'react-router';
+import { Prompt, Redirect, useHistory } from 'react-router';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
+import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
 import { IconButton } from '@material-ui/core';
+import { DialogBox } from '../UI/DialogBox/DialogBox';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -143,9 +144,49 @@ export interface FlowEditorProps {
 
 export const FlowEditor = (props: FlowEditorProps) => {
   const uuid = props.match.params.uuid;
+  const history = useHistory();
   const config = setConfig(uuid);
   const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
   const [published, setPublished] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [lastLocation, setLastLocation] = useState<Location | null>(null);
+  const [confirmedNavigation, setConfirmedNavigation] = useState(false);
+
+  let modal = null;
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  const handleBlockedNavigation = (nextLocation: any): boolean => {
+    if (!confirmedNavigation) {
+      setModalVisible(true);
+      setLastLocation(nextLocation);
+      return false;
+    }
+    return true;
+  };
+  const handleConfirmNavigationClick = () => {
+    setModalVisible(false);
+    setConfirmedNavigation(true);
+  };
+  useEffect(() => {
+    if (confirmedNavigation && lastLocation) {
+      history.push(lastLocation);
+    }
+  }, [confirmedNavigation, lastLocation]);
+
+  if (modalVisible) {
+    modal = (
+      <DialogBox
+        title="Do you want to navigate away without saving your changes?"
+        handleOk={handleConfirmNavigationClick}
+        handleCancel={closeModal}
+        colorOk="secondary"
+        alignButtons={'center'}
+      ></DialogBox>
+    );
+  }
+
   const { data: automationName } = useQuery(GET_AUTOMATION_NAME, {
     variables: {
       filter: {
@@ -154,6 +195,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
       opts: {},
     },
   });
+
+  useEffect(() => {
+    if (automationName) {
+      document.title = automationName.flows[0].name;
+    }
+    return () => {
+      document.title = APP_NAME;
+    };
+  }, [automationName]);
 
   useEffect(() => {
     const files = loadfiles();
@@ -184,6 +234,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   return (
     <>
+      {modal}
+      <Prompt when={true} message={handleBlockedNavigation} />
       <a
         href="https://app.rapidpro.io/video/"
         className={styles.Link}

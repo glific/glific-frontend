@@ -386,6 +386,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setReducedHeight(newHeight);
   };
 
+  const handleChatClearedAction = () => {
+    let conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
+    conversationInfoCopy.messages = [];
+    let allConversationsCopy: any = [];
+    allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
+    allConversationsCopy.search[conversationIndex] = conversationInfoCopy;
+
+    // update allConversations in the cache
+    updateConversationsCache(allConversationsCopy, client, queryVariables);
+  };
+
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
@@ -400,6 +411,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
+        handleAction={handleChatClearedAction}
       />
       {messageListContainer}
       <ChatInput
