@@ -46,7 +46,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         }
       });
     }
-  }, []);
+  }, [setShowJumpToLatest]);
 
   const submitMessage = (message: string) => {
     if (!message) return;

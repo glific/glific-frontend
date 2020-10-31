@@ -161,7 +161,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     if (messageContainer) {
       messageContainer.scrollTop += messageContainer.scrollHeight - lastScrollHeight;
     }
-  }, [allConversations]);
+  }, [allConversations, lastScrollHeight]);
 
   let unselectedTags: Array<any> = [];
 
