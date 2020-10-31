@@ -1,6 +1,5 @@
-import React, { useState, useEffect, ReactNode } from 'react';
-import { DialogBox } from '../DialogBox/DialogBox';
-import { Dialog, FormControl, DialogTitle, DialogContent } from '@material-ui/core';
+import React from 'react';
+import { Dialog, DialogContent } from '@material-ui/core';
 import styles from './MessageDialog.module.css';
 import { ReactComponent as CrossDarkIcon } from '../../../assets/images/icons/CrossDark.svg';
 import ChatInput from '../../../containers/Chat/ChatMessages/ChatInput/ChatInput';
