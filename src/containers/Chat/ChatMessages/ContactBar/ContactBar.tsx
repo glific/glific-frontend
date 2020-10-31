@@ -35,7 +35,6 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { GET_CREDENTIAL } from '../../../../graphql/queries/Organization';
-import { updateConversationsCache } from '../../../../services/ChatService';
 
 export interface ContactBarProps {
   contactName: string;
