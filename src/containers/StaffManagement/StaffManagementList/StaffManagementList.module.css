@@ -28,12 +28,13 @@
 }
 
 .Name {
-  width: 200px;
+  width: 25%;
 }
 
 .NameText {
   font-size: 20px !important;
   color: #073f24 !important;
+  word-break: break-all;
 }
 
 .Role {
@@ -42,15 +43,15 @@
 }
 
 .Phone {
-  width: 200px;
+  width: 15%;
 }
 
 .Group {
-  width: 300px;
+  width: 45%;
 }
 
 .Actions {
-  width: 150px;
+  width: 15%;
   justify-content: flex-end;
   margin-left: auto;
 }
