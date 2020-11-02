@@ -120,7 +120,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   // on chat screen, for eg: send message to group
   return (
     <div className={styles.App}>
-      <ChatSubscription />
+      {userRole.length > 0 ? <ChatSubscription /> : ''}
       <Layout>{route}</Layout>
     </div>
   );
