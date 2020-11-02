@@ -15,7 +15,6 @@ export interface DropdownDialogProps {
 
 export const DropdownDialog: React.FC<DropdownDialogProps> = (props: DropdownDialogProps) => {
   const [selectedValue, setSelectedValue] = useState('');
-
   const handleChange = (event: any) => {
     setSelectedValue(event.target.value);
   };
