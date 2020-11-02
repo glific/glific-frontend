@@ -34,8 +34,6 @@ import { DropdownDialog } from '../../../../components/UI/DropdownDialog/Dropdow
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
-import { GET_CREDENTIAL } from '../../../../graphql/queries/Organization';
-import { updateConversationsCache } from '../../../../services/ChatService';
 
 export interface ContactBarProps {
   contactName: string;
@@ -54,7 +52,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showAutomationDialog, setShowAutomationDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
-  const [checkCredentialData, setCheckCredentialData] = useState(false);
 
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
@@ -71,9 +68,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
   });
-
-  // get automation list
-  const [getCredential, { data: credentialData }] = useLazyQuery(GET_CREDENTIAL);
 
   // mutation to update the contact groups
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
@@ -214,24 +208,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   if (showClearChatDialog) {
     let bodyContext =
-      'Currently, your BigQuery & Google Cloud Storage are not integrated. Please change that in settings first to avoid loss of data.';
-    if (
-      credentialData &&
-      credentialData.credential.credential &&
-      credentialData.credential.credential.isActive
-    ) {
-      if (!checkCredentialData) {
-        setCheckCredentialData(true);
-        // check for GC
-        getCredential({
-          variables: {
-            shortcode: 'google_cloud_storage',
-          },
-        });
-      }
-      bodyContext =
-        'Since your BigQuery & Google Cloud Storage are integrated, you won’t lose any data.';
-    }
+      'All the conversation data for this contact will be deleted permanently. This action cannot be undone. However you should be able to access it in reports if you have backup configuration enabled.';
 
     dialogBox = (
       <DialogBox
@@ -336,18 +313,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               <AddContactIcon className={styles.Icon} />
               Add to group
             </Button>
-            <Button
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                // google_cloud_storage
-                getCredential({
-                  variables: {
-                    shortcode: 'bigquery',
-                  },
-                });
-                setClearChatDialog(true);
-              }}
-            >
+            <Button className={styles.ListButtonPrimary} onClick={() => setClearChatDialog(true)}>
               <ClearConversation className={styles.Icon} />
               Clear conversation
             </Button>
