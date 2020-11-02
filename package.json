@@ -80,7 +80,7 @@
     "cy:run": "cypress run",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
+    "floweditor": "rm -rf public/static && rm -rf public/sitestatic && cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
   },
   "eslintConfig": {
     "extends": "react-app"
