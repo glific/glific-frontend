@@ -208,7 +208,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   if (showClearChatDialog) {
     let bodyContext =
-      'If you have a backup configuration enabled, there will be no data loss or all your data will be lost.';
+      'All the conversation data for this contact will be deleted permanently. This action cannot be undone. However you should be able to access it in reports if you have backup configuration enabled.';
 
     dialogBox = (
       <DialogBox
