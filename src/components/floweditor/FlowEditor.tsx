@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Redirect, useHistory } from 'react-router';
+import { Prompt, Redirect, useHistory } from 'react-router';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
+import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
@@ -144,7 +144,7 @@ export interface FlowEditorProps {
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
-  const history=useHistory()
+  const history = useHistory();
   const uuid = props.match.params.uuid;
   const [publishDialog, setPublishDialog] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
@@ -152,6 +152,45 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
   const [published, setPublished] = useState(false);
   let dialog = null;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [lastLocation, setLastLocation] = useState<Location | null>(null);
+  const [confirmedNavigation, setConfirmedNavigation] = useState(false);
+
+  let modal = null;
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  const handleBlockedNavigation = (nextLocation: any): boolean => {
+    if (!confirmedNavigation) {
+      setModalVisible(true);
+      setLastLocation(nextLocation);
+      return false;
+    }
+    return true;
+  };
+  const handleConfirmNavigationClick = () => {
+    setModalVisible(false);
+    setConfirmedNavigation(true);
+  };
+  useEffect(() => {
+    if (confirmedNavigation && lastLocation) {
+      history.push(lastLocation);
+    }
+  }, [confirmedNavigation, lastLocation]);
+
+  if (modalVisible) {
+    modal = (
+      <DialogBox
+        title="Do you want to navigate away without saving your changes?"
+        handleOk={handleConfirmNavigationClick}
+        handleCancel={closeModal}
+        colorOk="secondary"
+        alignButtons={'center'}
+      ></DialogBox>
+    );
+  }
+
   const { data: automationName } = useQuery(GET_AUTOMATION_NAME, {
     variables: {
       filter: {
@@ -160,6 +199,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
       opts: {},
     },
   });
+
+  useEffect(() => {
+    if (automationName) {
+      document.title = automationName.flows[0].name;
+    }
+    return () => {
+      document.title = APP_NAME;
+    };
+  }, [automationName]);
 
   useEffect(() => {
     const files = loadfiles();
@@ -175,12 +223,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
     if (lastFile) {
       lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
-        
-      
       };
     }
   }, [config]);
-
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
@@ -219,7 +264,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           <HelpIcon className={styles.HelpIcon} />
         </a>
 
-        <Button variant="contained" color="default" onClick={()=>history.push('/automation')}>
+        <Button variant="contained" color="default" onClick={() => history.push('/automation')}>
           Back
         </Button>
 
@@ -244,6 +289,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
         </Button>
       </div>
       <Simulator showSimulator={showSimulator} setShowSimulator={setShowSimulator} />
+      {modal}
+      <Prompt when={true} message={handleBlockedNavigation} />
+
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
           {automationName ? (

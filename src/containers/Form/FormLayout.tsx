@@ -317,6 +317,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         placeholder: 'Language',
         options: languageOptions,
         validate: validateLanguage,
+        helperText: 'For more languages check settings or connect with your admin',
       }
     : null;
 

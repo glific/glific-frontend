@@ -37,6 +37,7 @@ export interface ChatConversationProps {
   };
   messageNumber?: number;
   highlightSearch?: string;
+  searchMode?: any;
 }
 
 const updateMessageCache = (client: any, data: any) => {
@@ -162,6 +163,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     });
   };
 
+  let msgID = props.searchMode ? '/#search' + props.lastMessage.id : '';
+
   return (
     <ListItem
       data-testid="list"
@@ -174,7 +177,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         props.onClick(index);
         if (props.messageNumber) setSearchOffset(client, props.messageNumber);
       }}
-      to={'/chat/' + contactId + '/#search' + props.lastMessage.id}
+      to={'/chat/' + contactId + msgID}
     >
       <div>
         <div className={chatBubble.join(' ')} />
