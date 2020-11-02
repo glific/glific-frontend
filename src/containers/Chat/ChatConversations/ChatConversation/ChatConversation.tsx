@@ -114,7 +114,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         variables: { contactId: contactId.toString() },
       });
     }
-  }, [unread, selected, contactId]);
+  }, [unread, selected, contactId, markAsRead]);
 
   const name = contactName.length > 20 ? contactName.slice(0, 20) + '...' : contactName;
 
