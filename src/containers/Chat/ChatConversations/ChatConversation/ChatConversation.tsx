@@ -110,7 +110,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   useEffect(() => {
     if (unread && selected) {
-      console.log('called nureadf');
       markAsRead({
         variables: { contactId: contactId.toString() },
       });
