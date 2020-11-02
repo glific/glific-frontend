@@ -208,8 +208,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   if (showClearChatDialog) {
     let bodyContext =
-      'All the conversation data for this contact will be deleted permanently. This action cannot be undone. However you should be able to access it in reports if you have backup configuration enabled.';
-
+      'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
     dialogBox = (
       <DialogBox
         title="Are you sure you want to clear all conversation for this contact?"
