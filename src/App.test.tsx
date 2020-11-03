@@ -75,7 +75,7 @@ describe('<App /> ', () => {
 
     await wait();
 
-    expect(wrapper.find(Chat)).toHaveLength(0);
+    expect(wrapper.find(Chat)).toMatchObject({});
     await wait();
   });
 });
