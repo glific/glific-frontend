@@ -183,7 +183,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     if (confirmedNavigation && lastLocation) {
       history.push(lastLocation);
     }
-  }, [confirmedNavigation, lastLocation]);
+  }, [confirmedNavigation, lastLocation, history]);
 
   if (modalVisible) {
     modal = (
