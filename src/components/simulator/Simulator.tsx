@@ -27,15 +27,24 @@ export interface SimulatorProps {
   showSimulator: boolean;
   setShowSimulator: any;
   simulatorIcon?: boolean;
+  message?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setShowSimulator,
   simulatorIcon = true,
+  message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const messageRef: any = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+  console.log(message)
+    if (message.keyword !== undefined) {
+      sendMessage();
+    }
+  }, [message.keyword]);
 
   let messages = [];
   let simulatorId = '';
@@ -103,7 +112,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
         payload: {
           type: 'text',
           payload: {
-            text: inputMessage,
+            text:
+              inputMessage === '' && message !== ''
+                ? message.type + ':' + message.keyword
+                : inputMessage,
           },
           sender: {
             //this number will be the simulated contact number

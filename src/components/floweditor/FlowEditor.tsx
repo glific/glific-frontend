@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router';
-
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
@@ -200,9 +200,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
     },
   });
 
+  let automationTitle: any;
+  let automationKeyword: any;
+  if (automationName) {
+    automationTitle = automationName.flows[0].name;
+    automationKeyword = automationName.flows[0].keywords[0];
+  }
+
   useEffect(() => {
     if (automationName) {
-      document.title = automationName.flows[0].name;
+      document.title = automationTitle;
     }
     return () => {
       document.title = APP_NAME;
@@ -275,9 +282,19 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           className={styles.Button}
-          onClick={() => setShowSimulator(true)}
+          onClick={() => {
+            setShowSimulator(!showSimulator);
+          }}
         >
           Preview
+          {showSimulator ? (
+            <CancelOutlinedIcon
+              className={styles.CrossIcon}
+              onClick={() => {
+                setShowSimulator(false);
+              }}
+            />
+          ) : null}
         </Button>
         <Button
           variant="contained"
@@ -288,7 +305,13 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      <Simulator showSimulator={showSimulator} setShowSimulator={setShowSimulator} />
+      {showSimulator ? (
+        <Simulator
+          showSimulator={showSimulator}
+          setShowSimulator={setShowSimulator}
+          message={{ type: 'draft', keyword: automationKeyword }}
+        />
+      ) : null}
       {modal}
       <Prompt when={true} message={handleBlockedNavigation} />
 
@@ -300,7 +323,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
                 <AutomationIcon />
               </IconButton>
 
-              {automationName.flows[0].name}
+              {automationTitle}
             </>
           ) : null}
         </div>

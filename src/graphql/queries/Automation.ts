@@ -46,6 +46,7 @@ export const GET_AUTOMATION_NAME = gql`
   query getFlowName($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
       name
+      keywords
     }
   }
 `;
