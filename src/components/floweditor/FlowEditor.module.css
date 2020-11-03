@@ -4,6 +4,7 @@
 
 .Link {
   text-decoration: none;
+  display: flex;
 }
 
 .HelpIcon {
