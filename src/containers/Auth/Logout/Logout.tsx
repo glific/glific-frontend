@@ -10,7 +10,7 @@ export interface LogoutProps {}
 
 export const Logout: React.SFC<LogoutProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
-  const client=useApolloClient()
+  const client = useApolloClient();
 
   // clear local storage auth session
   clearAuthSession();
@@ -22,7 +22,7 @@ export const Logout: React.SFC<LogoutProps> = () => {
   clearUserSession();
 
   // clear apollo cache
-  client.resetStore()
+  client.resetStore();
 
   return <Redirect to="/login" />;
 };
