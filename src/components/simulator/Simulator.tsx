@@ -40,7 +40,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const messageRef: any = useRef<HTMLDivElement>();
 
   useEffect(() => {
-  console.log(message)
     if (message.keyword !== undefined) {
       sendMessage();
     }
@@ -104,6 +103,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .reverse();
 
   const sendMessage = () => {
+    const sendMessage =
+      inputMessage === '' && message ? message.type + ':' + message.keyword : inputMessage;
     axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
@@ -112,10 +113,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         payload: {
           type: 'text',
           payload: {
-            text:
-              inputMessage === '' && message !== ''
-                ? message.type + ':' + message.keyword
-                : inputMessage,
+            text: sendMessage,
           },
           sender: {
             //this number will be the simulated contact number
@@ -149,7 +147,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
               <div className={styles.Header}>
                 <ArrowBackIcon />
                 <img src={DefaultWhatsappImage} alt="default Image" />
-                <span>Beneficiary</span>
+                <span data-testid="beneficiaryName">Beneficiary</span>
                 <div>
                   <VideocamIcon />
                   <CallIcon />

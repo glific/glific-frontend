@@ -1,4 +1,4 @@
-import { GET_AUTOMATION, GET_AUTOMATION_NAME } from '../graphql/queries/Automation';
+import { GET_AUTOMATION, GET_AUTOMATION_DETAILS } from '../graphql/queries/Automation';
 import { FILTER_AUTOMATION } from '../graphql/queries/Automation';
 
 export const getAutomationQuery = {
@@ -54,9 +54,9 @@ export const filterAutomationQuery = {
   },
 };
 
-export const getAutomationNameQuery = {
+export const getAutomationDetailsQuery = {
   request: {
-    query: GET_AUTOMATION_NAME,
+    query: GET_AUTOMATION_DETAILS,
     variables: {
       filter: {
         uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
@@ -70,6 +70,7 @@ export const getAutomationNameQuery = {
       flows: [
         {
           name: 'help workflow',
+          keywords:['help']
         },
       ],
     },
