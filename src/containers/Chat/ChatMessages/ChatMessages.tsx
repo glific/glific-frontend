@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Redirect } from 'react-router';
 
 import styles from './ChatMessages.module.css';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { ContactBar } from './ContactBar/ContactBar';
@@ -224,7 +223,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       });
 
     if (conversationIndex < 0) {
-      return <Loading />;
+      return <Redirect to="/chat" />
     }
   }
 
