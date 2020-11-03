@@ -19,9 +19,6 @@ export const Logout: React.SFC<LogoutProps> = () => {
   // clear local storage user session
   clearUserSession();
 
-  // reset user role
-  setUserRole([]);
-
   // TODOS: We should clear apollo cache
 
   return <Redirect to="/login" />;
