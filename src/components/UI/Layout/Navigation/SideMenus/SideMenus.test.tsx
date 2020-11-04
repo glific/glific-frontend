@@ -7,7 +7,7 @@ import { setUserRole } from '../../../../../context/role';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
 
 const mocks = [getCurrentUserQuery];
-describe('side drawer testing', () => {
+describe('side menu testing', () => {
   const component = (
     <MemoryRouter>
       <SideMenus opened={false} />
