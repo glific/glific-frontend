@@ -20,5 +20,6 @@ const tagList = (
 test('edit button for a tag should redirect to edit tag page', async () => {
   const { container } = render(tagList);
   await wait();
+  await wait();
   expect(container.querySelector('tbody tr a').getAttribute('href')).toBe('/tag/87/edit');
 });
