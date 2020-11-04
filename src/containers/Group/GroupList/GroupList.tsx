@@ -17,11 +17,9 @@ import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/C
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { setVariables } from '../../../common/constants';
-import { FormControl, IconButton, InputLabel, OutlinedInput } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
-import ChatInput from '../../Chat/ChatMessages/ChatInput/ChatInput';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
 export interface GroupListProps {}
@@ -56,7 +54,6 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
-  const [message, setMessage] = useState('');
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();

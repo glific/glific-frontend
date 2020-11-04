@@ -134,7 +134,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
-                <img src={DefaultWhatsappImage} alt="default Image" />
+                <img src={DefaultWhatsappImage} alt="default" />
                 <span>Beneficiary</span>
                 <div>
                   <VideocamIcon />

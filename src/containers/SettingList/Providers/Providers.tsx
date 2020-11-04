@@ -163,12 +163,13 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   }
 
   const saveHandler = (data: any) => {
-    // Update the details of the cache. This is required at the time of restoration
-    client.writeQuery({
-      query: GET_CREDENTIAL,
-      variables: { shortcode: type },
-      data: data.updateCredential,
-    });
+    if (data)
+      // Update the details of the cache. This is required at the time of restoration
+      client.writeQuery({
+        query: GET_CREDENTIAL,
+        variables: { shortcode: type },
+        data: data.updateCredential,
+      });
   };
 
   return (

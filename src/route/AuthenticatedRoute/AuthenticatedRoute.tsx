@@ -28,11 +28,8 @@ import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
-import { useApolloClient, useQuery } from '@apollo/client';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { setNotification } from '../../common/notification';
-import ToastMessage from '../../components/UI/ToastMessage/ToastMessage';
 import { useToast } from '../../services/ToastService';
+import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 export const AuthenticatedRoute: React.SFC = () => {
  const toastMessage=useToast()
@@ -122,9 +119,13 @@ export const AuthenticatedRoute: React.SFC = () => {
       </Switch>
     );
   }
+
+  // let's call chat subscriptions at this level so that we can listen to actions which are not performed
+  // on chat screen, for eg: send message to group
   return (
     <div className={styles.App}>
       {toastMessage}
+      {userRole.length > 0 ? <ChatSubscription /> : ''}
       <Layout>{route}</Layout>
     </div>
   );

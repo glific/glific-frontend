@@ -18,6 +18,7 @@ import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Blo
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
+import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import styles from './ContactBar.module.css';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
@@ -32,6 +33,7 @@ import { Timer } from '../../../../components/UI/Timer/Timer';
 import { DropdownDialog } from '../../../../components/UI/DropdownDialog/DropdownDialog';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
+import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 
 export interface ContactBarProps {
   contactName: string;
@@ -39,6 +41,7 @@ export interface ContactBarProps {
   lastMessageTime: any;
   contactStatus: string;
   contactBspStatus: string;
+  handleAction?: any;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
@@ -48,6 +51,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showGroupDialog, setShowGroupDialog] = useState(false);
   const [showAutomationDialog, setShowAutomationDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
+  const [showClearChatDialog, setClearChatDialog] = useState(false);
 
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
@@ -81,6 +85,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     onCompleted: (data) => {
       setShowAutomationDialog(false);
       setNotification(client, 'Automation started successfully');
+    },
+  });
+
+  // mutation to clear the chat messages of the contact
+  const [clearMessages] = useMutation(CLEAR_MESSAGES, {
+    variables: { contactId: props.contactId },
+    onCompleted: (data) => {
+      setClearChatDialog(false);
+      setNotification(client, 'Conversation cleared for this contact', 'warning');
     },
   });
 
@@ -187,6 +200,30 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const handleClearChatSubmit = () => {
+    clearMessages();
+    setClearChatDialog(false);
+    props.handleAction();
+  };
+
+  if (showClearChatDialog) {
+    let bodyContext =
+      'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
+    dialogBox = (
+      <DialogBox
+        title="Are you sure you want to clear all conversation for this contact?"
+        handleOk={handleClearChatSubmit}
+        handleCancel={() => setClearChatDialog(false)}
+        alignButtons={'center'}
+        buttonOk="YES, CLEAR"
+        colorOk="secondary"
+        buttonCancel="MAYBE LATER"
+      >
+        <p className={styles.DialogText}>{bodyContext}</p>
+      </DialogBox>
+    );
+  }
+
   const handleBlock = () => {
     blockContact({
       variables: {
@@ -275,7 +312,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               <AddContactIcon className={styles.Icon} />
               Add to group
             </Button>
-
+            <Button className={styles.ListButtonPrimary} onClick={() => setClearChatDialog(true)}>
+              <ClearConversation className={styles.Icon} />
+              Clear conversation
+            </Button>
             <Button
               className={styles.ListButtonDanger}
               color="secondary"

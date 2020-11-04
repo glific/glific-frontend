@@ -53,11 +53,22 @@ export const MARK_AS_READ = gql`
   }
 `;
 
-
 export const CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION = gql`
-  mutation createAndSendMessageToGroup($groupId:ID!, $input: MessageInput!) {
-    createAndSendMessageToGroup(groupId:$groupId, input: $input) {
+  mutation createAndSendMessageToGroup($groupId: ID!, $input: MessageInput!) {
+    createAndSendMessageToGroup(groupId: $groupId, input: $input) {
       success
+    }
+  }
+`;
+
+export const CLEAR_MESSAGES = gql`
+  mutation clearMessages($contactId: ID!) {
+    clearMessages(contactId: $contactId) {
+      success
+      errors {
+        key
+        message
+      }
     }
   }
 `;

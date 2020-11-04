@@ -99,6 +99,7 @@ export const setUserSession = (user: string) => {
 // clear the user session
 export const clearUserSession = () => {
   localStorage.removeItem('glific_user');
+  localStorage.removeItem('role');
 };
 
 // get the current user session
