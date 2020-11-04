@@ -5,6 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { ChatMessages } from './ChatMessages';
 import { mocksWithConversation, mocksWithMultipleMessages } from '../../../mocks/Chat';
 import { fireEvent } from '@testing-library/dom';
+import { MemoryRouter } from 'react-router';
 
 global.document.createRange = () => ({
   setStart: () => {},
@@ -18,19 +19,16 @@ global.document.createRange = () => ({
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 const chatMessages = (
-  <MockedProvider mocks={mocksWithConversation} addTypename={false}>
-    <ChatMessages contactId={'2'} />
-  </MockedProvider>
+  <MemoryRouter>
+    <MockedProvider mocks={mocksWithConversation} addTypename={false}>
+      <ChatMessages contactId={'2'} />
+    </MockedProvider>
+  </MemoryRouter>
 );
 
-const multipleUpdates = async () => {};
 
-it('should have loading state', async () => {
-  const { getByText } = render(chatMessages);
-  expect(getByText('Loading...')).toBeInTheDocument();
-  await wait();
-  await wait();
-});
+
+
 
 it('should have title as contact name', async () => {
   const { getByTestId } = render(chatMessages);
@@ -105,9 +103,11 @@ test('focus on the latest message', async () => {
 
 test('chat having multiple messages', async () => {
   const { getByText } = render(
-    <MockedProvider mocks={mocksWithMultipleMessages} addTypename={false}>
-      <ChatMessages contactId={'2'} />
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={mocksWithMultipleMessages} addTypename={false}>
+        <ChatMessages contactId={'2'} />
+      </MockedProvider>
+    </MemoryRouter>
   );
   await wait();
   await wait();
