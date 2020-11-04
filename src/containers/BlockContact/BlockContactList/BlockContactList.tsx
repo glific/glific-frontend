@@ -104,6 +104,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
       icon: unblockIcon,
       parameter: 'id',
       dialog: setDialog,
+      label: 'Unblock',
     },
   ];
   return (
