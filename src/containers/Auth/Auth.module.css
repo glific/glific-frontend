@@ -39,7 +39,7 @@
 }
 
 .LoginBox {
-  min-height: 390px;
+  min-height: 380px;
   height: auto;
   width: 395px;
   border-color: #eaedec;
@@ -190,7 +190,7 @@
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .Auth .Link a {
