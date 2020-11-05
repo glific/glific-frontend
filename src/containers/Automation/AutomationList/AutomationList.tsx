@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
 import {
@@ -10,6 +11,7 @@ import {
 } from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
 import { setVariables } from '../../../common/constants';
+import { useHistory } from 'react-router-dom';
 
 export interface AutomationListProps {}
 
@@ -35,30 +37,45 @@ const columnAttributes = {
   columns: getColumns,
   columnStyles: columnStyles,
 };
+
 const configureIcon = <ConfigureIcon></ConfigureIcon>;
 
-const additionalAction = [
-  {
-    label: 'Configure',
-    icon: configureIcon,
-    parameter: 'uuid',
-    link: '/automation/configure',
-  },
-];
+export const AutomationList: React.SFC<AutomationListProps> = (props) => {
+  let history = useHistory();
 
-export const AutomationList: React.SFC<AutomationListProps> = (props) => (
-  <List
-    title="Automations"
-    listItem="flows"
-    listItemName="automation"
-    pageLink="automation"
-    listIcon={automationIcon}
-    dialogMessage={dialogMessage}
-    refetchQueries={{ query: GET_AUTOMATIONS, variables: setVariables() }}
-    {...queries}
-    {...columnAttributes}
-    searchParameter="name"
-    additionalAction={additionalAction}
-    button={{ show: true, label: '+ CREATE AUTOMATION' }}
-  />
-);
+  const setDialog = (id: any) => {
+    history.push('/automation/add');
+  };
+
+  const additionalAction = [
+    {
+      label: 'Configure',
+      icon: configureIcon,
+      parameter: 'uuid',
+      link: '/automation/configure',
+    },
+    {
+      label: 'Make a copy',
+      icon: <DuplicateIcon></DuplicateIcon>,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
+
+  return (
+    <List
+      title="Automations"
+      listItem="flows"
+      listItemName="automation"
+      pageLink="automation"
+      listIcon={automationIcon}
+      dialogMessage={dialogMessage}
+      refetchQueries={{ query: GET_AUTOMATIONS, variables: setVariables() }}
+      {...queries}
+      {...columnAttributes}
+      searchParameter="name"
+      additionalAction={additionalAction}
+      button={{ show: true, label: '+ CREATE AUTOMATION' }}
+    />
+  );
+};
