@@ -26,7 +26,8 @@
 
 .RegistrationBox {
   width: 400px;
-  height: 508px;
+  min-height: 440px;
+  height: auto;
   background-color: #073f24;
 }
 
