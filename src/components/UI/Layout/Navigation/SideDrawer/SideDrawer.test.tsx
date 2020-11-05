@@ -61,6 +61,6 @@ describe('side drawer testing', () => {
   it('should open bottom menus', () => {
     const wrapper = mount(component);
     wrapper.find('div[data-testid="bottom-menu"]').first().simulate('click');
-    expect(wrapper.find('a[data-testid="MenuItem"]').first().text()).toBe('My profile');
+    expect(wrapper.find('a[data-testid="MenuItem"]').first().text()).toBe('My Profile');
   });
 });
