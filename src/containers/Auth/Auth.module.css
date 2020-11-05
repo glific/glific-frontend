@@ -32,7 +32,8 @@
 
 .OTPBox {
   width: 400px;
-  height: 355px;
+  min-height: 355px;
+  height: auto;
   background-color: #073f24;
 }
 
@@ -162,6 +163,7 @@
   margin-top: 5px;
   color: red;
   width: 333px;
+  padding-bottom: 10px;
 }
 
 .SuccessMessage {
