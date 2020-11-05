@@ -39,7 +39,8 @@
 }
 
 .LoginBox {
-  height: 450px;
+  min-height: 390px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
