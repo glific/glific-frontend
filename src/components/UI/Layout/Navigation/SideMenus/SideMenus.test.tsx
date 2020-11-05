@@ -18,7 +18,5 @@ describe('side menu testing', () => {
     await wait();
     expect(wrapper).toBeTruthy();
   });
- 
-
   
 });
