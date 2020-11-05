@@ -6,7 +6,7 @@ import { FormLayout } from './FormLayout';
 import { Route } from 'react-router-dom';
 import { TagList } from '../Tag/TagList/TagList';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
-import { setUserRole } from '../../context/role';
+import { setUserSession } from '../../services/AuthService';
 
 const mocks = LIST_ITEM_MOCKS;
 
@@ -78,7 +78,7 @@ test('save button should add a new tag', async () => {
     </MockedProvider>
   );
 
-  setUserRole(['Admin']);
+  setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
   await wait();
 

@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 
 import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
-import { setUserRole } from '../../../context/role';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -18,6 +17,7 @@ import {
 } from '../../../services/AuthService';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
+import { getRoleBasedAccess } from '../../../context/role';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
@@ -48,12 +48,13 @@ export const Login: React.SFC<LoginProps> = () => {
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
         accessDenied();
       } else {
-        setUserRole(roles);
-
         // needed to redirect after login
         setAuthenticated(true);
         const token: any = getAuthSession();
         setSessionToken(token);
+
+        // role & access permissions
+        getRoleBasedAccess();
       }
     }
     if (userError) {

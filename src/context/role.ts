@@ -1,18 +1,19 @@
 import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
+import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
-export const setUserRole = (type: any) => {
-  localStorage.setItem('role', JSON.stringify(type));
-  role = type;
+
+const resetRole = () => {
+  role = [];
   getRoleBasedAccess();
 };
 
 const getUserRole = () => {
   if (!role || role.length === 0) {
-    let userRole: any = localStorage.getItem('role');
+    let userRole: any = getUserSession('roles');
     if (userRole) {
       role = userRole;
-    }
+    } else role = [];
   }
   return role;
 };
@@ -27,7 +28,7 @@ let isManagerRole: boolean = false;
 const getRoleBasedAccess = () => {
   // if role not present get role
   if (!role) {
-    getUserRole();
+    role = getUserRole();
   }
   if (role && role.includes('Staff')) {
     sideDrawerMenu = [
@@ -79,4 +80,5 @@ export {
   advanceSearch,
   displayUserGroups,
   isManagerRole,
+  resetRole,
 };

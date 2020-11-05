@@ -120,6 +120,9 @@ export const getUserSession = (element?: string) => {
     case 'organizationId':
       returnValue = JSON.parse(user).organization.id;
       break;
+    case 'roles':
+      returnValue = JSON.parse(user).roles;
+      break;
   }
   return returnValue;
 };

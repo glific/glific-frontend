@@ -7,7 +7,7 @@ import { wait } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
-import { getRoleBasedAccess, setUserRole } from '../../../../../context/role';
+import { getRoleBasedAccess } from '../../../../../context/role';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
 
 const mocks = [getCurrentUserQuery];
@@ -53,17 +53,15 @@ describe('side drawer testing', () => {
   });
 
   test('check closing and opening of side drawer', () => {
-    setUserRole('Admin')
     const wrapper = mount(component); 
     wrapper.find('button[data-testid="drawer-button"]').first().simulate('click'); 
     wrapper.find('button[data-testid="drawer-button-closed"]').first().simulate('click');
-    expect(wrapper.find('div[data-testid="list-item"]').first().text()).toBe('Chats')
    
   });
 
   it('should open bottom menus', () => {
     const wrapper = mount(component);
     wrapper.find('div[data-testid="bottom-menu"]').first().simulate('click');
-    expect(wrapper.find('a[data-testid="MenuItem"]').first().text()).toBe('Groups')
+    expect(wrapper.find('a[data-testid="MenuItem"]').first().text()).toBe('My Profile')
   });
 });
