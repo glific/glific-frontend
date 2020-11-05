@@ -15,24 +15,29 @@ global.document.createRange = () => ({
   },
 });
 
-var localStorageMock = (function() {
-  var store:any = {};
-  return {
-    getItem: function(key:any) {
-      return store[key];
-    },
-    setItem: function(key:any, value:any) {
-      store[key] = value.toString();
-    },
-    clear: function() {
-      store = {};
-    },
-    removeItem: function(key:any) {
-      delete store[key];
-    }
-  };
-})();
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+class LocalStorageMock {
+  constructor() {
+    this.store = {};
+  }
+
+  clear() {
+    this.store = {};
+  }
+
+  getItem(key: any) {
+    return this.store[key] || null;
+  }
+
+  setItem(key: any, value: any) {
+    this.store[key] = value.toString();
+  }
+
+  removeItem(key: any) {
+    delete this.store[key];
+  }
+}
+
+global.localStorage = new LocalStorageMock();
 
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
 configure({ adapter: new Adapter() });
