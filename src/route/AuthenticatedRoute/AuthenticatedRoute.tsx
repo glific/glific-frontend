@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './AuthenticatedRoute.module.css';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { TagPage } from '../../components/pages/TagPage/TagPage';

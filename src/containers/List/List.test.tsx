@@ -8,11 +8,11 @@ import { List } from './List';
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
 import { LIST_MOCKS, defaultProps } from './List.test.helper';
-import { setUserRole } from '../../context/role';
+import { setUserSession } from '../../services/AuthService';
 
 const mocks = LIST_MOCKS;
 
-setUserRole(['Admin']);
+setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>

@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Redirect } from 'react-router';
+import { useApolloClient } from '@apollo/client';
 
+import { resetRole } from '../../../context/role';
 import { SessionContext } from '../../../context/session';
 import { clearAuthSession, clearUserSession } from '../../../services/AuthService';
-import { setUserRole } from '../../../context/role';
-import { useApolloClient } from '@apollo/client';
 
 export interface LogoutProps {}
 
@@ -21,6 +21,9 @@ export const Logout: React.SFC<LogoutProps> = () => {
   // clear local storage user session
   clearUserSession();
 
+  // clear role & access permissions
+  resetRole();
+  
   // clear apollo cache
   client.resetStore();
 
