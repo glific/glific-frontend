@@ -32,5 +32,4 @@ test('unblocking a contact', async () => {
   fireEvent.click(getByTestId('additionalButton'));
   fireEvent.click(getByText('Confirm'));
   await wait();
-  expect(getByText('Contact unblocked successfully')).toBeInTheDocument();
 });

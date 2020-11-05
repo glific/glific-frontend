@@ -285,6 +285,28 @@ export const TEMPLATE_MOCKS = [
       },
     },
   },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { label: '', isHsm: false },
+        opts: { order: 'ASC', limit: 10, offset: 0 },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          {
+            id: '98',
+            body: 'This is HSM template',
+            label: 'new Template',
+            isHsm: true,
+            isReserved: false,
+          },
+        ],
+      },
+    },
+  },
   count,
   speedSend,
   HSMTemplatecount,

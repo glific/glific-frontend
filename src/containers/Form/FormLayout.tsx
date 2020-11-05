@@ -15,7 +15,6 @@ import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
@@ -109,8 +108,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
-  const message = useQuery(NOTIFICATION);
-  let toastMessage: {} | null | undefined;
   let item: any = null;
 
   // get the organization for current user and have languages option set to that.
@@ -263,15 +260,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setNotification(client, message);
   };
 
-  //toast
-  const closeToastMessage = () => {
-    setNotification(client, null);
-  };
-
-  if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
-  }
-
   const cancelHandler = () => {
     // for chat screen collection
     if (type === 'search' || type === 'saveSearch') {
@@ -349,8 +337,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form} data-testid="formLayout">
-            {toastMessage}
+          <Form className={styles.Form} data-testid="formLayout">    
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>

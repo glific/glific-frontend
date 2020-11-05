@@ -28,11 +28,15 @@ import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
+import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 export const AuthenticatedRoute: React.SFC = () => {
+ const toastMessage=useToast()
   let userRole: any[] = [];
   let route = <Route path="/logout" exact component={Logout} />;
+
+ 
 
   if (getUserRole()) {
     userRole = getUserRole();
@@ -120,6 +124,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   // on chat screen, for eg: send message to group
   return (
     <div className={styles.App}>
+      {toastMessage}
       {userRole.length > 0 ? <ChatSubscription /> : ''}
       <Layout>{route}</Layout>
     </div>

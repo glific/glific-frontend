@@ -30,5 +30,4 @@ it('should convert comma separated keywords into array', async () => {
   const button = getByText('Save');
   fireEvent.click(button);
   await wait();
-  expect(getByText('Automation edited successfully!')).toBeInTheDocument();
 });
