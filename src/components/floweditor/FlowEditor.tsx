@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router';
-
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
@@ -9,10 +9,12 @@ import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
 import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
-import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
+import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Automation';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
 import { IconButton } from '@material-ui/core';
+import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
+import { setNotification } from '../../common/notification';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -143,11 +145,19 @@ export interface FlowEditorProps {
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
-  const uuid = props.match.params.uuid;
+  const client = useApolloClient();
   const history = useHistory();
+  const uuid = props.match.params.uuid;
+  const [publishDialog, setPublishDialog] = useState(false);
+  const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_AUTOMATION);
+  const [publishFlow] = useMutation(PUBLISH_AUTOMATION, {
+    onCompleted: () => {
+      setNotification(client, 'The flow has been published');
+    },
+  });
   const [published, setPublished] = useState(false);
+  let dialog = null;
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
@@ -187,7 +197,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     );
   }
 
-  const { data: automationName } = useQuery(GET_AUTOMATION_NAME, {
+  const { data: automationName } = useQuery(GET_AUTOMATION_DETAILS, {
     variables: {
       filter: {
         uuid: uuid,
@@ -196,9 +206,16 @@ export const FlowEditor = (props: FlowEditorProps) => {
     },
   });
 
+  let automationTitle: any;
+  let automationKeyword: any;
+  if (automationName) {
+    automationTitle = automationName.flows[0].name;
+    automationKeyword = automationName.flows[0].keywords[0];
+  }
+
   useEffect(() => {
     if (automationName) {
-      document.title = automationName.flows[0].name;
+      document.title = automationTitle;
     }
     return () => {
       document.title = APP_NAME;
@@ -228,32 +245,102 @@ export const FlowEditor = (props: FlowEditorProps) => {
     setPublished(true);
   };
 
+  if (publishDialog) {
+    dialog = (
+      <DialogBox
+        title="Are you ready to publish the flow?"
+        buttonOk="Publish"
+        handleOk={() => handlePublishFlow()}
+        handleCancel={() => setPublishDialog(false)}
+        alignButtons="center"
+      >
+        <p className={styles.DialogDescription}>New changes will be activated for the users</p>
+      </DialogBox>
+    );
+  }
+
   if (published) {
     return <Redirect to="/automation" />;
   }
 
   return (
     <>
+      {dialog}
+      <div className={styles.ButtonContainer}>
+        <a
+          href="https://app.rapidpro.io/video/"
+          className={styles.Link}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="helpButton"
+        >
+          <HelpIcon className={styles.HelpIcon} />
+        </a>
+
+        <Button
+          variant="contained"
+          color="default"
+          className={styles.ContainedButton}
+          onClick={() => {
+            setConfirmedNavigation(true);
+            history.push('/automation');
+          }}
+        >
+          Back
+        </Button>
+
+        <Button
+          variant="outlined"
+          color="primary"
+          data-testid='saveDraftButton'
+          className={styles.Button}
+          onClick={() => {
+            setConfirmedNavigation(true);
+            setNotification(client, 'The flow has been saved as draft');
+            history.push('/automation');
+          }}
+        >
+          Save as draft
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          data-testid="previewButton"
+          className={styles.Button}
+          onClick={() => {
+            setShowSimulator(!showSimulator);
+          }}
+        >
+          Preview
+          {showSimulator ? (
+            <CancelOutlinedIcon
+              className={styles.CrossIcon}
+              onClick={() => {
+                setShowSimulator(false);
+              }}
+            />
+          ) : null}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          data-testid="button"
+          className={styles.ContainedButton}
+          onClick={() => setPublishDialog(true)}
+        >
+          Publish
+        </Button>
+      </div>
+      {showSimulator ? (
+        <Simulator
+          showSimulator={showSimulator}
+          setShowSimulator={setShowSimulator}
+          message={{ type: 'draft', keyword: automationKeyword }}
+        />
+      ) : null}
       {modal}
       <Prompt when={true} message={handleBlockedNavigation} />
-      <a
-        href="https://app.rapidpro.io/video/"
-        className={styles.Link}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-testid="helpButton"
-      >
-        <HelpIcon className={styles.HelpIcon} />
-      </a>
-      <Button
-        variant="contained"
-        color="primary"
-        className={styles.Button}
-        data-testid="button"
-        onClick={handlePublishFlow}
-      >
-        Update
-      </Button>
+
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
           {automationName ? (
@@ -262,7 +349,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
                 <AutomationIcon />
               </IconButton>
 
-              {automationName.flows[0].name}
+              {automationTitle}
             </>
           ) : null}
         </div>
