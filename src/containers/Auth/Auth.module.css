@@ -111,7 +111,8 @@
 }
 
 .FirstResetBox {
-  height: 340px;
+  min-height: 300px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -119,7 +120,8 @@
 }
 
 .SecondResetBox {
-  height: 550px;
+  min-height: 476px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
