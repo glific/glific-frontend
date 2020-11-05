@@ -25,7 +25,7 @@ export const Logout: React.SFC<LogoutProps> = () => {
   resetRole();
   
   // clear apollo cache
-  client.resetStore();
+  client.clearStore();
 
   return <Redirect to="/login" />;
 };
