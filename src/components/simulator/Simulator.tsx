@@ -26,14 +26,24 @@ import { SIMULATOR_CONTACT } from '../../common/constants';
 export interface SimulatorProps {
   showSimulator: boolean;
   setShowSimulator: any;
+  simulatorIcon?: boolean;
+  message?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setShowSimulator,
+  simulatorIcon = true,
+  message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const messageRef: any = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    if (message.keyword !== undefined) {
+      sendMessage();
+    }
+  }, [message.keyword]);
 
   let messages = [];
   let simulatorId = '';
@@ -93,6 +103,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .reverse();
 
   const sendMessage = () => {
+    const sendMessage =
+      inputMessage === '' && message ? message.type + ':' + message.keyword : inputMessage;
     axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
@@ -101,7 +113,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         payload: {
           type: 'text',
           payload: {
-            text: inputMessage,
+            text: sendMessage,
           },
           sender: {
             //this number will be the simulated contact number
@@ -134,8 +146,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
-                <img src={DefaultWhatsappImage} alt="default" />
-                <span>Beneficiary</span>
+                <img src={DefaultWhatsappImage} alt="default Image" />
+                <span data-testid="beneficiaryName">Beneficiary</span>
                 <div>
                   <VideocamIcon />
                   <CallIcon />
@@ -187,11 +199,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
   return (
     <>
       {showSimulator ? simulator : null}
-      <SimulatorIcon
-        data-testid="simulatorIcon"
-        className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-        onClick={() => handleSimulator()}
-      ></SimulatorIcon>
+      {simulatorIcon ? (
+        <SimulatorIcon
+          data-testid="simulatorIcon"
+          className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
+          onClick={() => handleSimulator()}
+        ></SimulatorIcon>
+      ) : null}
     </>
   );
 };
