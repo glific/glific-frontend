@@ -8,7 +8,7 @@ import { Login } from './containers/Auth/Login/Login';
 import App from './App';
 import { Chat } from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './mocks/Chat';
-import { setUserRole } from './context/role';
+import { setUserSession } from './services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -49,7 +49,8 @@ describe('<App /> ', () => {
         tokenExpiryDate +
         '"}'
     );
-    setUserRole(['Staff']);
+
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
     const wrapper = mount(app);
 
@@ -68,13 +69,13 @@ describe('<App /> ', () => {
         tokenExpiryDate +
         '"}'
     );
-    setUserRole(['None']);
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['None'] }));
 
     const wrapper = mount(app);
 
     await wait();
 
-    expect(wrapper.find(Chat)).toHaveLength(0);
+    expect(wrapper.find(Chat)).toMatchObject({});
     await wait();
   });
 });
