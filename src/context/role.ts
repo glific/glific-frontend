@@ -1,7 +1,7 @@
 import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
 
 let role: any[] = [];
-const setUserRole = (type: any) => {
+export const setUserRole = (type: any) => {
   localStorage.setItem('role', JSON.stringify(type));
   role = type;
   getRoleBasedAccess();
@@ -73,7 +73,6 @@ export const getStaffManagementMenus = () => {
 };
 
 export {
-  setUserRole,
   getUserRole,
   getRoleBasedAccess,
   settingMenu,
