@@ -261,7 +261,7 @@ export const List: React.SFC<ListProps> = ({
     id: number | undefined,
     label: string,
     isReserved: boolean | null,
-    additionalActionParameter: string,
+    listItem: any,
     allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
@@ -301,6 +301,14 @@ export const List: React.SFC<ListProps> = ({
       return (
         <div className={styles.Icons}>
           {additionalAction.map((action: any, index: number) => {
+            // check if we are dealing with nested element
+            let additionalActionParameter: any;
+            const params: any = additionalAction[index].parameter.split('.');
+            if (params.length > 1) {
+              additionalActionParameter = listItem[params[0]][params[1]];
+            } else {
+              additionalActionParameter = listItem[params[0]];
+            }
             if (action.link) {
               return (
                 <Link to={`${action?.link}/${additionalActionParameter}`} key={index}>
@@ -351,19 +359,9 @@ export const List: React.SFC<ListProps> = ({
       const allowedAction = restrictedAction
         ? restrictedAction(listItem)
         : { chat: true, edit: true, delete: true };
-      let action: any;
-      if (additionalAction.length > 0) {
-        // check if we are dealing with nested element
-        const params = additionalAction[0].parameter.split('.');
-        if (params.length > 1) {
-          action = listItem[params[0]][params[1]];
-        } else {
-          action = listItem[params[0]];
-        }
-      }
       return {
         ...columns(listItem),
-        operations: getIcons(listItem.id, label, isReserved, action, allowedAction),
+        operations: getIcons(listItem.id, label, isReserved, listItem, allowedAction),
       };
     });
   }

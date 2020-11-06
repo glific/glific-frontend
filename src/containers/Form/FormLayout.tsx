@@ -146,9 +146,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
-      const itemUpdated = `update${camelCaseItem}`;
+      const itemUpdated = Object.keys(data)[0];
 
-      if (data[itemUpdated].errors) {
+      if (data[itemUpdated] && data[itemUpdated].errors) {
         setErrorMessage(client, data[itemUpdated].errors[0]);
       } else {
         if (additionalQuery) {
@@ -159,6 +159,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data);
         }
+        // display successful message after update
+        let message = `${capitalListItemName} edited successfully!`;
+        if (type === 'copy') {
+          message = 'Copy of the flow has been created!';
+        }
+        setNotification(client, message);
       }
     },
     onError: (error: ApolloError) => {
@@ -187,6 +193,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data.createSavedSearch);
         }
+        // display successful message after create
+        setNotification(client, `${capitalListItemName} created successfully!`);
       }
     },
     refetchQueries: () => {
@@ -239,8 +247,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     });
 
-    let message;
-
     if (itemId) {
       updateItem({
         variables: {
@@ -248,16 +254,13 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           input: payload,
         },
       });
-      message = `${capitalListItemName} edited successfully!`;
     } else {
       createItem({
         variables: {
           input: payload,
         },
       });
-      message = `${capitalListItemName} created successfully!`;
     }
-    setNotification(client, message);
   };
 
   const cancelHandler = () => {
