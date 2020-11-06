@@ -44,7 +44,7 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => {
   let history = useHistory();
 
   const setDialog = (id: any) => {
-    history.push('/automation/add');
+    history.push({ pathname: '/automation/' + id + '/edit', state: 'copy' });
   };
 
   const additionalAction = [

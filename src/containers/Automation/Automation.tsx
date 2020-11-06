@@ -8,10 +8,12 @@ import {
   CREATE_AUTOMATION,
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
+  CREATE_AUTOMATION_COPY,
 } from '../../graphql/mutations/Automation';
 import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { useLazyQuery } from '@apollo/client';
+import { useLocation } from 'react-router-dom';
 
 export interface AutomationProps {
   match: any;
@@ -25,7 +27,7 @@ const dialogMessage = "You won't be able to use this automation again.";
 
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
-const queries = {
+let queries = {
   getItemQuery: GET_AUTOMATION,
   createItemQuery: CREATE_AUTOMATION,
   updateItemQuery: UPDATE_AUTOMATION,
@@ -33,6 +35,7 @@ const queries = {
 };
 
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
+  const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
@@ -41,6 +44,11 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   const states = { name, keywords, ignoreKeywords };
 
   const setStates = ({ name, keywords, ignoreKeywords }: any) => {
+    // Override name & keywords when creating Automation Copy
+    if (location.state === 'copy') {
+      name = 'Copy of ' + name;
+      keywords = '';
+    }
     setName(name);
 
     // we are recieving keywords as an array object
@@ -145,6 +153,17 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     };
   };
 
+  // alter header & update/copy queries
+  let title;
+  let type;
+  if (location.state === 'copy') {
+    queries.updateItemQuery = CREATE_AUTOMATION_COPY;
+    title = 'Copy automation';
+    type = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_AUTOMATION;
+  }
+
   return (
     <FormLayout
       {...queries}
@@ -163,6 +182,8 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       icon={automationIcon}
       additionalAction={additionalAction}
       languageSupport={false}
+      title={title}
+      type={type}
     />
   );
 };
