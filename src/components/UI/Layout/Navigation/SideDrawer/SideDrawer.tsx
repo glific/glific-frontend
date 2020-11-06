@@ -149,6 +149,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
+            data-testid="drawer-button-closed"
             style={{ margin: 'auto' }}
             onClick={() => setFullOpen(true)}
           >
@@ -162,10 +163,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
-  const handleClick = () => {
-    setActive(!active);
-  };
-
   // check access for settings on page reload
   if (!settingMenu) {
     getRoleBasedAccess();
@@ -174,7 +171,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const settingMenus = settingMenu ? (
     <div>
       <Tooltip title="Settings" placement="top">
-        <Link to={'/settings'} onClick={handleClick}>
+        <Link to={'/settings'}>
           <IconButton data-testid="settingsMenu">
             <img
               src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
@@ -207,7 +204,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
           variant="temporary"
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={mobileOpen}
-          onClose={() => setMobileOpen(!mobileOpen)}
+          onClose={() => {
+            setMobileOpen(!mobileOpen);
+          }}
           classes={{
             paper: classes.drawerPaper,
           }}
@@ -234,7 +233,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
         >
           <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
-            <div onClick={() => getMenus()}>
+            <div data-testid="bottom-menu" onClick={() => getMenus()}>
               <Menu menus={staffManagementMenus}>
                 <Tooltip title="Staff Management" placement="top">
                   <IconButton data-testid="staffManagementMenu">
