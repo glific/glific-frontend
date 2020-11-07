@@ -18,7 +18,8 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "react/prop-types": "warn"
   },
   "env": {
     "jest": true
