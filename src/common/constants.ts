@@ -37,11 +37,11 @@ export const setVariables = (
   order: string = 'ASC'
 ) => {
   return {
-    filter: filter,
+    filter,
     opts: {
-      limit: limit,
-      offset: offset,
-      order: order,
+      limit,
+      offset,
+      order,
     },
   };
 };
