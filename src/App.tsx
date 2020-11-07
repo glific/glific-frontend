@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { ApolloProvider } from '@apollo/client';
 import './assets/fonts/fonts.css';
 import gqlClient from './config/apolloclient';
-import { ApolloProvider } from '@apollo/client';
 import { SessionContext } from './context/session';
 import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
 import { checkAuthStatusService } from './services/AuthService';
@@ -16,7 +16,7 @@ const App = () => {
   }, []);
 
   const values = {
-    authenticated: authenticated,
+    authenticated,
     setAuthenticated: (value: any) => {
       setAuthenticated(value);
     },
@@ -25,9 +25,9 @@ const App = () => {
   let routes;
 
   if (authenticated) {
-    routes = <AuthenticatedRoute></AuthenticatedRoute>;
+    routes = <AuthenticatedRoute />;
   } else {
-    routes = <UnauthenticatedRoute></UnauthenticatedRoute>;
+    routes = <UnauthenticatedRoute />;
   }
 
   return (
