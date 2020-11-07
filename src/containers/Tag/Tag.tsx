@@ -37,7 +37,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [colorCode, setColorcode] = useState('#0C976D');
+  const [colorCode, setColorCode] = useState('#0C976D');
   const [parentId, setParentId] = useState<any>([]);
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState('');
@@ -47,7 +47,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     setLabel(label);
     setDescription(description);
     setKeywords(keywords);
-    setColorcode(colorCode);
+    setColorCode(colorCode);
     if (parent) {
       setParentId(getObject(data.tags, [parent.id])[0]);
     }
