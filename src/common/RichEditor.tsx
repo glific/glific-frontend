@@ -48,9 +48,9 @@ export const TextReplacements: any = [
 const textConversion = (text: any, style: any, offset: number, symbol: string) => {
   const initialOffset = style.offset + offset;
   const finalOffset = initialOffset + style.length + 1;
-  text = text.slice(0, initialOffset) + symbol + text.slice(initialOffset);
-  text = text.slice(0, finalOffset) + symbol + text.slice(finalOffset);
-  return text;
+  let modifiedText = text.slice(0, initialOffset) + symbol + text.slice(initialOffset);
+  modifiedText = modifiedText.slice(0, finalOffset) + symbol + modifiedText.slice(finalOffset);
+  return modifiedText;
 };
 
 // Convert Draft.js to WhatsApp message format.
@@ -58,34 +58,37 @@ export const convertToWhatsApp = (editorState: any) => {
   const markdownString: any = convertToRaw(editorState.getCurrentContent());
   let finalString = '';
 
-  markdownString.blocks.map((block: any) => {
-    let text = block.text;
+  finalString = markdownString.blocks.map((block: any) => {
+    const { text } = block;
 
     let offset = 0;
-    block.inlineStyleRanges.map((style: any) => {
+    let convertedText = '';
+    convertedText = block.inlineStyleRanges.map((style: any) => {
       switch (style.style) {
         case 'BOLD':
-          text = textConversion(text, style, offset, '*');
+          convertedText = textConversion(text, style, offset, '*');
           break;
         case 'ITALIC':
-          text = textConversion(text, style, offset, '_');
+          convertedText = textConversion(text, style, offset, '_');
           break;
+        default:
       }
       offset += 2;
+      return convertedText;
     });
-    finalString = finalString + text + '\n';
+
+    return `${finalString}${convertedText} \n`;
   });
 
   return finalString;
 };
 
 // Converts WhatsApp message formatting into HTML elements.
-
 export const WhatsAppToDraftEditor = (text: string) => {
   const regexforBold = /[*][^*]*[*]/gi;
 
-  const addedBold = text.replace(regexforBold, function (str: any) {
-    return '*' + str + '*';
+  const addedBold = text.replace(regexforBold, (str: any) => {
+    return `*${str}*`;
   });
 
   const rawData = MarkDownConvertor.markdownToDraft(addedBold, {
@@ -97,23 +100,17 @@ export const WhatsAppToDraftEditor = (text: string) => {
 
 export const WhatsAppToJsx = (text: any) => {
   const replacements = TextReplacements;
-  for (let i = 0; i < replacements.length; i++) {
+  let modifiedText = text;
+  for (let i = 0; i < replacements.length; i += 1) {
     const type = Object.keys(replacements[i])[0];
     const character: any = replacements[i][type].char;
     const replaceFunc: any = replacements[i][type].replace;
-    // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
-    const regexStr =
-      '\\' +
-      character +
-      '{' +
-      character.length +
-      '}(.+?)\\' +
-      character +
-      '{' +
-      character.length +
-      '}';
-    text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any) => replaceFunc(match));
+    const regexStr = `\\${character}{${character.length}}(.+?)\\${character}${character.length}`;
+
+    modifiedText = reactStringReplace(modifiedText, new RegExp(regexStr, 'g'), (match: any) =>
+      replaceFunc(match)
+    );
   }
 
-  return text;
+  return modifiedText;
 };
