@@ -1,6 +1,7 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
 import { convertToRaw, convertFromRaw } from 'draft-js';
+
 const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
@@ -44,7 +45,6 @@ export const TextReplacements: any = [
 ];
 
 // Finds double asterisks in text with a regular expression.
-
 const textConversion = (text: any, style: any, offset: number, symbol: string) => {
   const initialOffset = style.offset + offset;
   const finalOffset = initialOffset + style.length + 1;
@@ -55,7 +55,7 @@ const textConversion = (text: any, style: any, offset: number, symbol: string) =
 
 // Convert Draft.js to WhatsApp message format.
 export const convertToWhatsApp = (editorState: any) => {
-  let markdownString: any = convertToRaw(editorState.getCurrentContent());
+  const markdownString: any = convertToRaw(editorState.getCurrentContent());
   let finalString = '';
 
   markdownString.blocks.map((block: any) => {
@@ -96,13 +96,13 @@ export const WhatsAppToDraftEditor = (text: string) => {
 };
 
 export const WhatsAppToJsx = (text: any) => {
-  let replacements = TextReplacements;
+  const replacements = TextReplacements;
   for (let i = 0; i < replacements.length; i++) {
-    let type = Object.keys(replacements[i])[0];
-    let character: any = replacements[i][type].char;
-    let replaceFunc: any = replacements[i][type].replace;
+    const type = Object.keys(replacements[i])[0];
+    const character: any = replacements[i][type].char;
+    const replaceFunc: any = replacements[i][type].replace;
     // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
-    let regexStr =
+    const regexStr =
       '\\' +
       character +
       '{' +
@@ -112,9 +112,7 @@ export const WhatsAppToJsx = (text: any) => {
       '{' +
       character.length +
       '}';
-    text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any, i: number) =>
-      replaceFunc(match)
-    );
+    text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any) => replaceFunc(match));
   }
 
   return text;
