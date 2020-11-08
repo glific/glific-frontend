@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
+import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK } from '../../config/index';
-import { FLOW_EDITOR_API } from '../../config/index';
-import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
+import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
@@ -28,7 +27,7 @@ const loadfiles = () => {
       index++;
       const script = document.createElement('script');
       script.src = filesToLoad[fileName].slice(1);
-      script.id = 'flowEditorScript' + index;
+      script.id = `flowEditorScript${index}`;
       script.async = false;
       document.body.appendChild(script);
       files.push(script);
@@ -37,7 +36,7 @@ const loadfiles = () => {
     if (filesToLoad[fileName].endsWith('.css')) {
       const link = document.createElement('link');
       link.href = filesToLoad[fileName].slice(1);
-      link.id = 'flowEditorfile' + index;
+      link.id = `flowEditorfile${index}`;
       link.rel = 'stylesheet';
       document.body.appendChild(link);
     }
@@ -46,7 +45,7 @@ const loadfiles = () => {
   return files;
 };
 
-const base_glific = FLOW_EDITOR_API;
+const glificBase = FLOW_EDITOR_API;
 
 const setConfig = (uuid: any) => {
   return {
@@ -116,23 +115,23 @@ const setConfig = (uuid: any) => {
     endpoints: {
       simulateStart: false,
       simulateResume: false,
-      globals: base_glific + 'globals',
-      groups: base_glific + 'groups',
-      fields: base_glific + 'fields',
-      labels: base_glific + 'labels',
-      channels: base_glific + 'channels',
-      classifiers: base_glific + 'classifiers',
-      ticketers: base_glific + 'ticketers',
-      resthooks: base_glific + 'resthooks',
-      templates: base_glific + 'templates',
-      languages: base_glific + 'languages',
-      environment: base_glific + 'environment',
-      recipients: base_glific + 'recipients',
-      completion: base_glific + 'completion',
-      activity: base_glific + 'activity',
-      flows: base_glific + 'flows',
-      revisions: base_glific + 'revisions/' + uuid,
-      functions: base_glific + 'functions',
+      globals: glificBase + 'globals',
+      groups: glificBase + 'groups',
+      fields: glificBase + 'fields',
+      labels: glificBase + 'labels',
+      channels: glificBase + 'channels',
+      classifiers: glificBase + 'classifiers',
+      ticketers: glificBase + 'ticketers',
+      resthooks: glificBase + 'resthooks',
+      templates: glificBase + 'templates',
+      languages: glificBase + 'languages',
+      environment: glificBase + 'environment',
+      recipients: glificBase + 'recipients',
+      completion: glificBase + 'completion',
+      activity: glificBase + 'activity',
+      flows: glificBase + 'flows',
+      revisions: glificBase + 'revisions/' + uuid,
+      functions: glificBase + 'functions',
       editor: FLOW_EDITOR_CONFIGURE_LINK,
     },
   };
@@ -182,8 +181,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
         handleOk={handleConfirmNavigationClick}
         handleCancel={closeModal}
         colorOk="secondary"
-        alignButtons={'center'}
-      ></DialogBox>
+        alignButtons="center"
+      />
     );
   }
 
@@ -266,7 +265,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
             </>
           ) : null}
         </div>
-        <div id="flow"></div>
+        <div id="flow" />
       </div>
     </>
   );
