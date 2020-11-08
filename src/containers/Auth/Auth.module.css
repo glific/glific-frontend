@@ -26,18 +26,21 @@
 
 .RegistrationBox {
   width: 400px;
-  height: 508px;
+  min-height: 440px;
+  height: auto;
   background-color: #073f24;
 }
 
 .OTPBox {
   width: 400px;
-  height: 355px;
+  min-height: 355px;
+  height: auto;
   background-color: #073f24;
 }
 
 .LoginBox {
-  height: 450px;
+  min-height: 380px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -108,7 +111,8 @@
 }
 
 .FirstResetBox {
-  height: 340px;
+  min-height: 300px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -116,7 +120,8 @@
 }
 
 .SecondResetBox {
-  height: 550px;
+  min-height: 476px;
+  height: auto;
   width: 395px;
   border-color: #eaedec;
   border-style: solid;
@@ -162,6 +167,7 @@
   margin-top: 5px;
   color: red;
   width: 333px;
+  padding-bottom: 10px;
 }
 
 .SuccessMessage {
@@ -186,7 +192,7 @@
   color: #93a29b;
   font-weight: 500;
   margin-left: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .Auth .Link a {

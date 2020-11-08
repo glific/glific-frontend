@@ -1,17 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useApolloClient } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
+import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
 
 import styles from './SettingList.module.css';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from '../../graphql/queries/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
-import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { setNotification } from '../../common/notification';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 
 const SettingIcon = <Settingicon />;
 
@@ -24,10 +21,6 @@ const List = [
 ];
 
 export const SettingList: React.SFC = () => {
-  const message = useQuery(NOTIFICATION);
-  let toastMessage: {} | null | undefined;
-  const client = useApolloClient();
-
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
   if (loading) return <Loading />;
@@ -47,19 +40,9 @@ export const SettingList: React.SFC = () => {
     </Typography>
   );
 
-  // toast
-  const closeToastMessage = () => {
-    setNotification(client, null);
-  };
-
-  if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
-  }
-
   return (
     <>
       {heading}
-      {toastMessage}
       <div className={styles.CardContainer}>
         {CardList.map((data: any) => {
           return (

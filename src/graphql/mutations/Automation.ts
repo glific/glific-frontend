@@ -66,3 +66,20 @@ export const ADD_AUTOMATION_TO_CONTACT = gql`
     }
   }
 `;
+
+export const CREATE_AUTOMATION_COPY = gql`
+  mutation copyFlow($id: ID!, $input: FlowInput!) {
+    copyFlow(id: $id, input: $input) {
+      flow {
+        id
+        name
+        keywords
+        uuid
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

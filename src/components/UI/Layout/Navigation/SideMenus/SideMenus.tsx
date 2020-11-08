@@ -41,6 +41,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         {props.opened ? (
           <ListItemText
             disableTypography
+            data-testid="list-item"
             className={clsx(styles.Text, {
               [styles.SelectedText]: isSelected,
               [styles.UnselectedText]: !isSelected,

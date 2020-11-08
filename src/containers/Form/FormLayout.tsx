@@ -4,17 +4,15 @@ import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 
+import styles from './FormLayout.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
@@ -108,8 +106,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
-  const message = useQuery(NOTIFICATION);
-  let toastMessage: {} | null | undefined;
   let item: any = null;
 
   // get the organization for current user and have languages option set to that.
@@ -148,9 +144,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
-      const itemUpdated = `update${camelCaseItem}`;
+      const itemUpdated = Object.keys(data)[0];
 
-      if (data[itemUpdated].errors) {
+      if (data[itemUpdated] && data[itemUpdated].errors) {
         setErrorMessage(client, data[itemUpdated].errors[0]);
       } else {
         if (additionalQuery) {
@@ -161,6 +157,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data);
         }
+        // display successful message after update
+        let message = `${capitalListItemName} edited successfully!`;
+        if (type === 'copy') {
+          message = 'Copy of the flow has been created!';
+        }
+        setNotification(client, message);
       }
     },
     onError: (error: ApolloError) => {
@@ -189,6 +191,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data.createSavedSearch);
         }
+        // display successful message after create
+        setNotification(client, `${capitalListItemName} created successfully!`);
       }
     },
     refetchQueries: () => {
@@ -241,8 +245,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     });
 
-    let message;
-
     if (itemId) {
       updateItem({
         variables: {
@@ -250,26 +252,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           input: payload,
         },
       });
-      message = `${capitalListItemName} edited successfully!`;
     } else {
       createItem({
         variables: {
           input: payload,
         },
       });
-      message = `${capitalListItemName} created successfully!`;
     }
-    setNotification(client, message);
   };
-
-  //toast
-  const closeToastMessage = () => {
-    setNotification(client, null);
-  };
-
-  if (message.data && message.data.message) {
-    toastMessage = <ToastMessage message={message.data.message} handleClose={closeToastMessage} />;
-  }
 
   const cancelHandler = () => {
     // for chat screen collection
@@ -349,7 +339,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       >
         {({ submitForm }) => (
           <Form className={styles.Form} data-testid="formLayout">
-            {toastMessage}
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>

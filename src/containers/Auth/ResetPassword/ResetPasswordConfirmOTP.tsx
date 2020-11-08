@@ -15,6 +15,7 @@ export interface ResetPasswordConfirmOTPProps {
 
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
   const [redirect, setRedirect] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
@@ -77,6 +78,9 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       })
       .then((response) => {
         setRedirect(true);
+      })
+      .catch((error: any) => {
+        setAuthError('We are unable to update your password, please enter the correct OTP.');
       });
   };
 
@@ -91,6 +95,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}
       initialFormValues={initialFormValues}
+      errorMessage={authError}
     />
   );
 };

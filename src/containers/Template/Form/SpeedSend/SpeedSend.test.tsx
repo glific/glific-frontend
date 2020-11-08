@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup, screen } from '@testing-library/react';
+import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -7,11 +7,11 @@ import { SpeedSend } from './SpeedSend';
 import { Switch, Route } from 'react-router-dom';
 import { SpeedSendList } from '../../List/SpeedSendList/SpeedSendList';
 import { TEMPLATE_MOCKS } from '../../Template.test.helper';
-import { setUserRole } from '../../../../context/role';
+import { setUserSession } from '../../../../services/AuthService';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
-setUserRole(['Admin']);
+setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {

@@ -99,6 +99,7 @@ export const setUserSession = (user: string) => {
 // clear the user session
 export const clearUserSession = () => {
   localStorage.removeItem('glific_user');
+  localStorage.removeItem('role');
 };
 
 // get the current user session
@@ -118,6 +119,9 @@ export const getUserSession = (element?: string) => {
   switch (element) {
     case 'organizationId':
       returnValue = JSON.parse(user).organization.id;
+      break;
+    case 'roles':
+      returnValue = JSON.parse(user).roles;
       break;
   }
   return returnValue;
