@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import { useQuery, useMutation, DocumentNode, useLazyQuery } from '@apollo/client';
-import { useApolloClient } from '@apollo/client';
-import { setNotification, setErrorMessage } from '../../common/notification';
+import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, Typography } from '@material-ui/core';
+
+import { setNotification, setErrorMessage } from '../../common/notification';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
@@ -300,7 +300,7 @@ export const List: React.SFC<ListProps> = ({
             aria-label="Delete"
             color="default"
             data-testid="DeleteIcon"
-            onClick={() => showDialogHandler(id!, label)}
+            onClick={() => showDialogHandler(id, label)}
           >
             {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>{' '}
@@ -346,7 +346,7 @@ export const List: React.SFC<ListProps> = ({
           {displayUserGroups || listItem !== 'groups' ? (
             <>
               {editButton}
-              {deleteButton(id!, label)}
+              {deleteButton(id, label)}
             </>
           ) : null}
         </div>
