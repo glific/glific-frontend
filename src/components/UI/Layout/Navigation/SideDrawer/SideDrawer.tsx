@@ -12,6 +12,8 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { Link, useLocation } from 'react-router-dom';
+
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 import Menu from '../../../Menu/Menu';
@@ -24,7 +26,6 @@ import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { userAccountMenus } from '../../../../../config/menu';
-import { Link, useLocation } from 'react-router-dom';
 import {
   getStaffManagementMenus,
   settingMenu,

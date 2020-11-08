@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
@@ -15,7 +15,7 @@ import tagSelectedIcon from '../../../assets/images/icons/Tags/Selected.svg';
 import broadcastSelectedIcon from '../../../assets/images/icons/Broadcast/Selected.svg';
 import automationSelectedIcon from '../../../assets/images/icons/Automations/Selected.svg';
 import collectionsSelectedIcon from '../../../assets/images/icons/Collections/Selected.svg';
-//import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
+// import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
@@ -25,6 +25,8 @@ export interface ListIconProps {
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
+  const { icon } = props;
+
   const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
     chat: chatIcon,
@@ -53,11 +55,11 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
   return (
     <img
       src={
-        location.pathname.startsWith('/' + props.icon)
-          ? stringsToSelectedIcons[props.icon]
-          : stringsToIcons[props.icon]
+        location.pathname.startsWith(`/${icon}`)
+          ? stringsToSelectedIcons[icon]
+          : stringsToIcons[icon]
       }
-      alt={'Selected '.concat(props.icon)}
+      alt={'Selected '.concat(icon)}
     />
   );
 };
