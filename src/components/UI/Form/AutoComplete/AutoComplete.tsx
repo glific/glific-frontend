@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
 import { getIn } from 'formik';
+
 import styles from './AutoComplete.module.css';
 import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Close.svg';
 
@@ -57,8 +58,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   useEffect(() => {
     if (getOptions && getOptions()) {
-      let options = getOptions();
-      if (options.length > 0) setOptionValue(options);
+      const optionList = getOptions();
+      if (optionList.length > 0) setOptionValue(optionList);
     }
   }, [open, getOptions]);
 
@@ -112,7 +113,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           }
           renderOption={(option, { selected }) => {
             return (
-              <React.Fragment>
+              <>
                 {multiple ? (
                   <Checkbox
                     icon={icon}
@@ -127,7 +128,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
                   ''
                 )}
                 {option[optionLabel]}
-              </React.Fragment>
+              </>
             );
           }}
           renderInput={(params: any) => {
