@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
+
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
-import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
-import { DELETE_TAG } from '../../graphql/mutations/Tag';
+import { UPDATE_TAG, CREATE_TAG, DELETE_TAG } from '../../graphql/mutations/Tag';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import styles from './Tag.module.css';

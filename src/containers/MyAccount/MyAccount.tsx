@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation } from '@apollo/client';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';

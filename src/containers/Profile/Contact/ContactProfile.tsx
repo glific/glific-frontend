@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import { useQuery, useMutation } from '@apollo/client';
 import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';

@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
+import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
+
 import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
 import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
-
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import styles from './SavedSearchToolbar.module.css';
-import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;

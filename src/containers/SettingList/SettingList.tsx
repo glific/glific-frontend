@@ -1,13 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
+
 import styles from './SettingList.module.css';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from '../../graphql/queries/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { setNotification } from '../../common/notification';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
@@ -33,7 +34,7 @@ export const SettingList: React.SFC = () => {
 
   let CardList: any = [];
   if (providerData) {
-    //create setting list of Organisation & providers
+    // create setting list of Organisation & providers
     CardList = [...List, ...providerData.providers];
   }
 
@@ -46,7 +47,7 @@ export const SettingList: React.SFC = () => {
     </Typography>
   );
 
-  //toast
+  // toast
   const closeToastMessage = () => {
     setNotification(client, null);
   };

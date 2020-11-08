@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
+import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
+
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
@@ -12,7 +14,6 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
-import Typography from '@material-ui/core/Typography';
 
 export interface ProvidersProps {
   match: any;

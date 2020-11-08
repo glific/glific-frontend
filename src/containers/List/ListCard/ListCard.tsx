@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardContent, Typography, CardActions } from '@material-ui/core';
-import styles from './ListCard.module.css';
 import { Link } from 'react-router-dom';
+
+import styles from './ListCard.module.css';
 
 interface ListCardProps {
   data: any;
