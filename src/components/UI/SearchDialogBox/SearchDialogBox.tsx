@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { DialogBox } from '../DialogBox/DialogBox';
 import { FormControl } from '@material-ui/core';
+
+import { DialogBox } from '../DialogBox/DialogBox';
 import styles from './SearchDialogBox.module.css';
 import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
@@ -17,11 +18,13 @@ export interface SearchDialogBoxProps {
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
+  const { asyncSearch, icon } = props;
+
   const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
-    if (!props.asyncSearch) {
+    if (!asyncSearch) {
       setSelectedOptions(
         props.options.filter((option: any) => props.selectedOptions.includes(option.id))
       );
@@ -29,7 +32,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   }, [props.selectedOptions, props.options]);
 
   useEffect(() => {
-    if (props.asyncSearch === true) {
+    if (asyncSearch === true) {
       setAsyncSelectedOptions(props.selectedOptions);
     }
   }, [props.selectedOptions]);
@@ -43,7 +46,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       title={props.title}
       handleOk={() =>
         props.handleOk(
-          props.asyncSearch
+          asyncSearch
             ? asyncSelectedOptions.map((option: any) => option.id)
             : selectedOptions.map((option: any) => option.id)
         )
@@ -55,7 +58,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
-            asyncSearch={props.asyncSearch}
+            asyncSearch={asyncSearch}
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
             options={props.options}
             optionLabel={props.optionLabel ? props.optionLabel : 'label'}
@@ -66,7 +69,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
               label: 'Search',
               variant: 'outlined',
             }}
-            chipIcon={props.icon}
+            chipIcon={icon}
           />
         </FormControl>
       </div>

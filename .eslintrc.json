@@ -19,7 +19,8 @@
         "tsx": "never"
       }
     ],
-    "react/prop-types": "warn"
+    "react/prop-types": "off",
+    "react/jsx-curly-newline": "off"
   },
   "env": {
     "jest": true

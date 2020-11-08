@@ -1,6 +1,7 @@
 import React from 'react';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
+
 import styles from './AuthenticatedRoute.module.css';
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { TagPage } from '../../components/pages/TagPage/TagPage';
 import { Tag } from '../../containers/Tag/Tag';
 import { SpeedSendPage } from '../../components/pages/Template/SpeedSendPage/SpeedSendPage';
