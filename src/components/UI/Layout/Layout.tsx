@@ -3,14 +3,17 @@ import React from 'react';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
 
-export interface LayoutProps {}
+export interface LayoutProps {
+  children: any;
+}
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
+  const { children } = props;
   return (
     <>
       <SideDrawer />
       <main className={styles.Main}>
-        <div>{props.children}</div>
+        <div>{children}</div>
       </main>
     </>
   );

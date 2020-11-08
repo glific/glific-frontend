@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Editor, RichUtils, Modifier } from 'draft-js';
+import { Editor, RichUtils, Modifier, EditorState } from 'draft-js';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+
 import { Input } from '../Input/Input';
-import { EditorState } from 'draft-js';
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
@@ -36,7 +36,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
   const updateValue = (emoji: any) => {
     const editorContentState = props.form.values[rest.name].getCurrentContent();
-    let editorSelectionState: any = props.form.values[rest.name].getSelection();
+    const editorSelectionState: any = props.form.values[rest.name].getSelection();
     const ModifiedContent = Modifier.insertText(
       editorContentState,
       editorSelectionState,

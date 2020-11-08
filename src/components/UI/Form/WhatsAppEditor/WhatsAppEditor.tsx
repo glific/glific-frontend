@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Picker } from 'emoji-mart';
 import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from 'draft-js';
-import { convertToWhatsApp } from '../../../../common/RichEditor';
-import ReactResizeDetector from 'react-resize-detector';
-import styles from './WhatsAppEditor.module.css';
 import { IconButton, ClickAwayListener } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
+import ReactResizeDetector from 'react-resize-detector';
+
+import { convertToWhatsApp } from '../../../../common/RichEditor';
+import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {
   handleHeightChange(newHeight: number): void;
