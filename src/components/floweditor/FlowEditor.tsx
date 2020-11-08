@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Prompt, Redirect, useHistory } from 'react-router';
+import { Prompt, Redirect, useHistory } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
@@ -11,7 +12,6 @@ import { FLOW_EDITOR_API } from '../../config/index';
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import { GET_AUTOMATION_NAME } from '../../graphql/queries/Automation';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
-import { IconButton } from '@material-ui/core';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 
 declare function showFlowEditor(node: any, config: any): void;

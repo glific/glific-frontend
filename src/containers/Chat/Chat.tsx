@@ -2,11 +2,12 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
+
+import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import styles from './Chat.module.css';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
@@ -17,8 +18,7 @@ import {
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
 } from '../../graphql/subscriptions/Tag';
 import { setErrorMessage } from '../../common/notification';
-import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { SIMULATOR_CONTACT } from '../../common/constants';
+import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
 import { getUserSession } from '../../services/AuthService';
 import { saveConversation } from '../../services/ChatService';
 

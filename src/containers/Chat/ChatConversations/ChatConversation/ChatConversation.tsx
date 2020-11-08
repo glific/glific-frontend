@@ -3,16 +3,16 @@ import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { useApolloClient, useMutation } from '@apollo/client';
 
 import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
-import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
-import { useApolloClient, useMutation } from '@apollo/client';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 import { ReactComponent as ImageIcon } from '../../../../assets/images/icons/Image.svg';
 import { ReactComponent as VideoIcon } from '../../../../assets/images/icons/Video.svg';
 import { ReactComponent as AudioIcon } from '../../../../assets/images/icons/Audio.svg';
+import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatConversationProps {

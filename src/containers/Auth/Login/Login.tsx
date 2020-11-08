@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { useLazyQuery } from '@apollo/client';
 
 import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
@@ -16,7 +17,6 @@ import {
   setUserSession,
   clearUserSession,
 } from '../../../services/AuthService';
-import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';

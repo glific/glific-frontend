@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
-import { useQuery, useMutation } from '@apollo/client';
+import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 
 export interface FormLayoutProps {
   match: any;

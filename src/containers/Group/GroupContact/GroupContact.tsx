@@ -11,13 +11,16 @@ export interface GroupContactProps {
 }
 
 export const GroupContact: React.FC<GroupContactProps> = (props: GroupContactProps) => {
-  const groupId = props.match.params.id;
+  const { match } = props;
+
+  const groupId = match.params.id;
   const group = useQuery(GET_GROUP, {
     variables: { id: groupId },
     fetchPolicy: 'cache-and-network',
   });
   const title = group.data ? group.data.group.group.label : 'Group';
-  let users, description;
+  let users;
+  let description;
 
   if (group.data) {
     users = group.data.group.group.users;

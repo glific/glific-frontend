@@ -1,7 +1,8 @@
 import React from 'react';
-import styles from './ChatTemplates.module.css';
 import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
+
+import styles from './ChatTemplates.module.css';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';

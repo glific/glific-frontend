@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
+import CancelOutlined from '@material-ui/icons/CancelOutlined';
+
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
 import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
@@ -8,7 +10,6 @@ import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearch
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Collection } from '../../Collection/Collection';
-import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 import { advanceSearch } from '../../../context/role';
 
@@ -182,7 +183,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         resetSearch();
       }}
     >
-      <CancelOutlined  className={styles.CancelOutlined}/>
+      <CancelOutlined className={styles.CancelOutlined} />
     </IconButton>
   );
 

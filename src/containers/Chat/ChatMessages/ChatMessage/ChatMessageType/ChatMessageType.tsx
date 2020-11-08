@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { DATE_FORMAT } from '../../../../../common/constants';
 import moment from 'moment';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { Tooltip } from '../../../../../components/UI/Tooltip/Tooltip';
+
 import styles from './ChatMessageType.module.css';
+import { DATE_FORMAT } from '../../../../../common/constants';
+import { Tooltip } from '../../../../../components/UI/Tooltip/Tooltip';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';

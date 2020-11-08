@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 import styles from './ChatMessages.module.css';
 import Loading from '../../../components/UI/Layout/Loading/Loading';

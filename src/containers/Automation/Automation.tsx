@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
+import { useLazyQuery } from '@apollo/client';
+
+import styles from './Automation.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
-import styles from './Automation.module.css';
 import {
   CREATE_AUTOMATION,
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
 } from '../../graphql/mutations/Automation';
-import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { useLazyQuery } from '@apollo/client';
+import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
 
 export interface AutomationProps {
   match: any;

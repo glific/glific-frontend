@@ -4,13 +4,14 @@ import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
+import { useApolloClient } from '@apollo/client';
+
 import styles from './ChatInput.module.css';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
-import { useApolloClient } from '@apollo/client';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatInputProps {

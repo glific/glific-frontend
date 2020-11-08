@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useApolloClient, useMutation } from '@apollo/client';
-import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@material-ui/core';
+
+import styles from './AddToMessageTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
-import styles from './AddToMessageTemplate.module.css';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
+import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 
 interface AddToMessageTemplateProps {

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
+import moment from 'moment';
+import { Typography } from '@material-ui/core';
+
+import styles from './Collection.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import styles from './Collection.module.css';
 import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
@@ -17,9 +20,7 @@ import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { Typography } from '@material-ui/core';
 import { setVariables } from '../../common/constants';
 
 export interface CollectionProps {

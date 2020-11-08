@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './Simulator.module.css';
-import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
+import { useQuery } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
-import { useQuery } from '@apollo/client';
 import Draggable from 'react-draggable';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
@@ -14,12 +12,15 @@ import CallIcon from '@material-ui/icons/Call';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
+import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
+import moment from 'moment';
+
+import styles from './Simulator.module.css';
+import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import moment from 'moment';
 import { TIME_FORMAT } from '../../common/constants';
-import ClearIcon from '@material-ui/icons/Clear';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { SIMULATOR_CONTACT } from '../../common/constants';
 

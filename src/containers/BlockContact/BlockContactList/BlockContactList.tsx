@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import { useMutation, useApolloClient } from '@apollo/client';
+
 import styles from './BlockContactList.module.css';
 import { ReactComponent as BlockIcon } from '../../../assets/images/icons/Block.svg';
 import { ReactComponent as UnblockIcon } from '../../../assets/images/icons/Unblock.svg';
 import { List } from '../../List/List';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
-import { useMutation, useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
+import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
+import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 export interface BlockContactListProps {}
 

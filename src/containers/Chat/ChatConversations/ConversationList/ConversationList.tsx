@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@material-ui/core';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 
+import styles from './ConversationList.module.css';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import {
@@ -12,8 +14,6 @@ import {
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
-import styles from './ConversationList.module.css';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { updateConversations } from '../../../../services/ChatService';
 
 interface ConversationListProps {
