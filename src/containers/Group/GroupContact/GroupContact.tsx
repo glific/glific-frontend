@@ -1,8 +1,9 @@
 import React from 'react';
-import { GroupContactList } from './GroupContactList/GroupContactList';
-import styles from './GroupContact.module.css';
-import { GroupDescription } from './GroupDescription/GroupDescription';
 import { useQuery } from '@apollo/client';
+
+import styles from './GroupContact.module.css';
+import { GroupContactList } from './GroupContactList/GroupContactList';
+import { GroupDescription } from './GroupDescription/GroupDescription';
 import { GET_GROUP } from '../../../graphql/queries/Group';
 
 export interface GroupContactProps {

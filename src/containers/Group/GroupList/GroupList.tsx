@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
-import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
-import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
+import { IconButton } from '@material-ui/core';
+import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import ChatDarkIconSVG from '../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { List } from '../../List/List';
-import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
+import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
+import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
-import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
+import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
+import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import { List } from '../../List/List';
+import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
-import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { setVariables } from '../../../common/constants';
-import { IconButton } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
-import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
 export interface GroupListProps {}
