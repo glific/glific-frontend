@@ -8,10 +8,6 @@ import { mount } from 'enzyme';
 import { List } from '../../List/List';
 import * as something  from '../../../context/role';
 
-
-
-
-
 const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
