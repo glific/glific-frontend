@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { mount } from 'enzyme';
+import {render} from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SearchDialogBox } from './SearchDialogBox';
 
@@ -11,16 +11,24 @@ const defaultProps = {
   options: [{ id: '1', label: 'something' }],
   selectedOptions: ['1'],
 };
-const wrapper = mount(
-  <MockedProvider>
-    <SearchDialogBox {...defaultProps} />
-  </MockedProvider>
-);
+
+let wrapper:any;
+
+beforeEach(()=>{
+   wrapper = render(
+    <MockedProvider>
+      <SearchDialogBox {...defaultProps} />
+    </MockedProvider>
+  );
+})
+
 
 test('it should render the title correctly', () => {
-  expect(wrapper.find('div[data-testid="dialogTitle"]').text()).toEqual('Search Box');
+  expect(wrapper.getByTestId("dialogTitle")).toHaveTextContent('Search Box')
 });
 
 test('it should contain the selected option', () => {
-  expect(wrapper.find('div[data-testid="searchChip"] span').text()).toEqual('something');
+  expect(wrapper.getByTestId("searchChip").querySelector('span')).toHaveTextContent('something');
 });
+
+
