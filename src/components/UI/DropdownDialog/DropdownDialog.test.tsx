@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {fireEvent, render} from "@testing-library/react"
 import { DropdownDialog } from './DropdownDialog';
 import { DialogBox } from '../DialogBox/DialogBox';
 import { Dropdown } from '../Form/Dropdown/Dropdown';
@@ -19,25 +19,27 @@ const dialogBox = (
 );
 
 test('it should contain a dropdown', () => {
-  const wrapper = mount(dialogBox);
-  expect(wrapper.find('[data-testid="dropdown"]').exists()).toBe(true);
+  const {getByTestId} = render(dialogBox);
+  expect(getByTestId('dropdown')).toBeInTheDocument();
 });
 
 test('it should have a description as per default value', () => {
-  const wrapper = mount(dialogBox);
-  expect(wrapper.find('[data-testid="description"]').text()).toBe('This is default dialog');
+  const {getByTestId} = render(dialogBox);
+  expect(getByTestId('description')).toHaveTextContent('This is default dialog');
 });
 
 test('handleOk and onChange function', () => {
-  const wrapper = mount(dialogBox);
-  wrapper.find(DialogBox).prop('handleOk')();
+  const {getByTestId} = render(dialogBox);
+ fireEvent.click(getByTestId('ok-button'))
   expect(mockCallbackOK).toBeCalled();
 
-  act(() => {
-    wrapper
-      .find(Select)
-      .at(0)
-      .props()
-      .onChange({ target: { value: 1 } });
-  });
+  // need to check how to mock these in RTL
+
+  // act(() => {
+  //   wrapper
+  //     .find(Select)
+  //     .at(0)
+  //     .props()
+  //     .onChange({ target: { value: 1 } });
+  // });
 });
