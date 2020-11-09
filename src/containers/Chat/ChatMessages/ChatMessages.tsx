@@ -6,7 +6,6 @@ import { Redirect } from 'react-router';
 
 import styles from './ChatMessages.module.css';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { ToastMessage } from '../../../components/UI/ToastMessage/ToastMessage';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
@@ -83,7 +82,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
-  let toastMessage;
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
@@ -103,11 +101,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   }, [editTagsMessageId]);
 
-  useEffect(() => {
-    return () => {
-      setNotification(client, null);
-    };
-  }, [toastMessage, client]);
 
   // get the conversations stored from the cache
   const queryVariables = SEARCH_QUERY_VARIABLES;
@@ -227,21 +220,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   }
 
-  //toast
-  const closeToastMessage = () => {
-    setNotification(client, null, null);
-  };
-
-  if (message.data && message.data.message) {
-    toastMessage = (
-      <ToastMessage
-        message={message.data.message}
-        severity={message.data.severity ? message.data.severity : ''}
-        handleClose={closeToastMessage}
-      />
-    );
-  }
-
+ 
   const closeDialogBox = () => {
     setDialogbox(false);
     setShowDropdown(null);
@@ -399,7 +378,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
-      {toastMessage}
       <ContactBar
         contactName={
           conversationInfo.contact.name

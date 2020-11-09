@@ -48,6 +48,7 @@ describe('<GroupList />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
+    await wait();
     expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     fireEvent.click(getAllByTestId('additionalButton')[0]);
 

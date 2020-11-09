@@ -1,5 +1,5 @@
 import React from 'react';
-import {  MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { mount } from 'enzyme';
 import { wait } from '@testing-library/react';
 import SideMenus from './SideMenus';
@@ -18,5 +18,4 @@ describe('side menu testing', () => {
     await wait();
     expect(wrapper).toBeTruthy();
   });
-  
 });
