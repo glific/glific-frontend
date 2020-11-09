@@ -15,11 +15,11 @@ import styles from './Input.module.css';
 
 export interface InputProps {
   type?: any;
-  field: any;
+  field: { name: string };
   disabled?: any;
   editor?: any;
   label: string;
-  form: any;
+  form: { touched: any; errors: any };
   placeholder: any;
   rows: number;
   helperText?: string;
@@ -31,15 +31,24 @@ export interface InputProps {
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
-  const touched = props.form.touched;
-  const error = props.form.errors;
-  const name = props.field.name;
+  const {
+    field,
+    form,
+    helperText,
+    type,
+    togglePassword,
+    endAdornmentCallback,
+    emojiPicker,
+    placeholder,
+    editor,
+    rows,
+  } = props;
 
-  let fieldType = props.type;
+  let fieldType = type;
   let fieldEndAdorment = null;
-  if (props.type === 'password') {
+  if (type === 'password') {
     // we should change the type to text if user has clicked on show password
-    if (props.togglePassword) {
+    if (togglePassword) {
       fieldType = 'text';
     }
     fieldEndAdorment = (
@@ -47,10 +56,10 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
         <IconButton
           aria-label="toggle password visibility"
           data-testid="passwordToggle"
-          onClick={props.endAdornmentCallback}
+          onClick={endAdornmentCallback}
           edge="end"
         >
-          {props.togglePassword ? (
+          {togglePassword ? (
             <Visibility classes={{ root: styles.Visibility }} />
           ) : (
             <VisibilityOff classes={{ root: styles.Visibility }} />
@@ -58,16 +67,16 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
         </IconButton>
       </InputAdornment>
     );
-  } else if (props.emojiPicker) {
-    fieldEndAdorment = props.emojiPicker;
-  } else if (props.type === 'otp') {
+  } else if (emojiPicker) {
+    fieldEndAdorment = emojiPicker;
+  } else if (type === 'otp') {
     fieldType = 'text';
     fieldEndAdorment = (
       <InputAdornment position="end">
         <IconButton
           aria-label="resend otp"
           data-testid="resendOtp"
-          onClick={props.endAdornmentCallback}
+          onClick={endAdornmentCallback}
           edge="end"
         >
           <p className={styles.Resend}>resend</p>{' '}
@@ -79,28 +88,30 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
 
   return (
     <div className={styles.Input}>
-      <FormControl fullWidth error={error[name] && touched[name] ? true : false}>
+      <FormControl fullWidth error={form.errors[field.name] && form.touched[field.name]}>
         <InputLabel variant="outlined" className={styles.Label}>
-          {props.placeholder}
+          {placeholder}
         </InputLabel>
         <OutlinedInput
-          inputComponent={props.editor ? props.editor.inputComponent : undefined}
-          inputProps={props.editor ? props.editor.inputProps : undefined}
+          inputComponent={editor ? editor.inputComponent : undefined}
+          inputProps={editor ? editor.inputProps : undefined}
           type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
-          error={error[name] && touched[name] ? true : false}
+          error={form.errors[field.name] && form.touched[field.name]}
           multiline={textArea}
-          rows={props.rows}
+          rows={rows}
           className={styles.OutlineInput}
-          label={props.placeholder}
+          label={placeholder}
           fullWidth
-          {...props.field}
+          {...field}
           endAdornment={fieldEndAdorment}
-        ></OutlinedInput>
-        {error[name] && touched[name] ? <FormHelperText>{error[name]}</FormHelperText> : null}
-        {props.helperText ? (
-          <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+        />
+        {form.errors[field.name] && form.touched[field.name] ? (
+          <FormHelperText>{form.errors[field.name]}</FormHelperText>
+        ) : null}
+        {helperText ? (
+          <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
         ) : null}
       </FormControl>
     </div>
