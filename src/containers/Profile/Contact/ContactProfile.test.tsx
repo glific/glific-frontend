@@ -11,14 +11,7 @@ const defaultProps = {
   match: { params: { id: 1 } },
 };
 
-global.document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
-  commonAncestorContainer: {
-    nodeName: 'BODY',
-    ownerDocument: document,
-  },
-});
+
 
 test('contact profile should mount', async () => {
   const { getByTestId } = render(
