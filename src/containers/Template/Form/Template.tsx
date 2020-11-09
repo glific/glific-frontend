@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
+import { EditorState } from 'draft-js';
+
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
+import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import {
   CREATE_TEMPLATE,
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
-import { EditorState } from 'draft-js';
-import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
+
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
   body: Yup.string()
@@ -23,7 +25,7 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
-const defaultAttribute = {
+const defaultTypeAttribute = {
   type: 'TEXT',
 };
 
@@ -43,20 +45,22 @@ export interface TemplateProps {
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
+  const { match, listItemName, redirectionLink, icon, defaultAttribute } = props;
+
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, body };
-  const setStates = ({ label, body }: any) => {
-    setLabel(label);
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(body)));
+  const setStates = ({ fieldLabel, fieldBody }: any) => {
+    setLabel(fieldLabel);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(fieldBody)));
   };
 
-  let attributesObject = defaultAttribute;
-  if (props.defaultAttribute) {
-    attributesObject = { ...attributesObject, ...props.defaultAttribute };
+  let attributesObject = defaultTypeAttribute;
+  if (defaultAttribute) {
+    attributesObject = { ...attributesObject, ...defaultAttribute };
   }
 
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
@@ -117,16 +121,16 @@ const Template: React.SFC<TemplateProps> = (props) => {
   return (
     <FormLayout
       {...queries}
-      match={props.match}
+      match={match}
       states={states}
       setStates={setStates}
       validationSchema={FormSchema}
-      listItemName={props.listItemName}
+      listItemName={listItemName}
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink={props.redirectionLink}
+      redirectionLink={redirectionLink}
       listItem="sessionTemplate"
-      icon={props.icon}
+      icon={icon}
       defaultAttribute={attributesObject}
       getLanguageId={getLanguageId}
     />

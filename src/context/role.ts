@@ -3,27 +3,15 @@ import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
 
-const resetRole = () => {
-  role = [];
-  getRoleBasedAccess();
-};
-
 const getUserRole = () => {
   if (!role || role.length === 0) {
-    let userRole: any = getUserSession('roles');
+    const userRole: any = getUserSession('roles');
     if (userRole) {
       role = userRole;
     } else role = [];
   }
   return role;
 };
-
-let sideDrawerMenu: any = [];
-let staffManagementMenu: any = [];
-let settingMenu: boolean;
-let advanceSearch: boolean = false;
-let displayUserGroups: boolean = false;
-let isManagerRole: boolean = false;
 
 const getRoleBasedAccess = () => {
   // if role not present get role
@@ -68,6 +56,18 @@ const getRoleBasedAccess = () => {
 
   return sideDrawerMenu;
 };
+
+const resetRole = () => {
+  role = [];
+  getRoleBasedAccess();
+};
+
+let sideDrawerMenu: any = [];
+let staffManagementMenu: any = [];
+let settingMenu: boolean;
+let advanceSearch: boolean = false;
+let displayUserGroups: boolean = false;
+let isManagerRole: boolean = false;
 
 export const getStaffManagementMenus = () => {
   return staffManagementMenu;
