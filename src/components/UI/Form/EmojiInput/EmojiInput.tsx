@@ -52,8 +52,8 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
     React.useImperativeHandle(inputRef, () => ({
       focus: () => {
-        const current: any = ref.current;
-        if (current) current.focus();
+        const current: any = ref;
+        if (current) current.current.focus();
       },
     }));
 

@@ -37,7 +37,7 @@ export interface SideDrawerProps {}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
-const theme = createMuiTheme({
+const themeUI = createMuiTheme({
   typography: {
     h6: {
       fontSize: 24,
@@ -115,12 +115,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
+export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const location = useLocation();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = React.useState(true);
-  const [active, setActive] = React.useState(false);
   const [staffManagementMenus, setStaffManagementMenus] = React.useState<any>([]);
 
   // get menu for role
@@ -133,7 +132,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
       <Toolbar className={classes.anotherToolBar}>
         {fullOpen ? (
           <div className={classes.outerBox}>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={themeUI}>
               <Typography variant="h6" className={classes.title}>
                 <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
               </Typography>
@@ -172,7 +171,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
   const settingMenus = settingMenu ? (
     <div>
       <Tooltip title="Settings" placement="top">
-        <Link to={'/settings'}>
+        <Link to="/settings">
           <IconButton data-testid="settingsMenu">
             <img
               src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
@@ -203,7 +202,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
         <Drawer
           container={container}
           variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+          anchor={themeUI.direction === 'rtl' ? 'right' : 'left'}
           open={mobileOpen}
           onClose={() => {
             setMobileOpen(!mobileOpen);
@@ -234,7 +233,12 @@ export const SideDrawer: React.SFC<SideDrawerProps> = (props) => {
         >
           <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
-            <div data-testid="bottom-menu" onClick={() => getMenus()}>
+            <div
+              data-testid="bottom-menu"
+              onClick={getMenus}
+              onKeyDown={getMenus}
+              aria-hidden="true"
+            >
               <Menu menus={staffManagementMenus}>
                 <Tooltip title="Staff Management" placement="top">
                   <IconButton data-testid="staffManagementMenu">

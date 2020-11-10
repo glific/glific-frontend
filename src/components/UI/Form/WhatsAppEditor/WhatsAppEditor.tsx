@@ -16,25 +16,26 @@ interface WhatsAppEditorProps {
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
+  const { setEditorState, sendMessage, editorState, handleHeightChange } = props;
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const handleChange = (editorState: any) => {
-    props.setEditorState(editorState);
+  const handleChange = (editorStateChange: any) => {
+    setEditorState(editorStateChange);
   };
 
-  const handleKeyCommand = (command: string, editorState: any) => {
+  const handleKeyCommand = (command: string, editorStateChange: any) => {
     // On enter, submit. Otherwise, deal with commands like normal.
     if (command === 'enter') {
       // Convert Draft.js to WhatsApp
-      props.sendMessage(convertToWhatsApp(editorState));
+      sendMessage(convertToWhatsApp(editorStateChange));
       return 'handled';
     }
     if (command === 'underline') {
       return 'handled';
     }
 
-    const newState = RichUtils.handleKeyCommand(editorState, command);
+    const newState = RichUtils.handleKeyCommand(editorStateChange, command);
     if (newState) {
-      props.setEditorState(newState);
+      setEditorState(newState);
       return 'handled';
     }
     return 'not-handled';
@@ -53,11 +54,11 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
   };
 
   const handleEmoji = (emoji: any) => {
-    const contentState = props.editorState.getCurrentContent();
-    const selectionState = props.editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
     const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
-    const editorState = EditorState.createWithContent(ModifiedContent);
-    props.setEditorState(editorState);
+    const editorStateCopy = EditorState.createWithContent(ModifiedContent);
+    setEditorState(editorStateCopy);
   };
 
   return (
@@ -65,12 +66,12 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       <ReactResizeDetector
         data-testid="resizer"
         handleHeight
-        onResize={(width: any, height: any) => props.handleHeightChange(height - 40)} // 40 is the initial height
+        onResize={(width: any, height: any) => handleHeightChange(height - 40)} // 40 is the initial height
       >
         <div className={styles.Editor}>
           <Editor
             data-testid="editor"
-            editorState={props.editorState}
+            editorState={editorState}
             onChange={handleChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
