@@ -78,12 +78,13 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
   }
 
   return (
-    <div className={styles.Input}>
+    <div className={styles.Input} data-testid="input">
       <FormControl fullWidth error={error[name] && touched[name] ? true : false}>
-        <InputLabel variant="outlined" className={styles.Label}>
+        <InputLabel variant="outlined" className={styles.Label} data-testid="inputLabel">
           {props.placeholder}
         </InputLabel>
         <OutlinedInput
+          data-testid="outlinedInput"
           inputComponent={props.editor ? props.editor.inputComponent : undefined}
           inputProps={props.editor ? props.editor.inputProps : undefined}
           type={fieldType}

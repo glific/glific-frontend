@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import {render} from "@testing-library/react";
 import { AutoComplete } from './AutoComplete';
 
 describe('<AutoComplete />', () => {
@@ -18,9 +18,9 @@ describe('<AutoComplete />', () => {
     form: { dirty: false, touched: false, errors: false, setFieldValue: null },
   };
 
-  const wrapper = shallow(<AutoComplete {...props} />);
+  const wrapper = render(<AutoComplete {...props} />);
 
   it('renders <AutoComplete /> component', () => {
-    expect(wrapper).toBeTruthy();
+    expect(wrapper.getByTestId('autocomplete-element')).toBeInTheDocument();
   });
 });

@@ -27,7 +27,7 @@ export const PhoneInput: React.SFC<InputProps> = ({
   const errorText = getIn(errors, field.name);
 
   return (
-    <div className={styles.Input}>
+    <div className={styles.Input} data-testid='phoneInput'>
       <FormControl>
         <ReactPhoneInput
           containerClass={styles.Container}
