@@ -1651,7 +1651,7 @@
 
 "@nyaruka/flow-editor@glific/floweditor#glific-master":
   version "1.9.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/8128b9b8a5f68a4527a0584cb69835606ea836d9"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/63e54ff3aa35245a11ab578a7c81030319895c53"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
