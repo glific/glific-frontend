@@ -151,6 +151,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data[itemUpdated] && data[itemUpdated].errors) {
         setErrorMessage(client, data[itemUpdated].errors[0]);
       } else {
+        if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
         if (additionalQuery) {
           additionalQuery(itemId);
         }
@@ -340,7 +341,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form} data-testid="formLayout">    
+          <Form className={styles.Form} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               return (
                 <React.Fragment key={index}>
