@@ -58,7 +58,13 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
 
-  const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS);
+  // get the published automation list
+  const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS, {
+    variables: setVariables({
+      status: 'done',
+    }),
+  });
+
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
