@@ -149,6 +149,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data[itemUpdated] && data[itemUpdated].errors) {
         setErrorMessage(client, data[itemUpdated].errors[0]);
       } else {
+        if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
         if (additionalQuery) {
           additionalQuery(itemId);
         }
