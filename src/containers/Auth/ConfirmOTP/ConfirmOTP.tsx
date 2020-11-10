@@ -71,19 +71,19 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
           otp: values.OTP,
         },
       })
-      .then((response: any) => {
+      .then(() => {
         setAuthSuccess(successMessage);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to register, kindly contact your technical team.');
       });
   };
 
   return (
     <Auth
-      pageTitle={'Create your new account'}
-      buttonText={'CONTINUE'}
-      mode={'confirmotp'}
+      pageTitle="Create your new account"
+      buttonText="CONTINUE"
+      mode="confirmotp"
       formFields={formFields}
       setStates={setStates}
       states={states}
