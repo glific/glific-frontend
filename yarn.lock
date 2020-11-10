@@ -1649,9 +1649,9 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@nyaruka/flow-editor@glific/floweditor#glific-master":
+"@nyaruka/flow-editor@glific/floweditor#tagv0.7.0":
   version "1.9.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/8128b9b8a5f68a4527a0584cb69835606ea836d9"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/63e54ff3aa35245a11ab578a7c81030319895c53"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
