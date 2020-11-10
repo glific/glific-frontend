@@ -67,7 +67,6 @@ const setConfig = (uuid: any) => {
       'call_resthook',
       'start_session',
       'open_ticket',
-      'split_by_expression',
       'transfer_airtime',
       'split_by_intent',
       'split_by_contact_field',
