@@ -18,7 +18,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.10.0",
-    "@nyaruka/flow-editor": "glific/floweditor#glific-master",
+    "@nyaruka/flow-editor": "glific/floweditor#v1.9.8.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -80,7 +80,7 @@
     "cy:run": "cypress run",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "npm update @nyaruka/flow-editor && cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
+    "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
   },
   "eslintConfig": {
     "extends": "react-app"
