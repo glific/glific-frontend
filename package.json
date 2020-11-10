@@ -74,7 +74,7 @@
   "scripts": {
     "setup": "yarn install && yarn run floweditor",
     "start": "react-scripts start",
-    "build": "npm run floweditor && react-scripts build",
+    "build": "yarn setup && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
     "cy:run": "cypress run",
