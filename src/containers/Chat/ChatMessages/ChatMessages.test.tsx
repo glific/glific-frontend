@@ -7,14 +7,7 @@ import { mocksWithConversation, mocksWithMultipleMessages } from '../../../mocks
 import { fireEvent } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 
-global.document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
-  commonAncestorContainer: {
-    nodeName: 'BODY',
-    ownerDocument: document,
-  },
-});
+
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 

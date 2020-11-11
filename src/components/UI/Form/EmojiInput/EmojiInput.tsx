@@ -47,13 +47,13 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     props.form.setFieldValue(rest.name, updatedEditorState);
   };
 
-  const InputWrapper = (props: any) => {
-    const { component: Component, inputRef, ...other } = props;
+  const InputWrapper = (inputProps: any) => {
+    const { component: Component, inputRef, ...other } = inputProps;
 
     React.useImperativeHandle(inputRef, () => ({
       focus: () => {
-        const current: any = ref.current;
-        if (current) current.focus();
+        const current: any = ref;
+        if (current) current.current.focus();
       },
     }));
 
@@ -66,12 +66,12 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
-    handleKeyCommand: handleKeyCommand,
+    handleKeyCommand,
     onBlur: props.form.handleBlur,
     onChange: draftJsChange,
   };
 
-  const editor = { inputComponent: inputComponent, inputProps: inputProps };
+  const editor = { inputComponent, inputProps };
 
   const emojiPicker = showEmojiPicker ? (
     <Picker

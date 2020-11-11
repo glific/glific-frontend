@@ -28,7 +28,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
 
   const handleDateChange = (time: Date | null) => {
-    let value = time ? moment(time).format('THH:mm:ss') : null;
+    const value = time ? moment(time).format('THH:mm:ss') : null;
     setFieldValue(field.name, value);
   };
 

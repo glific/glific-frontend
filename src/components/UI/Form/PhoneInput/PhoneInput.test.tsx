@@ -7,7 +7,7 @@ describe('<PhoneInput />', () => {
     helperText: 'Your helper text',
     field: { name: 'example', value: '' },
     placeholder: 'Your phone number',
-    form: { dirty: false, touched: false, errors: false, setFieldValue: null },
+    form: { errors: false, setFieldValue: null },
   };
   const phoneInput = () => <PhoneInput {...props} />;
 

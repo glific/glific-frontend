@@ -3,8 +3,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import clsx from 'clsx';
 
-import ListIcon from '../../../ListIcon/ListIcon';
 import styles from './SideMenus.module.css';
+import ListIcon from '../../../ListIcon/ListIcon';
 import { getRoleBasedAccess } from '../../../../../context/role';
 
 export interface SideMenusProps {
@@ -14,14 +14,14 @@ export interface SideMenusProps {
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
 
-  const menu: any[] = getRoleBasedAccess();
+  const menuObj: any[] = getRoleBasedAccess();
 
-  const menuList = menu.map((menu, i) => {
-    let isSelected = location.pathname.startsWith(menu.path);
+  const menuList = menuObj.map((menu) => {
+    const isSelected = location.pathname.startsWith(menu.path);
     return (
       <ListItem
         button
-        disableRipple={true}
+        disableRipple
         selected={isSelected}
         className={clsx({
           [styles.OpenItem]: props.opened,

@@ -63,6 +63,15 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     }
   }, [open, getOptions]);
 
+  const getValue = (() => {
+    if (multiple && asyncSearch) return asyncValues.value;
+    if (multiple)
+      return optionValue.filter((option: any) =>
+        field.value.map((value: any) => value.id).includes(option.id)
+      );
+    return field.value;
+  })();
+
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
@@ -87,15 +96,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             setFieldValue(field.name, value);
           }}
           inputValue={asyncSearch ? searchTerm : undefined}
-          value={
-            multiple
-              ? asyncSearch
-                ? asyncValues.value
-                : optionValue.filter((option: any) =>
-                    field.value.map((value: any) => value.id).includes(option.id)
-                  )
-              : field.value
-          }
+          value={getValue}
           disabled={disabled}
           disableCloseOnSelect
           renderTags={(value: any, getTagProps) =>

@@ -19,7 +19,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
 
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
-    return <Redirect to={'/resetpassword-phone'} />;
+    return <Redirect to="/resetpassword-phone" />;
   }
 
   if (redirect) {
@@ -76,21 +76,21 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
           otp: values.OTP,
         },
       })
-      .then((response) => {
+      .then(() => {
         setRedirect(true);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to update your password, please enter the correct OTP.');
       });
   };
 
   return (
     <Auth
-      pageTitle={'Reset your password'}
-      buttonText={'SAVE'}
-      alternateLink={'login'}
-      alternateText={'GO TO LOGIN'}
-      mode={'secondreset'}
+      pageTitle="Reset your password"
+      buttonText="SAVE"
+      alternateLink="login"
+      alternateText="GO TO LOGIN"
+      mode="secondreset"
       formFields={formFields}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}

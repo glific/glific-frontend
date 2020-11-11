@@ -1,22 +1,26 @@
 import React from 'react';
 import { FormControl, FormHelperText } from '@material-ui/core';
-import ReactPhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import { getIn } from 'formik';
+import ReactPhoneInput from 'react-phone-input-2';
+
 import styles from './PhoneInput.module.css';
 
 export interface InputProps {
   enableSearch?: boolean;
-  inputProps?: object;
+  inputProps?: {
+    required: boolean;
+    autoFocus: boolean;
+  };
   helperText: string;
   field: any;
   placeholder: string;
-  form: { dirty: any; touched: any; errors: any; setFieldValue: any };
+  form: { errors: any; setFieldValue: any };
 }
 
 export const PhoneInput: React.SFC<InputProps> = ({
   enableSearch = true,
-  form: { dirty, touched, errors, setFieldValue },
+  form: { errors, setFieldValue },
   field,
   inputProps = {
     required: true,
@@ -25,6 +29,7 @@ export const PhoneInput: React.SFC<InputProps> = ({
   ...props
 }) => {
   const errorText = getIn(errors, field.name);
+  const { placeholder } = props;
 
   return (
     <div className={styles.Input} data-testid='phoneInput'>
@@ -33,9 +38,9 @@ export const PhoneInput: React.SFC<InputProps> = ({
           containerClass={styles.Container}
           inputClass={styles.PhoneNumber}
           data-testid="phoneNumber"
-          placeholder={props.placeholder}
+          placeholder={placeholder}
           enableSearch={enableSearch}
-          country={'in'}
+          country="in"
           autoFormat={false}
           inputProps={inputProps}
           {...field}

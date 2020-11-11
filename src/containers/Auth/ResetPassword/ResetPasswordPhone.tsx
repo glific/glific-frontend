@@ -26,13 +26,13 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
     );
   }
 
-  const onSubmitPhone = (values: any) => {
-    sendOTP(values.phoneNumber)
-      .then((response) => {
-        setValues(values);
+  const onSubmitPhone = (data: any) => {
+    sendOTP(data.phoneNumber)
+      .then(() => {
+        setValues(data);
         setRedirect(true);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });
   };
@@ -55,11 +55,11 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
 
   return (
     <Auth
-      pageTitle={'Reset your password'}
-      buttonText={'GENERATE OTP TO CONFIRM'}
-      alternateLink={'login'}
-      alternateText={'GO TO LOGIN'}
-      mode={'firstreset'}
+      pageTitle="Reset your password"
+      buttonText="GENERATE OTP TO CONFIRM"
+      alternateLink="login"
+      alternateText="GO TO LOGIN"
+      mode="firstreset"
       formFields={formFields}
       titleSubText="Please confirm your phone number to proceed"
       validationSchema={FormSchema}
