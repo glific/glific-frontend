@@ -152,7 +152,9 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     FormSchema = Yup.object().shape(validation);
   };
 
+  let title;
   if (providerData) {
+    title = providerData.providers[0].name;
     providerData.providers.map((provider: any) => {
       keys = JSON.parse(provider.keys);
       secrets = JSON.parse(provider.secrets);
@@ -177,7 +179,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     <FormLayout
       backLinkButton={{ text: 'Back to settings', link: '/settings' }}
       {...queries}
-      title={type}
+      title={title}
       match={param}
       states={states}
       setStates={setCredential}

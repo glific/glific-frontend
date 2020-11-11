@@ -52,7 +52,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_AUTOMATIONS,
-      variables: setVariables(),
+      variables: setVariables({ status: 'done' }),
     },
     result: {
       data: {

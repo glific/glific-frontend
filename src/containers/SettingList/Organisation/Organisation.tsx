@@ -98,12 +98,17 @@ export const Organisation: React.SFC = () => {
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
   };
 
+  // get the published automation list
   const { data } = useQuery(GET_AUTOMATIONS, {
-    variables: setVariables(),
+    variables: setVariables({
+      status: 'done',
+    }),
   });
+
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
+
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
