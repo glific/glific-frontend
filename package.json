@@ -18,7 +18,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.10.0",
-    "@nyaruka/flow-editor": "glific/floweditor#glific-master",
+    "@nyaruka/flow-editor": "glific/floweditor#v1.9.8.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -72,9 +72,9 @@
     "yup": "^0.29.2"
   },
   "scripts": {
-    "setup": "yarn install && yarn run floweditor",
+    "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
     "start": "react-scripts start",
-    "build": "npm run floweditor && react-scripts build",
+    "build": "yarn setup && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
     "cy:run": "cypress run",
