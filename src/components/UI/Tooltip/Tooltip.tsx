@@ -5,35 +5,38 @@ import styles from './Tooltip.module.css';
 
 interface TooltipProps {
   title: String;
-  placement: TooltipElement.TooltipProps['placement'];
+  placement: any;
   children: ReactNode;
   tooltipClass?: string;
   tooltipArrowClass?: string;
 }
 
 export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
+  const { tooltipClass, tooltipArrowClass, title, placement, children } = props;
   // set the default styling for main tooltip
   const toolTipStyling = [styles.Tooltip];
   // let's add the class passed in props so that we can overide default properties.
-  if (props.tooltipClass) {
-    toolTipStyling.push(props.tooltipClass);
+  if (tooltipClass) {
+    toolTipStyling.push(tooltipClass);
   }
 
   // set the default styling for tooltip arrow
   const toolTipArrowStyling = [styles.TooltipArrow];
   // let's add the class passed in props so that we can overide default properties.
-  if (props.tooltipArrowClass) {
-    toolTipArrowStyling.push(props.tooltipArrowClass);
+  if (tooltipArrowClass) {
+    toolTipArrowStyling.push(tooltipArrowClass);
   }
 
   return (
     <TooltipElement.default
-      title={props.title}
-      placement={props.placement}
+      title={title}
+      placement={placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
     >
-      <span>{props.children}</span>
+      <span>{children}</span>
     </TooltipElement.default>
   );
 };
+
+export default Tooltip;

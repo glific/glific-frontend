@@ -10,11 +10,11 @@ import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
-import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Automation';
 import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
+import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
+import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Automation';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -27,7 +27,7 @@ const loadfiles = () => {
       continue;
     }
     if (filesToLoad[fileName].endsWith('.js')) {
-      index++;
+      index += 1;
       const script = document.createElement('script');
       script.src = filesToLoad[fileName].slice(1);
       script.id = `flowEditorScript${index}`;
@@ -116,23 +116,23 @@ const setConfig = (uuid: any) => {
     endpoints: {
       simulateStart: false,
       simulateResume: false,
-      globals: glificBase + 'globals',
-      groups: glificBase + 'groups',
-      fields: glificBase + 'fields',
-      labels: glificBase + 'labels',
-      channels: glificBase + 'channels',
-      classifiers: glificBase + 'classifiers',
-      ticketers: glificBase + 'ticketers',
-      resthooks: glificBase + 'resthooks',
-      templates: glificBase + 'templates',
-      languages: glificBase + 'languages',
-      environment: glificBase + 'environment',
-      recipients: glificBase + 'recipients',
-      completion: glificBase + 'completion',
-      activity: glificBase + 'activity',
-      flows: glificBase + 'flows',
-      revisions: glificBase + 'revisions/' + uuid,
-      functions: glificBase + 'functions',
+      globals: `${glificBase}globals`,
+      groups: `${glificBase}groups`,
+      fields: `${glificBase}fields`,
+      labels: `${glificBase}labels`,
+      channels: `${glificBase}channels`,
+      classifiers: `${glificBase}classifiers`,
+      ticketers: `${glificBase}ticketers`,
+      resthooks: `${glificBase}resthooks`,
+      templates: `${glificBase}templates`,
+      languages: `${glificBase}languages`,
+      environment: `${glificBase}environment`,
+      recipients: `${glificBase}recipients`,
+      completion: `${glificBase}completion`,
+      activity: `${glificBase}activity`,
+      flows: `${glificBase}flows`,
+      revisions: `${glificBase}revisions/${uuid}`,
+      functions: `${glificBase}functions`,
       editor: FLOW_EDITOR_CONFIGURE_LINK,
     },
   };
@@ -198,7 +198,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const { data: automationName } = useQuery(GET_AUTOMATION_DETAILS, {
     variables: {
       filter: {
-        uuid: uuid,
+        uuid,
       },
       opts: {},
     },
@@ -224,7 +224,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
     const files = loadfiles();
     return () => {
       for (const node in files) {
-        document.body.removeChild(files[node]);
+        if (files[node]) {
+          document.body.removeChild(files[node]);
+        }
       }
     };
   }, []);
@@ -337,13 +339,13 @@ export const FlowEditor = (props: FlowEditorProps) => {
         />
       ) : null}
       {modal}
-      <Prompt when={true} message={handleBlockedNavigation} />
+      <Prompt when message={handleBlockedNavigation} />
 
       <div className={styles.FlowContainer}>
         <div className={styles.AutomationName} data-testid="automationName">
           {automationName ? (
             <>
-              <IconButton disabled={true} className={styles.Icon}>
+              <IconButton disabled className={styles.Icon}>
                 <AutomationIcon />
               </IconButton>
 
