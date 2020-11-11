@@ -20,7 +20,8 @@
       }
     ],
     "react/prop-types": "off",
-    "react/jsx-curly-newline": "off"
+    "react/jsx-curly-newline": "off",
+    "react/jsx-props-no-spreading": "off"
   },
   "env": {
     "jest": true

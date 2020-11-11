@@ -43,19 +43,39 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, description, keywords, colorCode, parentId };
-  const setStates = ({ label, description, keywords, colorCode, parent }: any) => {
-    setLabel(label);
-    setDescription(description);
-    setKeywords(keywords);
-    setColorCode(colorCode);
-    if (parent) {
-      setParentId(getObject(data.tags, [parent.id])[0]);
+
+  const getObject = (arr: any, data: any) => {
+    if (arr && data) {
+      const result: any = [];
+      arr.map((obj: any) => {
+        data.map((ID: any) => {
+          if (obj.id === ID) result.push(obj);
+        });
+      });
+      return result;
+    }
+  };
+
+  const setStates = ({
+    labelValue,
+    descriptionValue,
+    keywordsValue,
+    colorCodeValue,
+    parentValue,
+  }: any) => {
+    setLabel(labelValue);
+    setDescription(descriptionValue);
+    setKeywords(keywordsValue);
+    setColorCode(colorCodeValue);
+    if (parentValue) {
+      setParentId(getObject(data.tags, [parentValue.id])[0]);
     }
   };
 
   const { data } = useQuery(GET_TAGS, {
     variables: setVariables(),
   });
+
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
       filter: { label: filterLabel, languageId: parseInt(languageId) },
@@ -76,18 +96,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
     }
   }
-
-  const getObject = (arr: any, data: any) => {
-    if (arr && data) {
-      let result: any = [];
-      arr.map((obj: any) => {
-        data.map((ID: any) => {
-          if (obj.id === ID) result.push(obj);
-        });
-      });
-      return result;
-    }
-  };
 
   const validateTitle = (value: any) => {
     if (value) {
