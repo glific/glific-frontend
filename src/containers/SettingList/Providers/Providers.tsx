@@ -34,8 +34,8 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   const type = match.params.type ? match.params.type : null;
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
-  let param = { params: { id: credentialId, shortcode: type } };
-  let states: any = {};
+  const param = { params: { id: credentialId, shortcode: type } };
+  const states: any = {};
   let keys: any = {};
   let secrets: any = {};
   let formFields: any = [];
@@ -184,15 +184,15 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
-      dialogMessage={''}
+      dialogMessage=""
       formFields={formFields}
       redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"
-      listItem={'credential'}
+      listItem="credential"
       icon={SettingIcon}
       languageSupport={false}
-      type={'settings'}
+      type="settings"
       redirect={true}
       afterSave={saveHandler}
     />
