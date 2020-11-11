@@ -1,6 +1,6 @@
 import React from 'react';
 import { ListIcon } from './ListIcon';
-import { shallow, mount } from 'enzyme';
+import { render } from '@testing-library/react';
 
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
@@ -34,15 +34,16 @@ describe('list icon tests', () => {
   };
 
   it('renders an object', () => {
-    const wrapper = shallow(createIcon('chat', false));
-    expect(wrapper).toBeTruthy();
+    const { getByTestId } = render(createIcon('chat', false));
+    expect(getByTestId('listIcon')).toBeInTheDocument();
   });
 
   it('renders appropriate icons', () => {
     let keys = Object.keys(iconList);
+
     for (let i = 0; i < keys.length; i++) {
-      const wrapper = mount(createIcon(keys[i], false));
-      expect(wrapper.find('img').props().src).toEqual('Unselected.svg');
+      const { container } = render(createIcon(keys[i], false));
+      expect(container.querySelector('img')?.src).toContain('Unselected.svg');
     }
   });
 });

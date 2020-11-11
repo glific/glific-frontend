@@ -60,6 +60,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
           : stringsToIcons[icon]
       }
       alt={'Selected '.concat(icon)}
+      data-testid="listIcon"
     />
   );
 };

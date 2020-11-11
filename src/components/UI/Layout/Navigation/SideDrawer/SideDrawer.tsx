@@ -197,6 +197,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
         [classes.navClose]: !fullOpen,
       })}
       aria-label="navigation menus"
+      data-testid="navbar"
     >
       <Hidden smUp implementation="css">
         <Drawer

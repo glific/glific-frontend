@@ -12,7 +12,7 @@ export const Layout: React.SFC<LayoutProps> = (props) => {
   return (
     <>
       <SideDrawer />
-      <main className={styles.Main}>
+      <main className={styles.Main} data-testid="layout">
         <div>{children}</div>
       </main>
     </>

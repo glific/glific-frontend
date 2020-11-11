@@ -29,6 +29,7 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
   return (
     <TooltipElement.default
       title={props.title}
+      data-testid="tooltip"
       placement={props.placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}

@@ -15,9 +15,10 @@ const getUserRole = () => {
 
 const getRoleBasedAccess = () => {
   // if role not present get role
-  if (!role) {
+  if (!role || role.length === 0) {
     role = getUserRole();
   }
+
   if (role && role.includes('Staff')) {
     sideDrawerMenu = [
       {

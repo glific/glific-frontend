@@ -53,7 +53,11 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     );
   });
 
-  return <List className={styles.List}>{menuList}</List>;
+  return (
+    <List className={styles.List} data-testid="list">
+      {menuList}
+    </List>
+  );
 };
 
 export default SideMenus;

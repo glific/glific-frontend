@@ -1,16 +1,22 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import { mount, shallow } from 'enzyme';
+import { render,waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('<AuthenticatedRoute />', () => {
-  test('it should mount', () => {
-    const wrapper = shallow(
-      <BrowserRouter>
-        <AuthenticatedRoute />
-      </BrowserRouter>
+  test('it should mount',async () => {
+    const { getByTestId } = render(
+      <MockedProvider>
+        <BrowserRouter>
+          <AuthenticatedRoute />
+        </BrowserRouter>
+      </MockedProvider>
     );
-    expect(wrapper).toBeTruthy();
+    await waitFor(()=>{
+      expect(getByTestId('app')).toBeInTheDocument();
+    })
+    
   });
 });
