@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import Draggable from 'react-draggable';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
@@ -17,12 +16,11 @@ import axios from 'axios';
 import moment from 'moment';
 
 import styles from './Simulator.module.css';
+import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { TIME_FORMAT } from '../../common/constants';
+import { SEARCH_QUERY_VARIABLES, TIME_FORMAT, SIMULATOR_CONTACT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
-import { SIMULATOR_CONTACT } from '../../common/constants';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -40,12 +38,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const [inputMessage, setInputMessage] = useState('');
   const messageRef: any = useRef<HTMLDivElement>();
 
-  useEffect(() => {
-    if (message.keyword !== undefined) {
-      sendMessage();
-    }
-  }, [message.keyword]);
-
   let messages = [];
   let simulatorId = '';
 
@@ -55,7 +47,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   });
 
   if (allConversations) {
-    //currently setting the simulated contact as the default receiver
+    // currently setting the simulated contact as the default receiver
     const simulatedContact = allConversations.search.filter(
       (item: any) => item.contact.phone === SIMULATOR_CONTACT
     );
@@ -97,15 +89,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .map((simulatorMessage: any, index: number) => {
       if (simulatorMessage.receiver.id === simulatorId) {
         return renderMessage(simulatorMessage.body, 'send', index, simulatorMessage.insertedAt);
-      } else {
-        return renderMessage(simulatorMessage.body, 'received', index, simulatorMessage.insertedAt);
       }
+      return renderMessage(simulatorMessage.body, 'received', index, simulatorMessage.insertedAt);
     })
     .reverse();
 
   const sendMessage = () => {
-    const sendMessage =
-      inputMessage === '' && message ? message.type + ':' + message.keyword : inputMessage;
+    const sendMessageText =
+      inputMessage === '' && message ? `${message.type}:${message.keyword}` : inputMessage;
     axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
@@ -114,10 +105,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
         payload: {
           type: 'text',
           payload: {
-            text: sendMessage,
+            text: sendMessageText,
           },
           sender: {
-            //this number will be the simulated contact number
+            // this number will be the simulated contact number
             phone: SIMULATOR_CONTACT,
             name: 'Simulator',
           },
@@ -126,6 +117,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
     });
     setInputMessage('');
   };
+
+  useEffect(() => {
+    if (message.keyword !== undefined) {
+      sendMessage();
+    }
+  }, [message.keyword]);
 
   useEffect(() => {
     const messageContainer: any = messageRef.current;
@@ -147,7 +144,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
-                <img src={DefaultWhatsappImage} alt="default Image" />
+                <img src={DefaultWhatsappImage} alt="default" />
                 <span data-testid="beneficiaryName">Beneficiary</span>
                 <div>
                   <VideocamIcon />
@@ -170,7 +167,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                       }
                     }}
                     value={inputMessage}
-                    placeholder={'Type a message'}
+                    placeholder="Type a message"
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
                   <AttachFileIcon className={styles.AttachFileIcon} />
@@ -205,7 +202,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           data-testid="simulatorIcon"
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
           onClick={() => handleSimulator()}
-        ></SimulatorIcon>
+        />
       ) : null}
     </>
   );
