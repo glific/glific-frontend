@@ -96,6 +96,7 @@ export const Organisation: React.SFC = () => {
     variables: setVariables({
       status: PUBLISHED_AUTOMATIONS,
     }),
+    fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
   const { data: languages } = useQuery(GET_LANGUAGES, {

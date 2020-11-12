@@ -67,6 +67,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     variables: setVariables({
       status: PUBLISHED_AUTOMATIONS,
     }),
+    fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
   // get contact groups
