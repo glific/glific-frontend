@@ -1,5 +1,5 @@
 import { setVariables } from '../common/constants';
-import { FILTER_TEMPLATES } from '../graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from '../graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
   return {
@@ -44,3 +44,37 @@ export const TEMPLATE_MOCKS = [
     },
   ]),
 ];
+
+export const getHSMTemplateCountQuery = {
+  request: {
+    query: GET_TEMPLATES_COUNT,
+    variables: {
+      filter: {
+        label: '',
+        isHsm: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      countSessionTemplates: 3,
+    },
+  },
+};
+
+export const getTemplateCountQuery = {
+  request: {
+    query: GET_TEMPLATES_COUNT,
+    variables: {
+      filter: {
+        label: '',
+        isHsm: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      countSessionTemplates: 3,
+    },
+  },
+};
