@@ -19,7 +19,7 @@ import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDi
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { setVariables } from '../../../common/constants';
+import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
@@ -62,8 +62,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   // get the published automation list
   const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS, {
     variables: setVariables({
-      status: 'done',
+      status: AUTOMATION_STATUS_PUBLISHED,
     }),
+    fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
   const [getContacts, { data: contactsData }] = useLazyQuery(CONTACT_SEARCH_QUERY, {

@@ -18,7 +18,7 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { setVariables } from '../../../common/constants';
+import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -101,8 +101,9 @@ export const Organisation: React.SFC = () => {
   // get the published automation list
   const { data } = useQuery(GET_AUTOMATIONS, {
     variables: setVariables({
-      status: 'done',
+      status: AUTOMATION_STATUS_PUBLISHED,
     }),
+    fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
   const { data: languages } = useQuery(GET_LANGUAGES, {
