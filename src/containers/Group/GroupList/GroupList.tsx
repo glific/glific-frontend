@@ -16,7 +16,7 @@ import { displayUserGroups } from '../../../context/role';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
-import { setVariables } from '../../../common/constants';
+import { PUBLISHED_AUTOMATIONS, setVariables } from '../../../common/constants';
 import { IconButton } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
@@ -61,7 +61,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   // get the published automation list
   const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS, {
     variables: setVariables({
-      status: 'done',
+      status: PUBLISHED_AUTOMATIONS,
     }),
   });
 
