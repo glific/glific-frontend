@@ -12,7 +12,9 @@ import { sendOTP } from '../../../services/AuthService';
 const successMessage = (
   <div>
     Your account is registered successfully. Please contact your organisation admin for the
-    approval. Click <a href="/login">here</a> for login.
+    approval. Click
+    <a href="/login">here</a>
+    for login.
   </div>
 );
 export interface ConfirmOTPProps {
@@ -29,19 +31,19 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       .then((response) => {
         return response;
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });
   };
 
   // Let's not allow direct navigation to this page
   if (props.location && props.location.state === undefined) {
-    return <Redirect to={'/registration'} />;
+    return <Redirect to="/registration" />;
   }
 
   const states = { OTP };
-  const setStates = ({ OTP }: any) => {
-    setOTP(OTP);
+  const setStates = ({ OTPValue }: any) => {
+    setOTP(OTPValue);
   };
 
   const formFields = [
