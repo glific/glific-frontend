@@ -29,7 +29,7 @@ import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
 import {
-  PUBLISHED_AUTOMATIONS,
+  AUTOMATION_STATUS_PUBLISHED,
   SEARCH_QUERY_VARIABLES,
   setVariables,
 } from '../../../../common/constants';
@@ -65,7 +65,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   // get the published automation list
   const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS, {
     variables: setVariables({
-      status: PUBLISHED_AUTOMATIONS,
+      status: AUTOMATION_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });

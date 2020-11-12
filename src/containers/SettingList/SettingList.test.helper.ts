@@ -6,7 +6,7 @@ import {
   getProvidersQuery,
   getCredential,
 } from '../../mocks/Organization';
-import { PUBLISHED_AUTOMATIONS, setVariables } from '../../common/constants';
+import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../common/constants';
 
 export const LIST_ITEM_MOCKS = [
   {
@@ -52,7 +52,7 @@ export const LIST_ITEM_MOCKS = [
   {
     request: {
       query: GET_AUTOMATIONS,
-      variables: setVariables({ status: PUBLISHED_AUTOMATIONS }),
+      variables: setVariables({ status: AUTOMATION_STATUS_PUBLISHED }),
     },
     result: {
       data: {
