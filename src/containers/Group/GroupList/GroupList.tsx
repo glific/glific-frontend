@@ -12,7 +12,6 @@ import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/
 import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
-import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
@@ -21,7 +20,6 @@ import { displayUserGroups } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
-import { IconButton } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
