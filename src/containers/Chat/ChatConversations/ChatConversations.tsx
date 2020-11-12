@@ -19,10 +19,11 @@ export interface ChatConversationsProps {
 }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
+  const { contactId, simulator } = props;
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
   const [searchParam, setSearchParam] = useState<any>({});
-  const [selectedContactId, setSelectedContactId] = useState<any>(props.contactId);
+  const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
   const [savedSearchCollection, setSavedSearchCollection] = useState(null);
@@ -32,12 +33,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [enableSearchMode, setEnableSearchMode] = useState(false);
 
   useEffect(() => {
-    setSelectedContactId(props.contactId.toString());
-  }, [props.contactId]);
+    setSelectedContactId(contactId.toString());
+  }, [contactId]);
 
   useEffect(() => {
-    if (selectedContactId === props.simulator.simulatorId) {
-      props.simulator.setShowSimulator(true);
+    if (selectedContactId === simulator.simulatorId) {
+      simulator.setShowSimulator(true);
     }
   }, [selectedContactId]);
 
@@ -56,8 +57,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    let searchVal = event.target.querySelector('input').value.trim();
-    setSearchVal(searchVal);
+    const searchValInput = event.target.querySelector('input').value.trim();
+    setSearchVal(searchValInput);
   };
 
   const resetSearch = () => {
@@ -73,8 +74,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSavedSearchCriteriaId(id);
   };
 
+  const closeDialogBox = () => {
+    setDialogbox(false);
+  };
+
   const search = (data: any) => {
-    let target = { value: data.term, param: data };
+    const target = { value: data.term, param: data };
     if (handleChange) {
       handleChange({ target });
     }
@@ -93,10 +98,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setDialogbox(!dialog);
   };
 
-  const closeDialogBox = () => {
-    setDialogbox(false);
-  };
-
   const saveHandler = (data: any) => {
     setSavedSearchCollection(data.savedSearch);
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
@@ -105,7 +106,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   // create collection
   let dialogBox;
   if (dialog) {
-    let match = { params: collectionMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
+    const match = { params: collectionMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
     let collection = (
       <Collection
         match={match}
@@ -114,7 +115,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         searchParam={searchParam}
         handleCancel={closeDialogBox}
         handleSave={saveHandler}
-      ></Collection>
+      />
     );
 
     if (dialogType === 'search')
@@ -125,7 +126,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           search={search}
           searchParam={searchParam}
           handleCancel={closeDialogBox}
-        ></Collection>
+        />
       );
 
     dialogBox = (
@@ -134,8 +135,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         handleCancel={closeDialogBox}
         handleOk={handleSubmit}
         buttonOk="Search"
-        skipOk={true}
-        skipCancel={true}
+        skipOk
+        skipCancel
       >
         {collection}
       </DialogBox>
@@ -178,7 +179,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     <IconButton
       className={styles.CancelButton}
       aria-label="cancel"
-      onClick={(e: any) => {
+      onClick={() => {
         setSearchParam({});
         resetSearch();
       }}
@@ -228,7 +229,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         onReset={() => resetSearch()}
         searchVal={searchVal}
         handleClick={handleClick}
-        endAdornment={true}
+        endAdornment
         searchMode={enableSearchMode}
       />
       <ConversationList

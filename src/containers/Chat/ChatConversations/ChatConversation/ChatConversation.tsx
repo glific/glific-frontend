@@ -63,7 +63,18 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const client = useApolloClient();
   let chatInfoClass = [styles.ChatInfo, styles.ChatInfoRead];
   let chatBubble = [styles.ChatBubble, styles.ChatBubbleRead];
-  const { lastMessage, selected, contactId, contactName, index, highlightSearch } = props;
+  const {
+    lastMessage,
+    selected,
+    contactId,
+    contactName,
+    index,
+    highlightSearch,
+    searchMode,
+    senderLastMessage,
+    contactStatus,
+    contactBspStatus,
+  } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (mydata) => {
@@ -84,16 +95,15 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   // display highlighted search message
   const BoldedText = (text: string, highlight: any) => {
-    highlight = highlight ? highlight : '';
+    const texts = highlight || '';
     // Split on highlight term and include term into strings, ignore case
-    const strings =
-      typeof text === 'string' ? text.split(new RegExp(`(${highlight})`, 'gi')) : null;
+    const strings = typeof text === 'string' ? text.split(new RegExp(`(${texts})`, 'gi')) : null;
 
     if (strings) {
       return (
         <span>
           {strings.map((string, i) =>
-            string.toLowerCase() === highlight.toLowerCase() ? (
+            string.toLowerCase() === texts.toLowerCase() ? (
               <span key={i} className={styles.TitleText}>
                 {string}
               </span>
@@ -103,9 +113,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           )}
         </span>
       );
-    } else {
-      return text;
     }
+    return text;
   };
 
   useEffect(() => {
@@ -116,7 +125,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     }
   }, [unread, selected, contactId, markAsRead]);
 
-  const name = contactName.length > 20 ? contactName.slice(0, 20) + '...' : contactName;
+  const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
   let message;
 
@@ -153,17 +162,17 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     default:
       message = lastMessage.type;
   }
-  let displayMSG = WhatsAppToJsx(message);
+  const displayMSG = WhatsAppToJsx(message);
 
   // set offset to use that in chatting window to fetch that msg
-  const setSearchOffset = (client: any, offset: number = 0) => {
-    client.writeQuery({
+  const setSearchOffset = (apolloClient: any, offset: number = 0) => {
+    apolloClient.writeQuery({
       query: SEARCH_OFFSET,
       data: { offset },
     });
   };
 
-  let msgID = props.searchMode ? '/#search' + props.lastMessage.id : '';
+  const msgID = searchMode ? `/#search${lastMessage.id}` : '';
 
   return (
     <ListItem
@@ -177,15 +186,15 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         props.onClick(index);
         if (props.messageNumber) setSearchOffset(client, props.messageNumber);
       }}
-      to={'/chat/' + contactId + msgID}
+      to={`/chat/${contactId}${msgID}`}
     >
       <div>
         <div className={chatBubble.join(' ')} />
         <div className={styles.Timer}>
           <Timer
-            time={props.senderLastMessage}
-            contactStatus={props.contactStatus}
-            contactBspStatus={props.contactBspStatus}
+            time={senderLastMessage}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
           />
         </div>
       </div>
