@@ -18,7 +18,7 @@ export const GroupDescription: React.FC<GroupDescriptionProps> = ({
     </ul>
   );
   return (
-    <div className={styles.DescriptionContainer}>
+    <div className={styles.DescriptionContainer} data-testid='groupDescription'>
       <h2 className={styles.Title}>Description</h2>
       <p className={styles.Description}>{description}</p>
       <div className={styles.StaffDivider} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, cleanup } from '@testing-library/react';
+import { render, waitFor, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { SpeedSendList } from './SpeedSendList';
@@ -20,13 +20,12 @@ const speedSend = (
 test('SpeedSendList has proper headers', async () => {
   const { getByText, container } = render(speedSend);
 
-  await wait();
-
-  expect(getByText('Speed sends')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Speed sends')).toBeInTheDocument();
+  });
 
   const { getByText: getByTextTableheader } = within(container.querySelector('thead'));
   expect(getByTextTableheader('LABEL')).toBeInTheDocument();
   expect(getByTextTableheader('BODY')).toBeInTheDocument();
   expect(getByTextTableheader('ACTIONS')).toBeInTheDocument();
-  await wait();
 });

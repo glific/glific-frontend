@@ -19,7 +19,7 @@ const component = (
 );
 
 describe('<Menu />', () => {
-  test('it should mount', () => {
+  test('it should render', () => {
     const { queryByText } = render(component);
 
     const menuComponent = screen.getByTestId('Menu');

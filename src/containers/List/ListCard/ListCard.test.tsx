@@ -1,6 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { ListCard } from './ListCard';
+import { MemoryRouter } from 'react-router';
 
 const defaultProps = {
   data: [
@@ -14,16 +15,18 @@ const defaultProps = {
   link: '/details',
 };
 
-const card = <ListCard {...defaultProps} />;
+const card = (
+  <MemoryRouter>
+    <ListCard {...defaultProps} />
+  </MemoryRouter>
+);
 
 test('it should have correct label', () => {
-  const wrapper = shallow(card);
-  expect(wrapper.find('div[data-testid="label"]').text()).toBe('Staff Management Group');
+  const { getByTestId } = render(card);
+  expect(getByTestId('label')).toHaveTextContent('Staff Management Group');
 });
 
 test('it should have correct description', () => {
-  const wrapper = shallow(card);
-  expect(wrapper.find('[data-testid="description"]').text()).toBe(
-    'All staff members of the organization'
-  );
+  const { getByTestId } = render(card);
+  expect(getByTestId('description')).toHaveTextContent('All staff members of the organization');
 });

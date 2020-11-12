@@ -104,7 +104,7 @@ describe('Server Table test', () => {
   });
 
 //   it('data rendered properly', () => {
-//     const wrapper = shallow(createTable());
+//     const wrapper = render(createTable());
 //     expect(wrapper.find(TableBody).find(TableCell).length).toEqual(
 //       data.length * columnNames.length
 //     );
@@ -139,7 +139,7 @@ describe('Server Table test', () => {
   // });
 
 //   it('changing rows per page', () => {
-//     const wrapper = mount(createTable());
+//     const wrapper = render(createTable());
 //     let event = {
 //       target: {
 //         value: '15',
@@ -165,7 +165,7 @@ describe('Server Table test', () => {
 //   });
 
 //   it('changing sort by column', () => {
-//     const wrapper = mount(createTable());
+//     const wrapper = render(createTable());
 //     for (let i = 0; i < columnNames.length - 1; i++) {
 //       wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
 //       expect(tableVals.sortCol).toEqual(columnNames[i]);

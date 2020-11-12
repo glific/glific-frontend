@@ -16,7 +16,7 @@ const component = (
 );
 
 describe('<MenuItem />', () => {
-  test('it should mount', () => {
+  test('it should render', () => {
     render(component);
 
     const menuItemComponent = screen.getByTestId('MenuItem');

@@ -1,17 +1,18 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { Profile } from './Profile';
 import { LOGGED_IN_USER_MOCK } from '../../mocks/Contact';
 import { MockedProvider } from '@apollo/client/testing';
 
 const mocks = LOGGED_IN_USER_MOCK;
 
-const wrapper = shallow(
+const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Profile match={{ params: { id: 1 } }} profileType="User" redirectionLink="/chat" />
   </MockedProvider>
 );
 
 it('should render Profile page', () => {
-  expect(wrapper.exists()).toBe(true);
+  const {container}= render(wrapper)
+  expect(container).toBeInTheDocument();
 });

@@ -45,7 +45,7 @@ describe('<AutoComplete />', () => {
   });
 
   // it('should open and close the list', () => {
-  //   const wrapper = mount(<AutoComplete {...props} />);
+  //   const wrapper = render(<AutoComplete {...props} />);
 
   //   act(() => {
   //     wrapper.find(Autocomplete).prop('onOpen')();
@@ -64,7 +64,7 @@ describe('<AutoComplete />', () => {
   // });
 
   // it('should search for an input', () => {
-  //   const wrapper = mount(<AutoComplete {...asyncProps} />);
+  //   const wrapper = render(<AutoComplete {...asyncProps} />);
   //   act(() => {
   //     wrapper
   //       .find(TextField)

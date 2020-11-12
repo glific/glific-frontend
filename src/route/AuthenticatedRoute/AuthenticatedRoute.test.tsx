@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 describe('<AuthenticatedRoute />', () => {
-  test('it should mount',async () => {
+  test('it should render',async () => {
     const { getByTestId } = render(
       <MockedProvider>
         <BrowserRouter>
