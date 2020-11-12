@@ -42,7 +42,7 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
     }
   };
 
-  let textField = (
+  const textField = (
     <div className={styles.DialogContainer} data-testid="templateContainer">
       <FormControl fullWidth error={required}>
         <InputLabel variant="outlined">Enter title</InputLabel>
@@ -56,7 +56,7 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
           fullWidth
           data-testid="templateInput"
           onChange={onChange}
-        ></OutlinedInput>
+        />
         {required ? <FormHelperText>Required</FormHelperText> : null}
       </FormControl>
       <div className={styles.Message}>{WhatsAppToJsx(message)}</div>
@@ -93,10 +93,11 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
       <DialogBox
         handleCancel={handleCloseButton}
         handleOk={handleOKButton}
-        title={'Add message to speed sends'}
-        children={textField}
+        title="Add message to speed sends"
         buttonOk="Save"
-      />
+      >
+        {textField}
+      </DialogBox>
     </div>
   );
 };

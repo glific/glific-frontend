@@ -58,9 +58,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     variables: setVariables(),
   });
 
-  // get automation list
+  // get the published automation list
   const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS, {
-    variables: setVariables(),
+    variables: setVariables({
+      status: 'done',
+    }),
   });
 
   // get contact groups

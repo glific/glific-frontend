@@ -34,8 +34,8 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   const type = match.params.type ? match.params.type : null;
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
-  let param = { params: { id: credentialId, shortcode: type } };
-  let states: any = {};
+  const param = { params: { id: credentialId, shortcode: type } };
+  const states: any = {};
   let keys: any = {};
   let secrets: any = {};
   let formFields: any = [];
@@ -152,7 +152,9 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     FormSchema = Yup.object().shape(validation);
   };
 
+  let title;
   if (providerData) {
+    title = providerData.providers[0].name;
     providerData.providers.map((provider: any) => {
       keys = JSON.parse(provider.keys);
       secrets = JSON.parse(provider.secrets);
@@ -177,22 +179,22 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     <FormLayout
       backLinkButton={{ text: 'Back to settings', link: '/settings' }}
       {...queries}
-      title={type}
+      title={title}
       match={param}
       states={states}
       setStates={setCredential}
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
-      dialogMessage={''}
+      dialogMessage=""
       formFields={formFields}
       redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"
-      listItem={'credential'}
+      listItem="credential"
       icon={SettingIcon}
       languageSupport={false}
-      type={'settings'}
+      type="settings"
       redirect={true}
       afterSave={saveHandler}
     />

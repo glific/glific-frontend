@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent } from '@material-ui/core';
+
 import styles from './MessageDialog.module.css';
 import { ReactComponent as CrossDarkIcon } from '../../../assets/images/icons/CrossDark.svg';
 import ChatInput from '../../../containers/Chat/ChatMessages/ChatInput/ChatInput';
@@ -13,7 +14,7 @@ export interface MessageDialogProps {
 export const MessageDialog = ({ title, onSendMessage, handleClose }: MessageDialogProps) => {
   return (
     <Dialog
-      open={true}
+      open
       classes={{
         paper: styles.Dialog,
       }}
@@ -24,7 +25,7 @@ export const MessageDialog = ({ title, onSendMessage, handleClose }: MessageDial
         </div>
         <ChatInput
           onSendMessage={onSendMessage}
-          handleHeightChange={(height: any) => {}}
+          handleHeightChange={() => {}}
           contactStatus=""
           contactBspStatus="SESSION_AND_HSM"
           additionalStyle={styles.ChatInput}

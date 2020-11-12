@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import * as Yup from 'yup';
+
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../../components/UI/Form/TimePicker/TimePicker';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
@@ -68,16 +69,6 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
   };
 
-  const setStates = ({ name, outOfOffice, activeLanguages, defaultLanguage }: any) => {
-    setName(name);
-    setHours(outOfOffice.enabled);
-    setIsDisable(!outOfOffice.enabled);
-    setOutOfOffice(outOfOffice);
-    setFlowId(getFlow(outOfOffice.flowId));
-    if (activeLanguages) setActiveLanguages(activeLanguages);
-    if (defaultLanguage) setDefaultLanguage(defaultLanguage);
-  };
-
   const setOutOfOffice = (data: any) => {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
@@ -92,12 +83,32 @@ export const Organisation: React.SFC = () => {
     return data.flows.filter((option: any) => option.id === id)[0];
   };
 
+  const setStates = ({
+    name:nameValue,
+    outOfOffice:outOfOfficeValue,
+    activeLanguages:activeLanguagesValue,
+    defaultLanguage:defaultLanguageValue,
+  }: any) => {
+    setName(nameValue);
+    setHours(outOfOfficeValue.enabled);
+    setIsDisable(!outOfOfficeValue.enabled);
+    setOutOfOffice(outOfOfficeValue);
+    setFlowId(getFlow(outOfOfficeValue.flowId));
+    if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
+    if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
+  };
+
+  // get the published automation list
   const { data } = useQuery(GET_AUTOMATIONS, {
-    variables: setVariables(),
+    variables: setVariables({
+      status: 'done',
+    }),
   });
+
   const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
+
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
   useEffect(() => {
@@ -107,7 +118,7 @@ export const Organisation: React.SFC = () => {
   useEffect(() => {
     if (orgData) {
       let data = orgData.organization.organization;
-      //get login OrganizationId
+      // get login OrganizationId
       setOrganizationId(data.id);
     }
   }, [orgData]);
@@ -117,6 +128,7 @@ export const Organisation: React.SFC = () => {
   const handleChange = (value: any) => {
     setIsDisable(!value);
   };
+
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {
     activeLanguage = value;
@@ -260,8 +272,8 @@ export const Organisation: React.SFC = () => {
         flowId: payload.flowId ? payload.flowId.id : null,
         startTime: payload.startTime,
       },
-      defaultLanguageId: defaultLanguageId,
-      activeLanguageIds: activeLanguageIds,
+      defaultLanguageId,
+      activeLanguageIds,
     };
 
     return object;
@@ -271,25 +283,27 @@ export const Organisation: React.SFC = () => {
     <FormLayout
       backLinkButton={{ text: 'Back to settings', link: '/settings' }}
       {...queries}
-      title={'organization'}
+      title="organization"
       match={{ params: { id: organizationId } }}
       states={States}
       setStates={setStates}
       validationSchema={FormSchema}
       setPayload={setPayload}
       listItemName="Settings"
-      dialogMessage={''}
+      dialogMessage=""
       formFields={formFields}
       refetchQueries={{ query: USER_LANGUAGES }}
       redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"
-      listItem={'organization'}
+      listItem="organization"
       icon={SettingIcon}
       languageSupport={false}
-      type={'settings'}
+      type="settings"
       redirect={true}
       afterSave={saveHandler}
     />
   );
 };
+
+export default Organisation;

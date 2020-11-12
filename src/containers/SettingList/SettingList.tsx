@@ -31,9 +31,9 @@ export const SettingList: React.SFC = () => {
     CardList = [...List, ...providerData.providers];
   }
 
-  let heading = (
+  const heading = (
     <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled={true} className={styles.Icon}>
+      <IconButton disabled className={styles.Icon}>
         {SettingIcon}
       </IconButton>
       Settings
@@ -63,7 +63,7 @@ export const SettingList: React.SFC = () => {
               <CardActions className={styles.CardActions}>
                 <Link
                   to={{
-                    pathname: 'settings/' + data.shortcode,
+                    pathname: `settings${data.shortcode}`,
                   }}
                   className={styles.Link}
                 >
@@ -79,3 +79,5 @@ export const SettingList: React.SFC = () => {
     </>
   );
 };
+
+export default SettingList;

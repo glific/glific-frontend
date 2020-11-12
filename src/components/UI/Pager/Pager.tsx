@@ -10,6 +10,7 @@ import {
   TableSortLabel,
   Checkbox,
 } from '@material-ui/core';
+
 import styles from './Pager.module.css';
 
 interface PagerProps {
@@ -123,28 +124,32 @@ const pagination = (
 );
 
 export const Pager: React.SFC<PagerProps> = (props) => {
+  const {
+    data,
+    columnStyles,
+    showCheckbox,
+    columnNames,
+    tableVals,
+    handleTableChange,
+    totalRows,
+  } = props;
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
-  const rows = createRows(props.data, props.columnStyles, props.showCheckbox);
+  const rows = createRows(data, columnStyles, showCheckbox);
   const tableHead = tableHeadColumns(
-    props.columnNames,
-    props.columnStyles,
-    props.tableVals,
-    props.handleTableChange,
-    props.showCheckbox
+    columnNames,
+    columnStyles,
+    tableVals,
+    handleTableChange,
+    showCheckbox
   );
 
-  const tablePagination = pagination(
-    props.columnNames,
-    props.totalRows,
-    props.handleTableChange,
-    props.tableVals
-  );
+  const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   useEffect(() => {
-    let table = document.querySelector('.MuiTable-root');
-    var html = document.querySelector('html');
+    const table = document.querySelector('.MuiTable-root');
+    const html = document.querySelector('html');
     if (table && html) {
       if (table.scrollHeight < html.clientHeight - 142) {
         setTableFooterStyle(styles.TableFooter);
@@ -164,3 +169,5 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     </div>
   );
 };
+
+export default Pager;
