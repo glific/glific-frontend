@@ -3,22 +3,21 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, Typography } from '@material-ui/core';
 
-import { setNotification, setErrorMessage } from '../../common/notification';
+import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
-import styles from './List.module.css';
-import SearchBar from '../../components/UI/SearchBar/SearchBar';
+import { SearchBar } from '../../components/UI/SearchBar/SearchBar';
+import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
+import { ListCard } from './ListCard/ListCard';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
-import { ListCard } from './ListCard/ListCard';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
+import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
-import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -160,7 +159,6 @@ export const List: React.SFC<ListProps> = ({
     GET_CURRENT_USER
   );
 
-
   const checkUserRole = () => {
     userRole = getUserRole();
   };
@@ -184,8 +182,6 @@ export const List: React.SFC<ListProps> = ({
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
 
- 
-
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
       checkUserRole();
@@ -203,7 +199,6 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(id);
   };
 
-
   const closeDialogBox = () => {
     setDeleteItemID(null);
   };
@@ -214,8 +209,6 @@ export const List: React.SFC<ListProps> = ({
     }
     setDeleteItemID(null);
   };
-
- 
 
   let dialogBox;
   if (deleteItemID) {

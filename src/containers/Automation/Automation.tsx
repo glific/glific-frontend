@@ -44,12 +44,12 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const states = { name, keywords, ignoreKeywords };
 
-  const setStates = ({ name, keywords, ignoreKeywords }: any) => {
+  const setStates = ({ nameValue, keywordsValue, ignoreKeywordsValue }: any) => {
     // Override name & keywords when creating Automation Copy
-    let fieldName = name;
-    let fieldKeywords = keywords;
+    let fieldName = nameValue;
+    let fieldKeywords = keywordsValue;
     if (location.state === 'copy') {
-      fieldName = `Copy of ${name}`;
+      fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
     }
     setName(fieldName);
@@ -59,7 +59,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       // lets display it comma separated
       setKeywords(fieldKeywords.join(','));
     }
-    setIgnoreKeywords(ignoreKeywords);
+    setIgnoreKeywords(ignoreKeywordsValue);
   };
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
