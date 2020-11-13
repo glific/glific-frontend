@@ -63,13 +63,13 @@ export const Profile: React.SFC<ProfileProps> = ({
     currentContactId = match.params.id;
   }
 
-  let states: any = { name, phone, status, bspStatus };
+  const states: any = { name, phone, status, bspStatus };
 
-  const setStates = ({ name, phone, status, bspStatus, ...rest }: any) => {
-    setName(name);
-    setPhone(phone);
-    setStatus(status);
-    setBspStatus(bspStatus);
+  const setStates = ({ nameValue, phoneValue, statusValue, bspStatusValue, ...rest }: any) => {
+    setName(nameValue);
+    setPhone(phoneValue);
+    setStatus(statusValue);
+    setBspStatus(bspStatusValue);
     if (additionalProfileStates) {
       additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
@@ -79,7 +79,7 @@ export const Profile: React.SFC<ProfileProps> = ({
     name: Yup.string().required('Name is required.'),
   });
 
-  let formFields = [
+  const formFields = [
     {
       component: Input,
       name: 'name',
