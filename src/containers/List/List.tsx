@@ -355,6 +355,7 @@ export const List: React.SFC<ListProps> = ({
       return {
         ...columns(listItem),
         operations: getIcons(listItem.id, label, isReserved, listItem, allowedAction),
+        recordId: listItem.id,
       };
     });
   }
