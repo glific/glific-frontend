@@ -39,7 +39,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             }}
             onClick={() => setShowViewer(true)}
             className={styles.Image}
-          ></div>
+          />
           <Viewer
             visible={showViewer}
             onClose={() => {
@@ -56,7 +56,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <div>
           <audio controls data-testid="audioMessage" controlsList="nodownload">
-            <source src={media.url} type="audio/ogg"></source>
+            <source src={media.url} type="audio/ogg" />
           </audio>
           {media.caption}
         </div>
@@ -87,7 +87,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             data-testid="documentMessage"
             style={{ background: `url("${DocumentThumbnail}") no-repeat` }}
             className={styles.Document}
-          ></div>
+          />
           <a href={media.url} className={styles.DocumentText}>
             <GetAppIcon />
             {media.caption}

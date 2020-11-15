@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import * as TooltipElement from '@material-ui/core/Tooltip';
+import { Tooltip as TooltipElement } from '@material-ui/core';
 
 import styles from './Tooltip.module.css';
 
@@ -28,14 +28,14 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
   }
 
   return (
-    <TooltipElement.default
+    <TooltipElement
       title={title}
       placement={placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
     >
       <span>{children}</span>
-    </TooltipElement.default>
+    </TooltipElement>
   );
 };
 
