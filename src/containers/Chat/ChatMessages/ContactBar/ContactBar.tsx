@@ -177,7 +177,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         handleOk={handleGroupDialogOk}
         handleCancel={handleGroupDialogCancel}
         options={groupOptions}
-      ></SearchDialogBox>
+      />
     );
   }
 
@@ -214,14 +214,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   };
 
   if (showClearChatDialog) {
-    let bodyContext =
+    const bodyContext =
       'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
     dialogBox = (
       <DialogBox
         title="Are you sure you want to clear all conversation for this contact?"
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
-        alignButtons={'center'}
+        alignButtons="center"
         buttonOk="YES, CLEAR"
         colorOk="secondary"
         buttonCancel="MAYBE LATER"
@@ -248,7 +248,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         title="Do you want to block this contact"
         handleOk={handleBlock}
         handleCancel={() => setShowBlockDialog(false)}
-        alignButtons={'center'}
+        alignButtons="center"
         colorOk="secondary"
       >
         <p className={styles.DialogText}>

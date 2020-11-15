@@ -101,7 +101,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     }
   }, [editTagsMessageId]);
 
-
   // get the conversations stored from the cache
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
@@ -128,7 +127,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             return currentMessage.id - nextMessage.id;
           })
           .reverse();
-        let conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           if (conversation.contact.id === contactId.toString()) {
             conversation.messages = [
@@ -216,11 +215,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       });
 
     if (conversationIndex < 0) {
-      return <Redirect to="/chat" />
+      return <Redirect to="/chat" />;
     }
   }
 
- 
   const closeDialogBox = () => {
     setDialogbox(false);
     setShowDropdown(null);
@@ -261,7 +259,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         handleCancel={closeDialogBox}
         options={tags}
         icon={<TagIcon />}
-      ></SearchDialogBox>
+      />
     );
   }
 
@@ -365,7 +363,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   };
 
   const handleChatClearedAction = () => {
-    let conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
+    const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
     conversationInfoCopy.messages = [];
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
