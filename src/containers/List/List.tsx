@@ -245,7 +245,7 @@ export const List: React.SFC<ListProps> = ({
 
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
-    deleteItem({ variables: variables });
+    deleteItem({ variables });
     setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 

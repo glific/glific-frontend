@@ -326,14 +326,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     let heading;
     if (type === 'search') {
       heading = (
-        <React.Fragment>
+        <>
           <Typography variant="h5" className={styles.Title}>
             Search conversations
           </Typography>
           <Typography variant="subtitle1" className={styles.Subtext}>
             Apply more parameters to search for conversations.
           </Typography>
-        </React.Fragment>
+        </>
       );
 
       FormSchema = Yup.object().shape({});
@@ -341,11 +341,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
     if (type === 'saveSearch') {
       heading = (
-        <React.Fragment>
+        <>
           <Typography variant="h5" className={styles.Title}>
             Save search to collections
           </Typography>
-        </React.Fragment>
+        </>
       );
       addFieldsValidation(validation);
     }

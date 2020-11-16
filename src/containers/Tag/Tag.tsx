@@ -160,7 +160,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     {
       component: ColorPicker,
       name: 'colorCode',
-      colorCode: colorCode,
+      colorCode,
       helperText: 'Tag color',
     },
   ];

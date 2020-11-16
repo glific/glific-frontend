@@ -111,7 +111,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
             Is active?
           </Typography>
         ),
-        handleChange: handleChange,
+        handleChange,
       },
     ];
     let defaultStates: any = {};

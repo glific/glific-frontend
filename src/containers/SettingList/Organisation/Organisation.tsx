@@ -188,7 +188,7 @@ export const Organisation: React.SFC = () => {
           Hours of operations
         </Typography>
       ),
-      handleChange: handleChange,
+      handleChange,
     },
     {
       component: TimePicker,

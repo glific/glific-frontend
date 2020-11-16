@@ -26,7 +26,7 @@ import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialo
 export interface GroupListProps {}
 
 const getColumns = ({ id, label, description }: any) => ({
-  id: id,
+  id,
   label: getLabel(label),
   description: getDescription(description),
 });
@@ -47,7 +47,7 @@ const queries = {
 
 const columnAttributes = {
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
 export const GroupList: React.SFC<GroupListProps> = (props) => {
@@ -148,7 +148,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     addAutomationToGroup({
       variables: {
         flowId: value,
-        groupId: groupId,
+        groupId,
       },
     });
   };
@@ -156,7 +156,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const sendMessageToGroup = (message: string) => {
     sendMessageToGroups({
       variables: {
-        groupId: groupId,
+        groupId,
         input: {
           body: message,
           senderId: 1,
@@ -205,7 +205,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         variables: {
           input: {
             addContactIds: selectedContacts,
-            groupId: groupId,
+            groupId,
             deleteContactIds: unselectedContacts,
           },
         },

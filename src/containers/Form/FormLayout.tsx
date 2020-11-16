@@ -127,7 +127,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   }
 
   const { loading, error } = useQuery(getItemQuery, {
-    variables: variables,
+    variables,
     skip: !itemId,
     onCompleted: (data) => {
       if (data) {
@@ -331,7 +331,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         enableReinitialize
         initialValues={{
           ...states,
-          languageId: languageId,
+          languageId,
         }}
         validationSchema={validationSchema}
         onSubmit={(item) => {

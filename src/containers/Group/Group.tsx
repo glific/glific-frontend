@@ -48,7 +48,7 @@ const formFields = (options: any) => {
       component: AutoComplete,
       name: 'users',
       additionalState: 'users',
-      options: options,
+      options,
       optionLabel: 'name',
       textFieldProps: {
         label: 'Assign staff to group',
@@ -97,7 +97,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
         variables: {
           input: {
             addUserIds: selectedUsers,
-            groupId: groupId,
+            groupId,
             deleteUserIds: removedUsers,
           },
         },

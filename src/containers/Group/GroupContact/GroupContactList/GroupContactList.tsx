@@ -41,7 +41,7 @@ const queries = {
 
 const columnAttributes = {
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
 export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
@@ -50,7 +50,7 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
   const getDeleteQueryVariables = (id: any) => {
     return {
       input: {
-        groupId: groupId,
+        groupId,
         addContactIds: [],
         deleteContactIds: [id],
       },
