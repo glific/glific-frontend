@@ -3,11 +3,9 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render, getByTestId } from '@testing-library/react';
 
-import { Login } from './containers/Auth/Login/Login';
 import App from './App';
-import { Chat } from './containers/Chat/Chat';
 import { CONVERSATION_MOCKS } from './mocks/Chat';
-import { setUserSession } from './services/AuthService';
+import { setAuthSession, setUserSession } from './services/AuthService';
 
 const mocks = CONVERSATION_MOCKS;
 
@@ -20,9 +18,12 @@ const app = (
 );
 
 describe('<App /> ', () => {
-  test('it should render <App /> component correctly', () => {
+  test('it should render <App /> component correctly',async () => {
     const { container } = render(app);
-    expect(container).toBeInTheDocument();
+    await waitFor(()=>{
+      expect(container).toBeInTheDocument();
+    })
+   
   });
 
   test('it should render <Login /> component by default', async () => {
@@ -32,41 +33,25 @@ describe('<App /> ', () => {
     });
   });
 
-  // test('it should render <Chat /> component if session is active', async () => {
-  //   // let's create token expiry date for tomorrow
-  //   const tokenExpiryDate = new Date();
-  //   tokenExpiryDate.setDate(new Date().getDate() + 1);
-  //   localStorage.setItem(
-  //     'glific_session',
-  //     '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-  //       tokenExpiryDate +
-  //       '"}'
-  //   );
-  //   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
+  test('it should render <Chat /> component if session is active', async () => {
+    // let's create token expiry date for tomorrow
+    const tokenExpiryDate = new Date();
+    tokenExpiryDate.setDate(new Date().getDate() + 1);
 
-  //   const { getByTestId } = render(app);
+    setAuthSession(
+      '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+        tokenExpiryDate +
+        '"}'
+    );
 
-  //   await waitFor(() => {
-  //     expect(getByTestId('chatContainer')).toBeInTheDocument();
-  //   });
-  // });
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-  // test('it should not render <Chat /> component if session is active and User Role "None"', async () => {
-  //   // let's create token expiry date for tomorrow
-  //   const tokenExpiryDate = new Date();
-  //   tokenExpiryDate.setDate(new Date().getDate() + 1);
-  //   localStorage.setItem(
-  //     'glific_session',
-  //     '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-  //       tokenExpiryDate +
-  //       '"}'
-  //   );
-  //   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['None'] }));
+    const { container } = render(app);
 
-  //   const { getByTestId } = render(app);
+    await waitFor(() => {
+      expect(container.querySelector('.MuiToolbar-root')).toBeInTheDocument();
+    });
+  });
 
-  //   await waitFor(() => {
-  //     expect(getByTestId('chatContainer')).toBeInTheDocument();
-  //   });
-  // });
+ 
 });

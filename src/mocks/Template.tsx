@@ -32,6 +32,22 @@ export const TEMPLATE_MOCKS = [
       isHsm: false,
     },
   ]),
+  filterTemplatesQuery('', [
+    {
+      id: '87',
+      label: 'Good message',
+      body: 'Hey there',
+      isReserved: true,
+      isHsm: true,
+    },
+    {
+      id: '94',
+      label: 'Message',
+      body: 'some description',
+      isReserved: true,
+      isHsm: false,
+    },
+  ]),
 
   filterTemplatesQuery('this should not return anything', []),
   filterTemplatesQuery('hi', [

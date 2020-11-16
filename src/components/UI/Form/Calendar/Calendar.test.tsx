@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { Calendar } from './Calendar';
-import moment from 'moment';
+
 
 describe('<Calendar />', () => {
   const props = {
@@ -37,12 +37,4 @@ describe('<Calendar />', () => {
     expect(input).toHaveValue('09/03/2020');
   });
 
-  // need to check why this case is not runnning
-
-  // it('test display date picker on calendar icon click', async () => {
-  //   render(wrapper);
-  //   const input = screen.getByRole('button');
-  //   fireEvent.click(input);
-  //   expect(screen.findAllByText(moment().format('YYYY')));
-  // });
 });

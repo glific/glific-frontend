@@ -64,7 +64,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     );
   };
 
-  return <div className={styles.ChatTemplates}>{popperItems()}</div>;
+  return <div className={styles.ChatTemplates} data-testid="chatTemplates">{popperItems()}</div>;
 };
 
 export default ChatTemplates;

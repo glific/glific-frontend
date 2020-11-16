@@ -3,6 +3,15 @@ import { render } from '@testing-library/react';
 import { Tooltip } from './Tooltip';
 import * as TooltipElement from '@material-ui/core/Tooltip';
 
+jest.mock('@material-ui/core/Tooltip', () => (...props: any) => {
+  const { children, classes } = props[0];
+  return (
+    <div data-testid="tooltip" className={`${classes.tooltip} ${classes.arrow}`}>
+      {children}
+    </div>
+  );
+});
+
 describe('Tooltip test', () => {
   const createTooltip = (props: any) => (
     <Tooltip title="test" placement="left" {...props}>
@@ -24,9 +33,7 @@ describe('Tooltip test', () => {
     const { container, getByTestId } = render(
       createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' })
     );
-
-    // need to check how to assert this
-    // expect(container.querySelector('.tooltipArrow')).toBeInTheDocument();
-    // expect(container.querySelector('.tooltip')).toBeInTheDocument();
+    expect(container.querySelector('.tooltipArrow')).toBeInTheDocument();
+    expect(container.querySelector('.tooltip')).toBeInTheDocument();
   });
 });
