@@ -45,7 +45,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       // let's return early incase we don't have cached conversations
       // TODO: Need to investigate why this happens
       if (!cachedConversations) {
-        return;
+        return null;
       }
 
       let newMessage: any;
@@ -78,6 +78,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
             // we should use receiver id to update the tag
             contactId = tagData.message.receiver.id;
           }
+          break;
+        default:
           break;
       }
 
