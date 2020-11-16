@@ -5,8 +5,9 @@ import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
-import { ReactComponent as ChatDarkIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
-import ChatDarkIconSVG from '../../../assets/images/icons/Chat/UnselectedDark.svg';
+import ChatDarkIconSVG, {
+  ReactComponent as ChatDarkIcon,
+} from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';

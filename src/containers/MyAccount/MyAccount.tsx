@@ -61,10 +61,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // callback function to send otp to the logged user
   const sendOTPHandler = () => {
     sendOTP(loggedInUserPhone)
-      .then((response) => {
+      .then(() => {
         setShowOTPButton(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setToastMessageInfo({
           severity: 'error',
           message: `Unable to send an OTP to ${loggedInUserPhone}.`,
@@ -146,14 +146,14 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     formFieldLayout = formFields.map((field: any, index) => {
       return (
         <React.Fragment key={index}>
-          <Field key={index} {...field}></Field>
+          <Field key={index} {...field} />
         </React.Fragment>
       );
     });
   }
 
   // form component
-  let form = (
+  const form = (
     <>
       <Formik
         enableReinitialize
@@ -207,7 +207,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   return (
     <div className={styles.MyAccount} data-testid="MyAccount">
       <Typography variant="h5" className={styles.Title}>
-        <IconButton disabled={true} className={styles.Icon}>
+        <IconButton disabled className={styles.Icon}>
           <UserIcon />
         </IconButton>
         My Account
