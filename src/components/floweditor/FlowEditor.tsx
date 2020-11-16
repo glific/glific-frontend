@@ -23,25 +23,24 @@ const loadfiles = () => {
   const filesToLoad: any = Manifest.files;
   let index = 0;
   for (const fileName in filesToLoad) {
-    if (!filesToLoad[fileName].startsWith('./static')) {
-      continue;
-    }
-    if (filesToLoad[fileName].endsWith('.js')) {
-      index += 1;
-      const script = document.createElement('script');
-      script.src = filesToLoad[fileName].slice(1);
-      script.id = `flowEditorScript${index}`;
-      script.async = false;
-      document.body.appendChild(script);
-      files.push(script);
-    }
+    if (filesToLoad[fileName].startsWith('./static')) {
+      if (filesToLoad[fileName].endsWith('.js')) {
+        index += 1;
+        const script = document.createElement('script');
+        script.src = filesToLoad[fileName].slice(1);
+        script.id = `flowEditorScript${index}`;
+        script.async = false;
+        document.body.appendChild(script);
+        files.push(script);
+      }
 
-    if (filesToLoad[fileName].endsWith('.css')) {
-      const link = document.createElement('link');
-      link.href = filesToLoad[fileName].slice(1);
-      link.id = `flowEditorfile${index}`;
-      link.rel = 'stylesheet';
-      document.body.appendChild(link);
+      if (filesToLoad[fileName].endsWith('.css')) {
+        const link = document.createElement('link');
+        link.href = filesToLoad[fileName].slice(1);
+        link.id = `flowEditorfile${index}`;
+        link.rel = 'stylesheet';
+        document.body.appendChild(link);
+      }
     }
   }
 
@@ -143,9 +142,10 @@ export interface FlowEditorProps {
 }
 
 export const FlowEditor = (props: FlowEditorProps) => {
+  const { match } = props;
   const client = useApolloClient();
   const history = useHistory();
-  const uuid = props.match.params.uuid;
+  const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
@@ -208,7 +208,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let automationKeyword: any;
   if (automationName) {
     automationTitle = automationName.flows[0].name;
-    automationKeyword = automationName.flows[0].keywords[0];
+    [automationKeyword] = automationName.flows[0].keywords;
   }
 
   useEffect(() => {

@@ -11,6 +11,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
 
+import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
@@ -19,7 +20,6 @@ import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/C
 import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
-import styles from './ContactBar.module.css';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
@@ -49,6 +49,7 @@ export interface ContactBarProps {
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
+  const { contactId, contactBspStatus, lastMessageTime, contactStatus, contactName } = props;
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -72,7 +73,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   // get contact groups
   const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
-    variables: { id: props.contactId },
+    variables: { id: contactId },
     fetchPolicy: 'cache-and-network',
   });
 
@@ -89,7 +90,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   const [addAutomation] = useMutation(ADD_AUTOMATION_TO_CONTACT, {
-    onCompleted: (data) => {
+    onCompleted: () => {
       setShowAutomationDialog(false);
       setNotification(client, 'Automation started successfully');
     },
@@ -97,8 +98,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
-    variables: { contactId: props.contactId },
-    onCompleted: (data) => {
+    variables: { contactId },
+    onCompleted: () => {
       setClearChatDialog(false);
       setNotification(client, 'Conversation cleared for this contact', 'warning');
     },
@@ -119,8 +120,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
     assignedToGroup = Array.from(new Set([].concat(...assignedToGroup)));
     if (assignedToGroup.length > 2) {
-      assignedToGroup =
-        assignedToGroup.slice(0, 2).join(', ') + ' +' + (assignedToGroup.length - 2).toString();
+      assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
+        assignedToGroup.length - 2
+      ).toString()}`;
     } else {
       assignedToGroup = assignedToGroup.join(', ');
     }
@@ -259,7 +261,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let automationButton: any;
-  if (props.contactBspStatus === 'SESSION' || props.contactBspStatus === 'SESSION_AND_HSM') {
+  if (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') {
     automationButton = (
       <Button
         className={styles.ListButtonPrimary}
@@ -358,9 +360,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       <div className={styles.SessionTimer} data-testid="sessionTimer">
         <span>Session Timer</span>
         <Timer
-          time={props.lastMessageTime}
-          contactStatus={props.contactStatus}
-          contactBspStatus={props.contactBspStatus}
+          time={lastMessageTime}
+          contactStatus={contactStatus}
+          contactBspStatus={contactBspStatus}
         />
       </div>
       <div>
@@ -378,7 +380,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       <div>
         <div className={styles.ContactDetails}>
           <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-            {props.contactName}
+            {contactName}
           </Typography>
           <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
             <div className={styles.Configure}>

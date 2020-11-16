@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useQuery, useMutation, useLazyQuery, useApolloClient, ApolloError } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
 import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
-import { NOTIFICATION } from '../../../graphql/queries/Notification';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
@@ -25,43 +24,10 @@ export interface ChatMessagesProps {
   contactId: number | string;
 }
 
-interface ConversationMessage {
-  id: string;
-  body: string;
-  insertedAt: string;
-  receiver: {
-    id: string;
-  };
-  sender: {
-    id: string;
-  };
-  tags: {
-    id: string;
-    label: string;
-  };
-}
-
-interface ChatMessagesInterface {
-  conversations: {
-    contact: {
-      id: string;
-      name: string;
-    };
-    messages: Array<ConversationMessage>;
-  };
-}
-
-interface ConversationResult {
-  chatMessages: any[];
-}
-
-type OptionalChatQueryResult = ChatMessagesInterface | null;
-
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
-  const message = useQuery(NOTIFICATION);
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
@@ -85,7 +51,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
-    onError: (error: ApolloError) => {
+    onError: () => {
       setNotification(
         client,
         'Sorry! 24 hrs window closed. Your message cannot be sent at this time. ',
@@ -114,14 +80,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (data) => {
-      if (data.search[0].messages.length === 0) {
+    onCompleted: (searchData) => {
+      if (searchData.search[0].messages.length === 0) {
         setShowLoadMore(false);
       } else {
         // get the conversations from cache
         const conversations = getCachedConverations(client, queryVariables);
 
-        const conversationCopy = JSON.parse(JSON.stringify(data));
+        const conversationCopy = JSON.parse(JSON.stringify(searchData));
         conversationCopy.search[0].messages
           .sort((currentMessage: any, nextMessage: any) => {
             return currentMessage.id - nextMessage.id;
@@ -168,7 +134,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   const sendMessageHandler = useCallback(
     (body: string) => {
       const payload = {
-        body: body,
+        body,
         senderId: 1,
         receiverId: contactId,
         type: 'TEXT',
@@ -224,11 +190,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     setShowDropdown(null);
   };
 
-  const handleSubmit = (selectedMessageTags: any) => {
-    const selectedTags = selectedMessageTags.filter(
-      (tag: any) => !previousMessageTags.includes(tag)
-    );
-    unselectedTags = previousMessageTags.filter((tag: any) => !selectedMessageTags.includes(tag));
+  const handleSubmit = (tags: any) => {
+    const selectedTags = tags.filter((tag: any) => !previousMessageTags.includes(tag));
+    unselectedTags = previousMessageTags.filter((tag: any) => !tags.includes(tag));
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
       setDialogbox(false);
@@ -282,7 +246,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             loadAllTags();
 
             let messageTags = conversationInfo.messages.filter(
-              (message: any) => message.id === editTagsMessageId
+              (messageObj: any) => messageObj.id === editTagsMessageId
             );
             if (messageTags.length > 0) {
               messageTags = messageTags[0].tags;
@@ -341,7 +305,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
             ) : (
-              <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+              <div
+                className={styles.LoadMoreButton}
+                onClick={loadMoreMessages}
+                onKeyDown={loadMoreMessages}
+                aria-hidden="true"
+              >
                 Load more messages
               </div>
             )}

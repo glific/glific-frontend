@@ -252,7 +252,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {
-        lastMessage = conversation.messages[0];
+        [lastMessage] = conversation.messages;
       }
       return (
         <ChatConversation

@@ -37,8 +37,10 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             style={{
               background: `url("${media.url}"), url('${ImageThumbnail}') no-repeat`,
             }}
-            onClick={() => setShowViewer(true)}
             className={styles.Image}
+            onClick={() => setShowViewer(true)}
+            onKeyDown={() => setShowViewer(true)}
+            aria-hidden="true"
           />
           <Viewer
             visible={showViewer}
@@ -70,7 +72,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             <ReactPlayer
               className={styles.Image}
               url={media.url}
-              controls={true}
+              controls
               light={VideoThumbnail}
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />

@@ -25,9 +25,9 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
 
   const popperItems = () => {
-    let templateObjs = data.sessionTemplates;
-    let text = props.isTemplate ? 'templates' : 'speed sends';
-    let listItems = templateObjs.map((obj: any, index: number) => {
+    const templateObjs = data.sessionTemplates;
+    const text = props.isTemplate ? 'templates' : 'speed sends';
+    const listItems = templateObjs.map((obj: any, index: number) => {
       if (obj.isHsm === props.isTemplate) {
         // True HSM === Template, False HSM === Speed send
         return (
@@ -36,7 +36,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
               data-testid="templateItem"
               button
               disableRipple
-              onClick={(e: any) => props.handleSelectText(obj)}
+              onClick={() => props.handleSelectText(obj)}
               className={styles.PopperListItem}
             >
               <p className={styles.Text}>
