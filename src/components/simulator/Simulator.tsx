@@ -72,10 +72,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
     text: string,
     direction: string,
     index: number,
-    insertedAt: string
+    insertedAt: string,
+    type: string,
+    media: any
   ): JSX.Element => {
     return (
       <div className={getStyleForDirection(direction)} key={index}>
+        {type === 'IMAGE' ? <img src={media.url} className={styles.Image}></img> : null}
         {text
           ? text.split('\n').map((item, key) => {
               return (
@@ -94,10 +97,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
+      const { body, insertedAt, type, media } = simulatorMessage;
       if (simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(simulatorMessage.body, 'send', index, simulatorMessage.insertedAt);
+        return renderMessage(body, 'send', index, insertedAt, type, media);
       } else {
-        return renderMessage(simulatorMessage.body, 'received', index, simulatorMessage.insertedAt);
+        return renderMessage(body, 'received', index, insertedAt, type, media);
       }
     })
     .reverse();
