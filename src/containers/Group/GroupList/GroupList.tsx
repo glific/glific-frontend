@@ -25,15 +25,15 @@ import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialo
 
 export interface GroupListProps {}
 
+const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
+
+const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
+
 const getColumns = ({ id, label, description }: any) => ({
   id,
   label: getLabel(label),
   description: getDescription(description),
 });
-
-const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
-
-const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
 
 const dialogMessage = "You won't be able to use this group again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
@@ -50,7 +50,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const GroupList: React.SFC<GroupListProps> = (props) => {
+export const GroupList: React.SFC<GroupListProps> = () => {
   const client = useApolloClient();
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
@@ -81,8 +81,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
     onCompleted: (data) => {
-      const numberDeleted = data.updateGroupContacts.numberDeleted;
-      const numberAdded = data.updateGroupContacts.groupContacts.length;
+      const { numberDeleted, groupContacts } = data.updateGroupContacts;
+      const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
           client,
@@ -107,7 +107,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   });
 
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
-    onCompleted: (data: any) => {
+    onCompleted: () => {
       setAddAutomationDialogShow(false);
       setNotification(client, 'Automation started successfully');
     },
@@ -173,7 +173,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         title="Send message to group"
         onSendMessage={sendMessageToGroup}
         handleClose={() => setSendMessageDialogShow(false)}
-      ></MessageDialog>
+      />
     );
   }
 
@@ -221,7 +221,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
-        asyncSearch={true}
+        asyncSearch
         selectedOptions={groupContacts}
         onChange={(value: any) => {
           setContactSearchTerm(value);
@@ -251,6 +251,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       </IconButton>
     </Menu>
   );
+
   const additionalAction = [
     {
       label: 'Add contacts to group',
@@ -270,7 +271,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     query: GET_GROUPS,
     variables: setVariables(),
   };
+
   const cardLink = { start: 'group', end: 'contacts' };
+
   return (
     <>
       <List
