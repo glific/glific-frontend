@@ -36,8 +36,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
-      if (data['updateCurrentUser'].errors) {
-        if (data['updateCurrentUser'].errors[0]['message'] === 'incorrect_code') {
+      if (data.updateCurrentUser.errors) {
+        if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: 'Please enter a valid OTP' });
         } else {
           setToastMessageInfo({

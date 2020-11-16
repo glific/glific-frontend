@@ -63,7 +63,7 @@ export const SettingList: React.SFC = () => {
               <CardActions className={styles.CardActions}>
                 <Link
                   to={{
-                    pathname: `settings${data.shortcode}`,
+                    pathname: `settings/${data.shortcode}`,
                   }}
                   className={styles.Link}
                 >
