@@ -41,7 +41,6 @@ describe('<ResetPasswordPhone />', () => {
     // let's mock successful login submission
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    await wait();
   });
 
   it('test the form submission with incorrect phone', async () => {
@@ -58,6 +57,5 @@ describe('<ResetPasswordPhone />', () => {
     // set the mock
     const errorMessage = 'Cannot send the otp to 919978776554';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
-    await wait();
   });
 });

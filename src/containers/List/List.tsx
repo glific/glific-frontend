@@ -445,7 +445,7 @@ export const List: React.SFC<ListProps> = ({
 
   return (
     <>
-      <div className={styles.Header}>
+      <div className={styles.Header} data-testid='listHeader'>
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}

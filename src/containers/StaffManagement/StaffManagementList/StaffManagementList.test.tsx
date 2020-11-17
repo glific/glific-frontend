@@ -1,12 +1,24 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { StaffManagementList } from './StaffManagementList';
 import { STAFF_MANAGEMENT_MOCKS } from '../StaffManagement.test.helper';
-import { mount } from 'enzyme';
 import { List } from '../../List/List';
-import * as something  from '../../../context/role';
+import { setUserSession } from '../../../services/AuthService';
+
+jest.mock('../../List/List', () => {
+  return {
+    List: (...props) => {
+      const { restrictedAction } = props[0];
+      return (
+        <div onClick={() => restrictedAction({ roles: ['Admin'] })} data-testid="staffList">
+          <span>Staff Management</span>
+        </div>
+      );
+    },
+  };
+});
 
 const mocks = STAFF_MANAGEMENT_MOCKS;
 
@@ -21,28 +33,18 @@ const staffManagement = (
 test('StaffManagementList is rendered correctly', async () => {
   const { getByText } = render(staffManagement);
 
-  await wait();
-
-  expect(getByText('Staff Management')).toBeInTheDocument();
-  await wait();
+  await waitFor(() => {
+    expect(getByText('Staff Management')).toBeInTheDocument();
+  });
 });
 
-test('check restricted action',async()=>{
-  const wrapper=mount(staffManagement);
-  await wait();
-  wrapper.find(List).prop('restrictedAction')({roles:['Admin']})
-  
-})
 
-test('check restricted action with manager role',async()=>{
-  something.isManagerRole=true
-  const wrapper=mount(staffManagement);
-  await wait();
-  wrapper.find(List).prop('restrictedAction')({roles:['Admin']})
-})
+test('check restricted action with manager role', async () => {
+  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-test('check getColumns function call',async()=>{
-  const wrapper=mount(staffManagement);
-  await wait();
-  wrapper.find(List).prop('columns')({name:'Alex',phone:'9897123456',groups:['Default'],roles:['Admin']})
-})
+  const { getByTestId } = render(staffManagement);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('staffList'));
+  });
+});
+

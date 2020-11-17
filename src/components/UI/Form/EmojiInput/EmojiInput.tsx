@@ -94,12 +94,13 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       <InputAdornment position="end" className={Styles.EmojiPosition}>
         <IconButton
           color="primary"
+          data-testid="emoji-picker"
           aria-label="pick emoji"
           component="span"
           className={Styles.Emoji}
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
-          <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
+          <span role="img" aria-label="pick emoji" >
             😀
           </span>
         </IconButton>

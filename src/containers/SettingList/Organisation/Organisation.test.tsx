@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, wait } from '@testing-library/react';
+import { render, screen, fireEvent, wait, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { Organisation } from './Organisation';
 import { MockedProvider } from '@apollo/client/testing';
@@ -21,9 +21,9 @@ describe('<Organisation />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Back to settings')).toBeInTheDocument();
+    });
   });
 });
 
@@ -32,13 +32,10 @@ describe('<Organisation />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    // click on SAVE
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
-    await wait();
-    await wait();
+    await waitFor(() => {
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
   });
 });
 
@@ -47,11 +44,12 @@ describe('<Organisation />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    // click on Cancel
-    const Button = screen.getByText('Cancel');
-    expect(Button).toBeInTheDocument();
-    UserEvent.click(Button);
+    await waitFor(() => {
+      const Button = screen.getByText('Cancel');
+      expect(Button).toBeInTheDocument();
+      // click on Cancel
+      UserEvent.click(Button);
+    });
   });
 });
 
@@ -61,10 +59,10 @@ describe('Checked Hours of operations', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
-    await wait();
-    await wait();
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.change(checkbox, { target: { value: 'true' } });
-    expect(checkbox.value).toBe('true');
+    await waitFor(() => {
+      const checkbox = screen.getByRole('checkbox');
+      fireEvent.change(checkbox, { target: { value: 'true' } });
+      expect(checkbox.value).toBe('true');
+    });
   });
 });

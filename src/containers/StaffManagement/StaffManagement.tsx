@@ -35,7 +35,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [groups, setGroups] = useState([]);
 
   const states = { name, phone, roles, groups };
-  const setStates = ({ nameValue, phoneValue, rolesValue, groupsValue }: any) => {
+  const setStates = ({
+    name: nameValue,
+    phone: phoneValue,
+    roles: rolesValue,
+    groups: groupsValue,
+  }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
 

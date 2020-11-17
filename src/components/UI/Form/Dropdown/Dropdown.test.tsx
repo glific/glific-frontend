@@ -1,21 +1,28 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { Select, InputLabel } from '@material-ui/core';
 import { Dropdown } from './Dropdown';
 
 describe('<Dropdown />', () => {
+  const defaultProps = {
+    options: [{id:'1',label:'Default'}],
+    label: 'Title',
+    placeholder: "Input your title",
+    field:{value:"1"}
+  };
+
   it('renders <Dropdown /> component', () => {
-    const wrapper = shallow(<Dropdown />);
-    expect(wrapper).toBeTruthy();
+    const wrapper = render(<Dropdown {...defaultProps}/>);
+    expect(wrapper.getByTestId('dropdown')).toBeInTheDocument();
   });
 
-  it('should have correct label', () => {
-    const wrapper = shallow(<Dropdown placeholder="Dropdown" />);
-    expect(wrapper.find(InputLabel).text()).toEqual('Dropdown');
+  it('should have correct placeholder', () => {
+    const wrapper = render(<Dropdown {...defaultProps}/>);
+    expect(wrapper.getByTestId('inputLabel')).toHaveTextContent('Input your title');
   });
 
   it('should have an initial value', () => {
-    const wrapper = shallow(<Dropdown field={{ value: 1 }} />);
-    expect(wrapper.find(Select).props().value).toEqual(1);
+    const wrapper = render(<Dropdown {...defaultProps} />);
+    expect(wrapper.container.querySelector('.MuiSelect-root')).toHaveTextContent('Default')
   });
 });

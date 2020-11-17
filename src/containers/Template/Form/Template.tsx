@@ -53,9 +53,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, body };
-  const setStates = ({ fieldLabel, fieldBody }: any) => {
-    setLabel(fieldLabel);
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(fieldBody)));
+  const setStates = ({ label, body }: any) => {
+
+    setLabel(label);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(body)));
   };
 
   let attributesObject = defaultTypeAttribute;

@@ -46,7 +46,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   }
 
   return (
-    <div className={styles.DescriptionContainer}>
+    <div className={styles.DescriptionContainer} data-testid='contactDescription'>
       <h2 className={styles.Title}>Details</h2>
       <div className={styles.Description}>
         <span data-testid="phoneNo">+{phoneNo}</span>

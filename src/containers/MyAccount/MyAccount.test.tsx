@@ -20,7 +20,7 @@ const wrapper = (
 );
 
 describe('<MyAccount />', () => {
-  test('it should mount', async () => {
+  test('it should render', async () => {
     const { getByText, findByTestId } = render(wrapper);
 
     // loading is show initially
