@@ -47,6 +47,25 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     },
   });
 
+  const handlerSavedSearchCriteria = (
+    savedSearchCriteria: string | null,
+    savedSearchId: number | null
+  ) => {
+    props.savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
+    setSelectedSavedSearch(savedSearchId);
+  };
+
+  const handleAdditionalSavedSearch = (search: any) => {
+    const removedCollection = fixedCollection[fixedCollection.length - 1];
+    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
+    fixedCollectionCopy.push(search);
+    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
+    moreCollection.unshift(removedCollection);
+    setFixedCollection(fixedCollectionCopy);
+    setAdditonalCollections(moreCollection);
+    handlerSavedSearchCriteria(search.args, search.id);
+  };
+
   useEffect(() => {
     // display created collection
     if (refetchData.savedSearchCollection) {
@@ -60,14 +79,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setErrorMessage(client, error);
     return null;
   }
-
-  const handlerSavedSearchCriteria = (
-    savedSearchCriteria: string | null,
-    savedSearchId: number | null
-  ) => {
-    props.savedSearchCriteriaCallback(savedSearchCriteria, savedSearchId);
-    setSelectedSavedSearch(savedSearchId);
-  };
 
   const savedSearchList = fixedCollection.map((savedSearch: any) => {
     // set the selected class if the button is clicked
@@ -102,17 +113,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const handleClickAway = () => {
     setAnchorEl(null);
     setOptionsSelected(false);
-  };
-
-  const handleAdditionalSavedSearch = (search: any) => {
-    const removedCollection = fixedCollection[fixedCollection.length - 1];
-    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
-    fixedCollectionCopy.push(search);
-    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
-    moreCollection.unshift(removedCollection);
-    setFixedCollection(fixedCollectionCopy);
-    setAdditonalCollections(moreCollection);
-    handlerSavedSearchCriteria(search.args, search.id);
   };
 
   const additionalOptions = (
