@@ -122,7 +122,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to group
   return (
-    <div className={styles.App} data-testid='app'>
+    <div className={styles.App} data-testid="app">
       {toastMessage}
       {userRole.length > 0 ? <ChatSubscription /> : ''}
       <Layout>{route}</Layout>

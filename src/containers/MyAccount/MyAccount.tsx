@@ -144,9 +144,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   let formFieldLayout: any;
   if (!showOTPButton) {
     formFieldLayout = formFields.map((field: any, index) => {
+      const key = index;
       return (
-        <React.Fragment key={index}>
-          <Field key={index} {...field} />
+        <React.Fragment key={key}>
+          <Field key={key} {...field} />
         </React.Fragment>
       );
     });

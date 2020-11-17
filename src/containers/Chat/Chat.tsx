@@ -70,7 +70,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   return (
     <Paper>
-      <div className={styles.Chat} data-testid='chatContainer'>{chatInterface}</div>
+      <div className={styles.Chat} data-testid="chatContainer">
+        {chatInterface}
+      </div>
       <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
     </Paper>
   );

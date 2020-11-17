@@ -341,14 +341,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         {({ submitForm }) => (
           <Form className={styles.Form} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
+              const key = index;
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={key}>
                   {field.label ? (
                     <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   ) : null}
-                  <Field key={index} {...field} />
+                  <Field key={key} {...field} />
                 </React.Fragment>
               );
             })}

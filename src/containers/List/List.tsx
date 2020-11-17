@@ -300,9 +300,10 @@ export const List: React.SFC<ListProps> = ({
             } else {
               additionalActionParameter = listItems[params[0]];
             }
+            const key = index;
             if (action.link) {
               return (
-                <Link to={`${action?.link}/${additionalActionParameter}`} key={index}>
+                <Link to={`${action?.link}/${additionalActionParameter}`} key={key}>
                   <Tooltip title={`${action.label}`} placement="top">
                     <IconButton
                       color="default"
@@ -317,7 +318,7 @@ export const List: React.SFC<ListProps> = ({
             }
             if (action.dialog) {
               return (
-                <Tooltip title={`${action.label}`} placement="top" key={index}>
+                <Tooltip title={`${action.label}`} placement="top" key={key}>
                   <IconButton
                     color="default"
                     data-testid="additionalButton"
@@ -445,7 +446,7 @@ export const List: React.SFC<ListProps> = ({
 
   return (
     <>
-      <div className={styles.Header} data-testid='listHeader'>
+      <div className={styles.Header} data-testid="listHeader">
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}

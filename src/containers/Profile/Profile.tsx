@@ -48,6 +48,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  let param = match;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
@@ -57,7 +58,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   let currentContactId;
   if (!match) {
     // let's manually set the contact id in the match object in case of user profile
-    match = { params: { id: loggedInUserContactId } };
+    param = { params: { id: loggedInUserContactId } };
     currentContactId = loggedInUserContactId;
   } else {
     currentContactId = match.params.id;
@@ -127,7 +128,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   return (
     <FormLayout
       {...queries}
-      match={match}
+      match={param}
       states={states}
       setStates={setStates}
       additionalState={additionalState}

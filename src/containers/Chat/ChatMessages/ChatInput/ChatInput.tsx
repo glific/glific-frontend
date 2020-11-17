@@ -160,7 +160,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   );
 
   return (
-    <Container className={`${styles.ChatInput} ${additionalStyle}`} data-testid="message-input-container">
+    <Container
+      className={`${styles.ChatInput} ${additionalStyle}`}
+      data-testid="message-input-container"
+    >
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
@@ -192,7 +195,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         {showJumpToLatest === true ? jumpToLatest : null}
 
         <WhatsAppEditor
-          
           editorState={editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
