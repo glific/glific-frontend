@@ -53,7 +53,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, body };
-  const setStates = ({ labelValue, bodyValue }: any) => {
+  const setStates = ({ label: labelValue, body: bodyValue }: any) => {
     setLabel(labelValue);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
   };

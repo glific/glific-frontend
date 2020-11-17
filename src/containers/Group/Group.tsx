@@ -124,7 +124,8 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   }, [groupUsers]);
 
   const states = { label, description, users };
-  const setStates = ({ labelValue, descriptionValue }: any) => {
+
+  const setStates = ({ label: labelValue, description: descriptionValue }: any) => {
     setLabel(labelValue);
     setDescription(descriptionValue);
   };

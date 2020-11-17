@@ -130,7 +130,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     });
   };
 
-  const setStates = ({ shortcodeValue, labelValue, argsValue }: any) => {
+  const setStates = ({ shortcode: shortcodeValue, label: labelValue, args: argsValue }: any) => {
     setShortcode(shortcodeValue);
     setLabel(labelValue);
     setArgs(argsValue);

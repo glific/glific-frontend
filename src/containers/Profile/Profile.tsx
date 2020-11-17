@@ -66,7 +66,13 @@ export const Profile: React.SFC<ProfileProps> = ({
 
   const states: any = { name, phone, status, bspStatus };
 
-  const setStates = ({ nameValue, phoneValue, statusValue, bspStatusValue, ...rest }: any) => {
+  const setStates = ({
+    name: nameValue,
+    phone: phoneValue,
+    status: statusValue,
+    bspStatus: bspStatusValue,
+    ...rest
+  }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
     setStatus(statusValue);
