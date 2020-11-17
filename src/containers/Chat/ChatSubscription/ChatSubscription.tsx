@@ -150,7 +150,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       updatedConversations.search = [...updatedConversation, ...updatedConversations.search];
 
       // return the updated object
-      const returnConversations = Object.assign(cachedConversations, { ...updatedConversations });
+      const returnConversations = { ...cachedConversations, ...updatedConversations };
 
       return returnConversations;
     },
