@@ -291,7 +291,7 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction.map((action: any, index: number) => {
+          {additionalAction.forEach((action: any, index: number) => {
             // check if we are dealing with nested element
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
@@ -330,6 +330,7 @@ export const List: React.SFC<ListProps> = ({
                 </Tooltip>
               );
             }
+            return null;
           })}
 
           {/* do not display edit & delete for staff role in group */}
@@ -342,6 +343,7 @@ export const List: React.SFC<ListProps> = ({
         </div>
       );
     }
+    return null;
   }
 
   function formatList(listItems: Array<any>) {

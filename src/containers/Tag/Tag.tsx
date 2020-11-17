@@ -47,8 +47,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const getObject = (arr: any, data: any) => {
     const result: any = [];
     if (arr && data) {
-      arr.map((obj: any) => {
-        data.map((ID: any) => {
+      arr.forEach((obj: any) => {
+        data.forEach((ID: any) => {
           if (obj.id === ID) result.push(obj);
         });
       });

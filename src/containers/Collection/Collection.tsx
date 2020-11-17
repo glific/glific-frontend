@@ -89,8 +89,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const getObject = (arr: any, dataObj: any) => {
     const result: any = [];
     if (arr && dataObj) {
-      arr.map((obj: any) => {
-        dataObj.map((ID: any) => {
+      arr.forEach((obj: any) => {
+        dataObj.forEach((ID: any) => {
           if (obj.id === ID) result.push(obj);
         });
       });

@@ -234,7 +234,7 @@ export const Organisation: React.SFC = () => {
     const array: any = [];
     for (let i = 0; i < 7; i += 1) {
       array[i] = { id: i + 1, enabled: false };
-      enabledDay.map((days: any) => {
+      enabledDay.forEach((days: any) => {
         if (i + 1 === days.id) {
           array[i] = { id: i + 1, enabled: true };
         }

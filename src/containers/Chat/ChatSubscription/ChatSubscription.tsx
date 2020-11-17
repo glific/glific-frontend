@@ -133,7 +133,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       } else {
         // let's add/delete tags for the message
         // tag object: tagData.tag
-        updatedConversation[0].messages.map((message: any) => {
+        updatedConversation[0].messages.forEach((message: any) => {
           if (message.id === tagData.message.id) {
             // let's add tag if action === "TAG_ADDED"
             if (action === 'TAG_ADDED') {

@@ -235,7 +235,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     }
 
     // remove fields from the payload that marked as skipPayload = true
-    formFields.map((field: any) => {
+    formFields.forEach((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }

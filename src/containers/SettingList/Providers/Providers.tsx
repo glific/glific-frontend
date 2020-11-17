@@ -46,7 +46,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     const fields: any = {};
     Object.assign(fields, keysObj);
     Object.assign(fields, secretsObj);
-    Object.keys(fields).map((key) => {
+    Object.keys(fields).forEach((key) => {
       // restore value of the field
       states[key] = fields[key];
     });
@@ -75,12 +75,12 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     let object: any = {};
     const secretsObj: any = {};
     const keysObj: any = {};
-    Object.keys(secrets).map((key) => {
+    Object.keys(secrets).forEach((key) => {
       if (payload[key]) {
         secretsObj[key] = payload[key];
       }
     });
-    Object.keys(keys).map((key) => {
+    Object.keys(keys).forEach((key) => {
       if (payload[key]) {
         keysObj[key] = payload[key];
       }
@@ -130,7 +130,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       },
     ];
     const defaultStates: any = {};
-    Object.keys(fields).map((key) => {
+    Object.keys(fields).forEach((key) => {
       Object.assign(defaultStates, { [key]: fields[key].default });
       const field = {
         component: Input,
@@ -153,7 +153,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   let title;
   if (providerData) {
     title = providerData.providers[0].name;
-    providerData.providers.map((provider: any) => {
+    providerData.providers.forEach((provider: any) => {
       keys = JSON.parse(provider.keys);
       secrets = JSON.parse(provider.secrets);
       const fields = {};
