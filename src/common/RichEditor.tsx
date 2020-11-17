@@ -62,19 +62,18 @@ export const convertToWhatsApp = (editorState: any) => {
     const { text } = block;
 
     let offset = 0;
-    let convertedText = '';
-    convertedText = block.inlineStyleRanges.map((style: any) => {
+    let convertedText = text;
+    block.inlineStyleRanges.forEach((style: any) => {
       switch (style.style) {
         case 'BOLD':
-          convertedText = textConversion(text, style, offset, '*');
+          convertedText = textConversion(convertedText, style, offset, '*');
           break;
         case 'ITALIC':
-          convertedText = textConversion(text, style, offset, '_');
+          convertedText = textConversion(convertedText, style, offset, '_');
           break;
         default:
       }
       offset += 2;
-      return convertedText;
     });
 
     return `${finalString}${convertedText} \n`;

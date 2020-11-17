@@ -223,7 +223,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     };
 
     payload = languageSupport
-      ? { ...payload, languageIdValue: Number(languageIdValue) }
+      ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
 
     // create custom payload for collection
