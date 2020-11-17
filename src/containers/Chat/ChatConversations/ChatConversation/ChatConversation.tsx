@@ -153,7 +153,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     default:
       message = lastMessage.type;
   }
-  let displayMSG = WhatsAppToJsx(message);
+  let displayMSG:any = WhatsAppToJsx(message);
 
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (client: any, offset: number = 0) => {

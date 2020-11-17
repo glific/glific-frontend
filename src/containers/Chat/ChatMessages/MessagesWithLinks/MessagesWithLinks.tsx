@@ -12,7 +12,7 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   props: MessagesWithLinksProps
 ) => {
   let linkPreview = null;
-  let messagebody = WhatsAppToJsx(props.message);
+  let messagebody:any = WhatsAppToJsx(props.message);
   let array;
   const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
   if ((array = regexForLink.exec(props.message)) != null) {

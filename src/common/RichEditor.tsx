@@ -97,6 +97,19 @@ export const WhatsAppToDraftEditor = (text: string) => {
 
 export const WhatsAppToJsx = (text: any) => {
   let replacements = TextReplacements;
+  let modifiedText = text;
+  const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
+
+  complexFormatting.forEach((expression) => {
+    modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => {
+      return (
+        <b key={i}>
+          <i>{match.slice(2, match.length - 2)}</i>
+        </b>
+      );
+    });
+  });
+
   for (let i = 0; i < replacements.length; i++) {
     let type = Object.keys(replacements[i])[0];
     let character: any = replacements[i][type].char;
@@ -112,10 +125,12 @@ export const WhatsAppToJsx = (text: any) => {
       '{' +
       character.length +
       '}';
-    text = reactStringReplace(text, new RegExp(regexStr, 'g'), (match: any, i: number) =>
-      replaceFunc(match)
+    modifiedText = reactStringReplace(
+      modifiedText,
+      new RegExp(regexStr, 'g'),
+      (match: any, i: number) => replaceFunc(match)
     );
   }
 
-  return text;
+  return modifiedText;
 };
