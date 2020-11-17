@@ -60,7 +60,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations
-            contactId={showSimulator && simulatorId ? parseInt(simulatorId) : contactId}
+            contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
             simulator={{ simulatorId, setShowSimulator }}
           />
         </div>

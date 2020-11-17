@@ -27,13 +27,13 @@ interface PagerProps {
   };
   showCheckbox?: boolean;
 }
-// Change name to Pager
 
 const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
   const createRow = (entry: any) => {
     return Object.keys(entry).map((item: any, i: number) => {
       return (
         <TableCell
+          // eslint-disable-next-line
           key={i}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
@@ -43,13 +43,14 @@ const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
     });
   };
 
-  return data.map((entry: any, i: number) => {
+  return data.map((entry: any) => {
     let batchAction = null;
     if (showCheckbox) {
       batchAction = <Checkbox />;
     }
+
     return (
-      <TableRow key={i} className={styles.TableRow}>
+      <TableRow key={entry.recordId} className={styles.TableRow}>
         {batchAction}
         {createRow(entry)}
       </TableRow>
@@ -74,6 +75,7 @@ const tableHeadColumns = (
       {columnNames.map((name: string, i: number) => {
         return (
           <TableCell
+            // eslint-disable-next-line
             key={i}
             className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
           >
@@ -133,6 +135,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     handleTableChange,
     totalRows,
   } = props;
+
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 

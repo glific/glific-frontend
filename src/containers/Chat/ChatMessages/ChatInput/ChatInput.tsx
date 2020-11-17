@@ -23,6 +23,7 @@ export interface ChatInputProps {
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
+  const { contactBspStatus, contactStatus, additionalStyle, handleHeightChange } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -36,10 +37,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     const messageContainer: any = document.querySelector('.messageContainer');
     if (messageContainer) {
       messageContainer.addEventListener('scroll', (event: any) => {
-        const messageContainer = event.target;
+        const messageContainerTarget = event.target;
         if (
-          messageContainer.scrollTop ===
-          messageContainer.scrollHeight - messageContainer.offsetHeight
+          messageContainerTarget.scrollTop ===
+          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
         ) {
           setShowJumpToLatest(false);
         } else if (showJumpToLatest === false) {
@@ -93,6 +94,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           key={type}
           data-testid="shortcutButton"
           onClick={() => handleClick(type)}
+          onKeyDown={() => handleClick(type)}
+          aria-hidden="true"
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
           })}
@@ -106,8 +109,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   // determine what kind of messages we should display
   let quickSendTypes: any = [];
-  if (props.contactBspStatus) {
-    switch (props.contactBspStatus) {
+  if (contactBspStatus) {
+    switch (contactBspStatus) {
       case 'SESSION':
         quickSendTypes = [speedSends];
         break;
@@ -117,13 +120,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       case 'HSM':
         quickSendTypes = [templates];
         break;
+      default:
+        break;
     }
   }
 
-  if (
-    (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactBspStatus === 'NONE'
-  ) {
+  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
       <div className={styles.ContactOptOutMessage}>
         Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to
@@ -146,13 +148,19 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const jumpToLatest = (
-    <div className={styles.JumpToLatest} onClick={() => showLatestMessage()}>
-      Jump to latest <ExpandMoreIcon />
+    <div
+      className={styles.JumpToLatest}
+      onClick={() => showLatestMessage()}
+      onKeyDown={showLatestMessage}
+      aria-hidden="true"
+    >
+      Jump to latest
+      <ExpandMoreIcon />
     </div>
   );
 
   return (
-    <Container className={`${styles.ChatInput} ${props.additionalStyle}`} data-testid="message-input-container">
+    <Container className={`${styles.ChatInput} ${additionalStyle}`} data-testid="message-input-container">
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
@@ -167,7 +175,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                   className={styles.ChatSearchBar}
                   handleChange={handleSearch}
                   onReset={() => setSearchVal('')}
-                  searchMode={true}
+                  searchMode
                 />
               </div>
             </Fade>
@@ -188,7 +196,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           editorState={editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
-          handleHeightChange={props.handleHeightChange}
+          handleHeightChange={handleHeightChange}
         />
 
         <div className={styles.SendButtonContainer}>

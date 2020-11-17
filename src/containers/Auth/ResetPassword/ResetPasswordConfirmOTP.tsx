@@ -14,11 +14,12 @@ export interface ResetPasswordConfirmOTPProps {
 }
 
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
+  const { location } = props;
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
 
   // Let's not allow direct navigation to this page
-  if (props.location && props.location.state === undefined) {
+  if (location && location.state === undefined) {
     return <Redirect to="/resetpassword-phone" />;
   }
 
@@ -27,7 +28,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   }
 
   const handleResend = () => {
-    sendOTP(props.location.state.phoneNumber);
+    sendOTP(location.state.phoneNumber);
   };
 
   const formFields = [
@@ -62,7 +63,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   });
 
   const initialFormValues = {
-    phoneNumber: props.location.state.phoneNumber,
+    phoneNumber: location.state.phoneNumber,
     OTP: '',
     password: '',
   };

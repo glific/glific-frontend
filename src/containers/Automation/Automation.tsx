@@ -28,7 +28,7 @@ const dialogMessage = "You won't be able to use this automation again.";
 
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
-let queries = {
+const queries = {
   getItemQuery: GET_AUTOMATION,
   createItemQuery: CREATE_AUTOMATION,
   updateItemQuery: UPDATE_AUTOMATION,
@@ -44,20 +44,22 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const states = { name, keywords, ignoreKeywords };
 
-  const setStates = ({ name, keywords, ignoreKeywords }: any) => {
+  const setStates = ({ nameValue, keywordsValue, ignoreKeywordsValue }: any) => {
     // Override name & keywords when creating Automation Copy
+    let fieldName = nameValue;
+    let fieldKeywords = keywordsValue;
     if (location.state === 'copy') {
-      name = 'Copy of ' + name;
-      keywords = '';
+      fieldName = `Copy of ${nameValue}`;
+      fieldKeywords = '';
     }
-    setName(name);
+    setName(fieldName);
 
     // we are recieving keywords as an array object
-    if (keywords.length > 0) {
+    if (fieldKeywords.length > 0) {
       // lets display it comma separated
-      setKeywords(keywords.join(','));
+      setKeywords(fieldKeywords.join(','));
     }
-    setIgnoreKeywords(ignoreKeywords);
+    setIgnoreKeywords(ignoreKeywordsValue);
   };
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
@@ -76,20 +78,6 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   useEffect(() => {
     if (filterKeywords) getAutomations();
   }, [filterKeywords, getAutomations]);
-
-  const validateName = (value: string) => {
-    if (value) {
-      setFilterKeywords({ name: value });
-      return validateFields(value, 'name', 'Name already exists.', false);
-    }
-  };
-
-  const validateKeywords = (value: string) => {
-    if (value) {
-      setFilterKeywords({ keyword: value });
-      return validateFields(value, 'keywords', 'Keyword already exists.', true);
-    }
-  };
 
   const validateFields = (value: string, key: string, errorMsg: string, deepFilter: boolean) => {
     let found = [];
@@ -112,6 +100,22 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       error = errorMsg;
     }
     return error;
+  };
+
+  const validateName = (value: string) => {
+    if (value) {
+      setFilterKeywords({ name: value });
+      return validateFields(value, 'name', 'Name already exists.', false);
+    }
+    return null;
+  };
+
+  const validateKeywords = (value: string) => {
+    if (value) {
+      setFilterKeywords({ keyword: value });
+      return validateFields(value, 'keywords', 'Keyword already exists.', true);
+    }
+    return null;
   };
 
   const formFields = [
@@ -142,9 +146,9 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     let formattedKeywords;
     if (payload.keywords) {
       // remove white spaces
-      const keywords = payload.keywords.replace(/[\s]+/g, '');
+      const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
       // conver to array
-      formattedKeywords = keywords.split(',');
+      formattedKeywords = inputKeywords.split(',');
     }
 
     // return modified payload

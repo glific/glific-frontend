@@ -78,7 +78,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
 
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
-      filter: { label: filterLabel, languageId: parseInt(languageId) },
+      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
     },
   });
 
@@ -160,7 +160,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     {
       component: ColorPicker,
       name: 'colorCode',
-      colorCode: colorCode,
+      colorCode,
       helperText: 'Tag color',
     },
   ];

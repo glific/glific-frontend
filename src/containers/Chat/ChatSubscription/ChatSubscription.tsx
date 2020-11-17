@@ -45,7 +45,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       // let's return early incase we don't have cached conversations
       // TODO: Need to investigate why this happens
       if (!cachedConversations) {
-        return;
+        return null;
       }
 
       let newMessage: any;
@@ -79,9 +79,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
             contactId = tagData.message.receiver.id;
           }
           break;
+        default:
+          break;
       }
 
-      //loop through the cached conversations and find if contact exists
+      // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
       cachedConversations.search.map((conversation: any, index: any) => {
@@ -120,7 +122,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       // get the conversation for the contact that needs to be updated
       updatedConversation = updatedConversation.splice(conversationIndex, 1);
 
-      //update contact last message at when receiving a new Message
+      // update contact last message at when receiving a new Message
       if (action === 'RECEIVED') {
         updatedConversation[0].contact.lastMessageAt = newMessage.insertedAt;
       }

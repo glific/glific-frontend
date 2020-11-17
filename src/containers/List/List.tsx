@@ -3,22 +3,21 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, Typography } from '@material-ui/core';
 
-import { setNotification, setErrorMessage } from '../../common/notification';
+import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { Pager } from '../../components/UI/Pager/Pager';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
-import styles from './List.module.css';
-import SearchBar from '../../components/UI/SearchBar/SearchBar';
+import { SearchBar } from '../../components/UI/SearchBar/SearchBar';
+import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
+import { ListCard } from './ListCard/ListCard';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
-import { ListCard } from './ListCard/ListCard';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
+import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
-import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -160,7 +159,6 @@ export const List: React.SFC<ListProps> = ({
     GET_CURRENT_USER
   );
 
-
   const checkUserRole = () => {
     userRole = getUserRole();
   };
@@ -176,15 +174,12 @@ export const List: React.SFC<ListProps> = ({
       if (!displayUserGroups && listItem === 'groups') {
         // if user role staff then display groups related to login user
         fetchUserGroups();
-      } else {
-        fetchQuery();
       }
+      fetchQuery();
     }
   }, [userRole]);
 
   // Make a new count request for a new count of the # of rows from this query in the back-end.
-
- 
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
@@ -194,7 +189,8 @@ export const List: React.SFC<ListProps> = ({
     refetchQueries: () => {
       if (refetchQueries) {
         return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      } else return [{ query: filterItemsQuery, variables: filterPayload() }];
+      }
+      return [{ query: filterItemsQuery, variables: filterPayload() }];
     },
   });
 
@@ -203,9 +199,14 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(id);
   };
 
-
   const closeDialogBox = () => {
     setDeleteItemID(null);
+  };
+
+  const deleteHandler = (id: number) => {
+    const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
+    deleteItem({ variables });
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
@@ -215,21 +216,17 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(null);
   };
 
- 
-
   let dialogBox;
   if (deleteItemID) {
     dialogBox = (
       <DialogBox
         title={
-          dialogTitle
-            ? dialogTitle
-            : `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
+          dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
         colorOk="secondary"
-        alignButtons={'center'}
+        alignButtons="center"
       >
         <p className={styles.DialogText}>{dialogMessage}</p>
       </DialogBox>
@@ -250,18 +247,12 @@ export const List: React.SFC<ListProps> = ({
     return null;
   }
 
-  const deleteHandler = (id: number) => {
-    const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
-    deleteItem({ variables: variables });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
-  };
-
   // Reformat all items to be entered in table
   function getIcons(
     id: number | undefined,
     label: string,
     isReserved: boolean | null,
-    listItem: any,
+    listItems: any,
     allowedAction: any | null
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
@@ -272,7 +263,7 @@ export const List: React.SFC<ListProps> = ({
     let editButton = null;
     if (editSupport) {
       editButton = allowedAction.edit ? (
-        <Link to={`/${pageLink}/` + id + '/edit'}>
+        <Link to={`/${pageLink}/${id}/edit`}>
           <Tooltip title="Edit" placement="top">
             <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
               <EditIcon />
@@ -282,14 +273,14 @@ export const List: React.SFC<ListProps> = ({
       ) : null;
     }
 
-    const deleteButton = (id: any, label: string) => {
+    const deleteButton = (Id: any, text: string) => {
       return allowedAction.delete ? (
         <Tooltip title={`${deleteModifier.label}`} placement="top">
           <IconButton
             aria-label="Delete"
             color="default"
             data-testid="DeleteIcon"
-            onClick={() => showDialogHandler(id, label)}
+            onClick={() => showDialogHandler(Id, text)}
           >
             {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
           </IconButton>{' '}
@@ -305,9 +296,9 @@ export const List: React.SFC<ListProps> = ({
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
             if (params.length > 1) {
-              additionalActionParameter = listItem[params[0]][params[1]];
+              additionalActionParameter = listItems[params[0]][params[1]];
             } else {
-              additionalActionParameter = listItem[params[0]];
+              additionalActionParameter = listItems[params[0]];
             }
             if (action.link) {
               return (
@@ -323,7 +314,8 @@ export const List: React.SFC<ListProps> = ({
                   </Tooltip>
                 </Link>
               );
-            } else if (action.dialog) {
+            }
+            if (action.dialog) {
               return (
                 <Tooltip title={`${action.label}`} placement="top" key={index}>
                   <IconButton
@@ -340,7 +332,7 @@ export const List: React.SFC<ListProps> = ({
           })}
 
           {/* do not display edit & delete for staff role in group */}
-          {displayUserGroups || listItem !== 'groups' ? (
+          {displayUserGroups || listItems !== 'groups' ? (
             <>
               {editButton}
               {deleteButton(id, label)}
@@ -352,16 +344,17 @@ export const List: React.SFC<ListProps> = ({
   }
 
   function formatList(listItems: Array<any>) {
-    return listItems.map(({ ...listItem }) => {
-      const label = listItem.label ? listItem.label : listItem.name;
-      const isReserved = listItem.isReserved ? listItem.isReserved : null;
+    return listItems.map(({ ...listItemObj }) => {
+      const label = listItemObj.label ? listItemObj.label : listItemObj.name;
+      const isReserved = listItemObj.isReserved ? listItemObj.isReserved : null;
       // display only actions allowed to the user
       const allowedAction = restrictedAction
-        ? restrictedAction(listItem)
+        ? restrictedAction(listItemObj)
         : { chat: true, edit: true, delete: true };
       return {
-        ...columns(listItem),
-        operations: getIcons(listItem.id, label, isReserved, listItem, allowedAction),
+        ...columns(listItemObj),
+        operations: getIcons(listItemObj.id, label, isReserved, listItemObj, allowedAction),
+        recordId: listItemObj.id,
       };
     });
   }
@@ -375,10 +368,10 @@ export const List: React.SFC<ListProps> = ({
     });
   };
 
-  const handleSearch = (e: any) => {
-    e.preventDefault();
-    let searchVal = e.target.querySelector('input').value.trim();
-    setSearchVal(searchVal);
+  const handleSearch = (searchError: any) => {
+    searchError.preventDefault();
+    const searchValInput = searchError.target.querySelector('input').value.trim();
+    setSearchVal(searchValInput);
     resetTableVals();
   };
 
@@ -390,13 +383,13 @@ export const List: React.SFC<ListProps> = ({
 
   if (userGroups) {
     if (listItem === 'groups') {
-      itemList = formatList(userGroups.currentUser.user['groups']);
+      itemList = formatList(userGroups.currentUser.user.groups);
     }
   }
 
   let itemCount: number = tableVals.pageRows;
   if (countData) {
-    itemCount = countData['count' + listItem[0].toUpperCase() + listItem.slice(1)];
+    itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
 
   let displayList;
@@ -454,7 +447,7 @@ export const List: React.SFC<ListProps> = ({
     <>
       <div className={styles.Header} data-testid='listHeader'>
         <Typography variant="h5" className={styles.Title}>
-          <IconButton disabled={true} className={styles.Icon}>
+          <IconButton disabled className={styles.Icon}>
             {listIcon}
           </IconButton>
           {title}
@@ -467,11 +460,11 @@ export const List: React.SFC<ListProps> = ({
               resetTableVals();
             }}
             searchVal={searchVal}
-            handleChange={(e: any) => {
+            handleChange={(err: any) => {
               // reset value only if empty
-              if (!e.target.value) setSearchVal('');
+              if (!err.target.value) setSearchVal('');
             }}
-            searchMode={true}
+            searchMode
           />
         </div>
         <div>

@@ -2,10 +2,10 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
-import absinthe from './absinthe';
-
-import { GLIFIC_API_URL } from '.';
 import { setContext } from '@apollo/link-context';
+
+import absinthe from './absinthe';
+import { GLIFIC_API_URL } from '.';
 import {
   checkAuthStatusService,
   renewAuthToken,
@@ -21,8 +21,8 @@ const gqlClient = () => {
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
     fetchAccessToken: () => renewAuthToken(),
-    handleFetch: (accessToken: any) => {},
-    handleResponse: (operation, accessTokenField) => (response: any) => {
+    handleFetch: () => {},
+    handleResponse: (_operation, accessTokenField) => (response: any) => {
       // lets set the session
       setAuthSession(JSON.stringify(response.data.data));
 
@@ -48,7 +48,7 @@ const gqlClient = () => {
     return {
       headers: {
         ...headers,
-        Authorization: accessToken ? accessToken : '',
+        Authorization: accessToken || '',
       },
     };
   });
@@ -64,7 +64,7 @@ const gqlClient = () => {
 
   const httpLink = createHttpLink({ uri: GLIFIC_API_URL });
 
-  const retryIf = (error: any, operation: any) => {
+  const retryIf = (error: any) => {
     const doNotRetryCodes = [500, 400];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
@@ -84,7 +84,7 @@ const gqlClient = () => {
   const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)) as any) as any
+    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
   return new ApolloClient({

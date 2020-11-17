@@ -12,14 +12,16 @@ export interface MessagesWithLinksProps {
 export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   props: MessagesWithLinksProps
 ) => {
+  const { message } = props;
   let linkPreview = null;
-  let messagebody = WhatsAppToJsx(props.message);
-  let array;
+  let messagebody = WhatsAppToJsx(message);
+  let array: any;
   const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-  if ((array = regexForLink.exec(props.message)) != null) {
+  if (regexForLink.exec(message) != null) {
+    array = regexForLink.exec(message);
     linkPreview = (
       <div className={styles.LinkPreview}>
-        <ReactTinyLink cardSize="small" showGraphic={true} maxLine={2} minLine={1} url={array[0]} />
+        <ReactTinyLink cardSize="small" showGraphic maxLine={2} minLine={1} url={array[0]} />
       </div>
     );
   }

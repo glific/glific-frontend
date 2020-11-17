@@ -37,9 +37,11 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             style={{
               background: `url("${media.url}"), url('${ImageThumbnail}') no-repeat`,
             }}
-            onClick={() => setShowViewer(true)}
             className={styles.Image}
-          ></div>
+            onClick={() => setShowViewer(true)}
+            onKeyDown={() => setShowViewer(true)}
+            aria-hidden="true"
+          />
           <Viewer
             visible={showViewer}
             onClose={() => {
@@ -56,7 +58,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <div>
           <audio controls data-testid="audioMessage" controlsList="nodownload">
-            <source src={media.url} type="audio/ogg"></source>
+            <source src={media.url} type="audio/ogg" />
           </audio>
           {media.caption}
         </div>
@@ -70,7 +72,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             <ReactPlayer
               className={styles.Image}
               url={media.url}
-              controls={true}
+              controls
               light={VideoThumbnail}
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />
@@ -87,7 +89,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             data-testid="documentMessage"
             style={{ background: `url("${DocumentThumbnail}") no-repeat` }}
             className={styles.Document}
-          ></div>
+          />
           <a href={media.url} className={styles.DocumentText}>
             <GetAppIcon />
             {media.caption}

@@ -69,18 +69,32 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
   };
 
+  // get the published automation list
+  const { data: automation } = useQuery(GET_AUTOMATIONS, {
+    variables: setVariables({
+      status: AUTOMATION_STATUS_PUBLISHED,
+    }),
+    fetchPolicy: 'network-only', // set for now, need to check cache issue
+  });
+
+  const { data: languages } = useQuery(GET_LANGUAGES, {
+    variables: { opts: { order: 'ASC' } },
+  });
+
+  const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
+
+  const getEnabledDays = (data: any) => {
+    return data.filter((option: any) => option.enabled);
+  };
+
   const setOutOfOffice = (data: any) => {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const getEnabledDays = (data: any) => {
-    return data.filter((option: any) => option.enabled);
-  };
-
   const getFlow = (id: string) => {
-    return data.flows.filter((option: any) => option.id === id)[0];
+    return automation.flows.filter((option: any) => option.id === id)[0];
   };
 
   const setStates = ({
@@ -98,33 +112,19 @@ export const Organisation: React.SFC = () => {
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
   };
 
-  // get the published automation list
-  const { data } = useQuery(GET_AUTOMATIONS, {
-    variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
-    }),
-    fetchPolicy: 'network-only', // set for now, need to check cache issue
-  });
-
-  const { data: languages } = useQuery(GET_LANGUAGES, {
-    variables: { opts: { order: 'ASC' } },
-  });
-
-  const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
-
   useEffect(() => {
     getOrg();
   }, [getOrg]);
 
   useEffect(() => {
     if (orgData) {
-      let data = orgData.organization.organization;
+      const data = orgData.organization.organization;
       // get login OrganizationId
       setOrganizationId(data.id);
     }
   }, [orgData]);
 
-  if (!data || !languages) return <Loading />;
+  if (!automation || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -136,6 +136,7 @@ export const Organisation: React.SFC = () => {
     if (!value || value.length === 0) {
       return 'Supported language is required.';
     }
+    return null;
   };
 
   const validateDefaultLanguage = (value: any) => {
@@ -188,7 +189,7 @@ export const Organisation: React.SFC = () => {
           Hours of operations
         </Typography>
       ),
-      handleChange: handleChange,
+      handleChange,
     },
     {
       component: TimePicker,
@@ -216,7 +217,7 @@ export const Organisation: React.SFC = () => {
     {
       component: AutoComplete,
       name: 'flowId',
-      options: data.flows,
+      options: automation.flows,
       optionLabel: 'name',
       multiple: false,
       textFieldProps: {
@@ -229,11 +230,11 @@ export const Organisation: React.SFC = () => {
     },
   ];
 
-  const assignDays = (enabledDays: any) => {
-    let array: any = [];
-    for (let i = 0; i < 7; i++) {
+  const assignDays = (enabledDay: any) => {
+    const array: any = [];
+    for (let i = 0; i < 7; i += 1) {
       array[i] = { id: i + 1, enabled: false };
-      enabledDays.map((days: any) => {
+      enabledDay.map((days: any) => {
         if (i + 1 === days.id) {
           array[i] = { id: i + 1, enabled: true };
         }
@@ -251,27 +252,28 @@ export const Organisation: React.SFC = () => {
   };
 
   const setPayload = (payload: any) => {
+    const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
-    let activeLanguageIds = payload.activeLanguages.map((activeLanguage: any) => {
-      return activeLanguage.id;
+    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => {
+      return language.id;
     });
 
     // remove activeLanguages from the payload
-    delete payload['activeLanguages'];
+    delete payloadCopy.activeLanguages;
     // set default Language Id
-    let defaultLanguageId = payload.defaultLanguage.id;
+    const defaultLanguageId = payloadCopy.defaultLanguage.id;
     // remove defaultLanguage from the payload
-    delete payload['defaultLanguage'];
+    delete payloadCopy.defaultLanguage;
 
     object = {
-      name: payload.name,
+      name: payloadCopy.name,
       outOfOffice: {
-        enabled: payload.hours,
-        enabledDays: assignDays(payload.enabledDays),
-        endTime: payload.endTime,
-        flowId: payload.flowId ? payload.flowId.id : null,
-        startTime: payload.startTime,
+        enabled: payloadCopy.hours,
+        enabledDays: assignDays(payloadCopy.enabledDays),
+        endTime: payloadCopy.endTime,
+        flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
+        startTime: payloadCopy.startTime,
       },
       defaultLanguageId,
       activeLanguageIds,
@@ -301,7 +303,7 @@ export const Organisation: React.SFC = () => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect={true}
+      redirect
       afterSave={saveHandler}
     />
   );

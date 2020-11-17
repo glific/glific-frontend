@@ -22,12 +22,13 @@ export interface ConfirmOTPProps {
 }
 
 export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
+  const { location } = props;
   const [OTP, setOTP] = useState('');
   const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');
 
   const handleResend = () => {
-    sendOTP(props.location.state.phoneNumber, 'true')
+    sendOTP(location.state.phoneNumber, 'true')
       .then((response) => {
         return response;
       })
@@ -37,7 +38,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   };
 
   // Let's not allow direct navigation to this page
-  if (props.location && props.location.state === undefined) {
+  if (location && location.state === undefined) {
     return <Redirect to="/registration" />;
   }
 

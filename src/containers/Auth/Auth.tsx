@@ -74,6 +74,8 @@ export const Auth: React.SFC<AuthProps> = ({
       boxTitleClass.push(styles.LoginBoxTitle);
       buttonContainedVariant = false;
       break;
+    default:
+      break;
   }
 
   let displayErrorMessage: any = null;
@@ -96,7 +98,7 @@ export const Auth: React.SFC<AuthProps> = ({
   };
 
   const handlePhone = () => (value: string): void => {
-    initialFormValues['phone'] = value;
+    initialFormValues.phone = value;
   };
 
   let formElements;
@@ -134,7 +136,7 @@ export const Auth: React.SFC<AuthProps> = ({
                 })}
 
                 <div className={styles.Link}>
-                  <Link to={'/' + linkURL}>{linkText} </Link>
+                  <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
                 <div className={styles.CenterButton}>
                   <Button
@@ -174,7 +176,7 @@ export const Auth: React.SFC<AuthProps> = ({
               <div className={styles.OrText}>OR</div>
               <hr />
             </div>
-            <Link to={'/' + alternateLink}>
+            <Link to={`/${alternateLink}`}>
               <div>{alternateText}</div>
             </Link>
           </>

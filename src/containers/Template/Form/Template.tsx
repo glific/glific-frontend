@@ -66,7 +66,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
     variables: {
-      filter: { label: filterLabel, languageId: parseInt(languageId) },
+      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
       opts: {
         order: 'ASC',
         limit: null,

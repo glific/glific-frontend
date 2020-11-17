@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styles from './ContactDescription.module.css';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 
@@ -10,32 +11,29 @@ export interface ContactDescriptionProps {
   lastMessage: string;
 }
 
-export const ContactDescription: React.FC<ContactDescriptionProps> = ({
-  fields,
-  settings,
-  phoneNo,
-  groups,
-  lastMessage,
-}: ContactDescriptionProps) => {
+export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => {
+  const { phoneNo, groups, lastMessage } = props;
+  let { fields, settings } = props;
   // list of groups that the contact is assigned
   let assignedToGroup: any = Array.from(
     new Set([].concat(...groups.map((group: any) => group.users.map((user: any) => user.name))))
   );
   if (assignedToGroup.length > 2) {
-    assignedToGroup =
-      assignedToGroup.slice(0, 2).join(', ') + ' +' + (assignedToGroup.length - 2).toString();
+    assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
+      assignedToGroup.length - 2
+    ).toString()}`;
   } else {
     assignedToGroup = assignedToGroup.join(', ');
   }
 
   // list of groups that the contact belongs
-  let groupList = groups.map((group: any) => group.label).join(', ');
+  const groupList = groups.map((group: any) => group.label).join(', ');
 
   const groupDetails = [
-    { label: 'Groups', value: groupList ? groupList : 'None' },
+    { label: 'Groups', value: groupList || 'None' },
     {
       label: 'Assigned to',
-      value: assignedToGroup ? assignedToGroup : 'None',
+      value: assignedToGroup || 'None',
     },
   ];
 
@@ -55,7 +53,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = ({
 
         <div className={styles.SessionTimer}>
           <span>Session Timer</span>
-          <Timer time={lastMessage}></Timer>
+          <Timer time={lastMessage} />
         </div>
       </div>
 
