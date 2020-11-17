@@ -41,16 +41,16 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   let formFields: any = [];
 
   const setCredential = (item: any) => {
-    let keys = JSON.parse(item.keys);
-    let secrets = JSON.parse(item.secrets);
-    let fields: any = {};
-    Object.assign(fields, keys);
-    Object.assign(fields, secrets);
+    const keysObj = JSON.parse(item.keys);
+    const secretsObj = JSON.parse(item.secrets);
+    const fields: any = {};
+    Object.assign(fields, keysObj);
+    Object.assign(fields, secretsObj);
     Object.keys(fields).map((key) => {
       // restore value of the field
       states[key] = fields[key];
     });
-    states['isActive'] = item.isActive;
+    states.isActive = item.isActive;
   };
 
   const { data: providerData } = useQuery(GET_PROVIDERS, {
@@ -62,7 +62,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   });
 
   if (credential && !credentialId) {
-    let data = credential.credential.credential;
+    const data = credential.credential.credential;
     if (data) {
       // to get credential data
       setCredentialId(data.id);
@@ -73,8 +73,8 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
 
   const setPayload = (payload: any) => {
     let object: any = {};
-    let secretsObj: any = {};
-    let keysObj: any = {};
+    const secretsObj: any = {};
+    const keysObj: any = {};
     Object.keys(secrets).map((key) => {
       if (payload[key]) {
         secretsObj[key] = payload[key];
@@ -95,14 +95,29 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   };
 
   const handleChange = (value: any) => {
-    states['isActive'] = value;
+    states.isActive = value;
+  };
+
+  const resetValidation = () => {
+    validation = {};
+    FormSchema = Yup.object().shape(validation);
+  };
+
+  const addValidation = (fields: any, key: string) => {
+    validation[key] = Yup.string()
+      .nullable()
+      .when('isActive', {
+        is: true,
+        then: Yup.string().nullable().required(`${fields[key].label} is required.`),
+      });
+    FormSchema = Yup.object().shape(validation);
   };
 
   const addField = (fields: any) => {
     // reset validation to empty
     resetValidation();
 
-    let formField: any = [
+    const formField: any = [
       {
         component: Checkbox,
         name: 'isActive',
@@ -114,10 +129,10 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
         handleChange,
       },
     ];
-    let defaultStates: any = {};
+    const defaultStates: any = {};
     Object.keys(fields).map((key) => {
       Object.assign(defaultStates, { [key]: fields[key].default });
-      let field = {
+      const field = {
         component: Input,
         name: key,
         type: 'text',
@@ -135,30 +150,13 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     formFields = formField;
   };
 
-  const addValidation = (fields: any, key: string) => {
-    validation[key] = Yup.string()
-      .nullable()
-      .when('isActive', {
-        is: true,
-        then: Yup.string()
-          .nullable()
-          .required(fields[key].label + ` is required.`),
-      });
-    FormSchema = Yup.object().shape(validation);
-  };
-
-  const resetValidation = () => {
-    validation = {};
-    FormSchema = Yup.object().shape(validation);
-  };
-
   let title;
   if (providerData) {
     title = providerData.providers[0].name;
     providerData.providers.map((provider: any) => {
       keys = JSON.parse(provider.keys);
       secrets = JSON.parse(provider.secrets);
-      let fields = {};
+      const fields = {};
       Object.assign(fields, keys);
       Object.assign(fields, secrets);
       addField(fields);
@@ -195,7 +193,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       icon={SettingIcon}
       languageSupport={false}
       type="settings"
-      redirect={true}
+      redirect
       afterSave={saveHandler}
     />
   );

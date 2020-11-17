@@ -2,6 +2,12 @@ import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
 import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
+let sideDrawerMenu: any = [];
+let staffManagementMenu: any = [];
+let settingMenu: boolean = false;
+let advanceSearch: boolean = false;
+let displayUserGroups: boolean = false;
+let isManagerRole: boolean = false;
 
 const getUserRole = () => {
   if (!role || role.length === 0) {
@@ -61,13 +67,6 @@ const resetRole = () => {
   role = [];
   getRoleBasedAccess();
 };
-
-let sideDrawerMenu: any = [];
-let staffManagementMenu: any = [];
-let settingMenu: boolean;
-let advanceSearch: boolean = false;
-let displayUserGroups: boolean = false;
-let isManagerRole: boolean = false;
 
 export const getStaffManagementMenus = () => {
   return staffManagementMenu;

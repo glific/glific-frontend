@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
 
+import styles from './Tag.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
 import { UPDATE_TAG, CREATE_TAG, DELETE_TAG } from '../../graphql/mutations/Tag';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
@@ -45,16 +45,26 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const states = { label, description, keywords, colorCode, parentId };
 
   const getObject = (arr: any, data: any) => {
+    const result: any = [];
     if (arr && data) {
-      const result: any = [];
       arr.map((obj: any) => {
         data.map((ID: any) => {
           if (obj.id === ID) result.push(obj);
         });
       });
-      return result;
     }
+    return result;
   };
+
+  const { data } = useQuery(GET_TAGS, {
+    variables: setVariables(),
+  });
+
+  const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
+    variables: {
+      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
+    },
+  });
 
   const setStates = ({
     labelValue,
@@ -72,16 +82,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   };
 
-  const { data } = useQuery(GET_TAGS, {
-    variables: setVariables(),
-  });
-
-  const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
-    variables: {
-      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
-    },
-  });
-
   useEffect(() => {
     if (filterLabel && languageId) getTags();
   }, [filterLabel, languageId, getTags]);
@@ -98,10 +98,10 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   }
 
   const validateTitle = (value: any) => {
+    let error;
     if (value) {
       setFilterLabel(value);
       let found = [];
-      let error;
       if (dataTag) {
         // need to check exact title
         found = dataTag.tags.filter((search: any) => search.label === value);
@@ -112,8 +112,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       if (found.length > 0) {
         error = 'Title already exists.';
       }
-      return error;
     }
+    return error;
   };
 
   const getLanguageId = (value: any) => {
@@ -166,10 +166,11 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   ];
 
   const setPayload = (payload: any) => {
-    if (payload.parentId) {
-      payload.parentId = payload.parentId.id;
+    const payloadCopy = payload;
+    if (payloadCopy.parentId) {
+      payloadCopy.parentId = payloadCopy.parentId.id;
     }
-    return payload;
+    return payloadCopy;
   };
 
   return (

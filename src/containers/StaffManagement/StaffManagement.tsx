@@ -70,14 +70,14 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   }
 
   const getOptions = () => {
+    let options: any = [];
     if (rolesList) {
-      let options: any = [];
       if (isManagerRole) {
         // should not display Admin role to manager.
         options = rolesList.filter((item: any) => item.label !== 'Admin');
       }
-      return options;
     }
+    return options;
   };
 
   const formFields = [
@@ -125,25 +125,26 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   const setPayload = (payload: any) => {
+    const payloadCopy = payload;
     // let's build the groupIds, as backend expects the array of group ids
-    const groupIds = payload.groups.map((group: any) => {
+    const groupIds = payloadCopy.groups.map((group: any) => {
       return group.id;
     });
 
     // remove groups from the payload
-    delete payload['groups'];
+    delete payloadCopy.groups;
 
     // let's rebuild roles, as per backend
-    const roleIds = payload.roles.map((role: any) => {
+    const roleIds = payloadCopy.roles.map((role: any) => {
       return role.id;
     });
 
     // delete current roles from the payload
-    delete payload['roles'];
+    delete payloadCopy.roles;
 
     // return modified payload
     return {
-      ...payload,
+      ...payloadCopy,
       groupIds,
       roles: roleIds,
     };
