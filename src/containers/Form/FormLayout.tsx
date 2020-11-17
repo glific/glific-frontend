@@ -216,13 +216,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
-  const saveHandler = ({ languageID, ...itemData }: any) => {
+  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
       ...itemData,
       ...defaultAttribute,
     };
 
-    payload = languageSupport ? { ...payload, languageID: Number(languageID) } : { ...payload };
+    payload = languageSupport
+      ? { ...payload, languageIdValue: Number(languageIdValue) }
+      : { ...payload };
 
     // create custom payload for collection
     if (setPayload) {
