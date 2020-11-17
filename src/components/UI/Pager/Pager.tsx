@@ -31,6 +31,11 @@ interface PagerProps {
 const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
   const createRow = (entry: any) => {
     return Object.keys(entry).map((item: any, i: number) => {
+      // let's not display recordId in the UI
+      if (item === 'recordId') {
+        return null;
+      }
+
       return (
         <TableCell
           // eslint-disable-next-line
