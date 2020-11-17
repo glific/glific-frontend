@@ -100,7 +100,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
           className={Styles.Emoji}
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
-          <span role="img" aria-label="pick emoji" >
+          <span role="img" aria-label="pick emoji">
             😀
           </span>
         </IconButton>

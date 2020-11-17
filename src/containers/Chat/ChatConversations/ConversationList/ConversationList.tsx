@@ -254,9 +254,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (conversation.messages.length > 0) {
         [lastMessage] = conversation.messages;
       }
+      const key = index;
       return (
         <ChatConversation
-          key={index}
+          key={key}
           selected={props.selectedContactId === conversation.contact.id}
           onClick={() => props.setSelectedContactId(conversation.contact.id)}
           index={index}

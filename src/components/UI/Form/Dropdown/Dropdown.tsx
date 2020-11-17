@@ -32,7 +32,9 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
     <div className={styles.Dropdown} data-testid="dropdown">
       <FormControl variant="outlined" fullWidth>
         {placeholder ? (
-          <InputLabel id="simple-select-outlined-label" data-testid="inputLabel">{placeholder}</InputLabel>
+          <InputLabel id="simple-select-outlined-label" data-testid="inputLabel">
+            {placeholder}
+          </InputLabel>
         ) : null}
         <Select {...field} label={placeholder} fullWidth disabled={disabled}>
           {optionsList}

@@ -28,22 +28,23 @@ export interface AuthProps {
   successMessage?: string;
 }
 
-export const Auth: React.SFC<AuthProps> = ({
-  pageTitle,
-  buttonText,
-  alternateLink,
-  alternateText,
-  mode,
-  initialFormValues = null,
-  saveHandler,
-  formFields,
-  validationSchema,
-  titleSubText,
-  linkText,
-  linkURL,
-  errorMessage,
-  successMessage,
-}) => {
+export const Auth: React.SFC<AuthProps> = (props) => {
+  const {
+    pageTitle,
+    buttonText,
+    alternateLink,
+    alternateText,
+    mode,
+    initialFormValues = null,
+    saveHandler,
+    formFields,
+    validationSchema,
+    titleSubText,
+    linkText,
+    linkURL,
+    errorMessage,
+    successMessage,
+  } = props;
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -132,7 +133,8 @@ export const Auth: React.SFC<AuthProps> = ({
                   if (field.type === 'phone') {
                     fieldInfo = { ...field, handlePhone };
                   }
-                  return <Field className={styles.Form} key={index} {...fieldInfo} />;
+                  const key = index;
+                  return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
 
                 <div className={styles.Link}>

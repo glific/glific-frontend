@@ -95,13 +95,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
           .reverse();
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          if (conversation.contact.id === contactId.toString()) {
-            conversation.messages = [
-              ...conversation.messages,
+          const conversationObj = conversation;
+          if (conversationObj.contact.id === contactId.toString()) {
+            conversationObj.messages = [
+              ...conversationObj.messages,
               ...conversationCopy.search[0].messages,
             ];
           }
-          return conversation;
+          return conversationObj;
         });
 
         // update the conversation cache
@@ -235,11 +236,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
+      const key = index;
       return (
         <ChatMessage
           {...message}
           contactId={contactId}
-          key={index}
+          key={key}
           popup={message.id === showDropdown}
           onClick={() => showEditTagsDialog(message.id)}
           setDialog={() => {

@@ -54,7 +54,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const states = { label, body };
   const setStates = ({ label, body }: any) => {
-
     setLabel(label);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(body)));
   };
@@ -80,10 +79,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [filterLabel, languageId, getSessionTemplates]);
 
   const validateTitle = (value: any) => {
+    let error;
     if (value) {
       setFilterLabel(value);
       let found = [];
-      let error;
       if (sessionTemplates) {
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
@@ -94,8 +93,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       if (found.length > 0) {
         error = 'Title already exists.';
       }
-      return error;
     }
+    return error;
   };
 
   const getLanguageId = (value: any) => {

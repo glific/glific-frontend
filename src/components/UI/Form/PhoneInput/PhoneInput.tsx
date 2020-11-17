@@ -32,7 +32,7 @@ export const PhoneInput: React.SFC<InputProps> = ({
   const { placeholder } = props;
 
   return (
-    <div className={styles.Input} data-testid='phoneInput'>
+    <div className={styles.Input} data-testid="phoneInput">
       <FormControl>
         <ReactPhoneInput
           containerClass={styles.Container}

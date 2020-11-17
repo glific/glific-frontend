@@ -98,10 +98,10 @@ export const Organisation: React.SFC = () => {
   };
 
   const setStates = ({
-    name:nameValue,
-    outOfOffice:outOfOfficeValue,
-    activeLanguages:activeLanguagesValue,
-    defaultLanguage:defaultLanguageValue,
+    name: nameValue,
+    outOfOffice: outOfOfficeValue,
+    activeLanguages: activeLanguagesValue,
+    defaultLanguage: defaultLanguageValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);

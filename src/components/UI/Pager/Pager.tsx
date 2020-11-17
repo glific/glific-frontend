@@ -162,10 +162,12 @@ export const Pager: React.SFC<PagerProps> = (props) => {
 
   return (
     <div className={styles.TableContainer}>
-      <Table className={styles.Table} data-testid='table'>
-        <TableHead className={styles.TagListHeader} data-testid='tableHead'>{tableHead}</TableHead>
-        <TableBody data-testid='tableBody'>{rows}</TableBody>
-        <TableFooter className={tableFooterStyle} data-testid='tableFooter'>
+      <Table className={styles.Table} data-testid="table">
+        <TableHead className={styles.TagListHeader} data-testid="tableHead">
+          {tableHead}
+        </TableHead>
+        <TableBody data-testid="tableBody">{rows}</TableBody>
+        <TableFooter className={tableFooterStyle} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>
       </Table>

@@ -28,10 +28,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     const templateObjs = data.sessionTemplates;
     const text = props.isTemplate ? 'templates' : 'speed sends';
     const listItems = templateObjs.map((obj: any, index: number) => {
+      const key = index;
       if (obj.isHsm === props.isTemplate) {
         // True HSM === Template, False HSM === Speed send
         return (
-          <div key={index}>
+          <div key={key}>
             <ListItem
               data-testid="templateItem"
               button
@@ -64,7 +65,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     );
   };
 
-  return <div className={styles.ChatTemplates} data-testid="chatTemplates">{popperItems()}</div>;
+  return (
+    <div className={styles.ChatTemplates} data-testid="chatTemplates">
+      {popperItems()}
+    </div>
+  );
 };
 
 export default ChatTemplates;
