@@ -67,11 +67,11 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   });
 
   const setStates = ({
-    labelValue,
-    descriptionValue,
-    keywordsValue,
-    colorCodeValue,
-    parentValue,
+    label: labelValue,
+    description: descriptionValue,
+    keywords: keywordsValue,
+    colorCode: colorCodeValue,
+    parent: parentValue,
   }: any) => {
     setLabel(labelValue);
     setDescription(descriptionValue);
