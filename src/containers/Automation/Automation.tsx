@@ -44,7 +44,11 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const states = { name, keywords, ignoreKeywords };
 
-  const setStates = ({ nameValue, keywordsValue, ignoreKeywordsValue }: any) => {
+  const setStates = ({
+    name: nameValue,
+    keywords: keywordsValue,
+    ignoreKeywords: ignoreKeywordsValue,
+  }: any) => {
     // Override name & keywords when creating Automation Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
