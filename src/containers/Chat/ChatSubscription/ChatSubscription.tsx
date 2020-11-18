@@ -140,6 +140,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
               message.tags.push(tagData.tag);
             } else {
               // handle delete of selected tags
+              // disabling eslint compile error for this until we find better solution
+              // eslint-disable-next-line
               message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
             }
           }

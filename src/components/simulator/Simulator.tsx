@@ -66,12 +66,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
     direction: string,
     index: number,
     insertedAt: string
-  ): JSX.Element => {
+  ): any => {
     return (
       <div className={getStyleForDirection(direction)} key={index}>
         {text
           ? text.split('\n').map((item, key) => {
               return (
+                // it is ok to use "key" as index as we are not altering sequence etc. and we can have 2 same messages
+                // eslint-disable-next-line
                 <div key={key} className={styles.MessageText}>
                   {item}
                 </div>
