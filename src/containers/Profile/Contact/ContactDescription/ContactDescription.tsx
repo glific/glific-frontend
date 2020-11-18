@@ -58,8 +58,8 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
       </div>
 
       <div className={styles.DetailBlock}>
-        {groupDetails.map((groupItem: any, index) => (
-          <div key={index}>
+        {groupDetails.map((groupItem: any) => (
+          <div key={groupItem.label}>
             <div className={styles.DescriptionItem}>{groupItem.label}</div>
             <div className={styles.DescriptionItemValue} data-testid="groups">
               {groupItem.value}

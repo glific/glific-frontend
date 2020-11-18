@@ -104,6 +104,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
         <span>
           {strings.map((string, i) =>
             string.toLowerCase() === texts.toLowerCase() ? (
+              // it is ok to use "i" as index as we are not altering sequence etc. and alphabets can repeat etc.
+              // eslint-disable-next-line
               <span key={i} className={styles.TitleText}>
                 {string}
               </span>
