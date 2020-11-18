@@ -4,10 +4,14 @@ import { getUserSession } from '../services/AuthService';
 let role: any[] = [];
 let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
+
+// we are correctly using mutable export bindings hence making an exception for below
+/* eslint-disable */
 let settingMenu: boolean = false;
 let advanceSearch: boolean = false;
 let displayUserGroups: boolean = false;
 let isManagerRole: boolean = false;
+/* eslint-enable */
 
 const getUserRole = () => {
   if (!role || role.length === 0) {

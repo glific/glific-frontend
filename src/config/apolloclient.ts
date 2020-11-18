@@ -33,8 +33,10 @@ const gqlClient = () => {
     },
     handleError: (err: Error) => {
       // full control over handling token fetch Error
+      /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
+      /* eslint-enable */
       // gracefully logout
       window.location.href = '/logout';
     },
@@ -56,10 +58,14 @@ const gqlClient = () => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
+        // eslint-disable-next-line
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
       );
 
-    if (networkError) console.log(`[Network error]: ${networkError}`);
+    if (networkError) {
+      // eslint-disable-next-line
+      console.log(`[Network error]: ${networkError}`);
+    }
   });
 
   const httpLink = createHttpLink({ uri: GLIFIC_API_URL });
