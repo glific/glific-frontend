@@ -22,7 +22,7 @@ const loadfiles = () => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
   let index = 0;
-  for (const fileName in filesToLoad) {
+  Object.keys(filesToLoad).forEach((fileName) => {
     if (filesToLoad[fileName].startsWith('./static')) {
       if (filesToLoad[fileName].endsWith('.js')) {
         index += 1;
@@ -42,7 +42,7 @@ const loadfiles = () => {
         document.body.appendChild(link);
       }
     }
-  }
+  });
 
   return files;
 };
@@ -223,11 +223,11 @@ export const FlowEditor = (props: FlowEditorProps) => {
   useEffect(() => {
     const files = loadfiles();
     return () => {
-      for (const node in files) {
+      Object.keys(files).forEach((node: any) => {
         if (files[node]) {
           document.body.removeChild(files[node]);
         }
-      }
+      });
     };
   }, []);
 
