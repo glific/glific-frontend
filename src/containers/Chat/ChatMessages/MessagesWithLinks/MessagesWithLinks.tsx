@@ -15,13 +15,17 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   const { message } = props;
   let linkPreview = null;
   let messagebody = WhatsAppToJsx(message);
-  let array: any;
+
+  // regex to determine the urls
   const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
-  if (regexForLink.exec(message) != null) {
-    array = regexForLink.exec(message);
+
+  // first element is the url, if the url is sent
+  const linkMessage = regexForLink.exec(message);
+
+  if (linkMessage) {
     linkPreview = (
       <div className={styles.LinkPreview}>
-        <ReactTinyLink cardSize="small" showGraphic maxLine={2} minLine={1} url={array[0]} />
+        <ReactTinyLink cardSize="small" showGraphic maxLine={2} minLine={1} url={linkMessage[0]} />
       </div>
     );
   }
