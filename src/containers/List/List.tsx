@@ -291,7 +291,7 @@ export const List: React.SFC<ListProps> = ({
     if (id) {
       return (
         <div className={styles.Icons}>
-          {additionalAction.forEach((action: any, index: number) => {
+          {additionalAction.map((action: any, index: number) => {
             // check if we are dealing with nested element
             let additionalActionParameter: any;
             const params: any = additionalAction[index].parameter.split('.');
@@ -301,6 +301,7 @@ export const List: React.SFC<ListProps> = ({
               additionalActionParameter = listItems[params[0]];
             }
             const key = index;
+
             if (action.link) {
               return (
                 <Link to={`${action?.link}/${additionalActionParameter}`} key={key}>
