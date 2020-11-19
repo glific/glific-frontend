@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
@@ -26,12 +26,14 @@ test('it should render the name correctly', async () => {
   expect(contactBarComponent).toBeInTheDocument();
   expect(getByText('Jane Doe')).toBeInTheDocument();
 
-  await wait();
-  expect(getByText('Default Group, Staff Group')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Default Group, Staff Group')).toBeInTheDocument();
+  });
 });
 
 test('it should have a session timer', async () => {
   const { getByText } = render(component);
-  await wait();
-  expect(getByText('24')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('24')).toBeInTheDocument();
+  });
 });

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DialogBox } from '../DialogBox/DialogBox';
 import { FormControl } from '@material-ui/core';
+
 import styles from './SearchDialogBox.module.css';
+import { DialogBox } from '../DialogBox/DialogBox';
 import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
 export interface SearchDialogBoxProps {
@@ -17,22 +18,32 @@ export interface SearchDialogBoxProps {
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
-  const [selectedOptions, setSelectedOptions] = useState<Array<string>>([]);
+  const {
+    asyncSearch,
+    icon,
+    options,
+    selectedOptions,
+    title,
+    handleOk,
+    optionLabel,
+    handleCancel,
+    onChange,
+  } = props;
+
+  const [selectedOption, setSelectedOptions] = useState<Array<string>>([]);
   const [asyncSelectedOptions, setAsyncSelectedOptions] = useState<Array<any>>([]);
 
   useEffect(() => {
-    if (!props.asyncSearch) {
-      setSelectedOptions(
-        props.options.filter((option: any) => props.selectedOptions.includes(option.id))
-      );
+    if (!asyncSearch) {
+      setSelectedOptions(options.filter((option: any) => selectedOptions.includes(option.id)));
     }
-  }, [props.selectedOptions, props.options]);
+  }, [selectedOptions, options]);
 
   useEffect(() => {
-    if (props.asyncSearch === true) {
-      setAsyncSelectedOptions(props.selectedOptions);
+    if (asyncSearch === true) {
+      setAsyncSelectedOptions(selectedOptions);
     }
-  }, [props.selectedOptions]);
+  }, [selectedOptions]);
 
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
@@ -40,33 +51,33 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
 
   return (
     <DialogBox
-      title={props.title}
+      title={title}
       handleOk={() =>
-        props.handleOk(
-          props.asyncSearch
+        handleOk(
+          asyncSearch
             ? asyncSelectedOptions.map((option: any) => option.id)
-            : selectedOptions.map((option: any) => option.id)
+            : selectedOption.map((option: any) => option.id)
         )
       }
-      handleCancel={props.handleCancel}
+      handleCancel={handleCancel}
       titleAlign="left"
       buttonOk="Save"
     >
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
-            asyncSearch={props.asyncSearch}
+            asyncSearch={asyncSearch}
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
-            options={props.options}
-            optionLabel={props.optionLabel ? props.optionLabel : 'label'}
-            field={{ value: selectedOptions }}
-            onChange={(value: any) => props.onChange(value)}
+            options={options}
+            optionLabel={optionLabel || 'label'}
+            field={{ value: selectedOption }}
+            onChange={(value: any) => onChange(value)}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
               label: 'Search',
               variant: 'outlined',
             }}
-            chipIcon={props.icon}
+            chipIcon={icon}
           />
         </FormControl>
       </div>

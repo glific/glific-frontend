@@ -2,23 +2,18 @@ import React from 'react';
 import { Drawer, ListItem } from '@material-ui/core';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { mount } from 'enzyme';
-import { wait } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
+import { wait, waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
 import { getRoleBasedAccess } from '../../../../../context/role';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
+import { setUserSession } from '../../../../../services/AuthService';
 
 const mocks = [getCurrentUserQuery];
 
 describe('side drawer testing', () => {
-  let isToggled = false;
-  const mockCallBack = jest.fn();
-  const changeToggle = () => {
-    console.log('being called');
-    isToggled = !isToggled;
-  };
   const component = (
     <MockedProvider mocks={mocks}>
       <Router>
@@ -28,39 +23,32 @@ describe('side drawer testing', () => {
   );
 
   it('it should be initialized properly', async () => {
-    const wrapper = mount(component);
-    await wait();
-    expect(wrapper).toBeTruthy();
-    // Use Hidden at index 0 because there's two Drawer components.
-    expect(wrapper.find(Drawer).at(0).find(ListItem).length).toEqual(getRoleBasedAccess().length);
+    const { getByTestId } = render(component);
+    await waitFor(() => {
+      expect(getByTestId('navbar')).toBeInTheDocument();
+    });
   });
 
-  it('callback is working', () => {
-    const wrapper = mount(component);
-    let callBackObj = wrapper.find(Drawer).filterWhere((obj) => !!obj.props().onClose);
-    callBackObj.simulate('close');
-    callBackObj.invoke('onClose');
-  });
-
-  it('correct menu items rendered', () => {
-    const wrapper = mount(component);
-    // Find drawer that has the onClose prop
-    let correctDrawer = wrapper.find(Drawer).filterWhere((n) => !!n.props().onClose);
-    let menuItems = correctDrawer.find(ListItem);
-    for (let i = 0; i < menuItems.length; i++) {
-      expect(menuItems.at(i).text()).toEqual(sideDrawerMenus[i].title);
-    }
-  });
-
-  test('check closing and opening of side drawer', () => {
-    const wrapper = mount(component);
-    wrapper.find('button[data-testid="drawer-button"]').first().simulate('click');
-    wrapper.find('button[data-testid="drawer-button-closed"]').first().simulate('click');
+  test('opening and closing of side drawer', () => {
+    const { getAllByTestId, queryByTestId } = render(component);
+    fireEvent.click(getAllByTestId('drawer-button')[0]);
+    expect(queryByTestId('drawer-button')).toBe(null);
+    fireEvent.click(getAllByTestId('drawer-button-closed')[0]);
+    expect(getAllByTestId('drawer-button')[0]).toBeInTheDocument();
   });
 
   it('should open bottom menus', () => {
-    const wrapper = mount(component);
-    wrapper.find('div[data-testid="bottom-menu"]').first().simulate('click');
-    expect(wrapper.find('a[data-testid="MenuItem"]').first().text()).toBe('My Profile');
+    const { getByTestId, getAllByTestId } = render(component);
+    fireEvent.click(getByTestId('bottom-menu'));
+    expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
+  });
+
+  it('correct menu items rendered', () => {
+    setUserSession('{"roles":["Admin"]}');
+    const { getAllByTestId } = render(component);
+    let menuItems = getAllByTestId('list-item');
+    for (let i = 0; i < menuItems.length / 2; i++) {
+      expect(getAllByTestId('list-item')[i]).toHaveTextContent(sideDrawerMenus[i].title);
+    }
   });
 });

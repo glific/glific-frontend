@@ -1,11 +1,20 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { AutomationList } from './AutomationList';
+import { MockedProvider } from '@apollo/client/testing';
+import { getAutomationCountQuery } from '../../../mocks/Automation';
 
-const wrapper = shallow(<AutomationList />);
+const mocks=[getAutomationCountQuery];
+
+const automationList = (
+  <MockedProvider mocks={mocks}>
+    <AutomationList />
+  </MockedProvider>
+);
 
 describe('<Automation />', () => {
   it('should render Automation', () => {
-    expect(wrapper.exists()).toBe(true);
+    const { getByText } = render(automationList);
+    expect(getByText('Loading...')).toBeInTheDocument();
   });
 });

@@ -1,22 +1,23 @@
 import React from 'react';
-import { List } from '../../List/List';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+
 import styles from './Template.module.css';
+import { List } from '../../List/List';
 import { WhatsAppToJsx } from '../../../common/RichEditor';
 import { setVariables } from '../../../common/constants';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
+import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 
 const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
 const columnStyles = [styles.Label, styles.Body, styles.Actions];
+
+const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
+
+const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
 const getColumns = ({ label, body }: any) => ({
   label: getLabel(label),
   body: getBody(body),
 });
-
-const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
-
-const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
 const queries = {
   countQuery: GET_TEMPLATES_COUNT,
@@ -25,9 +26,9 @@ const queries = {
 };
 
 const columnAttributes = {
-  columnNames: columnNames,
+  columnNames,
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
 const dialogMessage = 'It will stop showing when you draft a customized message';
@@ -43,20 +44,22 @@ export interface TemplateProps {
 }
 
 export const Template: React.SFC<TemplateProps> = (props) => {
+  const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
+
   return (
     <List
-      title={props.title}
-      listItem={props.listItem}
-      listItemName={props.listItemName}
-      pageLink={props.pageLink}
-      listIcon={props.listIcon}
+      title={title}
+      listItem={listItem}
+      listItemName={listItemName}
+      pageLink={pageLink}
+      listIcon={listIcon}
       dialogMessage={dialogMessage}
-      filters={props.filters}
+      filters={filters}
       refetchQueries={{
         query: FILTER_TEMPLATES,
         variables: setVariables({ term: '' }),
       }}
-      button={{ show: true, label: props.buttonLabel }}
+      button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}
     />

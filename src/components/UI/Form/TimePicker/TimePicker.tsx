@@ -1,10 +1,11 @@
 import React from 'react';
-import styles from './TimePicker.module.css';
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import moment from 'moment';
+
+import styles from './TimePicker.module.css';
 
 export interface TimePickerProps {
   variant?: any;
@@ -19,7 +20,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   variant = 'inline',
   inputVariant = 'outlined',
   field,
-  form: { dirty, touched, errors, setFieldValue },
+  form: { setFieldValue },
   placeholder,
   disabled = false,
 }) => {
@@ -27,7 +28,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
 
   const handleDateChange = (time: Date | null) => {
-    let value = time ? moment(time).format('THH:mm:ss') : null;
+    const value = time ? moment(time).format('THH:mm:ss') : null;
     setFieldValue(field.name, value);
   };
 

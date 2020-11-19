@@ -12,27 +12,23 @@ export interface TimerProps {
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
-
+  const { contactStatus, contactBspStatus, time } = props;
   useEffect(() => {
     setInterval(() => {
       setCurrentTime(moment(new Date()));
     }, 60000);
   }, []);
 
-  if (
-    (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactBspStatus === 'NONE' ||
-    !props.time
-  ) {
+  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE' || !time) {
     return <ContactOptOutIcon />;
   }
 
   let timerStyle = styles.TimerNormal;
-  let lastMessageTime = moment(props.time);
-  let duration = moment.duration(currentTime.diff(lastMessageTime));
+  const lastMessageTime = moment(time);
+  const duration = moment.duration(currentTime.diff(lastMessageTime));
   let hours: string | number = Math.floor(duration.asHours());
 
-  if (hours < 0 || isNaN(hours)) {
+  if (hours < 0 || Number.isNaN(hours)) {
     hours = 0;
   }
 
@@ -45,7 +41,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   }
 
   if (hours < 10 && hours > 0) {
-    hours = '0' + hours.toString();
+    hours = `0: ${hours.toString()}`;
   }
 
   return (

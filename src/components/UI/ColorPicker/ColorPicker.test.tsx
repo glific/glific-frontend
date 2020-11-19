@@ -12,7 +12,7 @@ const props = {
 const wrapper = <ColorPicker {...props} />;
 
 describe('<ColorPicker />', () => {
-  it('renders <Calendar /> component', async () => {
+  it('renders <ColorPicker /> component', async () => {
     const { findByTestId } = render(wrapper);
     const container = await findByTestId('ColorPicker');
     expect(container).toHaveTextContent('Tag color');

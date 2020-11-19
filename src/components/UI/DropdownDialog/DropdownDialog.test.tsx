@@ -1,13 +1,30 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import { DropdownDialog } from './DropdownDialog';
-import { DialogBox } from '../DialogBox/DialogBox';
+
 import { Dropdown } from '../Form/Dropdown/Dropdown';
-import { Select } from '@material-ui/core';
-import { act } from 'react-dom/test-utils';
+
+jest.mock('../Form/Dropdown/Dropdown', () => {
+  return {
+    Dropdown: (...props: any) => {
+      return (
+        <div data-testid="dropdown">
+          <input
+            data-testid="mock-select"
+            onChange={(event) => {
+              props[0].field.onChange(event);
+              mockCallbackChange();
+            }}
+          ></input>
+        </div>
+      );
+    },
+  };
+});
 
 const mockCallbackCancel = jest.fn();
 const mockCallbackOK = jest.fn();
+const mockCallbackChange = jest.fn();
 const dialogBox = (
   <DropdownDialog
     title="Default dialog"
@@ -19,25 +36,26 @@ const dialogBox = (
 );
 
 test('it should contain a dropdown', () => {
-  const wrapper = mount(dialogBox);
-  expect(wrapper.find('[data-testid="dropdown"]').exists()).toBe(true);
+  const { getByTestId } = render(dialogBox);
+  expect(getByTestId('dropdown')).toBeInTheDocument();
 });
 
 test('it should have a description as per default value', () => {
-  const wrapper = mount(dialogBox);
-  expect(wrapper.find('[data-testid="description"]').text()).toBe('This is default dialog');
+  const { getByTestId } = render(dialogBox);
+  expect(getByTestId('description')).toHaveTextContent('This is default dialog');
 });
 
 test('handleOk and onChange function', () => {
-  const wrapper = mount(dialogBox);
-  wrapper.find(DialogBox).prop('handleOk')();
-  expect(mockCallbackOK).toBeCalled();
+  const { getByTestId } = render(dialogBox);
 
-  act(() => {
-    wrapper
-      .find(Select)
-      .at(0)
-      .props()
-      .onChange({ target: { value: 1 } });
+  fireEvent.change(getByTestId('mock-select'), {
+    target: {
+      value: 10,
+    },
   });
+
+  expect(mockCallbackChange).toBeCalled();
+
+  fireEvent.click(getByTestId('ok-button'));
+  expect(mockCallbackOK).toBeCalled();
 });

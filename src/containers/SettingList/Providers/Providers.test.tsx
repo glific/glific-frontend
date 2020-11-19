@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, wait } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { Providers } from './Providers';
 import { MockedProvider } from '@apollo/client/testing';
@@ -21,9 +21,9 @@ describe('<Providers />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    expect(getByText('Back to settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Back to settings')).toBeInTheDocument();
+    });
   });
 });
 
@@ -39,14 +39,11 @@ describe('<Providers />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    // click on SAVE
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
-    await wait();
-    await wait();
-  
+    await waitFor(() => {
+      // click on SAVE
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
   });
 });
 
@@ -62,10 +59,10 @@ describe('<Providers />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    // click on Cancel
-    const cancelButton = screen.getByText('Cancel');
-    UserEvent.click(cancelButton);
+    await waitFor(() => {
+      // click on Cancel
+      const cancelButton = screen.getByText('Cancel');
+      UserEvent.click(cancelButton);
+    });
   });
 });

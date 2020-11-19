@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import moment from 'moment';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
@@ -49,45 +49,45 @@ const defaultProps = {
   },
 };
 
-const wrapperContainer = (props: any) =>
-  mount(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <MemoryRouter>
-        <ChatConversation {...props} />
-      </MemoryRouter>
-    </MockedProvider>
-  );
-const wrapper = wrapperContainer(defaultProps);
+const wrapperContainer = (props: any) => (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <MemoryRouter>
+      <ChatConversation {...props} />
+    </MemoryRouter>
+  </MockedProvider>
+);
 
 test('it should render the name correctly', () => {
-  expect(wrapper.find('[data-testid="name"]').text()).toEqual('Jane Doe');
+  const { getByTestId } = render(wrapperContainer(defaultProps));
+  expect(getByTestId('name')).toHaveTextContent('Jane Doe');
 });
 
 test('it should render the message content correctly', () => {
-  expect(wrapper.find('[data-testid="content"]').text()).toEqual('Hello there!');
+  const { getByTestId } = render(wrapperContainer(defaultProps));
+  expect(getByTestId('content')).toHaveTextContent('Hello there!');
 });
 
 test('it should render the message date correctly', () => {
-  expect(wrapper.find('[data-testid="date"]').text()).toEqual(
-    moment(insertedAt).format(DATE_FORMAT)
-  );
+  const { getByTestId } = render(wrapperContainer(defaultProps));
+  expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(DATE_FORMAT));
 });
 
 test('it should call the callback function on click action', () => {
-  wrapper.find('[data-testid="list"]').at(0).simulate('click');
+  const { getAllByTestId } = render(wrapperContainer(defaultProps));
+  fireEvent.click(getAllByTestId('list')[0]);
   expect(mockCallback).toHaveBeenCalled();
 });
 
 test('check the condition with empty tags', () => {
   const propswithEmptyTags = { ...defaultProps };
   propswithEmptyTags.lastMessage.tags = [];
-  const chatWrapper = wrapperContainer(propswithEmptyTags);
-  expect(chatWrapper.find('.ChatInfoRead')).toHaveLength(1);
+  const { container } = render(wrapperContainer(propswithEmptyTags));
+  expect(container.querySelector('.ChatInfoRead')).toBeInTheDocument();
 });
 
 test('check the condition with tag unread', () => {
   const propsWithTagUnread = defaultProps;
   propsWithTagUnread.lastMessage.tags = [{ id: 2, label: 'Unread' }];
-  const chatWrapper = wrapperContainer(propsWithTagUnread);
-  expect(chatWrapper.find('.ChatInfoUnread')).toHaveLength(1);
+  const { container } = render(wrapperContainer(propsWithTagUnread));
+  expect(container.querySelector('.ChatInfoUnread')).toBeInTheDocument();
 });

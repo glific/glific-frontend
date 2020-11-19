@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 
 import { resetRole } from '../../../context/role';
@@ -23,7 +23,7 @@ export const Logout: React.SFC<LogoutProps> = () => {
 
   // clear role & access permissions
   resetRole();
-  
+
   // clear apollo cache
   client.clearStore();
 
