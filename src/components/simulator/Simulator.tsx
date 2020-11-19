@@ -22,6 +22,7 @@ import { TIME_FORMAT } from '../../common/constants';
 import ClearIcon from '@material-ui/icons/Clear';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { SIMULATOR_CONTACT } from '../../common/constants';
+import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -78,8 +79,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   ): JSX.Element => {
     return (
       <div className={getStyleForDirection(direction)} key={index}>
-        {type === 'IMAGE' ? <img src={media.url} className={styles.Image}></img> : null}
-        {text
+        <ChatMessageType type={type} media={media} body={text} />
+        {/* {text
           ? text.split('\n').map((item, key) => {
               return (
                 <div key={key} className={styles.MessageText}>
@@ -87,10 +88,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 </div>
               );
             })
-          : null}
+          : null} */}
 
-        <span>{moment(insertedAt).format(TIME_FORMAT)}</span>
-        {direction === 'received' ? <DoneAllIcon /> : null}
+        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+          {moment(insertedAt).format(TIME_FORMAT)}
+        </span>
+        {direction === 'send' ? <DoneAllIcon /> : null}
       </div>
     );
   };
@@ -99,9 +102,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .map((simulatorMessage: any, index: number) => {
       const { body, insertedAt, type, media } = simulatorMessage;
       if (simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(body, 'send', index, insertedAt, type, media);
-      } else {
         return renderMessage(body, 'received', index, insertedAt, type, media);
+      } else {
+        return renderMessage(body, 'send', index, insertedAt, type, media);
       }
     })
     .reverse();

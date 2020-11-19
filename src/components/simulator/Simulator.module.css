@@ -1,37 +1,52 @@
 .MessageText {
-  padding: 4px 16px;
+  padding: 4px 12px;
+  padding-bottom: 14px;
   width: auto;
-
   font-size: 12px;
   font-weight: normal;
   line-height: 1.3;
+  position: relative;
+  width: fit-content;
+  max-width: 200px;
+  margin-bottom: 5px;
+  overflow: auto;
+  border-radius: 7px;
+  white-space: pre-line;
+}
+
+.MessageText a{
+  text-decoration: none;
 }
 
 .ReceivedMessage .MessageText {
   margin-right: 25px;
 }
 
-.SendMessage {
-  border-radius: 7px;
+.ReceivedMessage {
+  composes: MessageText;
   margin-right: 24px;
   color: #333;
-  overflow: auto;
   background: white;
-  width: fit-content;
-  margin-bottom: 5px;
-  max-width: 200px;
-  position: relative;
 }
 
-.SendMessage span {
+.SendMessage {
+  composes: MessageText;
+  text-align: right;
+  padding-right: 22px;
+  display: flex;
+  margin-left: auto;
+  background: #e1f4c9;
+}
+
+.TimeSent {
   font-size: 8px;
   color: #868181;
   position: absolute;
-  right: 5px;
+  right: 15px;
   bottom: 3px;
 }
 
-.ReceivedMessage svg {
+.SendMessage svg {
   width: 10px;
   height: 10px;
   color: #5ec3db;
@@ -40,25 +55,12 @@
   bottom: 3px;
 }
 
-.ReceivedMessage span {
+.TimeReceived {
   font-size: 8px;
   color: #868181;
   position: absolute;
   right: 15px;
   bottom: 2px;
-}
-
-.ReceivedMessage {
-  text-align: right;
-  position: relative;
-  display: flex;
-  border-radius: 7px;
-  margin-left: auto;
-  overflow: auto;
-  background: #e1f4c9;
-  width: fit-content;
-  max-width: 200px;
-  margin-bottom: 5px;
 }
 
 .SimulatorIcon {
@@ -248,6 +250,6 @@
   cursor: pointer;
 }
 
-.Image{
+.Image {
   width: 175px;
 }
