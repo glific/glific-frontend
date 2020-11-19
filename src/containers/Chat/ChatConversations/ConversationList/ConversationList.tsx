@@ -161,9 +161,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     SEARCH_MULTI_QUERY
   );
 
-  // Other cases
-  if ((called && loading) || conversationLoading || loadingSearch) return <Loading />;
-
   useEffect(() => {
     // Use multi search when has search value
     if (searchVal !== '' && Object.keys(searchParam).length === 0) {
@@ -176,6 +173,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria]);
+
+  // Other cases
+  if ((called && loading) || conversationLoading || loadingSearch) return <Loading />;
 
   if ((called && error) || conversationError) {
     if (error) {
