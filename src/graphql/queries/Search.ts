@@ -72,6 +72,7 @@ export const SEARCH_MULTI_QUERY = gql`
         contact {
           id
           name
+          phone
           lastMessageAt
           status
           bspStatus
@@ -101,6 +102,7 @@ export const SEARCH_MULTI_QUERY = gql`
         contact {
           id
           name
+          phone
           lastMessageAt
           status
           bspStatus

@@ -202,11 +202,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     header: any,
     contactId: any,
     contactName: string,
-    phone: any,
+    phone: string,
     lastMessage: any,
-    senderLastMessage: any,
-    contactStatus: any,
-    contactBspStatus: any,
+    senderLastMessage: string,
+    contactStatus: string,
+    contactBspStatus: string,
     messageNumber: any
   ) => {
     return (
