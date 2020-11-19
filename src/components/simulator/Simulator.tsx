@@ -80,16 +80,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     return (
       <div className={getStyleForDirection(direction)} key={index}>
         <ChatMessageType type={type} media={media} body={text} />
-        {/* {text
-          ? text.split('\n').map((item, key) => {
-              return (
-                <div key={key} className={styles.MessageText}>
-                  {item}
-                </div>
-              );
-            })
-          : null} */}
-
         <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
           {moment(insertedAt).format(TIME_FORMAT)}
         </span>
