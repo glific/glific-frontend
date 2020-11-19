@@ -52,11 +52,11 @@ describe('<GroupList />', () => {
       expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
     });
 
-    fireEvent.click(getAllByTestId('additionalButton')[0]);
-
     await waitFor(() => {
-      expect(getByText('Add contacts to the group')).toBeInTheDocument();
+      fireEvent.click(getAllByTestId('additionalButton')[0]);
     });
+
+    expect(getByText('Add contacts to the group')).toBeInTheDocument();
   });
 
   test('it should have send message dialog box ', async () => {
@@ -69,7 +69,9 @@ describe('<GroupList />', () => {
       expect(getByText('Send a message')).toBeInTheDocument();
     });
 
-    fireEvent.click(getAllByTestId('MenuItem')[0]);
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('MenuItem')[0]);
+    });
 
     expect(getByText('Send message to group')).toBeInTheDocument();
   });
