@@ -71,15 +71,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   // get contact groups
-  const { data, refetch } = useQuery(GET_CONTACT_GROUPS, {
+  const { data } = useQuery(GET_CONTACT_GROUPS, {
     variables: { id: props.contactId },
     fetchPolicy: 'cache-and-network',
   });
 
   // mutation to update the contact groups
-  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
-    onCompleted: () => refetch(),
-  });
+  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS);
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
