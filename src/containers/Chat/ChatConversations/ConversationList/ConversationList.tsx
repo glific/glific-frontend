@@ -197,13 +197,46 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = searchData.search;
   }
 
+  const buildChatConversation = (
+    index: number,
+    header: any,
+    contactId: any,
+    contactName: string,
+    phone: any,
+    lastMessage: any,
+    senderLastMessage: any,
+    contactStatus: any,
+    contactBspStatus: any,
+    messageNumber: any
+  ) => {
+    return (
+      <>
+        {index === 0 ? header : null}
+        <ChatConversation
+          key={contactId}
+          selected={props.selectedContactId === contactId}
+          onClick={(i: number) => props.setSelectedContactId(contactId)}
+          index={index}
+          contactId={contactId}
+          contactName={contactName ? contactName : phone}
+          lastMessage={lastMessage}
+          senderLastMessage={senderLastMessage}
+          contactStatus={contactStatus}
+          contactBspStatus={contactBspStatus}
+          highlightSearch={props.searchVal}
+          messageNumber={messageNumber}
+          searchMode={props.searchMode}
+        />
+      </>
+    );
+  };
+
   let conversationList: any;
   // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
   if (props.searchVal !== '' && searchMultiData && Object.keys(props.searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
-    // let searchArray = { contacts: [], tags: [], messages: [] };
-    let searchArray = { tags: [], messages: [] };
+    let searchArray = { contacts: [], tags: [], messages: [] };
     let data;
     Object.keys(searchArray).map((dataArray: any) => {
       let header = (
@@ -214,27 +247,32 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       data = conversations[dataArray].map((conversation: any, index: number) => {
         let lastMessage = [];
         lastMessage = conversation;
-        return (
-          <>
-            {index === 0 ? header : null}
-            <ChatConversation
-              key={conversation.contact.id}
-              selected={props.selectedContactId === conversation.contact.id}
-              onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
-              index={index}
-              contactId={conversation.contact.id}
-              contactName={
-                conversation.contact.name ? conversation.contact.name : conversation.contact.phone
-              }
-              lastMessage={lastMessage}
-              senderLastMessage={conversation.contact.lastMessageAt}
-              contactStatus={conversation.contact.status}
-              contactBspStatus={conversation.contact.bspStatus}
-              highlightSearch={props.searchVal}
-              messageNumber={conversation.messageNumber}
-              searchMode={props.searchMode}
-            />
-          </>
+        // We don't have the last message in the case of contacts. Therefore, view contact only
+        if (dataArray === 'contacts') {
+          return buildChatConversation(
+            index,
+            header,
+            conversation.id,
+            conversation.name,
+            conversation.phone,
+            lastMessage,
+            conversation.lastMessageAt,
+            conversation.status,
+            conversation.bspStatus,
+            conversation.messageNumber
+          );
+        }
+        return buildChatConversation(
+          index,
+          header,
+          conversation.contact.id,
+          conversation.contact.name,
+          conversation.contact.phone,
+          lastMessage,
+          conversation.contact.lastMessageAt,
+          conversation.contact.status,
+          conversation.contact.bspStatus,
+          conversation.messageNumber
         );
       });
       // Check if its not empty
