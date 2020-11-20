@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Editor, RichUtils, Modifier } from 'draft-js';
+import { Editor, RichUtils, Modifier, EditorState } from 'draft-js';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+
 import { Input } from '../Input/Input';
-import { EditorState } from 'draft-js';
 import Styles from './EmojiInput.module.css';
 
 export interface EmojiInputProps {
@@ -36,7 +36,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
   const updateValue = (emoji: any) => {
     const editorContentState = props.form.values[rest.name].getCurrentContent();
-    let editorSelectionState: any = props.form.values[rest.name].getSelection();
+    const editorSelectionState: any = props.form.values[rest.name].getSelection();
     const ModifiedContent = Modifier.insertText(
       editorContentState,
       editorSelectionState,
@@ -47,13 +47,13 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     props.form.setFieldValue(rest.name, updatedEditorState);
   };
 
-  const InputWrapper = (props: any) => {
-    const { component: Component, inputRef, ...other } = props;
+  const InputWrapper = (inputProps: any) => {
+    const { component: Component, inputRef, ...other } = inputProps;
 
     React.useImperativeHandle(inputRef, () => ({
       focus: () => {
-        const current: any = ref.current;
-        if (current) current.focus();
+        const current: any = ref;
+        if (current) current.current.focus();
       },
     }));
 
@@ -66,12 +66,12 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
-    handleKeyCommand: handleKeyCommand,
+    handleKeyCommand,
     onBlur: props.form.handleBlur,
     onChange: draftJsChange,
   };
 
-  const editor = { inputComponent: inputComponent, inputProps: inputProps };
+  const editor = { inputComponent, inputProps };
 
   const emojiPicker = showEmojiPicker ? (
     <Picker
@@ -94,12 +94,13 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       <InputAdornment position="end" className={Styles.EmojiPosition}>
         <IconButton
           color="primary"
+          data-testid="emoji-picker"
           aria-label="pick emoji"
           component="span"
           className={Styles.Emoji}
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
         >
-          <span role="img" aria-label="pick emoji" data-testid="emoji-picker">
+          <span role="img" aria-label="pick emoji">
             😀
           </span>
         </IconButton>

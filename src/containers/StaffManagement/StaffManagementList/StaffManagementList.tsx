@@ -1,7 +1,8 @@
 import React from 'react';
+
+import styles from './StaffManagementList.module.css';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
 import { DELETE_USER } from '../../../graphql/mutations/User';
-import styles from './StaffManagementList.module.css';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
@@ -14,12 +15,6 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 
-  const getColumns = ({ name, phone, groups, roles, contact }: any) => ({
-    name: getName(name, roles),
-    phone: getPhone(phone),
-    group: getGroups(groups),
-  });
-
   const queries = {
     countQuery: USER_COUNT,
     filterItemsQuery: FILTER_USERS,
@@ -31,7 +26,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
       return role;
     });
     return (
-      <p className={styles.TableText + ' ' + styles.NameText}>
+      <p className={`${styles.TableText} ${styles.NameText}`}>
         {text}
         <br />
         <div className={styles.Role}>{roles.join(', ')}</div>
@@ -50,22 +45,28 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{groups.join(', ')}</p>;
   };
 
+  const getColumns = ({ name, phone, groups, roles }: any) => ({
+    name: getName(name, roles),
+    phone: getPhone(phone),
+    group: getGroups(groups),
+  });
+
   const dialogMessage = ' Once deleted this action cannot be undone.';
 
   const columnAttributes = {
-    columnNames: columnNames,
+    columnNames,
     columns: getColumns,
-    columnStyles: columnStyles,
+    columnStyles,
   };
 
-  const chatIcon = <ChatIcon></ChatIcon>;
+  const chatIcon = <ChatIcon />;
   const additionalAction = [{ icon: chatIcon, parameter: 'contact.id', link: '/chat' }];
 
   const getRestrictedAction = (param: any) => {
-    let action: any = { chat: true, edit: true, delete: true };
+    const action: any = { chat: true, edit: true, delete: true };
     if (isManagerRole && param.roles.includes('Admin')) {
-      action['edit'] = false;
-      action['delete'] = false;
+      action.edit = false;
+      action.delete = false;
     }
     return action;
   };

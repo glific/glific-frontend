@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
+
 import { Login } from '../../containers/Auth/Login/Login';
 import { Registration } from '../../containers/Auth/Registration/Registration';
 import { ConfirmOTP } from '../../containers/Auth/ConfirmOTP/ConfirmOTP';
@@ -18,3 +19,5 @@ export const UnauthenticatedRoute: React.SFC = () => {
     </Switch>
   );
 };
+
+export default UnauthenticatedRoute;

@@ -1,15 +1,14 @@
 import React from 'react';
-import { useQuery, useApolloClient } from '@apollo/client';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
+import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
+
 import styles from './SettingList.module.css';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_PROVIDERS } from '../../graphql/queries/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
-import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { setNotification } from '../../common/notification';
 
 const SettingIcon = <Settingicon />;
 
@@ -22,28 +21,24 @@ const List = [
 ];
 
 export const SettingList: React.SFC = () => {
-  const message = useQuery(NOTIFICATION);
-  const client = useApolloClient();
-
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
   if (loading) return <Loading />;
 
   let CardList: any = [];
   if (providerData) {
-    //create setting list of Organisation & providers
+    // create setting list of Organisation & providers
     CardList = [...List, ...providerData.providers];
   }
 
-  let heading = (
+  const heading = (
     <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled={true} className={styles.Icon}>
+      <IconButton disabled className={styles.Icon}>
         {SettingIcon}
       </IconButton>
       Settings
     </Typography>
   );
-
 
   return (
     <>
@@ -68,7 +63,7 @@ export const SettingList: React.SFC = () => {
               <CardActions className={styles.CardActions}>
                 <Link
                   to={{
-                    pathname: 'settings/' + data.shortcode,
+                    pathname: `settings/${data.shortcode}`,
                   }}
                   className={styles.Link}
                 >
@@ -84,3 +79,5 @@ export const SettingList: React.SFC = () => {
     </>
   );
 };
+
+export default SettingList;

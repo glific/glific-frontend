@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { List, Container, CircularProgress, Typography } from '@material-ui/core';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 
+import styles from './ConversationList.module.css';
 import ChatConversation from '../ChatConversation/ChatConversation';
 import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import {
@@ -12,8 +14,6 @@ import {
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
-import styles from './ConversationList.module.css';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { updateConversations } from '../../../../services/ChatService';
 
 interface ConversationListProps {
@@ -26,6 +26,7 @@ interface ConversationListProps {
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
+  const { selectedContactId, searchVal, searchParam, savedSearchCriteria } = props;
   const client = useApolloClient();
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const [loadingOffset, setLoadingOffset] = useState(50);
@@ -38,8 +39,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     const contactsContainer: any = document.querySelector('.contactsContainer');
     if (contactsContainer) {
       contactsContainer.addEventListener('scroll', (event: any) => {
-        const contactsContainer = event.target;
-        if (contactsContainer.scrollTop === 0) {
+        const contactContainer = event.target;
+        if (contactContainer.scrollTop === 0) {
           setShowJumpToLatest(false);
         } else if (showJumpToLatest === false) {
           setShowJumpToLatest(true);
@@ -47,30 +48,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       });
     }
   }, []);
-
-  // We are using this after the search to get selected search data.
-  useEffect(() => {
-    let offsetValue = 0;
-    if (offset.data) {
-      offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
-    }
-    if (props.selectedContactId && offsetValue) {
-      loadMoreConversations({
-        variables: {
-          contactOpts: {
-            limit: 1,
-          },
-          filter: {
-            id: props.selectedContactId,
-          },
-          messageOpts: {
-            limit: 50,
-            offset: offsetValue,
-          },
-        },
-      });
-    }
-  }, [offset, props.selectedContactId]);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
@@ -81,16 +58,16 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
   const filterVariables = () => {
     if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
-      let variables = JSON.parse(props.savedSearchCriteria);
+      const variables = JSON.parse(props.savedSearchCriteria);
       if (props.searchVal) variables.filter.term = props.searchVal;
       return variables;
     }
 
-    let filter: any = {};
+    const filter: any = {};
     if (props.searchVal) {
       filter.term = props.searchVal;
     }
-    let params = props.searchParam;
+    const params = props.searchParam;
     if (params) {
       if (params.includeTags && params.includeTags.length > 0)
         filter.includeTags = params.includeTags.map((obj: any) => obj.id);
@@ -107,7 +84,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     return {
-      filter: filter,
+      filter,
       messageOpts: {
         limit: 50,
       },
@@ -133,31 +110,42 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     };
   };
 
-  useEffect(() => {
-    // Use multi search when has search value
-    if (props.searchVal !== '' && Object.keys(props.searchParam).length === 0) {
-      getFilterSearch({
-        variables: filterSearch(),
-      });
-    } else {
-      getFilterConvos({
-        variables: filterVariables(),
-      });
-    }
-  }, [props.searchVal, props.searchParam, props.savedSearchCriteria]);
-
   const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
-    onCompleted: (data) => {
-      if (data && data.search.length === 0) {
+    onCompleted: (searchData) => {
+      if (searchData && searchData.search.length === 0) {
         setShowLoadMore(false);
       } else {
         // save the conversation and update cache
-        updateConversations(data, client, queryVariables);
+        updateConversations(searchData, client, queryVariables);
 
         setLoadingOffset(loadingOffset + 10);
       }
     },
   });
+
+  // We are using this after the search to get selected search data.
+  useEffect(() => {
+    let offsetValue = 0;
+    if (offset.data) {
+      offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
+    }
+    if (props.selectedContactId && offsetValue) {
+      loadMoreConversations({
+        variables: {
+          contactOpts: {
+            limit: 1,
+          },
+          filter: {
+            id: selectedContactId,
+          },
+          messageOpts: {
+            limit: 50,
+            offset: offsetValue,
+          },
+        },
+      });
+    }
+  }, [offset, selectedContactId]);
 
   useEffect(() => {
     if (contactsData) {
@@ -172,6 +160,19 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [getFilterSearch, { loading: loadingSearch, data: searchMultiData }] = useLazyQuery<any>(
     SEARCH_MULTI_QUERY
   );
+
+  useEffect(() => {
+    // Use multi search when has search value
+    if (searchVal !== '' && Object.keys(searchParam).length === 0) {
+      getFilterSearch({
+        variables: filterSearch(),
+      });
+    } else {
+      getFilterConvos({
+        variables: filterVariables(),
+      });
+    }
+  }, [searchVal, searchParam, savedSearchCriteria]);
 
   // Other cases
   if ((called && loading) || conversationLoading || loadingSearch) return <Loading />;
@@ -193,24 +194,24 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (props.searchVal !== '' || props.savedSearchCriteria || props.searchParam)) {
+  if (called && (searchVal !== '' || savedSearchCriteria || searchParam)) {
     conversations = searchData.search;
   }
 
   let conversationList: any;
   // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
-  if (props.searchVal !== '' && searchMultiData && Object.keys(props.searchParam).length === 0) {
+  if (searchVal !== '' && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
-    let searchArray = { contacts: [], tags: [], messages: [] };
-    let data;
+    const searchArray = { contacts: [], tags: [], messages: [] };
+    let conversationsData;
     Object.keys(searchArray).map((dataArray: any) => {
-      let header = (
+      const header = (
         <div className={styles.Title}>
           <Typography className={styles.TitleText}>{dataArray}</Typography>
         </div>
       );
-      data = conversations[dataArray].map((conversation: any, index: number) => {
+      conversationsData = conversations[dataArray].map((conversation: any, index: number) => {
         let lastMessage = [];
         lastMessage = conversation;
         return (
@@ -219,7 +220,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             <ChatConversation
               key={conversation.contact.id}
               selected={props.selectedContactId === conversation.contact.id}
-              onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
+              onClick={() => props.setSelectedContactId(conversation.contact.id)}
               index={index}
               contactId={conversation.contact.id}
               contactName={
@@ -237,10 +238,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         );
       });
       // Check if its not empty
-      if (data.length > 0) {
+      if (conversationsData.length > 0) {
         if (!conversationList) conversationList = [];
-        conversationList.push(data);
+        conversationList.push(conversationsData);
       }
+      return null;
     });
   }
 
@@ -250,13 +252,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {
-        lastMessage = conversation.messages[0];
+        [lastMessage] = conversation.messages;
       }
+      const key = index;
       return (
         <ChatConversation
-          key={index}
+          key={key}
           selected={props.selectedContactId === conversation.contact.id}
-          onClick={(i: number) => props.setSelectedContactId(conversation.contact.id)}
+          onClick={() => props.setSelectedContactId(conversation.contact.id)}
           index={index}
           contactId={conversation.contact.id}
           contactName={
@@ -299,8 +302,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   };
 
   const scrollToTop = (
-    <div className={styles.ScrollToTopButton} onClick={showLatestContact}>
-      Go to top <KeyboardArrowUpIcon />
+    <div
+      className={styles.ScrollToTopButton}
+      onClick={showLatestContact}
+      onKeyDown={showLatestContact}
+      aria-hidden="true"
+    >
+      Go to top
+      <KeyboardArrowUpIcon />
     </div>
   );
 
@@ -321,7 +330,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />
               ) : (
-                <div onClick={loadMoreMessages} className={styles.LoadMoreButton}>
+                <div
+                  onClick={loadMoreMessages}
+                  onKeyDown={loadMoreMessages}
+                  className={styles.LoadMoreButton}
+                  aria-hidden="true"
+                >
                   Load more chats
                 </div>
               )}

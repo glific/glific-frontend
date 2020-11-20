@@ -16,7 +16,7 @@ const wrapper = (
 );
 
 describe('<ResetPasswordConfirmOTP />', () => {
-  test('it should mount', async () => {
+  test('it should render', async () => {
     const { findByTestId } = render(wrapper);
 
     const resetPassword = await findByTestId('AuthContainer');

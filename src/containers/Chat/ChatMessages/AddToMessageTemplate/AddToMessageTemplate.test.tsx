@@ -1,6 +1,6 @@
 import React from 'react';
 import AddToMessageTemplate from './AddToMessageTemplate';
-import { render, wait, fireEvent, cleanup } from '@testing-library/react';
+import { render, wait, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
@@ -68,8 +68,9 @@ test('template should call the query on clicking save button', async () => {
     },
   });
   fireEvent.click(getByTestId('ok-button'));
-  await wait();
-  expect(resultReturned).toBe(true);
+  await waitFor(() => {
+    expect(resultReturned).toBe(true);
+  });
 });
 
 test('message should be in the dialogbox', () => {

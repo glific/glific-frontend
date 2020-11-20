@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
-import { useApolloClient, DocumentNode, ApolloError } from '@apollo/client';
-import { useQuery, useMutation } from '@apollo/client';
+import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
 
+import styles from './FormLayout.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import styles from './FormLayout.module.css';
 import { convertToWhatsApp } from '../../common/RichEditor';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { NOTIFICATION } from '../../graphql/queries/Notification';
-import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
+import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 
 export interface FormLayoutProps {
   match: any;
@@ -88,7 +86,19 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getLanguageId,
   backLinkButton,
 }: FormLayoutProps) => {
+  const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [languageId, setLanguageId] = useState('');
+  const [formCancelled, setFormCancelled] = useState(false);
+  const [action, setAction] = useState(false);
+  const [link, setLink] = useState(undefined);
+  const [deleted, setDeleted] = useState(false);
+  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  let item: any = null;
+  const itemId = match.params.id ? match.params.id : false;
+  let variables: any = itemId ? { id: itemId } : false;
+
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
       setNotification(client, `${capitalListItemName} deleted successfully`);
@@ -102,13 +112,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       },
     ],
   });
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [languageId, setLanguageId] = useState('');
-  const [formCancelled, setFormCancelled] = useState(false);
-  const [action, setAction] = useState(false);
-  const [link, setLink] = useState(undefined);
-  const [deleted, setDeleted] = useState(false);
-  let item: any = null;
 
   // get the organization for current user and have languages option set to that.
 
@@ -120,16 +123,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
 
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
-  let itemId = match.params.id ? match.params.id : false;
-  let variables: any = itemId ? { id: itemId } : false;
-
   if (listItem === 'credential') {
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
   }
 
   const { loading, error } = useQuery(getItemQuery, {
-    variables: variables,
+    variables,
     skip: !itemId,
     onCompleted: (data) => {
       if (data) {
@@ -168,14 +167,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         setNotification(client, message);
       }
     },
-    onError: (error: ApolloError) => {
-      setErrorMessage(client, error);
+    onError: (e: ApolloError) => {
+      setErrorMessage(client, e);
       return null;
     },
     refetchQueries: () => {
       if (refetchQueries) {
         return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      } else return [];
+      }
+      return [];
     },
   });
 
@@ -201,15 +201,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     refetchQueries: () => {
       if (refetchQueries) {
         return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      } else return [];
+      }
+      return [];
     },
-    onError: (error: ApolloError) => {
-      setErrorMessage(client, error);
+    onError: (e: ApolloError) => {
+      setErrorMessage(client, e);
       return null;
     },
   });
-
-  const client = useApolloClient();
 
   if (loading) return <Loading />;
   if (error) {
@@ -217,26 +216,28 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
-  const saveHandler = ({ languageId, ...item }: any) => {
+  const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
-      ...item,
+      ...itemData,
       ...defaultAttribute,
     };
 
-    payload = languageSupport ? { ...payload, languageId: Number(languageId) } : { ...payload };
+    payload = languageSupport
+      ? { ...payload, languageId: Number(languageIdValue) }
+      : { ...payload };
 
     // create custom payload for collection
     if (setPayload) {
       payload = setPayload(payload);
       if (advanceSearch) {
-        let data = advanceSearch(payload);
+        const data = advanceSearch(payload);
 
         if (data && data.heading && type === 'search') return;
       }
     }
 
     // remove fields from the payload that marked as skipPayload = true
-    formFields.map((field: any) => {
+    formFields.forEach((field: any) => {
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }
@@ -280,9 +281,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (deleted) {
     if (afterDelete) {
       return <Redirect to={afterDelete.link} />;
-    } else {
-      return <Redirect to={redirectionLink} />;
     }
+    return <Redirect to={redirectionLink} />;
   }
 
   if (formCancelled) {
@@ -295,7 +295,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     }
   };
 
-  let languageOptions = organization.data
+  const languageOptions = organization.data
     ? organization.data.currentUser.user.organization.activeLanguages.slice()
     : [];
   // sort languages by their name
@@ -327,30 +327,31 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       </Button>
     ) : null;
 
-  let form = (
+  const form = (
     <>
       <Formik
         enableReinitialize
         initialValues={{
           ...states,
-          languageId: languageId,
+          languageId,
         }}
         validationSchema={validationSchema}
-        onSubmit={(item) => {
-          saveHandler(item);
+        onSubmit={(itemData) => {
+          saveHandler(itemData);
         }}
       >
         {({ submitForm }) => (
           <Form className={styles.Form} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
+              const key = index;
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={key}>
                   {field.label ? (
                     <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
                   ) : null}
-                  <Field key={index} {...field}></Field>
+                  <Field key={key} {...field} />
                 </React.Fragment>
               );
             })}
@@ -405,7 +406,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
-        alignButtons={'center'}
+        alignButtons="center"
       >
         <p className={styles.DialogText}>{dialogMessage}</p>
       </DialogBox>
@@ -414,15 +415,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   let heading = (
     <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled={true} className={styles.Icon}>
+      <IconButton disabled className={styles.Icon}>
         {icon}
       </IconButton>
-      {title ? title : itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
+      {title || itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
     </Typography>
   );
 
   if (advanceSearch) {
-    let data = advanceSearch({});
+    const data = advanceSearch({});
     if (data && data.heading) heading = data.heading;
   }
 

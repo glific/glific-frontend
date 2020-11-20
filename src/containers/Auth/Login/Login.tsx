@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { useLazyQuery } from '@apollo/client';
 
 import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
@@ -15,7 +16,6 @@ import {
   setUserSession,
   clearUserSession,
 } from '../../../services/AuthService';
-import { useLazyQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 import { getRoleBasedAccess } from '../../../context/role';
 
@@ -43,7 +43,9 @@ export const Login: React.SFC<LoginProps> = () => {
       // set the current user object
       setUserSession(JSON.stringify(userData.currentUser.user));
 
-      let roles = userData.currentUser.user.roles;
+      // get teh roles
+      const { roles } = userData.currentUser.user;
+
       // check for user role none or empty
       if ((roles.includes('None') && roles.length === 1) || roles.length === 0) {
         accessDenied();
@@ -112,18 +114,18 @@ export const Login: React.SFC<LoginProps> = () => {
         getCurrentUser();
         setAuthSession(responseString);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('Invalid phone or password.');
       });
   };
 
   return (
     <Auth
-      pageTitle={'Login to your account'}
-      buttonText={'LOGIN'}
-      alternateLink={'registration'}
-      alternateText={'CREATE A NEW ACCOUNT'}
-      mode={'login'}
+      pageTitle="Login to your account"
+      buttonText="LOGIN"
+      alternateLink="registration"
+      alternateText="CREATE A NEW ACCOUNT"
+      mode="login"
       formFields={formFields}
       linkText="Forgot Password?"
       linkURL="resetpassword-phone"

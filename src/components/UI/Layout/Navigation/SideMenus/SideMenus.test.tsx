@@ -1,7 +1,6 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { mount } from 'enzyme';
-import { wait } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import SideMenus from './SideMenus';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
 
@@ -14,8 +13,7 @@ describe('side menu testing', () => {
   );
 
   it('it should be initialized properly', async () => {
-    const wrapper = mount(component);
-    await wait();
-    expect(wrapper).toBeTruthy();
+    const { getByTestId } = render(component);
+    expect(getByTestId('list')).toBeInTheDocument();
   });
 });

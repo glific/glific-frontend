@@ -1,10 +1,10 @@
 import React from 'react';
 import { MessagesWithLinks } from './MessagesWithLinks';
-import { shallow } from 'enzyme';
+import { render} from "@testing-library/react"
 
 const messagesWithLinks = <MessagesWithLinks message={'hey There google.com'} />;
 
 test('it renders correctly', () => {
-  const wrapper = shallow(messagesWithLinks);
-  expect(wrapper.exists()).toBe(true);
+  const {getByTestId} = render(messagesWithLinks);
+  expect(getByTestId('messageLink')).toBeInTheDocument();
 });
