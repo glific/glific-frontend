@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
+
 import styles from './AuthenticatedRoute.module.css';
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
 import { TagPage } from '../../components/pages/TagPage/TagPage';
 import { Tag } from '../../containers/Tag/Tag';
 import { SpeedSendPage } from '../../components/pages/Template/SpeedSendPage/SpeedSendPage';
@@ -32,11 +33,9 @@ import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 export const AuthenticatedRoute: React.SFC = () => {
- const toastMessage=useToast()
+  const toastMessage = useToast();
   let userRole: any[] = [];
   let route = <Route path="/logout" exact component={Logout} />;
-
- 
 
   if (getUserRole()) {
     userRole = getUserRole();
@@ -123,7 +122,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to group
   return (
-    <div className={styles.App}>
+    <div className={styles.App} data-testid="app">
       {toastMessage}
       {userRole.length > 0 ? <ChatSubscription /> : ''}
       <Layout>{route}</Layout>

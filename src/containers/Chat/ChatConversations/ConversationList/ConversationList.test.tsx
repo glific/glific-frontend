@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, wait, fireEvent } from '@testing-library/react';
+import { render, wait, fireEvent, waitFor } from '@testing-library/react';
 import ConversationList from './ConversationList';
 import { MockedProvider } from '@apollo/client/testing';
 import { ChatConversationMocks } from './../ChatConversations.test.helper';
@@ -15,6 +15,7 @@ const conversationList = (
         selectedContactId={2}
         setSelectedContactId={jest.fn()}
         savedSearchCriteria=""
+        searchMode={false}
       />
     </Router>
   </MockedProvider>
@@ -22,14 +23,15 @@ const conversationList = (
 
 test('it should render ConversationsList properly', async () => {
   const { container } = render(conversationList);
-  await wait();
-  expect(container).toBeInTheDocument();
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
+  });
 });
 
 test('it shows a conversation on clicking a contact', async () => {
   const { getAllByTestId, getByText } = render(conversationList);
-  await wait();
-  await wait();
-  fireEvent.click(getAllByTestId('list')[0]);
+  await waitFor(() => {
+    fireEvent.click(getAllByTestId('list')[0]);
+  });
   expect(getByText('Hi')).toBeInTheDocument();
 });

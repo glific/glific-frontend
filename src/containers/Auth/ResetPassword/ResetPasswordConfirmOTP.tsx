@@ -14,12 +14,13 @@ export interface ResetPasswordConfirmOTPProps {
 }
 
 export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = (props) => {
+  const { location } = props;
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
 
   // Let's not allow direct navigation to this page
-  if (props.location && props.location.state === undefined) {
-    return <Redirect to={'/resetpassword-phone'} />;
+  if (location && location.state === undefined) {
+    return <Redirect to="/resetpassword-phone" />;
   }
 
   if (redirect) {
@@ -27,7 +28,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   }
 
   const handleResend = () => {
-    sendOTP(props.location.state.phoneNumber);
+    sendOTP(location.state.phoneNumber);
   };
 
   const formFields = [
@@ -62,7 +63,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   });
 
   const initialFormValues = {
-    phoneNumber: props.location.state.phoneNumber,
+    phoneNumber: location.state.phoneNumber,
     OTP: '',
     password: '',
   };
@@ -76,21 +77,21 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
           otp: values.OTP,
         },
       })
-      .then((response) => {
+      .then(() => {
         setRedirect(true);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to update your password, please enter the correct OTP.');
       });
   };
 
   return (
     <Auth
-      pageTitle={'Reset your password'}
-      buttonText={'SAVE'}
-      alternateLink={'login'}
-      alternateText={'GO TO LOGIN'}
-      mode={'secondreset'}
+      pageTitle="Reset your password"
+      buttonText="SAVE"
+      alternateLink="login"
+      alternateText="GO TO LOGIN"
+      mode="secondreset"
       formFields={formFields}
       validationSchema={FormSchema}
       saveHandler={onSubmitOTP}

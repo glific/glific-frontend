@@ -1,7 +1,8 @@
 import React from 'react';
-import styles from './ChatTemplates.module.css';
 import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
+
+import styles from './ChatTemplates.module.css';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
@@ -24,18 +25,19 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
 
   const popperItems = () => {
-    let templateObjs = data.sessionTemplates;
-    let text = props.isTemplate ? 'templates' : 'speed sends';
-    let listItems = templateObjs.map((obj: any, index: number) => {
+    const templateObjs = data.sessionTemplates;
+    const text = props.isTemplate ? 'templates' : 'speed sends';
+    const listItems = templateObjs.map((obj: any, index: number) => {
+      const key = index;
       if (obj.isHsm === props.isTemplate) {
         // True HSM === Template, False HSM === Speed send
         return (
-          <div key={index}>
+          <div key={key}>
             <ListItem
               data-testid="templateItem"
               button
               disableRipple
-              onClick={(e: any) => props.handleSelectText(obj)}
+              onClick={() => props.handleSelectText(obj)}
               className={styles.PopperListItem}
             >
               <p className={styles.Text}>
@@ -63,7 +65,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     );
   };
 
-  return <div className={styles.ChatTemplates}>{popperItems()}</div>;
+  return (
+    <div className={styles.ChatTemplates} data-testid="chatTemplates">
+      {popperItems()}
+    </div>
+  );
 };
 
 export default ChatTemplates;

@@ -1,15 +1,46 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
 import WhatsAppEditor from './WhatsAppEditor';
 import { render, wait, fireEvent } from '@testing-library/react';
 import { EMPTY_STATE } from './EditorState.test.helper';
 import { EditorState } from 'draft-js';
 import { WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 
+const mockHandleKeyCommand = jest.fn();
+
+jest.mock('draft-js', () => {
+  const moduleMock = jest.requireActual('draft-js');
+  return {
+    ...moduleMock,
+    Editor: (...props: any) => {
+      return (
+        <input
+          data-testid="editor"
+          onClick={() => {
+            props[0].handleKeyCommand('underline');
+            mockHandleKeyCommand();
+          }}
+          onChange={(event) => props[0].onChange(event)}
+        ></input>
+      );
+    },
+  };
+});
+
+jest.mock('react-resize-detector', () => (...props: any) => {
+  const { onResize, children } = props[0];
+  return (
+    <div>
+      <div data-testid="resizer" onClick={() => onResize('30', '40')}>
+        {children}
+      </div>
+    </div>
+  );
+});
+
 describe('<WhatsAppEditor/>', () => {
   let handleHeightChange = jest.fn();
   let sendMessage = jest.fn();
-  let editorState = EMPTY_STATE;
+  let editorState = EditorState.createEmpty();
   let setEditorState = jest.fn();
 
   const defaultProps = (editorState: any) => {
@@ -21,40 +52,32 @@ describe('<WhatsAppEditor/>', () => {
     };
   };
 
-  const getWrapper = (editorState: any) =>
-    shallow(<WhatsAppEditor {...defaultProps(editorState)} />);
-
-  const wrapper = getWrapper(EMPTY_STATE);
-  const editor = wrapper.find('[data-testid="editor"]');
-  const emojiPicker = wrapper.find('[data-testid="emoji-picker"]');
+  const editorContent = EditorState.createWithContent(WhatsAppToDraftEditor('Hello'));
 
   test('it should have editor and emoji components', () => {
-    expect(editor).toHaveLength(1);
-    expect(emojiPicker).toHaveLength(1);
+    const { container, getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    expect(container.querySelector('.Editor')).toBeInTheDocument();
+    expect(getByTestId('emoji-picker')).toBeInTheDocument();
   });
 
   test('input change should trigger callBacks', () => {
-    editor.simulate('change', EMPTY_STATE);
+    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    fireEvent.change(getByTestId('editor'), {
+      target: { value: 10 },
+    });
     expect(setEditorState).toHaveBeenCalled();
   });
 
-  // Cannot successfully test 'handleKeyCommand', due to lack of Enzyme integration with DraftJS.
+  test('handleKeyCommand should work with new commands', () => {
+    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    fireEvent.click(getByTestId('editor'));
 
-  // test('handleKeyCommand should work with new commands', () => {
-  //   editor.props().handleKeyCommand('bold', EMPTY_STATE);
-  //   expect(setEditorState).toHaveBeenCalled();
-  // });
-
-  test('keyBindingFn should be able to override an enter key as sendMessage instead of new line', () => {
-    const overrideEnter = editor
-      .props()
-      .keyBindingFn({ keyCode: 13, nativeEvent: { shiftKey: false } });
-    expect(overrideEnter).toBe('enter');
+    expect(mockHandleKeyCommand).toHaveBeenCalled();
   });
 
   test('testing change size callback', () => {
-    const resizer = wrapper.find('[data-testid="resizer"]');
-    resizer.props().onResize(40, 40);
+    const { getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
+    fireEvent.click(getByTestId('resizer'));
     expect(handleHeightChange).toHaveBeenCalled();
   });
 

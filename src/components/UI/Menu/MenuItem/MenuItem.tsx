@@ -12,20 +12,17 @@ export interface MenuItemProps {
 }
 
 const MenuItem: React.SFC<MenuItemProps> = (props) => {
+  const { className, onClickHandler, path, icon, title } = props;
+
   let menuItemClass = '';
-  if (props.className === 'Danger') {
+  if (className === 'Danger') {
     menuItemClass = styles.Danger;
   }
 
   return (
-    <MenuItemElement
-      onClick={props.onClickHandler}
-      component={Link}
-      to={props.path}
-      data-testid="MenuItem"
-    >
-      {props.icon ? props.icon : null}
-      <div className={menuItemClass}>{props.title}</div>
+    <MenuItemElement onClick={onClickHandler} component={Link} to={path} data-testid="MenuItem">
+      {icon}
+      <div className={menuItemClass}>{title}</div>
     </MenuItemElement>
   );
 };

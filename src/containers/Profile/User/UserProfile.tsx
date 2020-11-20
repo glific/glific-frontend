@@ -8,7 +8,7 @@ export interface UserProfileProps {}
 export const UserProfile: React.SFC<UserProfileProps> = () => {
   return (
     <div className={styles.UserProfile} data-testid="UserProfile">
-      <Profile profileType="User" redirectionLink={'chat/'} />
+      <Profile profileType="User" redirectionLink="chat/" />
     </div>
   );
 };

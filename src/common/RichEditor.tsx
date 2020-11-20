@@ -1,6 +1,7 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
 import { convertToRaw, convertFromRaw } from 'draft-js';
+
 const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
@@ -44,48 +45,50 @@ export const TextReplacements: any = [
 ];
 
 // Finds double asterisks in text with a regular expression.
-
 const textConversion = (text: any, style: any, offset: number, symbol: string) => {
   const initialOffset = style.offset + offset;
   const finalOffset = initialOffset + style.length + 1;
-  text = text.slice(0, initialOffset) + symbol + text.slice(initialOffset);
-  text = text.slice(0, finalOffset) + symbol + text.slice(finalOffset);
-  return text;
+  let modifiedText = text.slice(0, initialOffset) + symbol + text.slice(initialOffset);
+  modifiedText = modifiedText.slice(0, finalOffset) + symbol + modifiedText.slice(finalOffset);
+  return modifiedText;
 };
 
 // Convert Draft.js to WhatsApp message format.
 export const convertToWhatsApp = (editorState: any) => {
-  let markdownString: any = convertToRaw(editorState.getCurrentContent());
+  const markdownString: any = convertToRaw(editorState.getCurrentContent());
   let finalString = '';
 
-  markdownString.blocks.map((block: any) => {
-    let text = block.text;
+  finalString = markdownString.blocks.map((block: any) => {
+    const { text } = block;
 
     let offset = 0;
-    block.inlineStyleRanges.map((style: any) => {
+    let convertedText = text;
+    block.inlineStyleRanges.forEach((style: any) => {
       switch (style.style) {
         case 'BOLD':
-          text = textConversion(text, style, offset, '*');
+          convertedText = textConversion(convertedText, style, offset, '*');
           break;
         case 'ITALIC':
-          text = textConversion(text, style, offset, '_');
+          convertedText = textConversion(convertedText, style, offset, '_');
           break;
+        default:
       }
       offset += 2;
     });
-    finalString = finalString + text + '\n';
+
+    return `${finalString}${convertedText} \n`;
   });
 
-  return finalString;
+  // let's return 0 element as map() always returns an array
+  return finalString[0];
 };
 
 // Converts WhatsApp message formatting into HTML elements.
-
 export const WhatsAppToDraftEditor = (text: string) => {
   const regexforBold = /[*][^*]*[*]/gi;
 
-  const addedBold = text.replace(regexforBold, function (str: any) {
-    return '*' + str + '*';
+  const addedBold = text.replace(regexforBold, (str: any) => {
+    return `*${str}*`;
   });
 
   const rawData = MarkDownConvertor.markdownToDraft(addedBold, {

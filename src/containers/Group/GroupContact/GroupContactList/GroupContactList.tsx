@@ -12,11 +12,6 @@ export interface GroupContactListProps {
 
 const columnNames = ['BENEFICIARY', 'ALL GROUPS', 'ACTIONS'];
 
-const getColumns = ({ name, phone, groups }: any) => ({
-  label: getName(name, phone),
-  groups: getGroups(groups),
-});
-
 const getName = (label: string, phone: string) => (
   <>
     <p className={styles.NameText}>{label}</p>
@@ -27,6 +22,11 @@ const getName = (label: string, phone: string) => (
 const getGroups = (groups: Array<any>) => (
   <p className={styles.GroupsText}>{groups.map((group: any) => group.label).join(', ')}</p>
 );
+
+const getColumns = ({ name, phone, groups }: any) => ({
+  label: getName(name, phone),
+  groups: getGroups(groups),
+});
 
 const dialogTitle = 'Are you sure you want to remove contact from this group?';
 const dialogMessage = 'The contact will no longer receive messages sent to this group';
@@ -41,16 +41,17 @@ const queries = {
 
 const columnAttributes = {
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
 export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
-  const groupId = props.match.params.id;
+  const { match, title } = props;
+  const groupId = match.params.id;
 
   const getDeleteQueryVariables = (id: any) => {
     return {
       input: {
-        groupId: groupId,
+        groupId,
         addContactIds: [],
         deleteContactIds: [id],
       },
@@ -62,7 +63,7 @@ export const GroupContactList: React.SFC<GroupContactListProps> = (props) => {
       backLinkButton={{ text: 'Back to all groups', link: '/group' }}
       dialogTitle={dialogTitle}
       columnNames={columnNames}
-      title={props.title}
+      title={title}
       listItem="contacts"
       listItemName="contact"
       searchParameter="name"

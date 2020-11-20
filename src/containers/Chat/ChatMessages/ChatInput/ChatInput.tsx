@@ -4,13 +4,14 @@ import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
+import { useApolloClient } from '@apollo/client';
+
 import styles from './ChatInput.module.css';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
-import { useApolloClient } from '@apollo/client';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 
 export interface ChatInputProps {
@@ -22,6 +23,7 @@ export interface ChatInputProps {
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
+  const { contactBspStatus, contactStatus, additionalStyle, handleHeightChange } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -35,10 +37,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     const messageContainer: any = document.querySelector('.messageContainer');
     if (messageContainer) {
       messageContainer.addEventListener('scroll', (event: any) => {
-        const messageContainer = event.target;
+        const messageContainerTarget = event.target;
         if (
-          messageContainer.scrollTop ===
-          messageContainer.scrollHeight - messageContainer.offsetHeight
+          messageContainerTarget.scrollTop ===
+          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
         ) {
           setShowJumpToLatest(false);
         } else if (showJumpToLatest === false) {
@@ -92,6 +94,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           key={type}
           data-testid="shortcutButton"
           onClick={() => handleClick(type)}
+          onKeyDown={() => handleClick(type)}
+          aria-hidden="true"
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
           })}
@@ -105,8 +109,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   // determine what kind of messages we should display
   let quickSendTypes: any = [];
-  if (props.contactBspStatus) {
-    switch (props.contactBspStatus) {
+  if (contactBspStatus) {
+    switch (contactBspStatus) {
       case 'SESSION':
         quickSendTypes = [speedSends];
         break;
@@ -116,13 +120,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       case 'HSM':
         quickSendTypes = [templates];
         break;
+      default:
+        break;
     }
   }
 
-  if (
-    (props.contactStatus && props.contactStatus === 'INVALID') ||
-    props.contactBspStatus === 'NONE'
-  ) {
+  if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
       <div className={styles.ContactOptOutMessage}>
         Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to
@@ -145,13 +148,22 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const jumpToLatest = (
-    <div className={styles.JumpToLatest} onClick={() => showLatestMessage()}>
-      Jump to latest <ExpandMoreIcon />
+    <div
+      className={styles.JumpToLatest}
+      onClick={() => showLatestMessage()}
+      onKeyDown={showLatestMessage}
+      aria-hidden="true"
+    >
+      Jump to latest
+      <ExpandMoreIcon />
     </div>
   );
 
   return (
-    <Container className={`${styles.ChatInput} ${props.additionalStyle}`}>
+    <Container
+      className={`${styles.ChatInput} ${additionalStyle}`}
+      data-testid="message-input-container"
+    >
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
@@ -166,7 +178,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                   className={styles.ChatSearchBar}
                   handleChange={handleSearch}
                   onReset={() => setSearchVal('')}
-                  searchMode={true}
+                  searchMode
                 />
               </div>
             </Fade>
@@ -183,11 +195,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         {showJumpToLatest === true ? jumpToLatest : null}
 
         <WhatsAppEditor
-          data-testid="message-input"
           editorState={editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
-          handleHeightChange={props.handleHeightChange}
+          handleHeightChange={handleHeightChange}
         />
 
         <div className={styles.SendButtonContainer}>

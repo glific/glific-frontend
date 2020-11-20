@@ -63,22 +63,22 @@ export const Registration: React.SFC<RegistrationProps> = () => {
 
   const onSubmitRegistration = (values: any) => {
     sendOTP(values.phone, 'true')
-      .then((response) => {
+      .then(() => {
         setUser(values);
         setRedirect(true);
       })
-      .catch((error: any) => {
+      .catch(() => {
         setAuthError('We are unable to register, kindly contact your technical team.');
       });
   };
 
   return (
     <Auth
-      pageTitle={'Create your new account'}
-      buttonText={'CONTINUE'}
-      alternateLink={'login'}
-      alternateText={'LOGIN TO GLIFIC'}
-      mode={'registration'}
+      pageTitle="Create your new account"
+      buttonText="CONTINUE"
+      alternateLink="login"
+      alternateText="LOGIN TO GLIFIC"
+      mode="registration"
       formFields={formFields}
       validationSchema={FormSchema}
       saveHandler={onSubmitRegistration}

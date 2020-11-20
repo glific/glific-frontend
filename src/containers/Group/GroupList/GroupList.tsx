@@ -1,38 +1,40 @@
 import React, { useState } from 'react';
-import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
-import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
+import { IconButton } from '@material-ui/core';
+import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
-import { ReactComponent as ChatDarkIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
-import ChatDarkIconSVG from '../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { List } from '../../List/List';
-import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+import ChatDarkIconSVG, {
+  ReactComponent as ChatDarkIcon,
+} from '../../../assets/images/icons/Chat/UnselectedDark.svg';
+import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
+import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
+import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
 import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
-import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
+import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import { List } from '../../List/List';
+import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
-import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
 import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
-import { IconButton } from '@material-ui/core';
 import Menu from '../../../components/UI/Menu/Menu';
-import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
 export interface GroupListProps {}
 
-const getColumns = ({ id, label, description }: any) => ({
-  id: id,
-  label: getLabel(label),
-  description: getDescription(description),
-});
-
 const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
 
 const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
+
+const getColumns = ({ id, label, description }: any) => ({
+  id,
+  label: getLabel(label),
+  description: getDescription(description),
+});
 
 const dialogMessage = "You won't be able to use this group again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
@@ -46,10 +48,10 @@ const queries = {
 
 const columnAttributes = {
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
-export const GroupList: React.SFC<GroupListProps> = (props) => {
+export const GroupList: React.SFC<GroupListProps> = () => {
   const client = useApolloClient();
   const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
@@ -80,8 +82,8 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
   const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
     onCompleted: (data) => {
-      const numberDeleted = data.updateGroupContacts.numberDeleted;
-      const numberAdded = data.updateGroupContacts.groupContacts.length;
+      const { numberDeleted, groupContacts } = data.updateGroupContacts;
+      const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
           client,
@@ -106,7 +108,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   });
 
   const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
-    onCompleted: (data: any) => {
+    onCompleted: () => {
       setAddAutomationDialogShow(false);
       setNotification(client, 'Automation started successfully');
     },
@@ -147,7 +149,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     addAutomationToGroup({
       variables: {
         flowId: value,
-        groupId: groupId,
+        groupId,
       },
     });
   };
@@ -155,7 +157,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
   const sendMessageToGroup = (message: string) => {
     sendMessageToGroups({
       variables: {
-        groupId: groupId,
+        groupId,
         input: {
           body: message,
           senderId: 1,
@@ -172,7 +174,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         title="Send message to group"
         onSendMessage={sendMessageToGroup}
         handleClose={() => setSendMessageDialogShow(false)}
-      ></MessageDialog>
+      />
     );
   }
 
@@ -204,7 +206,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         variables: {
           input: {
             addContactIds: selectedContacts,
-            groupId: groupId,
+            groupId,
             deleteContactIds: unselectedContacts,
           },
         },
@@ -220,7 +222,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
-        asyncSearch={true}
+        asyncSearch
         selectedOptions={groupContacts}
         onChange={(value: any) => {
           setContactSearchTerm(value);
@@ -250,6 +252,7 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
       </IconButton>
     </Menu>
   );
+
   const additionalAction = [
     {
       label: 'Add contacts to group',
@@ -269,7 +272,9 @@ export const GroupList: React.SFC<GroupListProps> = (props) => {
     query: GET_GROUPS,
     variables: setVariables(),
   };
+
   const cardLink = { start: 'group', end: 'contacts' };
+
   return (
     <>
       <List

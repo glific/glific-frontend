@@ -5,6 +5,9 @@ import Alert from '@material-ui/lab/Alert';
 import styles from './ToastMessage.module.css';
 import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
 
+// Since attribute severity can only have 5 values,
+type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
+
 interface Props {
   open?: boolean;
   severity?: Severity;
@@ -13,9 +16,6 @@ interface Props {
   hideDuration?: number;
 }
 
-// Since attribute severity can only have 5 values,
-type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
-
 export const ToastMessage: React.SFC<Props> = ({
   open = true,
   severity = 'success',
@@ -23,7 +23,7 @@ export const ToastMessage: React.SFC<Props> = ({
   handleClose,
   hideDuration = 5000,
 }) => {
-  const handleCloseButton = (event?: React.SyntheticEvent) => {
+  const handleCloseButton = () => {
     handleClose(false);
   };
 
@@ -36,6 +36,7 @@ export const ToastMessage: React.SFC<Props> = ({
       classes={{ anchorOriginTopCenter: styles.SnackBar }}
       open={open}
       onClose={handleCloseButton}
+      autoHideDuration={hideDuration}
     >
       <Alert
         severity={severity}

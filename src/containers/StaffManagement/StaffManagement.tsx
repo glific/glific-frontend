@@ -5,11 +5,11 @@ import { useQuery } from '@apollo/client';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
-import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_GROUPS } from '../../graphql/queries/Group';
+import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { isManagerRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
 
@@ -35,19 +35,24 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [groups, setGroups] = useState([]);
 
   const states = { name, phone, roles, groups };
-  const setStates = ({ name, phone, roles, groups }: any) => {
-    setName(name);
-    setPhone(phone);
+  const setStates = ({
+    name: nameValue,
+    phone: phoneValue,
+    roles: rolesValue,
+    groups: groupsValue,
+  }: any) => {
+    setName(nameValue);
+    setPhone(phoneValue);
 
     // let' format the roles so that it is displayed correctly in the UI
     if (roles) {
-      let defaultRoles: any = [];
-      roles.map((role: any) => {
+      const defaultRoles: any = [];
+      rolesValue.forEach((role: any) => {
         defaultRoles.push({ id: role, label: role });
       });
       setRoles(defaultRoles);
     }
-    setGroups(groups);
+    setGroups(groupsValue);
   };
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
@@ -62,22 +67,22 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     return null;
   }
 
-  let rolesList: any = [];
+  const rolesList: any = [];
   if (roleData.roles) {
-    roleData.roles.map((role: any) => {
+    roleData.roles.forEach((role: any) => {
       rolesList.push({ id: role, label: role });
     });
   }
 
   const getOptions = () => {
+    let options: any = [];
     if (rolesList) {
-      let options: any = [];
       if (isManagerRole) {
         // should not display Admin role to manager.
         options = rolesList.filter((item: any) => item.label !== 'Admin');
       }
-      return options;
     }
+    return options;
   };
 
   const formFields = [
@@ -99,7 +104,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'roles',
       placeholder: 'Roles',
       options: rolesList,
-      getOptions: getOptions,
+      getOptions,
       optionLabel: 'label',
       textFieldProps: {
         label: 'Roles',
@@ -125,26 +130,27 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   const setPayload = (payload: any) => {
+    const payloadCopy = payload;
     // let's build the groupIds, as backend expects the array of group ids
-    let groupIds = payload.groups.map((group: any) => {
+    const groupIds = payloadCopy.groups.map((group: any) => {
       return group.id;
     });
 
     // remove groups from the payload
-    delete payload['groups'];
+    delete payloadCopy.groups;
 
     // let's rebuild roles, as per backend
-    let roleIds = payload.roles.map((role: any) => {
+    const roleIds = payloadCopy.roles.map((role: any) => {
       return role.id;
     });
 
     // delete current roles from the payload
-    delete payload['roles'];
+    delete payloadCopy.roles;
 
     // return modified payload
     return {
-      ...payload,
-      groupIds: groupIds,
+      ...payloadCopy,
+      groupIds,
       roles: roleIds,
     };
   };

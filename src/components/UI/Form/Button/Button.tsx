@@ -15,18 +15,21 @@ export interface ButtonProps {
 
 export const Button: React.SFC<ButtonProps> = ({ type = 'button', loading = false, ...props }) => {
   let buttonColor = null;
-  if (props.variant === 'outlined') buttonColor = styles.ButtonColor;
+  const { variant, color, onClick, className, children, ...rest } = props;
+
+  if (variant === 'outlined') buttonColor = styles.ButtonColor;
+
   return (
     <ButtonElement
-      variant={props.variant}
-      color={props.color}
-      onClick={props.onClick}
-      data-testid={props['data-testid']}
-      className={`${styles.Button} ${props.className} ${buttonColor}`}
+      variant={variant}
+      color={color}
+      onClick={onClick}
+      data-testid={rest['data-testid']}
+      className={`${styles.Button} ${className} ${buttonColor}`}
       disabled={loading}
       type={type}
     >
-      {props.children}
+      {children}
       {loading && <CircularProgress size={28} className={styles.buttonProgress} />}
     </ButtonElement>
   );

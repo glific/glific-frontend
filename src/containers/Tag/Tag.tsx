@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
+
+import styles from './Tag.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
-import { UPDATE_TAG, CREATE_TAG } from '../../graphql/mutations/Tag';
-import { DELETE_TAG } from '../../graphql/mutations/Tag';
+import { UPDATE_TAG, CREATE_TAG, DELETE_TAG } from '../../graphql/mutations/Tag';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import styles from './Tag.module.css';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
@@ -37,30 +37,50 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
-  const [colorCode, setColorcode] = useState('#0C976D');
+  const [colorCode, setColorCode] = useState('#0C976D');
   const [parentId, setParentId] = useState<any>([]);
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, description, keywords, colorCode, parentId };
-  const setStates = ({ label, description, keywords, colorCode, parent }: any) => {
-    setLabel(label);
-    setDescription(description);
-    setKeywords(keywords);
-    setColorcode(colorCode);
-    if (parent) {
-      setParentId(getObject(data.tags, [parent.id])[0]);
+
+  const getObject = (arr: any, data: any) => {
+    const result: any = [];
+    if (arr && data) {
+      arr.forEach((obj: any) => {
+        data.forEach((ID: any) => {
+          if (obj.id === ID) result.push(obj);
+        });
+      });
     }
+    return result;
   };
 
   const { data } = useQuery(GET_TAGS, {
     variables: setVariables(),
   });
+
   const [getTags, { data: dataTag }] = useLazyQuery<any>(GET_TAGS, {
     variables: {
-      filter: { label: filterLabel, languageId: parseInt(languageId) },
+      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
     },
   });
+
+  const setStates = ({
+    label: labelValue,
+    description: descriptionValue,
+    keywords: keywordsValue,
+    colorCode: colorCodeValue,
+    parent: parentValue,
+  }: any) => {
+    setLabel(labelValue);
+    setDescription(descriptionValue);
+    setKeywords(keywordsValue);
+    setColorCode(colorCodeValue);
+    if (parentValue) {
+      setParentId(getObject(data.tags, [parentValue.id])[0]);
+    }
+  };
 
   useEffect(() => {
     if (filterLabel && languageId) getTags();
@@ -77,23 +97,11 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
   }
 
-  const getObject = (arr: any, data: any) => {
-    if (arr && data) {
-      let result: any = [];
-      arr.map((obj: any) => {
-        data.map((ID: any) => {
-          if (obj.id === ID) result.push(obj);
-        });
-      });
-      return result;
-    }
-  };
-
   const validateTitle = (value: any) => {
+    let error;
     if (value) {
       setFilterLabel(value);
       let found = [];
-      let error;
       if (dataTag) {
         // need to check exact title
         found = dataTag.tags.filter((search: any) => search.label === value);
@@ -104,8 +112,8 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       if (found.length > 0) {
         error = 'Title already exists.';
       }
-      return error;
     }
+    return error;
   };
 
   const getLanguageId = (value: any) => {
@@ -152,16 +160,17 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     {
       component: ColorPicker,
       name: 'colorCode',
-      colorCode: colorCode,
+      colorCode,
       helperText: 'Tag color',
     },
   ];
 
   const setPayload = (payload: any) => {
-    if (payload.parentId) {
-      payload.parentId = payload.parentId.id;
+    const payloadCopy = payload;
+    if (payloadCopy.parentId) {
+      payloadCopy.parentId = payloadCopy.parentId.id;
     }
-    return payload;
+    return payloadCopy;
   };
 
   return (

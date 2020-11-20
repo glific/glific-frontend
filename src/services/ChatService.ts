@@ -2,6 +2,27 @@
 
 import { SEARCH_QUERY } from '../graphql/queries/Search';
 
+// read the conversation from cache
+export const getCachedConverations = (client: any, queryVariables: any) => {
+  // fetch conversations from the cache
+  const conversations = client.readQuery({
+    query: SEARCH_QUERY,
+    variables: queryVariables,
+  });
+
+  return conversations;
+};
+
+// update the conversations cache
+export const updateConversationsCache = (conversations: any, client: any, queryVariables: any) => {
+  // write the updated conversations to cached
+  client.writeQuery({
+    query: SEARCH_QUERY,
+    variables: queryVariables,
+    data: conversations,
+  });
+};
+
 // write conversation to cache
 export const updateConversations = (conversation: any, client: any, queryVariables: any) => {
   // get the current conversations from the cache
@@ -32,25 +53,4 @@ export const saveConversation = (conversation: any, client: any, queryVariables:
     .reverse();
 
   updateConversations(conversation, client, queryVariables);
-};
-
-// read the conversation from cache
-export const getCachedConverations = (client: any, queryVariables: any) => {
-  // fetch conversations from the cache
-  const conversations = client.readQuery({
-    query: SEARCH_QUERY,
-    variables: queryVariables,
-  });
-
-  return conversations;
-};
-
-// update the conversations cache
-export const updateConversationsCache = (conversations: any, client: any, queryVariables: any) => {
-  // write the updated conversations to cached
-  client.writeQuery({
-    query: SEARCH_QUERY,
-    variables: queryVariables,
-    data: conversations,
-  });
 };

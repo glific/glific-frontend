@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation } from '@apollo/client';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -36,8 +36,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
-      if (data['updateCurrentUser'].errors) {
-        if (data['updateCurrentUser'].errors[0]['message'] === 'incorrect_code') {
+      if (data.updateCurrentUser.errors) {
+        if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
           setToastMessageInfo({ severity: 'error', message: 'Please enter a valid OTP' });
         } else {
           setToastMessageInfo({
@@ -61,10 +61,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // callback function to send otp to the logged user
   const sendOTPHandler = () => {
     sendOTP(loggedInUserPhone)
-      .then((response) => {
+      .then(() => {
         setShowOTPButton(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setToastMessageInfo({
           severity: 'error',
           message: `Unable to send an OTP to ${loggedInUserPhone}.`,
@@ -144,16 +144,17 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   let formFieldLayout: any;
   if (!showOTPButton) {
     formFieldLayout = formFields.map((field: any, index) => {
+      const key = index;
       return (
-        <React.Fragment key={index}>
-          <Field key={index} {...field}></Field>
+        <React.Fragment key={key}>
+          <Field key={key} {...field} />
         </React.Fragment>
       );
     });
   }
 
   // form component
-  let form = (
+  const form = (
     <>
       <Formik
         enableReinitialize
@@ -207,7 +208,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   return (
     <div className={styles.MyAccount} data-testid="MyAccount">
       <Typography variant="h5" className={styles.Title}>
-        <IconButton disabled={true} className={styles.Icon}>
+        <IconButton disabled className={styles.Icon}>
           <UserIcon />
         </IconButton>
         My Account

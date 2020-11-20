@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { GroupList } from './GroupList';
@@ -33,8 +33,9 @@ describe('<GroupList />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
-    await wait();
-    expect(getByText('Groups')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Groups')).toBeInTheDocument();
+    });
 
     // TODO: test automation
 
@@ -47,12 +48,13 @@ describe('<GroupList />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    await wait();
-    expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
-    fireEvent.click(getAllByTestId('additionalButton')[0]);
+    await waitFor(() => {
+      expect(getAllByTestId('additionalButton')[0]).toBeInTheDocument();
+    });
 
-    await wait();
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('additionalButton')[0]);
+    });
 
     expect(getByText('Add contacts to the group')).toBeInTheDocument();
   });
@@ -63,10 +65,13 @@ describe('<GroupList />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
+    await waitFor(() => {
+      expect(getByText('Send a message')).toBeInTheDocument();
+    });
 
-    expect(getByText('Send a message')).toBeInTheDocument();
-    fireEvent.click(getAllByTestId('MenuItem')[0]);
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('MenuItem')[0]);
+    });
 
     expect(getByText('Send message to group')).toBeInTheDocument();
   });

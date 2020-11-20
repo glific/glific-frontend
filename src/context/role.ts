@@ -2,15 +2,20 @@ import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
 import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
+let sideDrawerMenu: any = [];
+let staffManagementMenu: any = [];
 
-const resetRole = () => {
-  role = [];
-  getRoleBasedAccess();
-};
+// we are correctly using mutable export bindings hence making an exception for below
+/* eslint-disable */
+let settingMenu: boolean = false;
+let advanceSearch: boolean = false;
+let displayUserGroups: boolean = false;
+let isManagerRole: boolean = false;
+/* eslint-enable */
 
 const getUserRole = () => {
   if (!role || role.length === 0) {
-    let userRole: any = getUserSession('roles');
+    const userRole: any = getUserSession('roles');
     if (userRole) {
       role = userRole;
     } else role = [];
@@ -18,18 +23,12 @@ const getUserRole = () => {
   return role;
 };
 
-let sideDrawerMenu: any = [];
-let staffManagementMenu: any = [];
-let settingMenu: boolean;
-let advanceSearch: boolean = false;
-let displayUserGroups: boolean = false;
-let isManagerRole: boolean = false;
-
 const getRoleBasedAccess = () => {
   // if role not present get role
-  if (!role) {
+  if (!role || role.length === 0) {
     role = getUserRole();
   }
+
   if (role && role.includes('Staff')) {
     sideDrawerMenu = [
       {
@@ -67,6 +66,11 @@ const getRoleBasedAccess = () => {
   }
 
   return sideDrawerMenu;
+};
+
+const resetRole = () => {
+  role = [];
+  getRoleBasedAccess();
 };
 
 export const getStaffManagementMenus = () => {
