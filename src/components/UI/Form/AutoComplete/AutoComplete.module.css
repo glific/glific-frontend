@@ -11,6 +11,16 @@
   margin-left: 16px !important;
 }
 
+.HelpLink {
+  margin-left: auto;
+  line-height: 1.28;
+  color: #073f24;
+  text-decoration: underline;
+  margin-right: 6px;
+  margin-top: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
 .DeleteIcon {
   width: 8px !important;
   margin-right: 13px !important;

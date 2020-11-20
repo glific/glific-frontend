@@ -9,7 +9,7 @@ import styles from './DialogBox.module.css';
 interface DialogProps {
   open?: boolean;
   title: string;
-  handleOk: Function;
+  handleOk?: Function;
   handleCancel: Function;
   children?: ReactNode;
   buttonOk?: string;
@@ -25,7 +25,7 @@ interface DialogProps {
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   title,
-  handleOk,
+  handleOk = () => {},
   handleCancel,
   children,
   buttonOk = 'Confirm',
