@@ -18,6 +18,7 @@ export const UPDATE_USER = gql`
         id
         name
         phone
+        isRestricted
         roles
         groups {
           id

@@ -24,6 +24,7 @@ export interface AutocompleteProps {
   noOptionsText?: any;
   onChange?: any;
   asyncSearch?: boolean;
+  roleSelection?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -39,6 +40,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   disabled = false,
   getOptions,
   asyncValues,
+  roleSelection,
   onChange,
   asyncSearch = false,
   noOptionsText = 'No options available',
@@ -81,6 +83,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
+            if (roleSelection) {
+              roleSelection(value);
+            }
             if (asyncSearch) {
               const filterValues = asyncValues.value.filter(
                 (val: any) => val.id !== value[value.length - 1].id

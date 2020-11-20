@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 
@@ -12,6 +12,7 @@ import { GET_GROUPS } from '../../graphql/queries/Group';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { isManagerRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 
 export interface StaffManagementProps {
   match: any;
@@ -31,15 +32,18 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState<Array<any>>([]);
   const [groups, setGroups] = useState([]);
+  const [isRestricted, setIsRestricted] = useState(false);
+  const [staffRole, setStaffRole] = useState(false);
 
-  const states = { name, phone, roles, groups };
+  const states = { name, phone, roles, groups, isRestricted };
   const setStates = ({
     name: nameValue,
     phone: phoneValue,
     roles: rolesValue,
     groups: groupsValue,
+    isRestricted: isRestrictedValue,
   }: any) => {
     setName(nameValue);
     setPhone(phoneValue);
@@ -53,6 +57,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       setRoles(defaultRoles);
     }
     setGroups(groupsValue);
+    setIsRestricted(isRestrictedValue);
   };
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
@@ -60,6 +65,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const { loading, data } = useQuery(GET_GROUPS, {
     variables: setVariables(),
   });
+
+  useEffect(() => {
+    if (roles.map((role: any) => role.label).includes('Staff')) {
+      setStaffRole(true);
+    }
+  }, [roles]);
 
   if (loading || loadingRoles) return <Loading />;
 
@@ -85,7 +96,18 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     return options;
   };
 
-  const formFields = [
+  let formFields: any = [];
+
+  const handleRolesChange = (value: any) => {
+    const hasStaffRole = value.map((good: any) => good.label).includes('Staff');
+    if (hasStaffRole) {
+      setStaffRole(true);
+    } else {
+      setStaffRole(false);
+    }
+  };
+
+  formFields = [
     {
       component: Input,
       name: 'name',
@@ -104,6 +126,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       name: 'roles',
       placeholder: 'Roles',
       options: rolesList,
+      roleSelection: handleRolesChange,
       getOptions,
       optionLabel: 'label',
       textFieldProps: {
@@ -123,6 +146,17 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       },
     },
   ];
+
+  if (staffRole) {
+    formFields = [
+      ...formFields,
+      {
+        component: Checkbox,
+        name: 'isRestricted',
+        title: 'Can chat with group contacts only',
+      },
+    ];
+  }
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
