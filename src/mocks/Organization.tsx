@@ -378,19 +378,37 @@ export const walletBalanceSubscription = {
   },
 };
 
-export const walletBalanceQuery = {
-  request: {
-    query: BSPBALANCE,
-    variables: { organizationId: '1' },
-  },
-  result: {
-    data: {
+export const walletBalanceQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: '1' },
+    },
+    result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
+        data: {
+          bspbalance: {
+            key: 'bsp_balance',
+            value: '{"balance":0.628}',
+          },
         },
       },
     },
   },
-};
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        data: {
+          bspbalance: {
+            key: 'bsp_balance',
+            value: '{"balance":0.628}',
+          },
+        },
+      },
+    },
+  },
+];

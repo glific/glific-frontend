@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery, useSubscription } from '@apollo/client/react';
+import { useQuery, useSubscription } from '@apollo/client';
 import { CircularProgress } from '@material-ui/core';
 
 import styles from './WalletBalance.module.css';
