@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import SearchBar from './SearchBar';
 import { InputBase, IconButton } from '@material-ui/core';
 
@@ -7,54 +7,42 @@ describe('<SearchBar/>', () => {
   const mockChange = jest.fn();
   const mockSubmit = jest.fn();
   const mockReset = jest.fn();
-  let searchVal = '';
 
-  const component = () => {
-    return (
-      <SearchBar
-        handleChange={mockChange}
-        handleSubmit={mockSubmit}
-        onReset={mockReset}
-        searchVal={searchVal}
-        searchMode={true}
-      />
-    );
-  };
-
-  const wrapper = shallow(component());
+  const component = (searchValue: any) => (
+    <SearchBar
+      handleChange={mockChange}
+      handleSubmit={mockSubmit}
+      onReset={mockReset}
+      searchVal={searchValue}
+      searchMode={true}
+    />
+  );
 
   it('initialized properly', () => {
-    expect(wrapper.exists()).toBe(true);
+    const { getByTestId } = render(component(''));
+    expect(getByTestId('searchForm')).toBeInTheDocument();
   });
 
   it('submit callback works properly', () => {
-    wrapper.find('form').simulate('submit');
+    const { getByTestId } = render(component(''));
+    fireEvent.submit(getByTestId('searchForm'));
     expect(mockSubmit).toHaveBeenCalled();
   });
 
   it('reset callback works properly', () => {
-    let searchVal = 'hello there';
-    const wrapper = shallow(
-      <SearchBar
-        handleChange={mockChange}
-        handleSubmit={mockSubmit}
-        onReset={mockReset}
-        searchVal={searchVal}
-        searchMode={true}
-      />
-    );
-    wrapper.find(IconButton).simulate('click');
+    const { getByTestId } = render(component('hello There'));
+    fireEvent.click(getByTestId('resetButton'));
     expect(mockReset).toHaveBeenCalled();
   });
 
   it('change in local search val renders change', () => {
-    wrapper.find(InputBase).simulate('change', { target: { value: 'new val' } });
-    expect(wrapper.find(InputBase).props().value).toEqual('new val');
+    const { getByTestId, getByPlaceholderText } = render(component(''));
+    fireEvent.change(getByPlaceholderText('Search'), { target: { value: 'new val' } });
     expect(mockChange).toHaveBeenCalled();
   });
 
   it('className gets passed in properly for additional styling', () => {
-    const wrapper = shallow(
+    const { container } = render(
       <SearchBar
         handleChange={mockChange}
         handleSubmit={mockSubmit}
@@ -62,6 +50,6 @@ describe('<SearchBar/>', () => {
         className={'mockClassName'}
       />
     );
-    expect(wrapper.find('div').first().hasClass('SearchBar mockClassName')).toBe(true);
+    expect(container.querySelector('.mockClassName')).toBeInTheDocument();
   });
 });

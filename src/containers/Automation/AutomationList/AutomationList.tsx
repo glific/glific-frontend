@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+
 import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
@@ -11,15 +13,14 @@ import {
 } from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
 import { setVariables } from '../../../common/constants';
-import { useHistory } from 'react-router-dom';
 
 export interface AutomationListProps {}
+
+const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const getColumns = ({ name }: any) => ({
   name: getName(name),
 });
-
-const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const columnNames = ['NAME', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this automation.";
@@ -33,18 +34,18 @@ const queries = {
 };
 
 const columnAttributes = {
-  columnNames: columnNames,
+  columnNames,
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
-const configureIcon = <ConfigureIcon></ConfigureIcon>;
+const configureIcon = <ConfigureIcon />;
 
-export const AutomationList: React.SFC<AutomationListProps> = (props) => {
-  let history = useHistory();
+export const AutomationList: React.SFC<AutomationListProps> = () => {
+  const history = useHistory();
 
   const setDialog = (id: any) => {
-    history.push({ pathname: '/automation/' + id + '/edit', state: 'copy' });
+    history.push({ pathname: `/automation/${id}/edit`, state: 'copy' });
   };
 
   const additionalAction = [
@@ -56,7 +57,7 @@ export const AutomationList: React.SFC<AutomationListProps> = (props) => {
     },
     {
       label: 'Make a copy',
-      icon: <DuplicateIcon></DuplicateIcon>,
+      icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
     },

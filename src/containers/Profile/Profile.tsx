@@ -48,6 +48,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  let param = match;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
   if (loading) return <Loading />;
@@ -57,19 +58,25 @@ export const Profile: React.SFC<ProfileProps> = ({
   let currentContactId;
   if (!match) {
     // let's manually set the contact id in the match object in case of user profile
-    match = { params: { id: loggedInUserContactId } };
+    param = { params: { id: loggedInUserContactId } };
     currentContactId = loggedInUserContactId;
   } else {
     currentContactId = match.params.id;
   }
 
-  let states: any = { name, phone, status, bspStatus };
+  const states: any = { name, phone, status, bspStatus };
 
-  const setStates = ({ name, phone, status, bspStatus, ...rest }: any) => {
-    setName(name);
-    setPhone(phone);
-    setStatus(status);
-    setBspStatus(bspStatus);
+  const setStates = ({
+    name: nameValue,
+    phone: phoneValue,
+    status: statusValue,
+    bspStatus: bspStatusValue,
+    ...rest
+  }: any) => {
+    setName(nameValue);
+    setPhone(phoneValue);
+    setStatus(statusValue);
+    setBspStatus(bspStatusValue);
     if (additionalProfileStates) {
       additionalProfileStates.setState(rest[additionalProfileStates.name]);
     }
@@ -79,7 +86,7 @@ export const Profile: React.SFC<ProfileProps> = ({
     name: Yup.string().required('Name is required.'),
   });
 
-  let formFields = [
+  const formFields = [
     {
       component: Input,
       name: 'name',
@@ -127,7 +134,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   return (
     <FormLayout
       {...queries}
-      match={match}
+      match={param}
       states={states}
       setStates={setStates}
       additionalState={additionalState}

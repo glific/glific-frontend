@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
+import moment from 'moment';
+import { Typography } from '@material-ui/core';
+
+import styles from './Collection.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import styles from './Collection.module.css';
 import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
 import {
   CREATE_COLLECTION,
@@ -17,9 +20,7 @@ import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import moment from 'moment';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { Typography } from '@material-ui/core';
 import { setVariables } from '../../common/constants';
 
 export interface CollectionProps {
@@ -50,6 +51,7 @@ const queries = {
 };
 
 export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ...props }) => {
+  const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
@@ -71,31 +73,49 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     dateFrom,
     dateTo,
   };
-  const setStates = ({ shortcode, label, args }: any) => {
-    setShortcode(shortcode);
-    setLabel(label);
-    setArgs(args);
+
+  const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
+    variables: setVariables(),
+  });
+
+  const { data } = useQuery(GET_GROUPS, {
+    variables: setVariables(),
+  });
+
+  const { data: dataUser } = useQuery(GET_USERS, {
+    variables: setVariables(),
+  });
+
+  const getObject = (arr: any, dataObj: any) => {
+    const result: any = [];
+    if (arr && dataObj) {
+      arr.forEach((obj: any) => {
+        dataObj.forEach((ID: any) => {
+          if (obj.id === ID) result.push(obj);
+        });
+      });
+    }
+    return result;
   };
 
   const setArgs = (args: any) => {
-    let filters = JSON.parse(args);
-
+    const filters = JSON.parse(args);
     Object.keys(filters.filter).map((key) => {
       switch (key) {
         case 'includeTags':
-          if (filters.filter.hasOwnProperty('includeTags'))
-            setIncludeTags(getObject(dataT.tags, filters.filter['includeTags']));
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
+            setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
           break;
         case 'includeGroups':
-          if (filters.filter.hasOwnProperty('includeGroups'))
-            setIncludeGroups(getObject(data.groups, filters.filter['includeGroups']));
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
+            setIncludeGroups(getObject(data.groups, filters.filter.includeGroups));
           break;
         case 'includeUsers':
-          if (filters.filter.hasOwnProperty('includeUsers'))
-            setIncludeUsers(getObject(dataUser.users, filters.filter['includeUsers']));
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeUsers'))
+            setIncludeUsers(getObject(dataUser.users, filters.filter.includeUsers));
           break;
         case 'dateRange':
-          if (filters.filter.hasOwnProperty('dateRange')) {
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {
             setdateFrom(filters.filter.dateRange.from);
             setdateTo(filters.filter.dateRange.to);
           }
@@ -110,20 +130,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     });
   };
 
-  const getObject = (arr: any, data: any) => {
-    if (arr && data) {
-      let result: any = [];
-      arr.map((obj: any) => {
-        data.map((ID: any) => {
-          if (obj.id === ID) result.push(obj);
-        });
-      });
-      return result;
-    }
+  const setStates = ({ shortcode: shortcodeValue, label: labelValue, args: argsValue }: any) => {
+    setShortcode(shortcodeValue);
+    setLabel(labelValue);
+    setArgs(argsValue);
   };
 
   const restoreSearch = () => {
-    let args = {
+    const args = {
       messageOpts: {
         offset: 0,
         limit: 10,
@@ -147,7 +161,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     };
 
     if (props.searchParam.dateFrom && props.searchParam.dateFrom !== 'Invalid date') {
-      let dateRange = {
+      const dateRange = {
         dateRange: {
           to: moment(props.searchParam.dateTo).format('yyyy-MM-DD'),
           from: moment(props.searchParam.dateFrom).format('yyyy-MM-DD'),
@@ -166,20 +180,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
   useEffect(() => {
     // Chat collection:restore collection search
-    if (props.searchParam && Object.keys(props.searchParam).length !== 0) {
+    if (searchParam && Object.keys(searchParam).length !== 0) {
       restoreSearch();
     }
-  }, [props.searchParam]);
+  }, [searchParam]);
 
-  const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
-    variables: setVariables(),
-  });
-  const { data } = useQuery(GET_GROUPS, {
-    variables: setVariables(),
-  });
-  const { data: dataUser } = useQuery(GET_USERS, {
-    variables: setVariables(),
-  });
   const { data: collections } = useQuery(COLLECTION_QUERY, {
     variables: setVariables({}, 100, 0, 'ASC'),
   });
@@ -187,20 +192,23 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   if (!data || !dataT || !dataUser) return <Loading />;
 
   const validateTitle = (value: any) => {
+    let error;
     if (value) {
       let found = [];
-      let error;
+
       if (collections) {
-        found = collections.savedSearches.filter((search: any) => search.shortcode === value);
+        found = collections.savedSearches.filter(
+          (savedSearch: any) => savedSearch.shortcode === value
+        );
         if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
+          found = found.filter((savedSearch: any) => savedSearch.id !== match.params.id);
         }
       }
       if (found.length > 0) {
         error = 'Title already exists.';
       }
-      return error;
     }
+    return error;
   };
 
   const DataFields = [
@@ -221,7 +229,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     },
   ];
 
-  let searchFields = [
+  const searchFields = [
     {
       component: Input,
       name: 'term',
@@ -280,7 +288,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const setPayload = (payload: any) => {
     if (search) search(payload);
 
-    let args = {
+    const args = {
       messageOpts: {
         offset: 0,
         limit: 10,
@@ -302,7 +310,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     };
 
     if (payload.dateFrom && payload.dateFrom !== 'Invalid date') {
-      let dateRange = {
+      const dateRange = {
         dateRange: {
           to: moment(payload.dateTo).format('yyyy-MM-DD'),
           from: moment(payload.dateFrom).format('yyyy-MM-DD'),
@@ -318,21 +326,25 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     };
   };
 
-  const advanceSearch = (data: any) => {
+  const addFieldsValidation = (object: any) => {
+    FormSchema = Yup.object().shape(object);
+  };
+
+  const advanceSearch = (dataType: any) => {
     // close dialogbox
-    if (data === 'cancel') props.handleCancel();
+    if (dataType === 'cancel') props.handleCancel();
 
     let heading;
     if (type === 'search') {
       heading = (
-        <React.Fragment>
+        <>
           <Typography variant="h5" className={styles.Title}>
             Search conversations
           </Typography>
           <Typography variant="subtitle1" className={styles.Subtext}>
             Apply more parameters to search for conversations.
           </Typography>
-        </React.Fragment>
+        </>
       );
 
       FormSchema = Yup.object().shape({});
@@ -340,11 +352,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
 
     if (type === 'saveSearch') {
       heading = (
-        <React.Fragment>
+        <>
           <Typography variant="h5" className={styles.Title}>
             Save search to collections
           </Typography>
-        </React.Fragment>
+        </>
       );
       addFieldsValidation(validation);
     }
@@ -361,17 +373,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     };
   };
 
-  const addFieldsValidation = (object: object) => {
-    FormSchema = Yup.object().shape(object);
-  };
-
   const getFields = () => {
     addFieldsValidation(validation);
     return [...DataFields, ...searchFields];
   };
 
-  const saveHandler = (data: any) => {
-    if (props.handleSave && data.updateSavedSearch) props.handleSave(data.updateSavedSearch);
+  const saveHandler = (saveData: any) => {
+    if (props.handleSave && saveData.updateSavedSearch)
+      props.handleSave(saveData.updateSavedSearch);
   };
 
   return (

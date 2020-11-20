@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup } from '@testing-library/react';
+import { render, waitFor, within, fireEvent, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { HSM } from './HSM';
@@ -14,9 +14,9 @@ test('HSM form is loaded correctly in edit mode', async () => {
       <HSM match={{ params: { id: 1 } }} />
     </MockedProvider>
   );
-  await wait();
-
-  expect(getByText('Edit HSM Template')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Edit HSM Template')).toBeInTheDocument();
+  });
 });
 
 test('check for validations for the HSM form', async () => {
@@ -25,17 +25,19 @@ test('check for validations for the HSM form', async () => {
       <HSM match={{ params: { id: null } }} />
     </MockedProvider>
   );
-  await wait();
-  expect(getByText('Add a new HSM Template')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Add a new HSM Template')).toBeInTheDocument();
+  });
 
   const { queryByText } = within(container.querySelector('form'));
   const button = queryByText('Save');
   fireEvent.click(button);
-  await wait();
+  await waitFor(() => {
+    expect(queryByText('Title is required.')).toBeInTheDocument();
+    expect(queryByText('Message is required.')).toBeInTheDocument();
+  });
 
   // we should have 2 errors
-  expect(queryByText('Title is required.')).toBeInTheDocument();
-  expect(queryByText('Message is required.')).toBeInTheDocument();
 
   fireEvent.change(container.querySelector('input[name="label"]'), {
     target: {
@@ -45,5 +47,4 @@ test('check for validations for the HSM form', async () => {
   // we should still have 2 errors
   expect(queryByText('Title is required.')).toBeInTheDocument();
   expect(queryByText('Message is required.')).toBeInTheDocument();
-  await wait();
 });

@@ -7,13 +7,13 @@ import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';
 
 export interface CollectionListProps {}
 
+const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
+const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
+
 const getColumns = ({ shortcode, label }: any) => ({
   shortcode: getShortcode(shortcode),
   label: getLabel(label),
 });
-
-const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
-const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
 const dialogMessage =
@@ -28,12 +28,12 @@ const queries = {
 };
 
 const columnAttributes = {
-  columnNames: columnNames,
+  columnNames,
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
-export const CollectionList: React.SFC<CollectionListProps> = (props) => (
+export const CollectionList: React.SFC<CollectionListProps> = () => (
   <List
     title="Collections"
     listItem="savedSearches"
