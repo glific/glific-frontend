@@ -96,6 +96,7 @@ export const GET_CONTACT_DETAILS = gql`
     contact(id: $id) {
       contact {
         phone
+        maskedPhone
         lastMessageAt
         groups {
           id

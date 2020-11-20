@@ -74,7 +74,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   if (data) {
     const { contact } = data;
     const contactData = contact.contact;
-    phoneNo = contactData.phone;
+    phoneNo = contactData.maskedPhone;
     groups = contactData.groups;
     lastMessage = contactData.lastMessageAt;
     fields = contactData.fields;
@@ -98,6 +98,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           profileType="Contact"
           redirectionLink={`chat/${match.params.id}`}
           afterDelete={{ link: '/chat' }}
+          removePhoneField
         />
       </div>
       <div className={styles.ContactDescription}>

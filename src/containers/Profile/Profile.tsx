@@ -32,6 +32,7 @@ export interface ProfileProps {
   additionalState?: any;
   additionalQuery?: any;
   afterDelete?: any;
+  removePhoneField?: boolean;
 }
 
 export const Profile: React.SFC<ProfileProps> = ({
@@ -43,6 +44,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   additionalState,
   additionalQuery,
   afterDelete,
+  removePhoneField = false,
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -122,6 +124,11 @@ export const Profile: React.SFC<ProfileProps> = ({
   if (additionalProfileStates) {
     states[additionalProfileStates.name] = additionalProfileStates.state;
     formFields.splice(1, 0, additionalField);
+  }
+
+  // remove phone field incase of contact profile
+  if (removePhoneField) {
+    formFields.splice(2, 1);
   }
 
   let type: any;
