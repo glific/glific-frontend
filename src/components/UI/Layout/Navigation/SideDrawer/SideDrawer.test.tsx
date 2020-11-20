@@ -45,7 +45,7 @@ describe('side drawer testing', () => {
   });
 
   it('correct menu items rendered', () => {
-    setUserSession('{"roles":["Admin"]}');
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getAllByTestId } = render(component);
     let menuItems = getAllByTestId('list-item');
     for (let i = 0; i < menuItems.length / 2; i++) {
