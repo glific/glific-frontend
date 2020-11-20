@@ -199,8 +199,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const buildChatConversation = (index: number, header: any, conversation: any) => {
+    // We don't have the contact data in the case of contacts.
     let contact = conversation;
-
     if (conversation.contact) {
       contact = conversation.contact;
     }
@@ -241,10 +241,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         </div>
       );
       conversationsData = conversations[dataArray].map((conversation: any, index: number) => {
-        // We don't have the last message in the case of contacts. Therefore, view contact only
-        if (dataArray === 'contacts') {
-          return buildChatConversation(index, header, conversation);
-        }
         return buildChatConversation(index, header, conversation);
       });
       // Check if its not empty
