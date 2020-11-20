@@ -198,34 +198,29 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     conversations = searchData.search;
   }
 
-  const buildChatConversation = (
-    index: number,
-    header: any,
-    contactId: any,
-    contactName: string,
-    phone: string,
-    lastMessage: any,
-    senderLastMessage: string,
-    contactStatus: string,
-    contactBspStatus: string,
-    messageNumber: any
-  ) => {
+  const buildChatConversation = (index: number, header: any, conversation: any) => {
+    let contact = conversation;
+
+    if (conversation.contact) {
+      contact = conversation.contact;
+    }
+
     return (
       <>
         {index === 0 ? header : null}
         <ChatConversation
-          key={contactId}
-          selected={props.selectedContactId === contactId}
-          onClick={() => props.setSelectedContactId(contactId)}
+          key={contact.id}
+          selected={props.selectedContactId === contact.id}
+          onClick={() => props.setSelectedContactId(contact.id)}
           index={index}
-          contactId={contactId}
-          contactName={contactName || phone}
-          lastMessage={lastMessage}
-          senderLastMessage={senderLastMessage}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
+          contactId={contact.id}
+          contactName={contact.name || contact.phone}
+          lastMessage={conversation}
+          senderLastMessage={contact.lastMessageAt}
+          contactStatus={contact.status}
+          contactBspStatus={contact.bspStatus}
           highlightSearch={props.searchVal}
-          messageNumber={messageNumber}
+          messageNumber={conversation.messageNumber}
           searchMode={props.searchMode}
         />
       </>
@@ -246,35 +241,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         </div>
       );
       conversationsData = conversations[dataArray].map((conversation: any, index: number) => {
-        let lastMessage = [];
-        lastMessage = conversation;
         // We don't have the last message in the case of contacts. Therefore, view contact only
         if (dataArray === 'contacts') {
-          return buildChatConversation(
-            index,
-            header,
-            conversation.id,
-            conversation.name,
-            conversation.phone,
-            lastMessage,
-            conversation.lastMessageAt,
-            conversation.status,
-            conversation.bspStatus,
-            conversation.messageNumber
-          );
+          return buildChatConversation(index, header, conversation);
         }
-        return buildChatConversation(
-          index,
-          header,
-          conversation.contact.id,
-          conversation.contact.name,
-          conversation.contact.phone,
-          lastMessage,
-          conversation.contact.lastMessageAt,
-          conversation.contact.status,
-          conversation.contact.bspStatus,
-          conversation.messageNumber
-        );
+        return buildChatConversation(index, header, conversation);
       });
       // Check if its not empty
       if (conversationsData.length > 0) {
