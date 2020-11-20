@@ -361,22 +361,40 @@ export const getOrganizationLanguagesQuery = {
   },
 };
 
-export const walletBalanceSubscription = {
-  request: {
-    query: PERIODIC_INFO_SUBSCRIPTION,
-    variables: { organizationId: '1' },
-  },
-  result: {
-    data: {
+export const walletBalanceSubscription = [
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: null },
+    },
+    result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
+        data: {
+          periodicInfo: {
+            key: 'bsp_balance',
+            value: '{"balance":0.787}',
+          },
         },
       },
     },
   },
-};
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        data: {
+          periodicInfo: {
+            key: 'bsp_balance',
+            value: '{"balance":0.787}',
+          },
+        },
+      },
+    },
+  },
+];
 
 export const walletBalanceQuery = [
   {

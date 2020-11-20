@@ -5,7 +5,7 @@ import WalletBalance from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import { walletBalanceQuery, walletBalanceSubscription } from '../../mocks/Organization';
 
-const mocks = [...walletBalanceQuery, walletBalanceSubscription];
+const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('<WalletBalance />', () => {
   test('it should mount', () => {
