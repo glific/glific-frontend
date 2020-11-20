@@ -3,14 +3,15 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import WalletBalance from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
-import { walletBalanceSubscription } from '../../mocks/Organization';
-const mocks = [walletBalanceSubscription];
+import { walletBalanceQuery, walletBalanceSubscription } from '../../mocks/Organization';
+
+const mocks = [walletBalanceQuery, walletBalanceSubscription];
 
 describe('<WalletBalance />', () => {
   test('it should mount', () => {
     render(
       <MockedProvider mocks={mocks}>
-        <WalletBalance />
+        <WalletBalance fullOpen={true} />
       </MockedProvider>
     );
 
