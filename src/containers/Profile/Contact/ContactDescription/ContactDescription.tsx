@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { IconButton } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 import styles from './ContactDescription.module.css';
 import { Timer } from '../../../../components/UI/Timer/Timer';
@@ -58,20 +60,32 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   if (phone) {
     if (showPlainPhone) {
       phoneDisplay = (
-        <>
+        <div>
           <span data-testid="phone">+{phone}</span>
-          <div aria-hidden="true" onClick={() => handlePhoneDisplay()}>
-            Hide
-          </div>
-        </>
+          <IconButton
+            aria-label="toggle phone visibility"
+            data-testid="phoneToggle"
+            onClick={handlePhoneDisplay}
+            edge="end"
+          >
+            <VisibilityOff classes={{ root: styles.Visibility }} />
+          </IconButton>
+        </div>
       );
     } else {
-      <>
-        <span data-testid="phone">+{maskedPhone}</span>
-        <div aria-hidden="true" onClick={() => handlePhoneDisplay()}>
-          Show
+      phoneDisplay = (
+        <div>
+          <span data-testid="phone">+{maskedPhone}</span>
+          <IconButton
+            aria-label="toggle phone visibility"
+            data-testid="phoneToggle"
+            onClick={handlePhoneDisplay}
+            edge="end"
+          >
+            <Visibility classes={{ root: styles.Visibility }} />
+          </IconButton>
         </div>
-      </>;
+      );
     }
   }
 
