@@ -7,6 +7,7 @@ export const SEARCH_QUERY = gql`
         id
         name
         phone
+        maskedPhone
         lastMessageAt
         status
         bspStatus
@@ -55,6 +56,7 @@ export const SEARCH_MULTI_QUERY = gql`
         id
         name
         phone
+        maskedPhone
         lastMessageAt
         status
         bspStatus
@@ -73,6 +75,7 @@ export const SEARCH_MULTI_QUERY = gql`
           id
           name
           phone
+          maskedPhone
           lastMessageAt
           status
           bspStatus
@@ -103,6 +106,7 @@ export const SEARCH_MULTI_QUERY = gql`
           id
           name
           phone
+          maskedPhone
           lastMessageAt
           status
           bspStatus

@@ -6,6 +6,7 @@ export const CONTACT_SEARCH_QUERY = gql`
       id
       name
       phone
+      maskedPhone
       groups {
         id
         label

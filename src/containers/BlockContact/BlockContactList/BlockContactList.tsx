@@ -18,9 +18,9 @@ const getName = (name: string) => <p className={styles.LabelText}>{name}</p>;
 
 const getPhone = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-const getColumns = ({ name, phone }: any) => ({
+const getColumns = ({ name, maskedPhone }: any) => ({
   name: getName(name),
-  phone: getPhone(phone),
+  phone: getPhone(maskedPhone),
 });
 
 const columnNames = ['NAME', 'PHONE NO', 'ACTIONS'];

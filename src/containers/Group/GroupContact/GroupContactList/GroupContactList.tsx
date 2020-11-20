@@ -23,8 +23,8 @@ const getGroups = (groups: Array<any>) => (
   <p className={styles.GroupsText}>{groups.map((group: any) => group.label).join(', ')}</p>
 );
 
-const getColumns = ({ name, phone, groups }: any) => ({
-  label: getName(name, phone),
+const getColumns = ({ name, maskedPhone, groups }: any) => ({
+  label: getName(name, maskedPhone),
   groups: getGroups(groups),
 });
 
