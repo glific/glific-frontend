@@ -1,26 +1,29 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { fireEvent, getByText, render } from '@testing-library/react';
 import { Button } from './Button';
 
 describe('<Button />', () => {
-  let isClicked = false;
-  const buttonCallback = () => {
-    isClicked = true;
+  const buttonCallback = jest.fn();
+
+  const defaultProps = {
+    variant: 'contained',
+    color: 'primary',
+    'data-testid': 'button',
   };
 
   it('renders <Button /> component', () => {
-    const wrapper = shallow(<Button>My Button</Button>);
+    const wrapper = render(<Button {...defaultProps}>My Button</Button>);
     expect(wrapper).toBeTruthy();
   });
 
   it('should have correct label', () => {
-    const wrapper = shallow(<Button>My Button</Button>);
-    expect(wrapper.text()).toEqual('My Button');
+    const { getByText } = render(<Button {...defaultProps}>My Button</Button>);
+    expect(getByText('My Button')).toBeInTheDocument();
   });
 
   it('should trigger onclick callback when clicked', () => {
-    const wrapper = shallow(<Button onClick={buttonCallback}>My Button</Button>);
-    wrapper.invoke('onClick')();
-    expect(isClicked).toEqual(true);
+    const { getByTestId } = render(<Button onClick={buttonCallback} {...defaultProps}>My Button</Button>);
+    fireEvent.click(getByTestId('button'));
+    expect(buttonCallback).toBeCalled();
   });
 });

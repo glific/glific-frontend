@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox } from './Checkbox';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-describe('<Calendar />', () => {
+describe('<Checkbox />', () => {
   const props = {
     title: 'Example',
     field: { name: 'example', value: false },

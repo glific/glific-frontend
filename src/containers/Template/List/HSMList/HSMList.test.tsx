@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { HSMList } from './HSMList';
@@ -18,8 +18,7 @@ const template = (
 test('HSMList is rendered correctly', async () => {
   const { getByText } = render(template);
 
-  await wait();
-
-  expect(getByText('Templates')).toBeInTheDocument();
-  await wait();
+  await waitFor(() => {
+    expect(getByText('Templates')).toBeInTheDocument();
+  });
 });

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 import { ReactComponent as AdvancedSearch } from '../../../assets/images/icons/AdvancedSearch.svg';
@@ -19,14 +20,24 @@ export interface SearchBarProps {
 }
 
 export const SearchBar: React.SFC<SearchBarProps> = (props) => {
+  const {
+    searchMode,
+    searchVal,
+    onReset,
+    endAdornment,
+    handleClick,
+    handleSubmit,
+    handleChange,
+    className,
+  } = props;
   const [localSearchValue, setLocalSearchValue] = useState('');
   // use local state value so that we can set the defaults correctly
   // local value is needed for list component
-  let inputValue: string | undefined = props.searchMode ? props.searchVal : '';
-  if (localSearchValue && props.searchMode) {
+  let inputValue: string | undefined = searchMode ? searchVal : '';
+  if (localSearchValue && searchMode) {
     inputValue = localSearchValue;
   } else {
-    inputValue = props.searchVal || '';
+    inputValue = searchVal || '';
   }
 
   // display reset button only if value is entered
@@ -38,22 +49,22 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
         className={styles.ResetSearch}
         onClick={() => {
           setLocalSearchValue('');
-          props.onReset();
+          onReset();
         }}
       >
-        <CloseIcon className={styles.CloseIcon}></CloseIcon>
+        <CloseIcon className={styles.CloseIcon} />
       </IconButton>
     );
   }
 
-  let endAdornment;
-  if (props.endAdornment) {
-    endAdornment = (
+  let endAdornmentInput;
+  if (endAdornment) {
+    endAdornmentInput = (
       <InputAdornment position="end">
         <IconButton
           aria-label="toggle password visibility"
           onClick={(e: any) => {
-            props.handleClick(e, 'search', 'update');
+            handleClick(e, 'search', 'update');
           }}
         >
           <AdvancedSearch />
@@ -63,8 +74,8 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   }
 
   return (
-    <form onSubmit={props.handleSubmit} autoComplete="off" data-testid="searchForm">
-      <div className={`${styles.SearchBar} ${props.className}`}>
+    <form onSubmit={handleSubmit} autoComplete="off" data-testid="searchForm">
+      <div className={`${styles.SearchBar} ${className}`}>
         <div className={styles.IconAndText}>
           <img src={searchIcon} className={styles.SearchIcon} alt="Search" />
           <InputBase
@@ -74,12 +85,12 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
             placeholder="Search"
             onChange={(e: any) => {
               setLocalSearchValue(e.target.value);
-              if (props.handleChange) {
-                props.handleChange(e);
+              if (handleChange) {
+                handleChange(e);
               }
             }}
             value={inputValue}
-            endAdornment={endAdornment}
+            endAdornment={endAdornmentInput}
           />
         </div>
         {resetButton}

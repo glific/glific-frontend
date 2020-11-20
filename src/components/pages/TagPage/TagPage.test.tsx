@@ -1,12 +1,23 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, waitFor } from '@testing-library/react';
 import { TagPage } from './TagPage';
 import { TagList } from '../../../containers/Tag/TagList/TagList';
+import { MockedProvider } from '@apollo/client/testing';
+import { getTagsCountQuery } from '../../../mocks/Tag';
 
-const wrapper = shallow(<TagPage />);
+const mocks = [getTagsCountQuery];
+
+const wrapper = (
+  <MockedProvider mocks={mocks}>
+    <TagPage />
+  </MockedProvider>
+);
 
 describe('<TagPage />', () => {
-  it('should display the TagList Page', () => {
-    expect(wrapper.find(TagList).exists()).toBe(true);
+  it('should display the TagList Page', async () => {
+    const { getByTestId } = render(wrapper);
+    await waitFor(() => {
+      expect(getByTestId('listHeader')).toBeInTheDocument();
+    });
   });
 });

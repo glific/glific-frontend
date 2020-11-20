@@ -1,12 +1,13 @@
 import React, { ReactNode } from 'react';
-import { Button } from '../Form/Button/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import styles from './DialogBox.module.css';
 
-interface DialogProps {
+import { Button } from '../Form/Button/Button';
+
+export interface DialogProps {
   open?: boolean;
   title: string;
   handleOk?: Function;
@@ -49,7 +50,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   if (!skipCancel) {
     cancelButtonDisplay = (
       <Button
-        variant={'contained'}
+        variant="contained"
         onClick={handleCancelButton}
         color={colorCancel}
         data-testid="cancel-button"
@@ -67,12 +68,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   let okButtonDisplay = null;
   if (!skipOk) {
     okButtonDisplay = (
-      <Button
-        onClick={handleOKButton}
-        color={colorOk}
-        variant={'contained'}
-        data-testid="ok-button"
-      >
+      <Button onClick={handleOKButton} color={colorOk} variant="contained" data-testid="ok-button">
         {buttonOk}
       </Button>
     );

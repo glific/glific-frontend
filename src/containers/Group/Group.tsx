@@ -48,7 +48,7 @@ const formFields = (options: any) => {
       component: AutoComplete,
       name: 'users',
       additionalState: 'users',
-      options: options,
+      options,
       optionLabel: 'name',
       textFieldProps: {
         label: 'Assign staff to group',
@@ -82,22 +82,22 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
 
   const [updateGroupUsers] = useMutation(UPDATE_GROUP_USERS);
 
-  const updateUsers = (groupId: any) => {
+  const updateUsers = (groupIdValue: any) => {
     const initialSelectedUsers = users.map((user: any) => user.id);
     const finalSelectedUsers = selected.map((user: any) => user.id);
-    const selectedUsers = finalSelectedUsers.filter(
+    const selectedUsersData = finalSelectedUsers.filter(
       (user: any) => !initialSelectedUsers.includes(user)
     );
     const removedUsers = initialSelectedUsers.filter(
       (contact: any) => !finalSelectedUsers.includes(contact)
     );
 
-    if (selectedUsers.length > 0 || removedUsers.length > 0) {
+    if (selectedUsersData.length > 0 || removedUsers.length > 0) {
       updateGroupUsers({
         variables: {
           input: {
-            addUserIds: selectedUsers,
-            groupId: groupId,
+            addUserIds: selectedUsersData,
+            groupId: groupIdValue,
             deleteUserIds: removedUsers,
           },
         },
@@ -124,9 +124,10 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   }, [groupUsers]);
 
   const states = { label, description, users };
-  const setStates = ({ label, description }: any) => {
-    setLabel(label);
-    setDescription(description);
+
+  const setStates = ({ label: labelValue, description: descriptionValue }: any) => {
+    setLabel(labelValue);
+    setDescription(descriptionValue);
   };
 
   const additionalState = (user: any) => {

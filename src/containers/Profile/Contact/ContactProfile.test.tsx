@@ -13,7 +13,7 @@ const defaultProps = {
 
 
 
-test('contact profile should mount', async () => {
+test('contact profile should render', async () => {
   const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <ContactProfile {...defaultProps} />

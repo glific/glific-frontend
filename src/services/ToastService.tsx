@@ -1,6 +1,7 @@
+import React from 'react';
 import { useApolloClient, useQuery } from '@apollo/client';
+
 import { setNotification } from '../common/notification';
-import React from 'react'
 import { ToastMessage } from '../components/UI/ToastMessage/ToastMessage';
 import { NOTIFICATION } from '../graphql/queries/Notification';
 
@@ -25,3 +26,5 @@ export function useToast() {
   }
   return toastMessage;
 }
+
+export default useToast;

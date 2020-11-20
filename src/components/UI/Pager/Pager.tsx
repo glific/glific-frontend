@@ -10,6 +10,7 @@ import {
   TableSortLabel,
   Checkbox,
 } from '@material-ui/core';
+
 import styles from './Pager.module.css';
 
 interface PagerProps {
@@ -26,13 +27,18 @@ interface PagerProps {
   };
   showCheckbox?: boolean;
 }
-// Change name to Pager
 
 const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
   const createRow = (entry: any) => {
     return Object.keys(entry).map((item: any, i: number) => {
+      // let's not display recordId in the UI
+      if (item === 'recordId') {
+        return null;
+      }
+
       return (
         <TableCell
+          // eslint-disable-next-line
           key={i}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
@@ -42,13 +48,14 @@ const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
     });
   };
 
-  return data.map((entry: any, i: number) => {
+  return data.map((entry: any) => {
     let batchAction = null;
     if (showCheckbox) {
       batchAction = <Checkbox />;
     }
+
     return (
-      <TableRow key={i} className={styles.TableRow}>
+      <TableRow key={entry.recordId} className={styles.TableRow}>
         {batchAction}
         {createRow(entry)}
       </TableRow>
@@ -73,6 +80,7 @@ const tableHeadColumns = (
       {columnNames.map((name: string, i: number) => {
         return (
           <TableCell
+            // eslint-disable-next-line
             key={i}
             className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
           >
@@ -123,28 +131,33 @@ const pagination = (
 );
 
 export const Pager: React.SFC<PagerProps> = (props) => {
+  const {
+    data,
+    columnStyles,
+    showCheckbox,
+    columnNames,
+    tableVals,
+    handleTableChange,
+    totalRows,
+  } = props;
+
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
-  const rows = createRows(props.data, props.columnStyles, props.showCheckbox);
+  const rows = createRows(data, columnStyles, showCheckbox);
   const tableHead = tableHeadColumns(
-    props.columnNames,
-    props.columnStyles,
-    props.tableVals,
-    props.handleTableChange,
-    props.showCheckbox
+    columnNames,
+    columnStyles,
+    tableVals,
+    handleTableChange,
+    showCheckbox
   );
 
-  const tablePagination = pagination(
-    props.columnNames,
-    props.totalRows,
-    props.handleTableChange,
-    props.tableVals
-  );
+  const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
   useEffect(() => {
-    let table = document.querySelector('.MuiTable-root');
-    var html = document.querySelector('html');
+    const table = document.querySelector('.MuiTable-root');
+    const html = document.querySelector('html');
     if (table && html) {
       if (table.scrollHeight < html.clientHeight - 142) {
         setTableFooterStyle(styles.TableFooter);
@@ -154,13 +167,17 @@ export const Pager: React.SFC<PagerProps> = (props) => {
 
   return (
     <div className={styles.TableContainer}>
-      <Table className={styles.Table}>
-        <TableHead className={styles.TagListHeader}>{tableHead}</TableHead>
-        <TableBody>{rows}</TableBody>
-        <TableFooter className={tableFooterStyle}>
+      <Table className={styles.Table} data-testid="table">
+        <TableHead className={styles.TagListHeader} data-testid="tableHead">
+          {tableHead}
+        </TableHead>
+        <TableBody data-testid="tableBody">{rows}</TableBody>
+        <TableFooter className={tableFooterStyle} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>
       </Table>
     </div>
   );
 };
+
+export default Pager;

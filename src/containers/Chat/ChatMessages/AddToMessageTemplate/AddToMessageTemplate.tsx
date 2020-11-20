@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useApolloClient, useMutation } from '@apollo/client';
-import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@material-ui/core';
+
+import styles from './AddToMessageTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { setNotification } from '../../../../common/notification';
-import styles from './AddToMessageTemplate.module.css';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
+import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 
 interface AddToMessageTemplateProps {
@@ -41,7 +42,7 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
     }
   };
 
-  let textField = (
+  const textField = (
     <div className={styles.DialogContainer} data-testid="templateContainer">
       <FormControl fullWidth error={required}>
         <InputLabel variant="outlined">Enter title</InputLabel>
@@ -55,7 +56,7 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
           fullWidth
           data-testid="templateInput"
           onChange={onChange}
-        ></OutlinedInput>
+        />
         {required ? <FormHelperText>Required</FormHelperText> : null}
       </FormControl>
       <div className={styles.Message}>{WhatsAppToJsx(message)}</div>
@@ -92,10 +93,11 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
       <DialogBox
         handleCancel={handleCloseButton}
         handleOk={handleOKButton}
-        title={'Add message to speed sends'}
-        children={textField}
+        title="Add message to speed sends"
         buttonOk="Save"
-      />
+      >
+        {textField}
+      </DialogBox>
     </div>
   );
 };

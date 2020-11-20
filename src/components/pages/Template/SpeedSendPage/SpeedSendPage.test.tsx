@@ -1,12 +1,20 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, waitFor } from '@testing-library/react';
 import { SpeedSendPage } from './SpeedSendPage';
-import { SpeedSendList } from '../../../../containers/Template/List/SpeedSendList/SpeedSendList';
+import { MockedProvider } from '@apollo/client/testing';
+import { getTemplateCountQuery } from '../../../../mocks/Template';
 
-const wrapper = shallow(<SpeedSendPage />);
+const mocks = [getTemplateCountQuery];
 
 describe('<SpeedSendPage />', () => {
-  it('should display the Speed Send Page', () => {
-    expect(wrapper.find(SpeedSendList).exists()).toBe(true);
+  it('should display the Speed Send Page', async () => {
+    const { getByTestId } = render(
+      <MockedProvider mocks={mocks}>
+        <SpeedSendPage />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(getByTestId('listHeader')).toBeInTheDocument();
+    });
   });
 });

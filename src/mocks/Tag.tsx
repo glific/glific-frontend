@@ -1,4 +1,4 @@
-import { FILTER_TAGS_NAME, GET_TAGS } from '../graphql/queries/Tag';
+import { FILTER_TAGS_NAME, GET_TAGS, GET_TAGS_COUNT } from '../graphql/queries/Tag';
 import { setVariables } from '../common/constants';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
@@ -105,3 +105,18 @@ export const deleteMessageTagSubscription = {
     },
   },
 };
+
+
+export const getTagsCountQuery={
+  request: {
+    query: GET_TAGS_COUNT,
+    variables: { filter: {
+      label:""
+    } },
+  },
+  result: {
+    data: {
+      countTags:2
+    },
+  },
+}

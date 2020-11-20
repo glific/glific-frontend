@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { mount } from 'enzyme';
+import { fireEvent, getByText, render } from '@testing-library/react';
 import { MessageDialog } from './MessageDialog';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -11,17 +11,19 @@ const defaultProps = {
   onSendMessage: jest.fn(),
   handleClose: handleClose,
 };
-const wrapper = mount(
+const wrapper = (
   <MockedProvider>
     <MessageDialog {...defaultProps} />
   </MockedProvider>
 );
 
 test('it should have correct title', () => {
-  expect(wrapper.find('div[data-testid="title"]').text()).toEqual('Send message');
+  const { getByTestId } = render(wrapper);
+  expect(getByTestId('title')).toHaveTextContent('Send message');
 });
 
 test('it should close the dialog box on clicking close button', () => {
-  wrapper.find('svg[data-testid="closeButton"]').simulate('click');
+  const { getByTestId } = render(wrapper);
+  fireEvent.click(getByTestId('closeButton'));
   expect(handleClose).toBeCalled();
 });

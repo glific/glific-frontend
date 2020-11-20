@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, wait } from '@testing-library/react';
+import { render, screen, fireEvent, wait, waitFor } from '@testing-library/react';
 import { SettingList } from './SettingList';
 import { MockedProvider } from '@apollo/client/testing';
 import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
@@ -20,7 +20,8 @@ describe('<SettingList />', () => {
     const { getByText } = render(wrapper);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    expect(getByText('Settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Settings')).toBeInTheDocument();
+    });
   });
 });

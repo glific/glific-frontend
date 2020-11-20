@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
 import { getIn } from 'formik';
+
 import styles from './AutoComplete.module.css';
 import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Close.svg';
 
@@ -59,10 +60,19 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   useEffect(() => {
     if (getOptions && getOptions()) {
-      let options = getOptions();
-      if (options.length > 0) setOptionValue(options);
+      const optionList = getOptions();
+      if (optionList.length > 0) setOptionValue(optionList);
     }
   }, [open, getOptions]);
+
+  const getValue = (() => {
+    if (multiple && asyncSearch) return asyncValues.value;
+    if (multiple)
+      return optionValue.filter((option: any) =>
+        field.value.map((value: any) => value.id).includes(option.id)
+      );
+    return field.value;
+  })();
 
   return (
     <div className={styles.Input}>
@@ -88,15 +98,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             setFieldValue(field.name, value);
           }}
           inputValue={asyncSearch ? searchTerm : undefined}
-          value={
-            multiple
-              ? asyncSearch
-                ? asyncValues.value
-                : optionValue.filter((option: any) =>
-                    field.value.map((value: any) => value.id).includes(option.id)
-                  )
-              : field.value
-          }
+          value={getValue}
           disabled={disabled}
           disableCloseOnSelect
           renderTags={(value: any, getTagProps) =>
@@ -114,7 +116,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           }
           renderOption={(option, { selected }) => {
             return (
-              <React.Fragment>
+              <>
                 {multiple ? (
                   <Checkbox
                     icon={icon}
@@ -129,7 +131,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
                   ''
                 )}
                 {option[optionLabel]}
-              </React.Fragment>
+              </>
             );
           }}
           renderInput={(params: any) => {
