@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -33,8 +33,9 @@ describe('<Group />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
-    await wait();
-    expect(getByText('Edit group')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Edit group')).toBeInTheDocument();
+    });
 
     // remove first user
     const removeUser = getAllByTestId('deleteIcon');
@@ -43,8 +44,5 @@ describe('<Group />', () => {
     // click on SAVE
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
-    await wait();
-
-    
   });
 });

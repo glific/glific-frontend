@@ -48,7 +48,7 @@ const theme = createMuiTheme({
     },
     MuiCssBaseline: {
       '@global': {
-        //override the pseudo-classes
+        // override the pseudo-classes
         '.Mui-disabled': { cursor: 'not-allowed !important' },
       },
     },

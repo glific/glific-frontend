@@ -8,3 +8,5 @@ export const GET_LANGUAGES = gql`
     }
   }
 `;
+
+export default GET_LANGUAGES;

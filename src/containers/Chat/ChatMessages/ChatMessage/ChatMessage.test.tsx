@@ -1,7 +1,6 @@
 import React from 'react';
-import { render, wait, within, fireEvent } from '@testing-library/react';
+import { render, wait, within, fireEvent, waitFor } from '@testing-library/react';
 import moment from 'moment';
-import { shallow, mount } from 'enzyme';
 
 import ChatMessage from './ChatMessage';
 import { TIME_FORMAT } from '../../../../common/constants';
@@ -32,7 +31,6 @@ const mocks = [
     },
   },
 ];
-
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
@@ -71,7 +69,6 @@ describe('<ChatMessage />', () => {
   );
 
   const chatMessageText = chatMessage('TEXT');
-  let wrapper = mount(chatMessageText);
 
   test('it should render the message content correctly', () => {
     const { getByTestId } = render(chatMessageText);
@@ -84,13 +81,13 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should render the message date  correctly', () => {
-    expect(wrapper.find('[data-testid="date"]').text()).toEqual(
-      moment(insertedAt).format(TIME_FORMAT)
-    );
+    const { getByTestId } = render(chatMessageText);
+    expect(getByTestId('date')).toHaveTextContent(moment(insertedAt).format(TIME_FORMAT));
   });
 
   test('it should render "Other" class for the content', () => {
-    expect(wrapper.find('.Other')).toHaveLength(1);
+    const { container } = render(chatMessageText);
+    expect(container.querySelector('.Other')).toBeInTheDocument();
   });
 
   test('it should render the tags correctly', () => {
@@ -112,9 +109,9 @@ describe('<ChatMessage />', () => {
   test('click on delete icon should call the delete query', async () => {
     const { getAllByTestId } = render(chatMessageText);
     fireEvent.click(getAllByTestId('deleteIcon')[0]);
-    await wait();
-
-    expect(resultReturned).toBe(true);
+    await waitFor(() => {
+      expect(resultReturned).toBe(true);
+    });
   });
 
   test('it should detect a link in messsage', async () => {
@@ -123,7 +120,7 @@ describe('<ChatMessage />', () => {
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
-  wrapper = mount(chatMessageVideo);
+
   test('it should show the download media option when clicked on down arrow and message type is video', async () => {
     const { getAllByTestId } = render(chatMessageVideo);
     fireEvent.click(getAllByTestId('popup')[0]);
@@ -131,7 +128,7 @@ describe('<ChatMessage />', () => {
   });
 
   const chatMessageAudio = chatMessage('AUDIO');
-  wrapper = mount(chatMessageAudio);
+
   test('it should show the download media option when clicked on down arrow and message type is audio', async () => {
     const { getAllByTestId } = render(chatMessageAudio);
     fireEvent.click(getAllByTestId('popup')[0]);
@@ -139,7 +136,7 @@ describe('<ChatMessage />', () => {
   });
 
   const chatMessageImage = chatMessage('IMAGE');
-  wrapper = mount(chatMessageImage);
+
   test('it should show the download media option when clicked on down arrow and message type is image', async () => {
     const { getAllByTestId } = render(chatMessageImage);
     fireEvent.click(getAllByTestId('popup')[0]);
@@ -147,7 +144,7 @@ describe('<ChatMessage />', () => {
   });
 
   const chatMessageDoc = chatMessage('DOCUMENT');
-  wrapper = mount(chatMessageDoc);
+
   test('it should show the download media option when clicked on down arrow and message type is document', async () => {
     const { getAllByTestId } = render(chatMessageDoc);
     fireEvent.click(getAllByTestId('popup')[0]);

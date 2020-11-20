@@ -11,3 +11,5 @@ export const SAVE_MESSAGE_TEMPLATE_MUTATION = gql`
     }
   }
 `;
+
+export default SAVE_MESSAGE_TEMPLATE_MUTATION;

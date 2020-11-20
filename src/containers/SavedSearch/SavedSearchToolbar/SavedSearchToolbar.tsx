@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
+import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
+
+import styles from './SavedSearchToolbar.module.css';
 import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
 import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
-
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
-import styles from './SavedSearchToolbar.module.css';
-import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
@@ -17,13 +17,13 @@ export interface SavedSearchToolbarProps {
 }
 
 export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) => {
+  const { searchMode, refetchData } = props;
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
-
   const [fixedCollection, setFixedCollection] = useState<any>([]);
   const [additonalCollections, setAdditonalCollections] = useState<any>([]);
-  const Ref = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const Ref = useRef(null);
   const open = Boolean(anchorEl);
 
   // default queryvariables
@@ -35,17 +35,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   // remove selected collection on search
-  if (props.searchMode && selectedSavedSearch) {
+  if (searchMode && selectedSavedSearch) {
     setSelectedSavedSearch(null);
   }
-
-  useEffect(() => {
-    // display created collection
-    if (props.refetchData.savedSearchCollection) {
-      refetch();
-      handleAdditionalSavedSearch(props.refetchData.savedSearchCollection);
-    }
-  }, [props.refetchData.savedSearchCollection]);
 
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
@@ -55,12 +47,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     },
   });
 
-  if (loading) return <Loading />;
-  if (error) {
-    setErrorMessage(client, error);
-    return null;
-  }
-
   const handlerSavedSearchCriteria = (
     savedSearchCriteria: string | null,
     savedSearchId: number | null
@@ -69,10 +55,35 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     setSelectedSavedSearch(savedSearchId);
   };
 
+  const handleAdditionalSavedSearch = (search: any) => {
+    const removedCollection = fixedCollection[fixedCollection.length - 1];
+    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
+    fixedCollectionCopy.push(search);
+    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
+    moreCollection.unshift(removedCollection);
+    setFixedCollection(fixedCollectionCopy);
+    setAdditonalCollections(moreCollection);
+    handlerSavedSearchCriteria(search.args, search.id);
+  };
+
+  useEffect(() => {
+    // display created collection
+    if (refetchData.savedSearchCollection) {
+      refetch();
+      handleAdditionalSavedSearch(refetchData.savedSearchCollection);
+    }
+  }, [refetchData.savedSearchCollection]);
+
+  if (loading) return <Loading />;
+  if (error) {
+    setErrorMessage(client, error);
+    return null;
+  }
+
   const savedSearchList = fixedCollection.map((savedSearch: any) => {
     // set the selected class if the button is clicked
-    let labelClass = [styles.SavedSearchItemLabel];
-    let countClass = [styles.SavedSearchCount];
+    const labelClass = [styles.SavedSearchItemLabel];
+    const countClass = [styles.SavedSearchCount];
     if (savedSearch.id === selectedSavedSearch) {
       labelClass.push(styles.SavedSearchItemSelected);
       countClass.push(styles.SavedSearchSelectedCount);
@@ -87,6 +98,11 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
           handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
           props.onSelect();
         }}
+        onKeyDown={() => {
+          handlerSavedSearchCriteria(savedSearch.args, savedSearch.id);
+          props.onSelect();
+        }}
+        aria-hidden="true"
       >
         <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
         <div className={countClass.join(' ')}>{savedSearch.count}</div>
@@ -97,17 +113,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const handleClickAway = () => {
     setAnchorEl(null);
     setOptionsSelected(false);
-  };
-
-  const handleAdditionalSavedSearch = (search: any) => {
-    const removedCollection = fixedCollection[fixedCollection.length - 1];
-    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
-    fixedCollectionCopy.push(search);
-    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
-    moreCollection.unshift(removedCollection);
-    setFixedCollection(fixedCollectionCopy);
-    setAdditonalCollections(moreCollection);
-    handlerSavedSearchCriteria(search.args, search.id);
   };
 
   const additionalOptions = (
@@ -121,6 +126,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
                   key={search.id}
                   className={styles.LabelContainer}
                   onClick={() => handleAdditionalSavedSearch(search)}
+                  aria-hidden="true"
                 >
                   <span className={styles.Label}>{search.shortcode}</span>
                   <span className={styles.Count}>{search.count}</span>

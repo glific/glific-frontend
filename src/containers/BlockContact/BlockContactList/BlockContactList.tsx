@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
+import { useMutation, useApolloClient } from '@apollo/client';
+
 import styles from './BlockContactList.module.css';
 import { ReactComponent as BlockIcon } from '../../../assets/images/icons/Block.svg';
 import { ReactComponent as UnblockIcon } from '../../../assets/images/icons/Unblock.svg';
 import { List } from '../../List/List';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
-import { useMutation, useApolloClient } from '@apollo/client';
 import { setNotification } from '../../../common/notification';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
+import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
+import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 export interface BlockContactListProps {}
+
+const getName = (name: string) => <p className={styles.LabelText}>{name}</p>;
+
+const getPhone = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const getColumns = ({ name, phone }: any) => ({
   name: getName(name),
   phone: getPhone(phone),
 });
-
-const getName = (name: string) => <p className={styles.LabelText}>{name}</p>;
-
-const getPhone = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const columnNames = ['NAME', 'PHONE NO', 'ACTIONS'];
 const dialogMessage = 'This contact will be permanently deleted';
@@ -34,17 +35,18 @@ const queries = {
 };
 
 const columnAttributes = {
-  columnNames: columnNames,
+  columnNames,
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
-export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
+export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   const client = useApolloClient();
   const [contactId, setContactId] = useState();
+  const [unblockDialog, setUnblockDialog] = useState(false);
   const unblockIcon = <UnblockIcon />;
 
-  //currently updating using refetch until we find a better way
+  // currently updating using refetch until we find a better way
   const contactSearchQueryVariables = {
     filter: { name: '', status: 'BLOCKED' },
     opts: {
@@ -53,6 +55,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
       order: 'ASC',
     },
   };
+
   const [unblockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
       setUnblockDialog(false);
@@ -65,7 +68,6 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
     ],
   });
 
-  const [unblockDialog, setUnblockDialog] = useState(false);
   let dialog = null;
 
   const setDialog = (id: any) => {
@@ -90,7 +92,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = (props) => {
         title="Do you want to unblock this contact"
         handleOk={handleUnblock}
         handleCancel={() => setUnblockDialog(false)}
-        alignButtons={'center'}
+        alignButtons="center"
       >
         <p className={styles.DialogText}>
           You will be able to view their chats and interact with them again

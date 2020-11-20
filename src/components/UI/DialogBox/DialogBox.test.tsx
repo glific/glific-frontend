@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {fireEvent, render} from '@testing-library/react'
 import { DialogBox } from './DialogBox';
 
 const mockCallbackCancel = jest.fn();
@@ -14,7 +14,7 @@ const dialogBox = (
 );
 
 it('should not display dialog box if open is false', () => {
-  const wrapper = mount(
+  const {container,queryByTestId} = render(
     <DialogBox
       open={false}
       title={'Are you sure?'}
@@ -23,22 +23,22 @@ it('should not display dialog box if open is false', () => {
     />
   );
 
-  expect(wrapper.find('div.MuiDialog-root').exists()).toBe(false);
+  expect(queryByTestId('dialogBox')).toBe(null);
 });
 
 it('should display the same message as passed in the prop', () => {
-  const wrapper = mount(dialogBox);
-  expect(wrapper.find('h2.MuiTypography-root').text()).toBe('Are you sure?');
+  const {getByTestId} = render(dialogBox);
+  expect(getByTestId('dialogTitle')).toHaveTextContent('Are you sure?');
 });
 
 it('should check if callback method is called when cancel button is clicked', () => {
-  const wrapper = mount(dialogBox);
-  wrapper.find('button[data-testid="cancel-button"]').simulate('click');
+  const {getByTestId} = render(dialogBox);
+  fireEvent.click(getByTestId('cancel-button'))
   expect(mockCallbackCancel).toHaveBeenCalled();
 });
 
 it('should check if callback method is called when confirm button is clicked', () => {
-  const wrapper = mount(dialogBox);
-  wrapper.find('button.MuiButton-containedPrimary').simulate('click');
+  const {getByTestId} = render(dialogBox);
+  fireEvent.click(getByTestId('ok-button'))
   expect(mockCallbackOK).toHaveBeenCalled();
 });

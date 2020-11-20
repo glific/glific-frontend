@@ -9,15 +9,9 @@ import { setVariables } from '../../../common/constants';
 
 export interface TagListProps {}
 
-const getColumns = ({ label, description, keywords, colorCode }: any) => ({
-  label: getLabel(label, colorCode),
-  description: getDescription(description),
-  keywords: getKeywords(keywords),
-});
-
-const getLabel = (label: string, colorCode: string) => (
+const getLabel = (label: string, colorCode: string = '#0C976D') => (
   <div className={styles.LabelContainer}>
-    <FilledTagIcon className={styles.FilledTagIcon} stroke={colorCode ? colorCode : '#0C976D'} />
+    <FilledTagIcon className={styles.FilledTagIcon} stroke={colorCode} />
     <p className={styles.LabelText} style={{ color: colorCode }}>
       {label}
     </p>
@@ -29,6 +23,12 @@ const getDescription = (text: string) => <p className={styles.TableText}>{text}<
 const getKeywords = (keyword: any) => (
   <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>
 );
+
+const getColumns = ({ label, description, keywords, colorCode }: any) => ({
+  label: getLabel(label, colorCode),
+  description: getDescription(description),
+  keywords: getKeywords(keywords),
+});
 
 const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this for tagging messages.";
@@ -42,12 +42,12 @@ const queries = {
 };
 
 const columnAttributes = {
-  columnNames: columnNames,
+  columnNames,
   columns: getColumns,
-  columnStyles: columnStyles,
+  columnStyles,
 };
 
-export const TagList: React.SFC<TagListProps> = (props) => (
+export const TagList: React.SFC<TagListProps> = () => (
   <List
     title="Tags"
     listItem="tags"
