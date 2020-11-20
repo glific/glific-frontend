@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from './ContactDescription.module.css';
 import { Timer } from '../../../../components/UI/Timer/Timer';
@@ -6,18 +6,23 @@ import { Timer } from '../../../../components/UI/Timer/Timer';
 export interface ContactDescriptionProps {
   fields: any;
   settings: any;
-  phoneNo: string;
+  phone: string;
+  maskedPhone: string;
   groups: any;
   lastMessage: string;
 }
 
 export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => {
-  const { phoneNo, groups, lastMessage } = props;
+  const { phone, maskedPhone, groups, lastMessage } = props;
   let { fields, settings } = props;
+
+  const [showPlainPhone, setShowPlainPhone] = useState(false);
+
   // list of groups that the contact is assigned
   let assignedToGroup: any = Array.from(
     new Set([].concat(...groups.map((group: any) => group.users.map((user: any) => user.name))))
   );
+
   if (assignedToGroup.length > 2) {
     assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
       assignedToGroup.length - 2
@@ -45,12 +50,36 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
     fields = JSON.parse(fields);
   }
 
+  const handlePhoneDisplay = () => {
+    setShowPlainPhone(!showPlainPhone);
+  };
+
+  let phoneDisplay = <span data-testid="phone">+{maskedPhone}</span>;
+  if (phone) {
+    if (showPlainPhone) {
+      phoneDisplay = (
+        <>
+          <span data-testid="phone">+{phone}</span>
+          <div aria-hidden="true" onClick={() => handlePhoneDisplay()}>
+            Hide
+          </div>
+        </>
+      );
+    } else {
+      <>
+        <span data-testid="phone">+{maskedPhone}</span>
+        <div aria-hidden="true" onClick={() => handlePhoneDisplay()}>
+          Show
+        </div>
+      </>;
+    }
+  }
+
   return (
     <div className={styles.DescriptionContainer} data-testid="contactDescription">
       <h2 className={styles.Title}>Details</h2>
       <div className={styles.Description}>
-        <span data-testid="phoneNo">+{phoneNo}</span>
-
+        {phoneDisplay}
         <div className={styles.SessionTimer}>
           <span>Session Timer</span>
           <Timer time={lastMessage} />
