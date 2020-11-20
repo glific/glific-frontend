@@ -2,10 +2,35 @@ import axios from 'axios';
 
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../config/index';
 
+// get the current authentication session
+export const getAuthSession = (element?: string) => {
+  const session = localStorage.getItem('glific_session');
+
+  // let's early if there is no session on local
+  if (!session) return null;
+
+  // we should retun as requested
+  let returnValue: any;
+  switch (element) {
+    case 'token_expiry_time':
+      returnValue = JSON.parse(session).token_expiry_time;
+      break;
+    case 'renewal_token':
+      returnValue = JSON.parse(session).renewal_token;
+      break;
+    case 'access_token':
+      returnValue = JSON.parse(session).access_token;
+      break;
+    default:
+      returnValue = session;
+  }
+  return returnValue;
+};
+
 // service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {
   // get the renewal token from session
-  axios.defaults.headers.common['Authorization'] = getAuthSession('renewal_token');
+  axios.defaults.headers.common.Authorization = getAuthSession('renewal_token');
 
   return axios
     .post(RENEW_TOKEN)
@@ -44,31 +69,6 @@ export const setAuthSession = (session: string) => {
   localStorage.setItem('glific_session', session);
 };
 
-// get the current authentication session
-export const getAuthSession = (element?: string) => {
-  const session = localStorage.getItem('glific_session');
-
-  // let's early if there is no session on local
-  if (!session) return null;
-
-  // we should retun as requested
-  let returnValue: any;
-  switch (element) {
-    case 'token_expiry_time':
-      returnValue = JSON.parse(session).token_expiry_time;
-      break;
-    case 'renewal_token':
-      returnValue = JSON.parse(session).renewal_token;
-      break;
-    case 'access_token':
-      returnValue = JSON.parse(session).access_token;
-      break;
-    default:
-      returnValue = session;
-  }
-  return returnValue;
-};
-
 // clear the authentication session
 export const clearAuthSession = () => {
   localStorage.removeItem('glific_session');
@@ -80,7 +80,7 @@ export const sendOTP = (phoneNumber: string, registration = 'false') => {
     .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
       user: {
         phone: phoneNumber,
-        registration: registration,
+        registration,
       },
     })
     .then((response) => {
@@ -123,6 +123,8 @@ export const getUserSession = (element?: string) => {
     case 'roles':
       returnValue = JSON.parse(user).roles;
       break;
+    default:
+      returnValue = JSON.parse(user);
   }
   return returnValue;
 };

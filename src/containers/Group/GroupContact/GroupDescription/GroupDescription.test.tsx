@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import { GroupDescription } from './GroupDescription';
 
 const defaultProps = {
@@ -7,8 +7,9 @@ const defaultProps = {
   description: 'Default group',
 };
 
-const wrapper = shallow(<GroupDescription {...defaultProps}></GroupDescription>);
+const wrapper = <GroupDescription {...defaultProps}></GroupDescription>;
 
 it('should render GroupDescription', () => {
-  expect(wrapper.exists()).toBe(true);
+  const { getByTestId } = render(wrapper);
+  expect(getByTestId('groupDescription')).toBeInTheDocument();
 });

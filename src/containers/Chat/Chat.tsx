@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
+
+import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatConversations from './ChatConversations/ChatConversations';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import styles from './Chat.module.css';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-
 import { setErrorMessage } from '../../common/notification';
-import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { SIMULATOR_CONTACT } from '../../common/constants';
 import { getUserRole } from '../../context/role';
+import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
 
 export interface ChatProps {
   contactId: number;
@@ -69,7 +68,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
         </div>
         <div className={styles.ChatConversations}>
           <ChatConversations
-            contactId={showSimulator && simulatorId ? parseInt(simulatorId) : contactId}
+            contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
             simulator={{ simulatorId, setShowSimulator }}
           />
         </div>
@@ -79,7 +78,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   return (
     <Paper>
-      <div className={styles.Chat}>{chatInterface}</div>
+      <div className={styles.Chat} data-testid="chatContainer">
+        {chatInterface}
+      </div>
       {simulatorAccess ? (
         <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
       ) : null}

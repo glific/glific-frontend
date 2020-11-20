@@ -2,9 +2,39 @@
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": ["error"]
+    "prettier/prettier": ["error"],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "react/prop-types": "off",
+    "react/jsx-curly-newline": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-wrap-multilines": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "jsx-a11y/media-has-caption": "off"
   },
   "env": {
     "jest": true
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }

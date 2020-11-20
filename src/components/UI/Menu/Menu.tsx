@@ -9,9 +9,12 @@ export interface MenuProps {
 }
 
 const Menu: React.SFC<MenuProps> = (props) => {
+  const { menus, children } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>
+  ) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -19,21 +22,27 @@ const Menu: React.SFC<MenuProps> = (props) => {
     setAnchorEl(null);
   };
 
-  const menuList = props.menus.map((menu: any) => {
+  const menuList = menus.map((menu: any) => {
     return (
       <div key={menu.title}>
-        <MenuItem onClickHandler={()=>{
-          if (menu.onClick) {
-            menu.onClick();
-          }
-          handleClose()}} {...menu} />
+        <MenuItem
+          onClickHandler={() => {
+            if (menu.onClick) {
+              menu.onClick();
+            }
+            handleClose();
+          }}
+          {...menu}
+        />
       </div>
     );
   });
 
   return (
     <div data-testid="Menu">
-      <div onClick={handleClick}>{props.children}</div>
+      <div onClick={handleClick} onKeyDown={handleClick} aria-hidden="true">
+        {children}
+      </div>
       <MenuElement
         anchorEl={anchorEl}
         keepMounted

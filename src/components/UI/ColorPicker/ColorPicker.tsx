@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import styles from './ColorPicker.module.css';
 import { TwitterPicker } from 'react-color';
-import { Input } from '@material-ui/core';
 import FormHelperText from '@material-ui/core/FormHelperText/FormHelperText';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { Input } from '@material-ui/core';
+
+import styles from './ColorPicker.module.css';
 
 export interface Props {
   colorCode: string;
@@ -15,14 +16,15 @@ export interface Props {
 
 export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
   const [displayPicker, setDisplayPicker] = useState(false);
-  const [colorCode, setColorCode] = useState('');
+  const [colorHex, setColorHex] = useState('');
+  const { colorCode, name, helperText } = props;
 
   useEffect(() => {
-    setColorCode(props.colorCode);
-  }, [props.colorCode]);
+    setColorHex(colorCode);
+  }, [colorCode]);
 
   const handleChangeComplete = (color: any) => {
-    setColorCode(color.hex);
+    setColorHex(color.hex);
     props.form.setFieldValue(props.field.name, color.hex);
   };
 
@@ -34,25 +36,30 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
     <div className={styles.Container}>
       <div className={styles.ColorPicker} data-testid="ColorPicker">
         <div className={styles.ColorInput}>
-          <Input type="text" placeholder="Select color" name={props.name} value={colorCode}></Input>
+          <Input type="text" placeholder="Select color" name={name} value={colorHex} />
         </div>
         <ClickAwayListener onClickAway={onClickAway}>
           <div className={styles.ContainListener}>
             <div
+              role="button"
+              tabIndex={0}
               data-testid="ChooseColor"
               className={styles.ChooseColor}
               style={{
-                backgroundColor: colorCode,
+                backgroundColor: colorHex,
               }}
               onClick={() => setDisplayPicker(!displayPicker)}
-            ></div>
-            {props.helperText ? (
-              <FormHelperText className={styles.HelperText}>{props.helperText}</FormHelperText>
+              onKeyDown={() => setDisplayPicker(!displayPicker)}
+            >
+              &nbsp;
+            </div>
+            {helperText ? (
+              <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
             ) : null}
             {displayPicker ? (
               <TwitterPicker
                 className={styles.PickerPanel}
-                triangle={'hide'}
+                triangle="hide"
                 onChangeComplete={handleChangeComplete}
               />
             ) : null}

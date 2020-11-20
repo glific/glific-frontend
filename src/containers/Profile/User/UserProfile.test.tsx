@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 describe('<UserProfile />', () => {
-  test('it should mount', () => {
+  test('it should render', () => {
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <UserProfile {...defaultProps} />

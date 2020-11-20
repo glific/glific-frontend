@@ -6,11 +6,11 @@ import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 
+import styles from './ChatMessage.module.css';
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
-import styles from './ChatMessage.module.css';
 import { TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
@@ -47,10 +47,23 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
-  let tag: any;
+  let displayTag: any;
   let deleteId: string | number;
 
-  const { popup, focus, id } = props;
+  const {
+    popup,
+    focus,
+    id,
+    sender,
+    contactId,
+    tags,
+    showMessage,
+    insertedAt,
+    onClick,
+    type,
+    media,
+    body,
+  } = props;
 
   useEffect(() => {
     if (popup) {
@@ -83,7 +96,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
 
-  if (props.sender.id === props.contactId) {
+  if (sender.id === contactId) {
     additionalClass = styles.Other;
     mineColor = styles.OtherColor;
     iconLeft = true;
@@ -111,6 +124,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         return '.m4a';
       case 'IMAGE':
         return '.png';
+      default:
+        break;
     }
     return '';
   };
@@ -150,8 +165,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     });
   };
 
-  if (props.tags && props.tags.length > 0)
-    tag = props.tags.map((tag: any) => {
+  if (tags && tags.length > 0)
+    displayTag = tags.map((tag: any) => {
       return (
         <div
           key={tag.id}
@@ -171,15 +186,15 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       );
     });
 
-  const date = props.showMessage ? (
+  const date = showMessage ? (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
-      {moment(props.insertedAt).format(TIME_FORMAT)}
+      {moment(insertedAt).format(TIME_FORMAT)}
     </div>
   ) : null;
 
   const icon = (
     <MessageIcon
-      onClick={props.onClick}
+      onClick={onClick}
       ref={Ref}
       className={`${styles.Button} ${iconPlacement}`}
       data-testid="messageOptions"
@@ -187,23 +202,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   );
 
   return (
-    <div
-      className={additionalClass}
-      ref={messageRef}
-      data-testid="message"
-      id={'#search' + props.id}
-    >
+    <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         <div className={`${styles.ChatMessage} ${mineColor}`}>
           <div className={styles.Content} data-testid="content">
             <div>
-              <ChatMessageType
-                type={props.type}
-                media={props.media}
-                body={props.body}
-                insertedAt={props.insertedAt}
-              />
+              <ChatMessageType type={type} media={media} body={body} insertedAt={insertedAt} />
             </div>
           </div>
 
@@ -265,7 +270,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
       <div className={messageDetails}>
         {date}
-        {tag ? <div className={`${styles.TagContainer} ${tagContainer}`}>{tag}</div> : null}
+        {displayTag ? (
+          <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
+        ) : null}
       </div>
     </div>
   );

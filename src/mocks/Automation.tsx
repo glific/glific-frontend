@@ -1,4 +1,8 @@
-import { GET_AUTOMATION, GET_AUTOMATION_DETAILS } from '../graphql/queries/Automation';
+import {
+  GET_AUTOMATION,
+  GET_AUTOMATION_COUNT,
+  GET_AUTOMATION_DETAILS,
+} from '../graphql/queries/Automation';
 import { FILTER_AUTOMATION } from '../graphql/queries/Automation';
 
 export const getAutomationQuery = {
@@ -70,9 +74,26 @@ export const getAutomationDetailsQuery = {
       flows: [
         {
           name: 'help workflow',
-          keywords:['help']
+          keywords: ['help'],
         },
       ],
+    },
+  },
+};
+
+export const getAutomationCountQuery = {
+  request: {
+    query: GET_AUTOMATION_COUNT,
+    variables: {
+      filter: {
+        name: '',
+      },
+    },
+  },
+
+  result: {
+    data: {
+      countFlows: 3,
     },
   },
 };

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import { useQuery, useMutation } from '@apollo/client';
 import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -14,7 +15,9 @@ export interface ContactProfileProps {
 }
 
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
-  const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: props.match.params.id } });
+  const { match } = props;
+
+  const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });
   const { data: tagsData } = useQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
@@ -42,7 +45,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
         variables: {
           input: {
             addTagIds: selectedTags,
-            contactId: contactId,
+            contactId,
             deleteTagIds: removedTags,
           },
         },
@@ -69,18 +72,19 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   let fields = {};
   let settings = {};
   if (data) {
-    const contact = data.contact.contact;
-    phoneNo = contact.phone;
-    groups = contact.groups;
-    lastMessage = contact.lastMessageAt;
-    fields = contact.fields;
-    settings = contact.settings;
+    const { contact } = data;
+    const contactData = contact.contact;
+    phoneNo = contactData.phone;
+    groups = contactData.groups;
+    lastMessage = contactData.lastMessageAt;
+    fields = contactData.fields;
+    settings = contactData.settings;
   }
 
   const additonalStates = { name: 'tags', state: tags, setState: setTags };
 
-  const setSelectedTags = (tags: any) => {
-    setSelected(tags);
+  const setSelectedTags = (selectedTags: any) => {
+    setSelected(selectedTags);
   };
   return (
     <div className={styles.ContactProfile}>
@@ -92,7 +96,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           additionalState={setSelectedTags}
           additionalQuery={updateTags}
           profileType="Contact"
-          redirectionLink={`chat/${props.match.params.id}`}
+          redirectionLink={`chat/${match.params.id}`}
           afterDelete={{ link: '/chat' }}
         />
       </div>
@@ -103,7 +107,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           settings={settings}
           groups={groups}
           lastMessage={lastMessage}
-        ></ContactDescription>
+        />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
-import styles from './Checkbox.module.css';
 import { Checkbox as CheckboxElement, FormControlLabel } from '@material-ui/core';
+
+import styles from './Checkbox.module.css';
 
 export interface CheckboxProps {
   field: any;
@@ -10,6 +11,7 @@ export interface CheckboxProps {
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
+  const { field, title } = props;
   const handleChange = () => {
     props.form.setFieldValue(props.field.name, !props.field.value);
     if (props.handleChange) props.handleChange(!props.field.value);
@@ -22,14 +24,14 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
           <CheckboxElement
             data-testid="checkboxLabel"
             className={styles.CheckboxColor}
-            {...props.field}
+            {...field}
             color="primary"
-            checked={props.field.value ? props.field.value : false}
+            checked={field.value ? field.value : false}
             onChange={handleChange}
           />
         }
         labelPlacement="end"
-        label={props.title}
+        label={title}
       />
     </div>
   );

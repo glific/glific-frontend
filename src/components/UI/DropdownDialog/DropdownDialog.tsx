@@ -18,24 +18,27 @@ export const DropdownDialog: React.FC<DropdownDialogProps> = (props: DropdownDia
   const handleChange = (event: any) => {
     setSelectedValue(event.target.value);
   };
+
+  const { title, handleCancel, options, placeholder, description } = props;
+
   return (
     <DialogBox
-      title={props.title}
+      title={title}
       handleOk={() => props.handleOk(selectedValue)}
-      handleCancel={props.handleCancel}
+      handleCancel={handleCancel}
       titleAlign="left"
       buttonOk="Start"
     >
       <div className={styles.DialogBox}>
         <Dropdown
-          options={props.options}
-          label={props.title}
-          placeholder={props.placeholder}
+          options={options}
+          label={title}
+          placeholder={placeholder}
           field={{ onChange: handleChange, value: selectedValue }}
-        ></Dropdown>
+        />
 
         <div className={styles.Message} data-testid="description">
-          {props.description}
+          {description}
         </div>
       </div>
     </DialogBox>

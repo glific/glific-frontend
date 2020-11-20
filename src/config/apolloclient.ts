@@ -2,10 +2,10 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
-import absinthe from './absinthe';
-
-import { GLIFIC_API_URL } from '.';
 import { setContext } from '@apollo/link-context';
+
+import absinthe from './absinthe';
+import { GLIFIC_API_URL } from '.';
 import {
   checkAuthStatusService,
   renewAuthToken,
@@ -21,8 +21,8 @@ const gqlClient = () => {
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
     fetchAccessToken: () => renewAuthToken(),
-    handleFetch: (accessToken: any) => {},
-    handleResponse: (operation, accessTokenField) => (response: any) => {
+    handleFetch: () => {},
+    handleResponse: (_operation, accessTokenField) => (response: any) => {
       // lets set the session
       setAuthSession(JSON.stringify(response.data.data));
 
@@ -33,8 +33,10 @@ const gqlClient = () => {
     },
     handleError: (err: Error) => {
       // full control over handling token fetch Error
+      /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
+      /* eslint-enable */
       // gracefully logout
       window.location.href = '/logout';
     },
@@ -48,7 +50,7 @@ const gqlClient = () => {
     return {
       headers: {
         ...headers,
-        Authorization: accessToken ? accessToken : '',
+        Authorization: accessToken || '',
       },
     };
   });
@@ -56,15 +58,19 @@ const gqlClient = () => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
+        // eslint-disable-next-line
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
       );
 
-    if (networkError) console.log(`[Network error]: ${networkError}`);
+    if (networkError) {
+      // eslint-disable-next-line
+      console.log(`[Network error]: ${networkError}`);
+    }
   });
 
   const httpLink = createHttpLink({ uri: GLIFIC_API_URL });
 
-  const retryIf = (error: any, operation: any) => {
+  const retryIf = (error: any) => {
     const doNotRetryCodes = [500, 400];
     return !!error && !doNotRetryCodes.includes(error.statusCode);
   };
@@ -84,7 +90,7 @@ const gqlClient = () => {
   const link = retryLink.split(
     (operation) => subscribe.hasSubscription(operation.query),
     absinthe,
-    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)) as any) as any
+    refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
   return new ApolloClient({

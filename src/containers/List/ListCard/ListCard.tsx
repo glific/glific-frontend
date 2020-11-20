@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardContent, Typography, CardActions } from '@material-ui/core';
-import styles from './ListCard.module.css';
 import { Link } from 'react-router-dom';
+
+import styles from './ListCard.module.css';
 
 interface ListCardProps {
   data: any;
@@ -9,6 +10,8 @@ interface ListCardProps {
 }
 
 export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
+  const { data } = props;
+
   const link = (id: any) => {
     return `/${props.link.start}/${id}/${props.link.end}`;
   };
@@ -19,19 +22,19 @@ export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
   );
   return (
     <div className={styles.CardContainer}>
-      {props.data.map((data: any) => {
+      {data.map((dataInfo: any) => {
         return (
-          <Card variant="outlined" className={styles.Card} key={data.id}>
+          <Card variant="outlined" className={styles.Card} key={dataInfo.id}>
             <CardContent className={styles.CardContent}>
-              <div data-testid="label">{data.label}</div>
+              <div data-testid="label">{dataInfo.label}</div>
 
               <Typography variant="body2" component="div" data-testid="description">
-                {data.description}
+                {dataInfo.description}
               </Typography>
             </CardContent>
             <CardActions className={styles.CardActions}>
-              {viewDetails(data.id)}
-              {data.operations}
+              {viewDetails(dataInfo.id)}
+              {dataInfo.operations}
             </CardActions>
           </Card>
         );
@@ -39,3 +42,5 @@ export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
     </div>
   );
 };
+
+export default ListCard;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import ChatMessageType from './ChatMessageType';
 
 const defaultProps = (type: string) => {
@@ -14,23 +14,23 @@ const defaultProps = (type: string) => {
   };
 };
 
-const chatMessageImage = mount(<ChatMessageType {...defaultProps('IMAGE')} />);
-const chatMessageVideo = mount(<ChatMessageType {...defaultProps('VIDEO')} />);
-const chatMessageDocument = mount(<ChatMessageType {...defaultProps('DOCUMENT')} />);
-const chatMessageAudio = mount(<ChatMessageType {...defaultProps('AUDIO')} />);
-
 test('it shows image when type of message is image', () => {
-  expect(chatMessageImage.find('[data-testid="imageMessage"]').exists()).toBe(true);
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
+  expect(getByTestId('imageMessage')).toBeInTheDocument();
 });
 
 test('it loads audio when type of message is audio', () => {
-  expect(chatMessageAudio.find('[data-testid="audioMessage"]').exists()).toBe(true);
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('AUDIO')} />);
+
+  expect(getByTestId('audioMessage')).toBeInTheDocument();
 });
 
 test('it loads video when type of message is video', () => {
-  expect(chatMessageVideo.find('[data-testid="videoMessage"]').exists()).toBe(true);
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('VIDEO')} />);
+  expect(getByTestId('videoMessage')).toBeInTheDocument();
 });
 
 test('it loads document when type of message is document', () => {
-  expect(chatMessageDocument.find('[data-testid="documentMessage"]').exists()).toBe(true);
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('DOCUMENT')} />);
+  expect(getByTestId('documentMessage')).toBeInTheDocument();
 });

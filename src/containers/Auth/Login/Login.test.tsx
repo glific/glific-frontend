@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
+import { act, render, screen, wait, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -32,7 +32,7 @@ describe('<Login />', () => {
   });
 
   it('test the login form submission with correct creds', async () => {
-    const { container } = render(wrapper);
+    const { container,getByText } = render(wrapper);
     const phone = screen.getByRole('textbox');
     UserEvent.type(phone, '+919978776554');
 
@@ -45,8 +45,10 @@ describe('<Login />', () => {
 
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-    await wait();
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    });
+
   });
 
   it('test the login form submission with incorrect creds', async () => {
@@ -63,7 +65,8 @@ describe('<Login />', () => {
 
     // set the mock error case while login
     const errorMessage = 'Cannot login';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
-    await wait();
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    });
   });
 });
