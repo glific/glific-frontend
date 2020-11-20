@@ -87,41 +87,21 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
         searchMulti: {
           contacts: [
             {
-              body: null,
-              contact: {
-                bspStatus: 'HSM',
-                id: '8',
-                lastMessageAt: '2020-10-15T07:15:33Z',
-                name: 'Dignesh',
-                status: 'VALID',
-              },
-              id: '66',
-              insertedAt: '2020-10-15T07:15:33.613260Z',
-              media: {
-                caption: null,
-                url:
-                  'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
-              },
-              messageNumber: 0,
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '8',
-              },
-              tags: [
-                {
-                  colorCode: '#9900ef',
-                  id: '30',
-                  label: 'Default',
-                },
-                {
-                  colorCode: '#0C976D',
-                  id: '15',
-                  label: 'Numeric',
-                },
-              ],
-              type: 'IMAGE',
+              bspStatus: 'SESSION_AND_HSM',
+              id: '2',
+              lastMessageAt: '2020-11-18T04:37:57Z',
+              name: 'Default receiver',
+              phone: '9876543210',
+              status: 'VALID',
+              tags: [],
+            },
+            {
+              bspStatus: 'SESSION',
+              id: '3',
+              lastMessageAt: '2020-11-18T04:37:57Z',
+              name: 'Adelle Cavin',
+              status: 'VALID',
+              tags: [],
             },
           ],
           messages: [
@@ -132,6 +112,7 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
                 id: '8',
                 lastMessageAt: '2020-10-15T07:15:33Z',
                 name: 'Dignesh',
+                phone: '9876543210',
                 status: 'VALID',
               },
               id: '18',
@@ -162,6 +143,7 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
                 id: '8',
                 lastMessageAt: '2020-10-15T07:15:33Z',
                 name: 'Dignesh',
+                phone: '9876543210',
                 status: 'VALID',
               },
               id: '12',
