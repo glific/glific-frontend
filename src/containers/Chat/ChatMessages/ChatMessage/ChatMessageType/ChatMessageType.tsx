@@ -15,7 +15,7 @@ import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 export interface ChatMessageTypeProps {
   type: string;
   media: any;
-  insertedAt: string;
+  insertedAt?: string;
   body: string;
 }
 
@@ -99,10 +99,12 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       break;
 
     default:
-      messageBody = (
+      messageBody = insertedAt ? (
         <Tooltip title={moment(insertedAt).format(DATE_FORMAT)} placement="right">
           <MessagesWithLinks message={body} />
         </Tooltip>
+      ) : (
+        <MessagesWithLinks message={body} />
       );
   }
 
