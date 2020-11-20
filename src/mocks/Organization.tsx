@@ -4,6 +4,7 @@ import {
   GET_PROVIDERS,
   GET_CREDENTIAL,
 } from '../graphql/queries/Organization';
+import PERIODIC_INFO_SUBSCRIPTION from '../graphql/subscriptions/PeriodicInfo';
 
 export const getOrganizationQuery = [
   {
@@ -353,6 +354,23 @@ export const getOrganizationLanguagesQuery = {
               label: 'English',
             },
           },
+        },
+      },
+    },
+  },
+};
+
+export const walletBalanceSubscription = {
+  request: {
+    query: PERIODIC_INFO_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      data: {
+        periodicInfo: {
+          key: 'bsp_balance',
+          value: '{"balance":0.787}',
         },
       },
     },

@@ -10,8 +10,9 @@ import { sideDrawerMenus } from '../../../../../config/menu';
 import { getRoleBasedAccess } from '../../../../../context/role';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
 import { setUserSession } from '../../../../../services/AuthService';
+import { walletBalanceSubscription } from '../../../../../mocks/Organization';
 
-const mocks = [getCurrentUserQuery];
+const mocks = [getCurrentUserQuery, walletBalanceSubscription];
 
 describe('side drawer testing', () => {
   const component = (
