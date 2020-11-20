@@ -73,7 +73,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   // get contact groups
   const { data } = useQuery(GET_CONTACT_GROUPS, {
-    variables: { id: props.contactId },
+    variables: { id: contactId },
     fetchPolicy: 'cache-and-network',
   });
 
