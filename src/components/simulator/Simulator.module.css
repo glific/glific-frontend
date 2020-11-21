@@ -14,7 +14,7 @@
   white-space: pre-line;
 }
 
-.MessageText a{
+.MessageText a {
   text-decoration: none;
 }
 
@@ -33,7 +33,6 @@
   composes: MessageText;
   text-align: right;
   padding-right: 22px;
-  display: flex;
   margin-left: auto;
   background: #e1f4c9;
 }

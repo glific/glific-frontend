@@ -78,3 +78,12 @@ export const USER_LANGUAGES = gql`
     }
   }
 `;
+
+export const BSPBALANCE = gql`
+  query bspbalance {
+    bspbalance {
+      key
+      value
+    }
+  }
+`;

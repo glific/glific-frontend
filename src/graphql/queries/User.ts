@@ -7,6 +7,7 @@ export const GET_USERS_QUERY = gql`
         id
         name
         phone
+        isRestricted
         roles
         groups {
           id

@@ -10,7 +10,7 @@ import { Button } from '../Form/Button/Button';
 export interface DialogProps {
   open?: boolean;
   title: string;
-  handleOk: Function;
+  handleOk?: Function;
   handleCancel: Function;
   children?: ReactNode;
   buttonOk?: string;
@@ -26,7 +26,7 @@ export interface DialogProps {
 export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   title,
-  handleOk,
+  handleOk = () => {},
   handleCancel,
   children,
   buttonOk = 'Confirm',
