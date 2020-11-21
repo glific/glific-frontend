@@ -13,6 +13,8 @@ import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons
 import { isManagerRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
+import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import styles from './StaffManagement.module.css';
 
 export interface StaffManagementProps {
   match: any;
@@ -36,6 +38,49 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [groups, setGroups] = useState([]);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
+  const [helpDialog, setHelpDialog] = useState(false);
+  
+  let dialog;
+
+  if (helpDialog) {
+    const rolesHelp = [
+      {
+        title: 'Admin',
+        description: 'Complete access to all the parts of the platform.',
+      },
+      {
+        title: 'Manager',
+        description: 'Complete access to the platform except settings and staff management.',
+      },
+      {
+        title: 'Staff',
+        description: `Access only to the chat section and their groups. Access can be limited to chatting
+       with all contacts or only to the ones in their assigned group.`,
+      },
+      {
+        title: 'None',
+        description: 'No access to the platform. They can’t login.',
+      },
+    ];
+    dialog = (
+      <DialogBox
+        titleAlign="left"
+        title="User roles"
+        skipOk
+        buttonCancel="Close"
+        handleCancel={() => setHelpDialog(false)}
+      >
+        {rolesHelp.map((role: any) => {
+          return (
+            <div className={styles.RolesHelp}>
+              <span>{role.title}: </span>
+              {role.description}
+            </div>
+          );
+        })}
+      </DialogBox>
+    );
+  }
 
   const states = { name, phone, roles, groups, isRestricted };
   const setStates = ({
@@ -107,6 +152,10 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     }
   };
 
+  const handleHelpClick = () => {
+    setHelpDialog(true);
+  };
+ 
   formFields = [
     {
       component: Input,
@@ -128,6 +177,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       options: rolesList,
       roleSelection: handleRolesChange,
       getOptions,
+      helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
       textFieldProps: {
         label: 'Roles',
@@ -190,20 +240,23 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   };
 
   return (
-    <FormLayout
-      {...queries}
-      match={match}
-      states={states}
-      setStates={setStates}
-      setPayload={setPayload}
-      validationSchema={FormSchema}
-      listItemName="User"
-      dialogMessage={dialogMessage}
-      formFields={formFields}
-      redirectionLink="staff-management"
-      listItem="user"
-      icon={staffManagementIcon}
-      languageSupport={false}
-    />
+    <>
+      {dialog}
+      <FormLayout
+        {...queries}
+        match={match}
+        states={states}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={FormSchema}
+        listItemName="User"
+        dialogMessage={dialogMessage}
+        formFields={formFields}
+        redirectionLink="staff-management"
+        listItem="user"
+        icon={staffManagementIcon}
+        languageSupport={false}
+      />
+    </>
   );
 };

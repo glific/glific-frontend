@@ -21,6 +21,7 @@ import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simul
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES, TIME_FORMAT, SIMULATOR_CONTACT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
+import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -65,34 +66,28 @@ export const Simulator: React.FC<SimulatorProps> = ({
     text: string,
     direction: string,
     index: number,
-    insertedAt: string
-  ): any => {
+    insertedAt: string,
+    type: string,
+    media: any
+  ) => {
     return (
       <div className={getStyleForDirection(direction)} key={index}>
-        {text
-          ? text.split('\n').map((item, key) => {
-              return (
-                // it is ok to use "key" as index as we are not altering sequence etc. and we can have 2 same messages
-                // eslint-disable-next-line
-                <div key={key} className={styles.MessageText}>
-                  {item}
-                </div>
-              );
-            })
-          : null}
-
-        <span>{moment(insertedAt).format(TIME_FORMAT)}</span>
-        {direction === 'received' ? <DoneAllIcon /> : null}
+        <ChatMessageType type={type} media={media} body={text} />
+        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+          {moment(insertedAt).format(TIME_FORMAT)}
+        </span>
+        {direction === 'send' ? <DoneAllIcon /> : null}
       </div>
     );
   };
 
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
+      const { body, insertedAt, type, media } = simulatorMessage;
       if (simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(simulatorMessage.body, 'send', index, simulatorMessage.insertedAt);
+        return renderMessage(body, 'received', index, insertedAt, type, media);
       }
-      return renderMessage(simulatorMessage.body, 'received', index, simulatorMessage.insertedAt);
+      return renderMessage(body, 'send', index, insertedAt, type, media);
     })
     .reverse();
 
