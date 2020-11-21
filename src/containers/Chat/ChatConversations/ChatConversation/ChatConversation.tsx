@@ -164,7 +164,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     default:
       message = lastMessage.type;
   }
-  const displayMSG = WhatsAppToJsx(message);
+  const displayMSG: any = WhatsAppToJsx(message);
 
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
