@@ -8,7 +8,7 @@ const resetRole = () => {
   getRoleBasedAccess();
 };
 
-const getUserRole = () => {
+const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     let userRole: any = getUserSession('roles');
     if (userRole) {

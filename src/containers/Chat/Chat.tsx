@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
@@ -12,12 +12,14 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { setErrorMessage } from '../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import { SIMULATOR_CONTACT } from '../../common/constants';
+import { getUserRole } from '../../context/role';
 
 export interface ChatProps {
   contactId: number;
 }
 
 export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+  const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   let simulatorId: string | null = null;
 
@@ -29,6 +31,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     variables: queryVariables,
     fetchPolicy: 'cache-first',
   });
+
+  useEffect(() => {
+    if (getUserRole().includes('Staff')) {
+      setSimulatorAccess(false);
+    }
+  }, []);
 
   if (loading) return <Loading />;
   if (error) {
@@ -72,7 +80,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   return (
     <Paper>
       <div className={styles.Chat}>{chatInterface}</div>
-      <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
+      {simulatorAccess ? (
+        <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
+      ) : null}
     </Paper>
   );
 };
