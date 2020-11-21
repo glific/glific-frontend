@@ -39,7 +39,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
-  
+
   let dialog;
 
   if (helpDialog) {
@@ -155,7 +155,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const handleHelpClick = () => {
     setHelpDialog(true);
   };
- 
+
   formFields = [
     {
       component: Input,

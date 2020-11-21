@@ -173,7 +173,15 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
         ) : null}
 
         {helpLink ? (
-          <div className={styles.HelpLink} onClick={()=>helpLink.handleClick()}>{helpLink.label}</div>
+          <div
+            className={styles.HelpLink}
+            onKeyDown={() => helpLink.handleClick()}
+            onClick={() => helpLink.handleClick()}
+            role="button"
+            tabIndex={0}
+          >
+            {helpLink.label}
+          </div>
         ) : null}
       </FormControl>
     </div>
