@@ -3,7 +3,9 @@ import {
   USER_LANGUAGES,
   GET_PROVIDERS,
   GET_CREDENTIAL,
+  BSPBALANCE,
 } from '../graphql/queries/Organization';
+import PERIODIC_INFO_SUBSCRIPTION from '../graphql/subscriptions/PeriodicInfo';
 
 export const getOrganizationQuery = [
   {
@@ -358,3 +360,73 @@ export const getOrganizationLanguagesQuery = {
     },
   },
 };
+
+export const walletBalanceSubscription = [
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        data: {
+          periodicInfo: {
+            key: 'bsp_balance',
+            value: '{"balance":0.787}',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        data: {
+          periodicInfo: {
+            key: 'bsp_balance',
+            value: '{"balance":0.787}',
+          },
+        },
+      },
+    },
+  },
+];
+
+export const walletBalanceQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        data: {
+          bspbalance: {
+            key: 'bsp_balance',
+            value: '{"balance":0.628}',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        data: {
+          bspbalance: {
+            key: 'bsp_balance',
+            value: '{"balance":0.628}',
+          },
+        },
+      },
+    },
+  },
+];

@@ -1,22 +1,24 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import { render,waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+import { walletBalanceQuery, walletBalanceSubscription } from '../../mocks/Organization';
+
+const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('<AuthenticatedRoute />', () => {
-  test('it should render',async () => {
+  test('it should render', async () => {
     const { getByTestId } = render(
-      <MockedProvider>
+      <MockedProvider mocks={mocks}>
         <BrowserRouter>
           <AuthenticatedRoute />
         </BrowserRouter>
       </MockedProvider>
     );
-    await waitFor(()=>{
+    await waitFor(() => {
       expect(getByTestId('app')).toBeInTheDocument();
-    })
-    
+    });
   });
 });

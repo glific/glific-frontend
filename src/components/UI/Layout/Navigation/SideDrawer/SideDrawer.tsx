@@ -32,6 +32,7 @@ import {
   getRoleBasedAccess,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
+import WalletBalance from '../../../../../containers/WalletBalance/WalletBalance';
 
 export interface SideDrawerProps {}
 
@@ -104,7 +105,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     BottomMenus: {
       position: 'absolute',
-      bottom: '10px',
+      bottom: '50px',
       display: 'flex',
       width: '100%',
       paddingLeft: '8px',
@@ -275,6 +276,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
             </div>
           </div>
           {drawer}
+          <WalletBalance fullOpen={fullOpen} />
         </Drawer>
       </Hidden>
     </nav>
