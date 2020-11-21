@@ -53,31 +53,15 @@ export const SEARCH_MULTI_QUERY = gql`
     searchMulti(filter: $searchFilter, contactOpts: $contactOpts, messageOpts: $messageOpts) {
       contacts {
         id
-        body
-        messageNumber
-        insertedAt
-        contact {
-          id
-          name
-          lastMessageAt
-          status
-          bspStatus
-        }
-        receiver {
-          id
-        }
-        sender {
-          id
-        }
+        name
+        phone
+        lastMessageAt
+        status
+        bspStatus
         tags {
           id
           label
           colorCode
-        }
-        type
-        media {
-          url
-          caption
         }
       }
       messages {
@@ -88,6 +72,7 @@ export const SEARCH_MULTI_QUERY = gql`
         contact {
           id
           name
+          phone
           lastMessageAt
           status
           bspStatus
@@ -117,6 +102,7 @@ export const SEARCH_MULTI_QUERY = gql`
         contact {
           id
           name
+          phone
           lastMessageAt
           status
           bspStatus
