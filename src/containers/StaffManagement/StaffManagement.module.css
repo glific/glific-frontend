@@ -1,0 +1,11 @@
+.RolesHelp {
+  color: #073f24;
+  font-size: 14px;
+  padding-bottom: 12px;
+  line-height: 1.28;
+  max-width: 350px;
+}
+
+.RolesHelp span {
+  font-weight: 700;
+}
