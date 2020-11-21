@@ -99,7 +99,7 @@ export const WhatsAppToDraftEditor = (text: string) => {
 };
 
 export const WhatsAppToJsx = (text: any) => {
-  let replacements = TextReplacements;
+  const replacements = TextReplacements;
   let modifiedText = text;
   const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
 
@@ -113,27 +113,15 @@ export const WhatsAppToJsx = (text: any) => {
     });
   });
 
-  for (let i = 0; i < replacements.length; i++) {
-    let type = Object.keys(replacements[i])[0];
-    let character: any = replacements[i][type].char;
-    let replaceFunc: any = replacements[i][type].replace;
-    // let regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
-    let regexStr =
-      '\\' +
-      character +
-      '{' +
-      character.length +
-      '}(.+?)\\' +
-      character +
-      '{' +
-      character.length +
-      '}';
-    modifiedText = reactStringReplace(
-      modifiedText,
-      new RegExp(regexStr, 'g'),
-      (match: any, i: number) => replaceFunc(match)
+  replacements.forEach((replacement: any) => {
+    const type = Object.keys(replacement)[0];
+    const character: any = replacement[type].char;
+    const replaceFunc: any = replacement[type].replace;
+    const regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
+    modifiedText = reactStringReplace(modifiedText, new RegExp(regexStr, 'g'), (match: any) =>
+      replaceFunc(match)
     );
-  }
+  });
 
   return modifiedText;
 };
