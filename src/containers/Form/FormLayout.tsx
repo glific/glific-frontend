@@ -249,7 +249,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     });
 
-    console.log(payload);
     if (itemId) {
       updateItem({
         variables: {
