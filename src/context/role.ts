@@ -13,7 +13,7 @@ let displayUserGroups: boolean = false;
 let isManagerRole: boolean = false;
 /* eslint-enable */
 
-const getUserRole = () => {
+const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     const userRole: any = getUserSession('roles');
     if (userRole) {
