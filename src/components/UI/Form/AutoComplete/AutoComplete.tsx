@@ -25,6 +25,7 @@ export interface AutocompleteProps {
   noOptionsText?: any;
   onChange?: any;
   asyncSearch?: boolean;
+  roleSelection?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -40,6 +41,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   disabled = false,
   getOptions,
   asyncValues,
+  roleSelection,
   onChange,
   asyncSearch = false,
   helpLink,
@@ -83,6 +85,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
+            if (roleSelection) {
+              roleSelection(value);
+            }
             if (asyncSearch) {
               const filterValues = asyncValues.value.filter(
                 (val: any) => val.id !== value[value.length - 1].id
@@ -168,7 +173,15 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
         ) : null}
 
         {helpLink ? (
-          <div className={styles.HelpLink} onClick={()=>helpLink.handleClick()}>{helpLink.label}</div>
+          <div
+            className={styles.HelpLink}
+            onKeyDown={() => helpLink.handleClick()}
+            onClick={() => helpLink.handleClick()}
+            role="button"
+            tabIndex={0}
+          >
+            {helpLink.label}
+          </div>
         ) : null}
       </FormControl>
     </div>
