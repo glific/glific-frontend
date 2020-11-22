@@ -58,35 +58,26 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
 
   let phoneDisplay = <span data-testid="phone">+{maskedPhone}</span>;
   if (phone) {
+    let phoneDisplayValue = maskedPhone;
+    let visibilityElement = <Visibility classes={{ root: styles.Visibility }} />;
     if (showPlainPhone) {
-      phoneDisplay = (
-        <div>
-          <span data-testid="phone">+{phone}</span>
-          <IconButton
-            aria-label="toggle phone visibility"
-            data-testid="phoneToggle"
-            onClick={handlePhoneDisplay}
-            edge="end"
-          >
-            <VisibilityOff classes={{ root: styles.Visibility }} />
-          </IconButton>
-        </div>
-      );
-    } else {
-      phoneDisplay = (
-        <div>
-          <span data-testid="phone">+{maskedPhone}</span>
-          <IconButton
-            aria-label="toggle phone visibility"
-            data-testid="phoneToggle"
-            onClick={handlePhoneDisplay}
-            edge="end"
-          >
-            <Visibility classes={{ root: styles.Visibility }} />
-          </IconButton>
-        </div>
-      );
+      phoneDisplayValue = phone;
+      visibilityElement = <VisibilityOff classes={{ root: styles.Visibility }} />;
     }
+
+    phoneDisplay = (
+      <div>
+        <span data-testid="phone">+{phoneDisplayValue}</span>
+        <IconButton
+          aria-label="toggle phone visibility"
+          data-testid="phoneToggle"
+          onClick={handlePhoneDisplay}
+          edge="end"
+        >
+          {visibilityElement}
+        </IconButton>
+      </div>
+    );
   }
 
   return (
