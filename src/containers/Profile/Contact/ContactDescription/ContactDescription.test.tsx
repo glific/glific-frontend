@@ -5,14 +5,16 @@ import { ContactDescription } from './ContactDescription';
 const date = new Date();
 const defaultProps = {
   fields: '{"Age":"14"}',
-  phoneNo: '9987399299',
+  phone: '9987399299',
+  maskedPhone: '9987399299',
   settings: '{"Status":"Active"}',
   groups: [{ id: 1, label: 'Default Group', users: [{ name: 'Glific' }] }],
   lastMessage: new Date(),
 };
 const propsWithMultipleGroups = {
   fields: {},
-  phoneNo: '9987399299',
+  phone: '9987399299',
+  maskedPhone: '9987399299',
   settings: {},
   groups: [
     { id: 1, label: 'Default Group', users: [{ name: 'Glific' }] },
@@ -31,7 +33,7 @@ it('should render ContactDescription', () => {
 
 test('it should display contact number', () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('phoneNo')).toHaveTextContent('+9987399299');
+  expect(getByTestId('phone')).toHaveTextContent('+9987399299');
 });
 
 test('it should display contact groups', () => {
