@@ -13,6 +13,7 @@ export const getCurrentUserQuery = {
           id: '1',
           name: 'John Doe',
           phone: '+919820198765',
+          maskedPhone: '+919820198765',
           roles: ['admin'],
           contact: {
             id: '1',
