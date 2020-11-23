@@ -34,3 +34,8 @@ test('it loads document when type of message is document', () => {
   const { getByTestId } = render(<ChatMessageType {...defaultProps('DOCUMENT')} />);
   expect(getByTestId('documentMessage')).toBeInTheDocument();
 });
+
+test('it loads document when type of message is sticker', () => {
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('STICKER')} />);
+  expect(getByTestId('stickerMessage')).toBeInTheDocument();
+});
