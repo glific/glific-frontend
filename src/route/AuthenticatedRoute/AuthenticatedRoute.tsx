@@ -25,7 +25,6 @@ import { HSM } from '../../containers/Template/Form/HSM/HSM';
 import { SettingList } from '../../containers/SettingList/SettingList';
 import { Providers } from '../../containers/SettingList/Providers/Providers';
 import { BlockContactList } from '../../containers/BlockContact/BlockContactList/BlockContactList';
-import { Logout } from '../../containers/Auth/Logout/Logout';
 import { Layout } from '../../components/UI/Layout/Layout';
 import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
@@ -35,7 +34,7 @@ import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSub
 export const AuthenticatedRoute: React.SFC = () => {
   const toastMessage = useToast();
   let userRole: any[] = [];
-  let route = <Route path="/logout" exact component={Logout} />;
+  let route;
 
   if (getUserRole()) {
     userRole = getUserRole();
@@ -60,7 +59,6 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/contact-profile/:id" exact component={ContactProfile} />
         <Route path="/blocked-contacts" exact component={BlockContactList} />
         <Route path="/myaccount" exact component={MyAccount} />
-        <Route path="/logout" exact component={Logout} />
         <Route path="/" render={defaultRedirect} />
       </Switch>
     );
@@ -104,8 +102,6 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/settings/organization" exact component={Organisation} />
         <Route path="/settings/:type" exact component={Providers} />
         <Route path="/blocked-contacts" exact component={BlockContactList} />
-
-        <Route path="/logout" exact component={Logout} />
 
         <Route
           exact
