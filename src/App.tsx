@@ -12,7 +12,7 @@ import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRout
 import { Logout } from './containers/Auth/Logout/Logout';
 
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
