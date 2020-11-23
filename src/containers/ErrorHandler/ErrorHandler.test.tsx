@@ -28,8 +28,6 @@ describe('<ErrorHandler />', () => {
       </MockedProvider>
     );
 
-    // loading is shown initially
-    expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
     expect(screen.queryByRole('dialog')).toBeInTheDocument();
 
