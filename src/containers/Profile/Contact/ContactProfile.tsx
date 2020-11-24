@@ -4,8 +4,8 @@ import { useQuery, useMutation } from '@apollo/client';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
 import { setVariables } from '../../../common/constants';
@@ -88,6 +88,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const setSelectedTags = (selectedTags: any) => {
     setSelected(selectedTags);
   };
+
   return (
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">

@@ -56,6 +56,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   if (loading) return <Loading />;
 
   const loggedInUserContactId = data.currentUser.user.contact.id;
+  const currentUserPhone = data.currentUser.user.phone;
 
   let currentContactId;
   if (!match) {
@@ -76,7 +77,13 @@ export const Profile: React.SFC<ProfileProps> = ({
     ...rest
   }: any) => {
     setName(nameValue);
-    setPhone(phoneValue);
+    if (phoneValue) {
+      setPhone(phoneValue);
+    } else {
+      // contact api does not return the phone when role is staff, hence in this case we manually set the phone
+      // for the current user
+      setPhone(currentUserPhone);
+    }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
     if (additionalProfileStates) {
