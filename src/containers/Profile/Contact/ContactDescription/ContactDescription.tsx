@@ -4,6 +4,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 import styles from './ContactDescription.module.css';
 import { Timer } from '../../../../components/UI/Timer/Timer';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ContactDescriptionProps {
   fields: any;
@@ -63,10 +64,18 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   );
   if (phone) {
     let phoneDisplayValue = maskedPhone;
-    let visibilityElement = <Visibility classes={{ root: styles.Visibility }} />;
+    let visibilityElement = (
+      <Tooltip title="Hide number" placement="right">
+        <Visibility classes={{ root: styles.Visibility }} />
+      </Tooltip>
+    );
     if (showPlainPhone) {
       phoneDisplayValue = phone;
-      visibilityElement = <VisibilityOff classes={{ root: styles.Visibility }} />;
+      visibilityElement = (
+        <Tooltip title="Show number" placement="right">
+          <VisibilityOff classes={{ root: styles.Visibility }} />
+        </Tooltip>
+      );
     }
 
     phoneDisplay = (

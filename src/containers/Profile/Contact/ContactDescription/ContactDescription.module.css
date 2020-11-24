@@ -24,6 +24,8 @@
   margin-left: auto;
   align-content: center;
   display: flex;
+  align-items: center;
+  padding-left: 15px;
 }
 
 .SessionTimer > span {
@@ -62,5 +64,5 @@
 }
 
 .PhoneField {
-  width: 118px;
+  width: 115px;
 }
