@@ -12,7 +12,9 @@ import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRout
 import { Logout } from './containers/Auth/Logout/Logout';
 
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+  // by default, do not assign any value to assume login or logout
+  // let's checkAuthStatusService allocate it on useEffect
+  const [authenticated, setAuthenticated] = useState<any>();
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
@@ -27,11 +29,12 @@ const App = () => {
 
   let routes;
 
-  if (authenticated) {
-    routes = <AuthenticatedRoute />;
-  } else {
-    routes = <UnauthenticatedRoute />;
-  }
+  if (authenticated !== undefined)
+    if (authenticated) {
+      routes = <AuthenticatedRoute />;
+    } else {
+      routes = <UnauthenticatedRoute />;
+    }
 
   // For logout acion, we don't need to check if the user is logged in or not. Hence, adding it at top level
   routes = (
