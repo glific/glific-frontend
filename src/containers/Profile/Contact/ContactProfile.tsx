@@ -4,8 +4,8 @@ import { useQuery, useMutation } from '@apollo/client';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
 import { ContactDescription } from './ContactDescription/ContactDescription';
-import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
 import { setVariables } from '../../../common/constants';
@@ -66,7 +66,8 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     },
   };
 
-  let phoneNo = '';
+  let phone = '';
+  let maskedPhone = '';
   let groups = [];
   let lastMessage = '';
   let fields = {};
@@ -74,7 +75,8 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   if (data) {
     const { contact } = data;
     const contactData = contact.contact;
-    phoneNo = contactData.phone;
+    phone = contactData.phone;
+    maskedPhone = contactData.maskedPhone;
     groups = contactData.groups;
     lastMessage = contactData.lastMessageAt;
     fields = contactData.fields;
@@ -86,6 +88,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const setSelectedTags = (selectedTags: any) => {
     setSelected(selectedTags);
   };
+
   return (
     <div className={styles.ContactProfile}>
       <div className={styles.ContactForm} data-testid="ContactProfile">
@@ -98,11 +101,13 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           profileType="Contact"
           redirectionLink={`chat/${match.params.id}`}
           afterDelete={{ link: '/chat' }}
+          removePhoneField
         />
       </div>
       <div className={styles.ContactDescription}>
         <ContactDescription
-          phoneNo={phoneNo}
+          phone={phone}
+          maskedPhone={maskedPhone}
           fields={fields}
           settings={settings}
           groups={groups}

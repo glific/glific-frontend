@@ -351,7 +351,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         contactName={
           conversationInfo.contact.name
             ? conversationInfo.contact.name
-            : conversationInfo.contact.phone
+            : conversationInfo.contact.maskedPhone
         }
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}

@@ -52,6 +52,7 @@ export const getContactQuery = {
           id: '1',
           name: 'Default User',
           phone: '+919820198765',
+          maskedPhone: '+919820198765',
           language: [],
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
@@ -76,6 +77,7 @@ export const getContactDetailsQuery = {
       contact: {
         contact: {
           phone: '+919820198765',
+          maskedPhone: '+919820198765',
           lastMessageAt: date.toISOString(),
           groups: [
             {

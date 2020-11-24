@@ -23,6 +23,7 @@ const contactSearchQuery = {
           id: '1',
           name: 'Default receiver',
           phone: '99399393303',
+          maskedPhone: '99399393303',
           groups: [
             {
               id: '1',

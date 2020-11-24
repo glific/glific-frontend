@@ -32,6 +32,7 @@ export interface ProfileProps {
   additionalState?: any;
   additionalQuery?: any;
   afterDelete?: any;
+  removePhoneField?: boolean;
 }
 
 export const Profile: React.SFC<ProfileProps> = ({
@@ -43,6 +44,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   additionalState,
   additionalQuery,
   afterDelete,
+  removePhoneField = false,
 }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -54,6 +56,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   if (loading) return <Loading />;
 
   const loggedInUserContactId = data.currentUser.user.contact.id;
+  const currentUserPhone = data.currentUser.user.phone;
 
   let currentContactId;
   if (!match) {
@@ -74,7 +77,13 @@ export const Profile: React.SFC<ProfileProps> = ({
     ...rest
   }: any) => {
     setName(nameValue);
-    setPhone(phoneValue);
+    if (phoneValue) {
+      setPhone(phoneValue);
+    } else {
+      // contact api does not return the phone when role is staff, hence in this case we manually set the phone
+      // for the current user
+      setPhone(currentUserPhone);
+    }
     setStatus(statusValue);
     setBspStatus(bspStatusValue);
     if (additionalProfileStates) {
@@ -122,6 +131,11 @@ export const Profile: React.SFC<ProfileProps> = ({
   if (additionalProfileStates) {
     states[additionalProfileStates.name] = additionalProfileStates.state;
     formFields.splice(1, 0, additionalField);
+  }
+
+  // remove phone field incase of contact profile
+  if (removePhoneField) {
+    formFields.splice(2, 1);
   }
 
   let type: any;

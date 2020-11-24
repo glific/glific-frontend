@@ -24,6 +24,8 @@
   margin-left: auto;
   align-content: center;
   display: flex;
+  align-items: center;
+  padding-left: 15px;
 }
 
 .SessionTimer > span {
@@ -50,4 +52,17 @@
 .DescriptionItemValue {
   font-size: 16px;
   color: #073f24;
+}
+
+.Visibility {
+  color: #93a29b;
+}
+
+.PhoneSection {
+  display: flex;
+  align-items: center;
+}
+
+.PhoneField {
+  width: 115px;
 }

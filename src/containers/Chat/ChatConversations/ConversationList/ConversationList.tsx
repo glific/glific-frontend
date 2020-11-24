@@ -214,7 +214,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           onClick={() => props.setSelectedContactId(contact.id)}
           index={index}
           contactId={contact.id}
-          contactName={contact.name || contact.phone}
+          contactName={contact.name || contact.maskedPhone}
           lastMessage={conversation}
           senderLastMessage={contact.lastMessageAt}
           contactStatus={contact.status}
@@ -269,7 +269,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           index={index}
           contactId={conversation.contact.id}
           contactName={
-            conversation.contact.name ? conversation.contact.name : conversation.contact.phone
+            conversation.contact.name ? conversation.contact.name : conversation.contact.maskedPhone
           }
           lastMessage={lastMessage}
           senderLastMessage={conversation.contact.lastMessageAt}
