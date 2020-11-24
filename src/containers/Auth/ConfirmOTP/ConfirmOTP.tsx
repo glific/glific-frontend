@@ -12,9 +12,7 @@ import { sendOTP } from '../../../services/AuthService';
 const successMessage = (
   <div>
     Your account is registered successfully. Please contact your organisation admin for the
-    approval. Click
-    <a href="/login">here</a>
-    for login.
+    approval. Click&nbsp;<a href="/login">here</a>&nbsp;for login.
   </div>
 );
 export interface ConfirmOTPProps {
