@@ -55,9 +55,6 @@ const getRoleBasedAccess = () => {
     if (role.includes('Manager')) {
       settingMenu = false;
       isManagerRole = true;
-      staffManagementMenu = staffManagementMenus.filter(
-        (obj: { path: string }) => obj.path !== '/staff-management'
-      );
     }
   }
 
