@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, wait } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { Tag } from './Tag';
@@ -14,23 +14,25 @@ const wrapper = (
 );
 
 test('should load tag edit form', async () => {
-  const { getByText, findByTestId } = render(wrapper);
+  const { getByText, getByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await wait();
-  const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Keywords');
+  await waitFor(() => {
+    const formLayout = getByTestId('formLayout');
+    expect(formLayout).toHaveTextContent('Keywords');
+  });
 });
 
 test('should be able to submit the data on save', async () => {
-  const { container, getByText, findByTestId } = render(wrapper);
+  const { container, getByText, getByTestId } = render(wrapper);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await wait();
-  const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Keywords');
+  await waitFor(() => {
+    const formLayout = getByTestId('formLayout');
+    expect(formLayout).toHaveTextContent('Keywords');
+  });
 
   fireEvent.change(container.querySelector('input[name="label"]'), {
     target: { value: 'new Tag' },
@@ -46,5 +48,7 @@ test('should be able to submit the data on save', async () => {
 
   const button = getByText('Save');
   fireEvent.click(button);
-  await wait();
+
+  //need to have an assertion here
+  await waitFor(() => {});
 });

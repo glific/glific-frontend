@@ -1,6 +1,6 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, wait, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 
 import { Automation } from './Automation';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
@@ -23,14 +23,18 @@ const automation = (
 
 it('should render Automation', async () => {
   const wrapper = render(automation);
-  await wait();
-  expect(wrapper.container).toBeInTheDocument();
+  await waitFor(() => {
+    expect(wrapper.container).toBeInTheDocument();
+  });
 });
 
 it('should convert comma separated keywords into array', async () => {
   const { getByText } = render(automation);
-  await wait();
-  const button = getByText('Save');
-  fireEvent.click(button);
-  await wait();
+  await waitFor(() => {
+    const button = getByText('Save');
+    fireEvent.click(button);
+  });
+
+  //Need an assertion here
+  await waitFor(() => {});
 });
