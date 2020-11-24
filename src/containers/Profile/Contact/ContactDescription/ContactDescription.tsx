@@ -56,7 +56,11 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
     setShowPlainPhone(!showPlainPhone);
   };
 
-  let phoneDisplay = <span data-testid="phone">+{maskedPhone}</span>;
+  let phoneDisplay = (
+    <div data-testid="phone" className={styles.PhoneField}>
+      +{maskedPhone}
+    </div>
+  );
   if (phone) {
     let phoneDisplayValue = maskedPhone;
     let visibilityElement = <Visibility classes={{ root: styles.Visibility }} />;
@@ -66,8 +70,10 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
     }
 
     phoneDisplay = (
-      <div>
-        <span data-testid="phone">+{phoneDisplayValue}</span>
+      <div className={styles.PhoneSection}>
+        <div data-testid="phone" className={styles.PhoneField}>
+          +{phoneDisplayValue}
+        </div>
         <IconButton
           aria-label="toggle phone visibility"
           data-testid="phoneToggle"

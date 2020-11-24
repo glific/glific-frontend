@@ -55,3 +55,12 @@
 .Visibility {
   color: #93a29b;
 }
+
+.PhoneSection {
+  display: flex;
+  align-items: center;
+}
+
+.PhoneField {
+  width: 118px;
+}
