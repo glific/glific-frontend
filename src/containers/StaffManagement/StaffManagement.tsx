@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
@@ -10,11 +11,12 @@ import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { isManagerRole } from '../../context/role';
+import { getUserRole, isManagerRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import styles from './StaffManagement.module.css';
+import { getUserSession } from '../../services/AuthService';
 
 export interface StaffManagementProps {
   match: any;
@@ -39,6 +41,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
+  const [isAdmin] = useState(getUserRole().includes('Admin'));
+  const history = useHistory();
 
   let dialog;
 
@@ -239,12 +243,20 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     };
   };
 
+  const checkAfterSave = (updatedUser: any) => {
+    const { id, roles: userRoles } = updatedUser.updateUser.user;
+    if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
+      history.push('/logout');
+    }
+  };
+
   return (
     <>
       {dialog}
       <FormLayout
         {...queries}
         match={match}
+        afterSave={checkAfterSave}
         states={states}
         setStates={setStates}
         setPayload={setPayload}
