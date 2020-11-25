@@ -1,6 +1,6 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, wait, act, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import SavedSearchToolbar from './SavedSearchToolbar';
 import { savedSearchQuery } from '../../../mocks/Chat';
 
@@ -14,7 +14,7 @@ describe('testing <SavedSearchToolbar />', () => {
   };
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
-    const { findByText, getByText, container } = render(
+    const { getByText, container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <SavedSearchToolbar {...defaultProps} />
       </MockedProvider>
@@ -22,14 +22,12 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
+    await waitFor(() => {
+      // check if Unread Saved search is rendered
+      const unreadButton: any = getByText('Unread');
+      expect(unreadButton).toBeInTheDocument();
 
-    // check if Unread Saved search is rendered
-    const unreadButton = await findByText('Unread');
-    expect(unreadButton).toBeInTheDocument();
-
-    // simulate saves search is selected
-    act(() => {
+      // simulate saves search is selected
       fireEvent.click(unreadButton);
     });
 
