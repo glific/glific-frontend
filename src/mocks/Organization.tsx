@@ -369,11 +369,9 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        data: {
-          periodicInfo: {
-            key: 'bsp_balance',
-            value: '{"balance":0.787}',
-          },
+        periodicInfo: {
+          key: 'bsp_balance',
+          value: '{"balance":0.787}',
         },
       },
     },
@@ -385,11 +383,40 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        data: {
-          periodicInfo: {
-            key: 'bsp_balance',
-            value: '{"balance":0.787}',
-          },
+        periodicInfo: {
+          key: 'bsp_balance',
+          value: '{"balance":0.787}',
+        },
+      },
+    },
+  },
+];
+
+export const walletBalanceHighSubscription = [
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        periodicInfo: {
+          key: 'bsp_balance',
+          value: '{"balance":10.787}',
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: PERIODIC_INFO_SUBSCRIPTION,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        periodicInfo: {
+          key: 'bsp_balance',
+          value: '{"balance":10.787}',
         },
       },
     },
@@ -404,11 +431,9 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        data: {
-          bspbalance: {
-            key: 'bsp_balance',
-            value: '{"balance":0.628}',
-          },
+        bspbalance: {
+          key: 'bsp_balance',
+          value: '{"balance":0.379}',
         },
       },
     },
@@ -420,11 +445,40 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        data: {
-          bspbalance: {
-            key: 'bsp_balance',
-            value: '{"balance":0.628}',
-          },
+        bspbalance: {
+          key: 'bsp_balance',
+          value: '{"balance":0.379}',
+        },
+      },
+    },
+  },
+];
+
+export const walletBalanceHighQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        bspbalance: {
+          key: 'bsp_balance',
+          value: '{"balance":10.379}',
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        bspbalance: {
+          key: 'bsp_balance',
+          value: '{"balance":10.379}',
         },
       },
     },
