@@ -36,7 +36,7 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<Array<any>>([]);
+  const [roles, setRoles] = useState<any>({});
   const [groups, setGroups] = useState([]);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
@@ -98,12 +98,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     setPhone(phoneValue);
 
     // let' format the roles so that it is displayed correctly in the UI
-    if (roles) {
-      const defaultRoles: any = [];
-      rolesValue.forEach((role: any) => {
-        defaultRoles.push({ id: role, label: role });
-      });
-      setRoles(defaultRoles);
+    if (rolesValue) {
+      setRoles({ id: rolesValue[0], label: rolesValue[0] });
     }
     setGroups(groupsValue);
     setIsRestricted(isRestrictedValue);
@@ -116,7 +112,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   useEffect(() => {
-    if (roles.map((role: any) => role.label).includes('Staff')) {
+    if (roles.id === 'Staff') {
       setStaffRole(true);
     }
   }, [roles]);
@@ -148,11 +144,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    const hasStaffRole = value.map((good: any) => good.label).includes('Staff');
-    if (hasStaffRole) {
-      setStaffRole(true);
-    } else {
-      setStaffRole(false);
+    if (value) {
+      const hasStaffRole = value.id === 'Staff';
+      if (hasStaffRole) {
+        setStaffRole(true);
+      } else {
+        setStaffRole(false);
+      }
     }
   };
 
@@ -183,6 +181,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       getOptions,
       helpLink: { label: 'help?', handleClick: handleHelpClick },
       optionLabel: 'label',
+      multiple: false,
       textFieldProps: {
         label: 'Roles',
         variant: 'outlined',
@@ -215,6 +214,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
     phone: Yup.string().required('Phone is required'),
+    roles: Yup.string().nullable().required('Roles is required'),
   });
 
   const setPayload = (payload: any) => {
@@ -227,10 +227,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     // remove groups from the payload
     delete payloadCopy.groups;
 
+    let roleIds: any[] = [];
     // let's rebuild roles, as per backend
-    const roleIds = payloadCopy.roles.map((role: any) => {
-      return role.id;
-    });
+    if (payloadCopy.roles) roleIds = [payloadCopy.roles.id];
 
     // delete current roles from the payload
     delete payloadCopy.roles;
