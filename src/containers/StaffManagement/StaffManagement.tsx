@@ -148,7 +148,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    const hasStaffRole = value.map((good: any) => good.label).includes('Staff');
+    const hasStaffRole = value.map((role: any) => role.label).includes('Staff');
     if (hasStaffRole) {
       setStaffRole(true);
     } else {
@@ -177,6 +177,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'roles',
+      disabled: isManagerRole,
       placeholder: 'Roles',
       options: rolesList,
       roleSelection: handleRolesChange,
