@@ -1,5 +1,6 @@
 import {
   GET_AUTOMATION,
+  GET_AUTOMATIONS,
   GET_AUTOMATION_COUNT,
   GET_AUTOMATION_DETAILS,
 } from '../graphql/queries/Automation';
@@ -94,6 +95,32 @@ export const getAutomationCountQuery = {
   result: {
     data: {
       countFlows: 3,
+    },
+  },
+};
+
+export const getPublishedAutomationQuery = {
+  request: {
+    query: GET_AUTOMATIONS,
+    variables: {
+      filter: { status: 'published' },
+      opts: {
+        order: 'ASC',
+        limit: null,
+        offset: 0,
+      },
+    },
+  },
+
+  result: {
+    data: {
+      flows: [
+        {
+          id: '1',
+          name: 'help workflow',
+          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+        },
+      ],
     },
   },
 };

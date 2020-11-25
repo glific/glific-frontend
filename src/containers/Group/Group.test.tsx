@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -7,6 +7,7 @@ import { Group } from './Group';
 import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
 import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import * as FormLayout from '../Form/FormLayout';
 
 const mocks = [
   getUsersQuery,
@@ -44,5 +45,21 @@ describe('<Group />', () => {
     // click on SAVE
     const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
+  });
+
+  test('it should call additional query and hit the update users function', async () => {
+    const spy = jest.spyOn(FormLayout, 'FormLayout');
+    spy.mockImplementation((props: any) => {
+      const { additionalQuery } = props;
+      return (
+        <div onClick={() => additionalQuery(['1'])} data-testid="group">
+          <span>Edit group</span>
+        </div>
+      );
+    });
+
+    const { getByTestId } = render(wrapper);
+
+    fireEvent.click(getByTestId('group'));
   });
 });

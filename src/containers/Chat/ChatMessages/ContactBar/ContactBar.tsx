@@ -262,6 +262,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') {
     automationButton = (
       <Button
+        data-testid="automationButton"
         className={styles.ListButtonPrimary}
         onClick={() => {
           getAutomations();
@@ -277,6 +278,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     automationButton = (
       <Tooltip title={toolTip} placement="right">
         <Button
+          data-testid="disabledAutomationButton"
           className={styles.ListButtonPrimary}
           onClick={() => {
             getAutomations();
@@ -310,6 +312,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             </Link>
             {automationButton}
             <Button
+              data-testid="groupButton"
               className={styles.ListButtonPrimary}
               onClick={() => {
                 getGroups();
@@ -319,11 +322,16 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               <AddContactIcon className={styles.Icon} />
               Add to group
             </Button>
-            <Button className={styles.ListButtonPrimary} onClick={() => setClearChatDialog(true)}>
+            <Button
+              className={styles.ListButtonPrimary}
+              data-testid="clearChatButton"
+              onClick={() => setClearChatDialog(true)}
+            >
               <ClearConversation className={styles.Icon} />
               Clear conversation
             </Button>
             <Button
+              data-testid="blockButton"
               className={styles.ListButtonDanger}
               color="secondary"
               onClick={() => setShowBlockDialog(true)}
@@ -381,7 +389,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             {contactName}
           </Typography>
           <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-            <div className={styles.Configure}>
+            <div className={styles.Configure} data-testid="dropdownIcon">
               <DropdownIcon onClick={handleConfigureIconClick} />
             </div>
           </ClickAwayListener>
