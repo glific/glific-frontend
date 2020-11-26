@@ -93,7 +93,7 @@ export const countGroupQuery = {
 export const filterGroupQuery = {
   request: {
     query: FILTER_GROUPS,
-    variables: setVariables({ label: '' }, 10, 0, 'ASC'),
+    variables: setVariables({ label: '' }, 50, 0, 'ASC'),
   },
   result: {
     data: {

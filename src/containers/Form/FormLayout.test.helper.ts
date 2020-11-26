@@ -113,7 +113,7 @@ export const LIST_ITEM_MOCKS = [
           label: '',
         },
         opts: {
-          limit: 10,
+          limit: 50,
           offset: 0,
           order: 'ASC',
         },

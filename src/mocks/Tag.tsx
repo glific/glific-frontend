@@ -106,17 +106,18 @@ export const deleteMessageTagSubscription = {
   },
 };
 
-
-export const getTagsCountQuery={
+export const getTagsCountQuery = {
   request: {
     query: GET_TAGS_COUNT,
-    variables: { filter: {
-      label:""
-    } },
+    variables: {
+      filter: {
+        label: '',
+      },
+    },
   },
   result: {
     data: {
-      countTags:2
+      countTags: 2,
     },
   },
-}
+};
