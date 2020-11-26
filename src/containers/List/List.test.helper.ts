@@ -44,7 +44,7 @@ const filter = {
         label: '',
       },
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -84,7 +84,7 @@ const search = {
         label: 'Unread',
       },
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },

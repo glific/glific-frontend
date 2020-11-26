@@ -34,7 +34,7 @@ const speedSend = {
       },
 
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -82,7 +82,7 @@ const HSMTemplate = {
       },
 
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -268,7 +268,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 10, offset: 0 },
+        opts: { order: 'ASC', limit: 50, offset: 0 },
       },
     },
     result: {
@@ -290,7 +290,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 10, offset: 0 },
+        opts: { order: 'ASC', limit: 50, offset: 0 },
       },
     },
     result: {
