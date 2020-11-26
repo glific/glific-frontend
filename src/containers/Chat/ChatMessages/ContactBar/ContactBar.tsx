@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
-import moment from 'moment';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -31,6 +30,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
 import {
   AUTOMATION_STATUS_PUBLISHED,
+  is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
 } from '../../../../common/constants';
@@ -262,7 +262,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let automationButton: any;
   if (
     (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
-    moment.duration(moment(new Date()).diff(moment(lastMessageTime))).asHours() < 24
+    !is24HourWindowOver(lastMessageTime)
   ) {
     automationButton = (
       <Button
