@@ -1,0 +1,18 @@
+.DialogContent {
+  display: flex;
+  flex: auto;
+  min-height: 160px;
+  width: 400px;
+}
+
+.DialogContent > div {
+  margin-right: 10px;
+}
+
+.Input {
+  width: 60%;
+}
+
+.Dropdown {
+  width: 40%;
+}

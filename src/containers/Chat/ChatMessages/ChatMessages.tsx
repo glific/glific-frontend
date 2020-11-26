@@ -133,12 +133,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
-    (body: string) => {
+    (body: string, mediaId: string, messageType: string) => {
       const payload = {
         body,
         senderId: 1,
+        mediaId,
         receiverId: contactId,
-        type: 'TEXT',
+        type: messageType,
         flow: 'OUTBOUND',
       };
 

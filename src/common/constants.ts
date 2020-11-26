@@ -49,3 +49,5 @@ export const setVariables = (
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;
+
+export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
