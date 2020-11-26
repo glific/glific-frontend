@@ -366,7 +366,7 @@ export const List: React.SFC<ListProps> = ({
   const resetTableVals = () => {
     setTableVals({
       pageNum: 0,
-      pageRows: 10,
+      pageRows: 50,
       sortCol: columnNames[0],
       sortDirection: 'asc',
     });

@@ -50,7 +50,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   const contactSearchQueryVariables = {
     filter: { name: '', status: 'BLOCKED' },
     opts: {
-      limit: 10,
+      limit: 50,
       offset: 0,
       order: 'ASC',
     },
