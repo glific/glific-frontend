@@ -122,7 +122,7 @@ const pagination = (
       handleTableChange('pageNum', newPage);
     }}
     onChangeRowsPerPage={(e) => {
-      handleTableChange('pageRows', parseInt(e.target.value, 50));
+      handleTableChange('pageRows', parseInt(e.target.value, 10));
     }}
     page={tableVals.pageNum}
     rowsPerPage={tableVals.pageRows}
