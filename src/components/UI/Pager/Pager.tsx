@@ -126,7 +126,7 @@ const pagination = (
     }}
     page={tableVals.pageNum}
     rowsPerPage={tableVals.pageRows}
-    rowsPerPageOptions={[10, 15, 20, 25, 30]} // for testing purposes, can be removed
+    rowsPerPageOptions={[50, 75, 100, 150, 200]}
   />
 );
 

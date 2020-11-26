@@ -111,7 +111,7 @@ export const List: React.SFC<ListProps> = ({
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
-    pageRows: 10,
+    pageRows: 50,
     sortCol: columnNames[0],
     sortDirection: 'asc',
   });
