@@ -4,6 +4,7 @@ import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from '
 import { IconButton, ClickAwayListener } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
+
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
 
@@ -77,7 +78,6 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
           />
         </div>
       </ReactResizeDetector>
-
       <ClickAwayListener onClickAway={handleClickAway}>
         <div>
           <div className={styles.EmojiButton}>
