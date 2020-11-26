@@ -48,18 +48,25 @@ describe('<Group />', () => {
   });
 
   test('it should call additional query and hit the update users function', async () => {
+    const mockCallback = jest.fn();
     const spy = jest.spyOn(FormLayout, 'FormLayout');
     spy.mockImplementation((props: any) => {
       const { additionalQuery } = props;
       return (
-        <div onClick={() => additionalQuery(['1'])} data-testid="group">
+        <div
+          onClick={() => {
+            additionalQuery(['1']);
+            mockCallback();
+          }}
+          data-testid="group"
+        >
           <span>Edit group</span>
         </div>
       );
     });
 
     const { getByTestId } = render(wrapper);
-
     fireEvent.click(getByTestId('group'));
+    expect(mockCallback).toBeCalled();
   });
 });
