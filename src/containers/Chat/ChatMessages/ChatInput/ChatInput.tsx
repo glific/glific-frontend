@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { EditorState, ContentState } from 'draft-js';
-import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
+import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useApolloClient } from '@apollo/client';
-
+import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
+import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -13,6 +14,7 @@ import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
+import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -29,9 +31,25 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [attachment, setAttachment] = useState(false);
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   const client = useApolloClient();
+
+  let dialog;
+
+  if (attachment) {
+    dialog = (
+      <DialogBox
+        title="Add attachments to message"
+        handleCancel={() => setAttachment(false)}
+        buttonOk="Add"
+        alignButtons="left"
+      >
+        Yohoo
+      </DialogBox>
+    );
+  }
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -164,6 +182,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       className={`${styles.ChatInput} ${additionalStyle}`}
       data-testid="message-input-container"
     >
+      {dialog}
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
@@ -200,6 +219,14 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
         />
+        <IconButton
+          className={styles.AttachmentIcon}
+          onClick={() => {
+            setAttachment(!attachment);
+          }}
+        >
+          {attachment ? <AttachmentIconSelected /> : <AttachmentIcon />}
+        </IconButton>
 
         <div className={styles.SendButtonContainer}>
           <Button

@@ -218,3 +218,9 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+.AttachmentIcon {
+  position: absolute !important;
+  bottom: 0;
+  right: 190px;
+}
