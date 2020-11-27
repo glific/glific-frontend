@@ -38,7 +38,7 @@ const gqlClient = () => {
       console.error(err);
       /* eslint-enable */
       // gracefully logout
-      window.location.href = '/logout';
+      // window.location.href = '/logout';
     },
   });
 
