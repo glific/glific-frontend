@@ -24,13 +24,16 @@ const getKeywords = (keyword: any) => (
   <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>
 );
 
-const getColumns = ({ label, description, keywords, colorCode }: any) => ({
+const getUpdatedAt = (text: string) => <p className={styles.TableText}>{text}</p>;
+
+const getColumns = ({ label, description, keywords, colorCode, updatedAt }: any) => ({
   label: getLabel(label, colorCode),
   description: getDescription(description),
   keywords: getKeywords(keywords),
+  updatedAt: getUpdatedAt(updatedAt),
 });
 
-const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
+const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'UPDATED AT', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
 const tagIcon = <TagIcon className={styles.TagIcon} />;
