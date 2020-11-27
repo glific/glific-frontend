@@ -57,13 +57,12 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'STICKER':
       messageBody = (
         <>
-          <div
+          <img
             data-testid="stickerMessage"
-            style={{
-              background: `url("${media.url}") no-repeat`,
-            }}
+            src={media.url}
             className={styles.Image}
             aria-hidden="true"
+            alt="sticker"
           />
         </>
       );
