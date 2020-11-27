@@ -48,13 +48,14 @@ const getRoleBasedAccess = () => {
   if (role.includes('Manager') || role.includes('Admin')) {
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
-    settingMenu = false;
-
-    if (role.includes('Admin')) settingMenu = true;
-    if (role.includes('Manager')) isManagerRole = true;
-
     advanceSearch = true;
     displayUserGroups = true;
+    settingMenu = true;
+
+    if (role.includes('Manager')) {
+      settingMenu = false;
+      isManagerRole = true;
+    }
   }
 
   // reset on logout
