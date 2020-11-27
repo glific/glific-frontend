@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait } from '@testing-library/react';
+import { render, wait, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
@@ -24,8 +24,8 @@ describe('<GroupContact />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
-    await wait();
-    await wait();
-    expect(getByText('Back to all groups')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Back to all groups')).toBeInTheDocument();
+    });
   });
 });
