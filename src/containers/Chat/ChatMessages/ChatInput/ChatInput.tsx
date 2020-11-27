@@ -54,16 +54,15 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   });
 
   if (attachment) {
-    dialog = (
-      <AddAttachment
-        attachmentType={attachmentType}
-        attachmentURL={attachmentURL}
-        setAttachment={setAttachment}
-        setAttachmentAdded={setAttachmentAdded}
-        setAttachmentType={setAttachmentType}
-        setAttachmentURL={setAttachmentURL}
-      />
-    );
+    const dialogProps = {
+      attachmentType,
+      attachmentURL,
+      setAttachment,
+      setAttachmentAdded,
+      setAttachmentType,
+      setAttachmentURL,
+    };
+    dialog = <AddAttachment {...dialogProps} />;
   }
 
   useEffect(() => {
