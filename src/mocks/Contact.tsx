@@ -154,3 +154,29 @@ export const getContactsQuery = {
     },
   },
 };
+
+export const getGroupContactsQuery = {
+  request: {
+    query: CONTACT_SEARCH_QUERY,
+    variables: setVariables({ name: '', includeGroups: 1 }, 10, 0, 'ASC'),
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          id: '1',
+          name: 'Glific User',
+          phone: '9876543211',
+          maskedPhone: '987******11',
+          groups: [
+            {
+              id: '1',
+              label: 'Default Group',
+            },
+          ],
+          status: 'SESSION',
+        },
+      ],
+    },
+  },
+};
