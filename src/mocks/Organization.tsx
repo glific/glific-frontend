@@ -433,7 +433,7 @@ export const walletBalanceQuery = [
       data: {
         bspbalance: {
           key: 'bsp_balance',
-          value: '{"balance":0.379}',
+          value: '{"balance":0.628}',
         },
       },
     },
@@ -447,38 +447,7 @@ export const walletBalanceQuery = [
       data: {
         bspbalance: {
           key: 'bsp_balance',
-          value: '{"balance":0.379}',
-        },
-      },
-    },
-  },
-];
-
-export const walletBalanceHighQuery = [
-  {
-    request: {
-      query: BSPBALANCE,
-      variables: { organizationId: '1' },
-    },
-    result: {
-      data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: BSPBALANCE,
-      variables: { organizationId: null },
-    },
-    result: {
-      data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
+          value: '{"balance":0.628}',
         },
       },
     },

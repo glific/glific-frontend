@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait, fireEvent, act } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Simulator } from './Simulator';
 import { MockedProvider } from '@apollo/client/testing';
 import { conversationQuery } from '../../mocks/Chat';
@@ -29,21 +29,24 @@ test('simulator should open on click of simulator icon', () => {
 
 test('send a message from the simulator', async () => {
   const { getByTestId } = render(simulator);
-  await wait();
-  const input = getByTestId('simulatorInput');
+  let input: any;
+  await waitFor(() => {
+    input = getByTestId('simulatorInput');
+    fireEvent.change(input, { target: { value: 'something' } });
+    fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+  });
 
-  fireEvent.change(input, { target: { value: 'something' } });
-  fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
   const responseData = { data: {} };
   axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-  await wait();
-
-  expect(input).toHaveTextContent('');
+  await waitFor(() => {
+    expect(input).toHaveTextContent('');
+  });
 });
 
 test('click on clear icon closes the simulator', async () => {
   const { getByTestId } = render(simulator);
-  await wait();
-  fireEvent.click(getByTestId('clearIcon'));
+  await waitFor(() => {
+    fireEvent.click(getByTestId('clearIcon'));
+  });
   expect(mockSetShowSimulator).toBeCalled();
 });
