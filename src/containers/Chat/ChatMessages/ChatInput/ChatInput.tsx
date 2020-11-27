@@ -47,6 +47,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       if (data) {
         props.onSendMessage('', data.createMessageMedia.messageMedia.id, attachmentType);
         setAttachmentAdded(false);
+        setAttachmentURL('');
+        setAttachmentType('');
       }
     },
   });
