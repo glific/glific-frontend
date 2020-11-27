@@ -1,7 +1,7 @@
 .DialogContent {
   display: flex;
   flex: auto;
-  min-height: 160px;
+  min-height: 140px;
   width: 400px;
 }
 

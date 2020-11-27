@@ -12,6 +12,8 @@ export interface AddAttachmentPropTypes {
   setAttachmentURL: any;
   setAttachmentAdded: any;
   setAttachmentType: any;
+  attachmentURL: any;
+  attachmentType: any;
 }
 
 export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
@@ -19,6 +21,8 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   setAttachmentAdded,
   setAttachmentURL,
   setAttachmentType,
+  attachmentURL,
+  attachmentType,
 }: AddAttachmentPropTypes) => {
   const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
     return { id: option, label: <MessageType type={option} color="dark" /> };
@@ -42,6 +46,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             label="Select Type"
             placeholder="Type"
             field={{
+              value: attachmentType,
               onChange: (event: any) => {
                 setAttachmentType(event.target.value);
               },
@@ -52,6 +57,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
           <Input
             field={{
               name: 'input',
+              value: attachmentURL,
               onChange: (event: any) => {
                 setAttachmentURL(event.target.value);
               },

@@ -75,6 +75,11 @@ export const MessageType: React.FC<MessageTypeProps> = ({
   }
 
   return (
-    <span className={`${styles.Message} ${isLight ? styles.Light : styles.Dark}`}>{message}</span>
+    <span
+      className={`${styles.Message} ${isLight ? styles.Light : styles.Dark}`}
+      data-testid="messageType"
+    >
+      {message}
+    </span>
   );
 };
