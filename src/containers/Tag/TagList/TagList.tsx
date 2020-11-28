@@ -33,9 +33,15 @@ const getColumns = ({ label, description, keywords, colorCode, updatedAt }: any)
   updatedAt: getUpdatedAt(updatedAt),
 });
 
-const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'UPDATED AT', 'ACTIONS'];
+const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this for tagging messages.";
-const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
+const columnStyles = [
+  styles.Label,
+  styles.Description,
+  styles.Keywords,
+  styles.LastModified,
+  styles.Actions,
+];
 const tagIcon = <TagIcon className={styles.TagIcon} />;
 
 const queries = {

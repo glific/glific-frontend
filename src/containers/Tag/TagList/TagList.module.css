@@ -48,6 +48,10 @@
   width: 35%;
 }
 
+.LastModified {
+  width: 15%;
+}
+
 .Actions {
   width: 20%;
   justify-content: flex-end;
