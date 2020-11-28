@@ -74,7 +74,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             buttonOk="Add"
             alignButtons="left"
           >
-            <div className={styles.DialogContent}>
+            <div className={styles.DialogContent} data-testid="attachmentDialog">
               {formFieldItems.map((field) => {
                 return <Field {...field} />;
               })}

@@ -15,5 +15,5 @@ const defaultProps = {
 test('it should render', () => {
   const { getByTestId } = render(<AddAttachment {...defaultProps} />);
 
-  expect(getByTestId('dialogBox')).toBeInTheDocument();
+  expect(getByTestId('attachmentDialog')).toBeInTheDocument();
 });
