@@ -17,7 +17,7 @@ export interface DropdownProps {
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
-  const { options, placeholder, field, helperText, disabled } = props;
+  const { options, placeholder, field, helperText, disabled, form } = props;
 
   const optionsList = options
     ? options.map((option: any) => {
@@ -30,7 +30,11 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
     : null;
   return (
     <div className={styles.Dropdown} data-testid="dropdown">
-      <FormControl variant="outlined" fullWidth>
+      <FormControl
+        variant="outlined"
+        fullWidth
+        error={form.errors[field.name] && form.touched[field.name]}
+      >
         {placeholder ? (
           <InputLabel id="simple-select-outlined-label" data-testid="inputLabel">
             {placeholder}
@@ -39,6 +43,9 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
         <Select {...field} label={placeholder} fullWidth disabled={disabled}>
           {optionsList}
         </Select>
+        {form.errors[field.name] && form.touched[field.name] ? (
+          <FormHelperText>{form && form.errors[field.name]}</FormHelperText>
+        ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
         ) : null}
