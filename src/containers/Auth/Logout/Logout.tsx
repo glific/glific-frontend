@@ -18,26 +18,25 @@ export const Logout: React.SFC<LogoutProps> = () => {
   const userLogout = () => {
     // get the auth token from session
     axios.defaults.headers.common.Authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION, {}).then(() => {
-      // clear local storage auth session
-      clearAuthSession();
-
-      // update the context
-      setAuthenticated(false);
-
-      // clear local storage user session
-      clearUserSession();
-
-      // clear role & access permissions
-      resetRole();
-
-      // clear apollo cache
-      client.clearStore();
-    });
+    axios.delete(USER_SESSION, {}).then(() => {});
   };
 
   useEffect(() => {
     userLogout();
+    // clear local storage auth session
+    clearAuthSession();
+
+    // update the context
+    setAuthenticated(false);
+
+    // clear local storage user session
+    clearUserSession();
+
+    // clear role & access permissions
+    resetRole();
+
+    // clear apollo cache
+    client.clearStore();
   }, []);
 
   return <Redirect to="/login" />;
