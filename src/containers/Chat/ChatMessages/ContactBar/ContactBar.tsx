@@ -30,6 +30,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
 import {
   AUTOMATION_STATUS_PUBLISHED,
+  is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
 } from '../../../../common/constants';
@@ -263,7 +264,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let automationButton: any;
-  if (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') {
+  if (
+    (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
+    !is24HourWindowOver(lastMessageTime)
+  ) {
     automationButton = (
       <Button
         className={styles.ListButtonPrimary}

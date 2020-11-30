@@ -13,6 +13,7 @@ import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
+import { is24HourWindowOver } from '../../../../common/constants';
 
 export interface ChatInputProps {
   onSendMessage(content: string): any;
@@ -20,10 +21,17 @@ export interface ChatInputProps {
   contactStatus: string;
   contactBspStatus: string;
   additionalStyle?: any;
+  lastMessageTime?: any;
 }
 
 export const ChatInput: React.SFC<ChatInputProps> = (props) => {
-  const { contactBspStatus, contactStatus, additionalStyle, handleHeightChange } = props;
+  const {
+    contactBspStatus,
+    contactStatus,
+    additionalStyle,
+    handleHeightChange,
+    lastMessageTime,
+  } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -122,6 +130,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         break;
       default:
         break;
+    }
+    if (is24HourWindowOver(lastMessageTime)) {
+      quickSendTypes = [templates];
     }
   }
 
