@@ -364,6 +364,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
+        lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
       />

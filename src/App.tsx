@@ -29,20 +29,21 @@ const App = () => {
 
   let routes;
 
-  if (authenticated !== undefined)
+  if (authenticated !== undefined) {
     if (authenticated) {
       routes = <AuthenticatedRoute />;
     } else {
       routes = <UnauthenticatedRoute />;
     }
 
-  // For logout acion, we don't need to check if the user is logged in or not. Hence, adding it at top level
-  routes = (
-    <Switch>
-      <Route path="/logout" exact component={Logout} />
-      {routes}
-    </Switch>
-  );
+    // For logout action, we don't need to check if the user is logged in or not. Hence, adding it at top level
+    routes = (
+      <Switch>
+        <Route path="/logout" exact component={Logout} />
+        {routes}
+      </Switch>
+    );
+  }
 
   return (
     <SessionContext.Provider value={values}>

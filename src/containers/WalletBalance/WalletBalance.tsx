@@ -20,10 +20,7 @@ export const WalletBalance: React.FC<{ fullOpen: any }> = (fullOpen) => {
   });
 
   const lodding = (
-    <div
-      className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}
-      data-testid="WalletBalance"
-    >
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="lodding">
       <div className={styles.WalletBalanceText}>
         <CircularProgress size={14} className={styles.Progress} />
       </div>
