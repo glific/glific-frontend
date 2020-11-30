@@ -218,3 +218,14 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+.AttachmentIcon {
+  position: absolute !important;
+  bottom: 4px;
+  right: 190px;
+}
+
+.AttachmentIcon svg{
+  height: 26px;
+  width: 26px;
+}

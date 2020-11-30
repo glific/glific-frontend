@@ -72,3 +72,13 @@ export const CLEAR_MESSAGES = gql`
     }
   }
 `;
+
+export const CREATE_MEDIA_MESSAGE = gql`
+  mutation createMediaMessage($input: MessageMediaInput!) {
+    createMessageMedia(input: $input) {
+      messageMedia {
+        id
+      }
+    }
+  }
+`;

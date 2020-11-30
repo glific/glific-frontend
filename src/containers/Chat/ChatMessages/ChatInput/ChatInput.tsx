@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { EditorState, ContentState } from 'draft-js';
-import { Container, Button, ClickAwayListener, Fade } from '@material-ui/core';
+import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useApolloClient } from '@apollo/client';
-
+import { useApolloClient, useMutation } from '@apollo/client';
+import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
+import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
@@ -13,10 +14,13 @@ import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
+import { AddAttachment } from '../AddAttachment/AddAttachment';
+import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver } from '../../../../common/constants';
 
+
 export interface ChatInputProps {
-  onSendMessage(content: string): any;
+  onSendMessage(content: string, mediaId: string | null, messageType: string): any;
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
   contactBspStatus: string;
@@ -37,9 +41,38 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [attachment, setAttachment] = useState(false);
+  const [attachmentAdded, setAttachmentAdded] = useState(false);
+  const [attachmentType, setAttachmentType] = useState('');
+  const [attachmentURL, setAttachmentURL] = useState('');
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   const client = useApolloClient();
+
+  let dialog;
+
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
+    onCompleted: (data: any) => {
+      if (data) {
+        props.onSendMessage('', data.createMessageMedia.messageMedia.id, attachmentType);
+        setAttachmentAdded(false);
+        setAttachmentURL('');
+        setAttachmentType('');
+      }
+    },
+  });
+
+  if (attachment) {
+    const dialogProps = {
+      attachmentType,
+      attachmentURL,
+      setAttachment,
+      setAttachmentAdded,
+      setAttachmentType,
+      setAttachmentURL,
+    };
+    dialog = <AddAttachment {...dialogProps} />;
+  }
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -67,7 +100,20 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
       )
     );
-    props.onSendMessage(message);
+
+    if (attachmentAdded) {
+      createMediaMessage({
+        variables: {
+          input: {
+            caption: message,
+            sourceUrl: attachmentURL,
+            url: attachmentURL,
+          },
+        },
+      });
+    } else {
+      props.onSendMessage(message, null, 'TEXT');
+    }
   };
 
   const handleClick = (title: string) => {
@@ -175,6 +221,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       className={`${styles.ChatInput} ${additionalStyle}`}
       data-testid="message-input-container"
     >
+      {dialog}
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={styles.SendsContainer}>
           {open ? (
@@ -211,6 +258,14 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
         />
+        <IconButton
+          className={styles.AttachmentIcon}
+          onClick={() => {
+            setAttachment(!attachment);
+          }}
+        >
+          {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
+        </IconButton>
 
         <div className={styles.SendButtonContainer}>
           <Button
@@ -220,7 +275,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             color="primary"
             disableElevation
             onClick={() => submitMessage(convertToWhatsApp(editorState))}
-            disabled={!editorState.getCurrentContent().hasText()}
+            disabled={!editorState.getCurrentContent().hasText() && !attachmentAdded}
           >
             Send
             <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />

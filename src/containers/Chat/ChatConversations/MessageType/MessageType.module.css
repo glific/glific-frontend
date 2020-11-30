@@ -1,0 +1,14 @@
+
+.Message{
+  display: flex;
+  align-items: center;
+}
+
+
+.Message svg{
+  margin-right: 10px;
+}
+
+.Dark {
+  color: #073f24;
+}
