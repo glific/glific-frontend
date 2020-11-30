@@ -1591,7 +1591,7 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.9.8.2":
+"@nyaruka/flow-editor@glific/floweditor#v1.9.8.3":
   version "1.9.8"
   resolved "https://codeload.github.com/glific/floweditor/tar.gz/5d2f3418fe36b9efc6a85aba1241a46428c57d41"
   dependencies:
