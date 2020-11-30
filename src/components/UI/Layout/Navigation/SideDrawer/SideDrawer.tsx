@@ -243,34 +243,38 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
             >
               <Menu menus={staffManagementMenus}>
                 <Tooltip title="Staff Management" placement="top">
-                  <IconButton data-testid="staffManagementMenu">
-                    <img
-                      src={
-                        ['/group', '/staff-management', '/blocked-contacts'].includes(
-                          location.pathname
-                        )
-                          ? ActiveStaffIcon
-                          : InactiveStaffIcon
-                      }
-                      className={styles.StaffIcon}
-                      alt="staff icon"
-                    />
-                  </IconButton>
+                  <span>
+                    <IconButton data-testid="staffManagementMenu">
+                      <img
+                        src={
+                          ['/group', '/staff-management', '/blocked-contacts'].includes(
+                            location.pathname
+                          )
+                            ? ActiveStaffIcon
+                            : InactiveStaffIcon
+                        }
+                        className={styles.StaffIcon}
+                        alt="staff icon"
+                      />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Menu>
             </div>
             <div>
               <Menu menus={userAccountMenus}>
                 <Tooltip title="Profile" placement="top">
-                  <IconButton data-testid="profileMenu">
-                    <img
-                      src={
-                        location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
-                      }
-                      className={styles.UserIcon}
-                      alt="user icon"
-                    />
-                  </IconButton>
+                  <span>
+                    <IconButton data-testid="profileMenu">
+                      <img
+                        src={
+                          location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
+                        }
+                        className={styles.UserIcon}
+                        alt="user icon"
+                      />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Menu>
             </div>

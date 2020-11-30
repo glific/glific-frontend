@@ -265,9 +265,11 @@ export const List: React.SFC<ListProps> = ({
       editButton = allowedAction.edit ? (
         <Link to={`/${pageLink}/${id}/edit`}>
           <Tooltip title="Edit" placement="top">
-            <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-              <EditIcon />
-            </IconButton>
+            <span>
+              <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+                <EditIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         </Link>
       ) : null;
@@ -276,14 +278,16 @@ export const List: React.SFC<ListProps> = ({
     const deleteButton = (Id: any, text: string) => {
       return allowedAction.delete ? (
         <Tooltip title={`${deleteModifier.label}`} placement="top">
-          <IconButton
-            aria-label="Delete"
-            color="default"
-            data-testid="DeleteIcon"
-            onClick={() => showDialogHandler(Id, text)}
-          >
-            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-          </IconButton>{' '}
+          <span>
+            <IconButton
+              aria-label="Delete"
+              color="default"
+              data-testid="DeleteIcon"
+              onClick={() => showDialogHandler(Id, text)}
+            >
+              {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+            </IconButton>
+          </span>
         </Tooltip>
       ) : null;
     };
@@ -306,13 +310,15 @@ export const List: React.SFC<ListProps> = ({
               return (
                 <Link to={`${action?.link}/${additionalActionParameter}`} key={key}>
                   <Tooltip title={`${action.label}`} placement="top">
-                    <IconButton
-                      color="default"
-                      className={styles.additonalButton}
-                      data-testid="additionalButton"
-                    >
-                      {action.icon}
-                    </IconButton>
+                    <span>
+                      <IconButton
+                        color="default"
+                        className={styles.additonalButton}
+                        data-testid="additionalButton"
+                      >
+                        {action.icon}
+                      </IconButton>
+                    </span>
                   </Tooltip>
                 </Link>
               );
@@ -320,14 +326,16 @@ export const List: React.SFC<ListProps> = ({
             if (action.dialog) {
               return (
                 <Tooltip title={`${action.label}`} placement="top" key={key}>
-                  <IconButton
-                    color="default"
-                    data-testid="additionalButton"
-                    className={styles.additonalButton}
-                    onClick={() => action.dialog(additionalActionParameter)}
-                  >
-                    {action.icon}
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      color="default"
+                      data-testid="additionalButton"
+                      className={styles.additonalButton}
+                      onClick={() => action.dialog(additionalActionParameter)}
+                    >
+                      {action.icon}
+                    </IconButton>
+                  </span>
                 </Tooltip>
               );
             }
