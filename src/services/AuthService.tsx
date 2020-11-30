@@ -29,8 +29,12 @@ export const getAuthSession = (element?: string) => {
 
 // service to auto renew the auth token based on valid refresh token
 export const renewAuthToken = () => {
+  const renewalToken = getAuthSession('renewal_token');
+  if (!renewalToken) {
+    return new Error('Error');
+  }
   // get the renewal token from session
-  axios.defaults.headers.common.Authorization = getAuthSession('renewal_token');
+  axios.defaults.headers.common.Authorization = renewalToken;
 
   return axios
     .post(RENEW_TOKEN)

@@ -13,6 +13,7 @@ import {
   setAuthSession,
 } from '../services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
+import { Logout } from '../containers/Auth/Logout/Logout';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -20,7 +21,7 @@ const gqlClient = () => {
   const refreshTokenLink = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
-    fetchAccessToken: () => renewAuthToken(),
+    fetchAccessToken: async () => renewAuthToken(),
     handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
       // lets set the session
@@ -38,7 +39,7 @@ const gqlClient = () => {
       console.error(err);
       /* eslint-enable */
       // gracefully logout
-      window.location.href = '/logout';
+      return Logout;
     },
   });
 
