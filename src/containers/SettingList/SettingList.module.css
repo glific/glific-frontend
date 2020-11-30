@@ -47,6 +47,13 @@
   padding-bottom: 50px !important;
 }
 
+.Description {
+  padding-top: 12px;
+  font-size: 16px !important;
+  color: #93a29b;
+  line-height: 1.25 !important;
+}
+
 .Title {
   margin-left: 24px !important;
   margin-top: 16px !important;
