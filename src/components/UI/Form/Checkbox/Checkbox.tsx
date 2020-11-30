@@ -23,7 +23,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         control={
           <CheckboxElement
             data-testid="checkboxLabel"
-            className={styles.CheckboxColor}
+            classes={{ colorPrimary: styles.CheckboxColor }}
             {...field}
             color="primary"
             checked={field.value ? field.value : false}
@@ -32,6 +32,9 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         }
         labelPlacement="end"
         label={title}
+        classes={{
+          label: styles.Label,
+        }}
       />
     </div>
   );
