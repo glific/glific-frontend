@@ -81,34 +81,36 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
-      if (searchData.search[0].messages.length === 0) {
-        setShowLoadMore(false);
-      } else {
-        // get the conversations from cache
-        const conversations = getCachedConverations(client, queryVariables);
+      if (searchData) {
+        if (searchData.search[0].messages.length === 0) {
+          setShowLoadMore(false);
+        } else {
+          // get the conversations from cache
+          const conversations = getCachedConverations(client, queryVariables);
 
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
-          .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          if (conversationObj.contact.id === contactId.toString()) {
-            conversationObj.messages = [
-              ...conversationObj.messages,
-              ...conversationCopy.search[0].messages,
-            ];
-          }
-          return conversationObj;
-        });
+          const conversationCopy = JSON.parse(JSON.stringify(searchData));
+          conversationCopy.search[0].messages
+            .sort((currentMessage: any, nextMessage: any) => {
+              return currentMessage.id - nextMessage.id;
+            })
+            .reverse();
+          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+            const conversationObj = conversation;
+            if (conversationObj.contact.id === contactId.toString()) {
+              conversationObj.messages = [
+                ...conversationObj.messages,
+                ...conversationCopy.search[0].messages,
+              ];
+            }
+            return conversationObj;
+          });
 
-        // update the conversation cache
-        updateConversationsCache(conversationsCopy, client, queryVariables);
+          // update the conversation cache
+          updateConversationsCache(conversationsCopy, client, queryVariables);
 
-        setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + 50);
+        }
       }
     },
   });
