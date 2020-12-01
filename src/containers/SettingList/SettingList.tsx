@@ -56,7 +56,12 @@ export const SettingList: React.SFC = () => {
                 <div data-testid="label" className={styles.Label}>
                   {data.name}
                 </div>
-                <Typography variant="body2" component="div" data-testid="description">
+                <Typography
+                  variant="body2"
+                  component="div"
+                  data-testid="description"
+                  className={styles.Description}
+                >
                   {data.description}
                 </Typography>
               </CardContent>

@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
@@ -47,5 +49,11 @@ export const setVariables = (
   };
 };
 
+export const is24HourWindowOver = (time: any) => {
+  return moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
+};
+
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;
+
+export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Attachment/Unselected</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Attachment/Unselected" stroke="#93A29B" stroke-width="2">
+            <path d="M17.7996758,11.9151013 L17.7996758,20.4627537 C17.7996758,21.4375675 17.009433,22.2278103 16.0346192,22.2278103 C15.0598053,22.2278103 14.2695626,21.4375675 14.2695626,20.4627537 L14.2695626,9.36521872 C14.2695626,7.50665974 15.7762223,6 17.6347813,6 C19.4933403,6 21,7.50665974 21,9.36521872 L21,21 C21,23.7614237 18.7614237,26 16,26 C13.2385763,26 11,23.7614237 11,21 L11,7.50741446 L11,7.50741446" id="Rectangle" stroke-linecap="round" transform="translate(16.000000, 16.000000) rotate(-330.000000) translate(-16.000000, -16.000000) "></path>
+            <circle id="Oval" cx="16" cy="16" r="15"></circle>
+        </g>
+    </g>
+</svg>

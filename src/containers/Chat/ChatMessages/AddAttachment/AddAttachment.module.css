@@ -1,0 +1,15 @@
+.DialogContent {
+  display: flex;
+  flex: auto;
+  min-height: 140px;
+  width: 400px;
+}
+
+.DialogContent > div:nth-child(1) {
+  margin-right: 10px;
+  width: 40%;
+}
+
+.DialogContent > div:nth-child(2) {
+  width: 60%;
+}

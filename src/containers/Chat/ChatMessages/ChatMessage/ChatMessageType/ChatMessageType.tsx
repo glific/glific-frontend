@@ -54,6 +54,20 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       );
       break;
 
+    case 'STICKER':
+      messageBody = (
+        <>
+          <img
+            data-testid="stickerMessage"
+            src={media.url}
+            className={styles.Image}
+            aria-hidden="true"
+            alt="sticker"
+          />
+        </>
+      );
+      break;
+
     case 'AUDIO':
       messageBody = (
         <div>

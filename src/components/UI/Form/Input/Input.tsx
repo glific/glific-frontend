@@ -15,13 +15,13 @@ import styles from './Input.module.css';
 
 export interface InputProps {
   type?: any;
-  field: { name: string };
+  field: { name: string; onChange: any; value: any };
   disabled?: any;
   editor?: any;
   label: string;
-  form: { touched: any; errors: any };
+  form?: { touched: any; errors: any };
   placeholder: any;
-  rows: number;
+  rows?: number;
   helperText?: string;
   emojiPicker?: any;
   textArea?: boolean;
@@ -88,7 +88,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
 
   return (
     <div className={styles.Input} data-testid="input">
-      <FormControl fullWidth error={form.errors[field.name] && form.touched[field.name]}>
+      <FormControl fullWidth error={form && form.errors[field.name] && form.touched[field.name]}>
         <InputLabel variant="outlined" className={styles.Label} data-testid="inputLabel">
           {placeholder}
         </InputLabel>
@@ -99,7 +99,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
-          error={form.errors[field.name] && form.touched[field.name]}
+          error={form && form.errors[field.name] && form.touched[field.name]}
           multiline={textArea}
           rows={rows}
           className={styles.OutlineInput}
@@ -108,8 +108,8 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {...field}
           endAdornment={fieldEndAdorment}
         />
-        {form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText>{form.errors[field.name]}</FormHelperText>
+        {form && form.errors[field.name] && form.touched[field.name] ? (
+          <FormHelperText>{form && form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>

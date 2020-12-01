@@ -144,7 +144,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    const hasStaffRole = value.map((role: any) => role.label).includes('Staff');
+    const hasStaffRole = value.label === 'Staff';
     if (hasStaffRole) {
       setStaffRole(true);
     } else {
@@ -205,7 +205,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {
         component: Checkbox,
         name: 'isRestricted',
-        title: 'Can chat with group contacts only',
+        title: 'Can chat with contacts from assigned group only',
       },
     ];
   }

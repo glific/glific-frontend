@@ -9,11 +9,10 @@ import styles from './ChatConversation.module.css';
 import { DATE_FORMAT } from '../../../../common/constants';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
-import { ReactComponent as ImageIcon } from '../../../../assets/images/icons/Image.svg';
-import { ReactComponent as VideoIcon } from '../../../../assets/images/icons/Video.svg';
-import { ReactComponent as AudioIcon } from '../../../../assets/images/icons/Audio.svg';
+
 import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
+import { MessageType } from '../MessageType/MessageType';
 
 export interface ChatConversationProps {
   contactId: number;
@@ -129,41 +128,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
-  let message;
+  const { type, body } = lastMessage;
+  const message = <MessageType type={type} body={body} />;
 
-  // checking if the last message type is text and displaying the message below the contact name
-  // else displaying the type of message
-  switch (lastMessage.type) {
-    case 'TEXT':
-      message = lastMessage.body;
-      break;
-    case 'IMAGE':
-      message = (
-        <>
-          <ImageIcon />
-          Image
-        </>
-      );
-      break;
-    case 'VIDEO':
-      message = (
-        <>
-          <VideoIcon />
-          Video
-        </>
-      );
-      break;
-    case 'AUDIO':
-      message = (
-        <>
-          <AudioIcon />
-          Audio
-        </>
-      );
-      break;
-    default:
-      message = lastMessage.type;
-  }
   const displayMSG: any = WhatsAppToJsx(message);
 
   // set offset to use that in chatting window to fetch that msg
