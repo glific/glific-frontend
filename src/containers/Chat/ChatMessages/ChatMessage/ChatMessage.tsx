@@ -205,7 +205,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
-        <div className={`${styles.ChatMessage} ${mineColor}`}>
+        <div
+          className={`${styles.ChatMessage} ${mineColor} ${
+            type === 'STICKER' ? styles.StickerBackground : ''
+          }`}
+        >
           <div className={styles.Content} data-testid="content">
             <div>
               <ChatMessageType type={type} media={media} body={body} insertedAt={insertedAt} />
