@@ -44,7 +44,7 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
           {optionsList}
         </Select>
         {form && form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText>{form && form.errors[field.name]}</FormHelperText>
+          <FormHelperText>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
