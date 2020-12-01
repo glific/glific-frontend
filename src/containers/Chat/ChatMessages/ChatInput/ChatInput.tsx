@@ -5,6 +5,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useApolloClient, useMutation } from '@apollo/client';
+
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import styles from './ChatInput.module.css';
@@ -17,7 +18,6 @@ import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver } from '../../../../common/constants';
-
 
 export interface ChatInputProps {
   onSendMessage(content: string, mediaId: string | null, messageType: string): any;
