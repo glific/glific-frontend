@@ -130,6 +130,7 @@ export const LIST_ITEM_MOCKS = [
             isReserved: false,
             colorCode: '#0C976D',
             parent: { id: '1' },
+            updatedAt: '2020-12-01T18:00:28Z',
           },
           {
             id: '94',
@@ -139,6 +140,7 @@ export const LIST_ITEM_MOCKS = [
             isReserved: false,
             colorCode: '#0C976D',
             parent: { id: '2' },
+            updatedAt: '2020-12-01T18:00:28Z',
           },
         ],
       },

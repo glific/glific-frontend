@@ -61,6 +61,7 @@ const filter = {
           isReserved: false,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
         {
           id: '88',
@@ -70,6 +71,7 @@ const filter = {
           isReserved: true,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
       ],
     },
@@ -101,6 +103,7 @@ const search = {
           isReserved: false,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
       ],
     },
