@@ -7,16 +7,19 @@ import { setVariables } from '../../../common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 
-const columnNames = ['LABEL', 'BODY', 'ACTIONS'];
+const columnNames = ['LABEL', 'BODY', 'ACTIONS', 'LAST MODIFIED'];
 const columnStyles = [styles.Label, styles.Body, styles.Actions];
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
-const getColumns = ({ label, body }: any) => ({
+const getUpdatedAt = (date: string) => <div className={styles.LabelText}>{date}</div>;
+
+const getColumns = ({ label, body, updatedAt }: any) => ({
   label: getLabel(label),
   body: getBody(body),
+  updatedAt: getUpdatedAt(updatedAt),
 });
 
 const queries = {
