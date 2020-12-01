@@ -33,7 +33,7 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
       <FormControl
         variant="outlined"
         fullWidth
-        error={form.errors[field.name] && form.touched[field.name]}
+        error={form && form.errors[field.name] && form.touched[field.name]}
       >
         {placeholder ? (
           <InputLabel id="simple-select-outlined-label" data-testid="inputLabel">
@@ -43,8 +43,8 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
         <Select {...field} label={placeholder} fullWidth disabled={disabled}>
           {optionsList}
         </Select>
-        {form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText>{form && form.errors[field.name]}</FormHelperText>
+        {form && form.errors[field.name] && form.touched[field.name] ? (
+          <FormHelperText>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
