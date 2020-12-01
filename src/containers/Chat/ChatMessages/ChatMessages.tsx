@@ -168,7 +168,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = [];
+  let conversationInfo: any = {};
 
   if (contactId) {
     // loop through the cached conversations and find if contact exists
@@ -181,9 +181,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         return null;
       });
 
+    // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      return <Redirect to="/chat" />;
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            filter: { id: contactId },
+            messageOpts: { limit: 50, offset: messageOffset },
+            contactOpts: { limit: 50 },
+          },
+        });
+      }
     }
+  }
+
+  if (data && data.search) {
+    [conversationInfo] = data.search;
   }
 
   const closeDialogBox = () => {
@@ -343,6 +356,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // update allConversations in the cache
     updateConversationsCache(allConversationsCopy, client, queryVariables);
   };
+
+  // conversationInfo should not be empty
+  if (!Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
+    return (
+      <div className={styles.LoadMore}>
+        <CircularProgress className={styles.Loading} />
+      </div>
+    );
+  }
 
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
