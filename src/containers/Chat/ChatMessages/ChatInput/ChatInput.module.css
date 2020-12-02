@@ -84,24 +84,22 @@
 
 .SendButton {
   border-radius: 20px !important;
-  width: 99px;
   height: 40px;
-}
-
-.SendIcon {
-  padding-left: 8px;
+  min-width: unset !important;
+  width: 40px !important;
+  padding: 10px !important;
 }
 
 .SendButtonContainer {
   position: absolute;
   bottom: 10px;
-  right: 50px;
+  right: 35px;
 }
 
 .EmojiButton {
   position: absolute;
   bottom: 14px;
-  right: 160px;
+  right: 78px;
 }
 
 .Editor {
@@ -222,10 +220,10 @@
 .AttachmentIcon {
   position: absolute !important;
   bottom: 4px;
-  right: 190px;
+  right: 122px;
 }
 
-.AttachmentIcon svg{
+.AttachmentIcon svg {
   height: 26px;
   width: 26px;
 }
