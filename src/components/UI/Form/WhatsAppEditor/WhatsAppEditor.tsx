@@ -75,6 +75,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             onChange={handleChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
+            placeholder="Type a message..."
           />
         </div>
       </ReactResizeDetector>
