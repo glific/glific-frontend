@@ -172,3 +172,8 @@
   margin-left: 4px;
   cursor: pointer;
 }
+
+.StickerBackground {
+  background-color: #00000000;
+  box-shadow: none;
+}

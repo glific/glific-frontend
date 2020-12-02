@@ -1,0 +1,85 @@
+import React from 'react';
+
+import styles from './MessageType.module.css';
+import { ReactComponent as ImageIcon } from '../../../../assets/images/icons/Image.svg';
+import { ReactComponent as VideoIcon } from '../../../../assets/images/icons/Video.svg';
+import { ReactComponent as AudioIcon } from '../../../../assets/images/icons/Audio.svg';
+import { ReactComponent as DocumentIcon } from '../../../../assets/images/icons/Document/Light.svg';
+import { ReactComponent as StickerIcon } from '../../../../assets/images/icons/Sticker/Light.svg';
+import { ReactComponent as ImageIconDark } from '../../../../assets/images/icons/Image/Dark.svg';
+import { ReactComponent as VideoIconDark } from '../../../../assets/images/icons/Video/Dark.svg';
+import { ReactComponent as AudioIconDark } from '../../../../assets/images/icons/Audio/Dark.svg';
+import { ReactComponent as DocumentIconDark } from '../../../../assets/images/icons/Document/Dark.svg';
+import { ReactComponent as StickerIconDark } from '../../../../assets/images/icons/Sticker/Dark.svg';
+
+export interface MessageTypeProps {
+  type: string;
+  body?: string;
+  color?: 'dark' | 'light';
+}
+
+export const MessageType: React.FC<MessageTypeProps> = ({
+  type,
+  body = '',
+  color = 'light',
+}: MessageTypeProps) => {
+  const isLight = color === 'light';
+
+  let message;
+  switch (type) {
+    case 'TEXT':
+      message = body;
+      break;
+    case 'IMAGE':
+      message = (
+        <>
+          {isLight ? <ImageIcon /> : <ImageIconDark />}
+          Image
+        </>
+      );
+      break;
+    case 'DOCUMENT':
+      message = (
+        <>
+          {isLight ? <DocumentIcon /> : <DocumentIconDark />}
+          Document
+        </>
+      );
+      break;
+    case 'STICKER':
+      message = (
+        <>
+          {isLight ? <StickerIcon /> : <StickerIconDark />}
+          Sticker
+        </>
+      );
+      break;
+    case 'VIDEO':
+      message = (
+        <>
+          {isLight ? <VideoIcon /> : <VideoIconDark />}
+          Video
+        </>
+      );
+      break;
+    case 'AUDIO':
+      message = (
+        <>
+          {isLight ? <AudioIcon /> : <AudioIconDark />}
+          Audio
+        </>
+      );
+      break;
+    default:
+      message = type;
+  }
+
+  return (
+    <span
+      className={`${styles.Message} ${isLight ? styles.Light : styles.Dark}`}
+      data-testid="messageType"
+    >
+      {message}
+    </span>
+  );
+};

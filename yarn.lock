@@ -1591,9 +1591,9 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.9.8.2":
-  version "1.9.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/5d2f3418fe36b9efc6a85aba1241a46428c57d41"
+"@nyaruka/flow-editor@glific/floweditor#v1.11.8.0":
+  version "1.11.8"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/fab110b2457bfa2c7c842e2d1f908595429c62cf"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"

@@ -1,6 +1,9 @@
-.Checkbox {
+.CheckboxColor {
+  color: #073f24 !important;
 }
 
-.CheckboxColor {
-  color: green;
+.Label {
+  font-weight: 500 !important;
+  color: #073f24;
+  font-size: 16px;
 }

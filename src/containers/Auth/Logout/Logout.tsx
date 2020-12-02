@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 
 import { resetRole } from '../../../context/role';
 import { SessionContext } from '../../../context/session';
-import { clearAuthSession, clearUserSession } from '../../../services/AuthService';
+import { clearAuthSession, clearUserSession, getAuthSession } from '../../../services/AuthService';
+import { USER_SESSION } from '../../../config';
 
 export interface LogoutProps {}
 
@@ -12,20 +14,30 @@ export const Logout: React.SFC<LogoutProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const client = useApolloClient();
 
-  // clear local storage auth session
-  clearAuthSession();
+  // let's notify the backend when user logs out
+  const userLogout = () => {
+    // get the auth token from session
+    axios.defaults.headers.common.Authorization = getAuthSession('access_token');
+    axios.delete(USER_SESSION, {}).then(() => {});
+  };
 
-  // update the context
-  setAuthenticated(false);
+  useEffect(() => {
+    userLogout();
+    // clear local storage auth session
+    clearAuthSession();
 
-  // clear local storage user session
-  clearUserSession();
+    // update the context
+    setAuthenticated(false);
 
-  // clear role & access permissions
-  resetRole();
+    // clear local storage user session
+    clearUserSession();
 
-  // clear apollo cache
-  client.clearStore();
+    // clear role & access permissions
+    resetRole();
+
+    // clear apollo cache
+    client.clearStore();
+  }, []);
 
   return <Redirect to="/login" />;
 };

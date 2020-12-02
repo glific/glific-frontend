@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Toolbar,
   Typography,
@@ -9,7 +9,7 @@ import {
   ClickAwayListener,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { useMutation, useLazyQuery, useApolloClient, useQuery } from '@apollo/client';
+import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -30,6 +30,7 @@ import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
 import {
   AUTOMATION_STATUS_PUBLISHED,
+  is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
 } from '../../../../common/constants';
@@ -72,10 +73,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   // get contact groups
-  const { data } = useQuery(GET_CONTACT_GROUPS, {
+  const [getContactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
     variables: { id: contactId },
     fetchPolicy: 'cache-and-network',
   });
+
+  useEffect(() => {
+    getContactGroups();
+  }, []);
 
   // mutation to update the contact groups
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS);
@@ -259,7 +264,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let automationButton: any;
-  if (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') {
+  if (
+    (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
+    !is24HourWindowOver(lastMessageTime)
+  ) {
     automationButton = (
       <Button
         className={styles.ListButtonPrimary}

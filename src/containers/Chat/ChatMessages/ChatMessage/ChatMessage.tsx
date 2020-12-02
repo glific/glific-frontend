@@ -209,7 +209,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
 
-        <div className={`${styles.ChatMessage} ${mineColor}`}>
+        <div
+          className={`${styles.ChatMessage} ${mineColor} ${
+            type === 'STICKER' ? styles.StickerBackground : ''
+          }`}
+        >
           <Tooltip
             title={moment(insertedAt).format(DATE_FORMAT)}
             placement={isSender ? 'right' : 'left'}
