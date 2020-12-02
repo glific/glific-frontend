@@ -7,8 +7,6 @@ import { mocksWithConversation, mocksWithMultipleMessages } from '../../../mocks
 import { fireEvent } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 
-
-
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 const chatMessages = (
@@ -18,10 +16,6 @@ const chatMessages = (
     </MockedProvider>
   </MemoryRouter>
 );
-
-
-
-
 
 it('should have title as contact name', async () => {
   const { getByTestId } = render(chatMessages);

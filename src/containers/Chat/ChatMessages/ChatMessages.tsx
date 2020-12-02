@@ -81,34 +81,36 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
-      if (searchData.search[0].messages.length === 0) {
-        setShowLoadMore(false);
-      } else {
-        // get the conversations from cache
-        const conversations = getCachedConverations(client, queryVariables);
+      if (searchData) {
+        if (searchData.search[0].messages.length === 0) {
+          setShowLoadMore(false);
+        } else {
+          // get the conversations from cache
+          const conversations = getCachedConverations(client, queryVariables);
 
-        const conversationCopy = JSON.parse(JSON.stringify(searchData));
-        conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
-          .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-          const conversationObj = conversation;
-          if (conversationObj.contact.id === contactId.toString()) {
-            conversationObj.messages = [
-              ...conversationObj.messages,
-              ...conversationCopy.search[0].messages,
-            ];
-          }
-          return conversationObj;
-        });
+          const conversationCopy = JSON.parse(JSON.stringify(searchData));
+          conversationCopy.search[0].messages
+            .sort((currentMessage: any, nextMessage: any) => {
+              return currentMessage.id - nextMessage.id;
+            })
+            .reverse();
+          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+            const conversationObj = conversation;
+            if (conversationObj.contact.id === contactId.toString()) {
+              conversationObj.messages = [
+                ...conversationObj.messages,
+                ...conversationCopy.search[0].messages,
+              ];
+            }
+            return conversationObj;
+          });
 
-        // update the conversation cache
-        updateConversationsCache(conversationsCopy, client, queryVariables);
+          // update the conversation cache
+          updateConversationsCache(conversationsCopy, client, queryVariables);
 
-        setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + 50);
+        }
       }
     },
   });
@@ -169,7 +171,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
   }
 
   // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = [];
+  let conversationInfo: any = {};
 
   if (contactId) {
     // loop through the cached conversations and find if contact exists
@@ -182,9 +184,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
         return null;
       });
 
+    // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      return <Redirect to="/chat" />;
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            filter: { id: contactId },
+            messageOpts: { limit: 50, offset: messageOffset },
+            contactOpts: { limit: 50 },
+          },
+        });
+      }
     }
+  }
+
+  if (data && data.search) {
+    [conversationInfo] = data.search;
   }
 
   const closeDialogBox = () => {
@@ -344,6 +359,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     // update allConversations in the cache
     updateConversationsCache(allConversationsCopy, client, queryVariables);
   };
+
+  // conversationInfo should not be empty
+  if (!Object.prototype.hasOwnProperty.call(conversationInfo, 'contact')) {
+    return (
+      <div className={styles.LoadMore}>
+        <CircularProgress className={styles.Loading} />
+      </div>
+    );
+  }
 
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
