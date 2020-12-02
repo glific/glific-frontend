@@ -264,31 +264,27 @@ export const List: React.SFC<ListProps> = ({
     if (editSupport) {
       editButton = allowedAction.edit ? (
         <Link to={`/${pageLink}/${id}/edit`}>
-          <Tooltip title="Edit" placement="top">
-            <span>
-              <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-                <EditIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+            <Tooltip title="Edit" placement="top">
+              <EditIcon />
+            </Tooltip>
+          </IconButton>
         </Link>
       ) : null;
     }
 
     const deleteButton = (Id: any, text: string) => {
       return allowedAction.delete ? (
-        <Tooltip title={`${deleteModifier.label}`} placement="top">
-          <span>
-            <IconButton
-              aria-label="Delete"
-              color="default"
-              data-testid="DeleteIcon"
-              onClick={() => showDialogHandler(Id, text)}
-            >
-              {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
-            </IconButton>
-          </span>
-        </Tooltip>
+        <IconButton
+          aria-label="Delete"
+          color="default"
+          data-testid="DeleteIcon"
+          onClick={() => showDialogHandler(Id, text)}
+        >
+          <Tooltip title={`${deleteModifier.label}`} placement="top">
+            {deleteModifier.icon === 'cross' ? <CrossIcon /> : <DeleteIcon />}
+          </Tooltip>
+        </IconButton>
       ) : null;
     };
 
@@ -309,34 +305,30 @@ export const List: React.SFC<ListProps> = ({
             if (action.link) {
               return (
                 <Link to={`${action?.link}/${additionalActionParameter}`} key={key}>
-                  <Tooltip title={`${action.label}`} placement="top">
-                    <span>
-                      <IconButton
-                        color="default"
-                        className={styles.additonalButton}
-                        data-testid="additionalButton"
-                      >
-                        {action.icon}
-                      </IconButton>
-                    </span>
-                  </Tooltip>
+                  <IconButton
+                    color="default"
+                    className={styles.additonalButton}
+                    data-testid="additionalButton"
+                  >
+                    <Tooltip title={`${action.label}`} placement="top">
+                      {action.icon}
+                    </Tooltip>
+                  </IconButton>
                 </Link>
               );
             }
             if (action.dialog) {
               return (
-                <Tooltip title={`${action.label}`} placement="top" key={key}>
-                  <span>
-                    <IconButton
-                      color="default"
-                      data-testid="additionalButton"
-                      className={styles.additonalButton}
-                      onClick={() => action.dialog(additionalActionParameter)}
-                    >
-                      {action.icon}
-                    </IconButton>
-                  </span>
-                </Tooltip>
+                <IconButton
+                  color="default"
+                  data-testid="additionalButton"
+                  className={styles.additonalButton}
+                  onClick={() => action.dialog(additionalActionParameter)}
+                >
+                  <Tooltip title={`${action.label}`} placement="top" key={key}>
+                    {action.icon}
+                  </Tooltip>
+                </IconButton>
               );
             }
             return null;
