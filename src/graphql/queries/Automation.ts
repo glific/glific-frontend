@@ -38,6 +38,7 @@ export const FILTER_AUTOMATION = gql`
       uuid
       keywords
       ignoreKeywords
+      updatedAt
     }
   }
 `;

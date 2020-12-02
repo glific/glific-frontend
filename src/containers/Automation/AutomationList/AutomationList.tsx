@@ -18,13 +18,16 @@ export interface AutomationListProps {}
 
 const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-const getColumns = ({ name }: any) => ({
+const getUpdatedAt = (date: string) => <div className={styles.LastModified}>{date}</div>;
+
+const getColumns = ({ name, updatedAt }: any) => ({
   name: getName(name),
+  updatedAt: getUpdatedAt(updatedAt),
 });
 
-const columnNames = ['NAME', 'ACTIONS'];
+const columnNames = ['NAME', 'LAST MODIFIED', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this automation.";
-const columnStyles = [styles.Name, styles.Actions];
+const columnStyles = [styles.Name, styles.LastModified, styles.Actions];
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
