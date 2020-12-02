@@ -39,6 +39,7 @@ export const getGroupQuery = {
 export const getGroupsQuery = {
   request: {
     query: GET_GROUPS,
+    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
   },
   result: {
     data: {
