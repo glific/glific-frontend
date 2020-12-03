@@ -261,7 +261,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
       dialog: setContactsDialog,
     },
     {
-      label: 'Send Messsage',
+      label: '',
       icon: messageMenu,
       parameter: 'id',
       dialog: setGroupId,
