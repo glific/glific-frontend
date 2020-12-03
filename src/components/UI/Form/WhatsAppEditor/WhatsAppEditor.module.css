@@ -12,6 +12,17 @@
 .Editor :global(.public-DraftEditor-content) > div {
   padding-top: 10px;
   padding-bottom: 10px;
+  color: #073f24;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.Editor :global(.public-DraftEditorPlaceholder-inner) {
+  padding-top: 10px;
+  margin-bottom: -32px;
+  pointer-events: none;
+  color: #93a29b;
+  font-size: 16px;
 }
 
 /* TODO: Override emoji-mart-emoji font-size to make it medium. */
