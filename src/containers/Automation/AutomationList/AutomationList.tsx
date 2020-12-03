@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import styles from './AutomationList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
@@ -12,13 +13,15 @@ import {
   GET_AUTOMATION_COUNT,
 } from '../../../graphql/queries/Automation';
 import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
-import { setVariables } from '../../../common/constants';
+import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
 export interface AutomationListProps {}
 
 const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-const getUpdatedAt = (date: string) => <div className={styles.LastModified}>{date}</div>;
+const getUpdatedAt = (date: string) => (
+  <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+);
 
 const getColumns = ({ name, updatedAt }: any) => ({
   name: getName(name),

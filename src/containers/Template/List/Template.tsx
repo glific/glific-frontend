@@ -1,9 +1,10 @@
 import React from 'react';
+import moment from 'moment';
 
 import styles from './Template.module.css';
 import { List } from '../../List/List';
 import { WhatsAppToJsx } from '../../../common/RichEditor';
-import { setVariables } from '../../../common/constants';
+import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 
@@ -14,7 +15,9 @@ const getLabel = (label: string) => <div className={styles.LabelText}>{label}</d
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
-const getUpdatedAt = (date: string) => <div className={styles.LastModified}>{date}</div>;
+const getUpdatedAt = (date: string) => (
+  <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+);
 
 const getColumns = ({ label, body, updatedAt }: any) => ({
   label: getLabel(label),
