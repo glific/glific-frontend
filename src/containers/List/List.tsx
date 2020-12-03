@@ -324,6 +324,7 @@ export const List: React.SFC<ListProps> = ({
                   data-testid="additionalButton"
                   className={styles.additonalButton}
                   onClick={() => action.dialog(additionalActionParameter)}
+                  key={key}
                 >
                   <Tooltip title={`${action.label}`} placement="top" key={key}>
                     {action.icon}
