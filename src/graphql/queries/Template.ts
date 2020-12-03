@@ -14,6 +14,7 @@ export const FILTER_TEMPLATES = gql`
       label
       isHsm
       isReserved
+      updatedAt
     }
   }
 `;

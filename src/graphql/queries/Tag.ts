@@ -56,6 +56,7 @@ export const FILTER_TAGS = gql`
       parent {
         id
       }
+      updatedAt
     }
   }
 `;

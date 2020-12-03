@@ -23,6 +23,7 @@ export const TEMPLATE_MOCKS = [
       body: 'Hey there',
       isReserved: true,
       isHsm: true,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
     {
       id: '94',
@@ -30,6 +31,7 @@ export const TEMPLATE_MOCKS = [
       body: 'some description',
       isReserved: true,
       isHsm: false,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
   ]),
   filterTemplatesQuery('', [
@@ -39,6 +41,7 @@ export const TEMPLATE_MOCKS = [
       body: 'Hey there',
       isReserved: true,
       isHsm: true,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
     {
       id: '94',
@@ -46,6 +49,7 @@ export const TEMPLATE_MOCKS = [
       body: 'some description',
       isReserved: true,
       isHsm: false,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
   ]),
 
@@ -57,6 +61,7 @@ export const TEMPLATE_MOCKS = [
       body: 'hi can you help!',
       isReserved: true,
       isHsm: true,
+      updatedAt: '2020-12-01T18:00:32Z',
     },
   ]),
 ];

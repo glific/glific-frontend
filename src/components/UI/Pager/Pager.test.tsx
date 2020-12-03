@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Pager } from './Pager';
-import {render } from "@testing-library/react"
+import { render } from '@testing-library/react';
 import {
   Table,
   TableHead,
@@ -46,7 +46,7 @@ describe('Server Table test', () => {
     ['sortDirection']: 'asc' | 'desc';
   } = {
     pageNum: 0,
-    pageRows: 10,
+    pageRows: 50,
     sortCol: 'First Name',
     sortDirection: 'asc',
   };
@@ -91,44 +91,49 @@ describe('Server Table test', () => {
 
   it('passes in tableVals correctly', () => {
     const wrapper = render(createTable());
-    expect(wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-caption')[1]).toHaveTextContent('1-5 of 5');
-    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiSelect-select')).toHaveTextContent('10');
-    
+    expect(
+      wrapper.getByTestId('tableFooter').querySelectorAll('.MuiTablePagination-caption')[1]
+    ).toHaveTextContent('1-5 of 5');
+    expect(wrapper.getByTestId('tableFooter').querySelector('.MuiSelect-select')).toHaveTextContent(
+      '50'
+    );
   });
 
   it('renders column names correctly', () => {
-    const wrapper = render(createTable());  
+    const wrapper = render(createTable());
     for (let i = 0; i < columnNames.length - 1; i++) {
       expect(wrapper.getByText(columnNames[i])).toBeInTheDocument();
     }
   });
 
-//   it('data rendered properly', () => {
-//     const wrapper = render(createTable());
-//     expect(wrapper.find(TableBody).find(TableCell).length).toEqual(
-//       data.length * columnNames.length
-//     );
-//     for (let i = 0; i < data.length; i++) {
-//       let entryVals = Object.values(data[i]);
-//       for (let j = 0; j < columnNames.length; j++) {
-//         expect(
-//           wrapper
-//             .find(TableBody)
-//             .find(TableCell)
-//             .at(i * columnNames.length + j)
-//             .text()
-//         ).toEqual(entryVals[j]);
-//       }
-//     }
-//   });
+  //   it('data rendered properly', () => {
+  //     const wrapper = render(createTable());
+  //     expect(wrapper.find(TableBody).find(TableCell).length).toEqual(
+  //       data.length * columnNames.length
+  //     );
+  //     for (let i = 0; i < data.length; i++) {
+  //       let entryVals = Object.values(data[i]);
+  //       for (let j = 0; j < columnNames.length; j++) {
+  //         expect(
+  //           wrapper
+  //             .find(TableBody)
+  //             .find(TableCell)
+  //             .at(i * columnNames.length + j)
+  //             .text()
+  //         ).toEqual(entryVals[j]);
+  //       }
+  //     }
+  //   });
 
   it('num rows correct', () => {
     const wrapper = render(createTable());
-    expect(wrapper.getByTestId('tableBody').querySelectorAll('.MuiTableRow-root').length).toEqual(data.length);
+    expect(wrapper.getByTestId('tableBody').querySelectorAll('.MuiTableRow-root').length).toEqual(
+      data.length
+    );
   });
 
   // it('changing page working', () => {
-   
+
   //   const wrapper = render(createTable());
   //   // Forward
   //   wrapper.getByTitle('Next page');
@@ -138,38 +143,38 @@ describe('Server Table test', () => {
   //   expect(tableVals.pageNum).toEqual(0);
   // });
 
-//   it('changing rows per page', () => {
-//     const wrapper = render(createTable());
-//     let event = {
-//       target: {
-//         value: '15',
-//       },
-//     };
-//     const changePageRows = (newNum: string) => {
-//       event.target.value = newNum;
-//     };
-//     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
-//       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-//     );
-//     expect(tableVals.pageRows).toEqual(15);
-//     changePageRows('30');
-//     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
-//       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-//     );
-//     expect(tableVals.pageRows).toEqual(30);
-//     changePageRows('10');
-//     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
-//       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-//     );
-//     expect(tableVals.pageRows).toEqual(10);
-//   });
+  //   it('changing rows per page', () => {
+  //     const wrapper = render(createTable());
+  //     let event = {
+  //       target: {
+  //         value: '15',
+  //       },
+  //     };
+  //     const changePageRows = (newNum: string) => {
+  //       event.target.value = newNum;
+  //     };
+  //     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+  //       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  //     );
+  //     expect(tableVals.pageRows).toEqual(15);
+  //     changePageRows('30');
+  //     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+  //       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  //     );
+  //     expect(tableVals.pageRows).toEqual(30);
+  //     changePageRows('10');
+  //     wrapper.find(TablePagination).prop('onChangeRowsPerPage')!(
+  //       event as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  //     );
+  //     expect(tableVals.pageRows).toEqual(10);
+  //   });
 
-//   it('changing sort by column', () => {
-//     const wrapper = render(createTable());
-//     for (let i = 0; i < columnNames.length - 1; i++) {
-//       wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
-//       expect(tableVals.sortCol).toEqual(columnNames[i]);
-//       expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
-//     }
-//   });
+  //   it('changing sort by column', () => {
+  //     const wrapper = render(createTable());
+  //     for (let i = 0; i < columnNames.length - 1; i++) {
+  //       wrapper.find('span.MuiTableSortLabel-root').at(i).simulate('click');
+  //       expect(tableVals.sortCol).toEqual(columnNames[i]);
+  //       expect(tableVals.sortDirection).toEqual(tableVals.sortDirection === 'asc' ? 'asc' : 'desc');
+  //     }
+  //   });
 });

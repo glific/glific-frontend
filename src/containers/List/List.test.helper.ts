@@ -44,7 +44,7 @@ const filter = {
         label: '',
       },
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -61,6 +61,7 @@ const filter = {
           isReserved: false,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
         {
           id: '88',
@@ -70,6 +71,7 @@ const filter = {
           isReserved: true,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
       ],
     },
@@ -84,7 +86,7 @@ const search = {
         label: 'Unread',
       },
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -101,6 +103,7 @@ const search = {
           isReserved: false,
           colorCode: '#0C976D',
           parent: null,
+          updatedAt: '2020-12-01T18:00:28Z',
         },
       ],
     },

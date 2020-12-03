@@ -10,7 +10,7 @@ const contactSearchQuery = {
         status: 'BLOCKED',
       },
       opts: {
-        limit: 10,
+        limit: 50,
         offset: 0,
         order: 'ASC',
       },
@@ -45,7 +45,7 @@ const contactCountQuery = {
         name: '',
         status: 'BLOCKED',
       },
-      opts: { limit: 10, offset: 0, order: 'ASC' },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },
   result: {

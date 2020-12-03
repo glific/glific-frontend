@@ -1,11 +1,13 @@
 import React from 'react';
+import moment from 'moment';
+
+import styles from './TagList.module.css';
 import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
-import styles from './TagList.module.css';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Dark.svg';
 import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
 import { List } from '../../List/List';
-import { setVariables } from '../../../common/constants';
+import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
 
 export interface TagListProps {}
 
@@ -24,15 +26,26 @@ const getKeywords = (keyword: any) => (
   <p className={styles.TableText}>{keyword ? keyword.join(', ') : null}</p>
 );
 
-const getColumns = ({ label, description, keywords, colorCode }: any) => ({
+const getUpdatedAt = (date: string) => (
+  <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+);
+
+const getColumns = ({ label, description, keywords, colorCode, updatedAt }: any) => ({
   label: getLabel(label, colorCode),
   description: getDescription(description),
   keywords: getKeywords(keywords),
+  updatedAt: getUpdatedAt(updatedAt),
 });
 
-const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'];
+const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this for tagging messages.";
-const columnStyles = [styles.Label, styles.Description, styles.Keywords, styles.Actions];
+const columnStyles = [
+  styles.Label,
+  styles.Description,
+  styles.Keywords,
+  styles.LastModified,
+  styles.Actions,
+];
 const tagIcon = <TagIcon className={styles.TagIcon} />;
 
 const queries = {
