@@ -11,11 +11,12 @@ import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
-import { TIME_FORMAT } from '../../../../common/constants';
+import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
+import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ChatMessageProps {
   id: number;
@@ -96,7 +97,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
 
-  if (sender.id === contactId) {
+  const isSender = sender.id === contactId;
+
+  if (isSender) {
     additionalClass = styles.Other;
     mineColor = styles.OtherColor;
     iconLeft = true;
@@ -205,12 +208,22 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
-        <div className={`${styles.ChatMessage} ${mineColor}`}>
-          <div className={styles.Content} data-testid="content">
-            <div>
-              <ChatMessageType type={type} media={media} body={body} insertedAt={insertedAt} />
+
+        <div
+          className={`${styles.ChatMessage} ${mineColor} ${
+            type === 'STICKER' ? styles.StickerBackground : ''
+          }`}
+        >
+          <Tooltip
+            title={moment(insertedAt).format(DATE_FORMAT)}
+            placement={isSender ? 'right' : 'left'}
+          >
+            <div className={styles.Content} data-testid="content">
+              <div>
+                <ChatMessageType type={type} media={media} body={body} insertedAt={insertedAt} />
+              </div>
             </div>
-          </div>
+          </Tooltip>
 
           <Popper
             id={popperId}

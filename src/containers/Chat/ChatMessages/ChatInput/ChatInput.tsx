@@ -10,7 +10,7 @@ import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icon
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
-import sendMessageIcon from '../../../../assets/images/icons/SendMessage.svg';
+import { ReactComponent as SendMessageIcon } from '../../../../assets/images/icons/SendMessage.svg';
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
@@ -277,8 +277,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             onClick={() => submitMessage(convertToWhatsApp(editorState))}
             disabled={!editorState.getCurrentContent().hasText() && !attachmentAdded}
           >
-            Send
-            <img className={styles.SendIcon} src={sendMessageIcon} alt="Send Message" />
+            <SendMessageIcon className={styles.SendIcon} />
           </Button>
         </div>
       </div>

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import moment from 'moment';
+
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import styles from './ChatMessageType.module.css';
-import { DATE_FORMAT } from '../../../../../common/constants';
-import { Tooltip } from '../../../../../components/UI/Tooltip/Tooltip';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
@@ -19,12 +17,7 @@ export interface ChatMessageTypeProps {
   body: string;
 }
 
-export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
-  type,
-  media,
-  insertedAt,
-  body,
-}) => {
+export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({ type, media, body }) => {
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
 
@@ -113,13 +106,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       break;
 
     default:
-      messageBody = insertedAt ? (
-        <Tooltip title={moment(insertedAt).format(DATE_FORMAT)} placement="right">
-          <MessagesWithLinks message={body} />
-        </Tooltip>
-      ) : (
-        <MessagesWithLinks message={body} />
-      );
+      messageBody = <MessagesWithLinks message={body} />;
   }
 
   return messageBody;

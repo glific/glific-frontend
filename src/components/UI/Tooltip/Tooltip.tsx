@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Tooltip as TooltipElement } from '@material-ui/core';
 
 import styles from './Tooltip.module.css';
@@ -6,7 +6,7 @@ import styles from './Tooltip.module.css';
 interface TooltipProps {
   title: String;
   placement: any;
-  children: ReactNode;
+  children: any;
   tooltipClass?: string;
   tooltipArrowClass?: string;
 }
@@ -35,7 +35,7 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
     >
-      <span>{children}</span>
+      {children}
     </TooltipElement>
   );
 };

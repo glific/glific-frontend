@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
     <title>Icon/Document/Dark</title>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icon/Document/Dark" stroke="#073F24" stroke-width="2">
-            <path d="M5,1 L10.2014057,1 C10.7417864,1 11.2591706,1.21866769 11.6357576,1.60621569 L14.4343519,4.48626597 C14.7970839,4.85955568 15,5.35955079 15,5.88005028 L15,15 C15,16.1045695 14.1045695,17 13,17 L5,17 C3.8954305,17 3,16.1045695 3,15 L3,3 C3,1.8954305 3.8954305,1 5,1 Z" id="Rectangle"></path>
-            <path d="" id="Path-28"></path>
-        </g>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/Document/Dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M5,1 L10.2014057,1 C10.7417864,1 11.2591706,1.21866769 11.6357576,1.60621569 L14.4343519,4.48626597 C14.7970839,4.85955568 15,5.35955079 15,5.88005028 L15,15 C15,16.1045695 14.1045695,17 13,17 L5,17 C3.8954305,17 3,16.1045695 3,15 L3,3 C3,1.8954305 3.8954305,1 5,1 Z" id="Rectangle" stroke="#073F24" stroke-width="2"></path>
+        <path d="M10.5857864,6 L11.4393398,6.85355339 C11.2440777,6.65829124 11.2440777,6.34170876 11.4393398,6.14644661 C11.533108,6.05267842 11.660285,6 11.7928932,6 L10.5857864,6 Z M10,6 L9.5,6 C9.77614237,6 10,6.22385763 10,6.5 L10,6 Z M10,5.41421356 L10,4.20710678 C10,4.48324916 9.77614237,4.70710678 9.5,4.70710678 C9.36739176,4.70710678 9.2402148,4.65442836 9.14644661,4.56066017 L10,5.41421356 Z" id="Path-28" stroke="#073F24" stroke-width="2"></path>
     </g>
 </svg>

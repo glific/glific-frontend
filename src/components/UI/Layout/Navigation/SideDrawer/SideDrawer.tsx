@@ -242,8 +242,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
               aria-hidden="true"
             >
               <Menu menus={staffManagementMenus}>
-                <Tooltip title="Staff Management" placement="top">
-                  <IconButton data-testid="staffManagementMenu">
+                <IconButton data-testid="staffManagementMenu">
+                  <Tooltip title="Staff Management" placement="top">
                     <img
                       src={
                         ['/group', '/staff-management', '/blocked-contacts'].includes(
@@ -255,14 +255,14 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
                       className={styles.StaffIcon}
                       alt="staff icon"
                     />
-                  </IconButton>
-                </Tooltip>
+                  </Tooltip>
+                </IconButton>
               </Menu>
             </div>
             <div>
               <Menu menus={userAccountMenus}>
-                <Tooltip title="Profile" placement="top">
-                  <IconButton data-testid="profileMenu">
+                <IconButton data-testid="profileMenu">
+                  <Tooltip title="Profile" placement="top">
                     <img
                       src={
                         location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
@@ -270,8 +270,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
                       className={styles.UserIcon}
                       alt="user icon"
                     />
-                  </IconButton>
-                </Tooltip>
+                  </Tooltip>
+                </IconButton>
               </Menu>
             </div>
           </div>

@@ -60,7 +60,9 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   };
 
   const chatIcon = <ChatIcon />;
-  const additionalAction = [{ icon: chatIcon, parameter: 'contact.id', link: '/chat' }];
+  const additionalAction = [
+    { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: 'Send Message' },
+  ];
 
   const getRestrictedAction = (param: any) => {
     const action: any = { chat: true, edit: true, delete: true };
