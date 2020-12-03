@@ -228,6 +228,11 @@ export const FlowEditor = (props: FlowEditorProps) => {
           document.body.removeChild(files[node]);
         }
       });
+      // clearing all timeouts when component unmounts
+      const highestTimeoutId = setTimeout(() => {});
+      for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
+        clearTimeout(timeoutId);
+      }
     };
   }, []);
 
