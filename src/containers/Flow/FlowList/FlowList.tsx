@@ -7,12 +7,8 @@ import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/A
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
-import {
-  FILTER_AUTOMATION,
-  GET_AUTOMATIONS,
-  GET_AUTOMATION_COUNT,
-} from '../../../graphql/queries/Flow';
-import { DELETE_AUTOMATION } from '../../../graphql/mutations/Flow';
+import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
+import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
 export interface AutomationListProps {}
@@ -34,9 +30,9 @@ const columnStyles = [styles.Name, styles.LastModified, styles.Actions];
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
-  countQuery: GET_AUTOMATION_COUNT,
-  filterItemsQuery: FILTER_AUTOMATION,
-  deleteItemQuery: DELETE_AUTOMATION,
+  countQuery: GET_FLOW_COUNT,
+  filterItemsQuery: FILTER_FLOW,
+  deleteItemQuery: DELETE_FLOW,
 };
 
 const columnAttributes = {
@@ -77,7 +73,7 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
       pageLink="flow"
       listIcon={automationIcon}
       dialogMessage={dialogMessage}
-      refetchQueries={{ query: GET_AUTOMATIONS, variables: setVariables() }}
+      refetchQueries={{ query: GET_FLOWS, variables: setVariables() }}
       {...queries}
       {...columnAttributes}
       searchParameter="name"

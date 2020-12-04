@@ -8,13 +8,13 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
 import {
-  CREATE_AUTOMATION,
-  UPDATE_AUTOMATION,
-  DELETE_AUTOMATION,
-  CREATE_AUTOMATION_COPY,
+  CREATE_FLOW,
+  UPDATE_FLOW,
+  DELETE_FLOW,
+  CREATE_FLOW_COPY,
 } from '../../graphql/mutations/Flow';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Flow';
+import { GET_FLOW, FILTER_FLOW } from '../../graphql/queries/Flow';
 
 export interface AutomationProps {
   match: any;
@@ -29,10 +29,10 @@ const dialogMessage = "You won't be able to use this automation again.";
 const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
 
 const queries = {
-  getItemQuery: GET_AUTOMATION,
-  createItemQuery: CREATE_AUTOMATION,
-  updateItemQuery: UPDATE_AUTOMATION,
-  deleteItemQuery: DELETE_AUTOMATION,
+  getItemQuery: GET_FLOW,
+  createItemQuery: CREATE_FLOW,
+  updateItemQuery: UPDATE_FLOW,
+  deleteItemQuery: DELETE_FLOW,
 };
 
 export const Automation: React.SFC<AutomationProps> = ({ match }) => {
@@ -68,7 +68,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
 
-  const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_AUTOMATION, {
+  const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_FLOW, {
     variables: {
       filter: filterKeywords,
       opts: {
@@ -166,11 +166,11 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   let title;
   let type;
   if (location.state === 'copy') {
-    queries.updateItemQuery = CREATE_AUTOMATION_COPY;
+    queries.updateItemQuery = CREATE_FLOW_COPY;
     title = 'Copy automation';
     type = 'copy';
   } else {
-    queries.updateItemQuery = UPDATE_AUTOMATION;
+    queries.updateItemQuery = UPDATE_FLOW;
   }
 
   return (
@@ -181,11 +181,11 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="automation"
+      listItemName="flow"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="automation"
-      cancelLink="automation"
+      redirectionLink="flow"
+      cancelLink="flow"
       linkParameter="uuid"
       listItem="flow"
       icon={automationIcon}
