@@ -4,7 +4,7 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 
 import { Automation } from './Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
-import { getAutomationQuery, filterAutomationQuery } from '../../mocks/Automation';
+import { getAutomationQuery, filterAutomationQuery } from '../../mocks/Flow';
 import { MemoryRouter } from 'react-router-dom';
 
 const mocks = [

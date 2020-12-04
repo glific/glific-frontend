@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { AutomationList } from './FlowList';
 import { MockedProvider } from '@apollo/client/testing';
-import { getAutomationCountQuery } from '../../../mocks/Automation';
+import { getAutomationCountQuery } from '../../../mocks/Flow';
 
 const mocks = [getAutomationCountQuery];
 

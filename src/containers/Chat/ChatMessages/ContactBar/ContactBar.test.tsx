@@ -6,7 +6,7 @@ import ContactBar from './ContactBar';
 import { contactGroupsQuery } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getGroupsQuery } from '../../../../mocks/Group';
-import { getPublishedAutomationQuery } from '../../../../mocks/Automation';
+import { getPublishedAutomationQuery } from '../../../../mocks/Flow';
 
 const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedAutomationQuery];
 

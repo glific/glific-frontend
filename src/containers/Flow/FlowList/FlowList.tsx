@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
-import styles from './FLowList.module.css';
+import styles from './FlowList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
@@ -71,9 +71,9 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
 
   return (
     <List
-      title="Automations"
+      title="Flows"
       listItem="flows"
-      listItemName="automation"
+      listItemName="flow"
       pageLink="flow"
       listIcon={automationIcon}
       dialogMessage={dialogMessage}
@@ -82,7 +82,7 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
       {...columnAttributes}
       searchParameter="name"
       additionalAction={additionalAction}
-      button={{ show: true, label: '+ CREATE AUTOMATION' }}
+      button={{ show: true, label: '+ CREATE FLOW' }}
     />
   );
 };
