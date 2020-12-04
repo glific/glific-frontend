@@ -9,7 +9,7 @@ import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
+import { GET_AUTOMATIONS } from '../../../graphql/queries/Flow';
 import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,

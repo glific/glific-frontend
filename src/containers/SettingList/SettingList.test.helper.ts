@@ -1,4 +1,4 @@
-import { GET_AUTOMATIONS } from '../../graphql/queries/Automation';
+import { GET_AUTOMATIONS } from '../../graphql/queries/Flow';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import {
   getOrganizationLanguagesQuery,

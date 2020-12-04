@@ -13,8 +13,8 @@ import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../con
 import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
-import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Automation';
+import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Flow';
+import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Flow';
 
 declare function showFlowEditor(node: any, config: any): void;
 

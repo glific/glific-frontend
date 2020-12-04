@@ -23,8 +23,8 @@ import { ReactComponent as ClearConversation } from '../../../../assets/images/i
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
-import { GET_AUTOMATIONS } from '../../../../graphql/queries/Automation';
-import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Automation';
+import { GET_AUTOMATIONS } from '../../../../graphql/queries/Flow';
+import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';

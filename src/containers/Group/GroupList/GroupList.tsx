@@ -11,8 +11,8 @@ import ChatDarkIconSVG, {
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
-import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
+import { GET_AUTOMATIONS } from '../../../graphql/queries/Flow';
+import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Flow';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';

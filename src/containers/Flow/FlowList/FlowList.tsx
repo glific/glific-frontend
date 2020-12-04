@@ -11,8 +11,8 @@ import {
   FILTER_AUTOMATION,
   GET_AUTOMATIONS,
   GET_AUTOMATION_COUNT,
-} from '../../../graphql/queries/Automation';
-import { DELETE_AUTOMATION } from '../../../graphql/mutations/Automation';
+} from '../../../graphql/queries/Flow';
+import { DELETE_AUTOMATION } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
 export interface AutomationListProps {}

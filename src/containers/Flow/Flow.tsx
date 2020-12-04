@@ -12,9 +12,9 @@ import {
   UPDATE_AUTOMATION,
   DELETE_AUTOMATION,
   CREATE_AUTOMATION_COPY,
-} from '../../graphql/mutations/Automation';
+} from '../../graphql/mutations/Flow';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
+import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Flow';
 
 export interface AutomationProps {
   match: any;

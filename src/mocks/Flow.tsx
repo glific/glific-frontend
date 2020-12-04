@@ -3,8 +3,8 @@ import {
   GET_AUTOMATIONS,
   GET_AUTOMATION_COUNT,
   GET_AUTOMATION_DETAILS,
-} from '../graphql/queries/Automation';
-import { FILTER_AUTOMATION } from '../graphql/queries/Automation';
+} from '../graphql/queries/Flow';
+import { FILTER_AUTOMATION } from '../graphql/queries/Flow';
 
 export const getAutomationQuery = {
   request: {
