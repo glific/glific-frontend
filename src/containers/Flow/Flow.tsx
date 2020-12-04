@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import styles from './Flow.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
+import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Selected.svg';
 import {
   CREATE_FLOW,
   UPDATE_FLOW,
@@ -16,7 +16,7 @@ import {
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW, FILTER_FLOW } from '../../graphql/queries/Flow';
 
-export interface AutomationProps {
+export interface FlowProps {
   match: any;
 }
 
@@ -26,7 +26,7 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = "You won't be able to use this automation again.";
 
-const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
+const automationIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   getItemQuery: GET_FLOW,
@@ -35,7 +35,7 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-export const Automation: React.SFC<AutomationProps> = ({ match }) => {
+export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -49,7 +49,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     keywords: keywordsValue,
     ignoreKeywords: ignoreKeywordsValue,
   }: any) => {
-    // Override name & keywords when creating Automation Copy
+    // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
     if (location.state === 'copy') {
@@ -68,7 +68,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
 
   const additionalAction = { label: 'Configure', link: '/automation/configure' };
 
-  const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_FLOW, {
+  const [getFlows, { data: automation }] = useLazyQuery<any>(FILTER_FLOW, {
     variables: {
       filter: filterKeywords,
       opts: {
@@ -80,8 +80,8 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   });
 
   useEffect(() => {
-    if (filterKeywords) getAutomations();
-  }, [filterKeywords, getAutomations]);
+    if (filterKeywords) getFlows();
+  }, [filterKeywords, getFlows]);
 
   const validateFields = (value: string, key: string, errorMsg: string, deepFilter: boolean) => {
     let found = [];

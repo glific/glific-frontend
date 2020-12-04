@@ -3,15 +3,15 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
 import styles from './FlowList.module.css';
-import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
-import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
+import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
 import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
-export interface AutomationListProps {}
+export interface FlowListProps {}
 
 const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
 
@@ -27,7 +27,7 @@ const getColumns = ({ name, updatedAt }: any) => ({
 const columnNames = ['NAME', 'LAST MODIFIED', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this automation.";
 const columnStyles = [styles.Name, styles.LastModified, styles.Actions];
-const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
+const automationIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   countQuery: GET_FLOW_COUNT,
@@ -43,7 +43,7 @@ const columnAttributes = {
 
 const configureIcon = <ConfigureIcon />;
 
-export const AutomationList: React.SFC<AutomationListProps> = () => {
+export const FlowList: React.SFC<FlowListProps> = () => {
   const history = useHistory();
 
   const setDialog = (id: any) => {
