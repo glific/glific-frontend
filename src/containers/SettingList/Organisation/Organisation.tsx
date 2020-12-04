@@ -9,7 +9,7 @@ import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Flow';
+import { GET_FLOWS } from '../../../graphql/queries/Flow';
 import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
@@ -18,7 +18,7 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -70,9 +70,9 @@ export const Organisation: React.SFC = () => {
   };
 
   // get the published automation list
-  const { data: automation } = useQuery(GET_AUTOMATIONS, {
+  const { data: automation } = useQuery(GET_FLOWS, {
     variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
+      status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });

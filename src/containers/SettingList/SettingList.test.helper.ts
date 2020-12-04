@@ -1,4 +1,4 @@
-import { GET_AUTOMATIONS } from '../../graphql/queries/Flow';
+import { GET_FLOWS } from '../../graphql/queries/Flow';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import {
   getOrganizationLanguagesQuery,
@@ -6,7 +6,7 @@ import {
   getProvidersQuery,
   getCredential,
 } from '../../mocks/Organization';
-import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../common/constants';
+import { FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
 
 export const LIST_ITEM_MOCKS = [
   {
@@ -51,8 +51,8 @@ export const LIST_ITEM_MOCKS = [
   },
   {
     request: {
-      query: GET_AUTOMATIONS,
-      variables: setVariables({ status: AUTOMATION_STATUS_PUBLISHED }),
+      query: GET_FLOWS,
+      variables: setVariables({ status: FLOW_STATUS_PUBLISHED }),
     },
     result: {
       data: {

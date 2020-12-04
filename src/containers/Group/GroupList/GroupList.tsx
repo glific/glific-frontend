@@ -11,8 +11,8 @@ import ChatDarkIconSVG, {
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Flow';
-import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Flow';
+import { GET_FLOWS } from '../../../graphql/queries/Flow';
+import { ADD_FLOW_TO_GROUP } from '../../../graphql/mutations/Flow';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
@@ -20,7 +20,7 @@ import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
-import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
@@ -61,9 +61,9 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   const [groupId, setGroupId] = useState();
 
   // get the published automation list
-  const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS, {
+  const [getAutomations, { data: automationData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
+      status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
@@ -107,7 +107,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
   });
 
-  const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
+  const [addAutomationToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
     onCompleted: () => {
       setAddAutomationDialogShow(false);
       setNotification(client, 'Automation started successfully');

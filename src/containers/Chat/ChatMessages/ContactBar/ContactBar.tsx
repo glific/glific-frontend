@@ -23,13 +23,13 @@ import { ReactComponent as ClearConversation } from '../../../../assets/images/i
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
-import { GET_AUTOMATIONS } from '../../../../graphql/queries/Flow';
-import { ADD_AUTOMATION_TO_CONTACT } from '../../../../graphql/mutations/Flow';
+import { GET_FLOWS } from '../../../../graphql/queries/Flow';
+import { ADD_FLOW_TO_CONTACT } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
 import {
-  AUTOMATION_STATUS_PUBLISHED,
+  FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
   SEARCH_QUERY_VARIABLES,
   setVariables,
@@ -65,9 +65,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   // get the published automation list
-  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_AUTOMATIONS, {
+  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
+      status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
@@ -92,7 +92,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
-  const [addAutomation] = useMutation(ADD_AUTOMATION_TO_CONTACT, {
+  const [addAutomation] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
       setShowAutomationDialog(false);
       setNotification(client, 'Automation started successfully');

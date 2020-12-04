@@ -1,14 +1,9 @@
-import {
-  GET_AUTOMATION,
-  GET_AUTOMATIONS,
-  GET_AUTOMATION_COUNT,
-  GET_AUTOMATION_DETAILS,
-} from '../graphql/queries/Flow';
-import { FILTER_AUTOMATION } from '../graphql/queries/Flow';
+import { GET_FLOW, GET_FLOWS, GET_FLOW_COUNT, GET_FLOW_DETAILS } from '../graphql/queries/Flow';
+import { FILTER_FLOW } from '../graphql/queries/Flow';
 
 export const getAutomationQuery = {
   request: {
-    query: GET_AUTOMATION,
+    query: GET_FLOW,
     variables: {
       id: 1,
     },
@@ -31,7 +26,7 @@ export const getAutomationQuery = {
 
 export const filterAutomationQuery = {
   request: {
-    query: FILTER_AUTOMATION,
+    query: FILTER_FLOW,
     variables: {
       filter: {
         keyword: 'help',
@@ -61,7 +56,7 @@ export const filterAutomationQuery = {
 
 export const getAutomationDetailsQuery = {
   request: {
-    query: GET_AUTOMATION_DETAILS,
+    query: GET_FLOW_DETAILS,
     variables: {
       filter: {
         uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
@@ -84,7 +79,7 @@ export const getAutomationDetailsQuery = {
 
 export const getAutomationCountQuery = {
   request: {
-    query: GET_AUTOMATION_COUNT,
+    query: GET_FLOW_COUNT,
     variables: {
       filter: {
         name: '',
@@ -101,7 +96,7 @@ export const getAutomationCountQuery = {
 
 export const getPublishedAutomationQuery = {
   request: {
-    query: GET_AUTOMATIONS,
+    query: GET_FLOWS,
     variables: {
       filter: { status: 'published' },
       opts: {

@@ -13,8 +13,8 @@ import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../con
 import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
-import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Flow';
-import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Flow';
+import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
+import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -149,7 +149,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [publishDialog, setPublishDialog] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_AUTOMATION, {
+  const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: () => {
       setNotification(client, 'The flow has been published');
     },
@@ -195,7 +195,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     );
   }
 
-  const { data: automationName } = useQuery(GET_AUTOMATION_DETAILS, {
+  const { data: automationName } = useQuery(GET_FLOW_DETAILS, {
     variables: {
       filter: {
         uuid,
