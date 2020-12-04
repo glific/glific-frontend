@@ -12,6 +12,10 @@ export const ADD_MESSAGE_TAG_SUBSCRIPTION = gql`
         sender {
           id
         }
+        media {
+          url
+          caption
+        }
       }
       tag {
         id
@@ -33,6 +37,10 @@ export const DELETE_MESSAGE_TAG_SUBSCRIPTION = gql`
         }
         sender {
           id
+        }
+        media {
+          url
+          caption
         }
       }
       tag {

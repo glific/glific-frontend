@@ -53,7 +53,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     SEARCH_QUERY,
     {
       variables: queryVariables,
-      fetchPolicy: 'cache-first',
+      fetchPolicy: 'cache-only',
     }
   );
   const filterVariables = () => {

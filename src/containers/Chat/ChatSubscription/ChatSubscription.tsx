@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
@@ -16,14 +16,17 @@ import {
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
 
-export interface ChatSubscriptionProps {}
+export interface ChatSubscriptionProps {
+  setDataLoaded: any;
+  setLoading: any;
+}
 
-export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
+export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
+  setDataLoaded,
+  setLoading,
+}) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
-
-  const { loading, error, subscribeToMore, client } = useQuery<any>(SEARCH_QUERY, {
-    variables: queryVariables,
-  });
+  const client = useApolloClient();
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -33,11 +36,9 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
       }
     },
   });
-
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
       // if there is no message data then return previous conversations
-
       if (!subscriptionData.data) {
         return cachedConversations;
       }
@@ -153,57 +154,72 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = () => {
 
       // return the updated object
       const returnConversations = { ...cachedConversations, ...updatedConversations };
-
       return returnConversations;
     },
     [getContactQuery]
   );
 
-  // handle subscription for message received and sent
-  const getMessageResponse = useCallback(() => {
-    // let's map all the subscriptions to logged in user's organization
-    const subscriptionVariables = { organizationId: getUserSession('organizationId') };
-    // message received subscription
-    subscribeToMore({
-      document: MESSAGE_RECEIVED_SUBSCRIPTION,
-      variables: subscriptionVariables,
-      updateQuery: (prev, { subscriptionData }) => {
-        return updateConversations(prev, subscriptionData, 'RECEIVED');
-      },
-    });
+  const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    nextFetchPolicy: 'cache-only',
+    onCompleted: () => {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
-    // message sent subscription
-    subscribeToMore({
-      document: MESSAGE_SENT_SUBSCRIPTION,
-      variables: subscriptionVariables,
-      updateQuery: (prev, { subscriptionData }) => {
-        return updateConversations(prev, subscriptionData, 'SENT');
-      },
-    });
+      if (subscribeToMore) {
+        // message received subscription
+        subscribeToMore({
+          document: MESSAGE_RECEIVED_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'RECEIVED');
+          },
+        });
 
-    // tag added subscription
-    subscribeToMore({
-      document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-      variables: subscriptionVariables,
-      updateQuery: (prev, { subscriptionData }) => {
-        return updateConversations(prev, subscriptionData, 'TAG_ADDED');
-      },
-    });
+        // message sent subscription
+        subscribeToMore({
+          document: MESSAGE_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'SENT');
+          },
+        });
 
-    // tag delete subscription
-    subscribeToMore({
-      document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-      variables: subscriptionVariables,
-      updateQuery: (prev, { subscriptionData }) => {
-        return updateConversations(prev, subscriptionData, 'TAG_DELETED');
-      },
-    });
-  }, [subscribeToMore, updateConversations]);
+        // tag added subscription
+        subscribeToMore({
+          document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'TAG_ADDED');
+          },
+        });
+
+        // tag delete subscription
+        subscribeToMore({
+          document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'TAG_DELETED');
+          },
+        });
+      }
+    },
+  });
 
   useEffect(() => {
-    getMessageResponse();
-    // we should call useEffect only once hence []
-  }, [getMessageResponse]);
+    if (data) {
+      setDataLoaded(true);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading]);
+
+  useEffect(() => {
+    if (!data) {
+      loadData();
+    }
+  }, []);
 
   if (loading) return <Loading />;
   if (error) {

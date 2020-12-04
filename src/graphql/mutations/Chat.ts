@@ -17,6 +17,10 @@ export const CREATE_AND_SEND_MESSAGE_MUTATION = gql`
           id
           label
         }
+        media {
+          url
+          caption
+        }
       }
     }
   }

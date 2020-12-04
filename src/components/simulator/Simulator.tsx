@@ -44,7 +44,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-only',
   });
 
   if (allConversations) {
