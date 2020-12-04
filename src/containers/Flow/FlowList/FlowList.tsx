@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
-import styles from './AutomationList.module.css';
+import styles from './FLowList.module.css';
 import { ReactComponent as AutomationIcon } from '../../../assets/images/icons/Automations/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Automations/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
@@ -51,7 +51,7 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
   const history = useHistory();
 
   const setDialog = (id: any) => {
-    history.push({ pathname: `/automation/${id}/edit`, state: 'copy' });
+    history.push({ pathname: `/flow/${id}/edit`, state: 'copy' });
   };
 
   const additionalAction = [
@@ -74,7 +74,7 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
       title="Automations"
       listItem="flows"
       listItemName="automation"
-      pageLink="automation"
+      pageLink="flow"
       listIcon={automationIcon}
       dialogMessage={dialogMessage}
       refetchQueries={{ query: GET_AUTOMATIONS, variables: setVariables() }}

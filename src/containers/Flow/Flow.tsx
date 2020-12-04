@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 
-import styles from './Automation.module.css';
+import styles from './Flow.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';

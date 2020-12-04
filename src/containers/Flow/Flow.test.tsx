@@ -2,7 +2,7 @@ import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 
-import { Automation } from './Automation';
+import { Automation } from './Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { getAutomationQuery, filterAutomationQuery } from '../../mocks/Automation';
 import { MemoryRouter } from 'react-router-dom';
