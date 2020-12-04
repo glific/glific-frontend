@@ -6,8 +6,8 @@ import { TagPage } from '../../components/pages/TagPage/TagPage';
 import { Tag } from '../../containers/Tag/Tag';
 import { SpeedSendPage } from '../../components/pages/Template/SpeedSendPage/SpeedSendPage';
 import { SpeedSend } from '../../containers/Template/Form/SpeedSend/SpeedSend';
-import { AutomationList } from '../../containers/Flow/FlowList/FlowList';
-import { Automation } from '../../containers/Flow/Flow';
+import { FlowList } from '../../containers/Flow/FlowList/FlowList';
+import { Flow } from '../../containers/Flow/Flow';
 import { GroupList } from '../../containers/Group/GroupList/GroupList';
 import { Group } from '../../containers/Group/Group';
 import { GroupContact } from '../../containers/Group/GroupContact/GroupContact';
@@ -75,9 +75,9 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/speed-send" exact component={SpeedSendPage} />
         <Route path="/speed-send/add" exact component={SpeedSend} />
         <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
-        <Route path="/flow" exact component={AutomationList} />
-        <Route path="/flow/add" exact component={Automation} />
-        <Route path="/flow/:id/edit" exact component={Automation} />
+        <Route path="/flow" exact component={FlowList} />
+        <Route path="/flow/add" exact component={Flow} />
+        <Route path="/flow/:id/edit" exact component={Flow} />
         <Route path="/group" exact component={GroupList} />
         <Route path="/group/add" exact component={Group} />
         <Route path="/group/:id/edit" exact component={Group} />

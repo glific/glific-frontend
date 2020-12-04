@@ -66,9 +66,9 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     setIgnoreKeywords(ignoreKeywordsValue);
   };
 
-  const additionalAction = { label: 'Configure', link: '/automation/configure' };
+  const additionalAction = { label: 'Configure', link: '/flow/configure' };
 
-  const [getFlows, { data: automation }] = useLazyQuery<any>(FILTER_FLOW, {
+  const [getFlows, { data: flow }] = useLazyQuery<any>(FILTER_FLOW, {
     variables: {
       filter: filterKeywords,
       opts: {
@@ -86,14 +86,14 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const validateFields = (value: string, key: string, errorMsg: string, deepFilter: boolean) => {
     let found = [];
     let error;
-    if (automation) {
+    if (flow) {
       // need to check exact keywords
       if (deepFilter) {
-        found = automation.flows.filter((search: any) =>
+        found = flow.flows.filter((search: any) =>
           search.keywords.filter((keyword: any) => keyword === value)
         );
       } else {
-        found = automation.flows.filter((search: any) => search[key] === value);
+        found = flow.flows.filter((search: any) => search[key] === value);
       }
 
       if (match.params.id && found.length > 0) {
