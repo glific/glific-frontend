@@ -50,6 +50,10 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
         label
         colorCode
       }
+      media {
+        url
+        caption
+      }
     }
   }
 `;

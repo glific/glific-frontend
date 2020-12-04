@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import styles from './AuthenticatedRoute.module.css';
@@ -30,8 +30,11 @@ import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
 import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import Loading from '../../components/UI/Layout/Loading/Loading';
 
 export const AuthenticatedRoute: React.SFC = () => {
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
   let userRole: any[] = [];
   let route;
@@ -115,13 +118,19 @@ export const AuthenticatedRoute: React.SFC = () => {
     );
   }
 
+  const loadingSpinner = <Loading />;
+  route = dataLoaded ? route : null;
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
   // on chat screen, for eg: send message to group
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
-      {userRole.length > 0 ? <ChatSubscription /> : ''}
-      <Layout>{route}</Layout>
+      {userRole.length > 0 ? (
+        <ChatSubscription setDataLoaded={setDataLoaded} setLoading={setLoading} />
+      ) : (
+        ''
+      )}
+      <Layout>{loading ? loadingSpinner : route}</Layout>
     </div>
   );
 };

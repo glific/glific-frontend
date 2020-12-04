@@ -76,7 +76,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId }) => {
     data: allConversations,
   }: any = useQuery(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-only',
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
