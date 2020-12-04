@@ -59,7 +59,7 @@ export const AutomationList: React.SFC<AutomationListProps> = () => {
       label: 'Configure',
       icon: configureIcon,
       parameter: 'uuid',
-      link: '/automation/configure',
+      link: '/flow/configure',
     },
     {
       label: 'Make a copy',

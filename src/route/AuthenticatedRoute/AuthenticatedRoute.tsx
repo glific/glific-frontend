@@ -75,15 +75,15 @@ export const AuthenticatedRoute: React.SFC = () => {
         <Route path="/speed-send" exact component={SpeedSendPage} />
         <Route path="/speed-send/add" exact component={SpeedSend} />
         <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
-        <Route path="/automation" exact component={AutomationList} />
-        <Route path="/automation/add" exact component={Automation} />
-        <Route path="/automation/:id/edit" exact component={Automation} />
+        <Route path="/flow" exact component={AutomationList} />
+        <Route path="/flow/add" exact component={Automation} />
+        <Route path="/flow/:id/edit" exact component={Automation} />
         <Route path="/group" exact component={GroupList} />
         <Route path="/group/add" exact component={Group} />
         <Route path="/group/:id/edit" exact component={Group} />
         <Route path="/group/:id/contacts" exact component={GroupContact} />
 
-        <Route path="/automation/configure/:uuid" exact component={FlowEditor} />
+        <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
         <Route path="/collection" exact component={CollectionList} />
         <Route path="/collection/add" exact component={Collection} />
