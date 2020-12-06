@@ -28,7 +28,15 @@ export const GET_TEMPLATE = gql`
         body
         isActive
         language {
+          label
           id
+        }
+        translations
+        type
+        MessageMedia {
+          id
+          caption
+          sourceUrl
         }
       }
     }

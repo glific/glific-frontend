@@ -16,6 +16,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
+import { CREATE_MEDIA_MESSAGE } from '../../graphql/mutations/Chat';
 
 export interface FormLayoutProps {
   match: any;
@@ -50,6 +51,7 @@ export interface FormLayoutProps {
   title?: string;
   getLanguageId?: any;
   backLinkButton?: any;
+  IsAttachment?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -85,6 +87,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   redirect = true,
   getLanguageId,
   backLinkButton,
+  IsAttachment = false,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -179,6 +182,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
 
+  // create media for attachment
+  const [createMediaMessage, { data: mediaData }] = useMutation(CREATE_MEDIA_MESSAGE);
+
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
@@ -216,6 +222,38 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
+  const getMediaId = (payload: any) => {
+    createMediaMessage({
+      variables: {
+        input: {
+          caption: payload.body,
+          sourceUrl: payload.attachmentURL,
+          url: payload.attachmentURL,
+        },
+      },
+    }).then((data) => {
+      if (data) {
+        const payloadCopy = payload;
+        delete payloadCopy.attachmentURL;
+        payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+        if (itemId) {
+          updateItem({
+            variables: {
+              id: itemId,
+              input: payloadCopy,
+            },
+          });
+        } else {
+          createItem({
+            variables: {
+              input: payloadCopy,
+            },
+          });
+        }
+      }
+    });
+  };
+
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
       ...itemData,
@@ -249,7 +287,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     });
 
-    if (itemId) {
+    // for template create media for attachment
+    if (IsAttachment && payload.type !== 'TEXT') {
+      getMediaId(payload);
+    } else if (itemId) {
       updateItem({
         variables: {
           id: itemId,

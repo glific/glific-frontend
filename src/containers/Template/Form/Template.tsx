@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -13,6 +13,9 @@ import {
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
+import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
+import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
+import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
@@ -21,12 +24,13 @@ const FormSchema = Yup.object().shape({
       return original.getCurrentContent().getPlainText();
     })
     .required('Message is required.'),
+  language: Yup.object().nullable().required('Language is required.'),
 });
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
 const defaultTypeAttribute = {
-  type: 'TEXT',
+  // type: 'TEXT',
 };
 
 const queries = {
@@ -50,12 +54,43 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
-  const [languageId, setLanguageId] = useState('');
+  const [language, setLanguageId] = useState<any>({});
+  const [type, setType] = useState<any>('');
+  const [translations, setTranslations] = useState<any>();
+  const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [languageOptions, setLanguageOptions] = useState<any>([]);
 
-  const states = { label, body };
-  const setStates = ({ label: labelValue, body: bodyValue }: any) => {
+  const states = { language, label, body, type, attachmentURL };
+  const setStates = ({
+    language: languageIdValue,
+    label: labelValue,
+    body: bodyValue,
+    type: typeValue,
+    translations: translationsValue,
+    MessageMedia: MessageMediaValue,
+  }: any) => {
+    if (languageIdValue) {
+      setLanguageId(languageIdValue);
+    }
+
     setLabel(labelValue);
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+    if (typeof bodyValue === 'string') {
+      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+    }
+    if (typeof bodyValue === 'object') {
+      setBody(bodyValue);
+    }
+    if (typeValue && typeValue !== 'TEXT') {
+      setType({ id: typeValue, label: typeValue });
+    } else {
+      setType('');
+    }
+    if (translationsValue) setTranslations(translationsValue);
+    if (MessageMediaValue) {
+      setAttachmentURL(MessageMediaValue.sourceUrl);
+    } else {
+      setAttachmentURL('');
+    }
   };
 
   let attributesObject = defaultTypeAttribute;
@@ -63,9 +98,13 @@ const Template: React.SFC<TemplateProps> = (props) => {
     attributesObject = { ...attributesObject, ...defaultAttribute };
   }
 
+  const { data: languages } = useQuery(USER_LANGUAGES, {
+    variables: { opts: { order: 'ASC' } },
+  });
+
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
     variables: {
-      filter: { label: filterLabel, languageId: parseInt(languageId, 10) },
+      filter: { label: filterLabel, languageId: parseInt(language.id, 10) },
       opts: {
         order: 'ASC',
         limit: null,
@@ -75,8 +114,22 @@ const Template: React.SFC<TemplateProps> = (props) => {
   });
 
   useEffect(() => {
-    if (filterLabel && languageId) getSessionTemplates();
-  }, [filterLabel, languageId, getSessionTemplates]);
+    if (languages) {
+      const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
+      // sort languages by their name
+      lang.sort((first: any, second: any) => {
+        return first.label > second.label ? 1 : -1;
+      });
+      setLanguageOptions(lang);
+      setLanguageId(lang[0]);
+    }
+  }, [languages]);
+
+  useEffect(() => {
+    if (filterLabel && language) {
+      getSessionTemplates();
+    }
+  }, [filterLabel, language, getSessionTemplates]);
 
   const validateTitle = (value: any) => {
     let error;
@@ -97,11 +150,55 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return error;
   };
 
-  const getLanguageId = (value: any) => {
-    setLanguageId(value);
+  const UpdateTranslation = (value: any) => {
+    const Id = value.id;
+    if (translations) {
+      const translationsCopy = JSON.parse(translations);
+      if (translationsCopy[Id]) {
+        setStates({
+          language: value,
+          label: translationsCopy[Id].label,
+          // body: translationsCopy[Id].body,
+          body: 'test',
+          type: translationsCopy[Id].type,
+          MessageMedia: { sourceUrl: translationsCopy[Id].attachmentURL },
+        });
+      } else {
+        setStates({
+          language: value,
+          label: '',
+          body: '',
+          type: null,
+          MessageMedia: { sourceUrl: '' },
+        });
+      }
+    }
   };
 
+  const getLanguageId = (value: any) => {
+    if (value) {
+      UpdateTranslation(value);
+    }
+  };
+
+  const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
+    return { id: option, label: option };
+  });
+
   const formFields = [
+    {
+      component: AutoComplete,
+      name: 'language',
+      options: languageOptions,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: 'Language',
+      },
+      onChange: getLanguageId,
+      helperText: 'For more languages check settings or connect with your admin',
+    },
     {
       component: Input,
       name: 'label',
@@ -116,7 +213,51 @@ const Template: React.SFC<TemplateProps> = (props) => {
       convertToWhatsApp: true,
       textArea: true,
     },
+    {
+      component: AutoComplete,
+      name: 'type',
+      options,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: 'Type',
+      },
+    },
+    {
+      component: Input,
+      name: 'attachmentURL',
+      type: 'text',
+      placeholder: 'Attachment URL',
+    },
   ];
+
+  const setPayload = (payload: any) => {
+    const payloadCopy = payload;
+    payloadCopy.languageId = language.id;
+    payloadCopy.type = payloadCopy.type.id || 'TEXT';
+
+    delete payloadCopy.language;
+
+    if (payloadCopy.type === 'TEXT') {
+      delete payloadCopy.attachmentURL;
+    }
+
+    let translationsCopy: any = {};
+    if (translations) {
+      translationsCopy = JSON.parse(translations);
+    }
+    translationsCopy[payloadCopy.languageId] = {
+      status: 'approved',
+      languageId: language,
+      label: payloadCopy.label,
+      body: payloadCopy.body,
+      type: payloadCopy.type,
+      attachmentURL: payloadCopy.attachmentURL || null,
+    };
+    payloadCopy.translations = JSON.stringify(translationsCopy);
+    return payloadCopy;
+  };
 
   return (
     <FormLayout
@@ -124,6 +265,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       match={match}
       states={states}
       setStates={setStates}
+      setPayload={setPayload}
       validationSchema={FormSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
@@ -133,6 +275,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       icon={icon}
       defaultAttribute={attributesObject}
       getLanguageId={getLanguageId}
+      languageSupport={false}
+      IsAttachment
     />
   );
 };
