@@ -69,8 +69,8 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
   };
 
-  // get the published automation list
-  const { data: automation } = useQuery(GET_FLOWS, {
+  // get the published flow list
+  const { data: flow } = useQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
     }),
@@ -94,7 +94,7 @@ export const Organisation: React.SFC = () => {
   };
 
   const getFlow = (id: string) => {
-    return automation.flows.filter((option: any) => option.id === id)[0];
+    return flow.flows.filter((option: any) => option.id === id)[0];
   };
 
   const setStates = ({
@@ -124,7 +124,7 @@ export const Organisation: React.SFC = () => {
     }
   }, [orgData]);
 
-  if (!automation || !languages) return <Loading />;
+  if (!flow || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -217,7 +217,7 @@ export const Organisation: React.SFC = () => {
     {
       component: AutoComplete,
       name: 'flowId',
-      options: automation.flows,
+      options: flow.flows,
       optionLabel: 'name',
       multiple: false,
       textFieldProps: {

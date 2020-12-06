@@ -1,20 +1,20 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { AutomationList } from './FlowList';
+import { FlowList } from './FlowList';
 import { MockedProvider } from '@apollo/client/testing';
-import { getAutomationCountQuery } from '../../../mocks/Flow';
+import { getFlowCountQuery } from '../../../mocks/Flow';
 
-const mocks = [getAutomationCountQuery];
+const mocks = [getFlowCountQuery];
 
-const automationList = (
+const flowList = (
   <MockedProvider mocks={mocks}>
-    <AutomationList />
+    <FlowList />
   </MockedProvider>
 );
 
-describe('<Automation />', () => {
-  it('should render Automation', () => {
-    const { getByText } = render(automationList);
+describe('<Flow />', () => {
+  it('should render Flow', () => {
+    const { getByText } = render(flowList);
     expect(getByText('Loading...')).toBeInTheDocument();
   });
 });

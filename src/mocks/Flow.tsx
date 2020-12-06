@@ -1,7 +1,7 @@
 import { GET_FLOW, GET_FLOWS, GET_FLOW_COUNT, GET_FLOW_DETAILS } from '../graphql/queries/Flow';
 import { FILTER_FLOW } from '../graphql/queries/Flow';
 
-export const getAutomationQuery = {
+export const getFlowQuery = {
   request: {
     query: GET_FLOW,
     variables: {
@@ -24,7 +24,7 @@ export const getAutomationQuery = {
   },
 };
 
-export const filterAutomationQuery = {
+export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
@@ -54,7 +54,7 @@ export const filterAutomationQuery = {
   },
 };
 
-export const getAutomationDetailsQuery = {
+export const getFlowDetailsQuery = {
   request: {
     query: GET_FLOW_DETAILS,
     variables: {
@@ -77,7 +77,7 @@ export const getAutomationDetailsQuery = {
   },
 };
 
-export const getAutomationCountQuery = {
+export const getFlowCountQuery = {
   request: {
     query: GET_FLOW_COUNT,
     variables: {
@@ -94,7 +94,7 @@ export const getAutomationCountQuery = {
   },
 };
 
-export const getPublishedAutomationQuery = {
+export const getPublishedFlowQuery = {
   request: {
     query: GET_FLOWS,
     variables: {

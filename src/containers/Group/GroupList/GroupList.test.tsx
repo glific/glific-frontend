@@ -37,7 +37,7 @@ describe('<GroupList />', () => {
       expect(getByText('Groups')).toBeInTheDocument();
     });
 
-    // TODO: test automation
+    // TODO: test flows
 
     // TODO: test delete
   });

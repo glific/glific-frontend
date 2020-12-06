@@ -17,7 +17,7 @@ export const sideDrawerMenus = [
   {
     title: 'Flows',
     path: '/flow',
-    icon: 'automation',
+    icon: 'flow',
   },
   {
     title: 'Collections',

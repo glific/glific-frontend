@@ -25,9 +25,9 @@ const getColumns = ({ name, updatedAt }: any) => ({
 });
 
 const columnNames = ['NAME', 'LAST MODIFIED', 'ACTIONS'];
-const dialogMessage = "You won't be able to use this automation.";
+const dialogMessage = "You won't be able to use this flow.";
 const columnStyles = [styles.Name, styles.LastModified, styles.Actions];
-const automationIcon = <FlowIcon className={styles.FlowIcon} />;
+const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   countQuery: GET_FLOW_COUNT,
@@ -71,7 +71,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       listItem="flows"
       listItemName="flow"
       pageLink="flow"
-      listIcon={automationIcon}
+      listIcon={flowIcon}
       dialogMessage={dialogMessage}
       refetchQueries={{ query: GET_FLOWS, variables: setVariables() }}
       {...queries}

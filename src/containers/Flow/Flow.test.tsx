@@ -2,34 +2,34 @@ import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 
-import { Automation } from './Flow';
+import { Flow } from './Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
-import { getAutomationQuery, filterAutomationQuery } from '../../mocks/Flow';
+import { getFlowQuery, filterFlowQuery } from '../../mocks/Flow';
 import { MemoryRouter } from 'react-router-dom';
 
 const mocks = [
   ...getOrganizationQuery,
-  getAutomationQuery,
-  filterAutomationQuery,
+  getFlowQuery,
+  filterFlowQuery,
   getOrganizationLanguagesQuery,
 ];
-const automation = (
+const flow = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <Automation match={{ params: { id: 1 } }} />
+      <Flow match={{ params: { id: 1 } }} />
     </MemoryRouter>
   </MockedProvider>
 );
 
-it('should render Automation', async () => {
-  const wrapper = render(automation);
+it('should render Flow', async () => {
+  const wrapper = render(flow);
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
 it('should convert comma separated keywords into array', async () => {
-  const { getByText } = render(automation);
+  const { getByText } = render(flow);
   await waitFor(() => {
     const button = getByText('Save');
     fireEvent.click(button);

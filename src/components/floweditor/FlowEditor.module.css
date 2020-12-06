@@ -13,7 +13,7 @@
   margin-right: 10px;
 }
 
-.AutomationName {
+.FlowName {
   position: absolute !important;
   top: 10px;
   left: 28px;
@@ -58,11 +58,11 @@
   color: #073f24;
 }
 
-.CrossIcon{
+.CrossIcon {
   margin-left: 15px;
   color: grey;
 }
 
-.ContainedButton{
+.ContainedButton {
   border: unset !important;
 }

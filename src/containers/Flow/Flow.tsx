@@ -24,9 +24,9 @@ const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
 });
 
-const dialogMessage = "You won't be able to use this automation again.";
+const dialogMessage = "You won't be able to use this flow again.";
 
-const automationIcon = <FlowIcon className={styles.FlowIcon} />;
+const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
   getItemQuery: GET_FLOW,
@@ -135,7 +135,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       name: 'keywords',
       type: 'text',
       placeholder: 'Keywords',
-      helperText: 'Enter comma separated keywords that trigger this automation',
+      helperText: 'Enter comma separated keywords that trigger this flow',
       validate: validateKeywords,
     },
 
@@ -167,7 +167,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   let type;
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = 'Copy automation';
+    title = 'Copy flow';
     type = 'copy';
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
@@ -188,7 +188,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       cancelLink="flow"
       linkParameter="uuid"
       listItem="flow"
-      icon={automationIcon}
+      icon={flowIcon}
       additionalAction={additionalAction}
       languageSupport={false}
       title={title}
