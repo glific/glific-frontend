@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
-import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,
 } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
@@ -53,15 +53,15 @@ const columnAttributes = {
 
 export const GroupList: React.SFC<GroupListProps> = () => {
   const client = useApolloClient();
-  const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
+  const [addFlowDialogShow, setAddFlowDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
 
-  // get the published automation list
-  const [getAutomations, { data: automationData }] = useLazyQuery(GET_FLOWS, {
+  // get the published flow list
+  const [getFlows, { data: flowData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
     }),
@@ -107,17 +107,17 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
   });
 
-  const [addAutomationToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
     onCompleted: () => {
-      setAddAutomationDialogShow(false);
-      setNotification(client, 'Automation started successfully');
+      setAddFlowDialogShow(false);
+      setNotification(client, 'Flow started successfully');
     },
   });
-  let automationOptions = [];
+  let flowOptions = [];
   let contactOptions = [];
   let groupContacts: Array<any> = [];
-  if (automationData) {
-    automationOptions = automationData.flows;
+  if (flowData) {
+    flowOptions = flowData.flows;
   }
   if (contactsData) {
     contactOptions = contactsData.contacts;
@@ -128,14 +128,14 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   let dialog = null;
 
-  const closeAutomationDialogBox = () => {
-    setAddAutomationDialogShow(false);
+  const closeFlowDialogBox = () => {
+    setAddFlowDialogShow(false);
   };
 
-  const setAutomationDialog = (id: any) => {
-    getAutomations();
+  const setFlowDialog = (id: any) => {
+    getFlows();
     setGroupId(id);
-    setAddAutomationDialogShow(true);
+    setAddFlowDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
@@ -145,8 +145,8 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     setAddContactsDialogShow(true);
   };
 
-  const handleAutomationSubmit = (value: any) => {
-    addAutomationToGroup({
+  const handleFlowSubmit = (value: any) => {
+    addFlowToGroup({
       variables: {
         flowId: value,
         groupId,
@@ -178,15 +178,15 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     );
   }
 
-  if (addAutomationDialogShow) {
+  if (addFlowDialogShow) {
     dialog = (
       <DropdownDialog
-        title="Select automation flow"
-        handleOk={handleAutomationSubmit}
-        handleCancel={closeAutomationDialogBox}
-        options={automationOptions}
-        placeholder="Select flow"
-        description="The contact will be responded as per the messages planned in the automation."
+        title="Select a flow"
+        handleOk={handleFlowSubmit}
+        handleCancel={closeFlowDialogBox}
+        options={flowOptions}
+        placeholder="Select a flow"
+        description="The contact will be responded as per the messages planned in the flow."
       />
     );
   }
@@ -241,9 +241,9 @@ export const GroupList: React.SFC<GroupListProps> = () => {
           onClick: () => setSendMessageDialogShow(true),
         },
         {
-          icon: <AutomationDarkIcon className={styles.Icon} />,
-          title: 'Start automation flow',
-          onClick: setAutomationDialog,
+          icon: <FlowDarkIcon className={styles.Icon} />,
+          title: 'Start a flow',
+          onClick: setFlowDialog,
         },
       ]}
     >

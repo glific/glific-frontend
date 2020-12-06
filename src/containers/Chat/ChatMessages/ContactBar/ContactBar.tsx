@@ -17,8 +17,8 @@ import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
-import { ReactComponent as AutomationIcon } from '../../../../assets/images/icons/Automations/Dark.svg';
-import { ReactComponent as AutomationUnselectedIcon } from '../../../../assets/images/icons/Automations/Unselected.svg';
+import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
@@ -55,7 +55,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [showGroupDialog, setShowGroupDialog] = useState(false);
-  const [showAutomationDialog, setShowAutomationDialog] = useState(false);
+  const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
 
@@ -64,8 +64,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     variables: setVariables(),
   });
 
-  // get the published automation list
-  const [getAutomations, { data: automationsData }] = useLazyQuery(GET_FLOWS, {
+  // get the published flow list
+  const [getFlows, { data: flowsData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
     }),
@@ -92,10 +92,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
-  const [addAutomation] = useMutation(ADD_FLOW_TO_CONTACT, {
+  const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
-      setShowAutomationDialog(false);
-      setNotification(client, 'Automation started successfully');
+      setShowFlowDialog(false);
+      setNotification(client, 'Flow started successfully');
     },
   });
 
@@ -109,7 +109,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   let groupOptions = [];
-  let automationOptions = [];
+  let flowOptions = [];
   let initialSelectedGroupIds: Array<any> = [];
   let selectedGroupsName = [];
   let assignedToGroup: any = [];
@@ -135,8 +135,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     groupOptions = groupsData.groups;
   }
 
-  if (automationsData) {
-    automationOptions = automationsData.flows;
+  if (flowsData) {
+    flowOptions = flowsData.flows;
   }
 
   let dialogBox = null;
@@ -186,28 +186,28 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const handleAutomationSubmit = (automationId: any) => {
-    addAutomation({
+  const handleFlowSubmit = (flowId: any) => {
+    addFlow({
       variables: {
-        flowId: automationId,
+        flowId: flowId,
         contactId: props.contactId,
       },
     });
   };
 
-  const closeAutomationDialogBox = () => {
-    setShowAutomationDialog(false);
+  const closeFlowDialogBox = () => {
+    setShowFlowDialog(false);
   };
 
-  if (showAutomationDialog) {
+  if (showFlowDialog) {
     dialogBox = (
       <DropdownDialog
-        title="Select automation flow"
-        handleOk={handleAutomationSubmit}
-        handleCancel={closeAutomationDialogBox}
-        options={automationOptions}
+        title="Select flow flow"
+        handleOk={handleFlowSubmit}
+        handleCancel={closeFlowDialogBox}
+        options={flowOptions}
         placeholder="Select flow"
-        description="The contact will be responded as per the messages planned in the automation."
+        description="The contact will be responded as per the messages planned in the flow."
       />
     );
   }
@@ -263,39 +263,39 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  let automationButton: any;
+  let flowButton: any;
   if (
     (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
     !is24HourWindowOver(lastMessageTime)
   ) {
-    automationButton = (
+    flowButton = (
       <Button
-        data-testid="automationButton"
+        data-testid="flowButton"
         className={styles.ListButtonPrimary}
         onClick={() => {
-          getAutomations();
-          setShowAutomationDialog(true);
+          getFlows();
+          setShowFlowDialog(true);
         }}
       >
-        <AutomationIcon className={styles.Icon} />
-        Start automation flow
+        <FlowIcon className={styles.Icon} />
+        Start a flow
       </Button>
     );
   } else {
     const toolTip = 'Option disabled because the 24hr window expired';
-    automationButton = (
+    flowButton = (
       <Tooltip title={toolTip} placement="right">
         <Button
-          data-testid="disabledAutomationButton"
+          data-testid="disabledFlowButton"
           className={styles.ListButtonPrimary}
           onClick={() => {
-            getAutomations();
-            setShowAutomationDialog(true);
+            getFlows();
+            setShowFlowDialog(true);
           }}
           disabled
         >
-          <AutomationUnselectedIcon className={styles.Icon} />
-          Start automation flow
+          <FlowUnselectedIcon className={styles.Icon} />
+          Start a flow
         </Button>
       </Tooltip>
     );
@@ -318,7 +318,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 View contact profile
               </Button>
             </Link>
-            {automationButton}
+            {flowButton}
             <Button
               data-testid="groupButton"
               className={styles.ListButtonPrimary}
