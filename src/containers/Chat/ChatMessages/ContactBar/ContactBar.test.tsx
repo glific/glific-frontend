@@ -98,7 +98,7 @@ describe('Menu test', () => {
     </MockedProvider>
   );
 
-  test('Select flow flow should be blocked when Bsp Status is none', async () => {
+  test('Select flow should be blocked when Bsp Status is none', async () => {
     cleanup();
     const { getByTestId } = render(componentWithBspStatusNone);
     await waitFor(() => {
