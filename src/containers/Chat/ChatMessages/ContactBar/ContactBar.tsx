@@ -189,7 +189,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const handleFlowSubmit = (flowId: any) => {
     addFlow({
       variables: {
-        flowId: flowId,
+        flowId,
         contactId: props.contactId,
       },
     });
