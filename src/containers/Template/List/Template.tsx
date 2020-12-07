@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import moment from 'moment';
+import { useLazyQuery } from '@apollo/client/react';
 
 import styles from './Template.module.css';
 import { List } from '../../List/List';
 import { WhatsAppToJsx } from '../../../common/RichEditor';
 import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
+import {
+  GET_TEMPLATES_COUNT,
+  FILTER_TEMPLATES,
+  GET_TEMPLATE,
+} from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
 
 const columnNames = ['LABEL', 'BODY', 'LAST MODIFIED', 'ACTIONS'];
 const columnStyles = [styles.Label, styles.Body, styles.LastModified, styles.Actions];
@@ -52,6 +58,29 @@ export interface TemplateProps {
 export const Template: React.SFC<TemplateProps> = (props) => {
   const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
 
+  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(GET_TEMPLATE);
+
+  useEffect(() => {
+    console.log('sessionTemplates', sessionTemplates);
+  }, [sessionTemplates]);
+
+  const setDialog = (id: any) => {
+    getSessionTemplates({
+      variables: {
+        id,
+      },
+    });
+  };
+
+  const additionalAction = [
+    {
+      label: 'Show all languages',
+      icon: <DownArrow />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
+
   return (
     <List
       title={title}
@@ -59,6 +88,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listItemName={listItemName}
       pageLink={pageLink}
       listIcon={listIcon}
+      additionalAction={additionalAction}
       dialogMessage={dialogMessage}
       filters={filters}
       refetchQueries={{

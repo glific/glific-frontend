@@ -183,7 +183,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   });
 
   // create media for attachment
-  const [createMediaMessage, { data: mediaData }] = useMutation(CREATE_MEDIA_MESSAGE);
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {

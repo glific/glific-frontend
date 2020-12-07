@@ -74,6 +74,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
 
     setLabel(labelValue);
+
     if (typeof bodyValue === 'string') {
       setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
     }
@@ -89,7 +90,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
-      setAttachmentURL('');
+      setAttachmentURL(null);
     }
   };
 

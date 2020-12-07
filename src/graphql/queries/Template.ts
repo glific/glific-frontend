@@ -15,6 +15,17 @@ export const FILTER_TEMPLATES = gql`
       isHsm
       isReserved
       updatedAt
+      translations
+      type
+      language {
+        id
+        label
+      }
+      MessageMedia {
+        id
+        caption
+        sourceUrl
+      }
     }
   }
 `;
