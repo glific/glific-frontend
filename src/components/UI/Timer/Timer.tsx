@@ -41,7 +41,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   }
 
   if (hours < 10 && hours > 0) {
-    hours = `0:${hours.toString()}`;
+    hours = `0${hours.toString()}`;
   }
 
   return (
