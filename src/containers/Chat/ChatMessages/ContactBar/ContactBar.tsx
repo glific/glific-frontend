@@ -202,7 +202,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (showFlowDialog) {
     dialogBox = (
       <DropdownDialog
-        title="Select flow flow"
+        title="Select flow"
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
         options={flowOptions}
