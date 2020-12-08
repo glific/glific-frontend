@@ -5,7 +5,7 @@ export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
-export const AUTOMATION_STATUS_PUBLISHED = 'published';
+export const FLOW_STATUS_PUBLISHED = 'published';
 
 // const enums
 // provider status against the contact

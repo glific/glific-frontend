@@ -4,15 +4,15 @@ import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './GroupList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
-import { ReactComponent as AutomationDarkIcon } from '../../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,
 } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
 import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
 import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
-import { ADD_AUTOMATION_TO_GROUP } from '../../../graphql/mutations/Automation';
+import { GET_FLOWS } from '../../../graphql/queries/Flow';
+import { ADD_FLOW_TO_GROUP } from '../../../graphql/mutations/Flow';
 import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
@@ -20,7 +20,7 @@ import { setNotification } from '../../../common/notification';
 import { displayUserGroups } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
-import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
@@ -53,17 +53,17 @@ const columnAttributes = {
 
 export const GroupList: React.SFC<GroupListProps> = () => {
   const client = useApolloClient();
-  const [addAutomationDialogShow, setAddAutomationDialogShow] = useState(false);
+  const [addFlowDialogShow, setAddFlowDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [groupId, setGroupId] = useState();
 
-  // get the published automation list
-  const [getAutomations, { data: automationData }] = useLazyQuery(GET_AUTOMATIONS, {
+  // get the published flow list
+  const [getFlows, { data: flowData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
+      status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
@@ -107,17 +107,17 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
   });
 
-  const [addAutomationToGroup] = useMutation(ADD_AUTOMATION_TO_GROUP, {
+  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
     onCompleted: () => {
-      setAddAutomationDialogShow(false);
-      setNotification(client, 'Automation started successfully');
+      setAddFlowDialogShow(false);
+      setNotification(client, 'Flow started successfully');
     },
   });
-  let automationOptions = [];
+  let flowOptions = [];
   let contactOptions = [];
   let groupContacts: Array<any> = [];
-  if (automationData) {
-    automationOptions = automationData.flows;
+  if (flowData) {
+    flowOptions = flowData.flows;
   }
   if (contactsData) {
     contactOptions = contactsData.contacts;
@@ -128,14 +128,14 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   let dialog = null;
 
-  const closeAutomationDialogBox = () => {
-    setAddAutomationDialogShow(false);
+  const closeFlowDialogBox = () => {
+    setAddFlowDialogShow(false);
   };
 
-  const setAutomationDialog = (id: any) => {
-    getAutomations();
+  const setFlowDialog = (id: any) => {
+    getFlows();
     setGroupId(id);
-    setAddAutomationDialogShow(true);
+    setAddFlowDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
@@ -145,8 +145,8 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     setAddContactsDialogShow(true);
   };
 
-  const handleAutomationSubmit = (value: any) => {
-    addAutomationToGroup({
+  const handleFlowSubmit = (value: any) => {
+    addFlowToGroup({
       variables: {
         flowId: value,
         groupId,
@@ -178,15 +178,15 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     );
   }
 
-  if (addAutomationDialogShow) {
+  if (addFlowDialogShow) {
     dialog = (
       <DropdownDialog
-        title="Select automation flow"
-        handleOk={handleAutomationSubmit}
-        handleCancel={closeAutomationDialogBox}
-        options={automationOptions}
-        placeholder="Select flow"
-        description="The contact will be responded as per the messages planned in the automation."
+        title="Select a flow"
+        handleOk={handleFlowSubmit}
+        handleCancel={closeFlowDialogBox}
+        options={flowOptions}
+        placeholder="Select a flow"
+        description="The contact will be responded as per the messages planned in the flow."
       />
     );
   }
@@ -241,9 +241,9 @@ export const GroupList: React.SFC<GroupListProps> = () => {
           onClick: () => setSendMessageDialogShow(true),
         },
         {
-          icon: <AutomationDarkIcon className={styles.Icon} />,
-          title: 'Start automation flow',
-          onClick: setAutomationDialog,
+          icon: <FlowDarkIcon className={styles.Icon} />,
+          title: 'Start a flow',
+          onClick: setFlowDialog,
         },
       ]}
     >
