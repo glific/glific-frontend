@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useLazyQuery } from '@apollo/client/react';
 
@@ -25,10 +25,21 @@ const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
 
-const getColumns = ({ label, body, updatedAt }: any) => ({
+const getTranslations = (data: string) => {
+  // const dataArr = JSON.parse(data);
+  // console.log('DATA======', dataArr);
+  // Object.keys(dataArr).forEach(function (key) {
+  //   console.log('dataArr=======', dataArr[key]);
+  //   return <div className={styles.TableText}> {dataArr[key].label}</div>;
+  // });
+  return data;
+};
+
+const getColumns = ({ label, body, updatedAt, translations }: any) => ({
   label: getLabel(label),
   body: getBody(body),
   updatedAt: getUpdatedAt(updatedAt),
+  translations: getTranslations(translations),
 });
 
 const queries = {
@@ -57,6 +68,7 @@ export interface TemplateProps {
 
 export const Template: React.SFC<TemplateProps> = (props) => {
   const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
+  const [open, setOpen] = useState(false);
 
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(GET_TEMPLATE);
 
@@ -65,11 +77,14 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   }, [sessionTemplates]);
 
   const setDialog = (id: any) => {
-    getSessionTemplates({
-      variables: {
-        id,
-      },
-    });
+    setOpen(!open);
+    if (open) {
+      getSessionTemplates({
+        variables: {
+          id,
+        },
+      });
+    }
   };
 
   const additionalAction = [
@@ -98,6 +113,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}
+      open={open}
     />
   );
 };

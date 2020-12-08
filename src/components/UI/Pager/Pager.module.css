@@ -49,3 +49,37 @@
 .FooterRow > div {
   min-height: 72px;
 }
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.Collapse {
+  background-color: white;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+  border: 1px solid #eaedec !important;
+}
+
+.Collapse tr {
+  margin-bottom: 0px !important;
+  border: 0px !important;
+}

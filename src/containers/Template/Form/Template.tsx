@@ -6,7 +6,7 @@ import { EditorState } from 'draft-js';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
-import { WhatsAppToDraftEditor } from '../../../common/RichEditor';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../common/RichEditor';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import {
   CREATE_TEMPLATE,
@@ -159,8 +159,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         setStates({
           language: value,
           label: translationsCopy[Id].label,
-          // body: translationsCopy[Id].body,
-          body: 'test',
+          body: translationsCopy[Id].body,
           type: translationsCopy[Id].type,
           MessageMedia: { sourceUrl: translationsCopy[Id].attachmentURL },
         });
@@ -252,7 +251,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       status: 'approved',
       languageId: language,
       label: payloadCopy.label,
-      body: payloadCopy.body,
+      body: convertToWhatsApp(payloadCopy.body),
       type: payloadCopy.type,
       attachmentURL: payloadCopy.attachmentURL || null,
     };

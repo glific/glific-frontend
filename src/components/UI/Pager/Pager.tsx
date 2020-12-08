@@ -26,13 +26,34 @@ interface PagerProps {
     sortDirection: 'asc' | 'desc';
   };
   showCheckbox?: boolean;
+  open: any;
 }
 
-const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
+const raw = (dataObj: any, columnStyles: any) => {
+  return Object.keys(dataObj).map((key) => (
+    <TableRow className={styles.TableRow}>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+        <div className={styles.LabelText}>{dataObj[key].label}</div>
+      </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+        <div>
+          <p className={styles.TableText}>{dataObj[key].body}</p>
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
+};
+
+const createRows = (
+  data: any,
+  columnStyles: any,
+  showCheckbox?: boolean,
+  open: boolean = false
+) => {
   const createRow = (entry: any) => {
     return Object.keys(entry).map((item: any, i: number) => {
       // let's not display recordId in the UI
-      if (item === 'recordId') {
+      if (item === 'recordId' || item === 'translations') {
         return null;
       }
 
@@ -54,11 +75,17 @@ const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
       batchAction = <Checkbox />;
     }
 
+    let dataObj: any;
+    if (entry.translations) dataObj = JSON.parse(entry.translations);
+
     return (
-      <TableRow key={entry.recordId} className={styles.TableRow}>
-        {batchAction}
-        {createRow(entry)}
-      </TableRow>
+      <div className={`${open ? styles.Collapse : ''}`}>
+        <TableRow key={entry.recordId} className={styles.TableRow}>
+          {batchAction}
+          {createRow(entry)}
+        </TableRow>
+        {open && dataObj ? raw(dataObj, columnStyles) : null}
+      </div>
     );
   });
 };
@@ -139,12 +166,13 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     tableVals,
     handleTableChange,
     totalRows,
+    open,
   } = props;
 
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
-  const rows = createRows(data, columnStyles, showCheckbox);
+  const rows = createRows(data, columnStyles, showCheckbox, open);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,
