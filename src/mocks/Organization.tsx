@@ -361,6 +361,33 @@ export const getOrganizationLanguagesQuery = {
   },
 };
 
+export const getOrganizationLanguagesQueryByOrder = {
+  request: {
+    query: USER_LANGUAGES,
+    variables: { opts: { order: 'ASC' } },
+  },
+  result: {
+    data: {
+      currentUser: {
+        user: {
+          organization: {
+            activeLanguages: [
+              {
+                id: '1',
+                label: 'English',
+              },
+            ],
+            defaultLanguage: {
+              id: '1',
+              label: 'English',
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 export const walletBalanceSubscription = [
   {
     request: {
