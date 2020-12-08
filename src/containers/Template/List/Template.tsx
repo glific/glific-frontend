@@ -26,12 +26,6 @@ const getUpdatedAt = (date: string) => (
 );
 
 const getTranslations = (data: string) => {
-  // const dataArr = JSON.parse(data);
-  // console.log('DATA======', dataArr);
-  // Object.keys(dataArr).forEach(function (key) {
-  //   console.log('dataArr=======', dataArr[key]);
-  //   return <div className={styles.TableText}> {dataArr[key].label}</div>;
-  // });
   return data;
 };
 
