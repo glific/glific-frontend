@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
 import broadcastIcon from '../../../assets/images/icons/Broadcast/Unselected.svg';
-import automationIcon from '../../../assets/images/icons/Automations/Unselected.svg';
+import flowIcon from '../../../assets/images/icons/Flow/Unselected.svg';
 import collectionsIcon from '../../../assets/images/icons/Collections/Unselected.svg';
 import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
 import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
@@ -13,7 +13,7 @@ import templateIcon from '../../../assets/images/icons/Template/Unselected.svg';
 import chatSelectedIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import tagSelectedIcon from '../../../assets/images/icons/Tags/Selected.svg';
 import broadcastSelectedIcon from '../../../assets/images/icons/Broadcast/Selected.svg';
-import automationSelectedIcon from '../../../assets/images/icons/Automations/Selected.svg';
+import flowSelectedIcon from '../../../assets/images/icons/Flow/Selected.svg';
 import collectionsSelectedIcon from '../../../assets/images/icons/Collections/Selected.svg';
 // import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
@@ -32,7 +32,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     chat: chatIcon,
     tag: tagIcon,
     broadcast: broadcastIcon,
-    automation: automationIcon,
+    flow: flowIcon,
     collection: collectionsIcon,
     goal: goalsIcon,
     analytics: analyticsIcon,
@@ -44,7 +44,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     chat: chatSelectedIcon,
     tag: tagSelectedIcon,
     broadcast: broadcastSelectedIcon,
-    automation: automationSelectedIcon,
+    flow: flowSelectedIcon,
     collection: collectionsSelectedIcon,
     // goal: goalsSelectedIcon,
     analytics: analyticsSelectedIcon,

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_AUTOMATIONS = gql`
+export const GET_FLOWS = gql`
   query flows($filter: FlowFilter, $opts: Opts) {
     flows(filter: $filter, opts: $opts) {
       id
@@ -10,7 +10,7 @@ export const GET_AUTOMATIONS = gql`
   }
 `;
 
-export const GET_AUTOMATION = gql`
+export const GET_FLOW = gql`
   query getFlow($id: ID!) {
     flow(id: $id) {
       flow {
@@ -24,13 +24,13 @@ export const GET_AUTOMATION = gql`
   }
 `;
 
-export const GET_AUTOMATION_COUNT = gql`
+export const GET_FLOW_COUNT = gql`
   query countFlows($filter: FlowFilter!) {
     countFlows(filter: $filter)
   }
 `;
 
-export const FILTER_AUTOMATION = gql`
+export const FILTER_FLOW = gql`
   query getFlows($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
       id
@@ -43,7 +43,7 @@ export const FILTER_AUTOMATION = gql`
   }
 `;
 
-export const GET_AUTOMATION_DETAILS = gql`
+export const GET_FLOW_DETAILS = gql`
   query getFlowName($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
       name

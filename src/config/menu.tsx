@@ -15,9 +15,9 @@ export const sideDrawerMenus = [
     icon: 'speed-send',
   },
   {
-    title: 'Automations',
-    path: '/automation',
-    icon: 'automation',
+    title: 'Flows',
+    path: '/flow',
+    icon: 'flow',
   },
   {
     title: 'Collections',
