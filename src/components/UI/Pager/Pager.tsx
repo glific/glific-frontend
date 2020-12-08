@@ -26,10 +26,12 @@ interface PagerProps {
     sortDirection: 'asc' | 'desc';
   };
   showCheckbox?: boolean;
-  open: any;
+  collapseOpen: boolean;
+  collapseRow: string;
 }
 
-const raw = (dataObj: any, columnStyles: any) => {
+// create a collapsible row
+const collapseRaw = (dataObj: any, columnStyles: any) => {
   return Object.keys(dataObj).map((key) => (
     <TableRow className={styles.TableRow}>
       <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
@@ -48,20 +50,24 @@ const createRows = (
   data: any,
   columnStyles: any,
   showCheckbox?: boolean,
-  open: boolean = false
+  collapseOpen: boolean = false,
+  collapseRow?: string
 ) => {
   const createRow = (entry: any) => {
+    let stylesIndex = -1;
     return Object.keys(entry).map((item: any, i: number) => {
       // let's not display recordId in the UI
-      if (item === 'recordId' || item === 'translations') {
+      if (item === 'recordId' || item === 'translations' || item === 'id') {
         return null;
       }
+      // maintain columnStyles index
+      stylesIndex += 1;
 
       return (
         <TableCell
           // eslint-disable-next-line
           key={i}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+          className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           <div>{entry[item]}</div>
         </TableCell>
@@ -79,12 +85,14 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
 
     return (
-      <div className={`${open ? styles.Collapse : ''}`}>
+      <div className={`${collapseOpen ? styles.Collapse : ''}`}>
         <TableRow key={entry.recordId} className={styles.TableRow}>
           {batchAction}
           {createRow(entry)}
         </TableRow>
-        {open && dataObj ? raw(dataObj, columnStyles) : null}
+        {collapseOpen && dataObj && entry.id === collapseRow
+          ? collapseRaw(dataObj, columnStyles)
+          : null}
       </div>
     );
   });
@@ -166,13 +174,14 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     tableVals,
     handleTableChange,
     totalRows,
-    open,
+    collapseOpen,
+    collapseRow,
   } = props;
 
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
-  const rows = createRows(data, columnStyles, showCheckbox, open);
+  const rows = createRows(data, columnStyles, showCheckbox, collapseOpen, collapseRow);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,

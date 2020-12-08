@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
-import { useLazyQuery } from '@apollo/client/react';
 
 import styles from './Template.module.css';
 import { List } from '../../List/List';
 import { WhatsAppToJsx } from '../../../common/RichEditor';
 import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
-import {
-  GET_TEMPLATES_COUNT,
-  FILTER_TEMPLATES,
-  GET_TEMPLATE,
-} from '../../../graphql/queries/Template';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
 
@@ -25,15 +20,20 @@ const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
 
-const getTranslations = (data: string) => {
-  return data;
+const getTranslations = (id: string, language: any, data: string) => {
+  const dataObj = JSON.parse(data);
+  if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
+    delete dataObj[language.id];
+  }
+  return JSON.stringify(dataObj);
 };
 
-const getColumns = ({ label, body, updatedAt, translations }: any) => ({
+const getColumns = ({ id, language, label, body, updatedAt, translations }: any) => ({
+  id,
   label: getLabel(label),
   body: getBody(body),
   updatedAt: getUpdatedAt(updatedAt),
-  translations: getTranslations(translations),
+  translations: getTranslations(id, language, translations),
 });
 
 const queries = {
@@ -63,22 +63,11 @@ export interface TemplateProps {
 export const Template: React.SFC<TemplateProps> = (props) => {
   const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
   const [open, setOpen] = useState(false);
+  const [Id, setId] = useState('');
 
-  const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(GET_TEMPLATE);
-
-  useEffect(() => {
-    console.log('sessionTemplates', sessionTemplates);
-  }, [sessionTemplates]);
-
-  const setDialog = (id: any) => {
+  const setDialog = (id: string) => {
+    setId(id);
     setOpen(!open);
-    if (open) {
-      getSessionTemplates({
-        variables: {
-          id,
-        },
-      });
-    }
   };
 
   const additionalAction = [
@@ -107,7 +96,8 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}
-      open={open}
+      collapseOpen={open}
+      collapseRow={Id}
     />
   );
 };
