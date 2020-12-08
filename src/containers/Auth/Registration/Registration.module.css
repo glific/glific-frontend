@@ -1,0 +1,13 @@
+.Instructions {
+  color: #93a29b;
+  display: flex;
+  margin: 0px 35px;
+  line-height: 1;
+  padding-bottom: 24px;
+  padding-top: 6px;
+}
+
+.Instructions svg {
+  width: 30px;
+  margin-right: 6px;
+}
