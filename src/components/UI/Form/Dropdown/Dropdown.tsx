@@ -14,10 +14,22 @@ export interface DropdownProps {
   helperText?: string;
   disabled?: boolean;
   validate?: any;
+  fieldChange?: any;
+  fieldValue?: any;
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
-  const { options, placeholder, field, helperText, disabled, form } = props;
+  const {
+    options,
+    placeholder,
+    field,
+    helperText,
+    disabled,
+    form,
+    fieldValue,
+    fieldChange,
+  } = props;
+  const { onChange, value, ...rest } = field;
 
   const optionsList = options
     ? options.map((option: any) => {
@@ -40,7 +52,19 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
             {placeholder}
           </InputLabel>
         ) : null}
-        <Select {...field} label={placeholder} fullWidth disabled={disabled}>
+        <Select
+          onChange={(event) => {
+            onChange(event);
+            if (fieldChange) {
+              fieldChange(event);
+            }
+          }}
+          value={fieldValue !== undefined ? fieldValue : value}
+          {...rest}
+          label={placeholder}
+          fullWidth
+          disabled={disabled}
+        >
           {optionsList}
         </Select>
         {form && form.errors[field.name] && form.touched[field.name] ? (
