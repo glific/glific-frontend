@@ -8,11 +8,15 @@ import { MemoryRouter } from 'react-router';
 import { getContactsQuery } from '../../../mocks/Contact';
 import { setUserSession } from '../../../services/AuthService';
 import { getCurrentUserQuery } from '../../../mocks/User';
+import * as SearchDialogBox from '../../../components/UI/SearchDialogBox/SearchDialogBox';
+import * as MessageDialog from '../../../components/UI/MessageDialog/MessageDialog';
+import { getPublishedAutomationQuery } from '../../../mocks/Automation';
 
 const mocks = [
   countGroupQuery,
   filterGroupQuery,
   filterGroupQuery,
+  getPublishedAutomationQuery,
   getGroupContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,
@@ -74,5 +78,68 @@ describe('<GroupList />', () => {
     });
 
     expect(getByText('Send message to group')).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('closeButton'));
+  });
+
+  test('it should have start automation dialog box ', async () => {
+    setUserSession(JSON.stringify({ roles: ['Admin'] }));
+    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText('Start automation flow')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('MenuItem')[1]);
+    });
+    expect(getByText('Select automation flow')).toBeInTheDocument();
+  });
+
+  test('add contacts to group', async () => {
+    setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+    const spy = jest.spyOn(SearchDialogBox, 'SearchDialogBox');
+    spy.mockImplementation((props: any) => {
+      const { handleCancel, onChange } = props;
+      return (
+        <div data-testid="searchDialogBox">
+          <input onChange={(value) => onChange(value)} />
+          <button onClick={() => handleCancel()}></button>
+        </div>
+      );
+    });
+
+    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('additionalButton')[0]);
+    });
+    fireEvent.click(getByTestId('searchDialogBox').querySelector('button'));
+  });
+
+  test('send message to group', async () => {
+    setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
+    const spy = jest.spyOn(MessageDialog, 'MessageDialog');
+    spy.mockImplementation((props: any) => {
+      const { onSendMessage } = props;
+      return <div data-testid="messageDialog" onClick={() => onSendMessage('hello')}></div>;
+    });
+
+    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      fireEvent.click(getAllByTestId('MenuItem')[0]);
+    });
+
+    fireEvent.click(getByTestId('messageDialog'));
   });
 });
