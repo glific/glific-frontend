@@ -68,7 +68,7 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('flowButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Select flow')).toBeInTheDocument();
+      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
     });
   });
 
