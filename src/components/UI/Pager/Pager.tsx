@@ -32,16 +32,32 @@ interface PagerProps {
 
 // create a collapsible row
 const collapseRaw = (dataObj: any, columnStyles: any) => {
+  // if empty dataObj
+  if (Object.keys(dataObj).length === 0)
+    return (
+      <TableRow className={styles.TableRow}>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>No data available</p>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+
   return Object.keys(dataObj).map((key) => (
     <TableRow className={styles.TableRow}>
       <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
-        <div className={styles.LabelText}>{dataObj[key].label}</div>
+        <div>
+          <div className={styles.LabelText}>{dataObj[key].label}</div>
+        </div>
       </TableCell>
       <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
         <div>
           <p className={styles.TableText}>{dataObj[key].body}</p>
         </div>
       </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
     </TableRow>
   ));
 };
@@ -83,7 +99,6 @@ const createRows = (
 
     let dataObj: any;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
-
     return (
       <div className={`${collapseOpen ? styles.Collapse : ''}`}>
         <TableRow key={entry.recordId} className={styles.TableRow}>
