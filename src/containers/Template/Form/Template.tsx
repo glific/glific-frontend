@@ -27,6 +27,8 @@ const FormSchema = Yup.object().shape({
   language: Yup.object().nullable().required('Language is required.'),
 });
 
+const pattern = /[^{}]+(?=})/g;
+
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
 const defaultTypeAttribute = {
@@ -90,7 +92,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
-      setAttachmentURL(null);
+      setAttachmentURL('');
     }
   };
 
@@ -114,6 +116,14 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   });
 
+  const [getSessionTemplate, { data: template }] = useLazyQuery<any>(GET_TEMPLATE);
+
+  useEffect(() => {
+    if (Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      getSessionTemplate({ variables: { id: match.params.id } });
+    }
+  }, [match.params]);
+
   useEffect(() => {
     if (languages) {
       const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
@@ -122,7 +132,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         return first.label > second.label ? 1 : -1;
       });
       setLanguageOptions(lang);
-      setLanguageId(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -153,8 +163,18 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const UpdateTranslation = (value: any) => {
     const Id = value.id;
-    if (translations) {
+    // restore if selected language is same as template
+    if (template && template.sessionTemplate.sessionTemplate.language.id === value.id) {
+      setStates({
+        language: value,
+        label: template.sessionTemplate.sessionTemplate.label,
+        body: template.sessionTemplate.sessionTemplate.body,
+        type: template.sessionTemplate.sessionTemplate.type,
+        MessageMedia: template.sessionTemplate.sessionTemplate.MessageMedia,
+      });
+    } else if (translations) {
       const translationsCopy = JSON.parse(translations);
+      // restore if translations present for selected language
       if (translationsCopy[Id]) {
         setStates({
           language: value,
@@ -169,14 +189,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
           label: '',
           body: '',
           type: null,
-          MessageMedia: { sourceUrl: '' },
+          MessageMedia: null,
         });
       }
     }
   };
 
   const getLanguageId = (value: any) => {
-    if (value) {
+    // create translations only while updating
+    if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
       UpdateTranslation(value);
     }
   };
@@ -233,29 +254,53 @@ const Template: React.SFC<TemplateProps> = (props) => {
   ];
 
   const setPayload = (payload: any) => {
-    const payloadCopy = payload;
-    payloadCopy.languageId = language.id;
-    payloadCopy.type = payloadCopy.type.id || 'TEXT';
-
-    delete payloadCopy.language;
-
-    if (payloadCopy.type === 'TEXT') {
-      delete payloadCopy.attachmentURL;
-    }
-
+    let payloadCopy = payload;
     let translationsCopy: any = {};
-    if (translations) {
-      translationsCopy = JSON.parse(translations);
+    const numberParameters = convertToWhatsApp(payloadCopy.body).match(pattern);
+
+    if (template) {
+      if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
+        payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
+        payloadCopy.languageId = language.id;
+        payloadCopy.type = payloadCopy.type.id || 'TEXT';
+
+        delete payloadCopy.language;
+
+        if (payloadCopy.type.id === 'TEXT') {
+          delete payloadCopy.attachmentURL;
+        }
+      } else {
+        // Update template translation
+        if (translations) {
+          translationsCopy = JSON.parse(translations);
+          translationsCopy[language.id] = {
+            status: 'approved',
+            languageId: language,
+            label: payloadCopy.label,
+            body: convertToWhatsApp(payloadCopy.body),
+            numberParameters: numberParameters ? numberParameters.length : 0,
+            type: payloadCopy.type.id,
+            attachmentURL: payloadCopy.attachmentURL || null,
+          };
+        }
+        payloadCopy = {
+          translations: JSON.stringify(translationsCopy),
+        };
+      }
+    } else {
+      // Create template
+      payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
+      payloadCopy.languageId = payload.language.id;
+      payloadCopy.type = payloadCopy.type.id || 'TEXT';
+
+      delete payloadCopy.language;
+
+      if (payloadCopy.type === 'TEXT') {
+        delete payloadCopy.attachmentURL;
+      }
+      payloadCopy.translations = JSON.stringify(translationsCopy);
     }
-    translationsCopy[payloadCopy.languageId] = {
-      status: 'approved',
-      languageId: language,
-      label: payloadCopy.label,
-      body: convertToWhatsApp(payloadCopy.body),
-      type: payloadCopy.type,
-      attachmentURL: payloadCopy.attachmentURL || null,
-    };
-    payloadCopy.translations = JSON.stringify(translationsCopy);
+
     return payloadCopy;
   };
 

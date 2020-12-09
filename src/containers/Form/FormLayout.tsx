@@ -279,16 +279,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }
-      if (field.convertToWhatsApp) {
+      if (field.convertToWhatsApp && payload[field.name]) {
         payload[field.name] = convertToWhatsApp(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];
       }
     });
-
     // for template create media for attachment
-    if (IsAttachment && payload.type !== 'TEXT') {
+    if (IsAttachment && payload.type !== 'TEXT' && payload.type) {
       getMediaId(payload);
     } else if (itemId) {
       updateItem({
