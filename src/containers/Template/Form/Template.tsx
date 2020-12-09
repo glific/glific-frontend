@@ -119,7 +119,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [getSessionTemplate, { data: template }] = useLazyQuery<any>(GET_TEMPLATE);
 
   useEffect(() => {
-    if (Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+    if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
       getSessionTemplate({ variables: { id: match.params.id } });
     }
   }, [match.params]);
@@ -137,7 +137,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [languages]);
 
   useEffect(() => {
-    if (filterLabel && language) {
+    if (filterLabel && language && language.id) {
       getSessionTemplates();
     }
   }, [filterLabel, language, getSessionTemplates]);
