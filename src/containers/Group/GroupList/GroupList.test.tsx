@@ -10,13 +10,13 @@ import { setUserSession } from '../../../services/AuthService';
 import { getCurrentUserQuery } from '../../../mocks/User';
 import * as SearchDialogBox from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import * as MessageDialog from '../../../components/UI/MessageDialog/MessageDialog';
-import { getPublishedAutomationQuery } from '../../../mocks/Automation';
+import { getPublishedFlowQuery } from '../../../mocks/Flow';
 
 const mocks = [
   countGroupQuery,
   filterGroupQuery,
   filterGroupQuery,
-  getPublishedAutomationQuery,
+  getPublishedFlowQuery,
   getGroupContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,
