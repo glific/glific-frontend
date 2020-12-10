@@ -47,10 +47,18 @@ export interface ContactBarProps {
   contactStatus: string;
   contactBspStatus: string;
   handleAction?: any;
+  isSimulator?: boolean;
 }
 
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
-  const { contactId, contactBspStatus, lastMessageTime, contactStatus, contactName } = props;
+  const {
+    contactId,
+    contactBspStatus,
+    lastMessageTime,
+    contactStatus,
+    contactName,
+    isSimulator,
+  } = props;
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -342,6 +350,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               data-testid="blockButton"
               className={styles.ListButtonDanger}
               color="secondary"
+              disabled={isSimulator}
               onClick={() => setShowBlockDialog(true)}
             >
               <BlockIcon className={styles.Icon} />
