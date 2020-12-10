@@ -10,7 +10,7 @@ export interface CheckboxProps {
   title: string;
   form: any;
   handleChange?: Function;
-  info?: boolean;
+  info?: { title: string };
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
@@ -41,11 +41,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         }}
       />
       {info ? (
-        <Tooltip
-          tooltipClass={styles.Tooltip}
-          title="If activated, users will not be able to change this flow by entering keyword for any other flow."
-          placement="right"
-        >
+        <Tooltip tooltipClass={styles.Tooltip} title={info.title} placement="right">
           <InfoIcon />
         </Tooltip>
       ) : null}
