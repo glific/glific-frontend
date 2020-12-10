@@ -1,8 +1,9 @@
 .DialogContent {
   display: flex;
   flex: auto;
-  min-height: 140px;
-  width: 400px;
+  min-height: 80px;
+  margin-bottom: 20px;
+  width: 410px;
 }
 
 .DialogContent > div:nth-child(1) {
@@ -12,4 +13,12 @@
 
 .DialogContent > div:nth-child(2) {
   width: 60%;
+}
+
+.CrossIcon {
+  cursor: pointer;
+  display: flex;
+  height: 70px;
+  align-items: center;
+  margin-left: 10px;
 }
