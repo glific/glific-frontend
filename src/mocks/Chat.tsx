@@ -83,7 +83,7 @@ const conversationMessageQuery = (
   },
 });
 
-const messageReceivedSubscription = {
+export const messageReceivedSubscription = {
   request: {
     query: MESSAGE_RECEIVED_SUBSCRIPTION,
     variables: { organizationId: '1' },
@@ -115,7 +115,7 @@ const messageReceivedSubscription = {
   },
 };
 
-const messageSendSubscription = {
+export const messageSendSubscription = {
   request: {
     query: MESSAGE_SENT_SUBSCRIPTION,
     variables: { organizationId: '1' },

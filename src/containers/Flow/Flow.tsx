@@ -3,20 +3,20 @@ import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 
-import styles from './Automation.module.css';
+import styles from './Flow.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Selected.svg';
+import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Selected.svg';
 import {
-  CREATE_AUTOMATION,
-  UPDATE_AUTOMATION,
-  DELETE_AUTOMATION,
-  CREATE_AUTOMATION_COPY,
-} from '../../graphql/mutations/Automation';
+  CREATE_FLOW,
+  UPDATE_FLOW,
+  DELETE_FLOW,
+  CREATE_FLOW_COPY,
+} from '../../graphql/mutations/Flow';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_AUTOMATION, FILTER_AUTOMATION } from '../../graphql/queries/Automation';
+import { GET_FLOW, FILTER_FLOW } from '../../graphql/queries/Flow';
 
-export interface AutomationProps {
+export interface FlowProps {
   match: any;
 }
 
@@ -24,18 +24,18 @@ const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
 });
 
-const dialogMessage = "You won't be able to use this automation again.";
+const dialogMessage = "You won't be able to use this flow again.";
 
-const automationIcon = <AutomationIcon className={styles.AutomationIcon} />;
+const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
-  getItemQuery: GET_AUTOMATION,
-  createItemQuery: CREATE_AUTOMATION,
-  updateItemQuery: UPDATE_AUTOMATION,
-  deleteItemQuery: DELETE_AUTOMATION,
+  getItemQuery: GET_FLOW,
+  createItemQuery: CREATE_FLOW,
+  updateItemQuery: UPDATE_FLOW,
+  deleteItemQuery: DELETE_FLOW,
 };
 
-export const Automation: React.SFC<AutomationProps> = ({ match }) => {
+export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
@@ -49,7 +49,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     keywords: keywordsValue,
     ignoreKeywords: ignoreKeywordsValue,
   }: any) => {
-    // Override name & keywords when creating Automation Copy
+    // Override name & keywords when creating Flow Copy
     let fieldName = nameValue;
     let fieldKeywords = keywordsValue;
     if (location.state === 'copy') {
@@ -66,9 +66,9 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
     setIgnoreKeywords(ignoreKeywordsValue);
   };
 
-  const additionalAction = { label: 'Configure', link: '/automation/configure' };
+  const additionalAction = { label: 'Configure', link: '/flow/configure' };
 
-  const [getAutomations, { data: automation }] = useLazyQuery<any>(FILTER_AUTOMATION, {
+  const [getFlows, { data: flow }] = useLazyQuery<any>(FILTER_FLOW, {
     variables: {
       filter: filterKeywords,
       opts: {
@@ -80,20 +80,20 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   });
 
   useEffect(() => {
-    if (filterKeywords) getAutomations();
-  }, [filterKeywords, getAutomations]);
+    if (filterKeywords) getFlows();
+  }, [filterKeywords, getFlows]);
 
   const validateFields = (value: string, key: string, errorMsg: string, deepFilter: boolean) => {
     let found = [];
     let error;
-    if (automation) {
+    if (flow) {
       // need to check exact keywords
       if (deepFilter) {
-        found = automation.flows.filter((search: any) =>
+        found = flow.flows.filter((search: any) =>
           search.keywords.filter((keyword: any) => keyword === value)
         );
       } else {
-        found = automation.flows.filter((search: any) => search[key] === value);
+        found = flow.flows.filter((search: any) => search[key] === value);
       }
 
       if (match.params.id && found.length > 0) {
@@ -135,7 +135,7 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       name: 'keywords',
       type: 'text',
       placeholder: 'Keywords',
-      helperText: 'Enter comma separated keywords that trigger this automation',
+      helperText: 'Enter comma separated keywords that trigger this flow',
       validate: validateKeywords,
     },
 
@@ -170,11 +170,11 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
   let title;
   let type;
   if (location.state === 'copy') {
-    queries.updateItemQuery = CREATE_AUTOMATION_COPY;
-    title = 'Copy automation';
+    queries.updateItemQuery = CREATE_FLOW_COPY;
+    title = 'Copy flow';
     type = 'copy';
   } else {
-    queries.updateItemQuery = UPDATE_AUTOMATION;
+    queries.updateItemQuery = UPDATE_FLOW;
   }
 
   return (
@@ -185,14 +185,14 @@ export const Automation: React.SFC<AutomationProps> = ({ match }) => {
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="automation"
+      listItemName="flow"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="automation"
-      cancelLink="automation"
+      redirectionLink="flow"
+      cancelLink="flow"
       linkParameter="uuid"
       listItem="flow"
-      icon={automationIcon}
+      icon={flowIcon}
       additionalAction={additionalAction}
       languageSupport={false}
       title={title}
