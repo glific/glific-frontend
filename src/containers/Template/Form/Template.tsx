@@ -279,8 +279,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
             label: payloadCopy.label,
             body: convertToWhatsApp(payloadCopy.body),
             numberParameters: numberParameters ? numberParameters.length : 0,
-            type: payloadCopy.type.id,
-            attachmentURL: payloadCopy.attachmentURL || null,
+            MessageMedia: {
+              type: payloadCopy.type.id,
+              attachmentURL: payloadCopy.attachmentURL || null,
+            },
+            ...defaultAttribute,
           };
         }
         payloadCopy = {
