@@ -270,6 +270,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
           delete payloadCopy.attachmentURL;
         }
       } else {
+        let messageMedia = null;
+        if (payloadCopy.type && payloadCopy.attachmentURL)
+          messageMedia = {
+            type: payloadCopy.type.id,
+            sourceUrl: payloadCopy.attachmentURL || null,
+          };
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
@@ -279,10 +285,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
             label: payloadCopy.label,
             body: convertToWhatsApp(payloadCopy.body),
             numberParameters: numberParameters ? numberParameters.length : 0,
-            MessageMedia: {
-              type: payloadCopy.type.id,
-              attachmentURL: payloadCopy.attachmentURL || null,
-            },
+            MessageMedia: messageMedia,
             ...defaultAttribute,
           };
         }
