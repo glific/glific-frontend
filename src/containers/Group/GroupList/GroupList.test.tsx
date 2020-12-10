@@ -82,20 +82,20 @@ describe('<GroupList />', () => {
     fireEvent.click(getByTestId('closeButton'));
   });
 
-  test('it should have start automation dialog box ', async () => {
+  test('it should have start flow dialog box ', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
-    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+    const { getByText, getAllByTestId, getAllByText } = render(wrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getByText('Start automation flow')).toBeInTheDocument();
+      expect(getByText('Start a flow')).toBeInTheDocument();
     });
 
     await waitFor(() => {
       fireEvent.click(getAllByTestId('MenuItem')[1]);
     });
-    expect(getByText('Select automation flow')).toBeInTheDocument();
+    expect(getAllByText('Select a flow')[0]).toBeInTheDocument();
   });
 
   test('add contacts to group', async () => {
