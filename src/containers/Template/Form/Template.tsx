@@ -177,8 +177,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
           language: value,
           label: translationsCopy[Id].label,
           body: translationsCopy[Id].body,
-          type: translationsCopy[Id].type,
-          MessageMedia: { sourceUrl: translationsCopy[Id].attachmentURL },
+          type: translationsCopy[Id].MessageMedia ? translationsCopy[Id].MessageMedia.type : null,
+          MessageMedia: translationsCopy[Id].MessageMedia,
         });
       } else {
         setStates({
@@ -271,7 +271,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (payloadCopy.type && payloadCopy.attachmentURL)
           messageMedia = {
             type: payloadCopy.type.id,
-            sourceUrl: payloadCopy.attachmentURL || null,
+            sourceUrl: payloadCopy.attachmentURL,
           };
         // Update template translation
         if (translations) {
