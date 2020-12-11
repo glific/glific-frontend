@@ -66,8 +66,12 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const [Id, setId] = useState('');
 
   const setDialog = (id: string) => {
-    setId(id);
-    setOpen(!open);
+    if (Id !== id) {
+      setId(id);
+      setOpen(true);
+    } else {
+      setOpen(!open);
+    }
   };
 
   const additionalAction = [

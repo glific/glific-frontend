@@ -51,7 +51,7 @@ export interface FormLayoutProps {
   title?: string;
   getLanguageId?: any;
   backLinkButton?: any;
-  IsAttachment?: boolean;
+  isAttachment?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -87,7 +87,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   redirect = true,
   getLanguageId,
   backLinkButton,
-  IsAttachment = false,
+  isAttachment = false,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -287,7 +287,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     });
     // for template create media for attachment
-    if (IsAttachment && payload.type !== 'TEXT' && payload.type) {
+    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
       getMediaId(payload);
     } else if (itemId) {
       updateItem({
