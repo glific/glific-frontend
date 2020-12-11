@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const DELETE_AUTOMATION = gql`
+export const DELETE_FLOW = gql`
   mutation deleteFlow($id: ID!) {
     deleteFlow(id: $id) {
       errors {
@@ -11,7 +11,7 @@ export const DELETE_AUTOMATION = gql`
   }
 `;
 
-export const CREATE_AUTOMATION = gql`
+export const CREATE_FLOW = gql`
   mutation createFlow($input: FlowInput!) {
     createFlow(input: $input) {
       flow {
@@ -27,7 +27,7 @@ export const CREATE_AUTOMATION = gql`
   }
 `;
 
-export const UPDATE_AUTOMATION = gql`
+export const UPDATE_FLOW = gql`
   mutation updateFlow($id: ID!, $input: FlowInput!) {
     updateFlow(id: $id, input: $input) {
       flow {
@@ -43,7 +43,7 @@ export const UPDATE_AUTOMATION = gql`
   }
 `;
 
-export const PUBLISH_AUTOMATION = gql`
+export const PUBLISH_FLOW = gql`
   mutation publishFlow($uuid: UUID!) {
     publishFlow(uuid: $uuid) {
       success
@@ -51,7 +51,7 @@ export const PUBLISH_AUTOMATION = gql`
   }
 `;
 
-export const ADD_AUTOMATION_TO_GROUP = gql`
+export const ADD_FLOW_TO_GROUP = gql`
   mutation startGroupFlow($flowId: ID!, $groupId: ID!) {
     startGroupFlow(flowId: $flowId, groupId: $groupId) {
       success
@@ -59,7 +59,7 @@ export const ADD_AUTOMATION_TO_GROUP = gql`
   }
 `;
 
-export const ADD_AUTOMATION_TO_CONTACT = gql`
+export const ADD_FLOW_TO_CONTACT = gql`
   mutation startContactFlow($flowId: ID!, $contactId: ID!) {
     startContactFlow(flowId: $flowId, contactId: $contactId) {
       success
@@ -67,7 +67,7 @@ export const ADD_AUTOMATION_TO_CONTACT = gql`
   }
 `;
 
-export const CREATE_AUTOMATION_COPY = gql`
+export const CREATE_FLOW_COPY = gql`
   mutation copyFlow($id: ID!, $input: FlowInput!) {
     copyFlow(id: $id, input: $input) {
       flow {
