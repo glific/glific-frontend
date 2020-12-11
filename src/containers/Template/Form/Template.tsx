@@ -80,9 +80,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (typeof bodyValue === 'string') {
       setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
     }
-    if (typeof bodyValue === 'object') {
-      setBody(bodyValue);
-    }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -327,7 +324,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       defaultAttribute={attributesObject}
       getLanguageId={getLanguageId}
       languageSupport={false}
-      IsAttachment
+      isAttachment
     />
   );
 };
