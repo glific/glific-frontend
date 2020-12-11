@@ -26,6 +26,7 @@ export interface AuthProps {
   linkURL?: string;
   errorMessage?: string;
   successMessage?: string;
+  staffInstructions?: any;
 }
 
 export const Auth: React.SFC<AuthProps> = (props) => {
@@ -44,6 +45,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
     linkURL,
     errorMessage,
     successMessage,
+    staffInstructions,
   } = props;
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
@@ -155,6 +157,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                 </div>
               </Form>
               {displayErrorMessage}
+              {staffInstructions}
             </div>
           )}
         </Formik>
@@ -167,7 +170,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
   return (
     <div className={styles.Container} data-testid="AuthContainer">
       <div className={styles.Auth}>
-        <div className={styles.GlificLogo}>
+        <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>
         <div className={boxClass.join(' ')}>{formElements}</div>
