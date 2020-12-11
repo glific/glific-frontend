@@ -39,7 +39,7 @@ describe('<Chat />', () => {
 
     // check if tags are displayed in the ChatMessages
     const ConversationTag = await findAllByText('Unread');
-    expect(ConversationTag).toHaveLength(1);
+    expect(ConversationTag[0]).toBeInTheDocument();
   });
 
   test('check condition when no subscription data provided', async () => {

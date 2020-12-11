@@ -10,13 +10,13 @@ import { setUserSession } from '../../../services/AuthService';
 import { getCurrentUserQuery } from '../../../mocks/User';
 import * as SearchDialogBox from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import * as MessageDialog from '../../../components/UI/MessageDialog/MessageDialog';
-import { getPublishedAutomationQuery } from '../../../mocks/Automation';
+import { getPublishedFlowQuery } from '../../../mocks/Flow';
 
 const mocks = [
   countGroupQuery,
   filterGroupQuery,
   filterGroupQuery,
-  getPublishedAutomationQuery,
+  getPublishedFlowQuery,
   getGroupContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,
@@ -82,20 +82,20 @@ describe('<GroupList />', () => {
     fireEvent.click(getByTestId('closeButton'));
   });
 
-  test('it should have start automation dialog box ', async () => {
+  test('it should have start flow dialog box ', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
-    const { getByText, getAllByTestId, getByTestId } = render(wrapper);
+    const { getByText, getAllByTestId, getAllByText } = render(wrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
-      expect(getByText('Start automation flow')).toBeInTheDocument();
+      expect(getByText('Start a flow')).toBeInTheDocument();
     });
 
     await waitFor(() => {
       fireEvent.click(getAllByTestId('MenuItem')[1]);
     });
-    expect(getByText('Select automation flow')).toBeInTheDocument();
+    expect(getAllByText('Select a flow')[0]).toBeInTheDocument();
   });
 
   test('add contacts to group', async () => {
