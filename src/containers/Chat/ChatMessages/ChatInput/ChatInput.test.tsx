@@ -2,7 +2,7 @@ import React from 'react';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, act, fireEvent } from '@testing-library/react';
+import { render, waitFor, act, fireEvent, getByTestId } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
@@ -90,5 +90,64 @@ describe('<ChatInput />', () => {
       const listItem = getAllByTestId('templateItem')[0];
       fireEvent.click(listItem);
     });
+  });
+
+  test('jump to latest', async () => {
+    const { getByTestId, queryByTestId } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <div>
+          <ChatInput {...defaultProps} />
+          <div className="messageContainer" data-testid="messageContainer"></div>
+        </div>
+      </MockedProvider>
+    );
+
+    const messageContainer = getByTestId('messageContainer');
+    jest.spyOn(messageContainer, 'scrollHeight', 'get').mockImplementation(() => 100);
+
+    fireEvent.scroll(getByTestId('messageContainer'), { target: { scrollY: 100 } });
+
+    const jumpToLatestButton = getByTestId('jumpToLatest');
+    fireEvent.click(jumpToLatestButton);
+
+    expect(queryByTestId('jumpToLatest')).toBe(null);
+  });
+
+  test('when bsp status is none', async () => {
+    const propsWithBspStatusNone = defaultProps;
+    propsWithBspStatusNone.contactBspStatus = 'NONE';
+    const { getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatInput {...propsWithBspStatusNone} />
+      </MockedProvider>
+    );
+
+    expect(
+      getByText(
+        'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  test('when bsp status is HSM', async () => {
+    const propsWithBspStatusHSM = defaultProps;
+    propsWithBspStatusHSM.contactBspStatus = 'HSM';
+    const { getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatInput {...propsWithBspStatusHSM} />
+      </MockedProvider>
+    );
+    expect(getByText('Templates')).toBeInTheDocument();
+  });
+
+  test('when bsp status is SESSION', async () => {
+    const propsWithBspStatusSession = defaultProps;
+    propsWithBspStatusSession.contactBspStatus = 'SESSION';
+    const { getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatInput {...propsWithBspStatusSession} />
+      </MockedProvider>
+    );
+    expect(getByText('Speed sends')).toBeInTheDocument();
   });
 });

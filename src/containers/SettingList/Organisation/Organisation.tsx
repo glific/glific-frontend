@@ -9,7 +9,7 @@ import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
-import { GET_AUTOMATIONS } from '../../../graphql/queries/Automation';
+import { GET_FLOWS } from '../../../graphql/queries/Flow';
 import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
@@ -18,7 +18,7 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { AUTOMATION_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -69,10 +69,10 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
   };
 
-  // get the published automation list
-  const { data: automation } = useQuery(GET_AUTOMATIONS, {
+  // get the published flow list
+  const { data: flow } = useQuery(GET_FLOWS, {
     variables: setVariables({
-      status: AUTOMATION_STATUS_PUBLISHED,
+      status: FLOW_STATUS_PUBLISHED,
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
@@ -94,7 +94,7 @@ export const Organisation: React.SFC = () => {
   };
 
   const getFlow = (id: string) => {
-    return automation.flows.filter((option: any) => option.id === id)[0];
+    return flow.flows.filter((option: any) => option.id === id)[0];
   };
 
   const setStates = ({
@@ -124,7 +124,7 @@ export const Organisation: React.SFC = () => {
     }
   }, [orgData]);
 
-  if (!automation || !languages) return <Loading />;
+  if (!flow || !languages) return <Loading />;
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
@@ -217,7 +217,7 @@ export const Organisation: React.SFC = () => {
     {
       component: AutoComplete,
       name: 'flowId',
-      options: automation.flows,
+      options: flow.flows,
       optionLabel: 'name',
       multiple: false,
       textFieldProps: {

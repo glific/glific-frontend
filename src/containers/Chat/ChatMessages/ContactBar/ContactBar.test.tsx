@@ -6,9 +6,9 @@ import ContactBar from './ContactBar';
 import { contactGroupsQuery } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getGroupsQuery } from '../../../../mocks/Group';
-import { getPublishedAutomationQuery } from '../../../../mocks/Automation';
+import { getPublishedFlowQuery } from '../../../../mocks/Flow';
 
-const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedAutomationQuery];
+const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedFlowQuery];
 
 const defaultProps = {
   contactName: 'Jane Doe',
@@ -64,11 +64,11 @@ describe('Menu test', () => {
     });
   });
 
-  test('clicking on Start automation should open up a dialog box', async () => {
-    fireEvent.click(screen.getByTestId('automationButton'));
+  test('clicking on Start flow should open up a dialog box', async () => {
+    fireEvent.click(screen.getByTestId('flowButton'));
 
     await waitFor(() => {
-      expect(screen.getByText('Select automation flow')).toBeInTheDocument();
+      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
     });
   });
 
@@ -98,14 +98,14 @@ describe('Menu test', () => {
     </MockedProvider>
   );
 
-  test('Select automation flow should be blocked when Bsp Status is none', async () => {
+  test('Select flow should be blocked when Bsp Status is none', async () => {
     cleanup();
     const { getByTestId } = render(componentWithBspStatusNone);
     await waitFor(() => {
       fireEvent.click(getByTestId('dropdownIcon')?.querySelector('svg'));
     });
     await waitFor(() => {
-      expect(getByTestId('disabledAutomationButton')).toBeInTheDocument();
+      expect(getByTestId('disabledFlowButton')).toBeInTheDocument();
     });
   });
 });

@@ -7,14 +7,14 @@ import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
-import { ReactComponent as AutomationIcon } from '../../assets/images/icons/Automations/Dark.svg';
+import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
-import { PUBLISH_AUTOMATION } from '../../graphql/mutations/Automation';
-import { GET_AUTOMATION_DETAILS } from '../../graphql/queries/Automation';
+import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
+import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -149,7 +149,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [publishDialog, setPublishDialog] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_AUTOMATION, {
+  const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: () => {
       setNotification(client, 'The flow has been published');
     },
@@ -195,7 +195,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     );
   }
 
-  const { data: automationName } = useQuery(GET_AUTOMATION_DETAILS, {
+  const { data: flowName } = useQuery(GET_FLOW_DETAILS, {
     variables: {
       filter: {
         uuid,
@@ -204,21 +204,21 @@ export const FlowEditor = (props: FlowEditorProps) => {
     },
   });
 
-  let automationTitle: any;
-  let automationKeyword: any;
-  if (automationName) {
-    automationTitle = automationName.flows[0].name;
-    [automationKeyword] = automationName.flows[0].keywords;
+  let flowTitle: any;
+  let flowKeyword: any;
+  if (flowName) {
+    flowTitle = flowName.flows[0].name;
+    [flowKeyword] = flowName.flows[0].keywords;
   }
 
   useEffect(() => {
-    if (automationName) {
-      document.title = automationTitle;
+    if (flowName) {
+      document.title = flowTitle;
     }
     return () => {
       document.title = APP_NAME;
     };
-  }, [automationName]);
+  }, [flowName]);
 
   useEffect(() => {
     const files = loadfiles();
@@ -265,7 +265,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }
 
   if (published) {
-    return <Redirect to="/automation" />;
+    return <Redirect to="/flow" />;
   }
 
   return (
@@ -288,7 +288,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           className={styles.ContainedButton}
           onClick={() => {
             setConfirmedNavigation(true);
-            history.push('/automation');
+            history.push('/flow');
           }}
         >
           Back
@@ -302,7 +302,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
-            history.push('/automation');
+            history.push('/flow');
           }}
         >
           Save as draft
@@ -340,21 +340,21 @@ export const FlowEditor = (props: FlowEditorProps) => {
         <Simulator
           showSimulator={showSimulator}
           setShowSimulator={setShowSimulator}
-          message={{ type: 'draft', keyword: automationKeyword }}
+          message={{ type: 'draft', keyword: flowKeyword }}
         />
       ) : null}
       {modal}
       <Prompt when message={handleBlockedNavigation} />
 
       <div className={styles.FlowContainer}>
-        <div className={styles.AutomationName} data-testid="automationName">
-          {automationName ? (
+        <div className={styles.FlowName} data-testid="flowName">
+          {flowName ? (
             <>
               <IconButton disabled className={styles.Icon}>
-                <AutomationIcon />
+                <FlowIcon />
               </IconButton>
 
-              {automationTitle}
+              {flowTitle}
             </>
           ) : null}
         </div>
