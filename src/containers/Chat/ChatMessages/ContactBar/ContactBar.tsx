@@ -321,7 +321,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
             <Link to={`/contact-profile/${props.contactId}`} className={styles.Link}>
-              <Button className={styles.ListButtonPrimary}>
+              <Button className={styles.ListButtonPrimary} disabled={isSimulator}>
                 <ProfileIcon className={styles.Icon} />
                 View contact profile
               </Button>
