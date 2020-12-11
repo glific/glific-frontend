@@ -8,6 +8,7 @@ import { Dropdown } from '../../../../components/UI/Form/Dropdown/Dropdown';
 import { Input } from '../../../../components/UI/Form/Input/Input';
 import { MessageType } from '../../ChatConversations/MessageType/MessageType';
 import { MEDIA_MESSAGE_TYPES } from '../../../../common/constants';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
 
 export interface AddAttachmentPropTypes {
   setAttachment: any;
@@ -30,20 +31,27 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     return { id: option, label: <MessageType type={option} color="dark" /> };
   });
 
-  const formFieldItems = [
+  const input = {
+    component: Input,
+    name: 'attachmentURL',
+    type: 'text',
+    placeholder: 'Attachment URL',
+  };
+
+  let formFieldItems: any = [
     {
       component: Dropdown,
       options,
       name: 'attachmentType',
       placeholder: 'Type',
-    },
-    {
-      component: Input,
-      name: 'attachmentURL',
-      type: 'text',
-      placeholder: 'Attachment URL',
+      fieldValue: attachmentType,
+      fieldChange: (event: any) => {
+        setAttachmentType(event?.target.value);
+      },
     },
   ];
+
+  formFieldItems = attachmentType !== '' ? [...formFieldItems, input] : formFieldItems;
 
   const validationSchema = Yup.object().shape({
     attachmentType: Yup.string().required('Type is required.'),
@@ -70,14 +78,28 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             handleOk={() => {
               submitForm();
             }}
-            handleCancel={() => setAttachment(false)}
+            handleCancel={() => {
+              setAttachment(false);
+              setAttachmentType('');
+              setAttachmentURL('');
+            }}
             buttonOk="Add"
             alignButtons="left"
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
-              {formFieldItems.map((field) => {
+              {formFieldItems.map((field: any) => {
                 return <Field {...field} />;
               })}
+              {attachmentType !== '' ? (
+                <div className={styles.CrossIcon}>
+                  <CrossIcon
+                    onClick={() => {
+                      setAttachmentType('');
+                      setAttachmentAdded(false);
+                    }}
+                  />
+                </div>
+              ) : null}
             </div>
           </DialogBox>
         </Form>

@@ -206,6 +206,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const jumpToLatest = (
     <div
+      data-testid="jumpToLatest"
       className={styles.JumpToLatest}
       onClick={() => showLatestMessage()}
       onKeyDown={showLatestMessage}

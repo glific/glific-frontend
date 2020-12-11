@@ -3,10 +3,10 @@ import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { wait, render, waitFor, fireEvent } from '@testing-library/react';
-import { getAutomationDetailsQuery } from '../../mocks/Automation';
+import { getFlowDetailsQuery } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
 
-const mocks = [getAutomationDetailsQuery, conversationQuery];
+const mocks = [getFlowDetailsQuery, conversationQuery];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
@@ -20,15 +20,15 @@ test('it should display the flowEditor', () => {
   expect(container.querySelector('#flow')).toBeInTheDocument();
 });
 
-test('it should have a done button that redirects to automation page', () => {
+test('it should have a done button that redirects to flow page', () => {
   const { getByTestId } = render(wrapper);
   expect(getByTestId('button')).toBeInTheDocument();
 });
 
-test('it should display name of the automation', async () => {
+test('it should display name of the flow', async () => {
   const { getByTestId } = render(wrapper);
   await waitFor(() => {
-    expect(getByTestId('automationName')).toHaveTextContent('help workflow');
+    expect(getByTestId('flowName')).toHaveTextContent('help workflow');
   });
 });
 
