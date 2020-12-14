@@ -143,6 +143,10 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       component: Checkbox,
       name: 'ignoreKeywords',
       title: 'Ignore Keywords',
+      info: {
+        title:
+          'If activated, users will not be able to change this flow by entering keyword for any other flow.',
+      },
     },
   ];
 

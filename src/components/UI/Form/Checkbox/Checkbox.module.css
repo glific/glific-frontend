@@ -2,8 +2,21 @@
   color: #073f24 !important;
 }
 
+.Checkbox {
+  display: flex;
+  align-items: center;
+}
+
 .Label {
   font-weight: 500 !important;
   color: #073f24;
   font-size: 16px;
+}
+
+.Root {
+  margin-right: 5px !important;
+}
+
+.Tooltip {
+  max-width: 150px !important;
 }
