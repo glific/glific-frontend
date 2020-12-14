@@ -158,6 +158,30 @@ const speedSendValidation = {
   },
 };
 
+const filterTemplateQuery = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: { label: '', isHsm: false },
+      opts: { order: 'ASC', limit: 50, offset: 0 },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          id: '98',
+          body: 'This is HSM template',
+          label: 'new Template',
+          isHsm: true,
+          isReserved: false,
+          updatedAt: '2020-12-01T18:00:32Z',
+        },
+      ],
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -263,53 +287,8 @@ export const TEMPLATE_MOCKS = [
       },
     },
   },
-
-  {
-    request: {
-      query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0 },
-      },
-    },
-    result: {
-      data: {
-        sessionTemplates: [
-          {
-            id: '98',
-            body: 'This is HSM template',
-            label: 'new Template',
-            isHsm: true,
-            isReserved: false,
-            updatedAt: '2020-12-01T18:00:32Z',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0 },
-      },
-    },
-    result: {
-      data: {
-        sessionTemplates: [
-          {
-            id: '98',
-            body: 'This is HSM template',
-            label: 'new Template',
-            isHsm: true,
-            isReserved: false,
-            updatedAt: '2020-12-01T18:00:32Z',
-          },
-        ],
-      },
-    },
-  },
+  filterTemplateQuery,
+  filterTemplateQuery,
   count,
   speedSend,
   HSMTemplatecount,
