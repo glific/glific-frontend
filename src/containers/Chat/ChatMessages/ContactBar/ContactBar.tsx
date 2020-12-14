@@ -8,7 +8,7 @@ import {
   Button,
   ClickAwayListener,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 
 import styles from './ContactBar.module.css';
@@ -16,7 +16,9 @@ import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/Searc
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
+import { ReactComponent as BlockDisabledIcon } from '../../../../assets/images/icons/BlockDisabled.svg';
 import { ReactComponent as ProfileIcon } from '../../../../assets/images/icons/Contact/Profile.svg';
+import { ReactComponent as ProfileDisabledIcon } from '../../../../assets/images/icons/Contact/ProfileDisabled.svg';
 import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
@@ -62,6 +64,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const history = useHistory();
   const [showGroupDialog, setShowGroupDialog] = useState(false);
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
@@ -320,12 +323,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Link to={`/contact-profile/${props.contactId}`} className={styles.Link}>
-              <Button className={styles.ListButtonPrimary} disabled={isSimulator}>
+            <Button
+              className={styles.ListButtonPrimary}
+              disabled={isSimulator}
+              onClick={() => {
+                history.push(`/contact-profile/${props.contactId}`);
+              }}
+            >
+              {isSimulator ? (
+                <ProfileDisabledIcon className={styles.Icon} />
+              ) : (
                 <ProfileIcon className={styles.Icon} />
-                View contact profile
-              </Button>
-            </Link>
+              )}
+              View contact profile
+            </Button>
+
             {flowButton}
             <Button
               data-testid="groupButton"
@@ -353,7 +365,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               disabled={isSimulator}
               onClick={() => setShowBlockDialog(true)}
             >
-              <BlockIcon className={styles.Icon} />
+              {isSimulator ? (
+                <BlockDisabledIcon className={styles.Icon} />
+              ) : (
+                <BlockIcon className={styles.Icon} />
+              )}
               Block Contact
             </Button>
           </Paper>
