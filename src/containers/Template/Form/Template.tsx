@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -16,6 +16,7 @@ import {
 import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
@@ -105,6 +106,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
   });
 
   const [getSessionTemplate, { data: template }] = useLazyQuery<any>(GET_TEMPLATE);
+
+  // create media for attachment
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
     if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
@@ -253,8 +257,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         payloadCopy.type = payloadCopy.type.id || 'TEXT';
 
         delete payloadCopy.language;
-
-        if (payloadCopy.type.id === 'TEXT') {
+        if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
       } else {
@@ -298,6 +301,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return payloadCopy;
   };
 
+  // create media for attachment
+  const getMediaId = async (payload: any) => {
+    const data = await createMediaMessage({
+      variables: {
+        input: {
+          caption: payload.body,
+          sourceUrl: payload.attachmentURL,
+          url: payload.attachmentURL,
+        },
+      },
+    });
+    return data;
+  };
+
   return (
     <FormLayout
       {...queries}
@@ -316,6 +333,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
+      getMediaId={getMediaId}
     />
   );
 };
