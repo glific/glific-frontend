@@ -31,10 +31,6 @@ const pattern = /[^{}]+(?=})/g;
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
-const defaultTypeAttribute = {
-  // type: 'TEXT',
-};
-
 const queries = {
   getItemQuery: GET_TEMPLATE,
   createItemQuery: CREATE_TEMPLATE,
@@ -92,11 +88,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setAttachmentURL('');
     }
   };
-
-  let attributesObject = defaultTypeAttribute;
-  if (defaultAttribute) {
-    attributesObject = { ...attributesObject, ...defaultAttribute };
-  }
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
@@ -321,7 +312,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       redirectionLink={redirectionLink}
       listItem="sessionTemplate"
       icon={icon}
-      defaultAttribute={attributesObject}
+      defaultAttribute={defaultAttribute}
       getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
