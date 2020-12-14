@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 
+import styles from './Registration.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Auth } from '../Auth';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from '../../../services/AuthService';
+import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
 
 export interface RegistrationProps {}
 
@@ -72,10 +74,21 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       });
   };
 
+  const staffInstructions = (
+    <div className={styles.Instructions}>
+      <InfoIcon />
+      <div>
+        Please make sure to optin to your gupshup number(by clicking signupforservices url) before
+        creating your account.
+      </div>
+    </div>
+  );
+
   return (
     <Auth
       pageTitle="Create your new account"
       buttonText="CONTINUE"
+      staffInstructions={staffInstructions}
       alternateLink="login"
       alternateText="LOGIN TO GLIFIC"
       mode="registration"
