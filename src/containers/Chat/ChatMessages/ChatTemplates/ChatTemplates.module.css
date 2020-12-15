@@ -29,6 +29,7 @@
 
 .Text {
   margin: 0;
+  width: calc(100% - 30px);
 }
 
 .PopperListItem {
@@ -41,4 +42,9 @@
 
 .Paper {
   border-radius: 25px 25px 0px 0px;
+}
+
+.AttachmentPin {
+  text-align: right;
+  width: 30px;
 }

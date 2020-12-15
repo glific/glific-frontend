@@ -5,24 +5,14 @@ import {
   GET_TEMPLATE,
 } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import {
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQueryByOrder,
+  getOrganizationQuery,
+} from '../../mocks/Organization';
+import { templateCountQuery } from '../../mocks/Template';
 
-const count = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: false,
-      },
-    },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 2,
-    },
-  },
-};
+const count = templateCountQuery(false, 2);
 
 const speedSend = {
   request: {
@@ -49,28 +39,25 @@ const speedSend = {
           label: 'Good message',
           isHsm: false,
           isReserved: false,
+          updatedAt: '2020-12-01T18:00:28Z',
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
   },
 };
 
-const HSMTemplatecount = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: true,
-      },
-    },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 2,
-    },
-  },
-};
+const HSMTemplateCount = templateCountQuery(true, 2);
 
 const HSMTemplate = {
   request: {
@@ -97,6 +84,17 @@ const HSMTemplate = {
           label: 'Good message',
           isHsm: true,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -124,6 +122,17 @@ const filterByBody = (body: string) => ({
           label: 'Hello',
           isHsm: false,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -152,6 +161,17 @@ const speedSendValidation = {
             'We are not allowing a really long title, and we should trigger validation for this',
           isHsm: true,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -232,6 +252,29 @@ export const TEMPLATE_MOCKS = [
   },
   {
     request: {
+      query: GET_TEMPLATE,
+      variables: {
+        id: 1,
+      },
+    },
+    result: {
+      data: {
+        sessionTemplate: {
+          sessionTemplate: {
+            id: 1,
+            label: 'important',
+            body: 'important template',
+            isActive: true,
+            language: {
+              id: 1,
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
       query: DELETE_TEMPLATE,
       variables: {
         id: '87',
@@ -282,6 +325,17 @@ export const TEMPLATE_MOCKS = [
             isHsm: true,
             isReserved: false,
             updatedAt: '2020-12-01T18:00:32Z',
+            translations: '{}',
+            type: 'TEXT',
+            language: {
+              id: '1',
+              label: 'Hindi',
+            },
+            MessageMedia: {
+              id: 1,
+              caption: 'Test',
+              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+            },
           },
         ],
       },
@@ -291,11 +345,12 @@ export const TEMPLATE_MOCKS = [
   filterTemplateQuery,
   count,
   speedSend,
-  HSMTemplatecount,
+  HSMTemplateCount,
   HSMTemplate,
   filterByBody('hi'),
   filterByBody(''),
   speedSendValidation,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQueryByOrder,
 ];

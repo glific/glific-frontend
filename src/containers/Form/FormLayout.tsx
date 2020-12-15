@@ -50,6 +50,8 @@ export interface FormLayoutProps {
   title?: string;
   getLanguageId?: any;
   backLinkButton?: any;
+  isAttachment?: boolean;
+  getMediaId?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -85,6 +87,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   redirect = true,
   getLanguageId,
   backLinkButton,
+  isAttachment = false,
+  getMediaId,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -216,6 +220,23 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
+  const performTask = (payload: any) => {
+    if (itemId) {
+      updateItem({
+        variables: {
+          id: itemId,
+          input: payload,
+        },
+      });
+    } else {
+      createItem({
+        variables: {
+          input: payload,
+        },
+      });
+    }
+  };
+
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
       ...itemData,
@@ -241,27 +262,29 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (field.additionalState) {
         additionalState(payload[field.additionalState]);
       }
-      if (field.convertToWhatsApp) {
+      if (field.convertToWhatsApp && payload[field.name]) {
         payload[field.name] = convertToWhatsApp(payload[field.name]);
       }
       if (field.skipPayload) {
         delete payload[field.name];
       }
     });
-
-    if (itemId) {
-      updateItem({
-        variables: {
-          id: itemId,
-          input: payload,
-        },
-      });
+    // for template create media for attachment
+    if (isAttachment && payload.type !== 'TEXT' && payload.type) {
+      getMediaId(payload)
+        .then((data: any) => {
+          if (data) {
+            const payloadCopy = payload;
+            delete payloadCopy.attachmentURL;
+            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+            performTask(payloadCopy);
+          }
+        })
+        .catch((e: any) => {
+          setErrorMessage(client, e);
+        });
     } else {
-      createItem({
-        variables: {
-          input: payload,
-        },
-      });
+      performTask(payload);
     }
   };
 

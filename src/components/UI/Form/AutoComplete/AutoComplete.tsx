@@ -100,6 +100,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               setSearchTerm('');
               onChange('');
             }
+            if (onChange) {
+              onChange(value);
+            }
             setFieldValue(field.name, value);
           }}
           inputValue={asyncSearch ? searchTerm : undefined}

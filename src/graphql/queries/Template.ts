@@ -15,6 +15,17 @@ export const FILTER_TEMPLATES = gql`
       isHsm
       isReserved
       updatedAt
+      translations
+      type
+      language {
+        id
+        label
+      }
+      MessageMedia {
+        id
+        caption
+        sourceUrl
+      }
     }
   }
 `;
@@ -28,7 +39,15 @@ export const GET_TEMPLATE = gql`
         body
         isActive
         language {
+          label
           id
+        }
+        translations
+        type
+        MessageMedia {
+          id
+          caption
+          sourceUrl
         }
       }
     }

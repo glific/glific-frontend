@@ -24,6 +24,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
     {
       id: '94',
@@ -32,6 +43,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: false,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
   filterTemplatesQuery('', [
@@ -42,6 +64,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
     {
       id: '94',
@@ -50,6 +83,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: false,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
 
@@ -62,40 +106,40 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
 ];
 
-export const getHSMTemplateCountQuery = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: true,
+export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
+  return {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: {
+        filter: {
+          label: '',
+          isHsm: isHsm,
+        },
       },
     },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 3,
+    result: {
+      data: {
+        countSessionTemplates: count,
+      },
     },
-  },
+  };
 };
 
-export const getTemplateCountQuery = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: false,
-      },
-    },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 3,
-    },
-  },
-};
+export const getHSMTemplateCountQuery = templateCountQuery(true);
+
+export const getTemplateCountQuery = templateCountQuery(false);
