@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 
 import styles from './Template.module.css';
@@ -7,6 +7,7 @@ import { WhatsAppToJsx } from '../../../common/RichEditor';
 import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
+import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
 
 const columnNames = ['LABEL', 'BODY', 'LAST MODIFIED', 'ACTIONS'];
 const columnStyles = [styles.Label, styles.Body, styles.LastModified, styles.Actions];
@@ -19,10 +20,20 @@ const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
 
-const getColumns = ({ label, body, updatedAt }: any) => ({
+const getTranslations = (id: string, language: any, data: string) => {
+  const dataObj = JSON.parse(data);
+  if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
+    delete dataObj[language.id];
+  }
+  return JSON.stringify(dataObj);
+};
+
+const getColumns = ({ id, language, label, body, updatedAt, translations }: any) => ({
+  id,
   label: getLabel(label),
   body: getBody(body),
   updatedAt: getUpdatedAt(updatedAt),
+  translations: getTranslations(id, language, translations),
 });
 
 const queries = {
@@ -51,6 +62,26 @@ export interface TemplateProps {
 
 export const Template: React.SFC<TemplateProps> = (props) => {
   const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
+  const [open, setOpen] = useState(false);
+  const [Id, setId] = useState('');
+
+  const setDialog = (id: string) => {
+    if (Id !== id) {
+      setId(id);
+      setOpen(true);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const additionalAction = [
+    {
+      label: 'Show all languages',
+      icon: <DownArrow />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
 
   return (
     <List
@@ -59,6 +90,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listItemName={listItemName}
       pageLink={pageLink}
       listIcon={listIcon}
+      additionalAction={additionalAction}
       dialogMessage={dialogMessage}
       filters={filters}
       refetchQueries={{
@@ -68,6 +100,8 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}
+      collapseOpen={open}
+      collapseRow={Id}
     />
   );
 };

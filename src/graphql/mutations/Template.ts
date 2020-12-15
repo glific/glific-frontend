@@ -18,6 +18,8 @@ export const CREATE_TEMPLATE = gql`
         id
         body
         label
+        translations
+        type
       }
       errors {
         key

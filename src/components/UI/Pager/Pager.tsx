@@ -26,21 +26,64 @@ interface PagerProps {
     sortDirection: 'asc' | 'desc';
   };
   showCheckbox?: boolean;
+  collapseOpen: boolean;
+  collapseRow: string;
 }
 
-const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
+// create a collapsible row
+const collapseRaw = (dataObj: any, columnStyles: any) => {
+  // if empty dataObj
+  if (Object.keys(dataObj).length === 0)
+    return (
+      <TableRow className={styles.TableRow}>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>No data available</p>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+
+  return Object.keys(dataObj).map((key) => (
+    <TableRow className={styles.TableRow}>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+        <div>
+          <div className={styles.LabelText}>{dataObj[key].label}</div>
+        </div>
+      </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+        <div>
+          <p className={styles.TableText}>{dataObj[key].body}</p>
+        </div>
+      </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+    </TableRow>
+  ));
+};
+
+const createRows = (
+  data: any,
+  columnStyles: any,
+  showCheckbox?: boolean,
+  collapseOpen: boolean = false,
+  collapseRow?: string
+) => {
   const createRow = (entry: any) => {
+    let stylesIndex = -1;
     return Object.keys(entry).map((item: any, i: number) => {
       // let's not display recordId in the UI
-      if (item === 'recordId') {
+      if (item === 'recordId' || item === 'translations' || item === 'id') {
         return null;
       }
+      // maintain columnStyles index
+      stylesIndex += 1;
 
       return (
         <TableCell
           // eslint-disable-next-line
           key={i}
-          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+          className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           <div>{entry[item]}</div>
         </TableCell>
@@ -54,11 +97,18 @@ const createRows = (data: any, columnStyles: any, showCheckbox?: boolean) => {
       batchAction = <Checkbox />;
     }
 
+    let dataObj: any;
+    if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
-      <TableRow key={entry.recordId} className={styles.TableRow}>
-        {batchAction}
-        {createRow(entry)}
-      </TableRow>
+      <div className={`${collapseOpen ? styles.Collapse : ''}`}>
+        <TableRow key={entry.recordId} className={styles.TableRow}>
+          {batchAction}
+          {createRow(entry)}
+        </TableRow>
+        {collapseOpen && dataObj && entry.id === collapseRow
+          ? collapseRaw(dataObj, columnStyles)
+          : null}
+      </div>
     );
   });
 };
@@ -139,12 +189,14 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     tableVals,
     handleTableChange,
     totalRows,
+    collapseOpen,
+    collapseRow,
   } = props;
 
   // Creates the rows for the table
   const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
 
-  const rows = createRows(data, columnStyles, showCheckbox);
+  const rows = createRows(data, columnStyles, showCheckbox, collapseOpen, collapseRow);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,

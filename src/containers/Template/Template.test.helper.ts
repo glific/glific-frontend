@@ -5,7 +5,11 @@ import {
   GET_TEMPLATE,
 } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
+import {
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQueryByOrder,
+  getOrganizationQuery,
+} from '../../mocks/Organization';
 
 const count = {
   request: {
@@ -49,6 +53,18 @@ const speedSend = {
           label: 'Good message',
           isHsm: false,
           isReserved: false,
+          updatedAt: '2020-12-01T18:00:28Z',
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -97,6 +113,17 @@ const HSMTemplate = {
           label: 'Good message',
           isHsm: true,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -124,6 +151,17 @@ const filterByBody = (body: string) => ({
           label: 'Hello',
           isHsm: false,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -152,6 +190,17 @@ const speedSendValidation = {
             'We are not allowing a really long title, and we should trigger validation for this',
           isHsm: true,
           isReserved: false,
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
         },
       ],
     },
@@ -178,6 +227,29 @@ export const TEMPLATE_MOCKS = [
             body: 'new Template body',
             id: '121',
             label: 'new Template',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_TEMPLATE,
+      variables: {
+        id: 1,
+      },
+    },
+    result: {
+      data: {
+        sessionTemplate: {
+          sessionTemplate: {
+            id: 1,
+            label: 'important',
+            body: 'important template',
+            isActive: true,
+            language: {
+              id: 1,
+            },
           },
         },
       },
@@ -258,6 +330,17 @@ export const TEMPLATE_MOCKS = [
             isHsm: true,
             isReserved: false,
             updatedAt: '2020-12-01T18:00:32Z',
+            translations: '{}',
+            type: 'TEXT',
+            language: {
+              id: '1',
+              label: 'Hindi',
+            },
+            MessageMedia: {
+              id: 1,
+              caption: 'Test',
+              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+            },
           },
         ],
       },
@@ -282,6 +365,17 @@ export const TEMPLATE_MOCKS = [
             isHsm: true,
             isReserved: false,
             updatedAt: '2020-12-01T18:00:32Z',
+            translations: '{}',
+            type: 'TEXT',
+            language: {
+              id: '1',
+              label: 'Hindi',
+            },
+            MessageMedia: {
+              id: 1,
+              caption: 'Test',
+              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+            },
           },
         ],
       },
@@ -305,6 +399,17 @@ export const TEMPLATE_MOCKS = [
             isHsm: true,
             isReserved: false,
             updatedAt: '2020-12-01T18:00:32Z',
+            translations: '{}',
+            type: 'TEXT',
+            language: {
+              id: '1',
+              label: 'Hindi',
+            },
+            MessageMedia: {
+              id: 1,
+              caption: 'Test',
+              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+            },
           },
         ],
       },
@@ -319,4 +424,5 @@ export const TEMPLATE_MOCKS = [
   speedSendValidation,
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQueryByOrder,
 ];

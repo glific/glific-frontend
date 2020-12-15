@@ -24,6 +24,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
     {
       id: '94',
@@ -32,6 +43,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: false,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
   filterTemplatesQuery('', [
@@ -42,6 +64,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
     {
       id: '94',
@@ -50,6 +83,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: false,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
 
@@ -62,6 +106,17 @@ export const TEMPLATE_MOCKS = [
       isReserved: true,
       isHsm: true,
       updatedAt: '2020-12-01T18:00:32Z',
+      translations: '{}',
+      type: 'TEXT',
+      language: {
+        id: '1',
+        label: 'Hindi',
+      },
+      MessageMedia: {
+        id: 1,
+        caption: 'Test',
+        sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+      },
     },
   ]),
 ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, wait, within, fireEvent, cleanup, waitFor, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -25,12 +25,12 @@ describe('SpeedSend', () => {
         </Router>
       </MockedProvider>
     );
-    await waitFor(()=>{
+    await waitFor(() => {
       const { queryByText } = within(container.querySelector('form'));
       const button = queryByText('Cancel');
       fireEvent.click(button);
     });
-  
+
     expect(getByText('Loading...')).toBeInTheDocument();
     await wait();
     expect(getByText('Speed sends')).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe('SpeedSend', () => {
   });
 
   test('save button should add a new template', async () => {
-    const { container } = render(
+    const { container, getAllByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <SpeedSend match={{ params: { id: null } }} />
@@ -52,12 +52,6 @@ describe('SpeedSend', () => {
     await wait();
     fireEvent.change(container.querySelector('input[name="label"]'), {
       target: { value: 'new Template' },
-    });
-
-    //TODO: add case to fill the draftjs input
-
-    fireEvent.change(container.querySelector('input[name="languageId"]'), {
-      target: { value: 1 },
     });
 
     const { queryByText } = within(container.querySelector('form'));

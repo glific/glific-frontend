@@ -59,6 +59,8 @@ export interface ListProps {
   dialogTitle?: string;
   backLinkButton?: any;
   restrictedAction?: any;
+  collapseOpen?: any;
+  collapseRow?: any;
 }
 
 interface TableVals {
@@ -97,6 +99,8 @@ export const List: React.SFC<ListProps> = ({
   refetchQueries,
   backLinkButton,
   restrictedAction,
+  collapseOpen,
+  collapseRow,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -408,6 +412,8 @@ export const List: React.SFC<ListProps> = ({
         handleTableChange={handleTableChange}
         tableVals={tableVals}
         showCheckbox={showCheckbox}
+        collapseOpen={collapseOpen}
+        collapseRow={collapseRow}
       />
     );
   } else if (displayListType === 'card') {
