@@ -48,15 +48,17 @@ test('inputs should have mock values', async () => {
   expect(container.querySelector('input[name="languageId"]').getAttribute('value')).toBe('1');
 });
 
+const editItemRoute = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
+      <Route path="/tag" exact component={TagList} />
+    </Router>
+  </MockedProvider>
+);
+
 test('cancel button should redirect to taglist page', async () => {
-  const { container, getByText } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
-        <Route path="/tag" exact component={TagList} />
-      </Router>
-    </MockedProvider>
-  );
+  const { container, getByText } = render(editItemRoute);
   await wait();
   await wait();
   const { queryByText } = within(container.querySelector('form'));
@@ -69,14 +71,7 @@ test('cancel button should redirect to taglist page', async () => {
 });
 
 test('save button should add a new tag', async () => {
-  const { container, getByText, getAllByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
-        <Route path="/tag" exact component={TagList} />
-      </Router>
-    </MockedProvider>
-  );
+  const { container, getByText, getAllByTestId } = render(editItemRoute);
 
   setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
