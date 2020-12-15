@@ -16,6 +16,14 @@ const wrapper = (
   </MockedProvider>
 );
 
+const wrapperWithType = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <Providers match={{ params: { type: 'gupshup' } }} />
+    </Router>
+  </MockedProvider>
+);
+
 describe('<Providers />', () => {
   it('renders component properly', async () => {
     const { getByText } = render(wrapper);
@@ -29,14 +37,7 @@ describe('<Providers />', () => {
 
 describe('<Providers />', () => {
   it('SAVE component properly', async () => {
-    const wrapper = (
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Providers match={{ params: { type: 'gupshup' } }} />
-        </Router>
-      </MockedProvider>
-    );
-    const { getByText } = render(wrapper);
+    const { getByText } = render(wrapperWithType);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
@@ -49,14 +50,7 @@ describe('<Providers />', () => {
 
 describe('<Providers />', () => {
   it('Click on Cancel button', async () => {
-    const wrapper = (
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router>
-          <Providers match={{ params: { type: 'gupshup' } }} />
-        </Router>
-      </MockedProvider>
-    );
-    const { getByText } = render(wrapper);
+    const { getByText } = render(wrapperWithType);
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {

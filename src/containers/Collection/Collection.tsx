@@ -21,7 +21,7 @@ import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { setVariables } from '../../common/constants';
+import { getObject, setVariables } from '../../common/constants';
 
 export interface CollectionProps {
   match?: any;
@@ -85,18 +85,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
   const { data: dataUser } = useQuery(GET_USERS, {
     variables: setVariables(),
   });
-
-  const getObject = (arr: any, dataObj: any) => {
-    const result: any = [];
-    if (arr && dataObj) {
-      arr.forEach((obj: any) => {
-        dataObj.forEach((ID: any) => {
-          if (obj.id === ID) result.push(obj);
-        });
-      });
-    }
-    return result;
-  };
 
   const setArgs = (args: any) => {
     const filters = JSON.parse(args);

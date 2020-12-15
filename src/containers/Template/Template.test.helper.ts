@@ -14,6 +14,14 @@ import { templateCountQuery } from '../../mocks/Template';
 
 const count = templateCountQuery(false, 2);
 
+const requestFilterTemplates = {
+  query: FILTER_TEMPLATES,
+  variables: {
+    filter: { label: 'new Template', languageId: 1 },
+    opts: { order: 'ASC', limit: null, offset: 0 },
+  },
+};
+
 const speedSend = {
   request: {
     query: FILTER_TEMPLATES,
@@ -142,14 +150,7 @@ const filterByBody = (body: string) => ({
 const speedSendValidation = {
   request: {
     query: FILTER_TEMPLATES,
-    variables: {
-      filter: {
-        label:
-          'We are not allowing a really long title, and we should trigger validation for this.',
-        languageId: 1,
-      },
-      opts: { order: 'ASC', limit: null, offset: 0 },
-    },
+    variables: requestFilterTemplates,
   },
   result: {
     data: {
@@ -310,10 +311,7 @@ export const TEMPLATE_MOCKS = [
   {
     request: {
       query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: 'new Template', languageId: 1 },
-        opts: { order: 'ASC', limit: null, offset: 0 },
-      },
+      variables: requestFilterTemplates,
     },
     result: {
       data: {
