@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -16,6 +16,7 @@ import {
 import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 
 const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
@@ -30,10 +31,6 @@ const FormSchema = Yup.object().shape({
 const pattern = /[^{}]+(?=})/g;
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
-
-const defaultTypeAttribute = {
-  // type: 'TEXT',
-};
 
 const queries = {
   getItemQuery: GET_TEMPLATE,
@@ -93,11 +90,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  let attributesObject = defaultTypeAttribute;
-  if (defaultAttribute) {
-    attributesObject = { ...attributesObject, ...defaultAttribute };
-  }
-
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
@@ -114,6 +106,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
   });
 
   const [getSessionTemplate, { data: template }] = useLazyQuery<any>(GET_TEMPLATE);
+
+  // create media for attachment
+  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
 
   useEffect(() => {
     if (Object.prototype.hasOwnProperty.call(match.params, 'id') && match.params.id) {
@@ -177,8 +172,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
           language: value,
           label: translationsCopy[Id].label,
           body: translationsCopy[Id].body,
-          type: translationsCopy[Id].type,
-          MessageMedia: { sourceUrl: translationsCopy[Id].attachmentURL },
+          type: translationsCopy[Id].MessageMedia ? translationsCopy[Id].MessageMedia.type : null,
+          MessageMedia: translationsCopy[Id].MessageMedia,
         });
       } else {
         setStates({
@@ -262,11 +257,16 @@ const Template: React.SFC<TemplateProps> = (props) => {
         payloadCopy.type = payloadCopy.type.id || 'TEXT';
 
         delete payloadCopy.language;
-
-        if (payloadCopy.type.id === 'TEXT') {
+        if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
       } else {
+        let messageMedia = null;
+        if (payloadCopy.type && payloadCopy.attachmentURL)
+          messageMedia = {
+            type: payloadCopy.type.id,
+            sourceUrl: payloadCopy.attachmentURL,
+          };
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
@@ -276,8 +276,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
             label: payloadCopy.label,
             body: convertToWhatsApp(payloadCopy.body),
             numberParameters: numberParameters ? numberParameters.length : 0,
-            type: payloadCopy.type.id,
-            attachmentURL: payloadCopy.attachmentURL || null,
+            MessageMedia: messageMedia,
+            ...defaultAttribute,
           };
         }
         payloadCopy = {
@@ -301,6 +301,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return payloadCopy;
   };
 
+  // create media for attachment
+  const getMediaId = async (payload: any) => {
+    const data = await createMediaMessage({
+      variables: {
+        input: {
+          caption: payload.body,
+          sourceUrl: payload.attachmentURL,
+          url: payload.attachmentURL,
+        },
+      },
+    });
+    return data;
+  };
+
   return (
     <FormLayout
       {...queries}
@@ -315,10 +329,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
       redirectionLink={redirectionLink}
       listItem="sessionTemplate"
       icon={icon}
-      defaultAttribute={attributesObject}
+      defaultAttribute={defaultAttribute}
       getLanguageId={getLanguageId}
       languageSupport={false}
       isAttachment
+      getMediaId={getMediaId}
     />
   );
 };

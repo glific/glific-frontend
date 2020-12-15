@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
 
 import styles from './ChatTemplates.module.css';
+import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/images/icons/Attachment/Attachment.svg';
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
@@ -25,9 +26,19 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
 
   const popperItems = () => {
-    const templateObjs = data.sessionTemplates;
+    const translationsObj: any = [];
+    data.sessionTemplates.forEach((obj: any) => {
+      const translations = JSON.parse(obj.translations);
+      // add translation in list
+      if (Object.keys(translations).length > 0) {
+        Object.keys(translations).forEach((key) => {
+          translationsObj.push(translations[key]);
+        });
+      }
+    });
+    const templateObj = [...data.sessionTemplates, ...translationsObj];
     const text = props.isTemplate ? 'templates' : 'speed sends';
-    const listItems = templateObjs.map((obj: any, index: number) => {
+    const listItems = templateObj.map((obj: any, index: number) => {
       const key = index;
       if (obj.isHsm === props.isTemplate) {
         // True HSM === Template, False HSM === Speed send
@@ -44,6 +55,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
                 <b style={{ marginRight: '5px' }}>{obj.label}:</b>
                 <span>{WhatsAppToJsx(obj.body)}</span>
               </p>
+              {obj.MessageMedia ? (
+                <div className={styles.AttachmentPin}>
+                  <AttachmentIconUnselected />
+                </div>
+              ) : null}
             </ListItem>
             <Divider light />
           </div>

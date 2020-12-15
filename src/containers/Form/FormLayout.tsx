@@ -16,7 +16,6 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
-import { CREATE_MEDIA_MESSAGE } from '../../graphql/mutations/Chat';
 
 export interface FormLayoutProps {
   match: any;
@@ -52,6 +51,7 @@ export interface FormLayoutProps {
   getLanguageId?: any;
   backLinkButton?: any;
   isAttachment?: boolean;
+  getMediaId?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -88,6 +88,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getLanguageId,
   backLinkButton,
   isAttachment = false,
+  getMediaId,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -182,9 +183,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
   });
 
-  // create media for attachment
-  const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
-
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
@@ -222,36 +220,21 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     return null;
   }
 
-  const getMediaId = (payload: any) => {
-    createMediaMessage({
-      variables: {
-        input: {
-          caption: payload.body,
-          sourceUrl: payload.attachmentURL,
-          url: payload.attachmentURL,
+  const performTask = (payload: any) => {
+    if (itemId) {
+      updateItem({
+        variables: {
+          id: itemId,
+          input: payload,
         },
-      },
-    }).then((data) => {
-      if (data) {
-        const payloadCopy = payload;
-        delete payloadCopy.attachmentURL;
-        payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
-        if (itemId) {
-          updateItem({
-            variables: {
-              id: itemId,
-              input: payloadCopy,
-            },
-          });
-        } else {
-          createItem({
-            variables: {
-              input: payloadCopy,
-            },
-          });
-        }
-      }
-    });
+      });
+    } else {
+      createItem({
+        variables: {
+          input: payload,
+        },
+      });
+    }
   };
 
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
@@ -288,20 +271,20 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     });
     // for template create media for attachment
     if (isAttachment && payload.type !== 'TEXT' && payload.type) {
-      getMediaId(payload);
-    } else if (itemId) {
-      updateItem({
-        variables: {
-          id: itemId,
-          input: payload,
-        },
-      });
+      getMediaId(payload)
+        .then((data: any) => {
+          if (data) {
+            const payloadCopy = payload;
+            delete payloadCopy.attachmentURL;
+            payloadCopy.messageMediaId = parseInt(data.data.createMessageMedia.messageMedia.id, 10);
+            performTask(payloadCopy);
+          }
+        })
+        .catch((e: any) => {
+          setErrorMessage(client, e);
+        });
     } else {
-      createItem({
-        variables: {
-          input: payload,
-        },
-      });
+      performTask(payload);
     }
   };
 

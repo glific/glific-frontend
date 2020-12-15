@@ -135,6 +135,18 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const handleSelectText = (obj: any) => {
     // Conversion from HTML text to EditorState
     setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+
+    // Add attachment if present
+    if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
+      const type = obj.type ? obj.type : obj.MessageMedia.type;
+      setAttachmentAdded(true);
+      setAttachmentURL(obj.MessageMedia.sourceUrl);
+      setAttachmentType(type);
+    } else {
+      setAttachmentAdded(false);
+      setAttachmentURL('');
+      setAttachmentType('');
+    }
   };
 
   const handleSearch = (e: any) => {
