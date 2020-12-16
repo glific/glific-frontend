@@ -17,7 +17,8 @@ import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsA
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
-import { is24HourWindowOver } from '../../../../common/constants';
+import { is24HourWindowOver, pattern } from '../../../../common/constants';
+import { AddVariables } from '../AddVariables/AddVariables';
 
 export interface ChatInputProps {
   onSendMessage(content: string, mediaId: string | null, messageType: string): any;
@@ -45,6 +46,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [attachmentAdded, setAttachmentAdded] = useState(false);
   const [attachmentType, setAttachmentType] = useState('');
   const [attachmentURL, setAttachmentURL] = useState('');
+  const [variable, setVariable] = useState(false);
+
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   const client = useApolloClient();
@@ -132,6 +135,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSelectedTab('');
   };
 
+  const resetAttachment = () => {
+    setAttachmentAdded(false);
+    setAttachmentURL('');
+    setAttachmentType('');
+  };
+
   const handleSelectText = (obj: any) => {
     // Conversion from HTML text to EditorState
     setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
@@ -143,11 +152,31 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       setAttachmentURL(obj.MessageMedia.sourceUrl);
       setAttachmentType(type);
     } else {
-      setAttachmentAdded(false);
-      setAttachmentURL('');
-      setAttachmentType('');
+      resetAttachment();
+    }
+
+    // check if variable present
+    const isVariable = obj.body.match(pattern);
+    if (isVariable) {
+      setVariable(true);
     }
   };
+
+  const handleCancel = () => {
+    setEditorState(EditorState.createEmpty());
+    resetAttachment();
+  };
+
+  if (variable) {
+    const bodyText = convertToWhatsApp(editorState);
+    const dialogProps = {
+      bodyText,
+      setVariable,
+      setAttachmentAdded,
+      handleCancel,
+    };
+    dialog = <AddVariables {...dialogProps} />;
+  }
 
   const handleSearch = (e: any) => {
     setSearchVal(e.target.value);

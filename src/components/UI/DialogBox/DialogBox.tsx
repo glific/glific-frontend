@@ -3,6 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import styles from './DialogBox.module.css';
 
 import { Button } from '../Form/Button/Button';
@@ -21,6 +22,7 @@ export interface DialogProps {
   alignButtons?: string;
   skipCancel?: boolean;
   skipOk?: boolean;
+  contentText?: string;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -37,6 +39,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   titleAlign = 'center',
   skipCancel = false,
   skipOk = false,
+  contentText,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -94,7 +97,12 @@ export const DialogBox: React.SFC<DialogProps> = ({
         <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
           {title}
         </DialogTitle>
-        <DialogContent>{children}</DialogContent>
+        <DialogContent>
+          {contentText ? (
+            <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
+          ) : null}
+          {children}
+        </DialogContent>
         <DialogActions className={dialogActionStyle}>
           {okButtonDisplay}
           {cancelButtonDisplay}
