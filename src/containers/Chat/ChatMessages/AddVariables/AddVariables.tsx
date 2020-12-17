@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import styles from './AddVariables.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Input } from '../../../../components/UI/Form/Input/Input';
 import { pattern } from '../../../../common/constants';
@@ -54,7 +53,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
       }}
     >
       {({ submitForm }) => (
-        <Form className={styles.Form} data-testid="formLayout">
+        <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
             title="Select variables for the message"
@@ -69,7 +68,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
             buttonOk="Done"
             alignButtons="left"
           >
-            <div className={styles.DialogContent} data-testid="variablesDialog">
+            <div data-testid="variablesDialog">
               {formFieldItems.map((field: any) => {
                 return <Field {...field} />;
               })}
