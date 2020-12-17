@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
+import { useQuery } from '@apollo/client/react';
 
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
@@ -12,6 +13,7 @@ import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Collection } from '../../Collection/Collection';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 import { advanceSearch } from '../../../context/role';
+import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
   contactId: number;
@@ -31,6 +33,15 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
   const [enableSearchMode, setEnableSearchMode] = useState(false);
+  const offset = useQuery(SEARCH_OFFSET);
+
+  // restore multi-search after conversation click
+  useEffect(() => {
+    if (offset.data) {
+      setSearchVal(offset.data.search);
+      setEnableSearchMode(true);
+    }
+  }, [offset.data]);
 
   useEffect(() => {
     setSelectedContactId(contactId.toString());
