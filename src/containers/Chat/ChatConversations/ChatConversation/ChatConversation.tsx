@@ -137,7 +137,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
     apolloClient.writeQuery({
       query: SEARCH_OFFSET,
-      data: { offset },
+      data: { offset, search: highlightSearch },
     });
   };
 
@@ -153,7 +153,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       selected={selected}
       onClick={() => {
         props.onClick(index);
-        if (props.messageNumber) setSearchOffset(client, props.messageNumber);
+        setSearchOffset(client, props.messageNumber);
       }}
       to={`/chat/${contactId}${msgID}`}
     >
@@ -172,7 +172,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {displayMSG[0] ? BoldedText(displayMSG[0], highlightSearch) : null}
+          {displayMSG[0] ? BoldedText(displayMSG[0].props.body, highlightSearch) : null}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
