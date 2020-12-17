@@ -18,7 +18,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiTableSortLabel: {
       icon: {
-        opacity: '0.7',
+        opacity: '0.7 ',
       },
     },
     MuiBackdrop: {
