@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 import styles from './Pager.module.css';
+import { COLUMN_TO_BACKEND_TERMS } from '../../../common/constants';
 
 interface PagerProps {
   columnNames: Array<any>;
@@ -136,14 +137,17 @@ const tableHeadColumns = (
           >
             {i !== columnNames.length - 1 ? (
               <TableSortLabel
-                active={name === tableVals.sortCol}
+                active={COLUMN_TO_BACKEND_TERMS[name] === tableVals.sortCol}
                 direction={tableVals.sortDirection}
                 onClick={() => {
-                  handleTableChange('sortCol', name);
-                  handleTableChange(
-                    'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                  );
+                  if (COLUMN_TO_BACKEND_TERMS[name] !== tableVals.sortCol) {
+                    handleTableChange('sortCol', name);
+                  } else {
+                    handleTableChange(
+                      'sortDirection',
+                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    );
+                  }
                 }}
               >
                 {name}

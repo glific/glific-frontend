@@ -5,7 +5,7 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks
 import { setVariables } from '../../common/constants';
 
 export const defaultProps = {
-  columnNames: ['label', 'description', 'keywords', 'actions'],
+  columnNames: ['LABEL', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'],
   countQuery: GET_TAGS_COUNT,
   listItem: 'tags',
   filterItemsQuery: FILTER_TAGS,
@@ -47,6 +47,7 @@ const filter = {
         limit: 50,
         offset: 0,
         order: 'ASC',
+        orderWith: 'label',
       },
     },
   },
@@ -89,6 +90,7 @@ const search = {
         limit: 50,
         offset: 0,
         order: 'ASC',
+        orderWith: 'label',
       },
     },
   },
@@ -193,6 +195,7 @@ export const LIST_MOCKS = [
   },
   count,
   count,
+  filter,
   filter,
   filter,
   filter,

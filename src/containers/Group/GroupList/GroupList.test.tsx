@@ -17,6 +17,7 @@ const mocks = [
   filterGroupQuery,
   filterGroupQuery,
   getPublishedFlowQuery,
+  getPublishedFlowQuery,
   getGroupContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,

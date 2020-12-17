@@ -58,3 +58,15 @@ export const is24HourWindowOver = (time: any) => {
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
+
+export const COLUMN_TO_BACKEND_TERMS: any = {
+  'LAST MODIFIED': 'updated_at',
+  NAME: 'name',
+  desc: 'desc',
+  asc: 'asc',
+  LABEL: 'label',
+  BODY: 'body',
+  DESCRIPTION: 'description',
+  TITLE: 'label',
+  BENEFICIARY: 'name',
+};

@@ -60,10 +60,10 @@ describe('<List />', () => {
     await waitFor(() => {
       const tableHead = container.querySelector('thead');
       const { getByText } = within(tableHead);
-      expect(getByText('label')).toBeInTheDocument();
-      expect(getByText('description')).toBeInTheDocument();
-      expect(getByText('keywords')).toBeInTheDocument();
-      expect(getByText('actions')).toBeInTheDocument();
+      expect(getByText('LABEL')).toBeInTheDocument();
+      expect(getByText('DESCRIPTION')).toBeInTheDocument();
+      expect(getByText('KEYWORDS')).toBeInTheDocument();
+      expect(getByText('ACTIONS')).toBeInTheDocument();
     });
   });
 
