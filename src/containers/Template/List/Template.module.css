@@ -1,10 +1,10 @@
 .Label {
-  width: 220px;
+  width: 250px;
 }
 
 .Body {
-  width: 360px;
-  margin-right: 20px;
+  width: 42%;
+  margin-right: 10px;
 }
 
 .Actions {
