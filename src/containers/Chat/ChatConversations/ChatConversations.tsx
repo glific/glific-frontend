@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
-import { useQuery } from '@apollo/client/react';
+import { useApolloClient, useQuery } from '@apollo/client/react';
 
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
@@ -34,10 +34,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [dialogType, setDialogboxType] = useState('');
   const [enableSearchMode, setEnableSearchMode] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
+  const client = useApolloClient();
 
   // restore multi-search after conversation click
   useEffect(() => {
-    if (offset.data) {
+    if (offset.data && offset.data.search) {
       setSearchVal(offset.data.search);
       setEnableSearchMode(true);
     }
@@ -75,6 +76,16 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const resetSearch = () => {
     setSearchVal('');
   };
+
+  useEffect(() => {
+    // reset search if empty searchVal
+    if (!searchVal || searchVal === '') {
+      client.writeQuery({
+        query: SEARCH_OFFSET,
+        data: { offset: 0, search: null },
+      });
+    }
+  }, [searchVal]);
 
   const handlerSavedSearchCriteria = (criteria: string, id: any) => {
     // Reset(empty) advance search if collection changed
