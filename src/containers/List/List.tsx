@@ -18,7 +18,7 @@ import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
-import { COLUMN_TO_BACKEND_TERMS } from '../../common/constants';
+import { setColumnToBackendTerms } from '../../common/constants';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -117,14 +117,14 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: COLUMN_TO_BACKEND_TERMS(listItemName, columnNames[0]),
+    sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
     sortDirection: 'asc',
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const val: string = COLUMN_TO_BACKEND_TERMS(listItemName, newVal);
+    const val: string = setColumnToBackendTerms(listItemName, newVal);
     setTableVals({
       ...tableVals,
       [attribute]: val,
@@ -370,7 +370,7 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: COLUMN_TO_BACKEND_TERMS(listItemName, columnNames[0]),
+      sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
       sortDirection: 'asc',
     });
   };

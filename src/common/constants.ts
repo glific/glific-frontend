@@ -59,7 +59,7 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
-export const COLUMN_TO_BACKEND_TERMS: any = (listName: string, columnName: string) => {
+export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     NAME: 'name',
