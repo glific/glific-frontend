@@ -117,14 +117,14 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: COLUMN_TO_BACKEND_TERMS[columnNames[0]],
+    sortCol: COLUMN_TO_BACKEND_TERMS(listItemName, columnNames[0]),
     sortDirection: 'asc',
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const val: string = COLUMN_TO_BACKEND_TERMS[newVal];
+    const val: string = COLUMN_TO_BACKEND_TERMS(listItemName, newVal);
     setTableVals({
       ...tableVals,
       [attribute]: val,
@@ -370,7 +370,7 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: COLUMN_TO_BACKEND_TERMS[columnNames[0]],
+      sortCol: COLUMN_TO_BACKEND_TERMS(listItemName, columnNames[0]),
       sortDirection: 'asc',
     });
   };
@@ -406,6 +406,7 @@ export const List: React.SFC<ListProps> = ({
         columnStyles={columnStyles}
         columnNames={columnNames}
         data={itemList}
+        listItemName={listItemName}
         totalRows={itemCount}
         handleTableChange={handleTableChange}
         tableVals={tableVals}

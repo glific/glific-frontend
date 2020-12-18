@@ -20,6 +20,7 @@ interface PagerProps {
   columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
+  listItemName: string;
   tableVals: {
     pageNum: number;
     pageRows: number;
@@ -119,7 +120,8 @@ const tableHeadColumns = (
   columnStyles: any,
   tableVals: any,
   handleTableChange: Function,
-  showCheckbox?: boolean
+  showCheckbox?: boolean,
+  listName?: string
 ) => {
   let batchAction = null;
   if (showCheckbox) {
@@ -137,10 +139,10 @@ const tableHeadColumns = (
           >
             {i !== columnNames.length - 1 ? (
               <TableSortLabel
-                active={COLUMN_TO_BACKEND_TERMS[name] === tableVals.sortCol}
+                active={COLUMN_TO_BACKEND_TERMS(listName, name) === tableVals.sortCol}
                 direction={tableVals.sortDirection}
                 onClick={() => {
-                  if (COLUMN_TO_BACKEND_TERMS[name] !== tableVals.sortCol) {
+                  if (COLUMN_TO_BACKEND_TERMS(listName, name) !== tableVals.sortCol) {
                     handleTableChange('sortCol', name);
                   } else {
                     handleTableChange(
@@ -191,6 +193,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     showCheckbox,
     columnNames,
     tableVals,
+    listItemName,
     handleTableChange,
     totalRows,
     collapseOpen,
@@ -206,7 +209,8 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     columnStyles,
     tableVals,
     handleTableChange,
-    showCheckbox
+    showCheckbox,
+    listItemName
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

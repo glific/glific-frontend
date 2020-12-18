@@ -59,14 +59,24 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
-export const COLUMN_TO_BACKEND_TERMS: any = {
-  'LAST MODIFIED': 'updated_at',
-  NAME: 'name',
-  desc: 'desc',
-  asc: 'asc',
-  LABEL: 'label',
-  BODY: 'body',
-  DESCRIPTION: 'description',
-  TITLE: 'label',
-  BENEFICIARY: 'name',
+export const COLUMN_TO_BACKEND_TERMS: any = (listName: string, columnName: string) => {
+  const backendTerms: any = {
+    'LAST MODIFIED': 'updated_at',
+    NAME: 'name',
+    desc: 'desc',
+    asc: 'asc',
+    LABEL: 'label',
+    BODY: 'body',
+    DESCRIPTION: 'description',
+    TITLE: 'label',
+    BENEFICIARY: 'name',
+    'PHONE NO': 'phone',
+  };
+
+  if (listName === 'Collection') {
+    backendTerms.TITLE = 'shortcode';
+    backendTerms.DESCRIPTION = 'label';
+  }
+
+  return backendTerms[columnName];
 };
