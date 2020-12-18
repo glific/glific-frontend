@@ -16,6 +16,11 @@ const theme = createMuiTheme({
     fontFamily: ['heebo', 'sans-serif'].join(','),
   },
   overrides: {
+    MuiTableSortLabel: {
+      icon: {
+        opacity: '0.7',
+      },
+    },
     MuiBackdrop: {
       root: {
         backgroundColor: 'rgba(147,162,155,0.84)',
