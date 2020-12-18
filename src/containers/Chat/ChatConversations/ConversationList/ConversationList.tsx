@@ -37,7 +37,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
 
-  //check if there is a previous scroll height
+  // check if there is a previous scroll height
   useEffect(() => {
     if (scrollHeight.data && scrollHeight.data.height) {
       const container = document.querySelector('.contactsContainer');
