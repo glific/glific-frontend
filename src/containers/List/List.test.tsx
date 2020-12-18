@@ -45,7 +45,7 @@ describe('<List />', () => {
       expect(container.querySelector('table')).toBeInTheDocument();
     });
 
-    fireEvent.change(getByTestId('searchInput').querySelector('input'), {
+    fireEvent.change(getByTestId('searchInput')?.querySelector('input'), {
       target: { value: 'Unread' },
     });
 
