@@ -48,7 +48,7 @@ export interface TemplateProps {
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
-  const { match, listItemName, redirectionLink, icon, defaultAttribute } = props;
+  const { match, listItemName, redirectionLink, icon, defaultAttribute = { isHsm: false } } = props;
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
@@ -164,7 +164,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         type: template.sessionTemplate.sessionTemplate.type,
         MessageMedia: template.sessionTemplate.sessionTemplate.MessageMedia,
       });
-    } else if (translations) {
+    } else if (translations && !defaultAttribute.isHsm) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (translationsCopy[Id]) {
@@ -260,7 +260,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
-      } else {
+      } else if (!defaultAttribute.isHsm) {
         let messageMedia = null;
         if (payloadCopy.type && payloadCopy.attachmentURL)
           messageMedia = {
