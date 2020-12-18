@@ -45,7 +45,7 @@ describe('<List />', () => {
       expect(container.querySelector('table')).toBeInTheDocument();
     });
 
-    fireEvent.change(getByTestId('searchInput').querySelector('input'), {
+    fireEvent.change(getByTestId('searchInput')?.querySelector('input'), {
       target: { value: 'Unread' },
     });
 
@@ -60,10 +60,10 @@ describe('<List />', () => {
     await waitFor(() => {
       const tableHead = container.querySelector('thead');
       const { getByText } = within(tableHead);
-      expect(getByText('label')).toBeInTheDocument();
-      expect(getByText('description')).toBeInTheDocument();
-      expect(getByText('keywords')).toBeInTheDocument();
-      expect(getByText('actions')).toBeInTheDocument();
+      expect(getByText('LABEL')).toBeInTheDocument();
+      expect(getByText('DESCRIPTION')).toBeInTheDocument();
+      expect(getByText('KEYWORDS')).toBeInTheDocument();
+      expect(getByText('ACTIONS')).toBeInTheDocument();
     });
   });
 

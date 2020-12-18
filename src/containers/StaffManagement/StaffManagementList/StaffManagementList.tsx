@@ -11,7 +11,7 @@ import { isManagerRole } from '../../../context/role';
 export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
-  const columnNames = ['NAME', 'PHONE NO.', 'ASSIGNED TO', 'ACTIONS'];
+  const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 
