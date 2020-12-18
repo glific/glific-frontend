@@ -138,3 +138,9 @@ export const SEARCH_OFFSET = gql`
     search @client
   }
 `;
+
+export const SCROLL_HEIGHT = gql`
+  {
+    height @client
+  }
+`;
