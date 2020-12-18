@@ -10,6 +10,7 @@ import Loading from '../../../../components/UI/Layout/Loading/Loading';
 import {
   SEARCH_QUERY,
   SEARCH_MULTI_QUERY,
+  SCROLL_HEIGHT,
   SEARCH_OFFSET,
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
@@ -34,6 +35,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
+
+  const scrollHeight = useQuery(SCROLL_HEIGHT);
+
+  useEffect(() => {
+    if (scrollHeight.data && scrollHeight.data.height) {
+      const container = document.querySelector('.contactsContainer');
+      if (container) {
+        container.scrollTop = scrollHeight.data.height;
+      }
+    }
+  }, [scrollHeight.data]);
 
   useEffect(() => {
     const contactsContainer: any = document.querySelector('.contactsContainer');
@@ -187,6 +199,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     return null;
   }
 
+  const setSearchHeight = () => {
+    client.writeQuery({
+      query: SCROLL_HEIGHT,
+      data: { height: document.querySelector('.contactsContainer')?.scrollTop },
+    });
+  };
+
   let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
@@ -211,7 +230,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={contact.id}
           selected={props.selectedContactId === contact.id}
-          onClick={() => props.setSelectedContactId(contact.id)}
+          onClick={() => {
+            setSearchHeight();
+            props.setSelectedContactId(contact.id);
+          }}
           index={index}
           contactId={contact.id}
           contactName={contact.name || contact.maskedPhone}
@@ -265,7 +287,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={key}
           selected={props.selectedContactId === conversation.contact.id}
-          onClick={() => props.setSelectedContactId(conversation.contact.id)}
+          onClick={() => {
+            setSearchHeight();
+            props.setSelectedContactId(conversation.contact.id);
+          }}
           index={index}
           contactId={conversation.contact.id}
           contactName={
