@@ -13,6 +13,7 @@ const contactSearchQuery = {
         limit: 50,
         offset: 0,
         order: 'ASC',
+        orderWith: 'name',
       },
     },
   },

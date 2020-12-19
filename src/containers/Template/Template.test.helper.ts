@@ -352,7 +352,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0 },
+        opts: { order: 'ASC', limit: 50, offset: 0, orderWith: 'label' },
       },
     },
     result: {
@@ -386,7 +386,7 @@ export const TEMPLATE_MOCKS = [
       query: FILTER_TEMPLATES,
       variables: {
         filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0 },
+        opts: { order: 'ASC', limit: 50, offset: 0, orderWith: 'label' },
       },
     },
     result: {
