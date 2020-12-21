@@ -1,14 +1,14 @@
 .Label {
-  width: 250px;
+  width: 200px;
 }
 
 .Body {
-  width: 42%;
+  width: 30%;
   margin-right: 10px;
 }
 
 .Actions {
-  width: 250px;
+  width: 200px;
   justify-content: flex-end;
   margin-left: auto;
 }
@@ -39,4 +39,12 @@
   width: 185px;
   padding-top: 12px;
   color: #93a29b;
+}
+
+.Status {
+  width: 120px;
+}
+
+.Active {
+  width: 110px;
 }

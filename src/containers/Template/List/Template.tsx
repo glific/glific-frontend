@@ -9,12 +9,15 @@ import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
 
-const columnNames = ['LABEL', 'BODY', 'LAST MODIFIED', 'ACTIONS'];
-const columnStyles = [styles.Label, styles.Body, styles.LastModified, styles.Actions];
-
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
+
+const getStatus = (text: string) => <p className={styles.TableText}>{text}</p>;
+
+const getIsActive = (active: boolean) => (
+  <p className={styles.TableText}>{active ? 'Active' : 'Not Active'}</p>
+);
 
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
@@ -28,24 +31,10 @@ const getTranslations = (id: string, language: any, data: string) => {
   return JSON.stringify(dataObj);
 };
 
-const getColumns = ({ id, language, label, body, updatedAt, translations }: any) => ({
-  id,
-  label: getLabel(label),
-  body: getBody(body),
-  updatedAt: getUpdatedAt(updatedAt),
-  translations: getTranslations(id, language, translations),
-});
-
 const queries = {
   countQuery: GET_TEMPLATES_COUNT,
   filterItemsQuery: FILTER_TEMPLATES,
   deleteItemQuery: DELETE_TEMPLATE,
-};
-
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
 };
 
 const dialogMessage = 'It will stop showing when you draft a customized message';
@@ -58,12 +47,54 @@ export interface TemplateProps {
   listIcon: any;
   filters: any;
   buttonLabel: string;
+  isHSM?: boolean;
 }
 
 export const Template: React.SFC<TemplateProps> = (props) => {
-  const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel } = props;
+  const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel, isHSM } = props;
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
+
+  let columnNames = ['LABEL', 'BODY', 'LAST MODIFIED'];
+  columnNames = isHSM
+    ? [...columnNames, 'STATUS', 'ACTIVE', 'ACTIONS']
+    : [...columnNames, 'ACTIONS'];
+
+  let columnStyles = [styles.Label, styles.Body, styles.LastModified];
+
+  columnStyles = isHSM
+    ? [...columnStyles, styles.Status, styles.Active, styles.Actions]
+    : [...columnStyles, styles.Actions];
+
+  const getColumns = ({
+    id,
+    language,
+    label,
+    body,
+    updatedAt,
+    translations,
+    status,
+    isActive,
+  }: any) => {
+    const columns: any = {
+      id,
+      label: getLabel(label),
+      body: getBody(body),
+      updatedAt: getUpdatedAt(updatedAt),
+      translations: getTranslations(id, language, translations),
+    };
+    if (isHSM) {
+      columns.status = getStatus(status);
+      columns.isActive = getIsActive(isActive);
+    }
+    return columns;
+  };
+
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
 
   const setDialog = (id: string) => {
     if (Id !== id) {
