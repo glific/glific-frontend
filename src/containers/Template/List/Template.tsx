@@ -16,7 +16,7 @@ const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx
 const getStatus = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const getIsActive = (active: boolean) => (
-  <p className={styles.TableText}>{active ? 'Active' : 'Not Active'}</p>
+  <p className={styles.TableText}>{active ? 'Yes' : 'No'}</p>
 );
 
 const getUpdatedAt = (date: string) => (
