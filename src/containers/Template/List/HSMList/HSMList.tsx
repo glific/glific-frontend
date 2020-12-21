@@ -17,7 +17,7 @@ export const HSMList: React.SFC<HSMListProps> = () => {
       pageLink="template"
       listIcon={templateIcon}
       filters={{ isHsm: true }}
-      isHSM={true}
+      isHSM
       buttonLabel="+ CREATE HSM TEMPLATE"
     />
   );
