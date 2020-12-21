@@ -150,7 +150,6 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                     className={styles.AuthButton}
                     data-testid="SubmitButton"
                     loading={loading}
-                    type="submit"
                   >
                     {loading ? null : buttonText}
                   </Button>
