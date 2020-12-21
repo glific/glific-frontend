@@ -138,7 +138,6 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
-
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
@@ -154,6 +153,10 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                     {loading ? null : buttonText}
                   </Button>
                 </div>
+                {/* We neeed to add this submit button to enable form sumbitting when user hits enter
+                key. This is an workaround solution till the bug in formik or react is fixed. For
+                more info: https://github.com/formium/formik/issues/1418 */}
+                <input className={styles.SubmitAction} type="submit" />
               </Form>
               {displayErrorMessage}
               {staffInstructions}
