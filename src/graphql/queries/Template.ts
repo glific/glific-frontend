@@ -12,6 +12,7 @@ export const FILTER_TEMPLATES = gql`
       id
       body
       label
+      shortcode
       isHsm
       isReserved
       updatedAt
@@ -51,6 +52,7 @@ export const GET_TEMPLATE = gql`
         }
         category
         shortcode
+        example
       }
     }
   }

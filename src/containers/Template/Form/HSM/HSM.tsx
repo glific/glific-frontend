@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
 
 import styles from './HSM.module.css';
-import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/Selected.svg';
+import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
 import Template from '../Template';
 import { AutoComplete } from '../../../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
-import { Checkbox } from '../../../../components/UI/Form/Checkbox/Checkbox';
 
 export interface HSMProps {
   match: any;
@@ -37,6 +35,31 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     }
   }, [categoryList]);
 
+  let sessionTemplates: any;
+  const getSessionTemplates = (data: any) => {
+    sessionTemplates = data;
+  };
+
+  const validateShortcode = (value: any) => {
+    let error;
+    if (value) {
+      let found = [];
+      if (sessionTemplates) {
+        // need to check exact shortcode
+        found = sessionTemplates.sessionTemplates.filter(
+          (search: any) => search.shortcode === value
+        );
+        if (match.params.id && found.length > 0) {
+          found = found.filter((search: any) => search.id !== match.params.id);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Shortcode already exists.';
+      }
+    }
+    return error;
+  };
+
   const formFields = [
     {
       component: EmojiInput,
@@ -61,15 +84,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       component: Input,
       name: 'shortcode',
       placeholder: 'Shortcode',
-    },
-    {
-      component: Checkbox,
-      name: 'isActive',
-      title: (
-        <Typography variant="h6" style={{ color: '#073f24' }}>
-          Is active?
-        </Typography>
-      ),
+      validate: validateShortcode,
     },
   ];
 
@@ -81,6 +96,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       icon={templateIcon}
       defaultAttribute={defaultAttribute}
       formField={formFields}
+      getSessionTemplatesCallBack={getSessionTemplates}
     />
   );
 };
