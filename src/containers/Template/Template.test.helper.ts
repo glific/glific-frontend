@@ -278,6 +278,8 @@ export const TEMPLATE_MOCKS = [
             label: 'important',
             body: 'important template',
             example: 'important template',
+            category: 'ACCOUNT_UPDATE',
+            shortcode: 'important template',
             isActive: true,
             language: {
               id: 1,
@@ -302,6 +304,8 @@ export const TEMPLATE_MOCKS = [
             label: 'important',
             body: 'important template',
             example: 'important template',
+            category: 'ACCOUNT_UPDATE',
+            shortcode: 'important template',
             isActive: true,
             language: {
               id: 1,
