@@ -133,7 +133,6 @@ export const List: React.SFC<ListProps> = ({
       const final = getList(listItemName, newVal);
 
       setListSession(JSON.stringify(final));
-    } else {
     }
     setTableVals({
       ...tableVals,
