@@ -92,16 +92,18 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  const additionalAction = isHSM
-    ? undefined
-    : [
-        {
-          label: 'Show all languages',
-          icon: <DownArrow />,
-          parameter: 'id',
-          dialog: setDialog,
-        },
-      ];
+  let additionalAction = [
+    {
+      label: 'Show all languages',
+      icon: <DownArrow />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
+
+  if (isHSM) {
+    additionalAction = [];
+  }
 
   return (
     <List
