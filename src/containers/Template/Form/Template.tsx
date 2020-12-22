@@ -25,10 +25,15 @@ const FormSchema = Yup.object().shape({
       return original.getCurrentContent().getPlainText();
     })
     .required('Message is required.'),
+  example: Yup.string()
+    .transform((current, original) => {
+      return original.getCurrentContent().getPlainText();
+    })
+    .required('Example is required.'),
   language: Yup.object().nullable().required('Language is required.'),
+  category: Yup.object().nullable().required('Category is required.'),
+  shortcode: Yup.string().required('Shortcode is required.'),
 });
-
-const pattern = /[^{}]+(?=})/g;
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
@@ -39,34 +44,73 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
+  return { id: option, label: option };
+});
+
+const attachmentField = [
+  {
+    component: AutoComplete,
+    name: 'type',
+    options,
+    optionLabel: 'label',
+    multiple: false,
+    textFieldProps: {
+      variant: 'outlined',
+      label: 'Attachment Type',
+    },
+  },
+  {
+    component: Input,
+    name: 'attachmentURL',
+    type: 'text',
+    placeholder: 'Attachment URL',
+  },
+];
+
 export interface TemplateProps {
   match: any;
   listItemName: string;
   redirectionLink: string;
   icon: any;
   defaultAttribute?: any;
+  formField?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
-  const { match, listItemName, redirectionLink, icon, defaultAttribute = { isHsm: false } } = props;
+  const {
+    match,
+    listItemName,
+    redirectionLink,
+    icon,
+    defaultAttribute = { isHsm: false },
+    formField,
+  } = props;
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
+  const [example, setExample] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
+  const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>('');
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
+  const [category, setCategory] = useState<any>();
 
-  const states = { language, label, body, type, attachmentURL };
+  const states = { language, label, body, type, attachmentURL, shortcode, example, category };
+
   const setStates = ({
     language: languageIdValue,
     label: labelValue,
     body: bodyValue,
+    example: exampleValue,
     type: typeValue,
     translations: translationsValue,
     MessageMedia: MessageMediaValue,
+    shortcode: shortcodeValue,
+    category: categoryValue,
   }: any) => {
     if (languageIdValue) {
       setLanguageId(languageIdValue);
@@ -77,6 +121,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (typeof bodyValue === 'string') {
       setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
     }
+    if (exampleValue)
+      setExample(EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue)));
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -87,6 +133,14 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
       setAttachmentURL('');
+    }
+
+    if (shortcodeValue) {
+      setShortcode(shortcodeValue);
+    }
+
+    if (categoryValue) {
+      setCategory({ label: categoryValue, id: categoryValue });
     }
   };
 
@@ -194,10 +248,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-    return { id: option, label: option };
-  });
-
   const formFields = [
     {
       component: AutoComplete,
@@ -226,37 +276,27 @@ const Template: React.SFC<TemplateProps> = (props) => {
       convertToWhatsApp: true,
       textArea: true,
     },
-    {
-      component: AutoComplete,
-      name: 'type',
-      options,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: 'Type',
-      },
-    },
-    {
-      component: Input,
-      name: 'attachmentURL',
-      type: 'text',
-      placeholder: 'Attachment URL',
-    },
   ];
+
+  const fields = defaultAttribute.isHsm
+    ? [...formFields, ...formField, ...attachmentField]
+    : [...formFields, ...attachmentField];
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
-    const numberParameters = convertToWhatsApp(payloadCopy.body).match(pattern);
 
     if (template) {
       if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
-        payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
+        console.log('payloadCopy', payloadCopy);
         payloadCopy.languageId = language.id;
         payloadCopy.type = payloadCopy.type.id || 'TEXT';
 
         delete payloadCopy.language;
+        if (payloadCopy.isHsm) {
+          payloadCopy.category = payloadCopy.category.id;
+          // payloadCopy.example = payloadCopy.example;
+        }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
@@ -275,7 +315,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
             languageId: language,
             label: payloadCopy.label,
             body: convertToWhatsApp(payloadCopy.body),
-            numberParameters: numberParameters ? numberParameters.length : 0,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -286,9 +325,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
       }
     } else {
       // Create template
-      payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
       payloadCopy.languageId = payload.language.id;
       payloadCopy.type = payloadCopy.type.id || 'TEXT';
+      if (payloadCopy.isHsm) {
+        payloadCopy.category = payloadCopy.category.id;
+        // payloadCopy.example = convertToWhatsApp(payloadCopy.example);
+      }
 
       delete payloadCopy.language;
 
@@ -325,7 +367,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       validationSchema={FormSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={fields}
       redirectionLink={redirectionLink}
       listItem="sessionTemplate"
       icon={icon}

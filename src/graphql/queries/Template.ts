@@ -49,7 +49,15 @@ export const GET_TEMPLATE = gql`
           caption
           sourceUrl
         }
+        category
+        shortcode
       }
     }
+  }
+`;
+
+export const GET_HSM_CATEGORIES = gql`
+  query {
+    whatsappHsmCategories
   }
 `;

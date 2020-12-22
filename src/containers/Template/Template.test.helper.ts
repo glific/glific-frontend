@@ -3,6 +3,7 @@ import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
   GET_TEMPLATE,
+  GET_HSM_CATEGORIES,
 } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import {
@@ -206,6 +207,32 @@ const speedSendValidation = {
     },
   },
 };
+
+export const whatsappHsmCategories = [
+  {
+    request: {
+      query: GET_HSM_CATEGORIES,
+      variables: {},
+    },
+    result: {
+      data: {
+        whatsappHsmCategories: [
+          'ACCOUNT_UPDATE',
+          'PAYMENT_UPDATE',
+          'PERSONAL_FINANCE_UPDATE',
+          'SHIPPING_UPDATE',
+          'RESERVATION_UPDATE',
+          'ISSUE_RESOLUTION',
+          'APPOINTMENT_UPDATE',
+          'TRANSPORTATION_UPDATE',
+          'TICKET_UPDATE',
+          'ALERT_UPDATE',
+          'AUTO_REPLY',
+        ],
+      },
+    },
+  },
+];
 
 export const TEMPLATE_MOCKS = [
   {
@@ -425,4 +452,5 @@ export const TEMPLATE_MOCKS = [
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQueryByOrder,
+  ...whatsappHsmCategories,
 ];
