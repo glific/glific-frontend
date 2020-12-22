@@ -15,10 +15,6 @@ const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx
 
 const getStatus = (text: string) => <p className={styles.TableText}>{text}</p>;
 
-const getIsActive = (active: boolean) => (
-  <p className={styles.TableText}>{active ? 'Yes' : 'No'}</p>
-);
-
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
@@ -55,37 +51,28 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
 
-  let columnNames = ['LABEL', 'BODY', 'LAST MODIFIED'];
+  let columnNames = ['LABEL', 'BODY'];
   columnNames = isHSM
-    ? [...columnNames, 'STATUS', 'ACTIVE', 'ACTIONS']
-    : [...columnNames, 'ACTIONS'];
+    ? [...columnNames, 'STATUS', 'ACTIONS']
+    : [...columnNames, 'LAST MODIFIED', 'ACTIONS'];
 
-  let columnStyles = [styles.Label, styles.Body, styles.LastModified];
+  let columnStyles: any = [styles.Label, styles.Body];
 
   columnStyles = isHSM
-    ? [...columnStyles, styles.Status, styles.Active, styles.Actions]
-    : [...columnStyles, styles.Actions];
+    ? [...columnStyles, styles.Status, styles.Actions]
+    : [...columnStyles, styles.LastModified, styles.Actions];
 
-  const getColumns = ({
-    id,
-    language,
-    label,
-    body,
-    updatedAt,
-    translations,
-    status,
-    isActive,
-  }: any) => {
+  const getColumns = ({ id, language, label, body, updatedAt, translations, status }: any) => {
     const columns: any = {
       id,
       label: getLabel(label),
       body: getBody(body),
-      updatedAt: getUpdatedAt(updatedAt),
-      translations: getTranslations(id, language, translations),
     };
     if (isHSM) {
       columns.status = getStatus(status);
-      columns.isActive = getIsActive(isActive);
+    } else {
+      columns.updatedAt = getUpdatedAt(updatedAt);
+      columns.translations = getTranslations(id, language, translations);
     }
     return columns;
   };
@@ -105,14 +92,16 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  const additionalAction = [
-    {
-      label: 'Show all languages',
-      icon: <DownArrow />,
-      parameter: 'id',
-      dialog: setDialog,
-    },
-  ];
+  const additionalAction = isHSM
+    ? undefined
+    : [
+        {
+          label: 'Show all languages',
+          icon: <DownArrow />,
+          parameter: 'id',
+          dialog: setDialog,
+        },
+      ];
 
   return (
     <List

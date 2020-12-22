@@ -70,7 +70,6 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     DESCRIPTION: 'description',
     TITLE: 'label',
     STATUS: 'status',
-    ACTIVE: 'is_active',
     BENEFICIARY: 'name',
     'PHONE NO': 'phone',
   };

@@ -12,7 +12,6 @@ export const FILTER_TEMPLATES = gql`
       id
       body
       label
-      isActive
       status
       isHsm
       isReserved
