@@ -139,10 +139,10 @@ const tableHeadColumns = (
           >
             {i !== columnNames.length - 1 ? (
               <TableSortLabel
-                active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
+                active={setColumnToBackendTerms(listName, name, true) === tableVals.sortCol}
                 direction={tableVals.sortDirection}
                 onClick={() => {
-                  if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
+                  if (setColumnToBackendTerms(listName, name, true) !== tableVals.sortCol) {
                     handleTableChange('sortCol', name);
                   } else {
                     handleTableChange(

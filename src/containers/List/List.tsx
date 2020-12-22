@@ -20,6 +20,8 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
+import { getList, setListSession } from '../../services/ListService';
+
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
@@ -124,7 +126,15 @@ export const List: React.SFC<ListProps> = ({
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const val: string = setColumnToBackendTerms(listItemName, newVal);
+    let val = newVal;
+
+    if (attribute === 'sortCol') {
+      val = setColumnToBackendTerms(listItemName, newVal, true);
+      const final = getList(listItemName, newVal);
+
+      setListSession(JSON.stringify(final));
+    } else {
+    }
     setTableVals({
       ...tableVals,
       [attribute]: val,
