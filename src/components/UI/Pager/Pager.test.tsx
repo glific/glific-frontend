@@ -18,11 +18,13 @@ describe('Server Table test', () => {
 
   const data = [
     {
+      recordId:'1',
       first: 'Foo',
       last: 'Bar',
       message: 'Typescript is the best!',
     },
     {
+      recordId:'2',
       first: 'Adam',
       last: 'Smith',
       message: 'I love testing my Typescript code!',

@@ -37,7 +37,7 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0)
     return (
-      <TableRow className={styles.TableRow}>
+      <TableRow className={styles.TableRow} key="2">
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -46,22 +46,24 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
       </TableRow>
     );
 
-  return Object.keys(dataObj).map((key) => (
-    <TableRow className={styles.TableRow}>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
-        <div>
-          <div className={styles.LabelText}>{dataObj[key].label}</div>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
-        <div>
-          <p className={styles.TableText}>{dataObj[key].body}</p>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
-    </TableRow>
-  ));
+  return Object.keys(dataObj).map((key) => {
+    return (
+      <TableRow className={styles.TableRow} key={dataObj[key].label}>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+          <div>
+            <div className={styles.LabelText}>{dataObj[key].label}</div>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>{dataObj[key].body}</p>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+      </TableRow>
+    );
+  });
 };
 
 const createRows = (
@@ -73,7 +75,7 @@ const createRows = (
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
-    return Object.keys(entry).map((item: any, i: number) => {
+    return Object.keys(entry).map((item: any) => {
       // let's not display recordId in the UI
       if (item === 'recordId' || item === 'translations' || item === 'id') {
         return null;
@@ -83,8 +85,7 @@ const createRows = (
 
       return (
         <TableCell
-          // eslint-disable-next-line
-          key={i}
+          key={item + entry.recordId}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           <div>{entry[item]}</div>
@@ -102,15 +103,18 @@ const createRows = (
     let dataObj: any;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
-      <div className={`${collapseOpen ? styles.Collapse : ''}`}>
-        <TableRow key={entry.recordId} className={styles.TableRow}>
+      <React.Fragment key={entry.recordId}>
+        <TableRow
+          key={entry.recordId}
+          className={`${styles.TableRow} ${collapseOpen ? styles.Collapse : ''}`}
+        >
           {batchAction}
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
           ? collapseRaw(dataObj, columnStyles)
           : null}
-      </div>
+      </React.Fragment>
     );
   });
 };
@@ -133,8 +137,7 @@ const tableHeadColumns = (
       {columnNames.map((name: string, i: number) => {
         return (
           <TableCell
-            // eslint-disable-next-line
-            key={i}
+            key={name}
             className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
           >
             {i !== columnNames.length - 1 ? (
