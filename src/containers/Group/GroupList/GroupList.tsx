@@ -281,6 +281,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
         refetchQueries={refetchQueries}
         title="Groups"
         listItem="groups"
+        columnNames={['LABEL']}
         listItemName="group"
         displayListType="card"
         button={{ show: displayUserGroups, label: '+ CREATE GROUP' }}

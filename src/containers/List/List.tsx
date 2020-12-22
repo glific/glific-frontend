@@ -18,6 +18,7 @@ import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
+import { setColumnToBackendTerms } from '../../common/constants';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -116,21 +117,17 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: columnNames[0],
+    sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
     sortDirection: 'asc',
   });
 
   let userRole: any = getUserRole();
 
-  const handleTableChange = (attribute: string, newVal: number | string) => {
-    // To handle sorting by columns that are not Name (currently don't support this functionality)
-    if (attribute === 'sortCol' && newVal !== 'Name') {
-      return;
-    }
-    // Otherwise, set all values like normal
+  const handleTableChange = (attribute: string, newVal: any) => {
+    const val: string = setColumnToBackendTerms(listItemName, newVal);
     setTableVals({
       ...tableVals,
-      [attribute]: newVal,
+      [attribute]: val,
     });
   };
   let filter: any = {};
@@ -143,6 +140,7 @@ export const List: React.SFC<ListProps> = ({
         limit: tableVals.pageRows,
         offset: tableVals.pageNum * tableVals.pageRows,
         order: tableVals.sortDirection.toUpperCase(),
+        orderWith: tableVals.sortCol,
       },
     };
   }, [searchVal, tableVals]);
@@ -372,7 +370,7 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: columnNames[0],
+      sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
       sortDirection: 'asc',
     });
   };
@@ -408,6 +406,7 @@ export const List: React.SFC<ListProps> = ({
         columnStyles={columnStyles}
         columnNames={columnNames}
         data={itemList}
+        listItemName={listItemName}
         totalRows={itemCount}
         handleTableChange={handleTableChange}
         tableVals={tableVals}

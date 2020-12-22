@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 import styles from './Pager.module.css';
+import { setColumnToBackendTerms } from '../../../common/constants';
 
 interface PagerProps {
   columnNames: Array<any>;
@@ -19,6 +20,7 @@ interface PagerProps {
   columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
+  listItemName: string;
   tableVals: {
     pageNum: number;
     pageRows: number;
@@ -118,7 +120,8 @@ const tableHeadColumns = (
   columnStyles: any,
   tableVals: any,
   handleTableChange: Function,
-  showCheckbox?: boolean
+  showCheckbox?: boolean,
+  listName?: string
 ) => {
   let batchAction = null;
   if (showCheckbox) {
@@ -136,14 +139,17 @@ const tableHeadColumns = (
           >
             {i !== columnNames.length - 1 ? (
               <TableSortLabel
-                active={name === tableVals.sortCol}
+                active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
                 direction={tableVals.sortDirection}
                 onClick={() => {
-                  handleTableChange('sortCol', name);
-                  handleTableChange(
-                    'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                  );
+                  if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
+                    handleTableChange('sortCol', name);
+                  } else {
+                    handleTableChange(
+                      'sortDirection',
+                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    );
+                  }
                 }}
               >
                 {name}
@@ -187,6 +193,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     showCheckbox,
     columnNames,
     tableVals,
+    listItemName,
     handleTableChange,
     totalRows,
     collapseOpen,
@@ -202,7 +209,8 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     columnStyles,
     tableVals,
     handleTableChange,
-    showCheckbox
+    showCheckbox,
+    listItemName
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

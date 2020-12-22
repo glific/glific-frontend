@@ -49,7 +49,9 @@
 }
 
 .LastModified {
-  width: 165px;
+  width: 185px;
+  padding-top: 12px;
+  color: #93a29b;
 }
 
 .Actions {
