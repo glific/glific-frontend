@@ -10,15 +10,22 @@ export interface AddVariablesPropTypes {
   setVariable: any;
   handleCancel: any;
   bodyText: any;
+  updateEditorState: any;
+  variableParams: any;
+  variableParam: any;
 }
 
 export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   setVariable,
   handleCancel,
   bodyText,
+  updateEditorState,
+  variableParams,
+  variableParam,
 }: AddVariablesPropTypes) => {
   const [formFieldItems, setFormFieldItems] = useState<any>([]);
   const [validation, setValidation] = useState<any>({});
+  const [initialValues, setInitialValues] = useState<any>({});
 
   useEffect(() => {
     const isVariable = bodyText.match(pattern);
@@ -40,15 +47,32 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
     }
   }, [bodyText]);
 
+  useEffect(() => {
+    const initialValue: any = {};
+    variableParam.forEach((value: any, i: any) => {
+      initialValue[`variable${i + 1}`] = value;
+    });
+    setInitialValues(initialValue);
+  }, [variableParam]);
+
+  const updateText = (variable: any) => {
+    let body = bodyText;
+    Object.keys(variable).forEach((element: string, index: number) => {
+      body = body.replace(`{{${index + 1}}}`, variable[element]);
+    });
+    updateEditorState(body);
+    variableParams(Object.values(variable));
+  };
+
   const validationSchema = Yup.object().shape(validation);
 
   const form = (
     <Formik
       enableReinitialize
-      initialValues={{}}
+      initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(itemData) => {
-        console.log(itemData);
+        updateText(itemData);
         setVariable(false);
       }}
     >

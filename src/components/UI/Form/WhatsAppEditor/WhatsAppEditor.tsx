@@ -13,10 +13,11 @@ interface WhatsAppEditorProps {
   sendMessage(message: string): void;
   editorState: any;
   setEditorState(editorState: any): void;
+  readOnly?: boolean;
 }
 
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
-  const { setEditorState, sendMessage, editorState, handleHeightChange } = props;
+  const { setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false } = props;
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleChange = (editorStateChange: any) => {
     setEditorState(editorStateChange);
@@ -76,6 +77,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
             placeholder="Type a message..."
+            readOnly={readOnly}
           />
         </div>
       </ReactResizeDetector>

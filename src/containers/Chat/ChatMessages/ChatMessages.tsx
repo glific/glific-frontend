@@ -136,8 +136,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
-    (body: string, mediaId: string, messageType: string) => {
-      const payload = {
+    (
+      body: string,
+      mediaId: string,
+      messageType: string,
+      selectedTemplate: any,
+      variableParam: any
+    ) => {
+      const payload: any = {
         body,
         senderId: 1,
         mediaId,
@@ -145,6 +151,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         type: messageType,
         flow: 'OUTBOUND',
       };
+
+      // add additional param for template
+      if (selectedTemplate) {
+        payload.isHsm = selectedTemplate.isHsm;
+        payload.templateId = parseInt(selectedTemplate.id, 10);
+        payload.params = variableParam;
+      }
 
       createAndSendMessage({
         variables: { input: payload },

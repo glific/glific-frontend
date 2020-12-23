@@ -6,7 +6,7 @@
 
 .Editor {
   width: 75%;
-  min-height: 40px;
+  min-height: 65px;
 }
 
 .Editor :global(.public-DraftEditor-content) > div {
