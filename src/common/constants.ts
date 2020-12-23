@@ -64,12 +64,14 @@ export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STIC
 export const setColumnToBackendTerms: any = (
   listName: string,
   columnName: string,
-  check: boolean = false
+  checkLastSort: boolean = false
 ) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     NAME: 'name',
     LABEL: 'label',
+    desc: 'desc',
+    asc: 'asc',
     BODY: 'body',
     DESCRIPTION: 'description',
     TITLE: 'label',
@@ -83,8 +85,14 @@ export const setColumnToBackendTerms: any = (
   }
 
   let lastSort = null;
-  if (!check) {
-    lastSort = getListSession(listName);
+
+  // check if present in local storage
+  if (checkLastSort) {
+    let isDirection = false;
+    if (columnName === 'desc' || columnName === 'asc') {
+      isDirection = true;
+    }
+    lastSort = getListSession(listName, isDirection);
   }
 
   return lastSort ? backendTerms[lastSort] : backendTerms[columnName];

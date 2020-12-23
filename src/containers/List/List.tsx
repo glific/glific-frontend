@@ -20,7 +20,7 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
-import { getList, setListSession } from '../../services/ListService';
+import { getUpdatedList, setListSession } from '../../services/ListService';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -119,21 +119,18 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
-    sortDirection: 'asc',
+    sortCol: setColumnToBackendTerms(listItemName, columnNames[0], true),
+    sortDirection: setColumnToBackendTerms(listItemName, 'asc', true),
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    let val = newVal;
+    const val = setColumnToBackendTerms(listItemName, newVal);
 
-    if (attribute === 'sortCol') {
-      val = setColumnToBackendTerms(listItemName, newVal, true);
-      const final = getList(listItemName, newVal);
+    const updateList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+    setListSession(JSON.stringify(updateList));
 
-      setListSession(JSON.stringify(final));
-    }
     setTableVals({
       ...tableVals,
       [attribute]: val,
@@ -379,8 +376,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
-      sortDirection: 'asc',
+      sortCol: setColumnToBackendTerms(listItemName, columnNames[0], true),
+      sortDirection: setColumnToBackendTerms(listItemName, 'asc', true),
     });
   };
 

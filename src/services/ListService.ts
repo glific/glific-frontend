@@ -1,45 +1,65 @@
 export const setListSession = (sorting: string) => {
   localStorage.setItem('list_sorting', sorting);
 };
-export const getListSession = (listName?: string) => {
-  const user = localStorage.getItem('list_sorting');
-  // let's early if there is no user session on local
-  if (!user) return null;
+
+export const getListSession = (listName: string, isDirection: boolean) => {
+  const listSort = localStorage.getItem('list_sorting');
+  // let's check early if there is no sort session on local
+  if (!listSort) return null;
 
   // we should retun as requested
+  const list: any = JSON.parse(listSort);
 
-  const list: any = JSON.parse(user);
+  const getListByName = list.filter((listItem: any) => listItem.name === listName);
 
-  const some = list.filter((name1: any) => name1.name === listName);
-
-  if (some.length > 0) {
-    return some[0].column;
+  if (getListByName.length > 0) {
+    if (isDirection) {
+      return getListByName[0].direction;
+    }
+    return getListByName[0].column;
   }
+
   return null;
 };
 
-export const getList = (listItemName: string, newVal: string) => {
-  const some1: any = localStorage.getItem('list_sorting');
+export const getUpdatedList = (listItemName: string, newVal: string, isDirection: boolean) => {
+  const listSorting: any = localStorage.getItem('list_sorting');
 
-  let some: any = [];
-  if (some1) {
-    some = JSON.parse(some1);
+  let finaList: any = [];
+  // check if list already present
+  if (listSorting) {
+    finaList = JSON.parse(listSorting);
   }
-  const isThere = some.filter((hey: any) => {
-    return hey.name === listItemName;
+
+  // check if current list name matches
+  const isListNamePresent = finaList.filter((listItem: any) => {
+    return listItem.name === listItemName;
   });
 
-  let final = [];
-  if (isThere.length > 0) {
-    final = some.map((hey: any) => {
-      if (hey.name === listItemName) {
-        return { name: hey.name, column: newVal };
+  if (isListNamePresent.length > 0) {
+    finaList = finaList.map((listItem: any) => {
+      // update column name for current list
+      if (listItem.name === listItemName && !isDirection) {
+        return {
+          name: listItem.name,
+          column: newVal,
+          direction: listItem.direction ? listItem.direction : 'asc',
+        };
       }
-      return hey;
+      // update direction for current list
+      if (listItem.name === listItemName && isDirection) {
+        return { name: listItem.name, column: listItem.column, direction: newVal };
+      }
+      return listItem;
     });
   } else {
-    final = [...some, { name: listItemName, column: newVal }];
+    // add if not present in list
+    finaList = [...finaList, { name: listItemName, column: newVal, direction: 'asc' }];
   }
 
-  return final;
+  return finaList;
+};
+
+export const clearListSession = () => {
+  localStorage.removeItem('list_sorting');
 };
