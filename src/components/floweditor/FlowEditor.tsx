@@ -60,7 +60,6 @@ const setConfig = (uuid: any) => {
     excludeTypes: [
       'send_broadcast',
       'add_contact_urn',
-      'remove_contact_groups',
       'send_email',
       'set_run_result',
       'call_resthook',
