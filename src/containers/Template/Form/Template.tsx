@@ -21,23 +21,24 @@ import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 
 const validation = {
-  label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
+  language: Yup.object().nullable().required('Language is required.'),
+  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
   body: Yup.string()
     .transform((current, original) => {
       return original.getCurrentContent().getPlainText();
     })
     .required('Message is required.'),
+};
+
+const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => {
       return original.getCurrentContent().getPlainText();
     })
     .required('Example is required.'),
-  language: Yup.object().nullable().required('Language is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string().required('Shortcode is required.'),
 };
-
-const FormSchema = Yup.object().shape(validation);
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
@@ -326,17 +327,23 @@ const Template: React.SFC<TemplateProps> = (props) => {
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
           payloadCopy.category = payloadCopy.category.id;
+        } else {
+          delete payloadCopy.example;
+          delete payloadCopy.isActive;
+          delete payloadCopy.shortcode;
+          delete payloadCopy.category;
         }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
       } else if (!defaultAttribute.isHsm) {
         let messageMedia = null;
-        if (payloadCopy.type && payloadCopy.attachmentURL)
+        if (payloadCopy.type && payloadCopy.attachmentURL) {
           messageMedia = {
             type: payloadCopy.type.id,
             sourceUrl: payloadCopy.attachmentURL,
           };
+        }
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
@@ -359,6 +366,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
       payloadCopy.type = payloadCopy.type.id || 'TEXT';
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.id;
+      } else {
+        delete payloadCopy.example;
+        delete payloadCopy.isActive;
+        delete payloadCopy.shortcode;
+        delete payloadCopy.category;
       }
 
       delete payloadCopy.language;
@@ -385,6 +397,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
     });
     return data;
   };
+
+  const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
+  const FormSchema = Yup.object().shape(validationObj);
 
   return (
     <FormLayout
