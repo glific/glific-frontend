@@ -7,6 +7,9 @@ const defaultProps = {
   setVariable: jest.fn(),
   handleCancel: jest.fn(),
   bodyText: 'Your OTP for {{1}} is {{2}}. This is valid for {{3}}.',
+  updateEditorState: jest.fn(),
+  variableParams: jest.fn(),
+  variableParam: [],
 };
 
 test('it should render', () => {

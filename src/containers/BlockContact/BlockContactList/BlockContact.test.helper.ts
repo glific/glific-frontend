@@ -38,6 +38,42 @@ const contactSearchQuery = {
   },
 };
 
+const contactSearchQueryBlocked = {
+  request: {
+    query: CONTACT_SEARCH_QUERY,
+    variables: {
+      filter: {
+        name: '',
+        status: 'BLOCKED',
+      },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+      },
+    },
+  },
+  result: {
+    data: {
+      contacts: [
+        {
+          id: '1',
+          name: 'Default receiver',
+          phone: '99399393303',
+          maskedPhone: '99399393303',
+          groups: [
+            {
+              id: '1',
+              label: 'Default group',
+            },
+          ],
+          status: 'BLOCKED',
+        },
+      ],
+    },
+  },
+};
+
 const contactCountQuery = {
   request: {
     query: GET_CONTACT_COUNT,
@@ -55,10 +91,12 @@ const contactCountQuery = {
     },
   },
 };
+
 export const CONTACT_LIST_MOCKS = [
   contactSearchQuery,
   contactSearchQuery,
   contactSearchQuery,
+  contactSearchQueryBlocked,
   updateContactStatusQuery,
   contactCountQuery,
   {
