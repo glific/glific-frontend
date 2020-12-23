@@ -71,7 +71,9 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             options={options}
             optionLabel={optionLabel || 'label'}
             field={{ value: selectedOption }}
-            onChange={(value: any) => onChange(value)}
+            onChange={(value: any) => {
+              if (onChange) onChange(value);
+            }}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
               label: 'Search',
