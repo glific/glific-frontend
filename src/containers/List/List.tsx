@@ -126,14 +126,14 @@ export const List: React.SFC<ListProps> = ({
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const val = setColumnToBackendTerms(listItemName, newVal);
+    const value = setColumnToBackendTerms(listItemName, newVal);
 
-    const updateList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
-    setListSession(JSON.stringify(updateList));
+    const updatedList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+    setListSession(JSON.stringify(updatedList));
 
     setTableVals({
       ...tableVals,
-      [attribute]: val,
+      [attribute]: value,
     });
   };
   let filter: any = {};
