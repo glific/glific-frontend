@@ -37,7 +37,7 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0)
     return (
-      <TableRow className={styles.TableRow} key="2">
+      <TableRow className={styles.TableRow}>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -46,24 +46,22 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
       </TableRow>
     );
 
-  return Object.keys(dataObj).map((key) => {
-    return (
-      <TableRow className={styles.TableRow} key={dataObj[key].label}>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
-          <div>
-            <div className={styles.LabelText}>{dataObj[key].label}</div>
-          </div>
-        </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
-          <div>
-            <p className={styles.TableText}>{dataObj[key].body}</p>
-          </div>
-        </TableCell>
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
-      </TableRow>
-    );
-  });
+  return Object.keys(dataObj).map((key) => (
+    <TableRow className={styles.TableRow} key={dataObj[key].label}>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+        <div>
+          <div className={styles.LabelText}>{dataObj[key].label}</div>
+        </div>
+      </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+        <div>
+          <p className={styles.TableText}>{dataObj[key].body}</p>
+        </div>
+      </TableCell>
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+    </TableRow>
+  ));
 };
 
 const createRows = (
