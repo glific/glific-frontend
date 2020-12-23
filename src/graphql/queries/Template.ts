@@ -13,6 +13,7 @@ export const FILTER_TEMPLATES = gql`
       body
       label
       shortcode
+      status
       isHsm
       isReserved
       updatedAt
