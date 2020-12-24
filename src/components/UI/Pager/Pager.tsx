@@ -37,7 +37,7 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0)
     return (
-      <TableRow className={styles.TableRow}>
+      <TableRow className={styles.CollapseTableRow}>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -47,7 +47,7 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
     );
 
   return Object.keys(dataObj).map((key) => (
-    <TableRow className={styles.TableRow} key={dataObj[key].label}>
+    <TableRow className={styles.CollapseTableRow} key={dataObj[key].label}>
       <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
         <div>
           <div className={styles.LabelText}>{dataObj[key].label}</div>
@@ -102,10 +102,7 @@ const createRows = (
     if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
       <React.Fragment key={entry.recordId}>
-        <TableRow
-          key={entry.recordId}
-          className={`${styles.TableRow} ${collapseOpen ? styles.Collapse : ''}`}
-        >
+        <TableRow key={entry.recordId} className={styles.TableRow}>
           {batchAction}
           {createRow(entry)}
         </TableRow>
