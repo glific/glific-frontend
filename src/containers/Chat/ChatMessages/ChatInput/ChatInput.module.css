@@ -240,7 +240,18 @@
   right: 210px;
 }
 
-.CrossIcon svg {
+.CrossIconWithVariable {
+  position: absolute !important;
+  bottom: 4px;
+  right: 165px;
+}
+
+.CrossIcon svg,
+.CrossIconWithVariable svg {
   height: 26px;
   width: 26px;
+}
+
+svg.SendIcon {
+  margin-top: 2px;
 }

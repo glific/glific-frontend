@@ -351,7 +351,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         {selectedTemplate ? (
           <Tooltip title="Clear template" placement="top">
             <IconButton
-              className={styles.CrossIcon}
+              className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
               onClick={() => {
                 resetVariable();
               }}
