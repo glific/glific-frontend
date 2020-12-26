@@ -64,10 +64,12 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     {
       component: EmojiInput,
       name: 'example',
-      placeholder: 'Example',
+      placeholder: 'Sample message*',
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
+      helperText:
+        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
     },
     {
       component: AutoComplete,
@@ -77,13 +79,14 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Category',
+        label: 'Category*',
       },
+      helperText: 'Select the most relevant category',
     },
     {
       component: Input,
       name: 'shortcode',
-      placeholder: 'Shortcode',
+      placeholder: 'Element name*',
       validate: validateShortcode,
     },
   ];

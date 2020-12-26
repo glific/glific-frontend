@@ -37,7 +37,7 @@ const HSMValidation = {
     })
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
-  shortcode: Yup.string().required('Shortcode is required.'),
+  shortcode: Yup.string().required('Element name is required.'),
 };
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
@@ -290,7 +290,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Language',
+        label: 'Language*',
       },
       onChange: getLanguageId,
       helperText: 'For more languages check settings or connect with your admin',
@@ -298,16 +298,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: Input,
       name: 'label',
-      placeholder: 'Title',
+      placeholder: 'Title*',
       validate: validateTitle,
+      helperText:
+        'Define what use case does this template serve eg. OTP, optin, activity preference',
     },
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: 'Message',
+      placeholder: 'Message*',
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
+      helperText:
+        'You can also use variabel and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.',
     },
   ];
 
@@ -420,7 +424,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
-      button={defaultAttribute.isHsm && !match.params.id ? 'Submit' : 'Save'}
+      button={defaultAttribute.isHsm && !match.params.id ? 'SUBMIT FOR APPROVAL' : 'Save'}
     />
   );
 };

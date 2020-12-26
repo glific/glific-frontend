@@ -30,7 +30,7 @@ test('check for validations for the HSM form', async () => {
   });
 
   const { queryByText } = within(container.querySelector('form'));
-  const button = queryByText('Submit');
+  const button = queryByText('SUBMIT FOR APPROVAL');
   fireEvent.click(button);
   await waitFor(() => {
     expect(queryByText('Title is required.')).toBeInTheDocument();
