@@ -71,6 +71,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     BODY: 'body',
     DESCRIPTION: 'description',
     TITLE: 'label',
+    STATUS: 'status',
     BENEFICIARY: 'name',
     'PHONE NO': 'phone',
   };
