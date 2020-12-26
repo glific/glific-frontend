@@ -22,6 +22,7 @@ import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
+import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -65,7 +66,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   let dialog;
 
-  const resetAfterSend = () => {
+  const resetVariable = () => {
     setUpdatedEditorState(undefined);
     setEditorState(EditorState.createEmpty());
     setSelectedTemplate(undefined);
@@ -85,7 +86,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         setAttachmentAdded(false);
         setAttachmentURL('');
         setAttachmentType('');
-        resetAfterSend();
+        resetVariable();
       }
     },
   });
@@ -141,7 +142,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       });
     } else {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
-      resetAfterSend();
+      resetVariable();
     }
   };
 
@@ -168,6 +169,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const handleSelectText = (obj: any) => {
+    resetVariable();
+
     // set selected template
     setSelectedTemplate(obj);
 
@@ -193,7 +196,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleCancel = () => {
     resetAttachment();
-    resetAfterSend();
+    resetVariable();
   };
 
   const updateEditorState = (body: string) => {
@@ -342,28 +345,30 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
-          readOnly={updatedEditorState !== undefined}
+          readOnly={selectedTemplate !== undefined}
         />
 
-        {updatedEditorState ? (
-          <span>
+        {selectedTemplate ? (
+          <Tooltip title="Clear template" placement="top">
             <IconButton
               className={styles.CrossIcon}
               onClick={() => {
-                resetAfterSend();
+                resetVariable();
               }}
             >
               <CrossIcon />
             </IconButton>
-            <IconButton
-              className={styles.VariableIcon}
-              onClick={() => {
-                setVariable(!variable);
-              }}
-            >
-              <VariableIcon />
-            </IconButton>
-          </span>
+          </Tooltip>
+        ) : null}
+        {updatedEditorState ? (
+          <IconButton
+            className={styles.VariableIcon}
+            onClick={() => {
+              setVariable(!variable);
+            }}
+          >
+            <VariableIcon />
+          </IconButton>
         ) : null}
         <IconButton
           className={styles.AttachmentIcon}

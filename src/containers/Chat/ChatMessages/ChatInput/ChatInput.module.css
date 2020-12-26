@@ -235,6 +235,12 @@
 }
 
 .CrossIcon {
-  margin-right: -5px !important;
-  padding: 0px !important;
+  position: absolute !important;
+  bottom: 4px;
+  right: 210px;
+}
+
+.CrossIcon svg {
+  height: 26px;
+  width: 26px;
 }
