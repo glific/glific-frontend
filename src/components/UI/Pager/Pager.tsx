@@ -33,9 +33,9 @@ interface PagerProps {
 }
 
 // create a collapsible row
-const collapseRaw = (dataObj: any, columnStyles: any) => {
+const collapsedRowData = (dataObj: any, columnStyles: any) => {
   // if empty dataObj
-  if (Object.keys(dataObj).length === 0)
+  if (Object.keys(dataObj).length === 0) {
     return (
       <TableRow className={styles.CollapseTableRow}>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
@@ -45,6 +45,7 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
         </TableCell>
       </TableRow>
     );
+  }
 
   return Object.keys(dataObj).map((key) => (
     <TableRow className={styles.CollapseTableRow} key={dataObj[key].label}>
@@ -107,7 +108,7 @@ const createRows = (
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
-          ? collapseRaw(dataObj, columnStyles)
+          ? collapsedRowData(dataObj, columnStyles)
           : null}
       </React.Fragment>
     );
