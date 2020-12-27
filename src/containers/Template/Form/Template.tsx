@@ -289,6 +289,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         variant: 'outlined',
         label: 'Language*',
       },
+      disabled: defaultAttribute.isHsm && match.params.id,
       onChange: getLanguageId,
     },
     {
@@ -296,6 +297,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       name: 'label',
       placeholder: 'Title*',
       validate: validateTitle,
+      disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
         ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
         : null,
@@ -307,6 +309,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
+      disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
         ? 'You can also use variabel and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,

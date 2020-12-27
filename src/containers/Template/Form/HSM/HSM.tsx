@@ -68,6 +68,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
+      disabled: match.params.id,
       helperText:
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
     },
@@ -81,6 +82,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         variant: 'outlined',
         label: 'Category*',
       },
+      disabled: match.params.id,
       helperText: 'Select the most relevant category',
     },
     {
@@ -88,6 +90,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       name: 'shortcode',
       placeholder: 'Element name*',
       validate: validateShortcode,
+      disabled: match.params.id,
     },
   ];
 
