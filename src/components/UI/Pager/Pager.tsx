@@ -33,7 +33,7 @@ interface PagerProps {
 }
 
 // create a collapsible row
-const collapsedRowData = (dataObj: any, columnStyles: any) => {
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
   if (Object.keys(dataObj).length === 0) {
     return (
@@ -47,22 +47,28 @@ const collapsedRowData = (dataObj: any, columnStyles: any) => {
     );
   }
 
-  return Object.keys(dataObj).map((key) => (
-    <TableRow className={styles.CollapseTableRow} key={dataObj[key].label}>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
-        <div>
-          <div className={styles.LabelText}>{dataObj[key].label}</div>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
-        <div>
-          <p className={styles.TableText}>{dataObj[key].body}</p>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
-    </TableRow>
-  ));
+  const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
+    const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
+
+    return (
+      <TableRow className={styles.CollapseTableRow} key={rowIdentifier}>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+          <div>
+            <div className={styles.LabelText}>{dataObj[key].label}</div>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>{dataObj[key].body}</p>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+      </TableRow>
+    );
+  });
+
+  return additionalRowInformation;
 };
 
 const createRows = (
@@ -108,7 +114,7 @@ const createRows = (
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
-          ? collapsedRowData(dataObj, columnStyles)
+          ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
       </React.Fragment>
     );
