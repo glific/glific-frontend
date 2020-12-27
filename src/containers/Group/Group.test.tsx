@@ -44,7 +44,9 @@ describe('<Group />', () => {
 
     // click on SAVE
     const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
+    await waitFor(() => {
+      UserEvent.click(saveButton);
+    });
   });
 
   test('it should call additional query and hit the update users function', async () => {
@@ -67,6 +69,9 @@ describe('<Group />', () => {
 
     const { getByTestId } = render(wrapper);
     fireEvent.click(getByTestId('group'));
-    expect(mockCallback).toBeCalled();
+
+    await waitFor(() => {
+      expect(mockCallback).toBeCalled();
+    });
   });
 });
