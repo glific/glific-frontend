@@ -52,6 +52,7 @@ export interface FormLayoutProps {
   backLinkButton?: any;
   isAttachment?: boolean;
   getMediaId?: any;
+  customStyles?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -89,6 +90,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   backLinkButton,
   isAttachment = false,
   getMediaId,
+  customStyles = null,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -98,6 +100,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
+  const [SaveClick, onSaveClick] = useState(false);
+
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
   const itemId = match.params.id ? match.params.id : false;
@@ -170,8 +174,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }
         setNotification(client, message);
       }
+      onSaveClick(false);
     },
     onError: (e: ApolloError) => {
+      onSaveClick(false);
       setErrorMessage(client, e);
       return null;
     },
@@ -201,6 +207,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         // display successful message after create
         setNotification(client, `${capitalListItemName} created successfully!`);
       }
+      onSaveClick(false);
     },
     refetchQueries: () => {
       if (refetchQueries) {
@@ -209,6 +216,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       return [];
     },
     onError: (e: ApolloError) => {
+      onSaveClick(false);
       setErrorMessage(client, e);
       return null;
     },
@@ -361,10 +369,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         validationSchema={validationSchema}
         onSubmit={(itemData) => {
           saveHandler(itemData);
+          onSaveClick(true);
         }}
       >
         {({ submitForm }) => (
-          <Form className={styles.Form} data-testid="formLayout">
+          <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
               return (
@@ -385,6 +394,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 onClick={submitForm}
                 className={styles.Button}
                 data-testid="submitActionButton"
+                loading={SaveClick}
               >
                 {button}
               </Button>

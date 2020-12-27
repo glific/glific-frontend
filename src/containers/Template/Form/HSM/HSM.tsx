@@ -100,6 +100,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       defaultAttribute={defaultAttribute}
       formField={formFields}
       getSessionTemplatesCallBack={getSessionTemplates}
+      customStyle={styles.HSMTemplate}
     />
   );
 };

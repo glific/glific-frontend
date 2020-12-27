@@ -15,10 +15,10 @@ import {
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
-import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+import GET_LANGUAGES from '../../../graphql/queries/List';
 
 const validation = {
   language: Yup.object().nullable().required('Language is required.'),
@@ -91,6 +91,7 @@ export interface TemplateProps {
   defaultAttribute?: any;
   formField?: any;
   getSessionTemplatesCallBack?: any;
+  customStyle?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -102,6 +103,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     defaultAttribute = { isHsm: false },
     formField,
     getSessionTemplatesCallBack,
+    customStyle,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -173,7 +175,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  const { data: languages } = useQuery(USER_LANGUAGES, {
+  const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
@@ -201,13 +203,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (languages) {
-      const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
-      // sort languages by their name
-      lang.sort((first: any, second: any) => {
-        return first.label > second.label ? 1 : -1;
-      });
+      const lang = languages ? languages.languages : [];
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -293,15 +290,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
         label: 'Language*',
       },
       onChange: getLanguageId,
-      helperText: 'For more languages check settings or connect with your admin',
     },
     {
       component: Input,
       name: 'label',
       placeholder: 'Title*',
       validate: validateTitle,
-      helperText:
-        'Define what use case does this template serve eg. OTP, optin, activity preference',
+      helperText: defaultAttribute.isHsm
+        ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
+        : null,
     },
     {
       component: EmojiInput,
@@ -310,8 +307,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      helperText:
-        'You can also use variabel and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.',
+      helperText: defaultAttribute.isHsm
+        ? 'You can also use variabel and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        : null,
     },
   ];
 
@@ -326,7 +324,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (template) {
       if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
         payloadCopy.languageId = language.id;
-        payloadCopy.type = payloadCopy.type.id || 'TEXT';
+        if (payloadCopy.type) {
+          payloadCopy.type = payloadCopy.type.id;
+          // STICKER is a type of IMAGE
+          if (payloadCopy.type.id === 'STICKER') {
+            payloadCopy.type = 'IMAGE';
+          }
+        } else {
+          payloadCopy.type = 'TEXT';
+        }
 
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
@@ -367,7 +373,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
     } else {
       // Create template
       payloadCopy.languageId = payload.language.id;
-      payloadCopy.type = payloadCopy.type.id || 'TEXT';
+      if (payloadCopy.type) {
+        payloadCopy.type = payloadCopy.type.id;
+        // STICKER is a type of IMAGE
+        if (payloadCopy.type.id === 'STICKER') {
+          payloadCopy.type = 'IMAGE';
+        }
+      } else {
+        payloadCopy.type = 'TEXT';
+      }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.id;
       } else {
@@ -425,6 +439,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       isAttachment
       getMediaId={getMediaId}
       button={defaultAttribute.isHsm && !match.params.id ? 'SUBMIT FOR APPROVAL' : 'Save'}
+      customStyles={customStyle}
     />
   );
 };
