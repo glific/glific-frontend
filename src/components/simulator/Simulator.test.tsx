@@ -21,10 +21,12 @@ const simulator = (
   </MockedProvider>
 );
 
-test('simulator should open on click of simulator icon', () => {
+test('simulator should open on click of simulator icon', async () => {
   const { getByTestId } = render(simulator);
   fireEvent.click(getByTestId('simulatorIcon'));
-  expect(mockSetShowSimulator).toBeCalled();
+  await waitFor(() => {
+    expect(mockSetShowSimulator).toBeCalled();
+  });
 });
 
 test('send a message from the simulator', async () => {
