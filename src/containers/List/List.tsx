@@ -119,21 +119,29 @@ export const List: React.SFC<ListProps> = ({
   const [searchVal, setSearchVal] = useState('');
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
-  // get the last sort value from local storage
-  const getLastSortIfPresent = (columnName: string) => {
+  // get the last sort value from local storage if exist else set the default column and order
+  const getLastSortIfPresent = (listItemNameValue: string, columnName: string) => {
     let isDirection = false;
     if (columnName === 'desc' || columnName === 'asc') {
       isDirection = true;
     }
-    const getValues = getLastListSessionValues(listItemName, isDirection);
-    return getValues !== null ? getValues : columnName;
+
+    let returnValue = columnName;
+    const getValues = getLastListSessionValues(listItemNameValue, isDirection);
+
+    if (getValues !== null) {
+      returnValue = getValues;
+    }
+
+    return setColumnToBackendTerms(listItemName, returnValue);
   };
+
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: setColumnToBackendTerms(listItemName, getLastSortIfPresent(columnNames[0])),
-    sortDirection: setColumnToBackendTerms(listItemName, getLastSortIfPresent('asc')),
+    sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
+    sortDirection: getLastSortIfPresent(listItemName, 'asc'),
   });
 
   let userRole: any = getUserRole();
@@ -389,8 +397,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: setColumnToBackendTerms(listItemName, getLastSortIfPresent(columnNames[0])),
-      sortDirection: setColumnToBackendTerms(listItemName, getLastSortIfPresent('asc')),
+      sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
+      sortDirection: getLastSortIfPresent(listItemName, 'asc'),
     });
   };
 
