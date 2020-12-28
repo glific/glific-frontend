@@ -345,7 +345,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
-          readOnly={selectedTemplate !== undefined}
+          readOnly={selectedTemplate !== undefined && selectedTemplate.isHsm}
         />
 
         {selectedTemplate ? (
