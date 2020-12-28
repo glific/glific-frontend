@@ -99,6 +99,7 @@ export const CONTACT_LIST_MOCKS = [
   contactSearchQueryBlocked,
   updateContactStatusQuery,
   contactCountQuery,
+  contactCountQuery,
   {
     request: {
       query: GET_CONTACT_COUNT,
