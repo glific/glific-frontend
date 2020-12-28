@@ -1,7 +1,5 @@
 import moment from 'moment';
 
-import { getListSession } from '../services/ListService';
-
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
 export const TIME_FORMAT = 'HH:mm';
@@ -61,11 +59,7 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
-export const setColumnToBackendTerms: any = (
-  listName: string,
-  columnName: string,
-  checkLastSort: boolean = false
-) => {
+export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     NAME: 'name',
@@ -84,16 +78,5 @@ export const setColumnToBackendTerms: any = (
     backendTerms.DESCRIPTION = 'label';
   }
 
-  let lastSort = null;
-
-  // check if present in local storage
-  if (checkLastSort) {
-    let isDirection = false;
-    if (columnName === 'desc' || columnName === 'asc') {
-      isDirection = true;
-    }
-    lastSort = getListSession(listName, isDirection);
-  }
-
-  return lastSort ? backendTerms[lastSort] : backendTerms[columnName];
+  return backendTerms[columnName];
 };

@@ -20,7 +20,11 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
-import { getUpdatedList, setListSession } from '../../services/ListService';
+import {
+  getUpdatedList,
+  setListSession,
+  getLastListSessionValues,
+} from '../../services/ListService';
 
 export interface ListProps {
   columnNames?: Array<string>;
@@ -115,12 +119,21 @@ export const List: React.SFC<ListProps> = ({
   const [searchVal, setSearchVal] = useState('');
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
+  // get the last sort value from local storage
+  const getLastSortIfPresent = (columnName: string) => {
+    let isDirection = false;
+    if (columnName === 'desc' || columnName === 'asc') {
+      isDirection = true;
+    }
+    const getValues = getLastListSessionValues(listItemName, isDirection);
+    return getValues !== null ? getValues : columnName;
+  };
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: setColumnToBackendTerms(listItemName, columnNames[0], true),
-    sortDirection: setColumnToBackendTerms(listItemName, 'asc', true),
+    sortCol: setColumnToBackendTerms(listItemName, getLastSortIfPresent(columnNames[0])),
+    sortDirection: setColumnToBackendTerms(listItemName, getLastSortIfPresent('asc')),
   });
 
   let userRole: any = getUserRole();
@@ -376,8 +389,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: setColumnToBackendTerms(listItemName, columnNames[0], true),
-      sortDirection: setColumnToBackendTerms(listItemName, 'asc', true),
+      sortCol: setColumnToBackendTerms(listItemName, getLastSortIfPresent(columnNames[0])),
+      sortDirection: setColumnToBackendTerms(listItemName, getLastSortIfPresent('asc')),
     });
   };
 
