@@ -120,7 +120,7 @@ export const List: React.SFC<ListProps> = ({
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
   // get the last sort value from local storage if exist else set the default column and order
-  const getLastSortIfPresent = (listItemNameValue: string, columnName: string = '') => {
+  const getSortCriteria = (listItemNameValue: string, columnName: string = '') => {
     // let's determine if we are retrieving sort column or direction
     // if columnName is empty then we want to get the sort direction
     // also set the default values
@@ -148,8 +148,8 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
-    sortDirection: getLastSortIfPresent(listItemName),
+    sortCol: getSortCriteria(listItemName, columnNames[0]),
+    sortDirection: getSortCriteria(listItemName),
   });
 
   let userRole: any = getUserRole();
@@ -405,8 +405,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
-      sortDirection: getLastSortIfPresent(listItemName),
+      sortCol: getSortCriteria(listItemName, columnNames[0]),
+      sortDirection: getSortCriteria(listItemName),
     });
   };
 
