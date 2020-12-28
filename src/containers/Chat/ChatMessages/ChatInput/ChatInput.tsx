@@ -58,7 +58,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [attachmentURL, setAttachmentURL] = useState('');
   const [variable, setVariable] = useState(false);
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
-  const [selectedTemplate, setSelectedTemplate] = useState();
+  const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -208,7 +208,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   if (variable) {
-    const bodyText = convertToWhatsApp(editorState);
+    const bodyText = selectedTemplate ? selectedTemplate.body : '';
     const dialogProps = {
       bodyText,
       setVariable,
