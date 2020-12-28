@@ -61,6 +61,7 @@ export const CONTACT_LIST_MOCKS = [
   contactSearchQuery,
   updateContactStatusQuery,
   contactCountQuery,
+  contactCountQuery,
   {
     request: {
       query: GET_CONTACT_COUNT,

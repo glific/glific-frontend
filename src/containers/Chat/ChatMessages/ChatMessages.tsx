@@ -39,7 +39,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(50);
+  const [messageOffset, setMessageOffset] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
