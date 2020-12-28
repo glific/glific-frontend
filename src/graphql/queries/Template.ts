@@ -12,6 +12,8 @@ export const FILTER_TEMPLATES = gql`
       id
       body
       label
+      shortcode
+      status
       isHsm
       isReserved
       updatedAt
@@ -49,7 +51,16 @@ export const GET_TEMPLATE = gql`
           caption
           sourceUrl
         }
+        category
+        shortcode
+        example
       }
     }
+  }
+`;
+
+export const GET_HSM_CATEGORIES = gql`
+  query {
+    whatsappHsmCategories
   }
 `;

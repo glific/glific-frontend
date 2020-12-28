@@ -179,11 +179,12 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
 export const searchOffset = {
   request: {
     query: SEARCH_OFFSET,
-    variables: { offset: 0 },
+    variables: { offset: 0, search: 'hi' },
   },
   result: {
     data: {
       offset: 0,
+      search: 'hi',
     },
   },
 };

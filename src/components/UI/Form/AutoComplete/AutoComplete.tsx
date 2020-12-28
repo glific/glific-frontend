@@ -108,7 +108,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           inputValue={asyncSearch ? searchTerm : undefined}
           value={getValue}
           disabled={disabled}
-          disableCloseOnSelect
+          disableCloseOnSelect={multiple}
           renderTags={(value: any, getTagProps) =>
             value.map((option: any, index: number) => (
               <Chip

@@ -6,6 +6,8 @@ export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
+// to find variables in message
+export const pattern = /[^{}]+(?=})/g;
 
 // const enums
 // provider status against the contact
@@ -69,4 +71,27 @@ export const getObject = (arr: any, data: any) => {
     });
   }
   return result;
+};
+
+export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
+  const backendTerms: any = {
+    'LAST MODIFIED': 'updated_at',
+    NAME: 'name',
+    desc: 'desc',
+    asc: 'asc',
+    LABEL: 'label',
+    BODY: 'body',
+    DESCRIPTION: 'description',
+    TITLE: 'label',
+    STATUS: 'status',
+    BENEFICIARY: 'name',
+    'PHONE NO': 'phone',
+  };
+
+  if (listName === 'Collection') {
+    backendTerms.TITLE = 'shortcode';
+    backendTerms.DESCRIPTION = 'label';
+  }
+
+  return backendTerms[columnName];
 };

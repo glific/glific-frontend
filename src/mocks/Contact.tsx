@@ -158,7 +158,15 @@ export const getContactsQuery = {
 export const getGroupContactsQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
-    variables: setVariables({ name: '', includeGroups: 1 }, 50, 0, 'ASC'),
+    variables: {
+      filter: { name: '', includeGroups: 1 },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
+      },
+    },
   },
   result: {
     data: {

@@ -96,9 +96,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
             })
             .reverse();
           const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          let isContactCached = false;
           conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
             const conversationObj = conversation;
+            // If the contact is present in the cache
             if (conversationObj.contact.id === contactId.toString()) {
+              isContactCached = true;
               conversationObj.messages = [
                 ...conversationObj.messages,
                 ...conversationCopy.search[0].messages,
@@ -106,7 +109,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
             }
             return conversationObj;
           });
-
+          // If the contact is NOT present in the cache
+          if (!isContactCached) {
+            conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
+          }
           // update the conversation cache
           updateConversationsCache(conversationsCopy, client, queryVariables);
 
@@ -136,8 +142,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
-    (body: string, mediaId: string, messageType: string) => {
-      const payload = {
+    (
+      body: string,
+      mediaId: string,
+      messageType: string,
+      selectedTemplate: any,
+      variableParam: any
+    ) => {
+      const payload: any = {
         body,
         senderId: 1,
         mediaId,
@@ -145,6 +157,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         type: messageType,
         flow: 'OUTBOUND',
       };
+
+      // add additional param for template
+      if (selectedTemplate) {
+        payload.isHsm = selectedTemplate.isHsm;
+        payload.templateId = parseInt(selectedTemplate.id, 10);
+        payload.params = variableParam;
+      }
 
       createAndSendMessage({
         variables: { input: payload },
@@ -191,16 +210,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 50, offset: messageOffset },
+            messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },
         });
       }
     }
-  }
-
-  if (data && data.search) {
-    [conversationInfo] = data.search;
   }
 
   const closeDialogBox = () => {

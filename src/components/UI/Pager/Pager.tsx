@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 
 import styles from './Pager.module.css';
+import { setColumnToBackendTerms } from '../../../common/constants';
 
 interface PagerProps {
   columnNames: Array<any>;
@@ -19,6 +20,7 @@ interface PagerProps {
   columnStyles?: Array<any>;
   totalRows: number;
   handleTableChange: Function;
+  listItemName: string;
   tableVals: {
     pageNum: number;
     pageRows: number;
@@ -31,11 +33,11 @@ interface PagerProps {
 }
 
 // create a collapsible row
-const collapseRaw = (dataObj: any, columnStyles: any) => {
+const collapsedRowData = (dataObj: any, columnStyles: any, recordId: any) => {
   // if empty dataObj
-  if (Object.keys(dataObj).length === 0)
+  if (Object.keys(dataObj).length === 0) {
     return (
-      <TableRow className={styles.TableRow}>
+      <TableRow className={styles.CollapseTableRow}>
         <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
           <div>
             <p className={styles.TableText}>No data available</p>
@@ -43,23 +45,30 @@ const collapseRaw = (dataObj: any, columnStyles: any) => {
         </TableCell>
       </TableRow>
     );
+  }
 
-  return Object.keys(dataObj).map((key) => (
-    <TableRow className={styles.TableRow}>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
-        <div>
-          <div className={styles.LabelText}>{dataObj[key].label}</div>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
-        <div>
-          <p className={styles.TableText}>{dataObj[key].body}</p>
-        </div>
-      </TableCell>
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
-      <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
-    </TableRow>
-  ));
+  const additionalRowInformation = Object.keys(dataObj).map((key, index) => {
+    const rowIdentifier = `collapsedRowData-${recordId}-${index}`;
+
+    return (
+      <TableRow className={styles.CollapseTableRow} key={rowIdentifier}>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[0] : null}`}>
+          <div>
+            <div className={styles.LabelText}>{dataObj[key].label}</div>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[1] : null}`}>
+          <div>
+            <p className={styles.TableText}>{dataObj[key].body}</p>
+          </div>
+        </TableCell>
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[2] : null}`} />
+        <TableCell className={`${styles.TableCell} ${columnStyles ? columnStyles[3] : null}`} />
+      </TableRow>
+    );
+  });
+
+  return additionalRowInformation;
 };
 
 const createRows = (
@@ -71,7 +80,7 @@ const createRows = (
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
-    return Object.keys(entry).map((item: any, i: number) => {
+    return Object.keys(entry).map((item: any) => {
       // let's not display recordId in the UI
       if (item === 'recordId' || item === 'translations' || item === 'id') {
         return null;
@@ -81,8 +90,7 @@ const createRows = (
 
       return (
         <TableCell
-          // eslint-disable-next-line
-          key={i}
+          key={item + entry.recordId}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[stylesIndex] : null}`}
         >
           <div>{entry[item]}</div>
@@ -100,15 +108,15 @@ const createRows = (
     let dataObj: any;
     if (entry.translations) dataObj = JSON.parse(entry.translations);
     return (
-      <div className={`${collapseOpen ? styles.Collapse : ''}`}>
+      <React.Fragment key={entry.recordId}>
         <TableRow key={entry.recordId} className={styles.TableRow}>
           {batchAction}
           {createRow(entry)}
         </TableRow>
         {collapseOpen && dataObj && entry.id === collapseRow
-          ? collapseRaw(dataObj, columnStyles)
+          ? collapsedRowData(dataObj, columnStyles, entry.recordId)
           : null}
-      </div>
+      </React.Fragment>
     );
   });
 };
@@ -118,7 +126,8 @@ const tableHeadColumns = (
   columnStyles: any,
   tableVals: any,
   handleTableChange: Function,
-  showCheckbox?: boolean
+  showCheckbox?: boolean,
+  listName?: string
 ) => {
   let batchAction = null;
   if (showCheckbox) {
@@ -130,20 +139,22 @@ const tableHeadColumns = (
       {columnNames.map((name: string, i: number) => {
         return (
           <TableCell
-            // eslint-disable-next-line
-            key={i}
+            key={name}
             className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
           >
             {i !== columnNames.length - 1 ? (
               <TableSortLabel
-                active={name === tableVals.sortCol}
+                active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
                 direction={tableVals.sortDirection}
                 onClick={() => {
-                  handleTableChange('sortCol', name);
-                  handleTableChange(
-                    'sortDirection',
-                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                  );
+                  if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
+                    handleTableChange('sortCol', name);
+                  } else {
+                    handleTableChange(
+                      'sortDirection',
+                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                    );
+                  }
                 }}
               >
                 {name}
@@ -187,6 +198,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     showCheckbox,
     columnNames,
     tableVals,
+    listItemName,
     handleTableChange,
     totalRows,
     collapseOpen,
@@ -202,7 +214,8 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     columnStyles,
     tableVals,
     handleTableChange,
-    showCheckbox
+    showCheckbox,
+    listItemName
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

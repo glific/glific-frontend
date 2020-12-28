@@ -135,5 +135,12 @@ export const SEARCH_MULTI_QUERY = gql`
 export const SEARCH_OFFSET = gql`
   {
     offset @client
+    search @client
+  }
+`;
+
+export const SCROLL_HEIGHT = gql`
+  {
+    height @client
   }
 `;

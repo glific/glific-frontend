@@ -3,6 +3,7 @@ import {
   GET_TEMPLATES_COUNT,
   FILTER_TEMPLATES,
   GET_TEMPLATE,
+  GET_HSM_CATEGORIES,
 } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import {
@@ -45,6 +46,43 @@ const speedSend = {
           id: '87',
           body: 'Hey There',
           label: 'Good message',
+          shortcode: 'test',
+          isHsm: false,
+          isReserved: false,
+          updatedAt: '2020-12-01T18:00:28Z',
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
+        },
+      ],
+    },
+  },
+};
+
+const speedSendOrderWith = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: { label: '', isHsm: false },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          id: '87',
+          body: 'Hey There',
+          label: 'Good message',
+          shortcode: 'test',
           isHsm: false,
           isReserved: false,
           updatedAt: '2020-12-01T18:00:28Z',
@@ -90,6 +128,7 @@ const HSMTemplate = {
           id: '98',
           body: 'This is HSM template',
           label: 'Good message',
+          shortcode: 'test',
           isHsm: true,
           isReserved: false,
           translations: '{}',
@@ -128,6 +167,7 @@ const filterByBody = (body: string) => ({
           id: '87',
           body: 'Hi',
           label: 'Hello',
+          shortcode: 'test',
           isHsm: false,
           isReserved: false,
           translations: '{}',
@@ -160,6 +200,7 @@ const speedSendValidation = {
           body: 'This is HSM template',
           label:
             'We are not allowing a really long title, and we should trigger validation for this',
+          shortcode: 'test',
           isHsm: true,
           isReserved: false,
           translations: '{}',
@@ -203,6 +244,32 @@ const filterTemplateQuery = {
   },
 };
 
+export const whatsappHsmCategories = [
+  {
+    request: {
+      query: GET_HSM_CATEGORIES,
+      variables: {},
+    },
+    result: {
+      data: {
+        whatsappHsmCategories: [
+          'ACCOUNT_UPDATE',
+          'PAYMENT_UPDATE',
+          'PERSONAL_FINANCE_UPDATE',
+          'SHIPPING_UPDATE',
+          'RESERVATION_UPDATE',
+          'ISSUE_RESOLUTION',
+          'APPOINTMENT_UPDATE',
+          'TRANSPORTATION_UPDATE',
+          'TICKET_UPDATE',
+          'ALERT_UPDATE',
+          'AUTO_REPLY',
+        ],
+      },
+    },
+  },
+];
+
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -242,6 +309,9 @@ export const TEMPLATE_MOCKS = [
             id: 1,
             label: 'important',
             body: 'important template',
+            example: 'important template',
+            category: 'ACCOUNT_UPDATE',
+            shortcode: 'important template',
             isActive: true,
             language: {
               id: 1,
@@ -265,6 +335,9 @@ export const TEMPLATE_MOCKS = [
             id: 1,
             label: 'important',
             body: 'important template',
+            example: 'important template',
+            category: 'ACCOUNT_UPDATE',
+            shortcode: 'important template',
             isActive: true,
             language: {
               id: 1,
@@ -310,6 +383,26 @@ export const TEMPLATE_MOCKS = [
   },
   {
     request: {
+      query: GET_LANGUAGES,
+      variables: { opts: { order: 'ASC' } },
+    },
+    result: {
+      data: {
+        languages: [
+          {
+            id: '1',
+            label: 'English (United States)',
+          },
+          {
+            id: '2',
+            label: 'Hindi (India)',
+          },
+        ],
+      },
+    },
+  },
+  {
+    request: {
       query: FILTER_TEMPLATES,
       variables: requestFilterTemplates,
     },
@@ -320,6 +413,7 @@ export const TEMPLATE_MOCKS = [
             id: '98',
             body: 'This is HSM template',
             label: 'new Template',
+            shortcode: 'test',
             isHsm: true,
             isReserved: false,
             updatedAt: '2020-12-01T18:00:32Z',
@@ -351,4 +445,7 @@ export const TEMPLATE_MOCKS = [
   ...getOrganizationQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQueryByOrder,
+  ...whatsappHsmCategories,
+  speedSendOrderWith,
+  speedSendOrderWith,
 ];
