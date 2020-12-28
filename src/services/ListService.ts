@@ -1,11 +1,11 @@
 // set session for list
 export const setListSession = (sorting: string) => {
-  localStorage.setItem('list_sorting', sorting);
+  localStorage.setItem('glific_config', sorting);
 };
 
 // returns the last sort diection or column for a particular list
 export const getLastListSessionValues = (listName: string, isDirection: boolean) => {
-  const listSort = localStorage.getItem('list_sorting');
+  const listSort = localStorage.getItem('glific_config');
   // let's check early if there is no sort session on local
   if (!listSort) return null;
 
@@ -26,7 +26,7 @@ export const getLastListSessionValues = (listName: string, isDirection: boolean)
 
 // return the updated list session with new values for direction and column name
 export const getUpdatedList = (listItemName: string, newVal: string, isDirection: boolean) => {
-  const listSorting: any = localStorage.getItem('list_sorting');
+  const listSorting: any = localStorage.getItem('glific_config');
 
   let finaList: any = [];
   // check if list already present
@@ -65,5 +65,5 @@ export const getUpdatedList = (listItemName: string, newVal: string, isDirection
 
 // clear the list sorting session from local storage
 export const clearListSession = () => {
-  localStorage.removeItem('list_sorting');
+  localStorage.removeItem('glific_config');
 };
