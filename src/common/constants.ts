@@ -65,9 +65,9 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     NAME: 'name',
+    LABEL: 'label',
     desc: 'desc',
     asc: 'asc',
-    LABEL: 'label',
     BODY: 'body',
     DESCRIPTION: 'description',
     TITLE: 'label',

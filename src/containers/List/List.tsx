@@ -20,6 +20,12 @@ import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, displayUserGroups } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
+import {
+  getUpdatedList,
+  setListSession,
+  getLastListSessionValues,
+} from '../../services/ListService';
+
 export interface ListProps {
   columnNames?: Array<string>;
   countQuery: DocumentNode;
@@ -113,21 +119,50 @@ export const List: React.SFC<ListProps> = ({
   const [searchVal, setSearchVal] = useState('');
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
+  // get the last sort value from local storage if exist else set the default column and order
+  const getSortCriteria = (listItemNameValue: string, columnName: string = '') => {
+    // let's determine if we are retrieving sort column or direction
+    // if columnName is empty then we want to get the sort direction
+    // also set the default values
+    let returnValue;
+    let isDirection = false;
+    if (columnName) {
+      returnValue = columnName;
+    } else {
+      // return default direction
+      returnValue = 'asc';
+      isDirection = true;
+    }
+
+    // check if we have sorting stored in local storage
+    const sortValue = getLastListSessionValues(listItemNameValue, isDirection);
+
+    if (sortValue) {
+      returnValue = sortValue;
+    }
+
+    return setColumnToBackendTerms(listItemName, returnValue);
+  };
+
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
-    sortDirection: 'asc',
+    sortCol: getSortCriteria(listItemName, columnNames[0]),
+    sortDirection: getSortCriteria(listItemName),
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const val: string = setColumnToBackendTerms(listItemName, newVal);
+    const value = setColumnToBackendTerms(listItemName, newVal);
+
+    const updatedList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+    setListSession(JSON.stringify(updatedList));
+
     setTableVals({
       ...tableVals,
-      [attribute]: val,
+      [attribute]: value,
     });
   };
   let filter: any = {};
@@ -370,8 +405,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: setColumnToBackendTerms(listItemName, columnNames[0]),
-      sortDirection: 'asc',
+      sortCol: getSortCriteria(listItemName, columnNames[0]),
+      sortDirection: getSortCriteria(listItemName),
     });
   };
 
