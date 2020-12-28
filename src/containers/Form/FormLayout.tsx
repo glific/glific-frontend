@@ -100,7 +100,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [action, setAction] = useState(false);
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
-  const [SaveClick, onSaveClick] = useState(false);
+  const [saveClick, onSaveClick] = useState(false);
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
@@ -394,7 +394,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 onClick={submitForm}
                 className={styles.Button}
                 data-testid="submitActionButton"
-                loading={SaveClick}
+                loading={saveClick}
               >
                 {button}
               </Button>
