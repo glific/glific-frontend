@@ -120,17 +120,25 @@ export const List: React.SFC<ListProps> = ({
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
 
   // get the last sort value from local storage if exist else set the default column and order
-  const getLastSortIfPresent = (listItemNameValue: string, columnName: string) => {
+  const getLastSortIfPresent = (listItemNameValue: string, columnName: string = '') => {
+    // let's determine if we are retrieving sort column or direction
+    // if columnName is empty then we want to get the sort direction
+    // also set the default values
+    let returnValue;
     let isDirection = false;
-    if (columnName === 'desc' || columnName === 'asc') {
+    if (columnName) {
+      returnValue = columnName;
+    } else {
+      // return default direction
+      returnValue = 'asc';
       isDirection = true;
     }
 
-    let returnValue = columnName;
-    const getValues = getLastListSessionValues(listItemNameValue, isDirection);
+    // check if we have sorting stored in local storage
+    const sortValue = getLastListSessionValues(listItemNameValue, isDirection);
 
-    if (getValues !== null) {
-      returnValue = getValues;
+    if (sortValue) {
+      returnValue = sortValue;
     }
 
     return setColumnToBackendTerms(listItemName, returnValue);
@@ -141,7 +149,7 @@ export const List: React.SFC<ListProps> = ({
     pageNum: 0,
     pageRows: 50,
     sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
-    sortDirection: getLastSortIfPresent(listItemName, 'asc'),
+    sortDirection: getLastSortIfPresent(listItemName),
   });
 
   let userRole: any = getUserRole();
@@ -398,7 +406,7 @@ export const List: React.SFC<ListProps> = ({
       pageNum: 0,
       pageRows: 50,
       sortCol: getLastSortIfPresent(listItemName, columnNames[0]),
-      sortDirection: getLastSortIfPresent(listItemName, 'asc'),
+      sortDirection: getLastSortIfPresent(listItemName),
     });
   };
 
