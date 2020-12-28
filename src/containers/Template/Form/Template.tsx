@@ -311,7 +311,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       textArea: true,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? 'You can also use variabel and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
     },
   ];
