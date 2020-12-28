@@ -88,7 +88,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
               {formFieldItems.map((field: any) => {
-                return <Field {...field} />;
+                return <Field {...field} key={field.name} />;
               })}
               {attachmentType !== '' ? (
                 <div className={styles.CrossIcon}>

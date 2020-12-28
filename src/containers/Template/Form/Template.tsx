@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
+import Typography from '@material-ui/core/Typography';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
@@ -14,21 +15,30 @@ import {
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
-import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
+import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+import GET_LANGUAGES from '../../../graphql/queries/List';
 
-const FormSchema = Yup.object().shape({
-  label: Yup.string().required('Title is required.').max(50, 'Title is length too long.'),
+const validation = {
+  language: Yup.object().nullable().required('Language is required.'),
+  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
   body: Yup.string()
     .transform((current, original) => {
       return original.getCurrentContent().getPlainText();
     })
     .required('Message is required.'),
-  language: Yup.object().nullable().required('Language is required.'),
-});
+};
 
-const pattern = /[^{}]+(?=})/g;
+const HSMValidation = {
+  example: Yup.string()
+    .transform((current, original) => {
+      return original.getCurrentContent().getPlainText();
+    })
+    .required('Example is required.'),
+  category: Yup.object().nullable().required('Category is required.'),
+  shortcode: Yup.string().required('Element name is required.'),
+};
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';
 
@@ -39,43 +49,112 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
+  return { id: option, label: option };
+});
+
+const attachmentField = [
+  {
+    component: AutoComplete,
+    name: 'type',
+    options,
+    optionLabel: 'label',
+    multiple: false,
+    textFieldProps: {
+      variant: 'outlined',
+      label: 'Attachment Type',
+    },
+  },
+  {
+    component: Input,
+    name: 'attachmentURL',
+    type: 'text',
+    placeholder: 'Attachment URL',
+  },
+];
+
+const formIsActive = {
+  component: Checkbox,
+  name: 'isActive',
+  title: (
+    <Typography variant="h6" style={{ color: '#073f24' }}>
+      Is active?
+    </Typography>
+  ),
+};
+
 export interface TemplateProps {
   match: any;
   listItemName: string;
   redirectionLink: string;
   icon: any;
   defaultAttribute?: any;
+  formField?: any;
+  getSessionTemplatesCallBack?: any;
+  customStyle?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
-  const { match, listItemName, redirectionLink, icon, defaultAttribute } = props;
+  const {
+    match,
+    listItemName,
+    redirectionLink,
+    icon,
+    defaultAttribute = { isHsm: false },
+    formField,
+    getSessionTemplatesCallBack,
+    customStyle,
+  } = props;
 
   const [label, setLabel] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
+  const [example, setExample] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
+  const [shortcode, setShortcode] = useState('');
   const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>('');
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
+  const [category, setCategory] = useState<any>({});
+  const [isActive, setIsActive] = useState<boolean>(true);
 
-  const states = { language, label, body, type, attachmentURL };
+  const states = {
+    language,
+    label,
+    body,
+    type,
+    attachmentURL,
+    shortcode,
+    example,
+    category,
+    isActive,
+  };
+
   const setStates = ({
+    isActive: isActiveValue,
     language: languageIdValue,
     label: labelValue,
     body: bodyValue,
+    example: exampleValue,
     type: typeValue,
     translations: translationsValue,
     MessageMedia: MessageMediaValue,
+    shortcode: shortcodeValue,
+    category: categoryValue,
   }: any) => {
     if (languageIdValue) {
       setLanguageId(languageIdValue);
     }
 
     setLabel(labelValue);
+    setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
       setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+    }
+    if (exampleValue) {
+      setExample(EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue)));
     }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
@@ -88,15 +167,21 @@ const Template: React.SFC<TemplateProps> = (props) => {
     } else {
       setAttachmentURL('');
     }
+    if (shortcodeValue) {
+      setShortcode(shortcodeValue);
+    }
+    if (categoryValue) {
+      setCategory({ label: categoryValue, id: categoryValue });
+    }
   };
 
-  const { data: languages } = useQuery(USER_LANGUAGES, {
+  const { data: languages } = useQuery(GET_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
     variables: {
-      filter: { label: filterLabel, languageId: parseInt(language.id, 10) },
+      filter: { languageId: parseInt(language.id, 10) },
       opts: {
         order: 'ASC',
         limit: null,
@@ -118,13 +203,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (languages) {
-      const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
-      // sort languages by their name
-      lang.sort((first: any, second: any) => {
-        return first.label > second.label ? 1 : -1;
-      });
+      const lang = languages ? languages.languages : [];
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
@@ -140,6 +220,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setFilterLabel(value);
       let found = [];
       if (sessionTemplates) {
+        if (getSessionTemplatesCallBack) {
+          getSessionTemplatesCallBack(sessionTemplates);
+        }
         // need to check exact title
         found = sessionTemplates.sessionTemplates.filter((search: any) => search.label === value);
         if (props.match.params.id && found.length > 0) {
@@ -164,7 +247,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         type: template.sessionTemplate.sessionTemplate.type,
         MessageMedia: template.sessionTemplate.sessionTemplate.MessageMedia,
       });
-    } else if (translations) {
+    } else if (translations && !defaultAttribute.isHsm) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (translationsCopy[Id]) {
@@ -192,11 +275,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
       UpdateTranslation(value);
     }
+    if (value) setLanguageId(value);
   };
-
-  const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-    return { id: option, label: option };
-  });
 
   const formFields = [
     {
@@ -207,66 +287,76 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Language',
+        label: 'Language*',
       },
+      disabled: defaultAttribute.isHsm && match.params.id,
       onChange: getLanguageId,
-      helperText: 'For more languages check settings or connect with your admin',
     },
     {
       component: Input,
       name: 'label',
-      placeholder: 'Title',
+      placeholder: 'Title*',
       validate: validateTitle,
+      disabled: defaultAttribute.isHsm && match.params.id,
+      helperText: defaultAttribute.isHsm
+        ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
+        : null,
     },
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: 'Message',
+      placeholder: 'Message*',
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-    },
-    {
-      component: AutoComplete,
-      name: 'type',
-      options,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: 'Type',
-      },
-    },
-    {
-      component: Input,
-      name: 'attachmentURL',
-      type: 'text',
-      placeholder: 'Attachment URL',
+      disabled: defaultAttribute.isHsm && match.params.id,
+      helperText: defaultAttribute.isHsm
+        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        : null,
     },
   ];
+
+  const fields = defaultAttribute.isHsm
+    ? [formIsActive, ...formFields, ...formField, ...attachmentField]
+    : [...formFields, ...attachmentField];
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
-    const numberParameters = convertToWhatsApp(payloadCopy.body).match(pattern);
 
     if (template) {
       if (template.sessionTemplate.sessionTemplate.language.id === language.id) {
-        payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
         payloadCopy.languageId = language.id;
-        payloadCopy.type = payloadCopy.type.id || 'TEXT';
+        if (payloadCopy.type) {
+          payloadCopy.type = payloadCopy.type.id;
+          // STICKER is a type of IMAGE
+          if (payloadCopy.type.id === 'STICKER') {
+            payloadCopy.type = 'IMAGE';
+          }
+        } else {
+          payloadCopy.type = 'TEXT';
+        }
 
         delete payloadCopy.language;
+        if (payloadCopy.isHsm) {
+          payloadCopy.category = payloadCopy.category.id;
+        } else {
+          delete payloadCopy.example;
+          delete payloadCopy.isActive;
+          delete payloadCopy.shortcode;
+          delete payloadCopy.category;
+        }
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
-      } else {
+      } else if (!defaultAttribute.isHsm) {
         let messageMedia = null;
-        if (payloadCopy.type && payloadCopy.attachmentURL)
+        if (payloadCopy.type && payloadCopy.attachmentURL) {
           messageMedia = {
             type: payloadCopy.type.id,
             sourceUrl: payloadCopy.attachmentURL,
           };
+        }
         // Update template translation
         if (translations) {
           translationsCopy = JSON.parse(translations);
@@ -275,7 +365,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
             languageId: language,
             label: payloadCopy.label,
             body: convertToWhatsApp(payloadCopy.body),
-            numberParameters: numberParameters ? numberParameters.length : 0,
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
@@ -286,9 +375,24 @@ const Template: React.SFC<TemplateProps> = (props) => {
       }
     } else {
       // Create template
-      payloadCopy.numberParameters = numberParameters ? numberParameters.length : 0;
       payloadCopy.languageId = payload.language.id;
-      payloadCopy.type = payloadCopy.type.id || 'TEXT';
+      if (payloadCopy.type) {
+        payloadCopy.type = payloadCopy.type.id;
+        // STICKER is a type of IMAGE
+        if (payloadCopy.type.id === 'STICKER') {
+          payloadCopy.type = 'IMAGE';
+        }
+      } else {
+        payloadCopy.type = 'TEXT';
+      }
+      if (payloadCopy.isHsm) {
+        payloadCopy.category = payloadCopy.category.id;
+      } else {
+        delete payloadCopy.example;
+        delete payloadCopy.isActive;
+        delete payloadCopy.shortcode;
+        delete payloadCopy.category;
+      }
 
       delete payloadCopy.language;
 
@@ -315,6 +419,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return data;
   };
 
+  const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
+  const FormSchema = Yup.object().shape(validationObj);
+
   return (
     <FormLayout
       {...queries}
@@ -325,7 +432,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       validationSchema={FormSchema}
       listItemName={listItemName}
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={fields}
       redirectionLink={redirectionLink}
       listItem="sessionTemplate"
       icon={icon}
@@ -334,6 +441,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
+      button={defaultAttribute.isHsm && !match.params.id ? 'SUBMIT FOR APPROVAL' : 'Save'}
+      customStyles={customStyle}
     />
   );
 };
