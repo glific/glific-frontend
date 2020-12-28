@@ -39,7 +39,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(0);
+  const [messageOffset, setMessageOffset] = useState(50);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
@@ -96,9 +96,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
             })
             .reverse();
           const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+          let IsContact = false;
           conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
             const conversationObj = conversation;
+            // If the contact is present in the cache
             if (conversationObj.contact.id === contactId.toString()) {
+              IsContact = true;
               conversationObj.messages = [
                 ...conversationObj.messages,
                 ...conversationCopy.search[0].messages,
@@ -106,7 +109,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
             }
             return conversationObj;
           });
-
+          // If the contact is NOT present in the cache
+          if (!IsContact) {
+            conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
+          }
           // update the conversation cache
           updateConversationsCache(conversationsCopy, client, queryVariables);
 
@@ -191,16 +197,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 50, offset: messageOffset },
+            messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },
         });
       }
     }
-  }
-
-  if (data && data.search) {
-    [conversationInfo] = data.search;
   }
 
   const closeDialogBox = () => {
