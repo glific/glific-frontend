@@ -6,6 +6,8 @@ export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
+// to find variables in message
+export const pattern = /[^{}]+(?=})/g;
 
 // const enums
 // provider status against the contact

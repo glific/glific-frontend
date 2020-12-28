@@ -8,6 +8,9 @@ import { useApolloClient, useMutation } from '@apollo/client';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
+import { ReactComponent as VariableIcon } from '../../../../assets/images/icons/Template/Variable.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
+
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 import { ReactComponent as SendMessageIcon } from '../../../../assets/images/icons/SendMessage.svg';
@@ -17,10 +20,18 @@ import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsA
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
-import { is24HourWindowOver } from '../../../../common/constants';
+import { is24HourWindowOver, pattern } from '../../../../common/constants';
+import { AddVariables } from '../AddVariables/AddVariables';
+import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ChatInputProps {
-  onSendMessage(content: string, mediaId: string | null, messageType: string): any;
+  onSendMessage(
+    content: string,
+    mediaId: string | null,
+    messageType: string,
+    selectedTemplate: any,
+    variableParam: any
+  ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus: string;
   contactBspStatus: string;
@@ -45,19 +56,37 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [attachmentAdded, setAttachmentAdded] = useState(false);
   const [attachmentType, setAttachmentType] = useState('');
   const [attachmentURL, setAttachmentURL] = useState('');
+  const [variable, setVariable] = useState(false);
+  const [updatedEditorState, setUpdatedEditorState] = useState<any>();
+  const [selectedTemplate, setSelectedTemplate] = useState<any>();
+  const [variableParam, setVariableParam] = useState<any>([]);
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   const client = useApolloClient();
 
   let dialog;
 
+  const resetVariable = () => {
+    setUpdatedEditorState(undefined);
+    setEditorState(EditorState.createEmpty());
+    setSelectedTemplate(undefined);
+    setVariableParam([]);
+  };
+
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
       if (data) {
-        props.onSendMessage('', data.createMessageMedia.messageMedia.id, attachmentType);
+        props.onSendMessage(
+          '',
+          data.createMessageMedia.messageMedia.id,
+          attachmentType,
+          selectedTemplate,
+          variableParam
+        );
         setAttachmentAdded(false);
         setAttachmentURL('');
         setAttachmentType('');
+        resetVariable();
       }
     },
   });
@@ -112,7 +141,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         },
       });
     } else {
-      props.onSendMessage(message, null, 'TEXT');
+      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      resetVariable();
     }
   };
 
@@ -132,7 +162,18 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSelectedTab('');
   };
 
+  const resetAttachment = () => {
+    setAttachmentAdded(false);
+    setAttachmentURL('');
+    setAttachmentType('');
+  };
+
   const handleSelectText = (obj: any) => {
+    resetVariable();
+
+    // set selected template
+    setSelectedTemplate(obj);
+
     // Conversion from HTML text to EditorState
     setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
 
@@ -143,11 +184,41 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       setAttachmentURL(obj.MessageMedia.sourceUrl);
       setAttachmentType(type);
     } else {
-      setAttachmentAdded(false);
-      setAttachmentURL('');
-      setAttachmentType('');
+      resetAttachment();
+    }
+
+    // check if variable present
+    const isVariable = obj.body.match(pattern);
+    if (isVariable) {
+      setVariable(true);
     }
   };
+
+  const handleCancel = () => {
+    resetAttachment();
+    resetVariable();
+  };
+
+  const updateEditorState = (body: string) => {
+    setUpdatedEditorState(body);
+  };
+
+  const variableParams = (params: Array<any>) => {
+    setVariableParam(params);
+  };
+
+  if (variable) {
+    const bodyText = selectedTemplate ? selectedTemplate.body : '';
+    const dialogProps = {
+      bodyText,
+      setVariable,
+      handleCancel,
+      updateEditorState,
+      variableParams,
+      variableParam,
+    };
+    dialog = <AddVariables {...dialogProps} />;
+  }
 
   const handleSearch = (e: any) => {
     setSearchVal(e.target.value);
@@ -266,11 +337,39 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         {showJumpToLatest === true ? jumpToLatest : null}
 
         <WhatsAppEditor
-          editorState={editorState}
+          editorState={
+            updatedEditorState
+              ? EditorState.createWithContent(WhatsAppToDraftEditor(updatedEditorState))
+              : editorState
+          }
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
+          readOnly={selectedTemplate !== undefined}
         />
+
+        {selectedTemplate ? (
+          <Tooltip title="Clear template" placement="top">
+            <IconButton
+              className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
+              onClick={() => {
+                resetVariable();
+              }}
+            >
+              <CrossIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {updatedEditorState ? (
+          <IconButton
+            className={styles.VariableIcon}
+            onClick={() => {
+              setVariable(!variable);
+            }}
+          >
+            <VariableIcon />
+          </IconButton>
+        ) : null}
         <IconButton
           className={styles.AttachmentIcon}
           onClick={() => {
@@ -287,7 +386,17 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             variant="contained"
             color="primary"
             disableElevation
-            onClick={() => submitMessage(convertToWhatsApp(editorState))}
+            onClick={() => {
+              if (updatedEditorState) {
+                submitMessage(
+                  convertToWhatsApp(
+                    EditorState.createWithContent(WhatsAppToDraftEditor(updatedEditorState))
+                  )
+                );
+              } else {
+                submitMessage(convertToWhatsApp(editorState));
+              }
+            }}
             disabled={!editorState.getCurrentContent().hasText() && !attachmentAdded}
           >
             <SendMessageIcon className={styles.SendIcon} />

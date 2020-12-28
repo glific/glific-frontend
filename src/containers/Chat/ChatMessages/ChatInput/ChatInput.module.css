@@ -212,7 +212,7 @@
   color: #edf6f2;
   border-radius: 12px 12px 0 0;
   z-index: 100;
-  bottom: 60px;
+  top: -17px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -226,4 +226,32 @@
 .AttachmentIcon svg {
   height: 26px;
   width: 26px;
+}
+
+.VariableIcon {
+  position: absolute !important;
+  bottom: 4px;
+  right: 165px;
+}
+
+.CrossIcon {
+  position: absolute !important;
+  bottom: 4px;
+  right: 210px;
+}
+
+.CrossIconWithVariable {
+  position: absolute !important;
+  bottom: 4px;
+  right: 165px;
+}
+
+.CrossIcon svg,
+.CrossIconWithVariable svg {
+  height: 26px;
+  width: 26px;
+}
+
+svg.SendIcon {
+  margin-top: 2px;
 }

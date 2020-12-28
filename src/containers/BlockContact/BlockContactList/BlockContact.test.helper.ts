@@ -38,7 +38,7 @@ const contactSearchQuery = {
   },
 };
 
-const contactSearchQueryForBlock = {
+const contactSearchQueryBlocked = {
   request: {
     query: CONTACT_SEARCH_QUERY,
     variables: {
@@ -91,11 +91,12 @@ const contactCountQuery = {
     },
   },
 };
+
 export const CONTACT_LIST_MOCKS = [
   contactSearchQuery,
   contactSearchQuery,
   contactSearchQuery,
-  contactSearchQueryForBlock,
+  contactSearchQueryBlocked,
   updateContactStatusQuery,
   contactCountQuery,
   {
