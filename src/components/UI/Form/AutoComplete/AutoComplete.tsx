@@ -88,7 +88,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             if (roleSelection) {
               roleSelection(value);
             }
-            if (asyncSearch) {
+            if (asyncSearch && value.length > 0) {
               const filterValues = asyncValues.value.filter(
                 (val: any) => val.id !== value[value.length - 1].id
               );
@@ -99,6 +99,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               }
               setSearchTerm('');
               onChange('');
+            } else if (asyncSearch && value.length === 0) {
+              asyncValues.setValue([]);
             }
             if (onChange) {
               onChange(value);

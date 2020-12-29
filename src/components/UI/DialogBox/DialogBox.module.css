@@ -13,6 +13,7 @@
   min-width: 459px;
   margin: 0 auto;
   height: unset !important;
+  max-height: 90% !important;
 }
 
 .Dialogbox Form {
