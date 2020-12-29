@@ -167,9 +167,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const toolTip = 'The collection will be updated as per new filters';
 
-  const buildButton = (toolTip: string, type: string, label: string) => {
+  const buildButton = (toolTipTitle: string, type: string, label: string) => {
     return (
-      <Tooltip title={toolTip} placement="top">
+      <Tooltip title={toolTipTitle} placement="top">
         <Button
           color="primary"
           variant="outlined"

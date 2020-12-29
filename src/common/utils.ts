@@ -9,3 +9,5 @@ export const getObject = (arr: any, data: any) => {
   }
   return result;
 };
+
+export { getObject as default };
