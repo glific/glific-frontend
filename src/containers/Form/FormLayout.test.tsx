@@ -51,6 +51,15 @@ test('inputs should have mock values', async () => {
   });
 });
 
+const editItemRoute = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <Router>
+      <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
+      <Route path="/tag" exact component={TagList} />
+    </Router>
+  </MockedProvider>
+);
+
 test('cancel button should redirect to taglist page', async () => {
   const { container, getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
@@ -73,14 +82,7 @@ test('cancel button should redirect to taglist page', async () => {
 });
 
 test('save button should add a new tag', async () => {
-  const { container, getByText, getAllByTestId } = render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Router>
-        <FormLayout match={{ params: { id: 1 } }} {...defaultProps} />
-        <Route path="/tag" exact component={TagList} />
-      </Router>
-    </MockedProvider>
-  );
+  const { container, getByText, getAllByTestId } = render(editItemRoute);
 
   setUserSession(JSON.stringify({ roles: ['Admin'] }));
 

@@ -510,49 +510,51 @@ const createAndSendMessageMutation = {
   },
 };
 
+const searchQueryResult = {
+  data: {
+    search: [
+      {
+        contact: {
+          id: '2',
+          name: 'Vaibhav',
+          lastMessageAt: '2020-06-29T09:31:47Z',
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+        },
+        messages: [
+          {
+            id: '1',
+            body: 'Hey there whats up?',
+            insertedAt: '2020-06-25T13:36:43Z',
+            receiver: {
+              id: '1',
+            },
+            sender: {
+              id: '2',
+            },
+            tags: [
+              {
+                id: '1',
+                label: 'important',
+                colorCode: '#00d084',
+                parent: null,
+              },
+            ],
+            type: 'TEXT',
+            media: null,
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export const searchQuerywithFilter = {
   request: {
     query: SEARCH_QUERY,
     variables: { contactOpts: { limit: 50 }, filter: { id: '2' }, messageOpts: { limit: 50 } },
   },
-  result: {
-    data: {
-      search: [
-        {
-          contact: {
-            id: '2',
-            name: 'Vaibhav',
-            lastMessageAt: '2020-06-29T09:31:47Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                  colorCode: '#00d084',
-                  parent: null,
-                },
-              ],
-              type: 'TEXT',
-              media: null,
-            },
-          ],
-        },
-      ],
-    },
-  },
+  result: searchQueryResult,
 };
 
 export const searchQuerywithFilterOffset = {
@@ -564,44 +566,7 @@ export const searchQuerywithFilterOffset = {
       messageOpts: { limit: 50, offset: 50 },
     },
   },
-  result: {
-    data: {
-      search: [
-        {
-          contact: {
-            id: '2',
-            name: 'Vaibhav',
-            lastMessageAt: '2020-06-29T09:31:47Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-          },
-          messages: [
-            {
-              id: '1',
-              body: 'Hey there whats up?',
-              insertedAt: '2020-06-25T13:36:43Z',
-              receiver: {
-                id: '1',
-              },
-              sender: {
-                id: '2',
-              },
-              tags: [
-                {
-                  id: '1',
-                  label: 'important',
-                  colorCode: '#00d084',
-                  parent: null,
-                },
-              ],
-              type: 'TEXT',
-              media: null,
-            },
-          ],
-        },
-      ],
-    },
-  },
+  result: searchQueryResult,
 };
 
 const chatMessagesMocks = [

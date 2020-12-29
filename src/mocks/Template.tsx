@@ -131,36 +131,25 @@ export const TEMPLATE_MOCKS = [
   ]),
 ];
 
-export const getHSMTemplateCountQuery = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: true,
+export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
+  return {
+    request: {
+      query: GET_TEMPLATES_COUNT,
+      variables: {
+        filter: {
+          label: '',
+          isHsm: isHsm,
+        },
       },
     },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 3,
+    result: {
+      data: {
+        countSessionTemplates: count,
+      },
     },
-  },
+  };
 };
 
-export const getTemplateCountQuery = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: false,
-      },
-    },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 3,
-    },
-  },
-};
+export const getHSMTemplateCountQuery = templateCountQuery(true);
+
+export const getTemplateCountQuery = templateCountQuery(false);

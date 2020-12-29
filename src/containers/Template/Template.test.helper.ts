@@ -11,21 +11,15 @@ import {
   getOrganizationLanguagesQueryByOrder,
   getOrganizationQuery,
 } from '../../mocks/Organization';
+import { templateCountQuery } from '../../mocks/Template';
 
-const count = {
-  request: {
-    query: GET_TEMPLATES_COUNT,
-    variables: {
-      filter: {
-        label: '',
-        isHsm: false,
-      },
-    },
-  },
-  result: {
-    data: {
-      countSessionTemplates: 2,
-    },
+const count = templateCountQuery(false, 2);
+
+const requestFilterTemplates = {
+  query: FILTER_TEMPLATES,
+  variables: {
+    filter: { label: 'new Template', languageId: 1 },
+    opts: { order: 'ASC', limit: null, offset: 0 },
   },
 };
 
@@ -73,22 +67,43 @@ const speedSend = {
   },
 };
 
-const HSMTemplatecount = {
+const speedSendOrderWith = {
   request: {
-    query: GET_TEMPLATES_COUNT,
+    query: FILTER_TEMPLATES,
     variables: {
-      filter: {
-        label: '',
-        isHsm: true,
-      },
+      filter: { label: '', isHsm: false },
+      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
   result: {
     data: {
-      countSessionTemplates: 2,
+      sessionTemplates: [
+        {
+          id: '87',
+          body: 'Hey There',
+          label: 'Good message',
+          shortcode: 'test',
+          isHsm: false,
+          isReserved: false,
+          updatedAt: '2020-12-01T18:00:28Z',
+          translations: '{}',
+          type: 'TEXT',
+          language: {
+            id: '1',
+            label: 'Hindi',
+          },
+          MessageMedia: {
+            id: 1,
+            caption: 'Test',
+            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+          },
+        },
+      ],
     },
   },
 };
+
+const HSMTemplateCount = templateCountQuery(true, 2);
 
 const HSMTemplate = {
   request: {
@@ -175,14 +190,7 @@ const filterByBody = (body: string) => ({
 const speedSendValidation = {
   request: {
     query: FILTER_TEMPLATES,
-    variables: {
-      filter: {
-        label:
-          'We are not allowing a really long title, and we should trigger validation for this.',
-        languageId: 1,
-      },
-      opts: { order: 'ASC', limit: null, offset: 0 },
-    },
+    variables: requestFilterTemplates,
   },
   result: {
     data: {
@@ -206,6 +214,30 @@ const speedSendValidation = {
             caption: 'Test',
             sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
           },
+        },
+      ],
+    },
+  },
+};
+
+const filterTemplateQuery = {
+  request: {
+    query: FILTER_TEMPLATES,
+    variables: {
+      filter: { label: '', isHsm: false },
+      opts: { order: 'ASC', limit: 50, offset: 0 },
+    },
+  },
+  result: {
+    data: {
+      sessionTemplates: [
+        {
+          id: '98',
+          body: 'This is HSM template',
+          label: 'new Template',
+          isHsm: true,
+          isReserved: false,
+          updatedAt: '2020-12-01T18:00:32Z',
         },
       ],
     },
@@ -372,10 +404,7 @@ export const TEMPLATE_MOCKS = [
   {
     request: {
       query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: 'new Template', languageId: 1 },
-        opts: { order: 'ASC', limit: null, offset: 0 },
-      },
+      variables: requestFilterTemplates,
     },
     result: {
       data: {
@@ -404,80 +433,11 @@ export const TEMPLATE_MOCKS = [
       },
     },
   },
-
-  {
-    request: {
-      query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0, orderWith: 'label' },
-      },
-    },
-    result: {
-      data: {
-        sessionTemplates: [
-          {
-            id: '98',
-            body: 'This is HSM template',
-            label: 'new Template',
-            shortcode: 'test',
-            isHsm: true,
-            isReserved: false,
-            updatedAt: '2020-12-01T18:00:32Z',
-            translations: '{}',
-            type: 'TEXT',
-            language: {
-              id: '1',
-              label: 'Hindi',
-            },
-            MessageMedia: {
-              id: 1,
-              caption: 'Test',
-              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-            },
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
-      query: FILTER_TEMPLATES,
-      variables: {
-        filter: { label: '', isHsm: false },
-        opts: { order: 'ASC', limit: 50, offset: 0, orderWith: 'label' },
-      },
-    },
-    result: {
-      data: {
-        sessionTemplates: [
-          {
-            id: '98',
-            body: 'This is HSM template',
-            label: 'new Template',
-            shortcode: 'test',
-            isHsm: true,
-            isReserved: false,
-            updatedAt: '2020-12-01T18:00:32Z',
-            translations: '{}',
-            type: 'TEXT',
-            language: {
-              id: '1',
-              label: 'Hindi',
-            },
-            MessageMedia: {
-              id: 1,
-              caption: 'Test',
-              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-            },
-          },
-        ],
-      },
-    },
-  },
+  filterTemplateQuery,
+  filterTemplateQuery,
   count,
   speedSend,
-  HSMTemplatecount,
+  HSMTemplateCount,
   HSMTemplate,
   filterByBody('hi'),
   filterByBody(''),
@@ -486,4 +446,6 @@ export const TEMPLATE_MOCKS = [
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQueryByOrder,
   ...whatsappHsmCategories,
+  speedSendOrderWith,
+  speedSendOrderWith,
 ];

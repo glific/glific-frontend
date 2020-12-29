@@ -32,6 +32,78 @@ import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 
+const defaultRedirect = () => <Redirect to="/chat" />;
+
+const routeStaff = (
+  <Switch>
+    <Route path="/chat" exact component={Chat} />
+    <Route
+      exact
+      path="/chat/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <Chat contactId={match.params.contactId} />
+      )}
+    />
+    <Route path="/group" exact component={GroupList} />
+    <Route path="/group/:id/contacts" exact component={GroupContact} />
+    <Route path="/user-profile" exact component={UserProfile} />
+    <Route path="/contact-profile/:id" exact component={ContactProfile} />
+    <Route path="/blocked-contacts" exact component={BlockContactList} />
+    <Route path="/myaccount" exact component={MyAccount} />
+    <Route path="/" render={defaultRedirect} />
+  </Switch>
+);
+
+const routeAdmin = (
+  <Switch>
+    <Route path="/tag" exact component={TagPage} />
+    <Route path="/tag/add" exact component={Tag} />
+    <Route path="/tag/:id/edit" exact component={Tag} />
+    <Route path="/speed-send" exact component={SpeedSendPage} />
+    <Route path="/speed-send/add" exact component={SpeedSend} />
+    <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
+    <Route path="/flow" exact component={FlowList} />
+    <Route path="/flow/add" exact component={Flow} />
+    <Route path="/flow/:id/edit" exact component={Flow} />
+    <Route path="/group" exact component={GroupList} />
+    <Route path="/group/add" exact component={Group} />
+    <Route path="/group/:id/edit" exact component={Group} />
+    <Route path="/group/:id/contacts" exact component={GroupContact} />
+
+    <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
+
+    <Route path="/collection" exact component={CollectionList} />
+    <Route path="/collection/add" exact component={Collection} />
+    <Route path="/collection/:id/edit" exact component={Collection} />
+
+    <Route path="/chat" exact component={Chat} />
+    <Route path="/staff-management" exact component={StaffManagementList} />
+    <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
+    <Route path="/contact-profile/:id" exact component={ContactProfile} />
+    <Route path="/user-profile" exact component={UserProfile} />
+
+    <Route path="/myaccount" exact component={MyAccount} />
+
+    <Route path="/template" exact component={HSMPage} />
+    <Route path="/template/add" exact component={HSM} />
+    <Route path="/template/:id/edit" exact component={HSM} />
+
+    <Route path="/settings" exact component={SettingList} />
+    <Route path="/settings/organization" exact component={Organisation} />
+    <Route path="/settings/:type" exact component={Providers} />
+    <Route path="/blocked-contacts" exact component={BlockContactList} />
+
+    <Route
+      exact
+      path="/chat/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <Chat contactId={match.params.contactId} />
+      )}
+    />
+    <Route path="/" render={defaultRedirect} />
+  </Switch>
+);
+
 export const AuthenticatedRoute: React.SFC = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,79 +115,12 @@ export const AuthenticatedRoute: React.SFC = () => {
     userRole = getUserRole();
   }
 
-  const defaultRedirect = () => <Redirect to="/chat" />;
-
   if (userRole.includes('Staff')) {
-    route = (
-      <Switch>
-        <Route path="/chat" exact component={Chat} />
-        <Route
-          exact
-          path="/chat/:contactId"
-          component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-            <Chat contactId={match.params.contactId} />
-          )}
-        />
-        <Route path="/group" exact component={GroupList} />
-        <Route path="/group/:id/contacts" exact component={GroupContact} />
-        <Route path="/user-profile" exact component={UserProfile} />
-        <Route path="/contact-profile/:id" exact component={ContactProfile} />
-        <Route path="/blocked-contacts" exact component={BlockContactList} />
-        <Route path="/myaccount" exact component={MyAccount} />
-        <Route path="/" render={defaultRedirect} />
-      </Switch>
-    );
+    route = routeStaff;
   }
+
   if (userRole.includes('Manager') || userRole.includes('Admin')) {
-    route = (
-      <Switch>
-        <Route path="/tag" exact component={TagPage} />
-        <Route path="/tag/add" exact component={Tag} />
-        <Route path="/tag/:id/edit" exact component={Tag} />
-        <Route path="/speed-send" exact component={SpeedSendPage} />
-        <Route path="/speed-send/add" exact component={SpeedSend} />
-        <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
-        <Route path="/flow" exact component={FlowList} />
-        <Route path="/flow/add" exact component={Flow} />
-        <Route path="/flow/:id/edit" exact component={Flow} />
-        <Route path="/group" exact component={GroupList} />
-        <Route path="/group/add" exact component={Group} />
-        <Route path="/group/:id/edit" exact component={Group} />
-        <Route path="/group/:id/contacts" exact component={GroupContact} />
-
-        <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
-
-        <Route path="/collection" exact component={CollectionList} />
-        <Route path="/collection/add" exact component={Collection} />
-        <Route path="/collection/:id/edit" exact component={Collection} />
-
-        <Route path="/chat" exact component={Chat} />
-        <Route path="/staff-management" exact component={StaffManagementList} />
-        <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
-        <Route path="/contact-profile/:id" exact component={ContactProfile} />
-        <Route path="/user-profile" exact component={UserProfile} />
-
-        <Route path="/myaccount" exact component={MyAccount} />
-
-        <Route path="/template" exact component={HSMPage} />
-        <Route path="/template/add" exact component={HSM} />
-        <Route path="/template/:id/edit" exact component={HSM} />
-
-        <Route path="/settings" exact component={SettingList} />
-        <Route path="/settings/organization" exact component={Organisation} />
-        <Route path="/settings/:type" exact component={Providers} />
-        <Route path="/blocked-contacts" exact component={BlockContactList} />
-
-        <Route
-          exact
-          path="/chat/:contactId"
-          component={({ match }: RouteComponentProps<{ contactId: any }>) => (
-            <Chat contactId={match.params.contactId} />
-          )}
-        />
-        <Route path="/" render={defaultRedirect} />
-      </Switch>
-    );
+    route = routeAdmin;
   }
 
   const loadingSpinner = <Loading />;
