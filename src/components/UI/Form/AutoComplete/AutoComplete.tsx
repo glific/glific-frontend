@@ -99,8 +99,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               }
               setSearchTerm('');
               onChange('');
-            }
-            if (asyncSearch && value.length === 0) {
+            } else if (asyncSearch && value.length === 0) {
               asyncValues.setValue([]);
             }
             if (onChange) {
