@@ -8,12 +8,49 @@ import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
 import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
+import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
+import { ReactComponent as RejectedIcon } from '../../../assets/images/icons/Template/Rejected.svg';
+import { ReactComponent as PendingIcon } from '../../../assets/images/icons/Template/Pending.svg';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
 
-const getStatus = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getStatus = (status: string) => {
+  let statusValue;
+  switch (status) {
+    case 'APPROVED':
+      statusValue = (
+        <>
+          <ApprovedIcon />
+          Approved
+        </>
+      );
+      break;
+    case 'PENDING':
+      statusValue = (
+        <>
+          <PendingIcon />
+          Pending
+        </>
+      );
+      break;
+
+    case 'REJECTED':
+      statusValue = (
+        <>
+          <RejectedIcon />
+          Rejected
+        </>
+      );
+      break;
+
+    default:
+      statusValue = status;
+  }
+
+  return <span className={styles.Status}>{statusValue}</span>;
+};
 
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
