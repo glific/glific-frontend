@@ -77,3 +77,16 @@
 .Button {
   margin-right: 24px !important;
 }
+
+.AttachmentFields {
+  display: flex;
+}
+
+.AttachmentFields > div:nth-child(1) {
+  width: 40%;
+  margin-right: 8px;
+}
+
+.AttachmentFields > div:nth-child(2) {
+  width: 60%;
+}

@@ -376,6 +376,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
+
+              if (field.groupFields) {
+                const subfields = field.groupFields.components.map((groupfield: any) => {
+                  return <Field key={groupfield.name} {...groupfield} />;
+                });
+                return (
+                  <div key={key} className={field.groupFields.className}>
+                    {subfields}
+                  </div>
+                );
+              }
               return (
                 <React.Fragment key={key}>
                   {field.label ? (

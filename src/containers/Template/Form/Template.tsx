@@ -19,6 +19,7 @@ import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoCompl
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import GET_LANGUAGES from '../../../graphql/queries/List';
+import styles from './Template.module.css';
 
 const validation = {
   language: Yup.object().nullable().required('Language is required.'),
@@ -65,25 +66,30 @@ const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
   return { id: option, label: option };
 });
 
-const attachmentField = [
-  {
-    component: AutoComplete,
-    name: 'type',
-    options,
-    optionLabel: 'label',
-    multiple: false,
-    textFieldProps: {
-      variant: 'outlined',
-      label: 'Attachment Type',
-    },
+const attachmentField = {
+  groupFields: {
+    components: [
+      {
+        component: AutoComplete,
+        name: 'type',
+        options,
+        optionLabel: 'label',
+        multiple: false,
+        textFieldProps: {
+          variant: 'outlined',
+          label: 'Attachment Type',
+        },
+      },
+      {
+        component: Input,
+        name: 'attachmentURL',
+        type: 'text',
+        placeholder: 'Attachment URL',
+      },
+    ],
+    className: styles.AttachmentFields,
   },
-  {
-    component: Input,
-    name: 'attachmentURL',
-    type: 'text',
-    placeholder: 'Attachment URL',
-  },
-];
+};
 
 const formIsActive = {
   component: Checkbox,
@@ -329,8 +335,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
   ];
 
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...formField, ...attachmentField]
-    : [...formFields, ...attachmentField];
+    ? [formIsActive, ...formFields, ...formField, ...attachmentField.groupFields.components]
+    : [...formFields, attachmentField];
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
