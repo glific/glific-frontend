@@ -61,18 +61,6 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
-export const getObject = (arr: any, data: any) => {
-  const result: any = [];
-  if (arr && data) {
-    arr.forEach((obj: any) => {
-      data.forEach((ID: any) => {
-        if (obj.id === ID) result.push(obj);
-      });
-    });
-  }
-  return result;
-};
-
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',

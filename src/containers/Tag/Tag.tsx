@@ -11,7 +11,8 @@ import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Select
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
-import { getObject, setVariables } from '../../common/constants';
+import { setVariables } from '../../common/constants';
+import { getObject } from '../../common/utils';
 
 export interface TagProps {
   match: any;

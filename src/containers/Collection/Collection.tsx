@@ -21,7 +21,8 @@ import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { getObject, setVariables } from '../../common/constants';
+import { setVariables } from '../../common/constants';
+import { getObject } from '../../common/utils';
 
 export interface CollectionProps {
   match?: any;
