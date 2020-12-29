@@ -28,6 +28,18 @@ const validation = {
       return original.getCurrentContent().getPlainText();
     })
     .required('Message is required.'),
+  type: Yup.object()
+    .nullable()
+    .when('attachmentURL', {
+      is: (val) => val && val !== '',
+      then: Yup.object().required('Type is required.'),
+    }),
+  attachmentURL: Yup.string()
+    .nullable()
+    .when('type', {
+      is: (val) => val && val.id,
+      then: Yup.string().required('Attachment URL is required.'),
+    }),
 };
 
 const HSMValidation = {
@@ -420,7 +432,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   };
 
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
-  const FormSchema = Yup.object().shape(validationObj);
+  const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);
 
   return (
     <FormLayout
