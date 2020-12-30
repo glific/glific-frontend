@@ -378,12 +378,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               const key = index;
 
               if (field.groupFields) {
-                const subfields = field.groupFields.components.map((groupfield: any) => {
+                const subFields = field.groupFields.components.map((groupfield: any) => {
                   return <Field key={groupfield.name} {...groupfield} />;
                 });
                 return (
                   <div key={key} className={field.groupFields.className}>
-                    {subfields}
+                    {subFields}
                   </div>
                 );
               }
