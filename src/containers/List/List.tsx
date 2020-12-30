@@ -166,7 +166,10 @@ export const List: React.SFC<ListProps> = ({
     });
   };
   let filter: any = {};
-  filter[searchParameter] = searchVal;
+
+  if (searchVal !== '') {
+    filter[searchParameter] = searchVal;
+  }
   filter = { ...filter, ...filters };
   const filterPayload = useCallback(() => {
     return {

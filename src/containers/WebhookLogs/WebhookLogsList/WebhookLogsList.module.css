@@ -1,0 +1,61 @@
+.TagIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.FilledTagIcon {
+  margin-right: 7px;
+  align-self: center;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: #073f24;
+  line-height: 1;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.LabelContainer {
+  display: flex;
+  height: fit-content;
+  align-items: baseline;
+  align-content: center;
+}
+
+.Label {
+  width: 40%;
+}
+
+.Description {
+  width: 30%;
+}
+
+.Keywords {
+  width: 30%;
+}
+
+.LastModified {
+  width: 185px;
+  padding-top: 12px;
+  color: #93a29b;
+}
+
+.Actions {
+  width: 20%;
+  justify-content: flex-end;
+  margin-left: auto;
+}
