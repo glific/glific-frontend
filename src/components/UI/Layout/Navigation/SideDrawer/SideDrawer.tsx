@@ -121,7 +121,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [fullOpen, setFullOpen] = useState(true);
-  const [staffManagementMenus, setStaffManagementMenus] = React.useState<any>([]);
+  const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
 
   // get menu for role
   const getMenus = () => {
