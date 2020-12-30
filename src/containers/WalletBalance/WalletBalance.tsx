@@ -24,7 +24,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   });
 
   const loading = (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="lodding">
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="loading">
       <div className={styles.WalletBalanceText}>
         <CircularProgress size={14} className={styles.Progress} />
       </div>

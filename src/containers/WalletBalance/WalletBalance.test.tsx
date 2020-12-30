@@ -42,8 +42,8 @@ describe('<WalletBalance />', () => {
     );
 
     // display initial loading
-    const lodding = screen.getByTestId('lodding');
-    expect(lodding).toBeInTheDocument();
+    const loading = screen.getByTestId('loading');
+    expect(loading).toBeInTheDocument();
 
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
