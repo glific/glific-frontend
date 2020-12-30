@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import WalletBalance from './WalletBalance';
+import { WalletBalance } from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import {
   walletBalanceHighQuery,

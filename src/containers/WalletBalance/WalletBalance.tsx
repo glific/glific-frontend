@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { CircularProgress } from '@material-ui/core';
 
@@ -10,16 +10,20 @@ import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from '../../graphql/queries/Organization';
 import PERIODIC_INFO_SUBSCRIPTION from '../../graphql/subscriptions/PeriodicInfo';
 
-export const WalletBalance: React.FC<{ fullOpen: any }> = (fullOpen) => {
+export interface WalletBalanceProps {
+  fullOpen: boolean;
+}
+
+export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
-  const [displayText, setDisplayText] = useState<any>();
+  const [displayBalance, setDisplayBalance] = useState<any>(null);
 
   // get gupshup balance
   const { data: balanceData, subscribeToMore } = useQuery(BSPBALANCE, {
     variables,
   });
 
-  const lodding = (
+  const loading = (
     <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="lodding">
       <div className={styles.WalletBalanceText}>
         <CircularProgress size={14} className={styles.Progress} />
@@ -27,43 +31,42 @@ export const WalletBalance: React.FC<{ fullOpen: any }> = (fullOpen) => {
     </div>
   );
 
-  const updateBody = useCallback((balance) => {
-    if (balance.balance > 1) {
-      return fullOpen.fullOpen ? (
+  const updateBody = () => {
+    if (displayBalance > 1) {
+      return fullOpen ? (
         <div className={styles.WalletBalanceText}>
           <SelectWhiteIcon className={styles.Icon} />
-          Wallet balance is okay: ${balance.balance}
+          Wallet balance is okay: ${displayBalance}
         </div>
       ) : (
-        <div className={styles.WalletBalanceText}>${balance.balance}</div>
+        <div className={styles.WalletBalanceText}>${displayBalance}</div>
       );
     }
+
     return (
       <Tooltip title="You will be unable to send messages without recharge" placement="top-start">
-        {fullOpen.fullOpen ? (
+        {fullOpen ? (
           <div className={styles.WalletBalanceText}>
             <WhiteIcon className={styles.Icon} />
-            Wallet balance is low: ${balance.balance}
+            Wallet balance is low: ${displayBalance}
           </div>
         ) : (
-          <div className={styles.WalletBalanceText}>${balance.balance}</div>
+          <div className={styles.WalletBalanceText}>${displayBalance}</div>
         )}
       </Tooltip>
     );
-  }, []);
+  };
 
-  const updateBalance = useCallback((balance) => {
-    return (
-      <div
-        className={`${styles.WalletBalance} ${
-          balance && balance.balance > 1 ? styles.WalletBalanceHigh : styles.WalletBalanceLow
-        }`}
-        data-testid="WalletBalance"
-      >
-        {updateBody(balance)}
-      </div>
-    );
-  }, []);
+  const updateBalance = (
+    <div
+      className={`${styles.WalletBalance} ${
+        displayBalance && displayBalance > 1 ? styles.WalletBalanceHigh : styles.WalletBalanceLow
+      }`}
+      data-testid="WalletBalance"
+    >
+      {displayBalance ? updateBody() : null}
+    </div>
+  );
 
   // use subscription to update balance
   useEffect(() => {
@@ -72,7 +75,7 @@ export const WalletBalance: React.FC<{ fullOpen: any }> = (fullOpen) => {
       variables,
       updateQuery: (prev, { subscriptionData }) => {
         const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-        setDisplayText(updateBalance(balance));
+        setDisplayBalance(balance.balance);
       },
     });
   }, [subscribeToMore]);
@@ -81,11 +84,13 @@ export const WalletBalance: React.FC<{ fullOpen: any }> = (fullOpen) => {
   useEffect(() => {
     if (balanceData) {
       const balance = JSON.parse(balanceData.bspbalance.value);
-      setDisplayText(updateBalance(balance));
+      setDisplayBalance(balance.balance);
     }
   }, [balanceData]);
 
-  return displayText || lodding;
-};
+  if (!balanceData) {
+    return loading;
+  }
 
-export default WalletBalance;
+  return updateBalance;
+};
