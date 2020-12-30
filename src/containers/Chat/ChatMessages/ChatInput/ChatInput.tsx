@@ -345,11 +345,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
-          readOnly={selectedTemplate !== undefined}
+          readOnly={selectedTemplate !== undefined && selectedTemplate.isHsm}
         />
 
         {selectedTemplate ? (
-          <Tooltip title="Clear template" placement="top">
+          <Tooltip title="Remove message" placement="top">
             <IconButton
               className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
               onClick={() => {

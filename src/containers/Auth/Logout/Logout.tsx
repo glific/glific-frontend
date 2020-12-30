@@ -7,6 +7,7 @@ import { resetRole } from '../../../context/role';
 import { SessionContext } from '../../../context/session';
 import { clearAuthSession, clearUserSession, getAuthSession } from '../../../services/AuthService';
 import { USER_SESSION } from '../../../config';
+import { clearListSession } from '../../../services/ListService';
 
 export interface LogoutProps {}
 
@@ -34,6 +35,9 @@ export const Logout: React.SFC<LogoutProps> = () => {
 
     // clear role & access permissions
     resetRole();
+
+    // clear local storage list sort session
+    clearListSession();
 
     // clear apollo cache
     client.clearStore();

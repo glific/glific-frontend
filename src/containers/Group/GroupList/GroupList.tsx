@@ -225,7 +225,9 @@ export const GroupList: React.SFC<GroupListProps> = () => {
         asyncSearch
         selectedOptions={groupContacts}
         onChange={(value: any) => {
-          setContactSearchTerm(value);
+          if (typeof value === 'string') {
+            setContactSearchTerm(value);
+          }
         }}
       />
     );
