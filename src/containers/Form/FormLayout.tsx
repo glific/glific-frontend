@@ -376,7 +376,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
-
+              // check if there are fields that are grouped together
               if (field.groupFields) {
                 const subFields = field.groupFields.components.map((groupfield: any) => {
                   return <Field key={groupfield.name} {...groupfield} />;
