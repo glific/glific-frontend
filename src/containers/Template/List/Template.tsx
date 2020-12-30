@@ -138,8 +138,11 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
+  let defaultSortBy;
+
   if (isHSM) {
     additionalAction = [];
+    defaultSortBy = 'STATUS';
   }
 
   return (
@@ -156,6 +159,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
         query: FILTER_TEMPLATES,
         variables: setVariables({ term: '' }),
       }}
+      defaultSortBy={defaultSortBy}
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}

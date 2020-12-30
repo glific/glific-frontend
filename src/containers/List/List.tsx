@@ -68,6 +68,7 @@ export interface ListProps {
   restrictedAction?: any;
   collapseOpen?: any;
   collapseRow?: any;
+  defaultSortBy?: string | null;
 }
 
 interface TableVals {
@@ -108,6 +109,7 @@ export const List: React.SFC<ListProps> = ({
   restrictedAction,
   collapseOpen,
   collapseRow,
+  defaultSortBy,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -118,6 +120,12 @@ export const List: React.SFC<ListProps> = ({
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  let defaultColumnSort = columnNames[0];
+
+  // check if there is a default column set for sorting
+  if (defaultSortBy) {
+    defaultColumnSort = defaultSortBy;
+  }
 
   // get the last sort value from local storage if exist else set the default column and order
   const getSortCriteria = (listItemNameValue: string, columnName: string = '') => {
@@ -148,7 +156,7 @@ export const List: React.SFC<ListProps> = ({
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getSortCriteria(listItemName, columnNames[0]),
+    sortCol: getSortCriteria(listItemName, defaultColumnSort),
     sortDirection: getSortCriteria(listItemName),
   });
 
@@ -405,7 +413,7 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getSortCriteria(listItemName, columnNames[0]),
+      sortCol: getSortCriteria(listItemName, defaultColumnSort),
       sortDirection: getSortCriteria(listItemName),
     });
   };
