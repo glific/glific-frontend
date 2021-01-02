@@ -13,6 +13,7 @@ import { setErrorMessage } from '../../common/notification';
 import { getUserRole } from '../../context/role';
 import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
+import CollectionConversations from './CollectionConversations/CollectionConversations';
 
 export interface ChatProps {
   contactId: number;
@@ -80,7 +81,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       );
       contactSelectedClass = `${styles.SelectedTab}`;
     } else {
-      listingContent = <div>Group Listing</div>;
+      listingContent = <CollectionConversations />;
       groupSelectedClass = `${styles.SelectedTab}`;
     }
 
