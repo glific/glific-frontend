@@ -69,6 +69,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     };
 
     let listingContent;
+    let contactSelectedClass = '';
+    let groupSelectedClass = '';
     if (selectedTab === 'contacts') {
       listingContent = (
         <ChatConversations
@@ -76,8 +78,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           simulator={{ simulatorId, setShowSimulator }}
         />
       );
+      contactSelectedClass = `${styles.SelectedTab}`;
     } else {
       listingContent = <div>Group Listing</div>;
+      groupSelectedClass = `${styles.SelectedTab}`;
     }
 
     chatInterface = (
@@ -101,7 +105,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
                 onClick={() => handleTabClick('contacts')}
                 onKeyDown={() => handleTabClick('contacts')}
               >
-                <Typography className={styles.TitleText} variant="h6">
+                <Typography className={`${styles.TitleText} ${contactSelectedClass}`} variant="h6">
                   Contacts
                 </Typography>
               </div>
@@ -111,7 +115,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
                 onClick={() => handleTabClick('groups')}
                 onKeyDown={() => handleTabClick('groups')}
               >
-                <Typography className={styles.TitleText} variant="h6">
+                <Typography className={`${styles.TitleText} ${groupSelectedClass}`} variant="h6">
                   Groups
                 </Typography>
               </div>
