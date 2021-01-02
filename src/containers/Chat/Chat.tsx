@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { setErrorMessage } from '../../common/notification';
 import { getUserRole } from '../../context/role';
 import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
+import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 
 export interface ChatProps {
   contactId: number;
@@ -87,23 +88,36 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
             simulatorId={simulatorId}
           />
         </div>
+
         <div className={styles.ChatConversations}>
-          <div>
-            <div
-              aria-hidden="true"
-              onClick={() => handleTabClick('contacts')}
-              onKeyDown={() => handleTabClick('contacts')}
-            >
-              Contacts
+          <Toolbar className={styles.ToolBar}>
+            <div className={styles.IconBackground}>
+              <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
             </div>
-            <div
-              aria-hidden="true"
-              onClick={() => handleTabClick('groups')}
-              onKeyDown={() => handleTabClick('groups')}
-            >
-              Groups
+            <div className={styles.TabContainer}>
+              <div
+                className={styles.Title}
+                aria-hidden="true"
+                onClick={() => handleTabClick('contacts')}
+                onKeyDown={() => handleTabClick('contacts')}
+              >
+                <Typography className={styles.TitleText} variant="h6">
+                  Contacts
+                </Typography>
+              </div>
+              <div
+                className={styles.Title}
+                aria-hidden="true"
+                onClick={() => handleTabClick('groups')}
+                onKeyDown={() => handleTabClick('groups')}
+              >
+                <Typography className={styles.TitleText} variant="h6">
+                  Groups
+                </Typography>
+              </div>
             </div>
-          </div>
+          </Toolbar>
+
           <div>{listingContent}</div>
         </div>
       </>

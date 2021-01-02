@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Toolbar, Container, IconButton } from '@material-ui/core';
+import { Container, IconButton } from '@material-ui/core';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';
 
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
-import selectedChatIcon from '../../../assets/images/icons/Chat/Selected.svg';
 import ConversationList from './ConversationList/ConversationList';
 import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
 import { Button } from '../../../components/UI/Form/Button/Button';
@@ -216,16 +215,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   return (
     <Container className={styles.ChatConversations} disableGutters>
-      <Toolbar className={styles.ToolBar}>
-        <div className={styles.IconBackground}>
-          <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
-        </div>
-        <div className={styles.Title}>
-          <Typography className={styles.TitleText} variant="h6">
-            Chats
-          </Typography>
-        </div>
-      </Toolbar>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
         refetchData={{ savedSearchCollection }}
