@@ -20,6 +20,7 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('contacts');
   let simulatorId: string | null = null;
 
   // default queryvariables
@@ -61,6 +62,23 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     if (simulatedContact.length > 0) {
       simulatorId = simulatedContact[0].contact.id;
     }
+
+    const handleTabClick = (tab: string) => {
+      setSelectedTab(tab);
+    };
+
+    let listingContent;
+    if (selectedTab === 'contacts') {
+      listingContent = (
+        <ChatConversations
+          contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
+          simulator={{ simulatorId, setShowSimulator }}
+        />
+      );
+    } else {
+      listingContent = <div>Group Listing</div>;
+    }
+
     chatInterface = (
       <>
         <div className={styles.ChatMessages}>
@@ -70,10 +88,23 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
           />
         </div>
         <div className={styles.ChatConversations}>
-          <ChatConversations
-            contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
-            simulator={{ simulatorId, setShowSimulator }}
-          />
+          <div>
+            <div
+              aria-hidden="true"
+              onClick={() => handleTabClick('contacts')}
+              onKeyDown={() => handleTabClick('contacts')}
+            >
+              Contacts
+            </div>
+            <div
+              aria-hidden="true"
+              onClick={() => handleTabClick('groups')}
+              onKeyDown={() => handleTabClick('groups')}
+            >
+              Groups
+            </div>
+          </div>
+          <div>{listingContent}</div>
         </div>
       </>
     );
