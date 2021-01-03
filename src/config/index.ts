@@ -5,9 +5,11 @@ const appName = envVariables.REACT_APP_APPLICATION_NAME;
 const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
 const PROTOCOL = window.location.protocol;
 const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
-const HOSTNAME = API_PREFIX
-  ? `${API_PREFIX}.${window.location.hostname}`
-  : window.location.hostname;
+// added support for localhost, need to update it after backend fixes
+const HOSTNAME =
+  API_PREFIX && window.location.hostname !== 'localhost'
+    ? `${API_PREFIX}.${window.location.hostname}`
+    : window.location.hostname;
 
 const GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
