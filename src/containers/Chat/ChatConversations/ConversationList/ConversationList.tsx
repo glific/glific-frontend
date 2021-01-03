@@ -19,11 +19,13 @@ import { updateConversations } from '../../../../services/ChatService';
 
 interface ConversationListProps {
   searchVal: string;
-  selectedContactId: number;
-  setSelectedContactId: (i: number) => void;
-  savedSearchCriteria: string | null;
+  selectedContactId?: number;
+  setSelectedContactId?: (i: number) => void;
+  savedSearchCriteria?: string | null;
   searchParam?: any;
   searchMode: boolean;
+  selectedGroupId?: number;
+  setSelectedGroupId?: (i: number) => void;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
