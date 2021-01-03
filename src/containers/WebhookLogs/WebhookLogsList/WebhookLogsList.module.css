@@ -20,6 +20,7 @@
 }
 
 .TableText {
+  cursor: pointer;
   margin-right: 23px;
   text-align: left;
   padding: 12px 0px;
@@ -37,15 +38,23 @@
 }
 
 .Label {
-  width: 40%;
+  width: 200px;
 }
 
 .Description {
-  width: 30%;
+  width: 300px;
 }
 
 .Keywords {
-  width: 30%;
+  width: 300px;
+}
+.PopoverText {
+  max-width: 400px;
+  overflow-x: auto;
+  max-height: 500px;
+  font-size: 16px;
+  color: #073f24;
+  padding: 10px;
 }
 
 .LastModified {
@@ -55,7 +64,5 @@
 }
 
 .Actions {
-  width: 20%;
-  justify-content: flex-end;
-  margin-left: auto;
+  width: 300px;
 }
