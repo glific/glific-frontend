@@ -13,7 +13,6 @@ import { setErrorMessage } from '../../common/notification';
 import { getUserRole } from '../../context/role';
 import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
-import CollectionConversations from './CollectionConversations/CollectionConversations';
 
 export interface ChatProps {
   contactId: number;
@@ -81,7 +80,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
       );
       contactSelectedClass = `${styles.SelectedTab}`;
     } else {
-      listingContent = <CollectionConversations />;
+      listingContent = (
+        <ChatConversations
+          contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
+          simulator={{ simulatorId, setShowSimulator }}
+        />
+      );
       groupSelectedClass = `${styles.SelectedTab}`;
     }
 
