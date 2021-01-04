@@ -64,8 +64,8 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(text).then(() => {
+  const copyToClipboard = (copiedText: any) => {
+    navigator.clipboard.writeText(copiedText).then(() => {
       setNotification(client, 'Copied to clipboard');
     });
   };
@@ -85,7 +85,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
         title: 'Copy text',
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard();
+          copyToClipboard(mytext);
         },
       },
       {
@@ -148,7 +148,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>
       <div className={styles.PopoverActions}>
-        <span onClick={() => copyToClipboard()} aria-hidden="true">
+        <span onClick={() => copyToClipboard(text)} aria-hidden="true">
           <img src={CopyIcon} alt="copy" />
           Copy text
         </span>
