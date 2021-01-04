@@ -70,14 +70,14 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
     });
   };
 
-  const getCroppedText = (mytext: string, isUrl: boolean = false) => {
-    if (!mytext) {
+  const getCroppedText = (croppedtext: string, isUrl: boolean = false) => {
+    if (!croppedtext) {
       return <div className={styles.TableText}>NULL</div>;
     }
 
-    let newtext = mytext;
+    let newtext = croppedtext;
     if (isUrl) {
-      newtext = JSON.stringify(mytext);
+      newtext = JSON.stringify(croppedtext);
     }
 
     const Menus = [
@@ -85,7 +85,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
         title: 'Copy text',
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(mytext);
+          copyToClipboard(croppedtext);
         },
       },
       {
