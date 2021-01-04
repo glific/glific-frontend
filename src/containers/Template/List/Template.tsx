@@ -44,6 +44,9 @@ const getStatus = (status: string) => {
         </>
       );
       break;
+    case 'SANDBOX_REQUESTED':
+      statusValue = 'Sandbox requested';
+      break;
 
     default:
       statusValue = status;
