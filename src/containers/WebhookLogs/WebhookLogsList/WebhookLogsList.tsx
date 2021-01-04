@@ -124,7 +124,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
     updatedAt: getTime(updatedAt),
     url: getCroppedText(url, true),
     statusCode: getText(statusCode),
-    error: getCroppedText(error),
+    error: getCroppedText(error, true),
     method: getText(method),
     requestHeaders: getCroppedText(requestHeaders),
     requestJson: getCroppedText(requestJson),
