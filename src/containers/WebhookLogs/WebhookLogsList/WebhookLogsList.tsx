@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Popover } from '@material-ui/core';
+import { useApolloClient } from '@apollo/client';
+import moment from 'moment';
 
 import styles from './WebhookLogsList.module.css';
 import { DELETE_TAG } from '../../../graphql/mutations/Tag';
@@ -9,17 +11,16 @@ import CopyIcon from '../../../assets/images/icons/Copy.png';
 import { List } from '../../List/List';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from '../../../graphql/queries/WebhookLogs';
 import Menu from '../../../components/UI/Menu/Menu';
+import { setNotification } from '../../../common/notification';
+import { Button } from '../../../components/UI/Form/Button/Button';
 
 export interface TagListProps {}
 
-// const getLabel = (label: string, colorCode: string = '#0C976D') => (
-//   <div className={styles.LabelContainer}>
-//     <FilledTagIcon className={styles.FilledTagIcon} stroke={colorCode} />
-//     <p className={styles.LabelText} style={{ color: colorCode }}>
-//       {label}
-//     </p>
-//   </div>
-// );
+const getTime = (time: string) => (
+  <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
+);
+
+const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
 const columnNames = [
   'TIME',
@@ -33,14 +34,14 @@ const columnNames = [
 ];
 const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [
-  styles.Label,
-  styles.Label,
-  styles.Label,
-  styles.Label,
-  styles.Label,
-  styles.Description,
-  styles.Keywords,
-  styles.Actions,
+  styles.Time,
+  styles.Url,
+  styles.StatusCode,
+  styles.Error,
+  styles.Method,
+  styles.Json,
+  styles.Json,
+  styles.Json,
 ];
 const tagIcon = <TagIcon className={styles.TagIcon} />;
 
@@ -51,45 +52,48 @@ const queries = {
 };
 
 const restrictedAction = () => {
-  return { delete: false, edit: true };
+  return { delete: false, edit: false };
 };
 
 export const WebhookLogsList: React.SFC<TagListProps> = () => {
+  const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
-  const [text, setText] = useState('');
+  const [text, setText] = useState<any>();
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const getDescription = (mytext: string) => {
-    const finalText = mytext ? mytext.toString() : 'NULL';
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      setNotification(client, 'Copied to clipboard');
+    });
+  };
+
+  const getCroppedText = (mytext: string, isUrl: boolean = false) => {
+    if (!mytext) {
+      return <div className={styles.TableText}>NULL</div>;
+    }
+
+    let newtext = mytext;
+    if (isUrl) {
+      newtext = JSON.stringify(mytext);
+    }
 
     const Menus = [
       {
         title: 'Copy text',
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          // const dummy = document.createElement('input');
-          // document.body.appendChild(dummy);
-
-          // dummy.setAttribute('value', finalText);
-          // console.log(dummy);
-          // dummy.focus();
-          // dummy.setSelectionRange(0, 10);
-          // document.execCommand('copy');
-          // document.body.removeChild(dummy);
-          navigator.clipboard.writeText('dd').then(()=>{
-            
-          })
+          copyToClipboard();
         },
       },
       {
         title: 'View',
         icon: <ViewIcon />,
         onClick: () => {
-          setText(finalText);
+          setText(newtext);
           setOpen(true);
         },
       },
@@ -97,12 +101,12 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
     return (
       <Menu menus={Menus}>
         <div
-          className={styles.TableText}
+          className={styles.CroppedText}
           onClick={handleClick}
           onKeyDown={handleClick}
           aria-hidden="true"
         >
-          {finalText.length > 25 ? `${finalText.slice(0, 25)}...` : finalText}
+          {newtext.length > 25 ? `${newtext.slice(0, 25)}...` : newtext}
         </div>
       </Menu>
     );
@@ -118,14 +122,14 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
     error,
     updatedAt,
   }: any) => ({
-    updatedAt: getDescription(updatedAt),
-    url: getDescription(url),
-    statusCode: getDescription(statusCode),
-    error: getDescription(error),
-    method: getDescription(method),
-    requestHeaders: getDescription(requestHeaders),
-    requestJson: getDescription(requestJson),
-    responseJson: getDescription(responseJson),
+    updatedAt: getTime(updatedAt),
+    url: getCroppedText(url, true),
+    statusCode: getText(statusCode),
+    error: getCroppedText(error),
+    method: getText(method),
+    requestHeaders: getCroppedText(requestHeaders),
+    requestJson: getCroppedText(requestJson),
+    responseJson: getCroppedText(responseJson),
   });
 
   const handleClose = () => {
@@ -142,7 +146,16 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
   const popover = (
     <Popover open={open} anchorEl={anchorEl} onClose={handleClose}>
       <div className={styles.PopoverText}>
-        <pre>{JSON.stringify(text, null, 2)}</pre>
+        <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
+      </div>
+      <div className={styles.PopoverActions}>
+        <span onClick={() => copyToClipboard()} aria-hidden="true">
+          <img src={CopyIcon} alt="copy" />
+          Copy text
+        </span>
+        <Button variant="contained" color="default" onClick={handleClose}>
+          Done
+        </Button>
       </div>
     </Popover>
   );

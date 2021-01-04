@@ -33,6 +33,7 @@
 .TableContainer {
   margin: 14px 24px;
   margin-bottom: 10px;
+  overflow: auto;
 }
 
 .TableFooter {
@@ -76,5 +77,3 @@
   margin-bottom: 12px;
   line-height: 1;
 }
-
-

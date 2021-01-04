@@ -74,6 +74,14 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     STATUS: 'status',
     BENEFICIARY: 'name',
     'PHONE NO': 'phone',
+    TIME: 'updated_at',
+    URL: 'url',
+    'STATUS CODE': 'status_code',
+    ERROR: 'error',
+    METHOD: 'method',
+    'REQUEST HEADER': 'request_headers',
+    'REQUEST JSON': 'request_json',
+    'RESPONSE JSON': 'response_json',
   };
 
   if (listName === 'Collection') {
