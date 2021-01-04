@@ -16,10 +16,11 @@ import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 
 export interface ChatProps {
-  contactId: number;
+  contactId?: number;
+  groupId?: number;
 }
 
-export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
+export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   const [selectedTab, setSelectedTab] = useState('contacts');
@@ -27,6 +28,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
 
   // default queryvariables
   const queryVariables = SEARCH_QUERY_VARIABLES;
+
+  if (groupId) {
+    queryVariables.filter = { searchGroup: true };
+  }
 
   // fetch the conversations from cache
   const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
@@ -46,7 +51,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     return null;
   }
 
-  if (!contactId && data.search.length !== 0) {
+  if (!contactId && !groupId && data.search.length !== 0) {
     return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }
 

@@ -44,6 +44,13 @@ const routeStaff = (
         <Chat contactId={match.params.contactId} />
       )}
     />
+    <Route
+      exact
+      path="/chat/group/:groupId"
+      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
+        <Chat groupId={match.params.groupId} />
+      )}
+    />
     <Route path="/group" exact component={GroupList} />
     <Route path="/group/:id/contacts" exact component={GroupContact} />
     <Route path="/user-profile" exact component={UserProfile} />
