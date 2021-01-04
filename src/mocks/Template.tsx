@@ -137,7 +137,6 @@ export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
       query: GET_TEMPLATES_COUNT,
       variables: {
         filter: {
-          label: '',
           isHsm: isHsm,
         },
       },

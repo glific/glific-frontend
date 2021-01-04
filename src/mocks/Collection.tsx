@@ -37,7 +37,7 @@ export const countCollectionsQuery = {
   request: {
     query: COLLECTION_QUERY_COUNT,
     variables: {
-      filter: { label: '' },
+      filter: {},
     },
   },
   result: {
@@ -63,7 +63,7 @@ const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number,
 
 export const getCollectionsQuery = [
   {
-    request: collectionQuery(COLLECTION_QUERY, { label: '' }, 10, 0, 'ASC'),
+    request: collectionQuery(COLLECTION_QUERY, {}, 10, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [

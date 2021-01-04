@@ -238,12 +238,12 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     <Menu
       menus={[
         {
-          icon: <ChatDarkIcon className={styles.Icon} />,
+          icon: <ChatDarkIcon />,
           title: 'Send a message',
           onClick: () => setSendMessageDialogShow(true),
         },
         {
-          icon: <FlowDarkIcon className={styles.Icon} />,
+          icon: <FlowDarkIcon />,
           title: 'Start a flow',
           onClick: setFlowDialog,
         },
