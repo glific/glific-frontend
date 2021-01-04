@@ -82,7 +82,7 @@ export const getGroupUsersQuery = {
 export const countGroupQuery = {
   request: {
     query: GET_GROUPS_COUNT,
-    variables: { filter: { label: '' } },
+    variables: { filter: {} },
   },
   result: {
     data: {
@@ -95,9 +95,7 @@ export const filterGroupQuery = {
   request: {
     query: FILTER_GROUPS,
     variables: {
-      filter: {
-        label: '',
-      },
+      filter: {},
       opts: {
         limit: 50,
         offset: 0,

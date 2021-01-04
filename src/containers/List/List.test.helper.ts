@@ -24,9 +24,7 @@ const count = {
   request: {
     query: GET_TAGS_COUNT,
     variables: {
-      filter: {
-        label: '',
-      },
+      filter: {},
     },
   },
   result: {
@@ -40,9 +38,7 @@ const filter = {
   request: {
     query: FILTER_TAGS,
     variables: {
-      filter: {
-        label: '',
-      },
+      filter: {},
       opts: {
         limit: 50,
         offset: 0,

@@ -129,7 +129,7 @@ export const updateContactStatusQuery = {
 export const countGroupContactsQuery = {
   request: {
     query: GET_CONTACT_COUNT,
-    variables: { filter: { name: '', includeGroups: 1 } },
+    variables: { filter: { includeGroups: 1 } },
   },
   result: {
     data: {
@@ -159,7 +159,7 @@ export const getGroupContactsQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
     variables: {
-      filter: { name: '', includeGroups: 1 },
+      filter: { includeGroups: 1 },
       opts: {
         limit: 50,
         offset: 0,

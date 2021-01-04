@@ -81,9 +81,7 @@ export const getFlowCountQuery = {
   request: {
     query: GET_FLOW_COUNT,
     variables: {
-      filter: {
-        name: '',
-      },
+      filter: {},
     },
   },
 
