@@ -21,7 +21,7 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
-  contactId: number | string;
+  contactId?: number | string;
   simulatorId?: string | null;
 }
 
@@ -100,7 +100,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
           conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
             const conversationObj = conversation;
             // If the contact is present in the cache
-            if (conversationObj.contact.id === contactId.toString()) {
+            if (conversationObj.contact.id === contactId?.toString()) {
               isContactCached = true;
               conversationObj.messages = [
                 ...conversationObj.messages,
@@ -313,7 +313,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const loadMoreMessages = () => {
     getSearchQuery({
       variables: {
-        filter: { id: contactId.toString() },
+        filter: { id: contactId?.toString() },
         messageOpts: { limit: 50, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
@@ -385,9 +385,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     );
   }
 
-  return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
-      {dialogBox}
+  let topChatBar;
+  if (contactId) {
+    topChatBar = (
       <ContactBar
         contactName={
           conversationInfo.contact.name
@@ -401,6 +401,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactBspStatus={conversationInfo.contact.bspStatus}
         handleAction={handleChatClearedAction}
       />
+    );
+  }
+
+  return (
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+      {dialogBox}
+      {topChatBar}
       {messageListContainer}
       <ChatInput
         handleHeightChange={handleHeightChange}

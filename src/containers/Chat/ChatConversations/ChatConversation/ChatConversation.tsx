@@ -21,7 +21,7 @@ export interface ChatConversationProps {
   contactBspStatus: string;
   selected: boolean;
   senderLastMessage: any;
-  onClick: (i: any) => void;
+  onClick?: (i: any) => void;
   index: number;
   lastMessage: {
     id: number;
@@ -151,10 +151,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
       component={Link}
       selected={selected}
-      onClick={() => {
-        props.onClick(index);
-        setSearchOffset(client, props.messageNumber);
-      }}
+      // TODO: Need to fix
+      // onClick={() => {
+      //   props.onClick(index);
+      //   setSearchOffset(client, props.messageNumber);
+      // }}
       to={`/chat/${contactId}${msgID}`}
     >
       <div>

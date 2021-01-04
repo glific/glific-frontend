@@ -208,6 +208,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     });
   };
 
+  // TODO: Need to fix
+  setSearchHeight();
+
   let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
@@ -232,10 +235,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={contact.id}
           selected={props.selectedContactId === contact.id}
-          onClick={() => {
-            setSearchHeight();
-            props.setSelectedContactId(contact.id);
-          }}
+          // TODO: Need to fix
+          // onClick={() => {
+          //   setSearchHeight();
+          //   props.setSelectedContactId(contact.id);
+          // }}
           index={index}
           contactId={contact.id}
           contactName={contact.name || contact.maskedPhone}
@@ -289,10 +293,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={key}
           selected={props.selectedContactId === conversation.contact.id}
-          onClick={() => {
-            setSearchHeight();
-            props.setSelectedContactId(conversation.contact.id);
-          }}
+          // TODO: Need to fix
+          // onClick={() => {
+          //   setSearchHeight();
+          //   props.setSelectedContactId(conversation.contact.id);
+          // }}
           index={index}
           contactId={conversation.contact.id}
           contactName={

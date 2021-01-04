@@ -15,7 +15,7 @@ import { advanceSearch } from '../../../context/role';
 import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
-  contactId: number;
+  contactId?: number;
   simulator: any;
 }
 
@@ -44,7 +44,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   }, [offset.data]);
 
   useEffect(() => {
-    setSelectedContactId(contactId.toString());
+    setSelectedContactId(contactId?.toString());
   }, [contactId]);
 
   useEffect(() => {
