@@ -20,6 +20,15 @@ const List = [
   },
 ];
 
+const heading = (
+  <Typography variant="h5" className={styles.Title}>
+    <IconButton disabled className={styles.Icon}>
+      {SettingIcon}
+    </IconButton>
+    Settings
+  </Typography>
+);
+
 export const SettingList: React.SFC = () => {
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
@@ -30,15 +39,6 @@ export const SettingList: React.SFC = () => {
     // create setting list of Organisation & providers
     CardList = [...List, ...providerData.providers];
   }
-
-  const heading = (
-    <Typography variant="h5" className={styles.Title}>
-      <IconButton disabled className={styles.Icon}>
-        {SettingIcon}
-      </IconButton>
-      Settings
-    </Typography>
-  );
 
   return (
     <>

@@ -11,6 +11,38 @@ import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.sv
 
 export interface RegistrationProps {}
 
+const formFields = [
+  {
+    component: Input,
+    name: 'userName',
+    type: 'text',
+    placeholder: 'Your username',
+  },
+  {
+    component: PhoneInput,
+    name: 'phone',
+    type: 'phone',
+    placeholder: 'Your phone number',
+    helperText: 'Please enter a phone number.',
+  },
+  {
+    component: Input,
+    name: 'password',
+    type: 'password',
+    placeholder: 'Password',
+  },
+];
+
+const FormSchema = Yup.object().shape({
+  userName: Yup.string().required('Input required'),
+  phone: Yup.string().required('Input required').min(11, 'Please enter a valid phone number.'),
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters long.')
+    .required('Input required'),
+});
+
+const initialFormValues = { userName: '', phone: '', password: '' };
+
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
@@ -30,38 +62,6 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       />
     );
   }
-
-  const formFields = [
-    {
-      component: Input,
-      name: 'userName',
-      type: 'text',
-      placeholder: 'Your username',
-    },
-    {
-      component: PhoneInput,
-      name: 'phone',
-      type: 'phone',
-      placeholder: 'Your phone number',
-      helperText: 'Please enter a phone number.',
-    },
-    {
-      component: Input,
-      name: 'password',
-      type: 'password',
-      placeholder: 'Password',
-    },
-  ];
-
-  const FormSchema = Yup.object().shape({
-    userName: Yup.string().required('Input required'),
-    phone: Yup.string().required('Input required').min(11, 'Please enter a valid phone number.'),
-    password: Yup.string()
-      .min(8, 'Password must be at least 8 characters long.')
-      .required('Input required'),
-  });
-
-  const initialFormValues = { userName: '', phone: '', password: '' };
 
   const onSubmitRegistration = (values: any) => {
     sendOTP(values.phone, 'true')

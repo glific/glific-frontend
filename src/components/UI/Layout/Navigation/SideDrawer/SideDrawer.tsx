@@ -32,7 +32,7 @@ import {
   getRoleBasedAccess,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
-import WalletBalance from '../../../../../containers/WalletBalance/WalletBalance';
+import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
 
 export interface SideDrawerProps {}
 
@@ -120,8 +120,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
   const location = useLocation();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [fullOpen, setFullOpen] = React.useState(true);
-  const [staffManagementMenus, setStaffManagementMenus] = React.useState<any>([]);
+  const [fullOpen, setFullOpen] = useState(true);
+  const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
 
   // get menu for role
   const getMenus = () => {

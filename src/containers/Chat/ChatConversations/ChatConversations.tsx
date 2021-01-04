@@ -167,35 +167,26 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const toolTip = 'The collection will be updated as per new filters';
 
-  const btnUpdate = savedSearchCriteriaId ? (
-    <Tooltip title={toolTip} placement="top">
-      <Button
-        color="primary"
-        variant="outlined"
-        className={styles.BackgroundWhite}
-        onClick={(e: any) => {
-          handleClick(e, 'saveSearch', 'update');
-        }}
-      >
-        Update
-      </Button>
-    </Tooltip>
-  ) : null;
+  const buildButton = (toolTipTitle: string, type: string, label: string) => {
+    return (
+      <Tooltip title={toolTipTitle} placement="top">
+        <Button
+          color="primary"
+          variant="outlined"
+          className={styles.BackgroundWhite}
+          onClick={(e: any) => {
+            handleClick(e, 'saveSearch', type);
+          }}
+        >
+          {label}
+        </Button>
+      </Tooltip>
+    );
+  };
 
-  const btnCreate = (
-    <Tooltip title="Create a new collection" placement="top">
-      <Button
-        color="primary"
-        variant="outlined"
-        className={styles.BackgroundWhite}
-        onClick={(e: any) => {
-          handleClick(e, 'saveSearch', 'new');
-        }}
-      >
-        Create new
-      </Button>
-    </Tooltip>
-  );
+  const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
+
+  const btnCreate = buildButton('Create a new collection', 'new', 'Create new');
 
   const btnCancel = (
     <IconButton

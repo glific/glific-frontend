@@ -12,6 +12,7 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { ColorPicker } from '../../components/UI/ColorPicker/ColorPicker';
 import { setVariables } from '../../common/constants';
+import { getObject } from '../../common/utils';
 
 export interface TagProps {
   match: any;
@@ -43,18 +44,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [languageId, setLanguageId] = useState('');
 
   const states = { label, description, keywords, colorCode, parentId };
-
-  const getObject = (arr: any, data: any) => {
-    const result: any = [];
-    if (arr && data) {
-      arr.forEach((obj: any) => {
-        data.forEach((ID: any) => {
-          if (obj.id === ID) result.push(obj);
-        });
-      });
-    }
-    return result;
-  };
 
   const { data } = useQuery(GET_TAGS, {
     variables: setVariables(),
