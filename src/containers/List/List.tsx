@@ -31,7 +31,7 @@ export interface ListProps {
   countQuery: DocumentNode;
   listItem: string;
   filterItemsQuery: DocumentNode;
-  deleteItemQuery: DocumentNode;
+  deleteItemQuery: DocumentNode | null;
   listItemName: string;
   dialogMessage: string;
   pageLink: string;
@@ -219,20 +219,23 @@ export const List: React.SFC<ListProps> = ({
     }
   }, [userRole]);
 
-  // Make a new count request for a new count of the # of rows from this query in the back-end.
+  let deleteItem: any;
 
-  const [deleteItem] = useMutation(deleteItemQuery, {
-    onCompleted: () => {
-      checkUserRole();
-      refetchCount();
-    },
-    refetchQueries: () => {
-      if (refetchQueries) {
-        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      }
-      return [{ query: filterItemsQuery, variables: filterPayload() }];
-    },
-  });
+  // Make a new count request for a new count of the # of rows from this query in the back-end.
+  if (deleteItemQuery) {
+    [deleteItem] = useMutation(deleteItemQuery, {
+      onCompleted: () => {
+        checkUserRole();
+        refetchCount();
+      },
+      refetchQueries: () => {
+        if (refetchQueries) {
+          return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
+        }
+        return [{ query: filterItemsQuery, variables: filterPayload() }];
+      },
+    });
+  }
 
   const showDialogHandler = (id: any, label: string) => {
     setDeleteItemName(label);

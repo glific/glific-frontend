@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Table,
   TableHead,
@@ -205,9 +205,6 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     collapseRow,
   } = props;
 
-  // Creates the rows for the table
-  const [tableFooterStyle, setTableFooterStyle] = useState<string | undefined>(undefined);
-
   const rows = createRows(data, columnStyles, showCheckbox, collapseOpen, collapseRow);
   const tableHead = tableHeadColumns(
     columnNames,
@@ -220,16 +217,6 @@ export const Pager: React.SFC<PagerProps> = (props) => {
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);
 
-  useEffect(() => {
-    const table = document.querySelector('.MuiTable-root');
-    const html = document.querySelector('html');
-    if (table && html) {
-      if (table.scrollHeight < html.clientHeight - 142) {
-        setTableFooterStyle(styles.TableFooter);
-      }
-    }
-  }, []);
-
   return (
     <div className={styles.TableContainer}>
       <Table className={styles.Table} data-testid="table">
@@ -237,7 +224,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
           {tableHead}
         </TableHead>
         <TableBody data-testid="tableBody">{rows}</TableBody>
-        <TableFooter className={tableFooterStyle} data-testid="tableFooter">
+        <TableFooter className={styles.TableFooter} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>
       </Table>

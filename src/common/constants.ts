@@ -89,9 +89,5 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     backendTerms.DESCRIPTION = 'label';
   }
 
-  if (listName === 'webhookLog') {
-    backendTerms.TITLE = 'url';
-  }
-
   return backendTerms[columnName];
 };

@@ -1,11 +1,6 @@
-.TagIcon {
+.WebhookLogIcon {
   width: 29px;
   height: 29px;
-}
-
-.FilledTagIcon {
-  margin-right: 7px;
-  align-self: center;
 }
 
 .LabelText {
@@ -74,15 +69,7 @@
   padding: 10px;
 }
 
-.LastModified {
-  width: 185px;
-  padding-top: 12px;
-  color: #93a29b;
-}
 
-.Actions {
-  width: 300px;
-}
 
 .PopoverActions {
   font-size: 16px;

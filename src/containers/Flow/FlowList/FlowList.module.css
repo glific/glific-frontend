@@ -43,3 +43,18 @@
   padding-top: 12px;
   color: #93a29b;
 }
+
+.Webhook {
+  color: #119656;
+  position: fixed;
+  bottom: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  left: 262px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.Webhook svg {
+  margin-right: 8px;
+}

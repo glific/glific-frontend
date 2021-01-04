@@ -4,8 +4,7 @@ import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
 
 import styles from './WebhookLogsList.module.css';
-import { DELETE_TAG } from '../../../graphql/mutations/Tag';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Dark.svg';
+import { ReactComponent as WebhookLogIcon } from '../../../assets/images/icons/Webhook/WebhookDark.svg';
 import { ReactComponent as ViewIcon } from '../../../assets/images/icons/View.svg';
 import CopyIcon from '../../../assets/images/icons/Copy.png';
 import { List } from '../../List/List';
@@ -43,12 +42,12 @@ const columnStyles = [
   styles.Json,
   styles.Json,
 ];
-const tagIcon = <TagIcon className={styles.TagIcon} />;
+const tagIcon = <WebhookLogIcon className={styles.WebhookLogIcon} />;
 
 const queries = {
   countQuery: GET_WEBHOOK_LOGS_COUNT,
   filterItemsQuery: FILTER_WEBHOOK_LOGS,
-  deleteItemQuery: DELETE_TAG,
+  deleteItemQuery: null,
 };
 
 const restrictedAction = () => {
