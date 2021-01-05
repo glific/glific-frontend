@@ -42,6 +42,7 @@ const contactSearchQueryBlocked = {
     query: CONTACT_SEARCH_QUERY,
     variables: {
       filter: {
+        name: '',
         status: 'BLOCKED',
       },
       opts: {
