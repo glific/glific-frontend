@@ -6,6 +6,7 @@
   width: 40%;
   margin-right: 10px;
   margin-left: 20px;
+  word-break: break-word;
 }
 
 .Actions {
@@ -36,13 +37,13 @@
   margin: 0;
 }
 
-.Status{
+.Status {
   composes: TableText;
   display: flex;
   align-content: center;
 }
-.Status svg{
- margin-right: 8px;
+.Status svg {
+  margin-right: 8px;
 }
 
 .LastModified {
