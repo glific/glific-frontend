@@ -7,13 +7,13 @@
   display: block;
 }
 
-:global(.SpeedSend_AttachmentFields__Ei2xh > div:nth-child(4)) {
+.AttachmentFields > div:nth-child(4) {
   width: 39%;
   margin-right: 9px;
   display: inline-block !important;
 }
 
-:global(.SpeedSend_AttachmentFields__Ei2xh > div:nth-child(5)) {
+.AttachmentFields > div:nth-child(5) {
   display: inline-block !important;
   width: 59% !important;
 }
