@@ -63,11 +63,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
       </Typography>
     );
   } else {
-    const simulatedContact = data.search.filter(
-      (item: any) => item.contact.phone === SIMULATOR_CONTACT
-    );
-    if (simulatedContact.length > 0) {
-      simulatorId = simulatedContact[0].contact.id;
+    if (contactId) {
+      const simulatedContact = data.search.filter(
+        (item: any) => item.contact.phone === SIMULATOR_CONTACT
+      );
+      if (simulatedContact.length > 0) {
+        simulatorId = simulatedContact[0].contact.id;
+      }
     }
 
     const handleTabClick = (tab: string) => {

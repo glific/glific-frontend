@@ -23,9 +23,10 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 export interface ChatMessagesProps {
   contactId?: number | string;
   simulatorId?: string | null;
+  groupId?: number | string;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId, groupId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
 
