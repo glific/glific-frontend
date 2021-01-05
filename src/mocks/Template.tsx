@@ -23,7 +23,7 @@ export const TEMPLATE_MOCKS = [
       body: 'Hey there',
       shortcode: 'test',
       isReserved: true,
-      status: null,
+      status: 'APPROVED',
       isHsm: true,
       isActive: true,
       updatedAt: '2020-12-01T18:00:32Z',
