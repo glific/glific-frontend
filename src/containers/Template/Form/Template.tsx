@@ -18,7 +18,7 @@ import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
-import GET_LANGUAGES from '../../../graphql/queries/List';
+import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 
 const validation = {
   language: Yup.object().nullable().required('Language is required.'),
@@ -187,7 +187,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   };
 
-  const { data: languages } = useQuery(GET_LANGUAGES, {
+  const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
@@ -215,8 +215,13 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (languages) {
-      const lang = languages ? languages.languages : [];
+      const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
+      // sort languages by their name
+      lang.sort((first: any, second: any) => {
+        return first.label > second.label ? 1 : -1;
+      });
       setLanguageOptions(lang);
+      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
   }, [languages]);
 
