@@ -38,7 +38,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showLoading, setShowLoading] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
-  console.log('selectedGroupId', selectedGroupId);
+
   // check if there is a previous scroll height
   useEffect(() => {
     if (scrollHeight.data && scrollHeight.data.height) {
@@ -229,12 +229,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       contact = conversation.contact;
     }
 
+    let selectedRecord = false;
+    if (props.selectedContactId === contact.id) {
+      selectedRecord = true;
+    }
+    console.log('selected group', selectedGroupId);
     return (
       <>
         {index === 0 ? header : null}
         <ChatConversation
           key={contact.id}
-          selected={props.selectedContactId === contact.id}
+          selected={selectedRecord}
           // TODO: Need to fix
           // onClick={() => {
           //   setSearchHeight();
@@ -289,10 +294,16 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         [lastMessage] = conversation.messages;
       }
       const key = index;
+      console.log('conversation', conversation);
+      let selectedContactRecord = false;
+      if (conversation.contact && props.selectedContactId === conversation.contact.id) {
+        selectedContactRecord = true;
+      }
+
       return (
         <ChatConversation
           key={key}
-          selected={props.selectedContactId === conversation.contact.id}
+          selected={selectedContactRecord}
           // TODO: Need to fix
           // onClick={() => {
           //   setSearchHeight();
