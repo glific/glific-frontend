@@ -85,9 +85,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
           simulator={{ simulatorId, setShowSimulator }}
         />
       );
+
+      // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
     } else if (groupId) {
       listingContent = <CollectionConversations groupId={groupId} />;
+
+      // set class for groups tab
       groupSelectedClass = `${styles.SelectedTab}`;
     }
 

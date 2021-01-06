@@ -48,7 +48,7 @@ const CollectionConversations: React.SFC<CollectionConversationsProps> = (props)
         searchMode={false}
         searchParam={searchParam}
         selectedGroupId={selectedGroupId}
-        setSelectedContactId={(i: number) => {
+        setSelectedGroupId={(i: number) => {
           setSelectedGroupId(i);
         }}
       />

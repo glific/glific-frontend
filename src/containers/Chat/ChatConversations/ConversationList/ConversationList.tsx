@@ -31,13 +31,17 @@ interface ConversationListProps {
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const { selectedContactId, searchVal, searchParam, savedSearchCriteria, selectedGroupId } = props;
   const client = useApolloClient();
-  const queryVariables = SEARCH_QUERY_VARIABLES;
   const [loadingOffset, setLoadingOffset] = useState(50);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
+
+  const queryVariables = SEARCH_QUERY_VARIABLES;
+  if (selectedGroupId) {
+    queryVariables.filter = { searchGroup: true };
+  }
 
   // check if there is a previous scroll height
   useEffect(() => {
@@ -70,6 +74,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       fetchPolicy: 'cache-only',
     }
   );
+
   const filterVariables = () => {
     if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
       const variables = JSON.parse(props.savedSearchCriteria);
@@ -296,8 +301,22 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       const key = index;
       console.log('conversation', conversation);
       let selectedContactRecord = false;
+      let entityId: any;
+      let displayName = '';
+      let senderLastMessage = '';
+      let contactStatus = '';
+      let contactBspStatus = '';
       if (conversation.contact && props.selectedContactId === conversation.contact.id) {
         selectedContactRecord = true;
+        entityId = conversation.contact.id;
+        if (conversation.contact.name) {
+          displayName = conversation.contact.name;
+        } else {
+          displayName = conversation.contact.maskedPhone;
+        }
+        senderLastMessage = conversation.contact.lastMessageAt;
+        contactStatus = conversation.contact.status;
+        contactBspStatus = conversation.contact.bspStatus;
       }
 
       return (
@@ -310,14 +329,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           //   props.setSelectedContactId(conversation.contact.id);
           // }}
           index={index}
-          contactId={conversation.contact.id}
-          contactName={
-            conversation.contact.name ? conversation.contact.name : conversation.contact.maskedPhone
-          }
+          contactId={entityId}
+          contactName={displayName}
           lastMessage={lastMessage}
-          senderLastMessage={conversation.contact.lastMessageAt}
-          contactStatus={conversation.contact.status}
-          contactBspStatus={conversation.contact.bspStatus}
+          senderLastMessage={senderLastMessage}
+          contactStatus={contactStatus}
+          contactBspStatus={contactBspStatus}
         />
       );
     });

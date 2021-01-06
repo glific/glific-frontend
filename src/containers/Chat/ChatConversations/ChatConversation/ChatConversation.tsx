@@ -17,8 +17,8 @@ import { MessageType } from '../MessageType/MessageType';
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   selected: boolean;
   senderLastMessage: any;
   onClick?: (i: any) => void;
