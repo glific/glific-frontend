@@ -109,6 +109,13 @@ const routeAdmin = (
         <Chat contactId={match.params.contactId} />
       )}
     />
+    <Route
+      exact
+      path="/chat/group/:groupId"
+      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
+        <Chat groupId={match.params.groupId} />
+      )}
+    />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );

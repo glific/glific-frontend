@@ -29,7 +29,7 @@ interface ConversationListProps {
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
-  const { selectedContactId, searchVal, searchParam, savedSearchCriteria } = props;
+  const { selectedContactId, searchVal, searchParam, savedSearchCriteria, selectedGroupId } = props;
   const client = useApolloClient();
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const [loadingOffset, setLoadingOffset] = useState(50);
@@ -38,7 +38,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showLoading, setShowLoading] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
-
+  console.log('selectedGroupId', selectedGroupId);
   // check if there is a previous scroll height
   useEffect(() => {
     if (scrollHeight.data && scrollHeight.data.height) {

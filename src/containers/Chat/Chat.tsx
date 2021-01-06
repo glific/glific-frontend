@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -51,8 +51,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
+  // TODOS: Need to redirect to first contact or first group based on the tab selection
   if (!contactId && !groupId && data.search.length !== 0) {
-    return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
+    // return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }
 
   let chatInterface: any;
@@ -79,7 +80,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     let listingContent;
     let contactSelectedClass = '';
     let groupSelectedClass = '';
-    if (selectedTab === 'contacts') {
+    if (contactId && selectedTab === 'contacts') {
       listingContent = (
         <ChatConversations
           contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
@@ -87,8 +88,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
         />
       );
       contactSelectedClass = `${styles.SelectedTab}`;
-    } else {
-      listingContent = <CollectionConversations />;
+    } else if (groupId) {
+      listingContent = <CollectionConversations groupId={groupId} />;
       groupSelectedClass = `${styles.SelectedTab}`;
     }
 
@@ -142,7 +143,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {simulatorAccess ? (
+      {simulatorAccess && !groupId ? (
         <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
       ) : null}
     </Paper>
