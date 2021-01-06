@@ -32,14 +32,16 @@
 
 .TableContainer {
   margin: 14px 24px;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
+  overflow: auto;
+  
 }
 
 .TableFooter {
-  position: absolute;
+  position: fixed;
   display: flex !important;
   justify-content: flex-end !important;
-  width: 80%;
+  width: calc(100% - 243px);
   background: #fafafa;
   bottom: 0px;
   right: 4px;
@@ -52,7 +54,7 @@
 }
 
 .FooterRow > div {
-  min-height: 72px;
+  min-height: 55px;
 }
 
 .TableText {
@@ -76,5 +78,3 @@
   margin-bottom: 12px;
   line-height: 1;
 }
-
-

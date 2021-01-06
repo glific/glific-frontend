@@ -6,7 +6,6 @@ const contactSearchQuery = {
     query: CONTACT_SEARCH_QUERY,
     variables: {
       filter: {
-        name: '',
         status: 'BLOCKED',
       },
       opts: {
@@ -79,7 +78,6 @@ const contactCountQuery = {
     query: GET_CONTACT_COUNT,
     variables: {
       filter: {
-        name: '',
         status: 'BLOCKED',
       },
       opts: { limit: 50, offset: 0, order: 'ASC' },
@@ -105,7 +103,6 @@ export const CONTACT_LIST_MOCKS = [
       query: GET_CONTACT_COUNT,
       variables: {
         filter: {
-          name: '',
           status: 'BLOCKED',
         },
       },

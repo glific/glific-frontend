@@ -30,6 +30,7 @@ import { getUserRole } from '../../context/role';
 import { Organisation } from '../../containers/SettingList/Organisation/Organisation';
 import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
@@ -99,6 +100,7 @@ const routeAdmin = (
     <Route path="/settings/organization" exact component={Organisation} />
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
+    <Route path="/webhook-logs" exact component={WebhookLogsList} />
 
     <Route
       exact

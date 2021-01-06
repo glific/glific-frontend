@@ -6,6 +6,7 @@
   width: 40%;
   margin-right: 10px;
   margin-left: 20px;
+  word-break: break-word;
 }
 
 .Actions {
@@ -34,6 +35,15 @@
   line-height: 1.25;
   white-space: pre-line;
   margin: 0;
+}
+
+.Status {
+  composes: TableText;
+  display: flex;
+  align-content: center;
+}
+.Status svg {
+  margin-right: 8px;
 }
 
 .LastModified {

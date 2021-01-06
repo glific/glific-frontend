@@ -94,7 +94,22 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }, []);
 
   // mutation to update the contact groups
-  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS);
+  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
+    onCompleted: (result: any) => {
+      const { numberDeleted, contactGroups } = result.updateContactGroups;
+      const numberAdded = contactGroups.length;
+      let notification = `Added to ${numberAdded} group${numberAdded === 1 ? '' : 's'}`;
+      if (numberDeleted > 0 && numberAdded > 0) {
+        notification = `Added to ${numberDeleted} group${
+          numberDeleted === 1 ? '' : 's  and'
+        } removed from ${numberAdded} group${numberAdded === 1 ? '' : 's '}`;
+      } else if (numberDeleted > 0) {
+        notification = `Removed from ${numberDeleted} group${numberDeleted === 1 ? '' : 's'}`;
+      }
+      setNotification(client, notification);
+    },
+    refetchQueries: [{ query: GET_CONTACT_GROUPS, variables: { id: contactId } }],
+  });
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
@@ -170,12 +185,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           },
         },
       });
-    }
-
-    if (finalSelectedGroups.length > 0) {
-      setNotification(client, 'Added to group succesfully');
-    } else if (finalRemovedGroups.length > 0) {
-      setNotification(client, 'Removed from group succesfully');
     }
 
     setShowGroupDialog(false);

@@ -18,6 +18,7 @@ export const UPDATE_CONTACT_GROUPS = gql`
         id
         value
       }
+      numberDeleted
     }
   }
 `;

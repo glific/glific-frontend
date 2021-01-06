@@ -16,6 +16,7 @@ export const FILTER_TEMPLATES = gql`
       status
       isHsm
       isReserved
+      isActive
       updatedAt
       translations
       type

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Rejected</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Rejected">
+            <g id="Icon/Select" fill="#FBE8E8">
+                <circle id="Oval" cx="9" cy="9" r="9"></circle>
+            </g>
+            <line x1="6" y1="11.939697" x2="11.939697" y2="6" id="Line" stroke="#DD1F1F" stroke-width="2" stroke-linecap="round"></line>
+            <line x1="6" y1="6" x2="11.939697" y2="11.939697" id="Line-2" stroke="#DD1F1F" stroke-width="2" stroke-linecap="round"></line>
+        </g>
+    </g>
+</svg>

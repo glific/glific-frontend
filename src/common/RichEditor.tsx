@@ -56,7 +56,7 @@ const textConversion = (text: any, style: any, offset: number, symbol: string) =
 // Convert Draft.js to WhatsApp message format.
 export const convertToWhatsApp = (editorState: any) => {
   const markdownString: any = convertToRaw(editorState.getCurrentContent());
-  let finalString = '';
+  let finalString: any = [];
 
   finalString = markdownString.blocks.map((block: any) => {
     const { text } = block;
@@ -80,7 +80,7 @@ export const convertToWhatsApp = (editorState: any) => {
   });
 
   // let's return 0 element as map() always returns an array
-  return finalString[0];
+  return finalString.join();
 };
 
 // Converts WhatsApp message formatting into HTML elements.

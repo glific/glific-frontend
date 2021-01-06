@@ -110,9 +110,7 @@ export const getTagsCountQuery = {
   request: {
     query: GET_TAGS_COUNT,
     variables: {
-      filter: {
-        label: '',
-      },
+      filter: {},
     },
   },
   result: {

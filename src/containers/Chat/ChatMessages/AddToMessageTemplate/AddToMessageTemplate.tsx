@@ -27,6 +27,9 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
   const [required, setRequired] = useState(false);
 
   const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION, {
+    onCompleted: () => {
+      setNotification(client, 'Message has been successfully added to speed sends.');
+    },
     refetchQueries: [
       {
         query: FILTER_TEMPLATES,
@@ -83,7 +86,6 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
         },
       });
       changeDisplay(false);
-      setNotification(client, 'Message has been successfully added to speed sends.');
       setMessageTemplate(null);
     }
   };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import WalletBalance from './WalletBalance';
+import { WalletBalance } from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import {
   walletBalanceHighQuery,
@@ -20,8 +20,8 @@ describe('<WalletBalance />', () => {
       </MockedProvider>
     );
     // display initial loading
-    const lodding = screen.getByTestId('lodding');
-    expect(lodding).toBeInTheDocument();
+    const loading = screen.getByTestId('loading');
+    expect(loading).toBeInTheDocument();
 
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
@@ -42,8 +42,8 @@ describe('<WalletBalance />', () => {
     );
 
     // display initial loading
-    const lodding = screen.getByTestId('lodding');
-    expect(lodding).toBeInTheDocument();
+    const loading = screen.getByTestId('loading');
+    expect(loading).toBeInTheDocument();
 
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');

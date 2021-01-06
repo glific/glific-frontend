@@ -28,7 +28,6 @@ const speedSend = {
     query: FILTER_TEMPLATES,
     variables: {
       filter: {
-        label: '',
         isHsm: false,
       },
 
@@ -71,7 +70,7 @@ const speedSendOrderWith = {
   request: {
     query: FILTER_TEMPLATES,
     variables: {
-      filter: { label: '', isHsm: false },
+      filter: { isHsm: false },
       opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'label' },
     },
   },
@@ -110,7 +109,6 @@ const HSMTemplate = {
     query: FILTER_TEMPLATES,
     variables: {
       filter: {
-        label: '',
         isHsm: true,
       },
 

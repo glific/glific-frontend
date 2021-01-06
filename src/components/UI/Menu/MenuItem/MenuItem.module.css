@@ -1,3 +1,7 @@
 .Danger {
   color: #dd1f1f !important;
 }
+
+.Spacing {
+  margin-left: 12px;
+}
