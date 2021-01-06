@@ -98,6 +98,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
           <ChatMessages
             contactId={showSimulator && simulatorId ? simulatorId : contactId}
             simulatorId={simulatorId}
+            groupId={groupId}
           />
         </div>
 
