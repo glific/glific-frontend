@@ -98,21 +98,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     onCompleted: (result: any) => {
       const { numberDeleted, contactGroups } = result.updateContactGroups;
       const numberAdded = contactGroups.length;
+      let notification = `Added to ${numberAdded} group${numberAdded === 1 ? '' : 's'}`;
       if (numberDeleted > 0 && numberAdded > 0) {
-        setNotification(
-          client,
-          `Added to ${numberDeleted} group${
-            numberDeleted === 1 ? '' : 's  and'
-          } removed from ${numberAdded} group${numberAdded === 1 ? '' : 's '}`
-        );
+        notification = `Added to ${numberDeleted} group${
+          numberDeleted === 1 ? '' : 's  and'
+        } removed from ${numberAdded} group${numberAdded === 1 ? '' : 's '}`;
       } else if (numberDeleted > 0) {
-        setNotification(
-          client,
-          `Removed from ${numberDeleted} group${numberDeleted === 1 ? '' : 's'}`
-        );
-      } else {
-        setNotification(client, `Added to ${numberAdded} group${numberAdded === 1 ? '' : 's'}`);
+        notification = `Removed from ${numberDeleted} group${numberDeleted === 1 ? '' : 's'}`;
       }
+      setNotification(client, notification);
     },
     refetchQueries: [{ query: GET_CONTACT_GROUPS, variables: { id: contactId } }],
   });
