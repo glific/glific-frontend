@@ -20,9 +20,9 @@ export const sideDrawerMenus = [
     icon: 'flow',
   },
   {
-    title: 'Collections',
-    path: '/collection',
-    icon: 'collection',
+    title: 'Searches',
+    path: '/search',
+    icon: 'search',
   },
   {
     title: 'Templates',

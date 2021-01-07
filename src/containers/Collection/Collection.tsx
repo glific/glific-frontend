@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 import styles from './Collection.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
+import { ReactComponent as Collectionicon } from '../../assets/images/icons/Searches/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
 import {
