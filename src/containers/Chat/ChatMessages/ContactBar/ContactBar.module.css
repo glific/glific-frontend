@@ -5,6 +5,15 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+@media only screen and (max-width: 600px) {
+  .ContactBar {
+    border-bottom: unset;
+  }
+  .Container {
+    display: none;
+  }
+}
+
 .ContactName {
   line-height: 56px;
 }

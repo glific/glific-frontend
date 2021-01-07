@@ -125,6 +125,12 @@
   z-index: 100;
 }
 
+@media only screen and (max-width: 600px) {
+  .QuickSend {
+    font-size: 12px;
+  }
+}
+
 .QuickSendSelected {
   background-color: #119656;
 }

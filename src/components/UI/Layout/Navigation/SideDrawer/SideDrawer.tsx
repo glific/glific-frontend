@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
+      [theme.breakpoints.down('md')]: {
+        display: 'none',
+      },
     },
     navClose: {
       width: '72px',
