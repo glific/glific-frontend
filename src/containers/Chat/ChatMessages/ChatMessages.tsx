@@ -72,6 +72,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   // get the conversations stored from the cache
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
+  if (groupId) {
+    queryVariables.filter = { searchGroup: true };
+  }
+
   const {
     loading: conversationLoad,
     error: conversationError,
