@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_COLLECTION = gql`
+export const CREATE_SEARCH = gql`
   mutation createSavedSearch($input: SavedSearchInput!) {
     createSavedSearch(input: $input) {
       savedSearch {
@@ -18,7 +18,7 @@ export const CREATE_COLLECTION = gql`
   }
 `;
 
-export const UPDATE_COLLECTION = gql`
+export const UPDATE_SEARCH = gql`
   mutation updateSavedSearch($id: ID!, $input: SavedSearchInput!) {
     updateSavedSearch(id: $id, input: $input) {
       savedSearch {
@@ -36,7 +36,7 @@ export const UPDATE_COLLECTION = gql`
   }
 `;
 
-export const DELETE_COLLECTION = gql`
+export const DELETE_SEARCH = gql`
   mutation deleteSavedSearch($id: ID!) {
     deleteSavedSearch(id: $id) {
       errors {

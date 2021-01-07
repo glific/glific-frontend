@@ -10,11 +10,7 @@ import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Searchicon } from '../../assets/images/icons/Search/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
-import {
-  CREATE_COLLECTION,
-  UPDATE_COLLECTION,
-  DELETE_COLLECTION,
-} from '../../graphql/mutations/Collection';
+import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
@@ -46,9 +42,9 @@ const searchIcon = <Searchicon className={styles.Searchicon} />;
 
 const queries = {
   getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
-  deleteItemQuery: DELETE_COLLECTION,
+  createItemQuery: CREATE_SEARCH,
+  updateItemQuery: UPDATE_SEARCH,
+  deleteItemQuery: DELETE_SEARCH,
 };
 
 export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }) => {

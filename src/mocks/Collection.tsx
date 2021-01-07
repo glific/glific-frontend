@@ -1,4 +1,4 @@
-import { CREATE_COLLECTION } from '../graphql/mutations/Collection';
+import { CREATE_SEARCH } from '../graphql/mutations/Search';
 import {
   COLLECTION_QUERY,
   COLLECTION_QUERY_COUNT,
@@ -7,7 +7,7 @@ import {
 
 export const createCollectionQuery = {
   request: {
-    query: CREATE_COLLECTION,
+    query: CREATE_SEARCH,
     variables: {
       input: {
         label: 'new Collection description',

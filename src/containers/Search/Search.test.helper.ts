@@ -1,9 +1,5 @@
 import { GET_COLLECTION } from '../../graphql/queries/Collection';
-import {
-  CREATE_COLLECTION,
-  DELETE_COLLECTION,
-  UPDATE_COLLECTION,
-} from '../../graphql/mutations/Collection';
+import { CREATE_SEARCH, DELETE_SEARCH, UPDATE_SEARCH } from '../../graphql/mutations/Search';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { FILTER_TAGS_NAME, GET_TAGS } from '../../graphql/queries/Tag';
@@ -19,7 +15,7 @@ import {
 import { setVariables } from '../../common/constants';
 
 export const listItemProps = {
-  deleteItemQuery: DELETE_COLLECTION,
+  deleteItemQuery: DELETE_SEARCH,
   states: {
     label: 'important',
     description: 'important label',
@@ -39,8 +35,8 @@ export const listItemProps = {
   redirectionLink: 'collection',
   listItem: 'collection',
   getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
+  createItemQuery: CREATE_SEARCH,
+  updateItemQuery: UPDATE_SEARCH,
   icon: null,
 };
 
