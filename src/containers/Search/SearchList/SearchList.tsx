@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './SearchList.module.css';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Searches/Dark.svg';
+import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Dark.svg';
 import { List } from '../../List/List';
 import { COLLECTION_QUERY, COLLECTION_QUERY_COUNT } from '../../../graphql/queries/Collection';
 import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';

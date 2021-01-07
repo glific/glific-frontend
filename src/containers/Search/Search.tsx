@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 import styles from './Search.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as Searchicon } from '../../assets/images/icons/Searches/Selected.svg';
+import { ReactComponent as Searchicon } from '../../assets/images/icons/Search/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
 import {
@@ -343,7 +343,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       heading = (
         <>
           <Typography variant="h5" className={styles.Title}>
-            Save search to collections
+            Save Search
           </Typography>
         </>
       );

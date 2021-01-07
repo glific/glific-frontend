@@ -18,6 +18,6 @@ test('should load the collection list', async () => {
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Collections')).toBeInTheDocument();
+    expect(getByText('Searches')).toBeInTheDocument();
   });
 });
