@@ -75,7 +75,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   );
 
-  const filterVariables = () => {
+  const filterVariables = (groupId: any) => {
     if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
       const variables = JSON.parse(props.savedSearchCriteria);
       if (props.searchVal) variables.filter.term = props.searchVal;
@@ -83,6 +83,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     const filter: any = {};
+
+    if (groupId) {
+      filter.searchGroup = true;
+    }
+
     if (props.searchVal) {
       filter.term = props.searchVal;
     }
@@ -183,12 +188,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     // Use multi search when has search value
     if (searchVal !== '' && Object.keys(searchParam).length === 0) {
+      console.log('multi search - calling filterSearch');
       getFilterSearch({
         variables: filterSearch(),
       });
     } else {
+      console.log('calling filterVariables');
       getFilterConvos({
-        variables: filterVariables(),
+        variables: filterVariables(selectedGroupId),
       });
     }
   }, [searchVal, searchParam, savedSearchCriteria]);
@@ -230,10 +237,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
     let contact = conversation;
+    const entityType = 'contact';
     if (conversation.contact) {
       contact = conversation.contact;
     }
-
+    console.log('Inside buildChatConversation');
     let selectedRecord = false;
     if (props.selectedContactId === contact.id) {
       selectedRecord = true;
@@ -250,6 +258,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           //   setSearchHeight();
           //   props.setSelectedContactId(contact.id);
           // }}
+          entityType={entityType}
           index={index}
           contactId={contact.id}
           contactName={contact.name || contact.maskedPhone}
@@ -292,6 +301,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
+    console.log('conversations =====', conversations);
+
     // TODO: Need to check why test is not returing correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
@@ -299,13 +310,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         [lastMessage] = conversation.messages;
       }
       const key = index;
-      console.log('conversation', conversation);
+
       let selectedContactRecord = false;
       let entityId: any;
       let displayName = '';
       let senderLastMessage = '';
       let contactStatus = '';
       let contactBspStatus = '';
+      let entityType = 'contact';
       if (conversation.contact && props.selectedContactId === conversation.contact.id) {
         selectedContactRecord = true;
         entityId = conversation.contact.id;
@@ -317,6 +329,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         senderLastMessage = conversation.contact.lastMessageAt;
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
+      } else if (conversation.group) {
+        entityId = conversation.group.id;
+        displayName = conversation.group.label;
+        entityType = 'group';
       }
 
       return (
@@ -330,6 +346,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           // }}
           index={index}
           contactId={entityId}
+          entityType={entityType}
           contactName={displayName}
           lastMessage={lastMessage}
           senderLastMessage={senderLastMessage}
@@ -345,6 +362,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
+    console.log('Inside load more');
     loadMoreConversations({
       variables: {
         contactOpts: {

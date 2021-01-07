@@ -21,6 +21,7 @@ export interface ChatConversationProps {
   contactBspStatus?: string;
   selected: boolean;
   senderLastMessage: any;
+  entityType: string;
   onClick?: (i: any) => void;
   index: number;
   lastMessage: {
@@ -73,6 +74,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     senderLastMessage,
     contactStatus,
     contactBspStatus,
+    entityType,
   } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
@@ -143,6 +145,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const msgID = searchMode ? `/#search${lastMessage.id}` : '';
 
+  let redirectURL = `/chat/${contactId}${msgID}`;
+  if (entityType === 'group') {
+    redirectURL = `/chat/group/${contactId}${msgID}`;
+  }
+
   return (
     <ListItem
       data-testid="list"
@@ -152,11 +159,12 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       // TODO: Need to fix
-      // onClick={() => {
-      //   props.onClick(index);
-      //   setSearchOffset(client, props.messageNumber);
-      // }}
-      to={`/chat/${contactId}${msgID}`}
+      onClick={() => {
+        // props.onClick(index);
+        console.log(index);
+        setSearchOffset(client, props.messageNumber);
+      }}
+      to={redirectURL}
     >
       <div>
         <div className={chatBubble.join(' ')} />
