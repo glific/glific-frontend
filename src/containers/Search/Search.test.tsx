@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { Collection } from './Collection';
-import { LIST_ITEM_MOCKS } from './Collection.test.helper';
+import { Collection } from './Search';
+import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 

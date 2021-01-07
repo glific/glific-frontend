@@ -10,7 +10,7 @@ import ConversationList from './ConversationList/ConversationList';
 import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { Collection } from '../../Search/Collection';
+import { Search } from '../../Search/Search';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 import { advanceSearch } from '../../../context/role';
 import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
@@ -130,7 +130,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   if (dialog) {
     const match = { params: collectionMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
     let collection = (
-      <Collection
+      <Search
         match={match}
         type="saveSearch"
         search={search}
@@ -142,7 +142,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
     if (dialogType === 'search')
       collection = (
-        <Collection
+        <Search
           match={match}
           type="search"
           search={search}

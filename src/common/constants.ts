@@ -84,7 +84,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     'RESPONSE JSON': 'response_json',
   };
 
-  if (listName === 'Collection') {
+  if (listName === 'Search') {
     backendTerms.TITLE = 'shortcode';
     backendTerms.DESCRIPTION = 'label';
   }
