@@ -1,11 +1,11 @@
 import React from 'react';
-import styles from './CollectionList.module.css';
-import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Searches/Dark.svg';
+import styles from './SearchList.module.css';
+import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Searches/Dark.svg';
 import { List } from '../../List/List';
 import { COLLECTION_QUERY, COLLECTION_QUERY_COUNT } from '../../../graphql/queries/Collection';
 import { DELETE_COLLECTION } from '../../../graphql/mutations/Collection';
 
-export interface CollectionListProps {}
+export interface SearchListProps {}
 
 const getShortcode = (shortcode: string) => <p className={styles.LabelText}>{shortcode}</p>;
 const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
@@ -17,9 +17,9 @@ const getColumns = ({ shortcode, label }: any) => ({
 
 const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
 const dialogMessage =
-  'This action will remove all the conversations that were linked to this collection and remove it as an option to filter your chat screen.';
+  'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.';
 const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
-const collectionIcon = <CollectionIcon className={styles.Icon} />;
+const searchIcon = <SearchIcon className={styles.Icon} />;
 
 const queries = {
   countQuery: COLLECTION_QUERY_COUNT,
@@ -33,14 +33,14 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const CollectionList: React.SFC<CollectionListProps> = () => (
+export const SearchList: React.SFC<SearchListProps> = () => (
   <List
-    title="Collections"
+    title="Searches"
     listItem="savedSearches"
-    listItemName="Collection"
-    pageLink="collection"
-    button={{ show: true, label: '+ CREATE COLLECTION' }}
-    listIcon={collectionIcon}
+    listItemName="Search"
+    pageLink="search"
+    button={{ show: true, label: '+ CREATE SEARCH' }}
+    listIcon={searchIcon}
     dialogMessage={dialogMessage}
     {...queries}
     {...columnAttributes}
