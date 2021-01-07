@@ -1,9 +1,5 @@
 import { CREATE_SEARCH } from '../graphql/mutations/Search';
-import {
-  COLLECTION_QUERY,
-  COLLECTION_QUERY_COUNT,
-  GET_COLLECTION,
-} from '../graphql/queries/Collection';
+import { SEARCH_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
 
 export const createCollectionQuery = {
   request: {
@@ -35,7 +31,7 @@ export const createCollectionQuery = {
 
 export const countCollectionsQuery = {
   request: {
-    query: COLLECTION_QUERY_COUNT,
+    query: SEARCH_QUERY_COUNT,
     variables: {
       filter: {},
     },
@@ -49,7 +45,7 @@ export const countCollectionsQuery = {
 
 const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
   return {
-    query: COLLECTION_QUERY,
+    query: SEARCH_QUERY,
     variables: {
       filter: filter,
       opts: {
@@ -63,7 +59,7 @@ const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number,
 
 export const getCollectionsQuery = [
   {
-    request: collectionQuery(COLLECTION_QUERY, {}, 10, 0, 'ASC'),
+    request: collectionQuery(SEARCH_QUERY, {}, 10, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [
@@ -80,7 +76,7 @@ export const getCollectionsQuery = [
     },
   },
   {
-    request: collectionQuery(COLLECTION_QUERY, {}, 100, 0, 'ASC'),
+    request: collectionQuery(SEARCH_QUERY, {}, 100, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [
@@ -100,7 +96,7 @@ export const getCollectionsQuery = [
 
 export const getCollection = {
   request: {
-    query: GET_COLLECTION,
+    query: GET_SEARCH,
     variables: {
       id: 1,
     },

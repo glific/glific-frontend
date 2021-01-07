@@ -9,7 +9,7 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as Searchicon } from '../../assets/images/icons/Search/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
+import { GET_SEARCH, SEARCH_QUERY } from '../../graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
@@ -41,7 +41,7 @@ const dialogMessage = "You won't be able to use this search again.";
 const searchIcon = <Searchicon className={styles.Searchicon} />;
 
 const queries = {
-  getItemQuery: GET_COLLECTION,
+  getItemQuery: GET_SEARCH,
   createItemQuery: CREATE_SEARCH,
   updateItemQuery: UPDATE_SEARCH,
   deleteItemQuery: DELETE_SEARCH,
@@ -170,7 +170,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     }
   }, [searchParam]);
 
-  const { data: collections } = useQuery(COLLECTION_QUERY, {
+  const { data: collections } = useQuery(SEARCH_QUERY, {
     variables: setVariables({}, 100, 0, 'ASC'),
   });
 

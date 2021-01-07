@@ -1,4 +1,4 @@
-import { GET_COLLECTION } from '../../graphql/queries/Collection';
+import { GET_SEARCH } from '../../graphql/queries/Search';
 import { CREATE_SEARCH, DELETE_SEARCH, UPDATE_SEARCH } from '../../graphql/mutations/Search';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUPS } from '../../graphql/queries/Group';
@@ -11,7 +11,7 @@ import {
   countCollectionsQuery,
   getCollectionsQuery,
   getCollection,
-} from '../../mocks/Collection';
+} from '../../mocks/Search';
 import { setVariables } from '../../common/constants';
 
 export const listItemProps = {
@@ -34,7 +34,7 @@ export const listItemProps = {
   ],
   redirectionLink: 'collection',
   listItem: 'collection',
-  getItemQuery: GET_COLLECTION,
+  getItemQuery: GET_SEARCH,
   createItemQuery: CREATE_SEARCH,
   updateItemQuery: UPDATE_SEARCH,
   icon: null,
