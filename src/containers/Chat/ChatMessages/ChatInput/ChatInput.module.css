@@ -129,6 +129,9 @@
   .QuickSend {
     font-size: 12px;
   }
+  .JumpToLatest {
+    display: none !important;
+  }
 }
 
 .QuickSendSelected {

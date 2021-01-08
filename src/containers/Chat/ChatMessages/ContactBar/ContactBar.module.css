@@ -10,6 +10,21 @@
   .ContactBar {
     border-bottom: unset;
     padding: 0px !important;
+    flex-direction: column;
+  }
+  .ContactInfoContainer {
+    display: flex;
+    width: 100%;
+  }
+  .MobileHeader {
+    padding: 8px 16px;
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+  }
+  .MenuIcon {
+    margin-left: auto;
   }
   .ContactDetails {
     padding: 12px !important;
@@ -25,6 +40,20 @@
   .ContactGroups {
     padding-left: 12px;
   }
+}
+
+.ContactInfoContainer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.MobileHeader {
+  display: none;
+}
+
+.GlificLogo {
+  width: 42px;
 }
 
 .Chat {
@@ -161,7 +190,9 @@
   display: flex;
   align-items: center;
 }
-
+.SessionTimerContainer {
+  margin-left: auto;
+}
 .SessionTimer {
   display: flex;
   align-items: center;

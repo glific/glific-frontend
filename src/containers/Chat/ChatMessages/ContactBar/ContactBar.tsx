@@ -10,10 +10,12 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import MenuIcon from '@material-ui/icons/Menu';
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import GlificLogo from '../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
@@ -443,20 +445,26 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   );
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <div>
-        <div className={styles.ContactDetails}>
-          <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-            {contactName}
-          </Typography>
-          <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-            <div className={styles.Configure} data-testid="dropdownIcon">
-              <DropdownIcon onClick={handleConfigureIconClick} />
-            </div>
-          </ClickAwayListener>
-        </div>
-        {contactGroups}
+      <div className={styles.MobileHeader}>
+        <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+        <MenuIcon className={styles.MenuIcon} />
       </div>
-      {sesssionAndGroupAssignedTo}
+      <div className={styles.ContactInfoContainer}>
+        <div>
+          <div className={styles.ContactDetails}>
+            <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
+              {contactName}
+            </Typography>
+            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+              <div className={styles.Configure} data-testid="dropdownIcon">
+                <DropdownIcon onClick={handleConfigureIconClick} />
+              </div>
+            </ClickAwayListener>
+          </div>
+          {contactGroups}
+        </div>
+        {sesssionAndGroupAssignedTo}
+      </div>
       {popper}
       {dialogBox}
     </Toolbar>

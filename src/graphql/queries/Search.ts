@@ -15,7 +15,6 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
-        params
         insertedAt
         receiver {
           id
