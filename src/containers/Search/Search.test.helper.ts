@@ -7,10 +7,10 @@ import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import {
-  createCollectionQuery,
-  countCollectionsQuery,
-  getCollectionsQuery,
-  getCollection,
+  createSearchQuery,
+  countSearchesQuery,
+  getSearchesQuery,
+  getSearch,
 } from '../../mocks/Search';
 import { setVariables } from '../../common/constants';
 
@@ -41,11 +41,11 @@ export const listItemProps = {
 };
 
 export const LIST_ITEM_MOCKS = [
-  createCollectionQuery,
-  countCollectionsQuery,
-  countCollectionsQuery,
-  ...getCollectionsQuery,
-  getCollection,
+  createSearchQuery,
+  countSearchesQuery,
+  countSearchesQuery,
+  ...getSearchesQuery,
+  getSearch,
   {
     request: {
       query: GET_GROUPS,
