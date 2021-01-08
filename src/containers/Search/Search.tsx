@@ -170,7 +170,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     }
   }, [searchParam]);
 
-  const { data: collections } = useQuery(SEARCH_LIST_QUERY, {
+  const { data: searchList } = useQuery(SEARCH_LIST_QUERY, {
     variables: setVariables({}, 100, 0, 'ASC'),
   });
 
@@ -181,8 +181,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     if (value) {
       let found = [];
 
-      if (collections) {
-        found = collections.savedSearches.filter(
+      if (searchList) {
+        found = searchList.savedSearches.filter(
           (savedSearch: any) => savedSearch.shortcode === value
         );
         if (match.params.id && found.length > 0) {

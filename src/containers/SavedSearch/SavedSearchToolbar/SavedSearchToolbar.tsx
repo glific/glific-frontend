@@ -21,7 +21,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
   const [fixedCollection, setFixedCollection] = useState<any>([]);
-  const [additonalCollections, setAdditonalCollections] = useState<any>([]);
+  const [additionalSearch, setAdditionalSearch] = useState<any>([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const Ref = useRef(null);
   const open = Boolean(anchorEl);
@@ -43,7 +43,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedCollection(data.savedSearches.slice(0, 3));
-      setAdditonalCollections(data.savedSearches.slice(3));
+      setAdditionalSearch(data.savedSearches.slice(3));
     },
   });
 
@@ -59,10 +59,10 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     const removedCollection = fixedCollection[fixedCollection.length - 1];
     const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
     fixedCollectionCopy.push(search);
-    const moreCollection = additonalCollections.filter((searc: any) => searc.id !== search.id);
+    const moreCollection = additionalSearch.filter((searc: any) => searc.id !== search.id);
     moreCollection.unshift(removedCollection);
     setFixedCollection(fixedCollectionCopy);
-    setAdditonalCollections(moreCollection);
+    setAdditionalSearch(moreCollection);
     handlerSavedSearchCriteria(search.args, search.id);
   };
 
@@ -120,7 +120,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
-            {additonalCollections.map((search: any) => {
+            {additionalSearch.map((search: any) => {
               return (
                 <div
                   key={search.id}
