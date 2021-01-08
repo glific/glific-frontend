@@ -1,5 +1,5 @@
 import { CREATE_SEARCH } from '../graphql/mutations/Search';
-import { SEARCH_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
+import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
 
 export const createCollectionQuery = {
   request: {
@@ -45,7 +45,7 @@ export const countCollectionsQuery = {
 
 const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
   return {
-    query: SEARCH_QUERY,
+    query: SEARCH_LIST_QUERY,
     variables: {
       filter: filter,
       opts: {
@@ -59,7 +59,7 @@ const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number,
 
 export const getCollectionsQuery = [
   {
-    request: collectionQuery(SEARCH_QUERY, {}, 10, 0, 'ASC'),
+    request: collectionQuery(SEARCH_LIST_QUERY, {}, 10, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [
@@ -76,7 +76,7 @@ export const getCollectionsQuery = [
     },
   },
   {
-    request: collectionQuery(SEARCH_QUERY, {}, 100, 0, 'ASC'),
+    request: collectionQuery(SEARCH_LIST_QUERY, {}, 100, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [

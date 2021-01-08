@@ -145,7 +145,7 @@ export const SCROLL_HEIGHT = gql`
   }
 `;
 
-export const SEARCH_QUERY = gql`
+export const SEARCH_LIST_QUERY = gql`
   query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
     savedSearches(filter: $filter, opts: $opts) {
       id
