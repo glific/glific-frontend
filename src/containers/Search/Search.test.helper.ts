@@ -1,9 +1,5 @@
-import { GET_COLLECTION } from '../../graphql/queries/Collection';
-import {
-  CREATE_COLLECTION,
-  DELETE_COLLECTION,
-  UPDATE_COLLECTION,
-} from '../../graphql/mutations/Collection';
+import { GET_SEARCH } from '../../graphql/queries/Search';
+import { CREATE_SEARCH, DELETE_SEARCH, UPDATE_SEARCH } from '../../graphql/mutations/Search';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { FILTER_TAGS_NAME, GET_TAGS } from '../../graphql/queries/Tag';
@@ -11,15 +7,15 @@ import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import {
-  createCollectionQuery,
-  countCollectionsQuery,
-  getCollectionsQuery,
-  getCollection,
-} from '../../mocks/Collection';
+  createSearchQuery,
+  countSearchesQuery,
+  getSearchesQuery,
+  getSearch,
+} from '../../mocks/Search';
 import { setVariables } from '../../common/constants';
 
 export const listItemProps = {
-  deleteItemQuery: DELETE_COLLECTION,
+  deleteItemQuery: DELETE_SEARCH,
   states: {
     label: 'important',
     description: 'important label',
@@ -38,18 +34,18 @@ export const listItemProps = {
   ],
   redirectionLink: 'collection',
   listItem: 'collection',
-  getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
+  getItemQuery: GET_SEARCH,
+  createItemQuery: CREATE_SEARCH,
+  updateItemQuery: UPDATE_SEARCH,
   icon: null,
 };
 
 export const LIST_ITEM_MOCKS = [
-  createCollectionQuery,
-  countCollectionsQuery,
-  countCollectionsQuery,
-  ...getCollectionsQuery,
-  getCollection,
+  createSearchQuery,
+  countSearchesQuery,
+  countSearchesQuery,
+  ...getSearchesQuery,
+  getSearch,
   {
     request: {
       query: GET_GROUPS,

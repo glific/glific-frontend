@@ -330,7 +330,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     messageListContainer = (
       <Container
         className={`${styles.MessageList} messageContainer `}
-        style={{ height: `calc(100% - 175px - ${reducedHeight}px)` }}
+        style={{ height: `calc(100% - 195px - ${reducedHeight}px)` }}
         maxWidth={false}
         data-testid="messageContainer"
       >

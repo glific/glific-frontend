@@ -13,6 +13,10 @@
 
 .HelperText {
   margin-left: 16px !important;
+  color: #93a29b !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
 }
 
 .HelpLink {
