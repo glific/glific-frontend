@@ -5,13 +5,58 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .ContactBar {
     border-bottom: unset;
+    padding: 0px !important;
   }
-  .Container {
+  .ContactDetails {
+    padding: 12px !important;
+    padding-bottom: 0px !important;
+  }
+  .SessionTimerContainer {
     display: none;
   }
+  .Chat {
+    display: flex !important;
+  }
+
+  .ContactGroups {
+    padding-left: 12px;
+  }
+}
+
+.Chat {
+  padding: 12px !important;
+  padding-right: 40px !important;
+  padding-left: 8px !important ;
+  display: none;
+  align-items: center;
+  margin-left: auto;
+  background-color: white;
+  border-radius: 0 0 0 12px;
+}
+
+.Chat svg {
+  height: 22px;
+  width: 25px;
+}
+
+.TitleText {
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.IconBackground {
+  background-color: #eaedec;
+  border-radius: 50%;
+  display: flex;
 }
 
 .ContactName {

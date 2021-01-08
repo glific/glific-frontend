@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .Template {
     width: 500px;
   }

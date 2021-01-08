@@ -7,6 +7,7 @@ import {
   Paper,
   Button,
   ClickAwayListener,
+  IconButton,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
@@ -22,6 +23,7 @@ import { ReactComponent as ProfileDisabledIcon } from '../../../../assets/images
 import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
+import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
@@ -382,6 +384,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
+  const selectContact = () => {
+    document.querySelector('.chatMessages')?.setAttribute('style', 'display: none ');
+    document
+      .querySelector('.chatConversations')
+      ?.setAttribute('style', 'display: block !important');
+  };
+
   let contactGroups: any;
   if (selectedGroupsName.length > 0) {
     contactGroups = (
@@ -395,24 +404,33 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const sesssionAndGroupAssignedTo = (
-    <div className={styles.Container}>
-      <div className={styles.SessionTimer} data-testid="sessionTimer">
-        <span>Session Timer</span>
-        <Timer
-          time={lastMessageTime}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
-        />
+    <>
+      <div className={styles.SessionTimerContainer}>
+        <div className={styles.SessionTimer} data-testid="sessionTimer">
+          <span>Session Timer</span>
+          <Timer
+            time={lastMessageTime}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
+          />
+        </div>
+        <div>
+          {assignedToGroup ? (
+            <>
+              <span className={styles.GroupHeading}>Assigned to</span>
+              <span className={styles.GroupsName}>{assignedToGroup}</span>
+            </>
+          ) : null}
+        </div>
       </div>
-      <div>
-        {assignedToGroup ? (
-          <>
-            <span className={styles.GroupHeading}>Assigned to</span>
-            <span className={styles.GroupsName}>{assignedToGroup}</span>
-          </>
-        ) : null}
+      <div className={styles.Chat} onClick={() => selectContact()} aria-hidden="true">
+        <IconButton className={styles.Icon}>
+          <ChatIcon />
+        </IconButton>
+
+        <div className={styles.TitleText}>Chats</div>
       </div>
-    </div>
+    </>
   );
   return (
     <Toolbar className={styles.ContactBar} color="primary">
