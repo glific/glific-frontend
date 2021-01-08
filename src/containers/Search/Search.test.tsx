@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { Collection } from './Collection';
-import { LIST_ITEM_MOCKS } from './Collection.test.helper';
+import { Search } from './Search';
+import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Collection match={{ params: { id: 1 } }} />
+    <Search match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
@@ -19,13 +19,13 @@ test('should load the collection edit', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Collection');
+  expect(formLayout).toHaveTextContent('Search');
 });
 
-test('should load the search collection', async () => {
+test('should load the search', async () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Collection
+      <Search
         match={{ params: { id: 1 }, type: 'search', search: Function, handleSave: Function }}
       />
     </MockedProvider>
@@ -36,13 +36,13 @@ test('should load the search collection', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Collection');
+  expect(formLayout).toHaveTextContent('Search');
 });
 
-test('should load the save Search collection', async () => {
+test('should load the save Search', async () => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Collection
+      <Search
         match={{ params: { id: 1 }, type: 'saveSearch', search: Function, handleSave: Function }}
       />
     </MockedProvider>
@@ -53,5 +53,5 @@ test('should load the save Search collection', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
 
   const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Collection');
+  expect(formLayout).toHaveTextContent('Search');
 });

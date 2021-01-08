@@ -1,17 +1,13 @@
-import { CREATE_COLLECTION } from '../graphql/mutations/Collection';
-import {
-  COLLECTION_QUERY,
-  COLLECTION_QUERY_COUNT,
-  GET_COLLECTION,
-} from '../graphql/queries/Collection';
+import { CREATE_SEARCH } from '../graphql/mutations/Search';
+import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
 
-export const createCollectionQuery = {
+export const createSearchQuery = {
   request: {
-    query: CREATE_COLLECTION,
+    query: CREATE_SEARCH,
     variables: {
       input: {
-        label: 'new Collection description',
-        shortcode: 'new Collection',
+        label: 'new search description',
+        shortcode: 'new search',
         args:
           '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
       },
@@ -25,17 +21,17 @@ export const createCollectionQuery = {
           args:
             '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '11',
-          label: 'new Collection description',
-          shortcode: 'new Collection',
+          label: 'new search description',
+          shortcode: 'new search',
         },
       },
     },
   },
 };
 
-export const countCollectionsQuery = {
+export const countSearchesQuery = {
   request: {
-    query: COLLECTION_QUERY_COUNT,
+    query: SEARCH_QUERY_COUNT,
     variables: {
       filter: {},
     },
@@ -47,9 +43,9 @@ export const countCollectionsQuery = {
   },
 };
 
-const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
+const searchListQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
   return {
-    query: COLLECTION_QUERY,
+    query: SEARCH_LIST_QUERY,
     variables: {
       filter: filter,
       opts: {
@@ -61,9 +57,9 @@ const collectionQuery = (QUERY: any, filter: any, limit: number, offset: number,
   };
 };
 
-export const getCollectionsQuery = [
+export const getSearchesQuery = [
   {
-    request: collectionQuery(COLLECTION_QUERY, {}, 10, 0, 'ASC'),
+    request: searchListQuery(SEARCH_LIST_QUERY, {}, 10, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [
@@ -72,15 +68,15 @@ export const getCollectionsQuery = [
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
-            label: 'Test collection',
-            shortcode: 'Save Search collection',
+            label: 'Test search',
+            shortcode: 'Save Search',
           },
         ],
       },
     },
   },
   {
-    request: collectionQuery(COLLECTION_QUERY, {}, 100, 0, 'ASC'),
+    request: searchListQuery(SEARCH_LIST_QUERY, {}, 100, 0, 'ASC'),
     result: {
       data: {
         savedSearches: [
@@ -89,8 +85,8 @@ export const getCollectionsQuery = [
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
-            label: 'Test collection',
-            shortcode: 'Save Search collection',
+            label: 'Test search',
+            shortcode: 'Save Search',
           },
         ],
       },
@@ -98,9 +94,9 @@ export const getCollectionsQuery = [
   },
 ];
 
-export const getCollection = {
+export const getSearch = {
   request: {
-    query: GET_COLLECTION,
+    query: GET_SEARCH,
     variables: {
       id: 1,
     },
@@ -113,7 +109,7 @@ export const getCollection = {
             '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           count: 0,
           id: '1',
-          label: 'Test collection',
+          label: 'Test search',
           shortcode: 'Save Search collection',
         },
       },

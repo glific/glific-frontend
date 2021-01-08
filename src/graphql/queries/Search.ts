@@ -144,3 +144,35 @@ export const SCROLL_HEIGHT = gql`
     height @client
   }
 `;
+
+export const SEARCH_LIST_QUERY = gql`
+  query savedSearches($filter: SavedSearchFilters!, $opts: SavedSearchOpts!) {
+    savedSearches(filter: $filter, opts: $opts) {
+      id
+      shortcode
+      label
+      args
+      count
+    }
+  }
+`;
+
+export const SEARCH_QUERY_COUNT = gql`
+  query countSavedSearches($filter: SavedSearchFilter!) {
+    countSavedSearches(filter: $filter)
+  }
+`;
+
+export const GET_SEARCH = gql`
+  query savedSearches($id: ID) {
+    savedSearch(id: $id) {
+      savedSearch {
+        id
+        shortcode
+        label
+        args
+        count
+      }
+    }
+  }
+`;
