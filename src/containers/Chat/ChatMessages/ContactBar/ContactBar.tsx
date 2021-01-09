@@ -286,7 +286,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let flowButton: any;
-  if (
+  if (groupId) {
+    flowButton = (
+      <Button
+        data-testid="flowButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getFlows();
+          setShowFlowDialog(true);
+        }}
+      >
+        <FlowIcon className={styles.Icon} />
+        Start a flow
+      </Button>
+    );
+  } else if (
     (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
     !is24HourWindowOver(lastMessageTime)
   ) {
@@ -334,55 +348,64 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Button
-              className={styles.ListButtonPrimary}
-              disabled={isSimulator}
-              onClick={() => {
-                history.push(`/contact-profile/${props.contactId}`);
-              }}
-            >
-              {isSimulator ? (
-                <ProfileDisabledIcon className={styles.Icon} />
-              ) : (
-                <ProfileIcon className={styles.Icon} />
-              )}
-              View contact profile
-            </Button>
-
+            {contactId ? (
+              <Button
+                className={styles.ListButtonPrimary}
+                disabled={isSimulator}
+                onClick={() => {
+                  history.push(`/contact-profile/${props.contactId}`);
+                }}
+              >
+                {isSimulator ? (
+                  <ProfileDisabledIcon className={styles.Icon} />
+                ) : (
+                  <ProfileIcon className={styles.Icon} />
+                )}
+                View contact profile
+              </Button>
+            ) : (
+              ''
+            )}
             {flowButton}
-            <Button
-              data-testid="groupButton"
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getGroups();
-                setShowGroupDialog(true);
-              }}
-            >
-              <AddContactIcon className={styles.Icon} />
-              Add to group
-            </Button>
-            <Button
-              className={styles.ListButtonPrimary}
-              data-testid="clearChatButton"
-              onClick={() => setClearChatDialog(true)}
-            >
-              <ClearConversation className={styles.Icon} />
-              Clear conversation
-            </Button>
-            <Button
-              data-testid="blockButton"
-              className={styles.ListButtonDanger}
-              color="secondary"
-              disabled={isSimulator}
-              onClick={() => setShowBlockDialog(true)}
-            >
-              {isSimulator ? (
-                <BlockDisabledIcon className={styles.Icon} />
-              ) : (
-                <BlockIcon className={styles.Icon} />
-              )}
-              Block Contact
-            </Button>
+            {contactId ? (
+              <>
+                <Button
+                  data-testid="groupButton"
+                  className={styles.ListButtonPrimary}
+                  onClick={() => {
+                    getGroups();
+                    setShowGroupDialog(true);
+                  }}
+                >
+                  <AddContactIcon className={styles.Icon} />
+                  Add to group
+                </Button>
+                <Button
+                  className={styles.ListButtonPrimary}
+                  data-testid="clearChatButton"
+                  onClick={() => setClearChatDialog(true)}
+                >
+                  <ClearConversation className={styles.Icon} />
+                  Clear conversation
+                </Button>
+                <Button
+                  data-testid="blockButton"
+                  className={styles.ListButtonDanger}
+                  color="secondary"
+                  disabled={isSimulator}
+                  onClick={() => setShowBlockDialog(true)}
+                >
+                  {isSimulator ? (
+                    <BlockDisabledIcon className={styles.Icon} />
+                  ) : (
+                    <BlockIcon className={styles.Icon} />
+                  )}
+                  Block Contact
+                </Button>
+              </>
+            ) : (
+              ''
+            )}
           </Paper>
         </Fade>
       )}
@@ -405,26 +428,30 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const sesssionAndGroupAssignedTo = (
-    <div className={styles.Container}>
-      <div className={styles.SessionTimer} data-testid="sessionTimer">
-        <span>Session Timer</span>
-        <Timer
-          time={lastMessageTime}
-          contactStatus={contactStatus}
-          contactBspStatus={contactBspStatus}
-        />
+  let sesssionAndGroupAssignedTo;
+  if (contactId) {
+    sesssionAndGroupAssignedTo = (
+      <div className={styles.Container}>
+        <div className={styles.SessionTimer} data-testid="sessionTimer">
+          <span>Session Timer</span>
+          <Timer
+            time={lastMessageTime}
+            contactStatus={contactStatus}
+            contactBspStatus={contactBspStatus}
+          />
+        </div>
+        <div>
+          {assignedToGroup ? (
+            <>
+              <span className={styles.GroupHeading}>Assigned to</span>
+              <span className={styles.GroupsName}>{assignedToGroup}</span>
+            </>
+          ) : null}
+        </div>
       </div>
-      <div>
-        {assignedToGroup ? (
-          <>
-            <span className={styles.GroupHeading}>Assigned to</span>
-            <span className={styles.GroupsName}>{assignedToGroup}</span>
-          </>
-        ) : null}
-      </div>
-    </div>
-  );
+    );
+  }
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div>
