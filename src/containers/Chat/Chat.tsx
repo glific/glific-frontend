@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -24,6 +24,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   const [selectedTab, setSelectedTab] = useState('contacts');
+  const history = useHistory();
+
   let simulatorId: string | null = null;
 
   // default queryvariables
@@ -63,7 +65,17 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   const handleTabClick = (tab: string) => {
+    // let's not do anything if we click on the selected tab
+    if (tab === selectedTab) {
+      return;
+    }
+
     setSelectedTab(tab);
+    if (tab === 'groups') {
+      history.push('/chat/group/');
+    } else {
+      history.push('/chat');
+    }
   };
 
   let chatInterface: any;
