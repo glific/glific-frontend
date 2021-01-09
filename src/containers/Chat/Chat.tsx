@@ -16,7 +16,7 @@ import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 
 export interface ChatProps {
-  contactId?: number;
+  contactId?: number | string;
   groupId?: number;
 }
 
@@ -29,7 +29,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // default queryvariables
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
-  if (groupId) {
+  // contact id === group when the group id is not passed in the url
+  if (groupId || contactId === 'group') {
     queryVariables.filter = { searchGroup: true };
   }
 
@@ -51,6 +52,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
+  // let's handle the case when group id is not passed then we redirect to first record
+  if (!groupId && contactId === 'group' && data.search.length !== 0) {
+    return <Redirect to={'/chat/group/'.concat(data.search[0].group.id)} />;
+  }
+
+  // let's handle the case when contact id and group id is not passed then we redirect to first record
   if (!contactId && !groupId && data.search.length !== 0) {
     return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }

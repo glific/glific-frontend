@@ -15,7 +15,7 @@ import { advanceSearch } from '../../../context/role';
 import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
-  contactId?: number;
+  contactId?: number | string;
   simulator: any;
 }
 
