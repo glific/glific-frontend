@@ -6,7 +6,6 @@ export const FILTER_WEBHOOK_LOGS = gql`
       id
       url
       method
-      status
       requestHeaders
       requestJson
       statusCode

@@ -24,7 +24,6 @@ const getText = (text: string) => <div className={styles.TableText}>{text}</div>
 const columnNames = [
   'TIME',
   'URL',
-  'STATUS',
   'STATUS CODE',
   'ERROR',
   'METHOD',
@@ -36,7 +35,6 @@ const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [
   styles.Time,
   styles.Url,
-  styles.StatusCode,
   styles.StatusCode,
   styles.Error,
   styles.Method,
@@ -116,7 +114,6 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
   const getColumns = ({
     url,
     method,
-    status,
     requestHeaders,
     requestJson,
     statusCode,
@@ -126,7 +123,6 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
   }: any) => ({
     updatedAt: getTime(updatedAt),
     url: getCroppedText(url, true),
-    status: getCroppedText(status, true),
     statusCode: getText(statusCode),
     error: getCroppedText(error, true),
     method: getText(method),
