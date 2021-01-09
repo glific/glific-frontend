@@ -1,14 +1,14 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { CollectionList } from './CollectionList';
-import { LIST_ITEM_MOCKS } from '../Collection.test.helper';
+import { SearchList } from './SearchList';
+import { LIST_ITEM_MOCKS } from '../Search.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <CollectionList />
+    <SearchList />
   </MockedProvider>
 );
 
@@ -17,8 +17,7 @@ test('should load the collection list', async () => {
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(()=>{
-    expect(getByText('Collections')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Searches')).toBeInTheDocument();
   });
- 
 });

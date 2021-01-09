@@ -4,17 +4,13 @@ import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { Typography } from '@material-ui/core';
 
-import styles from './Collection.module.css';
+import styles from './Search.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as Collectionicon } from '../../assets/images/icons/Collections/Selected.svg';
+import { ReactComponent as Searchicon } from '../../assets/images/icons/Search/Selected.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import { GET_COLLECTION, COLLECTION_QUERY } from '../../graphql/queries/Collection';
-import {
-  CREATE_COLLECTION,
-  UPDATE_COLLECTION,
-  DELETE_COLLECTION,
-} from '../../graphql/mutations/Collection';
+import { GET_SEARCH, SEARCH_LIST_QUERY } from '../../graphql/queries/Search';
+import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
 import { GET_GROUPS } from '../../graphql/queries/Group';
 import { GET_USERS } from '../../graphql/queries/User';
@@ -24,7 +20,7 @@ import Loading from '../../components/UI/Layout/Loading/Loading';
 import { setVariables } from '../../common/constants';
 import { getObject } from '../../common/utils';
 
-export interface CollectionProps {
+export interface SearchProps {
   match?: any;
   type?: string;
   search?: any;
@@ -40,18 +36,18 @@ const validation = {
 };
 let FormSchema = Yup.object().shape({});
 
-const dialogMessage = "You won't be able to use this collection again.";
+const dialogMessage = "You won't be able to use this search again.";
 
-const collectionIcon = <Collectionicon className={styles.Collectionicon} />;
+const searchIcon = <Searchicon className={styles.Searchicon} />;
 
 const queries = {
-  getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
-  deleteItemQuery: DELETE_COLLECTION,
+  getItemQuery: GET_SEARCH,
+  createItemQuery: CREATE_SEARCH,
+  updateItemQuery: UPDATE_SEARCH,
+  deleteItemQuery: DELETE_SEARCH,
 };
 
-export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ...props }) => {
+export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }) => {
   const { searchParam } = props;
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
@@ -174,7 +170,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     }
   }, [searchParam]);
 
-  const { data: collections } = useQuery(COLLECTION_QUERY, {
+  const { data: searchList } = useQuery(SEARCH_LIST_QUERY, {
     variables: setVariables({}, 100, 0, 'ASC'),
   });
 
@@ -185,8 +181,8 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
     if (value) {
       let found = [];
 
-      if (collections) {
-        found = collections.savedSearches.filter(
+      if (searchList) {
+        found = searchList.savedSearches.filter(
           (savedSearch: any) => savedSearch.shortcode === value
         );
         if (match.params.id && found.length > 0) {
@@ -205,7 +201,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       component: Input,
       name: 'shortcode',
       type: 'text',
-      placeholder: 'Collection Title',
+      placeholder: 'Search Title',
       validate: validateTitle,
     },
     {
@@ -343,7 +339,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       heading = (
         <>
           <Typography variant="h5" className={styles.Title}>
-            Save search to collections
+            Save Search
           </Typography>
         </>
       );
@@ -380,14 +376,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match, type, search, ..
       setStates={setStates}
       setPayload={setPayload}
       validationSchema={FormSchema}
-      listItemName="Collection"
+      listItemName="Search"
       dialogMessage={dialogMessage}
       formFields={formFields.length > 0 ? formFields : getFields()}
-      redirectionLink="collection"
-      cancelLink="collection"
+      redirectionLink="search"
+      cancelLink="search"
       linkParameter="id"
       listItem="savedSearch"
-      icon={collectionIcon}
+      icon={searchIcon}
       languageSupport={false}
       advanceSearch={advanceSearch}
       button={button}

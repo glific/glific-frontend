@@ -381,26 +381,6 @@ export const TEMPLATE_MOCKS = [
   },
   {
     request: {
-      query: GET_LANGUAGES,
-      variables: { opts: { order: 'ASC' } },
-    },
-    result: {
-      data: {
-        languages: [
-          {
-            id: '1',
-            label: 'English (United States)',
-          },
-          {
-            id: '2',
-            label: 'Hindi (India)',
-          },
-        ],
-      },
-    },
-  },
-  {
-    request: {
       query: FILTER_TEMPLATES,
       variables: requestFilterTemplates,
     },

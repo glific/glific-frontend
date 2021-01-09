@@ -12,8 +12,8 @@ import { GroupList } from '../../containers/Group/GroupList/GroupList';
 import { Group } from '../../containers/Group/Group';
 import { GroupContact } from '../../containers/Group/GroupContact/GroupContact';
 import { FlowEditor } from '../../components/floweditor/FlowEditor';
-import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
-import { Collection } from '../../containers/Collection/Collection';
+import { SearchList } from '../../containers/Search/SearchList/SearchList';
+import { Search } from '../../containers/Search/Search';
 import { Chat } from '../../containers/Chat/Chat';
 import { StaffManagementList } from '../../containers/StaffManagement/StaffManagementList/StaffManagementList';
 import { StaffManagement } from '../../containers/StaffManagement/StaffManagement';
@@ -80,9 +80,9 @@ const routeAdmin = (
 
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
-    <Route path="/collection" exact component={CollectionList} />
-    <Route path="/collection/add" exact component={Collection} />
-    <Route path="/collection/:id/edit" exact component={Collection} />
+    <Route path="/search" exact component={SearchList} />
+    <Route path="/search/add" exact component={Search} />
+    <Route path="/search/:id/edit" exact component={Search} />
 
     <Route path="/chat" exact component={Chat} />
     <Route path="/staff-management" exact component={StaffManagementList} />
