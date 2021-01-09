@@ -43,7 +43,7 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 
 export interface ContactBarProps {
-  contactName: string;
+  displayName: string;
   contactId?: string;
   groupId?: string;
   lastMessageTime?: any;
@@ -60,7 +60,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     contactBspStatus,
     lastMessageTime,
     contactStatus,
-    contactName,
+    displayName,
     isSimulator,
   } = props;
   const client = useApolloClient();
@@ -430,7 +430,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       <div>
         <div className={styles.ContactDetails}>
           <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-            {contactName}
+            {displayName}
           </Typography>
           <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
             <div className={styles.Configure} data-testid="dropdownIcon">

@@ -420,7 +420,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   if (contactId) {
     topChatBar = (
       <ContactBar
-        contactName={
+        displayName={
           conversationInfo.contact.name
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
@@ -447,7 +447,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     topChatBar = (
       <ContactBar
         groupId={groupId.toString()}
-        contactName={conversationInfo.group.label}
+        displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
       />
     );
