@@ -33,8 +33,8 @@ export interface ChatInputProps {
     variableParam: any
   ): any;
   handleHeightChange(newHeight: number): void;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   additionalStyle?: any;
   lastMessageTime?: any;
 }

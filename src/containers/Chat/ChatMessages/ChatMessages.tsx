@@ -223,6 +223,31 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     }
   }
 
+  if (groupId) {
+    // loop through the cached conversations and find if contact exists
+    if (allConversations && allConversations.search)
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation.group.id === groupId.toString()) {
+          conversationIndex = index;
+          conversationInfo = conversation;
+        }
+        return null;
+      });
+
+    // if conversation is not present then fetch for contact
+    if (conversationIndex < 0) {
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            // filter: { id: groupId },
+            messageOpts: { limit: 50, offset: 0 },
+            contactOpts: { limit: 50 },
+          },
+        });
+      }
+    }
+  }
+
   const closeDialogBox = () => {
     setDialogbox(false);
     setShowDropdown(null);
@@ -391,6 +416,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   let topChatBar;
+  let chatInputSection;
   if (contactId) {
     topChatBar = (
       <ContactBar
@@ -407,13 +433,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         handleAction={handleChatClearedAction}
       />
     );
-  }
 
-  return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
-      {dialogBox}
-      {topChatBar}
-      {messageListContainer}
+    chatInputSection = (
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
@@ -421,6 +442,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
+    );
+  } else if (groupId) {
+    topChatBar = (
+      <ContactBar
+        groupId={groupId.toString()}
+        contactName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
+    );
+  }
+
+  return (
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+      {dialogBox}
+      {topChatBar}
+      {messageListContainer}
+      {chatInputSection}
     </Container>
   );
 };

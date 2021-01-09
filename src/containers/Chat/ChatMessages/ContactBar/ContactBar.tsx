@@ -44,10 +44,11 @@ import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 
 export interface ContactBarProps {
   contactName: string;
-  contactId: string;
-  lastMessageTime: any;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactId?: string;
+  groupId?: string;
+  lastMessageTime?: any;
+  contactStatus?: string;
+  contactBspStatus?: string;
   handleAction?: any;
   isSimulator?: boolean;
 }
@@ -55,6 +56,7 @@ export interface ContactBarProps {
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const {
     contactId,
+    groupId,
     contactBspStatus,
     lastMessageTime,
     contactStatus,
@@ -69,7 +71,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
-
+  console.log(groupId);
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
     variables: setVariables(),
@@ -169,10 +171,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const handleGroupDialogOk = (selectedGroupIds: any) => {
     const finalSelectedGroups = selectedGroupIds.filter(
-      (groupId: any) => !initialSelectedGroupIds.includes(groupId)
+      (selectedGroupId: any) => !initialSelectedGroupIds.includes(selectedGroupId)
     );
     const finalRemovedGroups = initialSelectedGroupIds.filter(
-      (groupId: any) => !selectedGroupIds.includes(groupId)
+      (gId: any) => !selectedGroupIds.includes(gId)
     );
 
     if (finalSelectedGroups.length > 0 || finalRemovedGroups.length > 0) {
