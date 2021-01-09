@@ -45,6 +45,7 @@ import { DropdownDialog } from '../../../../components/UI/DropdownDialog/Dropdow
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
+import { showChats } from '../../../../common/responsive';
 
 export interface ContactBarProps {
   contactName: string;
@@ -395,13 +396,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const selectContact = () => {
-    document.querySelector('.chatMessages')?.setAttribute('style', 'display: none ');
-    document
-      .querySelector('.chatConversations')
-      ?.setAttribute('style', 'display: block !important');
-  };
-
   let contactGroups: any;
   if (selectedGroupsName.length > 0) {
     contactGroups = (
@@ -434,7 +428,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           ) : null}
         </div>
       </div>
-      <div className={styles.Chat} onClick={() => selectContact()} aria-hidden="true">
+      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
         <IconButton className={styles.Icon}>
           <ChatIcon />
         </IconButton>

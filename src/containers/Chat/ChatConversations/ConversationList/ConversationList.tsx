@@ -16,6 +16,7 @@ import {
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
+import { showMessages } from '../../../../common/responsive';
 
 interface ConversationListProps {
   searchVal: string;
@@ -289,10 +290,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           selected={props.selectedContactId === conversation.contact.id}
           onClick={() => {
             setSearchHeight();
-            if (window.screen.width < 768) {
-              document.querySelector('.chatMessages')?.setAttribute('style', 'display: block ');
-              document.querySelector('.chatConversations')?.setAttribute('style', 'display: none');
-            }
+            showMessages();
             props.setSelectedContactId(conversation.contact.id);
           }}
           index={index}

@@ -12,10 +12,6 @@
     padding: 0px !important;
     flex-direction: column;
   }
-  .ContactInfoContainer {
-    display: flex;
-    width: 100%;
-  }
   .MobileHeader {
     padding: 8px 16px;
     display: flex !important;
@@ -45,7 +41,7 @@
 .ContactInfoContainer {
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: end;
 }
 
 .MobileHeader {
