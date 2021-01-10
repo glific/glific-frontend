@@ -39,10 +39,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // fetch the conversations from cache
   const [getChatConversations, { loading, error, data, client }] = useLazyQuery<any>(SEARCH_QUERY);
 
-  // const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-  //   SEARCH_QUERY
-  // );
-
   useEffect(() => {
     console.log('calling getChatConversations');
     getChatConversations({
@@ -57,25 +53,21 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (getUserRole().includes('Staff')) {
-      setSimulatorAccess(false);
-    }
-  }, []);
-
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
     return null;
   }
 
+  console.log('data', data);
+
   // let's handle the case when group id is not passed then we redirect to first record
-  if (!groupId && contactId === 'group' && data.search.length !== 0) {
+  if (!groupId && contactId === 'group' && data && data.search.length !== 0) {
     return <Redirect to={'/chat/group/'.concat(data.search[0].group.id)} />;
   }
 
   // let's handle the case when contact id and group id is not passed then we redirect to first record
-  if (!contactId && !groupId && data.search.length !== 0) {
+  if (!contactId && !groupId && data && data.search.length !== 0) {
     return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
   }
 
@@ -100,7 +92,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
         There are no chat conversations to display.
       </Typography>
     );
-  } else {
+  } else if (data) {
     let listingContent;
     let contactSelectedClass = '';
     let groupSelectedClass = '';
