@@ -20,7 +20,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { searchMode, refetchData } = props;
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
-  const [fixedCollection, setFixedCollection] = useState<any>([]);
+  const [fixedSearches, setFixedSearches] = useState<any>([]);
   const [additionalSearch, setAdditionalSearch] = useState<any>([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const Ref = useRef(null);
@@ -34,7 +34,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     },
   };
 
-  // remove selected collection on search
+  // remove selected searches on search
   if (searchMode && selectedSavedSearch) {
     setSelectedSavedSearch(null);
   }
@@ -42,7 +42,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      setFixedCollection(data.savedSearches.slice(0, 3));
+      setFixedSearches(data.savedSearches.slice(0, 3));
       setAdditionalSearch(data.savedSearches.slice(3));
     },
   });
@@ -56,18 +56,18 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   const handleAdditionalSavedSearch = (search: any) => {
-    const removedCollection = fixedCollection[fixedCollection.length - 1];
-    const fixedCollectionCopy = fixedCollection.slice(0, fixedCollection.length - 1);
-    fixedCollectionCopy.push(search);
-    const moreCollection = additionalSearch.filter((searc: any) => searc.id !== search.id);
-    moreCollection.unshift(removedCollection);
-    setFixedCollection(fixedCollectionCopy);
-    setAdditionalSearch(moreCollection);
+    const removedSearches = fixedSearches[fixedSearches.length - 1];
+    const fixedSearchesCopy = fixedSearches.slice(0, fixedSearches.length - 1);
+    fixedSearchesCopy.push(search);
+    const moreSearches = additionalSearch.filter((searc: any) => searc.id !== search.id);
+    moreSearches.unshift(removedSearches);
+    setFixedSearches(fixedSearchesCopy);
+    setAdditionalSearch(moreSearches);
     handlerSavedSearchCriteria(search.args, search.id);
   };
 
   useEffect(() => {
-    // display created collection
+    // display created searches
     if (refetchData.savedSearchCollection) {
       refetch();
       handleAdditionalSavedSearch(refetchData.savedSearchCollection);
@@ -80,7 +80,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     return null;
   }
 
-  const savedSearchList = fixedCollection.map((savedSearch: any) => {
+  const savedSearchList = fixedSearches.map((savedSearch: any) => {
     // set the selected class if the button is clicked
     const labelClass = [styles.SavedSearchItemLabel];
     const countClass = [styles.SavedSearchCount];

@@ -255,7 +255,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
 
-    // create custom payload for collection
+    // create custom payload for searches
     if (setPayload) {
       payload = setPayload(payload);
       if (advanceSearch) {
@@ -297,7 +297,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const cancelHandler = () => {
-    // for chat screen collection
+    // for chat screen searches
     if (type === 'search' || type === 'saveSearch') {
       advanceSearch('cancel');
       return;

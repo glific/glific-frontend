@@ -12,7 +12,7 @@ const wrapper = (
   </MockedProvider>
 );
 
-test('should load the collection edit', async () => {
+test('should load the search edit', async () => {
   const { getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
