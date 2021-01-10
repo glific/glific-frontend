@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { Redirect, useHistory } from 'react-router-dom';
 
 import styles from './Chat.module.css';
@@ -37,10 +37,25 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   // fetch the conversations from cache
-  const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
-    variables: queryVariables,
-    fetchPolicy: 'cache-first',
-  });
+  const [getChatConversations, { loading, error, data, client }] = useLazyQuery<any>(SEARCH_QUERY);
+
+  // const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
+  //   SEARCH_QUERY
+  // );
+
+  useEffect(() => {
+    console.log('calling getChatConversations');
+    getChatConversations({
+      variables: queryVariables,
+      // fetchPolicy: 'cache-first',
+    });
+  }, []);
+
+  useEffect(() => {
+    if (getUserRole().includes('Staff')) {
+      setSimulatorAccess(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (getUserRole().includes('Staff')) {
