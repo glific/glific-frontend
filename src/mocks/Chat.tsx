@@ -185,6 +185,7 @@ export const conversationQuery = getConversationQuery({
           id: '1',
           body: 'Hello',
           insertedAt: '2020-06-25T13:36:43Z',
+          location: null,
           receiver: {
             id: '1',
           },
@@ -206,6 +207,7 @@ export const conversationQuery = getConversationQuery({
           id: '2',
           body: 'How can we help?',
           insertedAt: '2020-06-25T13:36:43Z',
+          location: null,
           receiver: {
             id: '2',
           },
@@ -262,6 +264,7 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
           messages: [
             {
               body: 'Hi',
+              location: null,
               contact: {
                 bspStatus: 'HSM',
                 id: '8',

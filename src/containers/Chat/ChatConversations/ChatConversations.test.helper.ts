@@ -19,6 +19,7 @@ const withResult = {
           {
             id: '34',
             body: 'Hi',
+            location: null,
             insertedAt: '2020-08-03T07:01:36Z',
             receiver: {
               id: '2',
@@ -109,6 +110,7 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
           messages: [
             {
               body: 'Hi',
+              location: null,
               contact: {
                 bspStatus: 'HSM',
                 id: '8',
