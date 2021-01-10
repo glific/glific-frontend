@@ -250,7 +250,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   };
 
   let conversationList: any;
-  // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
+  // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
   if (searchVal !== '' && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence

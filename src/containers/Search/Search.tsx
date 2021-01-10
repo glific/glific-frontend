@@ -154,8 +154,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       };
       args.filter = Object.assign(args.filter, dateRange);
     }
-    // For create new collection then label & shortcode should be empty
-    // For update collection match.params.id should not empty
+    // For create new search then label & shortcode should be empty
+    // For update search match.params.id should not empty
     setStates({
       label: match.params.id ? props.searchParam.label : '',
       shortcode: match.params.id ? props.searchParam.shortcode : '',
@@ -164,7 +164,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   };
 
   useEffect(() => {
-    // Chat collection:restore collection search
+    // Chat search:restore search's search
     if (searchParam && Object.keys(searchParam).length !== 0) {
       restoreSearch();
     }
