@@ -23,7 +23,7 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('contacts');
+  const [selectedTab, setSelectedTab] = useState('');
   const history = useHistory();
 
   let simulatorId: string | null = null;
@@ -34,6 +34,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // contact id === group when the group id is not passed in the url
   if (groupId || contactId === 'group') {
     queryVariables.filter = { searchGroup: true };
+    setSelectedTab('groups');
   }
 
   // fetch the conversations from cache
@@ -83,6 +84,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     } else {
       history.push('/chat');
     }
+
+    getChatConversations({
+      variables: queryVariables,
+      // fetchPolicy: 'cache-first',
+    });
   };
 
   let chatInterface: any;
