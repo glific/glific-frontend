@@ -7,6 +7,10 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
       body
       flow
       type
+      location {
+        latitude
+        longitude
+      }
       insertedAt
       receiver {
         id
@@ -36,6 +40,10 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
       body
       flow
       type
+      location {
+        latitude
+        longitude
+      }
       insertedAt
       receiver {
         id
