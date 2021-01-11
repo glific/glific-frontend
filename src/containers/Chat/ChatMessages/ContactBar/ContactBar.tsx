@@ -441,7 +441,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     <Toolbar className={styles.ContactBar} color="primary">
       <div className={styles.MobileHeader}>
         <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-        <MenuIcon className={styles.MenuIcon} />
+        <MenuIcon
+          className={styles.MenuIcon}
+          onClick={() => {
+            document.querySelector('.navbar')?.setAttribute('style', 'display:block');
+          }}
+        />
       </div>
       <div className={styles.ContactInfoContainer}>
         <div>

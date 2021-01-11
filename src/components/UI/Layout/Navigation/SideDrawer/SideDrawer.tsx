@@ -55,9 +55,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
     },
     navClose: {
       width: '72px',
@@ -143,7 +140,13 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
             </ThemeProvider>
             <IconButton
               className={classes.iconButton}
-              onClick={() => setFullOpen(false)}
+              onClick={() => {
+                if (window.screen.width < 768) {
+                  document.querySelector('.navbar')?.setAttribute('style', 'display:none');
+                } else {
+                  setFullOpen(false);
+                }
+              }}
               data-testid="drawer-button"
             >
               <MenuIcon />
@@ -196,10 +199,10 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
 
   return (
     <nav
-      className={clsx({
+      className={`${clsx({
         [classes.drawer]: fullOpen,
         [classes.navClose]: !fullOpen,
-      })}
+      })} navbar`}
       aria-label="navigation menus"
       data-testid="navbar"
     >
@@ -222,66 +225,58 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
           {drawer}
         </Drawer>
       </Hidden>
-      <Hidden xsDown implementation="css">
-        <Drawer
-          className={clsx(classes.drawer, {
+
+      <Drawer
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: fullOpen,
+          [classes.drawerClose]: !fullOpen,
+        })}
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: fullOpen,
             [classes.drawerClose]: !fullOpen,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: fullOpen,
-              [classes.drawerClose]: !fullOpen,
-            }),
-          }}
-          variant="permanent"
-        >
-          <div className={bottonMenuClasses.join(' ')}>
-            {settingMenus}
-            <div
-              data-testid="bottom-menu"
-              onClick={getMenus}
-              onKeyDown={getMenus}
-              aria-hidden="true"
-            >
-              <Menu menus={staffManagementMenus}>
-                <IconButton data-testid="staffManagementMenu">
-                  <Tooltip title="Staff Management" placement="top">
-                    <img
-                      src={
-                        ['/group', '/staff-management', '/blocked-contacts'].includes(
-                          location.pathname
-                        )
-                          ? ActiveStaffIcon
-                          : InactiveStaffIcon
-                      }
-                      className={styles.StaffIcon}
-                      alt="staff icon"
-                    />
-                  </Tooltip>
-                </IconButton>
-              </Menu>
-            </div>
-            <div>
-              <Menu menus={userAccountMenus}>
-                <IconButton data-testid="profileMenu">
-                  <Tooltip title="Profile" placement="top">
-                    <img
-                      src={
-                        location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
-                      }
-                      className={styles.UserIcon}
-                      alt="user icon"
-                    />
-                  </Tooltip>
-                </IconButton>
-              </Menu>
-            </div>
+          }),
+        }}
+        variant="permanent"
+      >
+        <div className={bottonMenuClasses.join(' ')}>
+          {settingMenus}
+          <div data-testid="bottom-menu" onClick={getMenus} onKeyDown={getMenus} aria-hidden="true">
+            <Menu menus={staffManagementMenus}>
+              <IconButton data-testid="staffManagementMenu">
+                <Tooltip title="Staff Management" placement="top">
+                  <img
+                    src={
+                      ['/group', '/staff-management', '/blocked-contacts'].includes(
+                        location.pathname
+                      )
+                        ? ActiveStaffIcon
+                        : InactiveStaffIcon
+                    }
+                    className={styles.StaffIcon}
+                    alt="staff icon"
+                  />
+                </Tooltip>
+              </IconButton>
+            </Menu>
           </div>
-          {drawer}
-          <WalletBalance fullOpen={fullOpen} />
-        </Drawer>
-      </Hidden>
+          <div>
+            <Menu menus={userAccountMenus}>
+              <IconButton data-testid="profileMenu">
+                <Tooltip title="Profile" placement="top">
+                  <img
+                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
+                    className={styles.UserIcon}
+                    alt="user icon"
+                  />
+                </Tooltip>
+              </IconButton>
+            </Menu>
+          </div>
+        </div>
+        {drawer}
+        <WalletBalance fullOpen={fullOpen} />
+      </Drawer>
     </nav>
   );
 };

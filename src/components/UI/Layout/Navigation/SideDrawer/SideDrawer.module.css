@@ -27,3 +27,9 @@
   padding-top: 10px;
   width: 52px;
 }
+
+@media only screen and (max-width: 768px) {
+  :global(.navbar) {
+    display: none;
+  }
+}
