@@ -14,6 +14,12 @@
   border-left: 1px solid rgba(0, 0, 0, 0.12);
 }
 
+@media only screen and (max-width: 768px) {
+  .ChatConversations {
+    display: none !important;
+    width: 100% !important;
+  }
+}
 .NoConversations {
   padding: 76px;
 }

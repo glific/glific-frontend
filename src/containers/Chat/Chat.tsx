@@ -63,13 +63,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId }) => {
     }
     chatInterface = (
       <>
-        <div className={styles.ChatMessages}>
+        <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
             contactId={showSimulator && simulatorId ? simulatorId : contactId}
             simulatorId={simulatorId}
           />
         </div>
-        <div className={styles.ChatConversations}>
+        <div className={`${styles.ChatConversations} chatConversations`}>
           <ChatConversations
             contactId={showSimulator && simulatorId ? Number(simulatorId) : contactId}
             simulator={{ simulatorId, setShowSimulator }}
