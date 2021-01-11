@@ -37,6 +37,7 @@ export interface ChatMessageProps {
   setDialog?: any;
   focus?: boolean;
   showMessage: boolean;
+  location: any;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -64,6 +65,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     type,
     media,
     body,
+    location,
   } = props;
 
   useEffect(() => {
@@ -220,7 +222,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           >
             <div className={styles.Content} data-testid="content">
               <div>
-                <ChatMessageType type={type} media={media} body={body} insertedAt={insertedAt} />
+                <ChatMessageType
+                  type={type}
+                  media={media}
+                  body={body}
+                  insertedAt={insertedAt}
+                  location={location}
+                />
               </div>
             </div>
           </Tooltip>

@@ -68,11 +68,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
     index: number,
     insertedAt: string,
     type: string,
-    media: any
+    media: any,
+    location: any
   ) => {
     return (
       <div className={getStyleForDirection(direction)} key={index}>
-        <ChatMessageType type={type} media={media} body={text} />
+        <ChatMessageType type={type} media={media} body={text} location={location} />
         <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
           {moment(insertedAt).format(TIME_FORMAT)}
         </span>
@@ -83,11 +84,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
-      const { body, insertedAt, type, media } = simulatorMessage;
+      const { body, insertedAt, type, media, location } = simulatorMessage;
       if (simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(body, 'received', index, insertedAt, type, media);
+        return renderMessage(body, 'received', index, insertedAt, type, media, location);
       }
-      return renderMessage(body, 'send', index, insertedAt, type, media);
+      return renderMessage(body, 'send', index, insertedAt, type, media, location);
     })
     .reverse();
 

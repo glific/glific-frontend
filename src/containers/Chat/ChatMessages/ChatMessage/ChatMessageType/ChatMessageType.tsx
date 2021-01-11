@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { ReactTinyLink } from 'react-tiny-link';
 
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
@@ -15,9 +16,15 @@ export interface ChatMessageTypeProps {
   media: any;
   insertedAt?: string;
   body: string;
+  location: any;
 }
 
-export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({ type, media, body }) => {
+export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
+  type,
+  media,
+  body,
+  location,
+}) => {
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
 
@@ -102,6 +109,18 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({ type, media, 
             {media.caption}
           </a>
         </>
+      );
+      break;
+
+    case 'LOCATION':
+      messageBody = (
+        <ReactTinyLink
+          cardSize="small"
+          showGraphic
+          maxLine={2}
+          minLine={1}
+          url={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
+        />
       );
       break;
 
