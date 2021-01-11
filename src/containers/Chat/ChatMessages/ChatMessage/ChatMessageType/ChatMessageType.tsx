@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { ReactTinyLink } from 'react-tiny-link';
 
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
+import Pin from '../../../../../assets/images/pin.jpg';
 
 export interface ChatMessageTypeProps {
   type: string;
@@ -114,13 +114,14 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
 
     case 'LOCATION':
       messageBody = (
-        <ReactTinyLink
-          cardSize="small"
-          showGraphic
-          maxLine={2}
-          minLine={1}
-          url={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
-        />
+        <a
+          href={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
+          target="_blank"
+          rel="noreferrer"
+          className={styles.Location}
+        >
+          <img src={Pin} alt="pin" />
+        </a>
       );
       break;
 

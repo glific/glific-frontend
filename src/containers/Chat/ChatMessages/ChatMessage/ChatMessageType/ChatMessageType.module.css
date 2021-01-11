@@ -28,3 +28,11 @@
   text-decoration: none;
   font-weight: 700;
 }
+
+.Location {
+  color: #073f24 !important;
+}
+
+.Location img {
+  max-width: 200px;
+}
