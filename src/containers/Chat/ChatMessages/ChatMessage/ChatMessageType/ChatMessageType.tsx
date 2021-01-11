@@ -118,9 +118,8 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           href={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
           target="_blank"
           rel="noreferrer"
-          className={styles.Location}
         >
-          <img src={Pin} alt="pin" />
+          <img src={Pin} alt="pin" className={styles.Location} />
         </a>
       );
       break;
