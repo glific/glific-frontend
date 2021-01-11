@@ -9,7 +9,7 @@ import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
-import Pin from '../../../../../assets/images/pin.jpg';
+import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
 
 export interface ChatMessageTypeProps {
   type: string;
@@ -119,7 +119,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           target="_blank"
           rel="noreferrer"
         >
-          <img src={Pin} alt="pin" className={styles.Location} />
+          <MapIcon />
         </a>
       );
       break;
