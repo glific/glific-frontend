@@ -309,15 +309,17 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       }
       const key = index;
 
-      let selectedContactRecord = false;
+      let selectedRecord = false;
       let entityId: any;
       let displayName = '';
       let senderLastMessage = '';
       let contactStatus = '';
       let contactBspStatus = '';
       let entityType = 'contact';
-      if (conversation.contact && props.selectedContactId === conversation.contact.id) {
-        selectedContactRecord = true;
+      if (conversation.contact) {
+        if (props.selectedContactId === conversation.contact.id) {
+          selectedRecord = true;
+        }
         entityId = conversation.contact.id;
         if (conversation.contact.name) {
           displayName = conversation.contact.name;
@@ -328,6 +330,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
       } else if (conversation.group) {
+        if (props.selectedGroupId === conversation.group.id) {
+          selectedRecord = true;
+        }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
         entityType = 'group';
@@ -336,7 +341,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       return (
         <ChatConversation
           key={key}
-          selected={selectedContactRecord}
+          selected={selectedRecord}
           // TODO: Need to fix
           // onClick={() => {
           //   setSearchHeight();
