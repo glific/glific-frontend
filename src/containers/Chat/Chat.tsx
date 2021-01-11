@@ -24,7 +24,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   const [selectedTab, setSelectedTab] = useState('contacts');
-  // const history = useHistory();
 
   let simulatorId: string | null = null;
 
@@ -37,7 +36,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   // fetch the conversations from cache
-  const { loading, error, data, client, refetch } = useQuery<any>(SEARCH_QUERY, {
+  const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'network-only',
   });
@@ -48,7 +47,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     }
   }, []);
 
-  // if (networkStatus === NetworkStatus.refetch) return <Loading />;
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
@@ -76,14 +74,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     }
 
     console.log('refetchVariables', refetchVariables);
-    refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
+    // refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
 
     setSelectedTab(tab);
-    // if (tab === 'groups') {
-    //   history.push('/chat/group/');
-    // } else {
-    //   history.push('/chat');
-    // }
   };
 
   let chatInterface: any;
