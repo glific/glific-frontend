@@ -406,6 +406,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     element.scrollIntoView();
   }
 
+  console.log('conversation list', conversations);
+
   return (
     <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
       {showJumpToLatest && !showLoading ? scrollToTop : null}

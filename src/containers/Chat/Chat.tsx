@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -16,19 +16,16 @@ import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 
 export interface ChatProps {
-  contactId?: number | string;
-  groupId?: number;
+  contactId?: number | string | null;
+  groupId?: number | null;
 }
 
 export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   const [selectedTab, setSelectedTab] = useState('contacts');
-  const history = useHistory();
-
-  // this is to avoid modifying function params
-  let selectedContactId: any = contactId;
-  let selectedGroupId: any = groupId;
+  const [selectedContactId, setSelectedContactId] = useState(contactId);
+  const [selectedGroupId, setSelectedGroupId] = useState(groupId);
 
   let simulatorId: string | null = null;
 
@@ -75,12 +72,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
     const refetchVariables = SEARCH_QUERY_VARIABLES;
     if (tab === 'groups') {
-      selectedContactId = null;
+      setSelectedGroupId(null);
       refetchVariables.filter = { searchGroup: true };
-      history.replace('/chat/group');
     } else {
-      selectedGroupId = null;
-      history.replace('/chat');
+      setSelectedContactId(null);
     }
 
     console.log('chat selectedContactId', selectedContactId);

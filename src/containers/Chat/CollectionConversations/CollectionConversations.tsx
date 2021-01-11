@@ -6,7 +6,7 @@ import { SearchBar } from '../../../components/UI/SearchBar/SearchBar';
 import { ConversationList } from '../ChatConversations/ConversationList/ConversationList';
 
 export interface CollectionConversationsProps {
-  groupId?: number;
+  groupId?: number | null;
 }
 
 const CollectionConversations: React.SFC<CollectionConversationsProps> = (props) => {

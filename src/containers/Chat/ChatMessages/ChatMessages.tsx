@@ -21,9 +21,9 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
-  contactId?: number | string;
+  contactId?: number | string | null;
   simulatorId?: string | null;
-  groupId?: number | string;
+  groupId?: number | string | null;
 }
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId, groupId }) => {
