@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
-import { useLazyQuery } from '@apollo/client';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { Redirect } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -23,8 +23,8 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('');
-  const history = useHistory();
+  const [selectedTab, setSelectedTab] = useState('contacts');
+  // const history = useHistory();
 
   let simulatorId: string | null = null;
 
@@ -34,19 +34,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // contact id === group when the group id is not passed in the url
   if (groupId || contactId === 'group') {
     queryVariables.filter = { searchGroup: true };
-    setSelectedTab('groups');
   }
 
   // fetch the conversations from cache
-  const [getChatConversations, { loading, error, data, client }] = useLazyQuery<any>(SEARCH_QUERY);
-
-  useEffect(() => {
-    console.log('calling getChatConversations');
-    getChatConversations({
-      variables: queryVariables,
-      // fetchPolicy: 'cache-first',
-    });
-  }, []);
+  const { loading, error, data, client, refetch } = useQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
     if (getUserRole().includes('Staff')) {
@@ -54,6 +48,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     }
   }, []);
 
+  // if (networkStatus === NetworkStatus.refetch) return <Loading />;
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
@@ -73,22 +68,22 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   const handleTabClick = (tab: string) => {
-    // let's not do anything if we click on the selected tab
-    if (tab === selectedTab) {
-      return;
+    console.log('tab', tab);
+
+    const refetchVariables = SEARCH_QUERY_VARIABLES;
+    if (tab === 'groups') {
+      refetchVariables.filter = { searchGroup: true };
     }
+
+    console.log('refetchVariables', refetchVariables);
+    refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
 
     setSelectedTab(tab);
-    if (tab === 'groups') {
-      history.push('/chat/group/');
-    } else {
-      history.push('/chat');
-    }
-
-    getChatConversations({
-      variables: queryVariables,
-      // fetchPolicy: 'cache-first',
-    });
+    // if (tab === 'groups') {
+    //   history.push('/chat/group/');
+    // } else {
+    //   history.push('/chat');
+    // }
   };
 
   let chatInterface: any;
