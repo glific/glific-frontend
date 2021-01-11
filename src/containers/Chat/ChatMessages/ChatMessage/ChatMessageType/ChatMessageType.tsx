@@ -9,15 +9,22 @@ import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
+import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
 
 export interface ChatMessageTypeProps {
   type: string;
   media: any;
   insertedAt?: string;
   body: string;
+  location: any;
 }
 
-export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({ type, media, body }) => {
+export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
+  type,
+  media,
+  body,
+  location,
+}) => {
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
 
@@ -102,6 +109,18 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({ type, media, 
             {media.caption}
           </a>
         </>
+      );
+      break;
+
+    case 'LOCATION':
+      messageBody = (
+        <a
+          href={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <MapIcon />
+        </a>
       );
       break;
 

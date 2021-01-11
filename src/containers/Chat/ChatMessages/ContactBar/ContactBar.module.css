@@ -6,6 +6,85 @@
   min-height: 85px !important;
 }
 
+@media only screen and (max-width: 768px) {
+  .ContactBar {
+    border-bottom: unset;
+    padding: 0px !important;
+    flex-direction: column;
+  }
+  .MobileHeader {
+    padding: 8px 16px;
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+  }
+  .MenuIcon {
+    margin-left: auto;
+  }
+  .ContactDetails {
+    padding: 12px !important;
+    padding-bottom: 0px !important;
+  }
+  .SessionTimerContainer {
+    display: none;
+  }
+  .Chat {
+    display: flex !important;
+  }
+
+  .ContactGroups {
+    padding-left: 12px;
+  }
+}
+
+.ContactInfoContainer {
+  display: flex;
+  width: 100%;
+  align-items: end;
+}
+
+.MobileHeader {
+  display: none;
+}
+
+.GlificLogo {
+  width: 42px;
+}
+
+.Chat {
+  padding: 12px !important;
+  padding-right: 40px !important;
+  padding-left: 8px !important ;
+  display: none;
+  align-items: center;
+  margin-left: auto;
+  background-color: white;
+  border-radius: 0 0 0 12px;
+}
+
+.Chat svg {
+  height: 22px;
+  width: 25px;
+}
+
+.TitleText {
+  color: #073f24;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.IconBackground {
+  background-color: #eaedec;
+  border-radius: 50%;
+  display: flex;
+}
+
 .ContactName {
   line-height: 56px;
 }
@@ -107,7 +186,9 @@
   display: flex;
   align-items: center;
 }
-
+.SessionTimerContainer {
+  margin-left: auto;
+}
 .SessionTimer {
   display: flex;
   align-items: center;

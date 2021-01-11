@@ -27,8 +27,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
   const [savedSearchCriteriaId, setSavedSearchCriteriaId] = useState(null);
-  const [savedSearchCollection, setSavedSearchCollection] = useState(null);
-  const [collectionMethod, setCollectionMethod] = useState('');
+  const [savedSearches, setSavedSearches] = useState(null);
+  const [searchMethod, setSearchMethod] = useState('');
   const [dialog, setDialogbox] = useState(false);
   const [dialogType, setDialogboxType] = useState('');
   const [enableSearchMode, setEnableSearchMode] = useState(false);
@@ -87,7 +87,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   }, [searchVal]);
 
   const handlerSavedSearchCriteria = (criteria: string, id: any) => {
-    // Reset(empty) advance search if collection changed
+    // Reset(empty) advance search if searches changed
     setSearchParam({});
     resetSearch();
 
@@ -114,21 +114,21 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const handleClick = (event: any, data: any, type: string) => {
     event.preventDefault();
-    if (type) setCollectionMethod(type);
+    if (type) setSearchMethod(type);
     if (data) setDialogboxType(data);
     setDialogbox(!dialog);
   };
 
   const saveHandler = (data: any) => {
-    setSavedSearchCollection(data.savedSearch);
+    setSavedSearches(data.savedSearch);
     handlerSavedSearchCriteria(data.savedSearch.args, data.savedSearch.id);
   };
 
-  // create collection
+  // create searches
   let dialogBox;
   if (dialog) {
-    const match = { params: collectionMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
-    let collection = (
+    const match = { params: searchMethod === 'update' ? { id: savedSearchCriteriaId } : {} };
+    let searches = (
       <Search
         match={match}
         type="saveSearch"
@@ -140,7 +140,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     );
 
     if (dialogType === 'search')
-      collection = (
+      searches = (
         <Search
           match={match}
           type="search"
@@ -159,12 +159,12 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         skipOk
         skipCancel
       >
-        {collection}
+        {searches}
       </DialogBox>
     );
   }
 
-  const toolTip = 'The collection will be updated as per new filters';
+  const toolTip = 'The search will be updated as per new filters';
 
   const buildButton = (toolTipTitle: string, type: string, label: string) => {
     return (
@@ -185,7 +185,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
 
-  const btnCreate = buildButton('Create a new collection', 'new', 'Create new');
+  const btnCreate = buildButton('Create a new search', 'new', 'Create new');
 
   const btnCancel = (
     <IconButton
@@ -200,11 +200,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     </IconButton>
   );
 
-  let saveCollectionButton;
+  let saveSearchButton;
 
   if (Object.keys(searchParam).length !== 0)
-    saveCollectionButton = advanceSearch ? (
-      <div className={styles.SaveCollection}>
+    saveSearchButton = advanceSearch ? (
+      <div className={styles.SaveSearch}>
         <div className={styles.Container}>
           {btnUpdate}
           {btnCreate}
@@ -217,9 +217,9 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     <Container className={styles.ChatConversations} disableGutters>
       <SavedSearchToolbar
         savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-        refetchData={{ savedSearchCollection }}
+        refetchData={{ savedSearches }}
         onSelect={() => {
-          // on select collection remove search value & disable search mode
+          // on select searches remove search value & disable search mode
           setSearchVal('');
           if (enableSearchMode) setEnableSearchMode(false);
         }}
@@ -244,7 +244,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         }}
         savedSearchCriteria={savedSearchCriteria}
       />
-      {saveCollectionButton}
+      {saveSearchButton}
       {dialogBox}
     </Container>
   );

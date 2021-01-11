@@ -26,6 +26,10 @@ export const SEARCH_QUERY = gql`
         sender {
           id
         }
+        location {
+          latitude
+          longitude
+        }
         tags {
           id
           label

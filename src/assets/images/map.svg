@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="120px" viewBox="0 0 135 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 40</title>
+    <g id="Graphics" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-44.000000, -800.000000)">
+            <g id="Group-40" transform="translate(44.000000, 800.000000)">
+                <rect id="Rectangle" fill="#F9F4ED" x="0" y="0" width="135" height="80" rx="6"></rect>
+                <path d="M44.4094384,27 L91.5905616,27 C92.4357889,27 93.1897647,27.5313413 93.4740454,28.3273272 L102.045474,52.3273272 C102.416981,53.3675466 101.874882,54.5119769 100.834663,54.8834838 C100.618773,54.9605872 100.391235,55 100.16199,55 L35.8380098,55 C34.7334403,55 33.8380098,54.1045695 33.8380098,53 C33.8380098,52.7707551 33.8774226,52.5432167 33.954526,52.3273272 L42.5259546,28.3273272 C42.8102353,27.5313413 43.5642111,27 44.4094384,27 Z" id="Rectangle" stroke="#073F24" stroke-width="3.5" fill="#119656"></path>
+                <text id="Click-to-view-locati" font-family="Heebo-Regular, Heebo" font-size="6" font-weight="normal" line-spacing="7" fill="#93A29B">
+                    <tspan x="17" y="74">Click to view location on Google maps</tspan>
+                </text>
+                <polygon id="Path-16" stroke="#F9F4ED" stroke-width="3.5" points="55.6830612 30.5151359 78.9917352 51.463302 82.0122642 51.463302 58.9788223 30.5151359"></polygon>
+                <g id="Group-39" transform="translate(57.000000, 10.000000)">
+                    <path d="M9.02029828,25 C10.5,25 18.0405966,14.5894024 18.0405966,9.02029828 C18.0405966,3.4511942 14.0020715,0 9.02029828,0 C4.0385251,0 0,3.02257422 0,9.02029828 C0,15.0180223 7.54059656,25 9.02029828,25 Z" id="Oval" stroke="#6F1D06" stroke-width="3.5" fill="#BF3008"></path>
+                    <circle id="Oval" fill="#6F1D06" cx="9" cy="9" r="3"></circle>
+                </g>
+                <polygon id="Path-17" stroke="#F9F4ED" stroke-width="3.5" points="71.3355353 39.5040497 81.3585872 30.5151359 84.4993459 30.5151359 73.0706436 40.989219"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

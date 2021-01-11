@@ -16,6 +16,8 @@ import {
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
+// TODOS: Need to uncomment this once onclick is fixed
+// import { showMessages } from '../../../../common/responsive';
 
 interface ConversationListProps {
   searchVal: string;
@@ -275,7 +277,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   };
 
   let conversationList: any;
-  // If a search term is used, use the SearchMulti API. For collection term, this is not applicable.
+  // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
   if (searchVal !== '' && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
@@ -345,6 +347,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           // TODO: Need to fix
           // onClick={() => {
           //   setSearchHeight();
+          //   showMessages();
           //   props.setSelectedContactId(conversation.contact.id);
           // }}
           index={index}

@@ -125,7 +125,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
     chatInterface = (
       <>
-        <div className={styles.ChatMessages}>
+        <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
             contactId={showSimulator && simulatorId ? simulatorId : selectedContactId}
             simulatorId={simulatorId}
@@ -133,7 +133,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
           />
         </div>
 
-        <div className={styles.ChatConversations}>
+        <div className={`${styles.ChatConversations} chatConversations`}>
           <Toolbar className={styles.ToolBar}>
             <div className={styles.IconBackground}>
               <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />

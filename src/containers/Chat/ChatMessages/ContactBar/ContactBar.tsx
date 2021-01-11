@@ -7,12 +7,15 @@ import {
   Paper,
   Button,
   ClickAwayListener,
+  IconButton,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import MenuIcon from '@material-ui/icons/Menu';
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import GlificLogo from '../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
@@ -22,6 +25,7 @@ import { ReactComponent as ProfileDisabledIcon } from '../../../../assets/images
 import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
+import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
@@ -41,6 +45,7 @@ import { DropdownDialog } from '../../../../components/UI/DropdownDialog/Dropdow
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
+import { showChats } from '../../../../common/responsive';
 
 export interface ContactBarProps {
   displayName: string;
@@ -431,43 +436,58 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let sesssionAndGroupAssignedTo;
   if (contactId) {
     sesssionAndGroupAssignedTo = (
-      <div className={styles.Container}>
-        <div className={styles.SessionTimer} data-testid="sessionTimer">
-          <span>Session Timer</span>
-          <Timer
-            time={lastMessageTime}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
+      <>
+        <div className={styles.SessionTimerContainer}>
+          <div className={styles.SessionTimer} data-testid="sessionTimer">
+            <span>Session Timer</span>
+            <Timer
+              time={lastMessageTime}
+              contactStatus={contactStatus}
+              contactBspStatus={contactBspStatus}
+            />
+          </div>
+          <div>
+            {assignedToGroup ? (
+              <>
+                <span className={styles.GroupHeading}>Assigned to</span>
+                <span className={styles.GroupsName}>{assignedToGroup}</span>
+              </>
+            ) : null}
+          </div>
         </div>
-        <div>
-          {assignedToGroup ? (
-            <>
-              <span className={styles.GroupHeading}>Assigned to</span>
-              <span className={styles.GroupsName}>{assignedToGroup}</span>
-            </>
-          ) : null}
+        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+          <IconButton className={styles.Icon}>
+            <ChatIcon />
+          </IconButton>
+
+          <div className={styles.TitleText}>Chats</div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <div>
-        <div className={styles.ContactDetails}>
-          <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-            {displayName}
-          </Typography>
-          <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-            <div className={styles.Configure} data-testid="dropdownIcon">
-              <DropdownIcon onClick={handleConfigureIconClick} />
-            </div>
-          </ClickAwayListener>
-        </div>
-        {contactGroups}
+      <div className={styles.MobileHeader}>
+        <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+        <MenuIcon className={styles.MenuIcon} />
       </div>
-      {sesssionAndGroupAssignedTo}
+      <div className={styles.ContactInfoContainer}>
+        <div>
+          <div className={styles.ContactDetails}>
+            <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
+              {displayName}
+            </Typography>
+            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+              <div className={styles.Configure} data-testid="dropdownIcon">
+                <DropdownIcon onClick={handleConfigureIconClick} />
+              </div>
+            </ClickAwayListener>
+          </div>
+          {contactGroups}
+        </div>
+        {sesssionAndGroupAssignedTo}
+      </div>
       {popper}
       {dialogBox}
     </Toolbar>
