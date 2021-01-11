@@ -71,7 +71,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
-  console.log(groupId);
+  console.log('contact bar: groupId', groupId);
   // get group list
   const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
     variables: setVariables(),

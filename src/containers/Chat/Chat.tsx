@@ -36,7 +36,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   // fetch the conversations from cache
-  const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
+  const { loading, error, data, client, refetch } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'network-only',
   });
@@ -53,7 +53,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
-  console.log('data', data);
+  console.log('chat.ts data', data);
 
   // let's handle the case when group id is not passed then we redirect to first record
   if (!groupId && contactId === 'group' && data && data.search.length !== 0) {
@@ -74,7 +74,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     }
 
     console.log('refetchVariables', refetchVariables);
-    // refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
+    refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
 
     setSelectedTab(tab);
   };
@@ -108,7 +108,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
       // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
-    } else if (groupId) {
+    } else if (groupId || selectedTab === 'groups') {
       listingContent = <CollectionConversations groupId={groupId} />;
 
       // set class for groups tab

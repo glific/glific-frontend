@@ -188,12 +188,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     // Use multi search when has search value
     if (searchVal !== '' && Object.keys(searchParam).length === 0) {
-      console.log('multi search - calling filterSearch');
+      console.log('[conversation list]: multi search - calling filterSearch');
       getFilterSearch({
         variables: filterSearch(),
       });
     } else {
-      console.log('calling filterVariables');
+      console.log('[conversation list]: calling filterVariables');
       getFilterConvos({
         variables: filterVariables(selectedGroupId),
       });
@@ -241,12 +241,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     if (conversation.contact) {
       contact = conversation.contact;
     }
-    console.log('Inside buildChatConversation');
+    console.log('[conversation list]: Inside buildChatConversation');
     let selectedRecord = false;
     if (props.selectedContactId === contact.id) {
       selectedRecord = true;
     }
-    console.log('selected group', selectedGroupId);
+    console.log('[conversation list]: selected group', selectedGroupId);
     return (
       <>
         {index === 0 ? header : null}
@@ -301,8 +301,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    console.log('conversations =====', conversations);
-
     // TODO: Need to check why test is not returing correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
@@ -362,7 +360,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
-    console.log('Inside load more');
+    console.log('[conversation list]: Inside load more');
     loadMoreConversations({
       variables: {
         contactOpts: {
