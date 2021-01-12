@@ -39,8 +39,6 @@ const CollectionConversations: React.SFC<CollectionConversationsProps> = (props)
         handleSubmit={handleSubmit}
         onReset={() => resetSearch()}
         searchVal={searchVal}
-        // handleClick={handleClick}
-        endAdornment
         searchMode={false}
       />
       <ConversationList
