@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
-import { Redirect } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -24,8 +23,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
   const [selectedTab, setSelectedTab] = useState('contacts');
-  const [selectedContactId, setSelectedContactId] = useState(contactId);
-  const [selectedGroupId, setSelectedGroupId] = useState(groupId);
+
+  let selectedContactId = contactId;
+  let selectedGroupId = groupId;
 
   let simulatorId: string | null = null;
 
@@ -38,7 +38,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   }
 
   // fetch the conversations from cache
-  const { loading, error, data, client, refetch } = useQuery<any>(SEARCH_QUERY, {
+  const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'network-only',
   });
@@ -57,32 +57,30 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
   console.log('chat.ts data', data);
 
-  // let's handle the case when group id is not passed then we redirect to first record
+  // let's handle the case when group id is not passed in the url then we set the first group
+  // as the selected group
   if (!selectedGroupId && selectedContactId === 'group' && data && data.search.length !== 0) {
-    return <Redirect to={'/chat/group/'.concat(data.search[0].group.id)} />;
+    selectedGroupId = data.search[0].group.id;
+    selectedContactId = '';
   }
 
-  // let's handle the case when contact id and group id is not passed then we redirect to first record
+  // let's handle the case when contact id and group id is not passed in the url then we set the
+  // first record as selected contact
   if (!selectedContactId && !selectedGroupId && data && data.search.length !== 0) {
-    return <Redirect to={'/chat/'.concat(data.search[0].contact.id)} />;
+    selectedContactId = data.search[0].contact.id;
   }
 
   const handleTabClick = (tab: string) => {
-    console.log('chat.ts tab', tab);
-
+    console.log('chat.ts selected tab', tab);
     const refetchVariables = SEARCH_QUERY_VARIABLES;
     if (tab === 'groups') {
-      setSelectedGroupId(null);
       refetchVariables.filter = { searchGroup: true };
     } else {
-      setSelectedContactId(null);
+      refetchVariables.filter = {};
     }
 
-    console.log('chat selectedContactId', selectedContactId);
-    console.log('chat selectedGroupId', selectedGroupId);
-
     console.log('chat.ts refetchVariables', refetchVariables);
-    refetch({ variables: refetchVariables, fetchPolicy: 'network-only' });
+    // refetch({ variables: refetchVariables });
     console.log('chat.ts after data refetch', data);
     setSelectedTab(tab);
   };
@@ -94,11 +92,18 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
         There are no chat conversations to display.
       </Typography>
     );
-  } else if (data) {
+  } else {
     let listingContent;
     let contactSelectedClass = '';
     let groupSelectedClass = '';
-    if (selectedContactId && selectedTab === 'contacts') {
+    console.log('selectedGroupId', selectedGroupId);
+    console.log('contactid', selectedContactId);
+    if (selectedGroupId || selectedTab === 'groups') {
+      listingContent = <CollectionConversations groupId={selectedGroupId} />;
+      // listingContent = <div>Hello</div>;
+      // set class for groups tab
+      groupSelectedClass = `${styles.SelectedTab}`;
+    } else if (selectedContactId) {
       // let's enable simulator only when contact tab is shown
       const simulatedContact = data.search.filter(
         (item: any) => item.contact.phone === SIMULATOR_CONTACT
@@ -116,11 +121,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
       // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
-    } else if (selectedGroupId || selectedTab === 'groups') {
-      listingContent = <CollectionConversations groupId={selectedGroupId} />;
-
-      // set class for groups tab
-      groupSelectedClass = `${styles.SelectedTab}`;
     }
 
     chatInterface = (
