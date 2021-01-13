@@ -28,6 +28,11 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   const [showViewer, setShowViewer] = useState(false);
   let messageBody;
 
+  // manage validation if there is no media
+  if (type !== 'LOCATION' && !media) {
+    return <MessagesWithLinks message={body} />;
+  }
+
   switch (type) {
     case 'IMAGE':
       messageBody = (
