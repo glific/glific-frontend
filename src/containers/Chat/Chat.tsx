@@ -71,7 +71,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // let's handle the case when contact id and group id is not passed in the url then we set the
   // first record as selected contact
   if (!selectedContactId && !selectedGroupId && data && data.search.length !== 0) {
-    selectedContactId = data.search[0].contact.id;
+    if (data.search[0].contact) {
+      selectedContactId = data.search[0].contact.id;
+    } else {
+      // TODOS: this is temporarly fix to refetch the correct data when tabs are switched.
+      // hard redirect
+      window.location.href = '/chat';
+    }
   }
 
   let chatInterface: any;
