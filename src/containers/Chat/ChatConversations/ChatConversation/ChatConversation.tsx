@@ -129,9 +129,12 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
   const { type, body } = lastMessage;
-  const message = <MessageType type={type} body={body} />;
+  const isTextType = type === 'TEXT';
+  let displayMSG: any = <MessageType type={type} body={body} />;
 
-  const displayMSG: any = WhatsAppToJsx(message);
+  if (isTextType) {
+    displayMSG = WhatsAppToJsx(displayMSG);
+  }
 
   // set offset to use that in chatting window to fetch that msg
   const setSearchOffset = (apolloClient: any, offset: number = 0) => {
@@ -172,7 +175,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
           {name}
         </div>
         <div className={styles.MessageContent} data-testid="content">
-          {displayMSG[0] ? BoldedText(displayMSG[0].props.body, highlightSearch) : null}
+          {isTextType && displayMSG[0]
+            ? BoldedText(displayMSG[0].props.body, highlightSearch)
+            : displayMSG}
         </div>
         <div className={styles.MessageDate} data-testid="date">
           {moment(lastMessage.insertedAt).format(DATE_FORMAT)}
