@@ -16,8 +16,7 @@ import {
 import { setErrorMessage } from '../../../../common/notification';
 import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
-// TODOS: Need to uncomment this once onclick is fixed
-// import { showMessages } from '../../../../common/responsive';
+import { showMessages } from '../../../../common/responsive';
 
 interface ConversationListProps {
   searchVal: string;
@@ -222,9 +221,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     });
   };
 
-  // TODO: Need to fix
-  setSearchHeight();
-
   let conversations: any = null;
   // Retrieving all convos or the ones searched by.
   if (data) {
@@ -255,11 +251,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={contact.id}
           selected={selectedRecord}
-          // TODO: Need to fix
-          // onClick={() => {
-          //   setSearchHeight();
-          //   props.setSelectedContactId(contact.id);
-          // }}
+          onClick={() => {
+            setSearchHeight();
+            if (entityType === 'contact' && props.setSelectedContactId) {
+              props.setSelectedContactId(contact.id);
+            }
+          }}
           entityType={entityType}
           index={index}
           contactId={contact.id}
@@ -303,6 +300,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
+    let selectedRecord = false;
     // TODO: Need to check why test is not returing correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
@@ -311,7 +309,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       }
       const key = index;
 
-      let selectedRecord = false;
       let entityId: any;
       let displayName = '';
       let senderLastMessage = '';
@@ -321,6 +318,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (conversation.contact) {
         if (props.selectedContactId === conversation.contact.id) {
           selectedRecord = true;
+        } else {
+          selectedRecord = false;
         }
         entityId = conversation.contact.id;
         if (conversation.contact.name) {
@@ -334,6 +333,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       } else if (conversation.group) {
         if (props.selectedGroupId === conversation.group.id) {
           selectedRecord = true;
+        } else {
+          selectedRecord = false;
         }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
@@ -344,12 +345,15 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         <ChatConversation
           key={key}
           selected={selectedRecord}
-          // TODO: Need to fix
-          // onClick={() => {
-          //   setSearchHeight();
-          //   showMessages();
-          //   props.setSelectedContactId(conversation.contact.id);
-          // }}
+          onClick={() => {
+            setSearchHeight();
+            showMessages();
+            if (entityType === 'contact' && props.setSelectedContactId) {
+              props.setSelectedContactId(conversation.contact.id);
+            } else if (entityType === 'group' && props.setSelectedGroupId) {
+              props.setSelectedGroupId(conversation.group.id);
+            }
+          }}
           index={index}
           contactId={entityId}
           entityType={entityType}
