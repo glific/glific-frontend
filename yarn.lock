@@ -1591,12 +1591,13 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.11.8.9":
+"@nyaruka/flow-editor@glific/floweditor#v1.11.9.0":
   version "1.11.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/901b5b68500991de4b9fe0d24b83793d3768dc19"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/bd90462252ccd326a422c246f805c269f4000389"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
+    react-notifications "1.7.2"
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.2":
   version "0.4.2"
@@ -2485,6 +2486,11 @@ acorn-walk@^7.1.1:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.2.0.tgz#0de889a601203909b0fbe07b8938dc21d2e967bc"
   integrity sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==
+
+acorn@6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  integrity sha512-ZVA9k326Nwrj3Cj9jlh3wGFutC2ZornPNARZwsNYqQYgN0EsV2d53w5RN/co65Ohn4sUAUtb1rSUAOD6XN9idA==
 
 acorn@^6.4.1:
   version "6.4.2"
@@ -3618,7 +3624,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5, classnames@^2.2.6:
+classnames@^2.1.1, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -10122,6 +10128,16 @@ react-linkify@^1.0.0-alpha:
     linkify-it "^2.0.3"
     tlds "^1.199.0"
 
+react-notifications@1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/react-notifications/-/react-notifications-1.7.2.tgz#e70e2c053f86321c0a7fa81ff638922e2fdd572f"
+  integrity sha512-3mlMiNLDQtp64IP+EnYx3xgmbdpzrLQiSO8AP+8o4LiYQC6HcgdVB+MMdGuYZ1ttfKeLgTgol2ESFQJhmz0O3Q==
+  dependencies:
+    acorn "6.4.1"
+    classnames "^2.1.1"
+    prop-types "^15.5.10"
+    react-transition-group "^4.4.1"
+
 react-phone-input-2@^2.13.7:
   version "2.13.9"
   resolved "https://registry.yarnpkg.com/react-phone-input-2/-/react-phone-input-2-2.13.9.tgz#85df6f64e602fc6d4465a63d80b3161602a7012f"
@@ -10284,7 +10300,7 @@ react-tiny-link@^3.6.0:
   resolved "https://registry.yarnpkg.com/react-tiny-link/-/react-tiny-link-3.6.0.tgz#4b2d1bc36a48fbc5d5af2eed83034e05472b628a"
   integrity sha512-uixE/1+IDKVcobnjZQpMafkBT/JQjdgt6kvBZ8AG4uSZ46ECi2HFT5R/TLokQoBJipU4dDs4Mph2AN4BGQMvkQ==
 
-react-transition-group@^4.0.0, react-transition-group@^4.4.0:
+react-transition-group@^4.0.0, react-transition-group@^4.4.0, react-transition-group@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
   integrity sha512-Djqr7OQ2aPUiYurhPalTrVy9ddmFCCzwhqQmtN+J3+3DzLO209Fdr70QrN8Z3DsglWql6iY1lDWAfpFiBtuKGw==
