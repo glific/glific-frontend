@@ -216,11 +216,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const handleFlowSubmit = (flowId: any) => {
+    const flowVariables: any = {
+      flowId,
+    };
+
+    if (props.contactId) {
+      flowVariables.contactId = props.contactId;
+    }
+
+    if (props.groupId) {
+      flowVariables.groupId = props.groupId;
+    }
+
     addFlow({
-      variables: {
-        flowId,
-        contactId: props.contactId,
-      },
+      variables: flowVariables,
     });
   };
 
