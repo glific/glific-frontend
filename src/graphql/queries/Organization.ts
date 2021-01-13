@@ -24,6 +24,7 @@ export const GET_ORGANIZATION = gql`
           id
           label
         }
+        signaturePhrase
       }
     }
   }
