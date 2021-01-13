@@ -51,6 +51,13 @@
   padding: 4px 8px;
   color: #119656;
 }
+
+.Redirect {
+  background-color: #dfa1f9;
+  border-radius: 14px;
+  padding: 4px 8px;
+  color: #7200a1;
+}
 .Time {
   width: 180px;
 }
