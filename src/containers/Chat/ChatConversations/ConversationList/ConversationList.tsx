@@ -187,13 +187,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
 
   useEffect(() => {
-    // Use multi search when has search value
-    if (searchVal !== '' && Object.keys(searchParam).length === 0) {
+    // Use multi search when has search value and when there is no group id
+    if (searchVal !== '' && Object.keys(searchParam).length === 0 && !selectedGroupId) {
       console.log('[conversation list]: multi search - calling filterSearch');
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else {
+    } else if (searchVal !== '') {
+      // TODOS: we were calling this always. Hence added if condition. Do we need this for contacts mode?
       console.log('[conversation list]: calling filterVariables');
       getFilterConvos({
         variables: filterVariables(selectedGroupId),
@@ -412,8 +413,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   if (element) {
     element.scrollIntoView();
   }
-
-  console.log('conversation list', conversations);
 
   return (
     <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>

@@ -97,8 +97,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   useEffect(() => {
-    getContactGroups();
-  }, []);
+    if (contactId) {
+      getContactGroups();
+    }
+  }, [contactId]);
 
   // mutation to update the contact groups
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {

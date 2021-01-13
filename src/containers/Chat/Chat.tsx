@@ -96,8 +96,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     let listingContent;
     let contactSelectedClass = '';
     let groupSelectedClass = '';
-    console.log('selectedGroupId', selectedGroupId);
-    console.log('contactid', selectedContactId);
+    console.log('chat.ts selectedGroupId', selectedGroupId);
+    console.log('chat.ts contactid', selectedContactId);
     if (selectedGroupId || selectedTab === 'groups') {
       listingContent = <CollectionConversations groupId={selectedGroupId} />;
       // listingContent = <div>Hello</div>;
