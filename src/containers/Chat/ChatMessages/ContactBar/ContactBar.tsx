@@ -458,7 +458,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           </div>
         </div>
         <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-          <IconButton className={styles.Icon}>
+          <IconButton className={styles.MobileIcon}>
             <ChatIcon />
           </IconButton>
 
