@@ -19,11 +19,31 @@ const getTime = (time: string) => (
   <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
 );
 
+const getStatus = (status: string) => {
+  let showStatus;
+  switch (status) {
+    case 'Success':
+      showStatus = <div className={styles.Success}>{status}</div>;
+      break;
+    case 'Error':
+      showStatus = <div className={styles.ErrorStyle}>{status}</div>;
+      break;
+    case 'Redirect':
+      showStatus = <div className={styles.Redirect}>{status}</div>;
+      break;
+    default:
+      showStatus = status;
+  }
+
+  return <div className={styles.StatusContainer}>{showStatus}</div>;
+};
+
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
 const columnNames = [
   'TIME',
   'URL',
+  'STATUS',
   'STATUS CODE',
   'ERROR',
   'METHOD',
@@ -35,6 +55,7 @@ const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [
   styles.Time,
   styles.Url,
+  styles.Status,
   styles.StatusCode,
   styles.Error,
   styles.Method,
@@ -114,6 +135,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
   const getColumns = ({
     url,
     method,
+    status,
     requestHeaders,
     requestJson,
     statusCode,
@@ -123,6 +145,7 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
   }: any) => ({
     updatedAt: getTime(updatedAt),
     url: getCroppedText(url, true),
+    status: getStatus(status),
     statusCode: getText(statusCode),
     error: getCroppedText(error, true),
     method: getText(method),

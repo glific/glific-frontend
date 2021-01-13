@@ -17,11 +17,20 @@
 .TableText {
   margin-right: 23px;
   text-align: left;
-  padding: 12px 0px;
+  padding: 8px 0px;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
   margin: 0;
+}
+
+.ErrorStyle {
+  background-color: #fbe8e8;
+  border-radius: 14px;
+  padding: 4px 8px;
+  color: #dd1f1f;
+  min-width: 77px;
+  text-align: center;
 }
 
 .CroppedText {
@@ -36,6 +45,12 @@
   align-content: center;
 }
 
+.Success {
+  background-color: #c8ebdc;
+  border-radius: 14px;
+  padding: 4px 8px;
+  color: #119656;
+}
 .Time {
   width: 180px;
 }
@@ -45,6 +60,10 @@
 }
 
 .StatusCode {
+  width: 140px;
+}
+
+.Status {
   width: 140px;
 }
 
@@ -69,14 +88,19 @@
   padding: 10px;
 }
 
-
-
 .PopoverActions {
   font-size: 16px;
   color: #073f24;
   display: flex;
   align-items: center;
   padding: 16px;
+}
+
+.StatusContainer {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
 }
 
 .PopoverActions span {
