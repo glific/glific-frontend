@@ -30,7 +30,7 @@ import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT } from '../../../../graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_GROUP } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setNotification } from '../../../../common/notification';
@@ -134,6 +134,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     },
   });
 
+  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+    onCompleted: () => {
+      setShowFlowDialog(false);
+      setNotification(client, 'Flow started successfully');
+    },
+  });
+
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
     variables: { contactId },
@@ -222,15 +229,17 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
     if (props.contactId) {
       flowVariables.contactId = props.contactId;
+      addFlow({
+        variables: flowVariables,
+      });
     }
 
     if (props.groupId) {
       flowVariables.groupId = props.groupId;
+      addFlowToGroup({
+        variables: flowVariables,
+      });
     }
-
-    addFlow({
-      variables: flowVariables,
-    });
   };
 
   const closeFlowDialogBox = () => {
