@@ -61,3 +61,8 @@
   display: flex;
   cursor: pointer;
 }
+
+.Title a {
+  text-decoration: none;
+  color: inherit;
+}

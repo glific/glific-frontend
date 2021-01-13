@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -22,7 +23,6 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('contacts');
 
   let selectedContactId = contactId;
   let selectedGroupId = groupId;
@@ -33,8 +33,10 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
 
   // contact id === group when the group id is not passed in the url
+  let selectedTab = 'contacts';
   if (selectedGroupId || selectedContactId === 'group') {
     queryVariables.filter = { searchGroup: true };
+    selectedTab = 'groups';
   }
 
   // fetch the conversations from cache
@@ -55,6 +57,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
+  console.log('chat.ts selectedGroupId', selectedGroupId);
+  console.log('chat.ts contactid', selectedContactId);
   console.log('chat.ts data', data);
 
   // let's handle the case when group id is not passed in the url then we set the first group
@@ -70,21 +74,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     selectedContactId = data.search[0].contact.id;
   }
 
-  const handleTabClick = (tab: string) => {
-    console.log('chat.ts selected tab', tab);
-    const refetchVariables = SEARCH_QUERY_VARIABLES;
-    if (tab === 'groups') {
-      refetchVariables.filter = { searchGroup: true };
-    } else {
-      refetchVariables.filter = {};
-    }
-
-    console.log('chat.ts refetchVariables', refetchVariables);
-    // refetch({ variables: refetchVariables });
-    console.log('chat.ts after data refetch', data);
-    setSelectedTab(tab);
-  };
-
   let chatInterface: any;
   if (data && data.search.length === 0) {
     chatInterface = (
@@ -96,11 +85,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     let listingContent;
     let contactSelectedClass = '';
     let groupSelectedClass = '';
-    console.log('chat.ts selectedGroupId', selectedGroupId);
-    console.log('chat.ts contactid', selectedContactId);
     if (selectedGroupId || selectedTab === 'groups') {
       listingContent = <CollectionConversations groupId={selectedGroupId} />;
-      // listingContent = <div>Hello</div>;
       // set class for groups tab
       groupSelectedClass = `${styles.SelectedTab}`;
     } else if (selectedContactId) {
@@ -139,24 +125,14 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
               <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
             </div>
             <div className={styles.TabContainer}>
-              <div
-                className={styles.Title}
-                aria-hidden="true"
-                onClick={() => handleTabClick('contacts')}
-                onKeyDown={() => handleTabClick('contacts')}
-              >
+              <div className={styles.Title}>
                 <Typography className={`${styles.TitleText} ${contactSelectedClass}`} variant="h6">
-                  Contacts
+                  <Link to="/chat">Contacts</Link>
                 </Typography>
               </div>
-              <div
-                className={styles.Title}
-                aria-hidden="true"
-                onClick={() => handleTabClick('groups')}
-                onKeyDown={() => handleTabClick('groups')}
-              >
+              <div className={styles.Title}>
                 <Typography className={`${styles.TitleText} ${groupSelectedClass}`} variant="h6">
-                  Groups
+                  <Link to="/chat/group">Groups</Link>
                 </Typography>
               </div>
             </div>
