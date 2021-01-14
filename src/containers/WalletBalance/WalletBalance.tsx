@@ -5,7 +5,6 @@ import { CircularProgress } from '@material-ui/core';
 import styles from './WalletBalance.module.css';
 import { ReactComponent as WhiteIcon } from '../../assets/images/icons/White.svg';
 import { ReactComponent as SelectWhiteIcon } from '../../assets/images/icons/SelectWhite.svg';
-import { getUserSession } from '../../services/AuthService';
 import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from '../../graphql/queries/Organization';
 import PERIODIC_INFO_SUBSCRIPTION from '../../graphql/subscriptions/PeriodicInfo';
@@ -15,13 +14,10 @@ export interface WalletBalanceProps {
 }
 
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
-  const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
 
   // get gupshup balance
-  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
-    variables,
-  });
+  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE);
 
   useEffect(() => {
     if (balanceData) {
@@ -35,7 +31,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     if (subscribeToMore) {
       subscribeToMore({
         document: PERIODIC_INFO_SUBSCRIPTION,
-        variables,
         updateQuery: (prev, { subscriptionData }) => {
           const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
           setDisplayBalance(balance.balance);

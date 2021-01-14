@@ -392,21 +392,6 @@ export const walletBalanceSubscription = [
   {
     request: {
       query: PERIODIC_INFO_SUBSCRIPTION,
-      variables: { organizationId: null },
-    },
-    result: {
-      data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
-      variables: { organizationId: '1' },
     },
     result: {
       data: {
@@ -423,21 +408,6 @@ export const walletBalanceHighSubscription = [
   {
     request: {
       query: PERIODIC_INFO_SUBSCRIPTION,
-      variables: { organizationId: null },
-    },
-    result: {
-      data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":10.787}',
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
-      variables: { organizationId: '1' },
     },
     result: {
       data: {
@@ -454,21 +424,6 @@ export const walletBalanceQuery = [
   {
     request: {
       query: BSPBALANCE,
-      variables: { organizationId: '1' },
-    },
-    result: {
-      data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: BSPBALANCE,
-      variables: { organizationId: null },
     },
     result: {
       data: {
@@ -485,21 +440,6 @@ export const walletBalanceHighQuery = [
   {
     request: {
       query: BSPBALANCE,
-      variables: { organizationId: '1' },
-    },
-    result: {
-      data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
-      },
-    },
-  },
-  {
-    request: {
-      query: BSPBALANCE,
-      variables: { organizationId: null },
     },
     result: {
       data: {
