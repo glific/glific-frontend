@@ -8,16 +8,20 @@ import { ReactComponent as SelectWhiteIcon } from '../../assets/images/icons/Sel
 import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from '../../graphql/queries/Organization';
 import PERIODIC_INFO_SUBSCRIPTION from '../../graphql/subscriptions/PeriodicInfo';
+import { getUserSession } from '../../services/AuthService';
 
 export interface WalletBalanceProps {
   fullOpen: boolean;
 }
 
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
+  const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
 
   // get gupshup balance
-  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE);
+  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
+    variables,
+  });
 
   useEffect(() => {
     if (balanceData) {
@@ -31,6 +35,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     if (subscribeToMore) {
       subscribeToMore({
         document: PERIODIC_INFO_SUBSCRIPTION,
+        variables,
         updateQuery: (prev, { subscriptionData }) => {
           if (subscriptionData.data.periodicInfo.key === 'bsp_balance') {
             const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
