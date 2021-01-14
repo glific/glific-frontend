@@ -37,12 +37,17 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   if (selectedGroupId || selectedContactId === 'group') {
     queryVariables.filter = { searchGroup: true };
     selectedTab = 'groups';
+  } else {
+    // need to check why query variables does not change
+    queryVariables.filter = {};
   }
+
+  console.log(queryVariables);
 
   // fetch the conversations from cache
   const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-only',
   });
 
   useEffect(() => {
@@ -67,10 +72,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     if (data.search[0].group) {
       selectedGroupId = data.search[0].group.id;
       selectedContactId = '';
-    } else {
-      // TODOS: this is temp fix to refetch the correct data when tabs are switched.
-      // hard redirect
-      window.location.href = '/chat/group';
     }
   }
 
@@ -79,10 +80,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   if (!selectedContactId && !selectedGroupId && data && data.search.length !== 0) {
     if (data.search[0].contact) {
       selectedContactId = data.search[0].contact.id;
-    } else {
-      // TODOS: this is temp fix to refetch the correct data when tabs are switched.
-      // hard redirect
-      window.location.href = '/chat';
     }
   }
 
@@ -155,6 +152,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
       </>
     );
   }
+
+  console.log(!selectedGroupId);
 
   return (
     <Paper>

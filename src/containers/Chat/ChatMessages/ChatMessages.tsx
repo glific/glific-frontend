@@ -14,6 +14,7 @@ import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../comm
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -144,6 +145,38 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       setDialogbox(false);
     },
   });
+
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION);
+
+  // this function is called when the message is sent
+  const sendGroupMessageHandler = (
+    body: string,
+    mediaId: string,
+    messageType: string,
+    selectedTemplate: any,
+    variableParam: any
+  ) => {
+    const payload: any = {
+      body,
+      senderId: 1,
+      mediaId,
+      type: messageType,
+      flow: 'OUTBOUND',
+    };
+
+    console.log(groupId);
+
+    // add additional param for template
+    if (selectedTemplate) {
+      payload.isHsm = selectedTemplate.isHsm;
+      payload.templateId = parseInt(selectedTemplate.id, 10);
+      payload.params = variableParam;
+    }
+
+    sendMessageToGroups({
+      variables: { groupId, input: payload },
+    });
+  };
 
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
@@ -453,7 +486,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     );
 
     chatInputSection = (
-      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendMessageHandler} />
+      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendGroupMessageHandler} />
     );
   }
 

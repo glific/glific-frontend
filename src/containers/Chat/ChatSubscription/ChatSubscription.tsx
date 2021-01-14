@@ -159,8 +159,9 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     [getContactQuery]
   );
 
+  const [loadGroupData] = useLazyQuery<any>(SEARCH_QUERY);
+
   const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: queryVariables,
     nextFetchPolicy: 'cache-only',
     onCompleted: () => {
       const subscriptionVariables = { organizationId: getUserSession('organizationId') };
@@ -217,7 +218,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   useEffect(() => {
     if (!data) {
-      loadData();
+      const groupFilter = JSON.parse(JSON.stringify(queryVariables));
+      groupFilter.filter.searchGroup = true;
+      loadData({ variables: queryVariables });
+      loadGroupData({ variables: groupFilter });
     }
   }, []);
 
