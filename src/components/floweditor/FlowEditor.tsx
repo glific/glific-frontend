@@ -58,7 +58,6 @@ const setConfig = (uuid: any) => {
     filters: ['whatsapp'],
 
     excludeTypes: [
-      'send_broadcast',
       'add_contact_urn',
       'send_email',
       'set_run_result',
@@ -94,10 +93,6 @@ const setConfig = (uuid: any) => {
       'has_time',
       'has_group',
       'has_category',
-      'has_phone',
-      'has_phone_category',
-      'has_email',
-      'has_email_category',
       'has_state',
       'has_state_category',
       'has_district',
