@@ -32,14 +32,16 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
 
   // use subscription to update balance
   useEffect(() => {
-    subscribeToMore({
-      document: PERIODIC_INFO_SUBSCRIPTION,
-      variables,
-      updateQuery: (prev, { subscriptionData }) => {
-        const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-        setDisplayBalance(balance.balance);
-      },
-    });
+    if (subscribeToMore) {
+      subscribeToMore({
+        document: PERIODIC_INFO_SUBSCRIPTION,
+        variables,
+        updateQuery: (prev, { subscriptionData }) => {
+          const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
+          setDisplayBalance(balance.balance);
+        },
+      });
+    }
   }, [subscribeToMore]);
 
   console.log(balanceData);
@@ -54,13 +56,29 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     );
   }
 
-  if (error) {
+  const errorBody = () => {
     return (
-      <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
-        <div className={styles.WalletBalanceText}>Put in your Gupshup Id</div>
-      </div>
+      <Tooltip title="For any help, please contact the Glific team" placement="top-start">
+        <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
+          {fullOpen ? (
+            <div className={styles.WalletBalanceText}>
+              <WhiteIcon className={styles.Icon} />
+              Verify Gupshup settings
+            </div>
+          ) : (
+            <div className={styles.WalletBalanceText}>
+              <WhiteIcon className={styles.Icon} />
+            </div>
+          )}
+        </div>
+      </Tooltip>
     );
+  };
+
+  if (error) {
+    errorBody();
   }
+
   const updateBody = () => {
     if (displayBalance > 1) {
       return fullOpen ? (
@@ -94,11 +112,9 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
       }`}
       data-testid="WalletBalance"
     >
-      {displayBalance ? updateBody() : null}
+      {displayBalance ? updateBody() : errorBody()}
     </div>
   );
-
-  // get balance on load
 
   return updateBalance;
 };
