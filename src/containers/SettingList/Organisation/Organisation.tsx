@@ -22,6 +22,9 @@ import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
+  activeLanguages: Yup.array().required('Supported Languages is required.'),
+  defaultLanguage: Yup.object().nullable().required('Default Language is required.'),
+  signaturePhrase: Yup.string().nullable().required('Webhook signature is required.'),
 };
 
 const FormSchema = Yup.object().shape(validation);
@@ -57,6 +60,7 @@ export const Organisation: React.SFC = () => {
   const [organizationId, setOrganizationId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
+  const [signaturePhrase, setSignaturePhrase] = useState();
 
   const States = {
     name,
@@ -67,6 +71,7 @@ export const Organisation: React.SFC = () => {
     flowId,
     activeLanguages,
     defaultLanguage,
+    signaturePhrase,
   };
 
   // get the published flow list
@@ -102,12 +107,14 @@ export const Organisation: React.SFC = () => {
     outOfOffice: outOfOfficeValue,
     activeLanguages: activeLanguagesValue,
     defaultLanguage: defaultLanguageValue,
+    signaturePhrase: signaturePhraseValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
     setFlowId(getFlow(outOfOfficeValue.flowId));
+    setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
   };
@@ -180,6 +187,12 @@ export const Organisation: React.SFC = () => {
         label: 'Default language',
       },
       validate: validateDefaultLanguage,
+    },
+    {
+      component: Input,
+      name: 'signaturePhrase',
+      type: 'text',
+      placeholder: 'Webhook signature',
     },
     {
       component: Checkbox,
@@ -277,6 +290,7 @@ export const Organisation: React.SFC = () => {
       },
       defaultLanguageId,
       activeLanguageIds,
+      signaturePhrase: payload.signaturePhrase,
     };
 
     return object;
