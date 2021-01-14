@@ -19,18 +19,48 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const [displayBalance, setDisplayBalance] = useState<any>(null);
 
   // get gupshup balance
-  const { data: balanceData, subscribeToMore } = useQuery(BSPBALANCE, {
+  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
     variables,
   });
 
-  const loading = (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="loading">
-      <div className={styles.WalletBalanceText}>
-        <CircularProgress size={14} className={styles.Progress} />
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    if (balanceData) {
+      const balance = JSON.parse(balanceData.bspbalance.value);
+      setDisplayBalance(balance.balance);
+    }
+  }, [balanceData]);
 
+  // use subscription to update balance
+  useEffect(() => {
+    subscribeToMore({
+      document: PERIODIC_INFO_SUBSCRIPTION,
+      variables,
+      updateQuery: (prev, { subscriptionData }) => {
+        const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
+        setDisplayBalance(balance.balance);
+      },
+    });
+  }, [subscribeToMore]);
+
+  console.log(balanceData);
+
+  if (loading) {
+    return (
+      <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`} data-testid="loading">
+        <div className={styles.WalletBalanceText}>
+          <CircularProgress size={14} className={styles.Progress} />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
+        <div className={styles.WalletBalanceText}>Put in your Gupshup Id</div>
+      </div>
+    );
+  }
   const updateBody = () => {
     if (displayBalance > 1) {
       return fullOpen ? (
@@ -68,29 +98,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     </div>
   );
 
-  // use subscription to update balance
-  useEffect(() => {
-    subscribeToMore({
-      document: PERIODIC_INFO_SUBSCRIPTION,
-      variables,
-      updateQuery: (prev, { subscriptionData }) => {
-        const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-        setDisplayBalance(balance.balance);
-      },
-    });
-  }, [subscribeToMore]);
-
   // get balance on load
-  useEffect(() => {
-    if (balanceData) {
-      const balance = JSON.parse(balanceData.bspbalance.value);
-      setDisplayBalance(balance.balance);
-    }
-  }, [balanceData]);
-
-  if (!balanceData) {
-    return loading;
-  }
 
   return updateBalance;
 };
