@@ -32,14 +32,14 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
       subscribeToMore({
         document: PERIODIC_INFO_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
-          const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-          setDisplayBalance(balance.balance);
+          if (subscriptionData.data.periodicInfo.key === 'bsp_balance') {
+            const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
+            setDisplayBalance(balance.balance);
+          }
         },
       });
     }
   }, [subscribeToMore]);
-
-  console.log(balanceData);
 
   if (loading) {
     return (
