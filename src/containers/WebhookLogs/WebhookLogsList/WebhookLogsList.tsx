@@ -31,6 +31,9 @@ const getStatus = (status: string) => {
     case 'Redirect':
       showStatus = <div className={styles.Redirect}>{status}</div>;
       break;
+    case 'Undefined':
+      showStatus = null;
+      break;
     default:
       showStatus = status;
   }
