@@ -296,7 +296,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    let selectedRecord = false;
     // TODO: Need to check why test is not returing correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
@@ -311,11 +310,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       let contactStatus = '';
       let contactBspStatus = '';
       let entityType = 'contact';
+      let selectedRecord = false;
       if (conversation.contact) {
         if (props.selectedContactId === conversation.contact.id) {
           selectedRecord = true;
-        } else {
-          selectedRecord = false;
         }
         entityId = conversation.contact.id;
         if (conversation.contact.name) {
@@ -329,13 +327,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       } else if (conversation.group) {
         if (props.selectedGroupId === conversation.group.id) {
           selectedRecord = true;
-        } else {
-          selectedRecord = false;
         }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
         entityType = 'group';
       }
+
+      console.log('conversation list: selectedRecord', selectedRecord);
 
       return (
         <ChatConversation
