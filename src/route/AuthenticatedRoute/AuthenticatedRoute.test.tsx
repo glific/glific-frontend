@@ -10,7 +10,7 @@ import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import * as Chat from '../../containers/Chat/Chat';
 
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription, ...CONVERSATION_MOCKS];
-
+window.HTMLElement.prototype.scrollIntoView = function () {};
 describe('<AuthenticatedRoute />', () => {
   test('it should render', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));

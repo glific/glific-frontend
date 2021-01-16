@@ -6,6 +6,7 @@ const withResult = {
     search: [
       {
         __typename: 'Conversation',
+        group: null,
         contact: {
           id: '6',
           name: 'Red Sparrow',

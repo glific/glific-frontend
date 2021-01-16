@@ -17,6 +17,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        group: null,
         contact: {
           id: '2',
           name: 'Effie Cormier',
