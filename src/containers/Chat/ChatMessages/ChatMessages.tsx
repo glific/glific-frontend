@@ -75,6 +75,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   if (groupId) {
     queryVariables.filter = { searchGroup: true };
+  } else {
+    queryVariables.filter = {};
   }
 
   const {
@@ -163,8 +165,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       type: messageType,
       flow: 'OUTBOUND',
     };
-
-    console.log(groupId);
 
     // add additional param for template
     if (selectedTemplate) {
@@ -258,14 +258,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   if (groupId) {
     // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search)
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.group.id === groupId.toString()) {
-          conversationIndex = index;
-          conversationInfo = conversation;
-        }
-        return null;
-      });
+    if (allConversations && allConversations.search) {
+      if (groupId === -1) {
+        conversationIndex = 0;
+        [conversationInfo] = allConversations.search;
+      } else {
+        allConversations.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === groupId.toString()) {
+            conversationIndex = index;
+            conversationInfo = conversation;
+          }
+          return null;
+        });
+      }
+    }
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {

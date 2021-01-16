@@ -190,7 +190,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       });
     } else if (searchVal !== '') {
       // TODOS: we were calling this always and do we need this anymore? For now added above condition.
-      console.log('[conversation list]: calling filterVariables');
       getFilterConvos({
         variables: filterVariables(),
       });
@@ -235,12 +234,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     if (conversation.contact) {
       contact = conversation.contact;
     }
-    console.log('[conversation list]: Inside buildChatConversation');
+
     let selectedRecord = false;
     if (props.selectedContactId === contact.id) {
       selectedRecord = true;
     }
-    console.log('[conversation list]: selected group', selectedGroupId);
+
     return (
       <>
         {index === 0 ? header : null}
@@ -333,8 +332,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         entityType = 'group';
       }
 
-      console.log('conversation list: selectedRecord', selectedRecord);
-
       return (
         <ChatConversation
           key={key}
@@ -366,7 +363,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
-    console.log('[conversation list]: Inside load more');
     loadMoreConversations({
       variables: {
         contactOpts: {

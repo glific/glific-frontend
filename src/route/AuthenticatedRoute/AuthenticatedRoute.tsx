@@ -101,7 +101,7 @@ const routeAdmin = (
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
-
+    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"

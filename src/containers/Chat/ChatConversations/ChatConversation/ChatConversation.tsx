@@ -163,7 +163,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       selected={selected}
       // TODO: Need to fix
       onClick={() => {
-        // props.onClick(index);
+        if (props.onClick) props.onClick(index);
         console.log('index', index);
         setSearchOffset(client, props.messageNumber);
       }}

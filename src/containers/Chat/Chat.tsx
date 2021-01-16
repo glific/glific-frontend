@@ -42,8 +42,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     queryVariables.filter = {};
   }
 
-  console.log(queryVariables);
-
   // fetch the conversations from cache
   const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -62,13 +60,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
-  console.log('chat.ts selectedGroupId', selectedGroupId);
-  console.log('chat.ts contactid', selectedContactId);
-  console.log('chat.ts data', data);
-
-  // let's handle the case when group id is not passed in the url then we set the first group
+  // let's handle the case when group id is -1 then we set the first group
   // as the selected group
-  if (!selectedGroupId && selectedContactId === 'group' && data && data.search.length !== 0) {
+  if (!selectedGroupId && selectedGroupId === -1 && data && data.search.length !== 0) {
     if (data.search[0].group) {
       selectedGroupId = data.search[0].group.id;
       selectedContactId = '';
@@ -152,8 +146,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
       </>
     );
   }
-
-  console.log(!selectedGroupId);
 
   return (
     <Paper>
