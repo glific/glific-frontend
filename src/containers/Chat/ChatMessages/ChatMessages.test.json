@@ -83,7 +83,8 @@
             "sender": {
               "id": "1"
             },
-            "tags": []
+            "tags": [],
+            "errors": "{'message':'['Media Url Not WhiteListed']'}"
           },
           {
             "body": "Tempt not a desperate man.",
@@ -104,7 +105,8 @@
                 "id": "8",
                 "label": "Important"
               }
-            ]
+            ],
+            "errors": "{'message':'['Media Url Not WhiteListed']'}"
           },
           {
             "body": "That it should come to this!",
@@ -125,7 +127,8 @@
                 "id": "1",
                 "label": "Messages"
               }
-            ]
+            ],
+            "errors": "{'message':'['Media Url Not WhiteListed']'}"
           }
         ]
       }

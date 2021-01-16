@@ -8,6 +8,7 @@ import { getUserSession } from '../../../services/AuthService';
 import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
+  MESSAGE_STATUS_SUBSCRIPTION,
 } from '../../../graphql/subscriptions/Chat';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
@@ -180,7 +181,20 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           document: MESSAGE_SENT_SUBSCRIPTION,
           variables: subscriptionVariables,
           updateQuery: (prev, { subscriptionData }) => {
+            console.log('MESSAGE_SENT_SUBSCRIPTION', subscriptionData);
             return updateConversations(prev, subscriptionData, 'SENT');
+          },
+        });
+
+        // message status subscription
+        subscribeToMore({
+          document: MESSAGE_STATUS_SUBSCRIPTION,
+          updateQuery: (prev, { subscriptionData }) => {
+            console.log('MESSAGE_STATUS_SUBSCRIPTION', subscriptionData);
+            return updateConversations(prev, subscriptionData, 'SENT');
+          },
+          onError: (e) => {
+            console.log('e', e);
           },
         });
 

@@ -38,6 +38,7 @@ export interface ChatMessageProps {
   focus?: boolean;
   showMessage: boolean;
   location: any;
+  errors: any;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -51,7 +52,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   let displayTag: any;
   let deleteId: string | number;
-
   const {
     popup,
     focus,
@@ -66,6 +66,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     media,
     body,
     location,
+    errors,
   } = props;
 
   useEffect(() => {
@@ -98,6 +99,20 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagContainer: string | null = styles.TagContainerSender;
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
+  const messageError = errors ? JSON.parse(errors) : {};
+  let messageErrorStatus: any = false;
+  let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
+
+  // Check if the message has an error after sending the message.
+  if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
+    messageErrorStatus = JSON.parse(messageError.message);
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageErrorStatus[0]}</div>
+      </>
+    );
+  }
 
   const isSender = sender.id === contactId;
 
@@ -216,11 +231,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             type === 'STICKER' ? styles.StickerBackground : ''
           }`}
         >
-          <Tooltip
-            title={moment(insertedAt).format(DATE_FORMAT)}
-            placement={isSender ? 'right' : 'left'}
-          >
-            <div className={styles.Content} data-testid="content">
+          <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
+            <div
+              className={`${styles.Content} ${messageErrorStatus ? styles.ErrorContent : ''}`}
+              data-testid="content"
+            >
               <div>
                 <ChatMessageType
                   type={type}

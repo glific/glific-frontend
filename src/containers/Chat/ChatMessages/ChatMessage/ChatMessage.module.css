@@ -82,6 +82,12 @@
   white-space: pre-line;
 }
 
+.ErrorContent {
+  background-color: rgba(58, 55, 55, 0.4);
+  border-radius: 12px;
+  border: 1px solid #ff0000;
+}
+
 .Content a {
   text-decoration: none;
 }
@@ -176,4 +182,10 @@
 .StickerBackground {
   background-color: #00000000;
   box-shadow: none;
+}
+
+.ErrorMessage {
+  color: red;
+  font-size: 12px;
+  font-weight: 600;
 }
