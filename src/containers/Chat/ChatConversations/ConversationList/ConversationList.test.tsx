@@ -47,6 +47,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
+            errors: '{}',
           },
         ],
       },
@@ -63,7 +64,7 @@ const conversationList = (
     <Router>
       <ConversationList
         searchVal=""
-        selectedContactId={3}
+        selectedContactId={2}
         setSelectedContactId={jest.fn()}
         savedSearchCriteria=""
         searchMode={false}
@@ -84,5 +85,5 @@ test('it shows a conversation on clicking a contact', async () => {
   await waitFor(() => {
     fireEvent.click(getAllByTestId('list')[0]);
   });
-  expect(getByText('Restricted Group message body')).toBeInTheDocument();
+  expect(getByText('Hey there whats up?')).toBeInTheDocument();
 });
