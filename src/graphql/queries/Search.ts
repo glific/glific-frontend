@@ -33,6 +33,7 @@ export const SEARCH_QUERY = gql`
         }
         type
         media {
+          id
           url
           caption
         }

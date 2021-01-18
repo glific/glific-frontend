@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
@@ -26,8 +26,21 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
+  useEffect(() => {
+    if (type === 'IMAGE') {
+      const image: any = document.querySelector(`#a${media.id}`);
+      console.log(image);
+      if (image) {
+        image.onload = () => {
+          alert('Image loaded');
+        };
+        image.onerror = () => {
+          alert('Image not loaded');
+        };
+      }
+    }
+  }, []);
   let messageBody;
-
   // manage validation if there is no media
   if (type !== 'LOCATION' && !media) {
     return <MessagesWithLinks message={body} />;
@@ -36,17 +49,21 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   switch (type) {
     case 'IMAGE':
       messageBody = (
-        <>
-          <div
+        <div
+          className={styles.Image}
+          style={{
+            background: `transparent url('${ImageThumbnail}') center no-repeat`,
+          }}
+        >
+          <img
+            alt="img"
+            src={media.url}
+            id={`a${media.id}`}
             data-testid="imageMessage"
-            style={{
-              background: `url("${media.url}"), url('${ImageThumbnail}') no-repeat`,
-            }}
-            className={styles.Image}
             onClick={() => setShowViewer(true)}
-            onKeyDown={() => setShowViewer(true)}
             aria-hidden="true"
           />
+
           <Viewer
             visible={showViewer}
             onClose={() => {
@@ -55,7 +72,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             images={[{ src: media.url, alt: '' }]}
           />
           <MessagesWithLinks message={media.caption} />
-        </>
+        </div>
       );
       break;
 
