@@ -118,36 +118,38 @@ export const messageReceivedSubscription = {
   },
 };
 
+const messageSubscriptionData = {
+  sentMessage: {
+    body: 'How can we help?',
+    flow: 'OUTBOUND',
+    id: '22',
+    insertedAt: '2020-07-11T14:03:28Z',
+    receiver: {
+      id: '2',
+      phone: '919090909009',
+    },
+    sender: {
+      id: '1',
+      phone: '917834811114',
+    },
+    tags: [],
+    type: 'TEXT',
+    media: {
+      caption: null,
+      url:
+        'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+    },
+    errors: '{}',
+  },
+};
+
 export const messageSendSubscription = {
   request: {
     query: MESSAGE_SENT_SUBSCRIPTION,
     variables: { organizationId: '1' },
   },
   result: {
-    data: {
-      sentMessage: {
-        body: 'How can we help?',
-        flow: 'OUTBOUND',
-        id: '22',
-        insertedAt: '2020-07-11T14:03:28Z',
-        receiver: {
-          id: '2',
-          phone: '919090909009',
-        },
-        sender: {
-          id: '1',
-          phone: '917834811114',
-        },
-        tags: [],
-        type: 'TEXT',
-        media: {
-          caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
-        },
-        errors: '{}',
-      },
-    },
+    data: messageSubscriptionData,
   },
 };
 
@@ -157,30 +159,7 @@ export const messageStatusSubscription = {
     variables: { organizationId: '1' },
   },
   result: {
-    data: {
-      sentMessage: {
-        body: 'How can we help?',
-        flow: 'OUTBOUND',
-        id: '22',
-        insertedAt: '2020-07-11T14:03:28Z',
-        receiver: {
-          id: '2',
-          phone: '919090909009',
-        },
-        sender: {
-          id: '1',
-          phone: '917834811114',
-        },
-        tags: [],
-        type: 'TEXT',
-        media: {
-          caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
-        },
-        errors: '{}',
-      },
-    },
+    data: messageSubscriptionData,
   },
 };
 
