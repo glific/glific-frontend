@@ -63,7 +63,7 @@ const conversationList = (
     <Router>
       <ConversationList
         searchVal=""
-        selectedContactId={2}
+        selectedContactId={3}
         setSelectedContactId={jest.fn()}
         savedSearchCriteria=""
         searchMode={false}
@@ -84,5 +84,5 @@ test('it shows a conversation on clicking a contact', async () => {
   await waitFor(() => {
     fireEvent.click(getAllByTestId('list')[0]);
   });
-  expect(getByText('Hey there whats up?')).toBeInTheDocument();
+  expect(getByText('Restricted Group message body')).toBeInTheDocument();
 });
