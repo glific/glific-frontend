@@ -84,7 +84,7 @@
               "id": "1"
             },
             "tags": [],
-            "errors": "{'message':'['Media Url Not WhiteListed']'}"
+            "errors": "{\"message\":[\"Media Url Not WhiteListed\"]}"
           },
           {
             "body": "Tempt not a desperate man.",
@@ -106,7 +106,7 @@
                 "label": "Important"
               }
             ],
-            "errors": "{'message':'['Media Url Not WhiteListed']'}"
+            "errors": "{\"message\":[\"Media Url Not WhiteListed\"]}"
           },
           {
             "body": "That it should come to this!",
@@ -128,7 +128,7 @@
                 "label": "Messages"
               }
             ],
-            "errors": "{'message':'['Media Url Not WhiteListed']'}"
+            "errors": "{\"message\":[\"Media Url Not WhiteListed\"]}"
           }
         ]
       }
