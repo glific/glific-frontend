@@ -76,7 +76,7 @@ const conversationMessageQuery = (
               ],
               type: 'TEXT',
               media: null,
-              errors: '{"message":["Media Url Not WhiteListed"]}',
+              errors: '{"message":"["Media Url Not WhiteListed"]"}',
             },
           ],
         },
@@ -112,7 +112,7 @@ export const messageReceivedSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
-        errors: '{"message":["Media Url Not WhiteListed"]}',
+        errors: '{"message":"["Media Url Not WhiteListed"]"}',
       },
     },
   },
@@ -145,7 +145,7 @@ export const messageSendSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
-        errors: '{"message":["Media Url Not WhiteListed"]}',
+        errors: '{"message":"["Media Url Not WhiteListed"]"}',
       },
     },
   },
@@ -178,7 +178,7 @@ export const messageStatusSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
-        errors: '{"message":["Media Url Not WhiteListed"]}',
+        errors: '{"message":"["Media Url Not WhiteListed"]"}',
       },
     },
   },
@@ -239,7 +239,7 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
-          errors: '{"message":["Media Url Not WhiteListed"]}',
+          errors: '{"message":"["Media Url Not WhiteListed"]"}',
         },
         {
           id: '2',
@@ -262,7 +262,7 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
-          errors: '{"message":["Media Url Not WhiteListed"]}',
+          errors: '{"message":"["Media Url Not WhiteListed"]"}',
         },
       ],
     },

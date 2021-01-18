@@ -99,6 +99,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagContainer: string | null = styles.TagContainerSender;
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
+  console.log('errors', errors);
   const messageError = errors ? JSON.parse(errors) : {};
   let messageErrorStatus: any = false;
   let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
