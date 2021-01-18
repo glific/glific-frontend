@@ -255,7 +255,6 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
-          location: null,
         },
         {
           id: '2',
@@ -278,7 +277,6 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
-          location: null,
         },
       ],
     },
