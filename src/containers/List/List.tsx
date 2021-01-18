@@ -69,6 +69,7 @@ export interface ListProps {
   collapseOpen?: any;
   collapseRow?: any;
   defaultSortBy?: string | null;
+  removeSortBy?: any;
 }
 
 interface TableVals {
@@ -92,6 +93,7 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   dialogTitle,
+  removeSortBy = null,
   button = {
     show: true,
     label: 'Add New',
@@ -453,6 +455,7 @@ export const List: React.SFC<ListProps> = ({
     displayList = (
       <Pager
         columnStyles={columnStyles}
+        removeSortBy={removeSortBy !== null ? removeSortBy : []}
         columnNames={columnNames}
         data={itemList}
         listItemName={listItemName}
