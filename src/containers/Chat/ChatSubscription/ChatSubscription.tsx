@@ -201,6 +201,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           document: MESSAGE_STATUS_SUBSCRIPTION,
           variables: subscriptionVariables,
           updateQuery: (prev, { subscriptionData }) => {
+            console.log('MESSAGE_STATUS_SUBSCRIPTION', subscriptionData);
             return updateConversations(prev, subscriptionData, 'STATUS');
           },
           onError: (e) => {

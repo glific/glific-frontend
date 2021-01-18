@@ -88,9 +88,8 @@
 }
 
 .ErrorMsgIcon {
-  margin-right: 8px;
+  margin: auto 12px;
   flex: none;
-  margin-top: 10px;
 }
 
 .WarningTooltip {
