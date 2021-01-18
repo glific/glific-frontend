@@ -47,7 +47,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
-            errors: '{"message":"["Media Url Not WhiteListed"]"}',
+            errors: '{}',
           },
         ],
       },

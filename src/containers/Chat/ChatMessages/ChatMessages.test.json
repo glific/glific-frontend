@@ -84,7 +84,7 @@
               "id": "1"
             },
             "tags": [],
-            "errors": "{ \"message\": \"[\"Media Url Not WhiteListed\"]\" }"
+            "errors": "{}"
           },
           {
             "body": "Tempt not a desperate man.",
