@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import styles from './ChatMessage.module.css';
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as WarningIcon } from '../../../../assets/images/icons/Warning.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
@@ -237,11 +238,22 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  const ErrorIcon = messageErrorStatus ? (
+    <Tooltip
+      title="Something went wrong! This message could not be sent"
+      placement={isSender ? 'right' : 'left'}
+      tooltipClass={styles.WarningTooltip}
+      tooltipArrowClass={styles.ArrowTooltip}
+    >
+      <WarningIcon className={styles.ErrorMsgIcon} />
+    </Tooltip>
+  ) : null;
+
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
-
+        {ErrorIcon}
         <div
           className={`${styles.ChatMessage} ${mineColor} ${
             type === 'STICKER' ? styles.StickerBackground : ''
