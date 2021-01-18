@@ -16,6 +16,7 @@ import { setColumnToBackendTerms } from '../../../common/constants';
 
 interface PagerProps {
   columnNames: Array<any>;
+  removeSortBy: Array<any>;
   data: any;
   columnStyles?: Array<any>;
   totalRows: number;
@@ -127,7 +128,8 @@ const tableHeadColumns = (
   tableVals: any,
   handleTableChange: Function,
   showCheckbox?: boolean,
-  listName?: string
+  listName?: string,
+  removeSortBy?: Array<any>
 ) => {
   let batchAction = null;
   if (showCheckbox) {
@@ -142,7 +144,7 @@ const tableHeadColumns = (
             key={name}
             className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
           >
-            {i !== columnNames.length - 1 ? (
+            {i !== columnNames.length - 1 && !removeSortBy?.includes(name) ? (
               <TableSortLabel
                 active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
                 direction={tableVals.sortDirection}
@@ -203,6 +205,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     totalRows,
     collapseOpen,
     collapseRow,
+    removeSortBy = [],
   } = props;
 
   const rows = createRows(data, columnStyles, showCheckbox, collapseOpen, collapseRow);
@@ -212,7 +215,8 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     tableVals,
     handleTableChange,
     showCheckbox,
-    listItemName
+    listItemName,
+    removeSortBy
   );
 
   const tablePagination = pagination(columnNames, totalRows, handleTableChange, tableVals);

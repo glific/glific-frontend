@@ -1591,12 +1591,13 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.11.9.0":
+"@nyaruka/flow-editor@glific/floweditor#v1.11.9.2":
   version "1.11.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/bd90462252ccd326a422c246f805c269f4000389"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/c2096252c812647eeefd445668eb43cd2aefdc6a"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
+    react-icons "4.1.0"
     react-notifications "1.7.2"
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.2":
@@ -10102,6 +10103,11 @@ react-icon-base@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-icon-base/-/react-icon-base-2.1.0.tgz#a196e33fdf1e7aaa1fda3aefbb68bdad9e82a79d"
   integrity sha1-oZbjP98eeqof2jrvu2i9rZ6Cp50=
+
+react-icons@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.1.0.tgz#9ca9bcbf2e3aee8e86e378bb9d465842947bbfc3"
+  integrity sha512-FCXBg1JbbR0vWALXIxmFAfozHdVIJmmwCD81Jk0EKOt7Ax4AdBNcaRkWhR0NaKy9ugJgoY3fFvo0PHpte55pXg==
 
 react-icons@^2.2.6:
   version "2.2.7"
