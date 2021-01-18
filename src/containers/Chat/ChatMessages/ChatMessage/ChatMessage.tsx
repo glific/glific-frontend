@@ -104,12 +104,28 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
 
   // Check if the message has an error after sending the message.
-  if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
+  if (Object.prototype.hasOwnProperty.call(messageError, 'payload')) {
+    messageErrorStatus = true;
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageError.payload.payload.reason}</div>
+      </>
+    );
+  } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
     messageErrorStatus = JSON.parse(messageError.message);
     tooltipTitle = (
       <>
         {tooltipTitle}
         <div className={styles.ErrorMessage}>{messageErrorStatus[0]}</div>
+      </>
+    );
+  } else if (Object.keys(messageError).length !== 0) {
+    messageErrorStatus = true;
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageError}</div>
       </>
     );
   }
