@@ -1,5 +1,4 @@
 import React from 'react';
-import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
 import { Chat } from './Chat';

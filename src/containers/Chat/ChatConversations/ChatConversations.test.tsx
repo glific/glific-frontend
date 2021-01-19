@@ -2,8 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import ChatConversations from './ChatConversations';
-import { MockedProvider } from '@apollo/client/testing';
-import { ChatConversationMocks } from './ChatConversations.test.helper';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
