@@ -129,52 +129,73 @@ export const List: React.SFC<ListProps> = ({
     defaultColumnSort = defaultSortBy;
   }
 
-  // get the last sort value from local storage if exist else set the default column and order
-  const getSortCriteria = (listItemNameValue: string, columnName: string = '') => {
-    // let's determine if we are retrieving sort column or direction
-    // if columnName is empty then we want to get the sort direction
-    // also set the default values
-    let returnValue;
-    let isDirection = false;
+  // get the last sort column value from local storage if exist else set the default column
+  const getSortColumn = (listItemNameValue: string, columnName: string) => {
+    // set the column name
+    let columnnNameValue;
     if (columnName) {
-      returnValue = columnName;
-    } else {
-      // return default direction
-      returnValue = 'asc';
-      isDirection = true;
+      columnnNameValue = columnName;
     }
 
     // check if we have sorting stored in local storage
-    const sortValue = getLastListSessionValues(listItemNameValue, isDirection);
+    const sortValue = getLastListSessionValues(listItemNameValue, false);
 
+    // update column name from the local storage
     if (sortValue) {
-      returnValue = sortValue;
+      columnnNameValue = sortValue;
     }
 
-    return setColumnToBackendTerms(listItemName, returnValue);
+    return setColumnToBackendTerms(listItemName, columnnNameValue);
+  };
+
+  // get the last sort direction value from local storage if exist else set the default order
+  const getSortDirection = (listItemNameValue: string) => {
+    // set column direction
+    let sortDirection: any = 'asc';
+
+    // check if we have sorting stored in local storage
+    const sortValue = getLastListSessionValues(listItemNameValue, true);
+
+    if (sortValue) {
+      sortDirection = sortValue;
+    }
+
+    return sortDirection;
   };
 
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getSortCriteria(listItemName, defaultColumnSort),
-    sortDirection: getSortCriteria(listItemName),
+    sortCol: getSortColumn(listItemName, defaultColumnSort),
+    sortDirection: getSortDirection(listItemName),
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const value = setColumnToBackendTerms(listItemName, newVal);
+    console.log('listItemName', listItemName);
+    console.log('attribute', attribute);
+    console.log('newVal', newVal);
+    let updatedList;
+    let attributeValue = newVal;
+    if (attribute === 'sortCol') {
+      attributeValue = setColumnToBackendTerms(listItemName, newVal);
+      updatedList = getUpdatedList(listItemName, newVal, false);
+    } else {
+      updatedList = getUpdatedList(listItemName, newVal, true);
+    }
 
-    const updatedList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+    console.log('udpatedList', updatedList);
+    // set the sort criteria in localstorage
     setListSession(JSON.stringify(updatedList));
 
     setTableVals({
       ...tableVals,
-      [attribute]: value,
+      [attribute]: attributeValue,
     });
   };
+
   let filter: any = {};
 
   if (searchVal !== '') {
@@ -421,8 +442,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getSortCriteria(listItemName, defaultColumnSort),
-      sortDirection: getSortCriteria(listItemName),
+      sortCol: getSortColumn(listItemName, defaultColumnSort),
+      sortDirection: getSortDirection(listItemName),
     });
   };
 
