@@ -38,6 +38,7 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 const routeStaff = (
   <Switch>
     <Route path="/chat" exact component={Chat} />
+    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"

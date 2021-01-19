@@ -1,4 +1,5 @@
 import {
+  GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
@@ -154,6 +155,40 @@ export const messageReceivedSubscription = {
           phone: '919090709009',
         },
         tags: [],
+        type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
+        location: null,
+      },
+    },
+  },
+};
+
+export const groupSendSubscription = {
+  request: {
+    query: GROUP_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentGroupMessage: {
+        body: 'How can we help?',
+        flow: 'OUTBOUND',
+        id: '22',
+        insertedAt: '2020-07-11T14:03:28Z',
+        receiver: {
+          id: '1',
+          phone: '917834811114',
+        },
+        sender: {
+          id: '1',
+          phone: '917834811114',
+        },
+        tags: [],
+        groupId: '1',
         type: 'TEXT',
         media: {
           caption: null,
@@ -390,6 +425,7 @@ export const CONVERSATION_MOCKS = [
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  groupSendSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
   savedSearchQuery,
