@@ -62,7 +62,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
   // let's handle the case when group id is -1 then we set the first group
   // as the selected group
-  if (!selectedGroupId && selectedGroupId === -1 && data && data.search.length !== 0) {
+  if (!selectedContactId && selectedGroupId === -1 && data && data.search.length !== 0) {
     if (data.search[0].group) {
       selectedGroupId = data.search[0].group.id;
       selectedContactId = '';

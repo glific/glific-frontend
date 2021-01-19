@@ -6,6 +6,7 @@ import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
 import { getUserSession } from '../../../services/AuthService';
 import {
+  GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
 } from '../../../graphql/subscriptions/Chat';
@@ -38,6 +39,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
+      console.log(cachedConversations, subscriptionData);
       // if there is no message data then return previous conversations
       if (!subscriptionData.data) {
         return cachedConversations;
@@ -51,6 +53,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
       let newMessage: any;
       let contactId: number = 0;
+      let groupId: number = 0;
       let tagData: any;
       switch (action) {
         case 'SENT':
@@ -63,6 +66,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           // set the sender contact id
           newMessage = subscriptionData.data.receivedMessage;
           contactId = subscriptionData.data.receivedMessage.sender.id;
+          break;
+        case 'GROUP':
+          newMessage = subscriptionData.data.sentGroupMessage;
+          groupId = subscriptionData.data.sentGroupMessage.groupId.toString();
           break;
         case 'TAG_ADDED':
         case 'TAG_DELETED':
@@ -87,13 +94,24 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
-      cachedConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
-          conversationIndex = index;
-          conversationFound = true;
-        }
-        return null;
-      });
+
+      if (action === 'GROUP') {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === groupId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      } else {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.contact.id === contactId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      }
 
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
@@ -159,7 +177,26 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     [getContactQuery]
   );
 
-  const [loadGroupData] = useLazyQuery<any>(SEARCH_QUERY);
+  const [loadGroupData, { subscribeToMore: groupSubscribe, data: groupData }] = useLazyQuery<any>(
+    SEARCH_QUERY,
+    {
+      nextFetchPolicy: 'cache-only',
+      onCompleted: () => {
+        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+
+        if (groupSubscribe) {
+          // message received subscription
+          groupSubscribe({
+            document: GROUP_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) => {
+              return updateConversations(prev, subscriptionData, 'GROUP');
+            },
+          });
+        }
+      },
+    }
+  );
 
   const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -208,10 +245,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && groupData) {
       setDataLoaded(true);
     }
-  }, [data]);
+  }, [data, groupData]);
 
   useEffect(() => {
     setLoading(loading);

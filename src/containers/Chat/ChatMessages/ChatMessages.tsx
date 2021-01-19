@@ -30,7 +30,6 @@ export interface ChatMessagesProps {
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId, groupId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
-
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
