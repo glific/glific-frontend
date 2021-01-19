@@ -174,9 +174,6 @@ export const List: React.SFC<ListProps> = ({
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    console.log('listItemName', listItemName);
-    console.log('attribute', attribute);
-    console.log('newVal', newVal);
     let updatedList;
     let attributeValue = newVal;
     if (attribute === 'sortCol') {
@@ -186,7 +183,6 @@ export const List: React.SFC<ListProps> = ({
       updatedList = getUpdatedList(listItemName, newVal, true);
     }
 
-    console.log('udpatedList', updatedList);
     // set the sort criteria in localstorage
     setListSession(JSON.stringify(updatedList));
 

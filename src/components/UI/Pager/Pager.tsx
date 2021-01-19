@@ -152,6 +152,7 @@ const tableHeadColumns = (
                   if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
                     handleTableChange('sortCol', name);
                   } else {
+                    handleTableChange('sortCol', name);
                     handleTableChange(
                       'sortDirection',
                       tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
