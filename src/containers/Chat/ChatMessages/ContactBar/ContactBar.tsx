@@ -136,7 +136,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
     onCompleted: () => {
-      setShowFlowDialog(false);
       setNotification(client, 'Flow started successfully');
     },
   });
@@ -239,6 +238,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       addFlowToGroup({
         variables: flowVariables,
       });
+      // Closing the dialog box after starting the flow since it takes a lot of time
+      setShowFlowDialog(false);
     }
   };
 

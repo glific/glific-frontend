@@ -34,7 +34,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
 
   // contact id === group when the group id is not passed in the url
   let selectedTab = 'contacts';
-  if (selectedGroupId || selectedContactId === 'group') {
+  if (selectedGroupId) {
     queryVariables.filter = { searchGroup: true };
     selectedTab = 'groups';
   } else {

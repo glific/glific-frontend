@@ -33,7 +33,17 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     onCompleted: (conversation) => {
       if (conversation) {
         // save the conversation and update cache
-        saveConversation(conversation, client, queryVariables);
+
+        // temporary fix for cache. need to check why queryvariables change
+        saveConversation(conversation, client, {
+          contactOpts: {
+            limit: 50,
+          },
+          filter: {},
+          messageOpts: {
+            limit: 50,
+          },
+        });
       }
     },
   });
@@ -111,6 +121,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           return null;
         });
       }
+
+      console.log(action, conversationIndex, conversationFound);
 
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
