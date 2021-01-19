@@ -58,6 +58,14 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     attachmentURL: Yup.string().required('URL is required.'),
   });
 
+  const displayWarning = () => {
+    return (
+      <div className={styles.FormHelperText}>
+        WhatsApp does not support the sticker & audio caption, if you have it, it will be ignored.
+      </div>
+    );
+  };
+
   const form = (
     <Formik
       enableReinitialize
@@ -80,8 +88,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             }}
             handleCancel={() => {
               setAttachment(false);
-              setAttachmentType('');
-              setAttachmentURL('');
             }}
             buttonOk="Add"
             alignButtons="left"
@@ -95,11 +101,13 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
                   <CrossIcon
                     onClick={() => {
                       setAttachmentType('');
+                      setAttachmentURL('');
                       setAttachmentAdded(false);
                     }}
                   />
                 </div>
               ) : null}
+              {attachmentType === 'STICKER' || attachmentType === 'AUDIO' ? displayWarning() : null}
             </div>
           </DialogBox>
         </Form>

@@ -22,3 +22,11 @@
   align-items: center;
   margin-left: 10px;
 }
+
+.FormHelperText {
+  position: absolute;
+  margin-top: 65px;
+  color: #ff0000;
+  width: 85%;
+  padding-top: 15px;
+}
