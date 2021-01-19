@@ -159,7 +159,15 @@ export const messageStatusSubscription = {
     variables: { organizationId: '1' },
   },
   result: {
-    data: messageSubscriptionData,
+    data: {
+      sentMessage: {
+        id: '22',
+        receiver: {
+          id: '2',
+        },
+        errors: '{}',
+      },
+    },
   },
 };
 

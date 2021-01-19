@@ -72,30 +72,8 @@ export const MESSAGE_STATUS_SUBSCRIPTION = gql`
   subscription($organizationId: ID!) {
     updateMessageStatus(organizationId: $organizationId) {
       id
-      body
-      flow
-      type
-      location {
-        latitude
-        longitude
-      }
-      insertedAt
       receiver {
         id
-        phone
-      }
-      sender {
-        id
-        phone
-      }
-      tags {
-        id
-        label
-        colorCode
-      }
-      media {
-        url
-        caption
       }
       errors
     }
