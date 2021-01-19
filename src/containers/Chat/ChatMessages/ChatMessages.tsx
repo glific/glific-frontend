@@ -243,11 +243,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
-      if (!loading && !data) {
+      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 50, offset: 0 },
+            messageOpts: { limit: 200, offset: 0 },
             contactOpts: { limit: 50 },
           },
         });
