@@ -18,6 +18,7 @@ import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
+import { parseTextMethod } from '../../../../common/utils';
 
 export interface ChatMessageProps {
   id: number;
@@ -100,7 +101,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagContainer: string | null = styles.TagContainerSender;
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
-  const messageError = errors ? JSON.parse(errors) : {};
+  const messageError = errors ? parseTextMethod(errors) : {};
   let messageErrorStatus: any = false;
   let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
 
@@ -114,7 +115,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       </>
     );
   } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
-    messageErrorStatus = JSON.parse(messageError.message);
+    messageErrorStatus = parseTextMethod(messageError.message);
     tooltipTitle = (
       <>
         {tooltipTitle}
