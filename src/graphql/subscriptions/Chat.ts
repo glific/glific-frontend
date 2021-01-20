@@ -29,6 +29,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         url
         caption
       }
+      errors
     }
   }
 `;
@@ -62,6 +63,19 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
         url
         caption
       }
+      errors
+    }
+  }
+`;
+
+export const MESSAGE_STATUS_SUBSCRIPTION = gql`
+  subscription($organizationId: ID!) {
+    updateMessageStatus(organizationId: $organizationId) {
+      id
+      receiver {
+        id
+      }
+      errors
     }
   }
 `;

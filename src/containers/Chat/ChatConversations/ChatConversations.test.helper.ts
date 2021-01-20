@@ -38,6 +38,7 @@ const withResult = {
             ],
             type: 'TEXT',
             media: null,
+            errors: '{}',
           },
         ],
       },

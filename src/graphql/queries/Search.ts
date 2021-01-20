@@ -40,6 +40,7 @@ export const SEARCH_QUERY = gql`
           url
           caption
         }
+        errors
       }
     }
   }

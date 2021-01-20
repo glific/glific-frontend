@@ -9,6 +9,7 @@ import {
   GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
+  MESSAGE_STATUS_SUBSCRIPTION,
 } from '../../../graphql/subscriptions/Chat';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
@@ -56,12 +57,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       let contactId: number = 0;
       let groupId: number = 0;
       let tagData: any;
+      let messageStatusData: any;
       switch (action) {
         case 'SENT':
           // set the receiver contact id
           newMessage = subscriptionData.data.sentMessage;
           contactId = subscriptionData.data.sentMessage.receiver.id;
-
           break;
         case 'RECEIVED':
           // set the sender contact id
@@ -71,6 +72,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         case 'GROUP':
           newMessage = subscriptionData.data.sentGroupMessage;
           groupId = subscriptionData.data.sentGroupMessage.groupId.toString();
+          break;
+        case 'STATUS':
+          // set the receiver contact id
+          messageStatusData = subscriptionData.data.updateMessageStatus;
+          contactId = subscriptionData.data.updateMessageStatus.receiver.id;
           break;
         case 'TAG_ADDED':
         case 'TAG_DELETED':
@@ -154,7 +160,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // let's add/delete tags for the message
         // tag object: tagData.tag
         updatedConversation[0].messages.forEach((message: any) => {
-          if (message.id === tagData.message.id) {
+          if (tagData && message.id === tagData.message.id) {
             // let's add tag if action === "TAG_ADDED"
             if (action === 'TAG_ADDED') {
               message.tags.push(tagData.tag);
@@ -164,6 +170,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
               // eslint-disable-next-line
               message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
             }
+          }
+
+          if (messageStatusData && message.id === messageStatusData.id) {
+            // eslint-disable-next-line
+            message.errors = messageStatusData.errors;
           }
         });
       }
@@ -222,6 +233,18 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           variables: subscriptionVariables,
           updateQuery: (prev, { subscriptionData }) => {
             return updateConversations(prev, subscriptionData, 'SENT');
+          },
+        });
+
+        // message status subscription
+        subscribeToMore({
+          document: MESSAGE_STATUS_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'STATUS');
+          },
+          onError: (e) => {
+            console.log('e', e);
           },
         });
 

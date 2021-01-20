@@ -59,6 +59,7 @@ describe('<ChatMessage />', () => {
       ],
       type: link,
       media: { url: 'http://glific.com' },
+      errors: '{}',
     };
   };
 

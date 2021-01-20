@@ -2,6 +2,7 @@ import {
   GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
+  MESSAGE_STATUS_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
 import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
@@ -126,6 +127,7 @@ const conversationGroupQuery = (
               media: null,
               tags: [],
               location: null,
+              errors: '{}',
             },
           ],
         },
@@ -196,8 +198,34 @@ export const groupSendSubscription = {
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
         location: null,
+        errors: '{}',
       },
     },
+  },
+};
+
+const messageSubscriptionData = {
+  sentMessage: {
+    body: 'How can we help?',
+    flow: 'OUTBOUND',
+    id: '22',
+    insertedAt: '2020-07-11T14:03:28Z',
+    receiver: {
+      id: '2',
+      phone: '919090909009',
+    },
+    sender: {
+      id: '1',
+      phone: '917834811114',
+    },
+    tags: [],
+    type: 'TEXT',
+    media: {
+      caption: null,
+      url:
+        'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+    },
+    errors: '{}',
   },
 };
 
@@ -207,28 +235,24 @@ export const messageSendSubscription = {
     variables: { organizationId: '1' },
   },
   result: {
+    data: messageSubscriptionData,
+  },
+};
+
+export const messageStatusSubscription = {
+  request: {
+    query: MESSAGE_STATUS_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
     data: {
       sentMessage: {
-        body: 'How can we help?',
-        flow: 'OUTBOUND',
         id: '22',
-        insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
           id: '2',
-          phone: '919090909009',
-        },
-        sender: {
-          id: '1',
-          phone: '917834811114',
-        },
-        tags: [],
-        type: 'TEXT',
-        media: {
-          caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
         location: null,
+        errors: '{}',
       },
     },
   },
@@ -290,6 +314,7 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
+          errors: '{}',
         },
         {
           id: '2',
@@ -312,6 +337,7 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
+          errors: '{}',
         },
       ],
     },
@@ -426,6 +452,7 @@ export const CONVERSATION_MOCKS = [
   messageReceivedSubscription,
   messageSendSubscription,
   groupSendSubscription,
+  messageStatusSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
   savedSearchQuery,
