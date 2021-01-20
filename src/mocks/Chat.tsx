@@ -198,7 +198,6 @@ export const groupSendSubscription = {
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
         location: null,
-        errors: '{}',
       },
     },
   },
