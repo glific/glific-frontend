@@ -150,9 +150,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     if (offset.data) {
       offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
     }
-    if (props.selectedContactId && offsetValue) {
-      loadMoreConversations({
-        variables: {
+    if (offsetValue) {
+      let loadMoreVariables;
+      if (props.selectedContactId) {
+        loadMoreVariables = {
           contactOpts: {
             limit: 1,
           },
@@ -163,7 +164,25 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             limit: 50,
             offset: offsetValue,
           },
-        },
+        };
+      } else if (props.selectedGroupId) {
+        loadMoreVariables = {
+          contactOpts: {
+            limit: 1,
+          },
+          filter: {
+            id: selectedGroupId,
+            searchGroup: true,
+          },
+          messageOpts: {
+            limit: 50,
+            offset: offsetValue,
+          },
+        };
+      }
+
+      loadMoreConversations({
+        variables: loadMoreVariables,
       });
     }
   }, [offset, selectedContactId]);
@@ -363,17 +382,23 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
-    loadMoreConversations({
-      variables: {
-        contactOpts: {
-          limit: 10,
-          offset: loadingOffset,
-        },
-        filter: {},
-        messageOpts: {
-          limit: 50,
-        },
+    const conversationLoadMoreVariables = {
+      contactOpts: {
+        limit: 10,
+        offset: loadingOffset,
       },
+      filter: {},
+      messageOpts: {
+        limit: 50,
+      },
+    };
+
+    if (selectedGroupId) {
+      conversationLoadMoreVariables.filter = { searchGroup: true };
+    }
+
+    loadMoreConversations({
+      variables: conversationLoadMoreVariables,
     });
     setShowLoading(true);
   };
