@@ -47,6 +47,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
+            errors: '{}',
           },
         ],
       },
