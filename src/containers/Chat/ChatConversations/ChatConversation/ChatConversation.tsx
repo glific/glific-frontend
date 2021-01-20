@@ -160,7 +160,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       }}
       to={`/chat/${contactId}${msgID}`}
     >
-      <div>
+      <div className={styles.ChatIcons}>
         <div className={chatBubble.join(' ')} />
         <div className={styles.Timer}>
           <Timer
