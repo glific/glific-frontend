@@ -59,9 +59,21 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   });
 
   const displayWarning = () => {
+    if (attachmentType === 'STICKER') {
+      return (
+        <div className={styles.FormHelperText}>
+          <ol>
+            <li>Animated stickers are not supported.</li>
+            <li>Captions along with stickers are not supported.</li>
+          </ol>
+        </div>
+      );
+    }
     return (
       <div className={styles.FormHelperText}>
-        WhatsApp does not support the sticker & audio caption, if you have it, it will be ignored.
+        <ol>
+          <li>Captions along with audio are not supported.</li>
+        </ol>
       </div>
     );
   };
