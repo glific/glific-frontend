@@ -87,6 +87,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     fetchPolicy: 'cache-only',
   });
 
+  console.log(messageOffset);
+
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData) {
@@ -107,7 +109,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
           conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
             const conversationObj = conversation;
             // If the contact is present in the cache
-            if (conversationObj.contact.id === contactId?.toString()) {
+
+            if (groupId) {
+              if (conversationObj.group.id === groupId?.toString()) {
+                conversationObj.messages = [
+                  ...conversationObj.messages,
+                  ...conversationCopy.search[0].messages,
+                ];
+              }
+            } else if (conversationObj.contact.id === contactId?.toString()) {
               isContactCached = true;
               conversationObj.messages = [
                 ...conversationObj.messages,
@@ -116,6 +126,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
             }
             return conversationObj;
           });
+
           // If the contact is NOT present in the cache
           if (!isContactCached) {
             conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
@@ -211,7 +222,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (data && data.search[0].contact.status === 'BLOCKED') {
+  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
     return <Redirect to="/chat" />;
   }
 
@@ -379,12 +390,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   const loadMoreMessages = () => {
+    const variables: any = {
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: 50, offset: messageOffset },
+      contactOpts: { limit: 1 },
+    };
+
+    if (groupId) {
+      variables.filter = { id: groupId.toString(), searchGroup: true };
+    }
     getSearchQuery({
-      variables: {
-        filter: { id: contactId?.toString() },
-        messageOpts: { limit: 50, offset: messageOffset },
-        contactOpts: { limit: 1 },
-      },
+      variables,
     });
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {

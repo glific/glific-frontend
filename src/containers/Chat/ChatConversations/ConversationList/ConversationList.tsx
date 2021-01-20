@@ -429,7 +429,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   return (
-    <Container className={`${styles.ListingContainer} contactsContainer`} disableGutters>
+    <Container
+      className={`${
+        selectedContactId ? styles.ListingContainer : styles.groupListingContainer
+      } contactsContainer`}
+      disableGutters
+    >
       {showJumpToLatest && !showLoading ? scrollToTop : null}
       {conversationList ? (
         <List className={styles.StyledList}>

@@ -4,6 +4,12 @@
   padding: 0px !important;
 }
 
+.groupListingContainer {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
 .StyledList {
   padding: 0 !important;
   width: 93%;
