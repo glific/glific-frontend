@@ -11,3 +11,13 @@ export const getObject = (arr: any, data: any) => {
 };
 
 export { getObject as default };
+
+export const parseText = (text: string) => {
+  try {
+    return JSON.parse(text);
+  } catch (ex) {
+    return {};
+  }
+};
+
+export { parseText as parseTextMethod };
