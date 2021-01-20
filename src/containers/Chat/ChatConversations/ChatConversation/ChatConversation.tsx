@@ -161,23 +161,27 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       className={clsx(styles.StyledListItem, { [styles.SelectedColor]: selected })}
       component={Link}
       selected={selected}
-      // TODO: Need to fix
       onClick={() => {
         if (props.onClick) props.onClick(index);
-        console.log('index', index);
         setSearchOffset(client, props.messageNumber);
       }}
       to={redirectURL}
     >
       <div>
-        <div className={chatBubble.join(' ')} />
-        <div className={styles.Timer}>
-          <Timer
-            time={senderLastMessage}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
-        </div>
+        {entityType === 'contact' ? (
+          <>
+            <div className={chatBubble.join(' ')} />
+            <div className={styles.Timer}>
+              <Timer
+                time={senderLastMessage}
+                contactStatus={contactStatus}
+                contactBspStatus={contactBspStatus}
+              />
+            </div>
+          </>
+        ) : (
+          ''
+        )}
       </div>
       <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">
