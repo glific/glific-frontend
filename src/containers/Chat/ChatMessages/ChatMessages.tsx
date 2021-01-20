@@ -10,7 +10,12 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
+import {
+  TIME_FORMAT,
+  SEARCH_QUERY_VARIABLES,
+  setVariables,
+  GROUP_SEARCH_QUERY_VARIABLES,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
@@ -70,12 +75,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
 
   if (groupId) {
-    queryVariables.filter = { searchGroup: true };
-  } else {
-    queryVariables.filter = {};
+    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
   }
 
   const {
@@ -86,8 +89,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     variables: queryVariables,
     fetchPolicy: 'cache-only',
   });
-
-  console.log(messageOffset);
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
@@ -267,7 +268,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   if (groupId) {
-    // loop through the cached conversations and find if contact exists
+    // loop through the cached conversations and find if group exists
     if (allConversations && allConversations.search) {
       if (groupId === -1) {
         conversationIndex = 0;
@@ -288,7 +289,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       if (!loading && !data) {
         getSearchQuery({
           variables: {
-            // filter: { id: groupId },
+            filter: { id: groupId, searchGroup: true },
             messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },

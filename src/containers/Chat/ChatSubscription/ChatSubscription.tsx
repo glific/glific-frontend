@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
-import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import { GROUP_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
 import { getUserSession } from '../../../services/AuthService';
@@ -35,15 +35,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // save the conversation and update cache
 
         // temporary fix for cache. need to check why queryvariables change
-        saveConversation(conversation, client, {
-          contactOpts: {
-            limit: 50,
-          },
-          filter: {},
-          messageOpts: {
-            limit: 50,
-          },
-        });
+        saveConversation(conversation, client, queryVariables);
       }
     },
   });
@@ -122,8 +114,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         });
       }
 
-      console.log(action, conversationIndex, conversationFound);
-
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       if (!conversationFound) {
@@ -191,12 +181,13 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const [loadGroupData, { subscribeToMore: groupSubscribe, data: groupData }] = useLazyQuery<any>(
     SEARCH_QUERY,
     {
+      variables: GROUP_SEARCH_QUERY_VARIABLES,
       nextFetchPolicy: 'cache-only',
       onCompleted: () => {
         const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
         if (groupSubscribe) {
-          // message received subscription
+          // group sent subscription
           groupSubscribe({
             document: GROUP_SENT_SUBSCRIPTION,
             variables: subscriptionVariables,
@@ -267,10 +258,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   useEffect(() => {
     if (!data) {
-      const groupFilter = JSON.parse(JSON.stringify(queryVariables));
-      groupFilter.filter.searchGroup = true;
       loadData();
-      loadGroupData({ variables: groupFilter });
+      loadGroupData();
     }
   }, []);
 

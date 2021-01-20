@@ -11,7 +11,11 @@ import Loading from '../../components/UI/Layout/Loading/Loading';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { setErrorMessage } from '../../common/notification';
 import { getUserRole } from '../../context/role';
-import { SEARCH_QUERY_VARIABLES, SIMULATOR_CONTACT } from '../../common/constants';
+import {
+  GROUP_SEARCH_QUERY_VARIABLES,
+  SEARCH_QUERY_VARIABLES,
+  SIMULATOR_CONTACT,
+} from '../../common/constants';
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 
@@ -30,16 +34,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   let simulatorId: string | null = null;
 
   // default queryvariables
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
 
   // contact id === group when the group id is not passed in the url
   let selectedTab = 'contacts';
   if (selectedGroupId) {
-    queryVariables.filter = { searchGroup: true };
+    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
     selectedTab = 'groups';
-  } else {
-    // need to check why query variables does not change
-    queryVariables.filter = {};
   }
 
   // fetch the conversations from cache

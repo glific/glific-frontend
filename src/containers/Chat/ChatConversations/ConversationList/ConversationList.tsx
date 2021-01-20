@@ -14,7 +14,7 @@ import {
   SEARCH_OFFSET,
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
-import { SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import { GROUP_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
 
@@ -39,9 +39,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
 
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
   if (selectedGroupId) {
-    queryVariables.filter = { searchGroup: true };
+    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
   }
 
   // check if there is a previous scroll height
