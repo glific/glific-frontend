@@ -20,8 +20,11 @@ export interface FlowProps {
   match: any;
 }
 
+const regex = /^[a-z]+(,[a-z]+)*$/g;
+
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
+  keywords: Yup.string().matches(regex, 'Only lowercase are allowed.'),
 });
 
 const dialogMessage = "You won't be able to use this flow again.";
@@ -58,7 +61,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     }
     setName(fieldName);
 
-    // we are recieving keywords as an array object
+    // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
       // lets display it comma separated
       setKeywords(fieldKeywords.join(','));
