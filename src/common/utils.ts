@@ -16,7 +16,7 @@ export const parseText = (text: string) => {
   try {
     return JSON.parse(text);
   } catch (ex) {
-    return null;
+    return {};
   }
 };
 
