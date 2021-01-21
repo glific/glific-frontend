@@ -159,7 +159,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     },
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION);
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+  });
 
   // this function is called when the message is sent
   const sendGroupMessageHandler = (
