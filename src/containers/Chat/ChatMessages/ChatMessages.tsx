@@ -83,39 +83,39 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData) {
+        // get the conversations from cache
+        const conversations = getCachedConverations(client, queryVariables);
+
+        const conversationCopy = JSON.parse(JSON.stringify(searchData));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        let isContactCached = false;
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          const conversationObj = conversation;
+          // If the contact is present in the cache
+          if (conversationObj.contact.id === contactId.toString()) {
+            isContactCached = true;
+            conversationObj.messages = [
+              ...conversationObj.messages,
+              ...conversationCopy.search[0].messages,
+            ];
+          }
+          return conversationObj;
+        });
+        // If the contact is NOT present in the cache
+        if (!isContactCached) {
+          conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
+        }
+        // update the conversation cache
+        updateConversationsCache(conversationsCopy, client, queryVariables);
+
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         } else {
-          // get the conversations from cache
-          const conversations = getCachedConverations(client, queryVariables);
-
-          const conversationCopy = JSON.parse(JSON.stringify(searchData));
-          conversationCopy.search[0].messages
-            .sort((currentMessage: any, nextMessage: any) => {
-              return currentMessage.id - nextMessage.id;
-            })
-            .reverse();
-          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-          let isContactCached = false;
-          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-            const conversationObj = conversation;
-            // If the contact is present in the cache
-            if (conversationObj.contact.id === contactId.toString()) {
-              isContactCached = true;
-              conversationObj.messages = [
-                ...conversationObj.messages,
-                ...conversationCopy.search[0].messages,
-              ];
-            }
-            return conversationObj;
-          });
-          // If the contact is NOT present in the cache
-          if (!isContactCached) {
-            conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
-          }
-          // update the conversation cache
-          updateConversationsCache(conversationsCopy, client, queryVariables);
-
           setMessageOffset(messageOffset + 50);
         }
       }
@@ -314,7 +314,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     getSearchQuery({
       variables: {
         filter: { id: contactId.toString() },
-        messageOpts: { limit: 50, offset: messageOffset },
+        messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
     });
