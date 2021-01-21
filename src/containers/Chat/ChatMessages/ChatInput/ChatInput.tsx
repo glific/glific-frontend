@@ -328,14 +328,15 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           {quickSendButtons(quickSendTypes)}
         </div>
       </ClickAwayListener>
+
+      {showJumpToLatest === true ? jumpToLatest : null}
+
       <div
         className={clsx(styles.ChatInputElements, {
           [styles.Unrounded]: selectedTab !== '',
           [styles.Rounded]: selectedTab === '',
         })}
       >
-        {showJumpToLatest === true ? jumpToLatest : null}
-
         <WhatsAppEditor
           editorState={
             updatedEditorState
