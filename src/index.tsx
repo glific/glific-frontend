@@ -4,9 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import Appsignal from '@appsignal/javascript';
 import { ErrorBoundary } from '@appsignal/react';
-import WindowEvents from '@appsignal/plugin-window-events';
-import BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
-import PathDecorator from '@appsignal/plugin-path-decorator';
+import * as WindowEvents from '@appsignal/plugin-window-events';
+import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
+import * as PathDecorator from '@appsignal/plugin-path-decorator';
 
 import theme from './config/theme';
 import { APPSIGNAL_API_KEY, APPSINAL_REVISION } from './config';
