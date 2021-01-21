@@ -48,6 +48,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
+            errors: null,
           },
         ],
       },
@@ -59,7 +60,6 @@ const client = new ApolloClient({
   cache: cache,
   assumeImmutableResults: true,
 });
-
 
 afterEach(cleanup);
 const chatConversation = (
