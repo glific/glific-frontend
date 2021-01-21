@@ -110,6 +110,7 @@ export const GROUP_SENT_SUBSCRIPTION = gql`
         url
         caption
       }
+      errors
     }
   }
 `;
