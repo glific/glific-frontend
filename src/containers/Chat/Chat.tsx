@@ -46,7 +46,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   // fetch the conversations from cache
   const { loading, error, data, client } = useQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
-    fetchPolicy: 'cache-only',
+    fetchPolicy: 'cache-first',
   });
 
   useEffect(() => {
