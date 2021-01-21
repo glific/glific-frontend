@@ -314,7 +314,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     getSearchQuery({
       variables: {
         filter: { id: contactId.toString() },
-        messageOpts: { limit: 50, offset: messageOffset },
+        messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
     });
