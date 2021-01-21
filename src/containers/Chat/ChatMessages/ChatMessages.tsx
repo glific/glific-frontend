@@ -107,7 +107,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId.toString()) {
+          if (conversationObj.contact.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -394,15 +394,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       variables.filter = { id: groupId.toString(), searchGroup: true };
     }
     getSearchQuery({
-<<<<<<< HEAD
-      variables,
-=======
       variables: {
-        filter: { id: contactId.toString() },
+        filter: { id: contactId?.toString() },
         messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
->>>>>>> 60cb0d53417f0aa7e7df3a3c06dc6d3befbb9f4e
     });
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
