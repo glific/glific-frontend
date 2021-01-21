@@ -277,7 +277,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       }
     }
 
-    // if conversation is not present then fetch for contact
+    // if conversation is not present then fetch the group
     if (conversationIndex < 0) {
       if (!loading && !data) {
         getSearchQuery({
