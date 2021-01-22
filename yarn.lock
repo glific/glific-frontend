@@ -87,6 +87,27 @@
     "@appsignal/types" "^1.0.0"
     tslib "^2.0.1"
 
+"@appsignal/plugin-breadcrumbs-network@^1.1.11":
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/@appsignal/plugin-breadcrumbs-network/-/plugin-breadcrumbs-network-1.1.11.tgz#05251be0a44a27e638bf3dbdc1a3a4ae844779a2"
+  integrity sha512-U/qOp42vmJAnkotiZdVzOu75dWEJ7eOJYeVRHQ8q+REZ+N945vGpCWAHpbRrPuQL478koCuzENw7afV6SHaWiQ==
+  dependencies:
+    "@appsignal/types" "^2.0.4"
+
+"@appsignal/plugin-path-decorator@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@appsignal/plugin-path-decorator/-/plugin-path-decorator-1.0.5.tgz#17718ad4ed46362743f03ab09d6fd130e964f4ad"
+  integrity sha512-YjT5fdeqaJVNFbu2E87TafvJot0vqn/aYPOYcJ6FKIa6qAHCgAmM91TeUnzPKlWyX94ST5JQwhmd99oH6dGDVA==
+  dependencies:
+    "@appsignal/types" "^2.0.4"
+
+"@appsignal/plugin-window-events@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@appsignal/plugin-window-events/-/plugin-window-events-1.0.5.tgz#7829c25137fb5b3cd7eb9752b29fd3f06e72bcd2"
+  integrity sha512-/3piId8cQddt16iB8GgF8ap7C6B07WxEUUzEP6/Z2dLBr7fs2aR00xa/iI1USh337Bb4v0vJ5A+Mg4mp7NxuIg==
+  dependencies:
+    "@appsignal/types" "^2.0.4"
+
 "@appsignal/react@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@appsignal/react/-/react-1.0.1.tgz#f06431a511a1d1250cad6bb9003d647737bf5396"
@@ -96,6 +117,11 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-1.0.0.tgz#1e28406d414d4d1e875ea55087ab2b3c93750b5d"
   integrity sha512-09qxLnLxxom44xgJF0x25jpQviyiWh1VtpkK6oqYwbkUnFHhgyEgl+vmp0EaeWaeoZYXInHejveHQCo0wRvchA==
+
+"@appsignal/types@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.0.4.tgz#d9a6d3c5ff306a4393c9f9a524e40aa7f69b31f0"
+  integrity sha512-Wa94nhFHEOyy6sS4Bq53iet9ju/PncZ51bGZc9h1fnR8ga0Zpo7TpL/CLW9bJqgbLIDa/hg0PxnhVfvBsSXK/A==
 
 "@babel/code-frame@7.10.4", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.5.5":
   version "7.10.4"
@@ -1597,8 +1623,6 @@
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
-    react-icons "4.1.0"
-    react-notifications "1.7.2"
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.2":
   version "0.4.2"
@@ -2487,11 +2511,6 @@ acorn-walk@^7.1.1:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.2.0.tgz#0de889a601203909b0fbe07b8938dc21d2e967bc"
   integrity sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==
-
-acorn@6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
-  integrity sha512-ZVA9k326Nwrj3Cj9jlh3wGFutC2ZornPNARZwsNYqQYgN0EsV2d53w5RN/co65Ohn4sUAUtb1rSUAOD6XN9idA==
 
 acorn@^6.4.1:
   version "6.4.2"
@@ -3625,7 +3644,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.1.1, classnames@^2.2.5, classnames@^2.2.6:
+classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -10104,11 +10123,6 @@ react-icon-base@2.1.0:
   resolved "https://registry.yarnpkg.com/react-icon-base/-/react-icon-base-2.1.0.tgz#a196e33fdf1e7aaa1fda3aefbb68bdad9e82a79d"
   integrity sha1-oZbjP98eeqof2jrvu2i9rZ6Cp50=
 
-react-icons@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.1.0.tgz#9ca9bcbf2e3aee8e86e378bb9d465842947bbfc3"
-  integrity sha512-FCXBg1JbbR0vWALXIxmFAfozHdVIJmmwCD81Jk0EKOt7Ax4AdBNcaRkWhR0NaKy9ugJgoY3fFvo0PHpte55pXg==
-
 react-icons@^2.2.6:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-2.2.7.tgz#d7860826b258557510dac10680abea5ca23cf650"
@@ -10133,16 +10147,6 @@ react-linkify@^1.0.0-alpha:
   dependencies:
     linkify-it "^2.0.3"
     tlds "^1.199.0"
-
-react-notifications@1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/react-notifications/-/react-notifications-1.7.2.tgz#e70e2c053f86321c0a7fa81ff638922e2fdd572f"
-  integrity sha512-3mlMiNLDQtp64IP+EnYx3xgmbdpzrLQiSO8AP+8o4LiYQC6HcgdVB+MMdGuYZ1ttfKeLgTgol2ESFQJhmz0O3Q==
-  dependencies:
-    acorn "6.4.1"
-    classnames "^2.1.1"
-    prop-types "^15.5.10"
-    react-transition-group "^4.4.1"
 
 react-phone-input-2@^2.13.7:
   version "2.13.9"
@@ -10306,7 +10310,7 @@ react-tiny-link@^3.6.0:
   resolved "https://registry.yarnpkg.com/react-tiny-link/-/react-tiny-link-3.6.0.tgz#4b2d1bc36a48fbc5d5af2eed83034e05472b628a"
   integrity sha512-uixE/1+IDKVcobnjZQpMafkBT/JQjdgt6kvBZ8AG4uSZ46ECi2HFT5R/TLokQoBJipU4dDs4Mph2AN4BGQMvkQ==
 
-react-transition-group@^4.0.0, react-transition-group@^4.4.0, react-transition-group@^4.4.1:
+react-transition-group@^4.0.0, react-transition-group@^4.4.0:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
   integrity sha512-Djqr7OQ2aPUiYurhPalTrVy9ddmFCCzwhqQmtN+J3+3DzLO209Fdr70QrN8Z3DsglWql6iY1lDWAfpFiBtuKGw==
