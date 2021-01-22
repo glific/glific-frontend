@@ -9,7 +9,7 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import { ReactComponent as VariableIcon } from '../../../../assets/images/icons/Template/Variable.svg';
-import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Clear.svg';
 
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
