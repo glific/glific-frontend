@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
@@ -37,7 +37,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
   message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
-  const messageRef: any = useRef<HTMLDivElement>();
 
   let messages = [];
   let simulatorId = '';
@@ -122,12 +121,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }, [message.keyword]);
 
-  useEffect(() => {
-    const messageContainer: any = messageRef.current;
-    if (messageContainer) {
-      messageContainer.scrollTop = messageContainer.scrollHeight;
-    }
-  }, [messages]);
+  const messageRef = useCallback(
+    (node: any) => {
+      if (node !== null) {
+        const nodeCopy = node;
+        nodeCopy.scrollTop = node.scrollHeight;
+      }
+    },
+    [messages]
+  );
 
   const simulator = (
     <Draggable>
