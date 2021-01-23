@@ -169,7 +169,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     >
       <div>
         {entityType === 'contact' ? (
-          <>
+          <div className={styles.ChatIcons}>
             <div className={chatBubble.join(' ')} />
             <div className={styles.Timer}>
               <Timer
@@ -178,7 +178,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
                 contactBspStatus={contactBspStatus}
               />
             </div>
-          </>
+          </div>
         ) : (
           ''
         )}

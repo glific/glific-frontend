@@ -25,11 +25,11 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   // Handle type of error message
-  let title = 'An error has occured!';
+  let title = 'An error has occurred!';
 
   if (data.errorMessage.networkError) {
     // set specific message for network error
-    title = 'A network error has occured!';
+    title = 'A network error has occurred!';
   }
 
   return (
@@ -42,8 +42,9 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
           handleCancel={handleErrorClose}
           buttonOk="Ok"
           skipCancel
+          alignButtons="center"
         >
-          <p>{data.errorMessage.message}</p>
+          <p style={{ textAlign: 'center' }}>{data.errorMessage.message}</p>
         </DialogBox>
       </div>
     </Container>

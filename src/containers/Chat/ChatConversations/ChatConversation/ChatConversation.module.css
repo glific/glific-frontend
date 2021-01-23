@@ -68,7 +68,7 @@
   margin: 0px;
 }
 
-.MessageContent svg{
+.MessageContent svg {
   margin-right: 8px;
 }
 
@@ -93,4 +93,9 @@
   font-size: 13px !important;
   color: #073f24 !important;
   font-weight: bold;
+}
+
+.ChatIcons {
+  height: 75px;
+  padding-top: 22px;
 }
