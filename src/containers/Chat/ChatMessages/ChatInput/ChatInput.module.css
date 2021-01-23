@@ -224,6 +224,7 @@
   margin-top: -30px;
   width: fit-content;
   left: 50%;
+  transform: translateX(-50%);
 }
 
 .AttachmentIcon {
