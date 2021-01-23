@@ -231,7 +231,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           key={type}
           data-testid="shortcutButton"
           onClick={() => handleClick(type)}
-          onKeyDown={() => handleClick(type)}
           aria-hidden="true"
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
