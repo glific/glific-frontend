@@ -207,8 +207,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (searchVal !== '') {
-      // TODOS: we were calling this always and do we need this anymore? For now added above condition.
+    } else {
+      // This is used for filtering the searches, when you click on it
       getFilterConvos({
         variables: filterVariables(),
       });
