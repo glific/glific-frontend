@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 
 import './assets/fonts/fonts.css';
@@ -12,6 +12,7 @@ import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRout
 import { Logout } from './containers/Auth/Logout/Logout';
 
 const App = () => {
+  const history = useHistory();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
@@ -47,7 +48,7 @@ const App = () => {
 
   return (
     <SessionContext.Provider value={values}>
-      <ApolloProvider client={gqlClient()}>
+      <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
         {routes}
       </ApolloProvider>

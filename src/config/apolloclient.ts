@@ -17,7 +17,7 @@ import { Logout } from '../containers/Auth/Logout/Logout';
 
 const subscribe = require('@jumpn/utils-graphql');
 
-const gqlClient = () => {
+const gqlClient = (history: any) => {
   const refreshTokenLink = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
@@ -65,7 +65,14 @@ const gqlClient = () => {
 
     if (networkError) {
       // eslint-disable-next-line
-      console.log(`[Network error]: ${networkError}`);
+      // @ts-ignore
+      switch (networkError.statusCode) {
+        case 401:
+          history.push('/logout');
+          break;
+        default:
+          console.log(`[Network error]: ${networkError}`);
+      }
     }
   });
 
