@@ -33,7 +33,7 @@ import { GET_FLOWS } from '../../../../graphql/queries/Flow';
 import { ADD_FLOW_TO_CONTACT } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
-import { setNotification } from '../../../../common/notification';
+import { setErrorMessage, setNotification } from '../../../../common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
@@ -125,8 +125,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
-      setShowFlowDialog(false);
       setNotification(client, 'Flow started successfully');
+    },
+    onError: (error) => {
+      setErrorMessage(client, error);
     },
   });
 
@@ -218,6 +220,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         contactId: props.contactId,
       },
     });
+    setShowFlowDialog(false);
   };
 
   const closeFlowDialogBox = () => {
