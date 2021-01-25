@@ -9,6 +9,11 @@ import { Input } from '../../../../components/UI/Form/Input/Input';
 import { MessageType } from '../../ChatConversations/MessageType/MessageType';
 import { MEDIA_MESSAGE_TYPES } from '../../../../common/constants';
 import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
+import { validateMedia } from '../../../../common/utils';
+
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
+  return { id: option, label: <MessageType type={option} color="dark" /> };
+});
 
 export interface AddAttachmentPropTypes {
   setAttachment: any;
@@ -27,15 +32,24 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   attachmentURL,
   attachmentType,
 }: AddAttachmentPropTypes) => {
-  const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-    return { id: option, label: <MessageType type={option} color="dark" /> };
-  });
+  const validateURL = (value: string) => {
+    if (value && attachmentType) {
+      return validateMedia(value, attachmentType).then((response: any) => {
+        if (!response.data.is_valid) {
+          return response.data.message;
+        }
+        return null;
+      });
+    }
+    return true;
+  };
 
   const input = {
     component: Input,
     name: 'attachmentURL',
     type: 'text',
     placeholder: 'Attachment URL',
+    validate: validateURL,
   };
 
   let formFieldItems: any = [
