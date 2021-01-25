@@ -7,13 +7,13 @@ import { ErrorBoundary } from '@appsignal/react';
 import * as WindowEvents from '@appsignal/plugin-window-events';
 import * as BreadcrumbsNetwork from '@appsignal/plugin-breadcrumbs-network';
 import * as PathDecorator from '@appsignal/plugin-path-decorator';
-import { version } from '../package.json';
 
 import theme from './config/theme';
 import { APPSIGNAL_API_KEY } from './config';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { version } from '../package.json';
 
 let appComponent = <App />;
 if (APPSIGNAL_API_KEY) {
