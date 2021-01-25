@@ -45,7 +45,7 @@ export interface FormLayoutProps {
   type?: string;
   afterSave?: any;
   afterDelete?: any;
-  refetchQueries?: any;
+  refetchQueries?: Array<any>;
   redirect?: boolean;
   title?: string;
   getLanguageId?: any;
@@ -182,9 +182,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       return null;
     },
     refetchQueries: () => {
-      if (refetchQueries) {
-        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      }
+      if (refetchQueries)
+        return refetchQueries.map((refetchQuery: any) => {
+          return { query: refetchQuery.query, variables: refetchQuery.variables };
+        });
       return [];
     },
   });
@@ -210,9 +211,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       onSaveClick(false);
     },
     refetchQueries: () => {
-      if (refetchQueries) {
-        return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-      }
+      if (refetchQueries)
+        return refetchQueries.map((refetchQuery: any) => {
+          return { query: refetchQuery.query, variables: refetchQuery.variables };
+        });
+
       return [];
     },
     onError: (e: ApolloError) => {
