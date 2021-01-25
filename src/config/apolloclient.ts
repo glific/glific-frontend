@@ -59,6 +59,7 @@ const gqlClient = (history: any) => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
+        // eslint-disable-next-line
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
       );
 
@@ -69,6 +70,7 @@ const gqlClient = (history: any) => {
           history.push('/logout');
           break;
         default:
+          // eslint-disable-next-line
           console.log(`[Network error]: ${networkError}`);
       }
     }
