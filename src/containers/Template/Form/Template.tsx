@@ -20,28 +20,6 @@ import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 
-const validation = {
-  language: Yup.object().nullable().required('Language is required.'),
-  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
-  body: Yup.string()
-    .transform((current, original) => {
-      return original.getCurrentContent().getPlainText();
-    })
-    .required('Message is required.'),
-  type: Yup.object()
-    .nullable()
-    .when('attachmentURL', {
-      is: (val) => val && val !== '',
-      then: Yup.object().required('Type is required.'),
-    }),
-  attachmentURL: Yup.string()
-    .nullable()
-    .when('type', {
-      is: (val) => val && val.id,
-      then: Yup.string().required('Attachment URL is required.'),
-    }),
-};
-
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => {
@@ -434,6 +412,31 @@ const Template: React.SFC<TemplateProps> = (props) => {
       },
     });
     return data;
+  };
+
+  const validation = {
+    language: Yup.object().nullable().required('Language is required.'),
+    label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
+    body: Yup.string()
+      .transform((current, original) => {
+        return original.getCurrentContent().getPlainText();
+      })
+      .when('type', {
+        is: (val) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
+        then: Yup.string().required('Message is required.'),
+      }),
+    type: Yup.object()
+      .nullable()
+      .when('attachmentURL', {
+        is: (val) => val && val !== '',
+        then: Yup.object().required('Type is required.'),
+      }),
+    attachmentURL: Yup.string()
+      .nullable()
+      .when('type', {
+        is: (val) => val && val.id,
+        then: Yup.string().required('Attachment URL is required.'),
+      }),
   };
 
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;

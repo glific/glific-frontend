@@ -58,6 +58,26 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     attachmentURL: Yup.string().required('URL is required.'),
   });
 
+  const displayWarning = () => {
+    if (attachmentType === 'STICKER') {
+      return (
+        <div className={styles.FormHelperText}>
+          <ol>
+            <li>Animated stickers are not supported.</li>
+            <li>Captions along with stickers are not supported.</li>
+          </ol>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.FormHelperText}>
+        <ol>
+          <li>Captions along with audio are not supported.</li>
+        </ol>
+      </div>
+    );
+  };
+
   const form = (
     <Formik
       enableReinitialize
@@ -80,8 +100,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             }}
             handleCancel={() => {
               setAttachment(false);
-              setAttachmentType('');
-              setAttachmentURL('');
             }}
             buttonOk="Add"
             alignButtons="left"
@@ -95,11 +113,13 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
                   <CrossIcon
                     onClick={() => {
                       setAttachmentType('');
+                      setAttachmentURL('');
                       setAttachmentAdded(false);
                     }}
                   />
                 </div>
               ) : null}
+              {attachmentType === 'STICKER' || attachmentType === 'AUDIO' ? displayWarning() : null}
             </div>
           </DialogBox>
         </Form>

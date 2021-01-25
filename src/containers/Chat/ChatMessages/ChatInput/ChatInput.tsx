@@ -54,7 +54,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
   const [attachment, setAttachment] = useState(false);
   const [attachmentAdded, setAttachmentAdded] = useState(false);
-  const [attachmentType, setAttachmentType] = useState('');
+  const [attachmentType, setAttachmentType] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState('');
   const [variable, setVariable] = useState(false);
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
@@ -355,6 +355,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
               onClick={() => {
                 resetVariable();
+                resetAttachment();
               }}
             >
               <CrossIcon />
