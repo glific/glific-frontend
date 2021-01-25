@@ -59,12 +59,10 @@ const gqlClient = (history: any) => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
-        // eslint-disable-next-line
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
       );
 
     if (networkError) {
-      // eslint-disable-next-line
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
