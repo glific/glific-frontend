@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router';
 import { getGroupsQuery } from '../../../../mocks/Group';
 import { getPublishedFlowQuery } from '../../../../mocks/Flow';
 
-const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedFlowQuery];
+const mocks = [contactGroupsQuery, ...getGroupsQuery, getPublishedFlowQuery];
 
 const defaultProps = {
   contactName: 'Jane Doe',
