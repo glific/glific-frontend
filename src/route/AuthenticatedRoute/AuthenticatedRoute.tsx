@@ -38,11 +38,19 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 const routeStaff = (
   <Switch>
     <Route path="/chat" exact component={Chat} />
+    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
       component={({ match }: RouteComponentProps<{ contactId: any }>) => (
         <Chat contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/group/:groupId"
+      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
+        <Chat groupId={match.params.groupId} />
       )}
     />
     <Route path="/group" exact component={GroupList} />
@@ -94,12 +102,19 @@ const routeAdmin = (
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
-
+    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
       component={({ match }: RouteComponentProps<{ contactId: any }>) => (
         <Chat contactId={match.params.contactId} />
+      )}
+    />
+    <Route
+      exact
+      path="/chat/group/:groupId"
+      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
+        <Chat groupId={match.params.groupId} />
       )}
     />
     <Route path="/" render={defaultRedirect} />

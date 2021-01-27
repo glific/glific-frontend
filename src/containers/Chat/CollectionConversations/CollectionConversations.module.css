@@ -1,0 +1,7 @@
+.CollectionConversations {
+  width: 100%;
+  height: calc(100vh - 64px);
+  padding-left: 10px;
+  overflow-y: hidden;
+  position: relative;
+}

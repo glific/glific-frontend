@@ -12,6 +12,10 @@ export const SEARCH_QUERY = gql`
         status
         bspStatus
       }
+      group {
+        id
+        label
+      }
       messages {
         id
         body

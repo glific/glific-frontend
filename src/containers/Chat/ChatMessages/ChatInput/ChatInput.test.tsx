@@ -2,7 +2,7 @@ import React from 'react';
 import ChatInput from './ChatInput';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, act, fireEvent, getByTestId } from '@testing-library/react';
+import { render, waitFor, act, fireEvent, getByTestId, wait } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
@@ -149,5 +149,19 @@ describe('<ChatInput />', () => {
       </MockedProvider>
     );
     expect(getByText('Speed sends')).toBeInTheDocument();
+  });
+
+  test('24 hour window gets over', async () => {
+    const propsWithChatWindowOver: any = defaultProps;
+    const date = new Date();
+    date.setDate(date.getDate() - 2);
+    propsWithChatWindowOver.lastMessageTime = date;
+
+    const { getByText } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatInput {...propsWithChatWindowOver} />
+      </MockedProvider>
+    );
+    expect(getByText('Templates')).toBeInTheDocument();
   });
 });

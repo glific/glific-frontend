@@ -10,10 +10,16 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
+import {
+  TIME_FORMAT,
+  SEARCH_QUERY_VARIABLES,
+  setVariables,
+  GROUP_SEARCH_QUERY_VARIABLES,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -21,14 +27,14 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
-  contactId: number | string;
+  contactId?: number | string | null;
   simulatorId?: string | null;
+  groupId?: number | string | null;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId, groupId }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
-
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
@@ -69,7 +75,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
+
+  if (groupId) {
+    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
+  }
 
   const {
     loading: conversationLoad,
@@ -97,7 +107,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId.toString()) {
+          if (conversationObj.contact.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -140,6 +150,38 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     },
   });
 
+  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+  });
+
+  // this function is called when the message is sent
+  const sendGroupMessageHandler = (
+    body: string,
+    mediaId: string,
+    messageType: string,
+    selectedTemplate: any,
+    variableParam: any
+  ) => {
+    const payload: any = {
+      body,
+      senderId: 1,
+      mediaId,
+      type: messageType,
+      flow: 'OUTBOUND',
+    };
+
+    // add additional param for template
+    if (selectedTemplate) {
+      payload.isHsm = selectedTemplate.isHsm;
+      payload.templateId = parseInt(selectedTemplate.id, 10);
+      payload.params = variableParam;
+    }
+
+    sendMessageToGroups({
+      variables: { groupId, input: payload },
+    });
+  };
+
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
     (
@@ -174,7 +216,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (data && data.search[0].contact.status === 'BLOCKED') {
+  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
     return <Redirect to="/chat" />;
   }
 
@@ -211,6 +253,37 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
           variables: {
             filter: { id: contactId },
             messageOpts: { limit: 200, offset: 0 },
+            contactOpts: { limit: 50 },
+          },
+        });
+      }
+    }
+  }
+
+  if (groupId) {
+    // loop through the cached conversations and find if group exists
+    if (allConversations && allConversations.search) {
+      if (groupId === -1) {
+        conversationIndex = 0;
+        [conversationInfo] = allConversations.search;
+      } else {
+        allConversations.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === groupId.toString()) {
+            conversationIndex = index;
+            conversationInfo = conversation;
+          }
+          return null;
+        });
+      }
+    }
+
+    // if conversation is not present then fetch the group
+    if (conversationIndex < 0) {
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            filter: { id: groupId, searchGroup: true },
+            messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },
         });
@@ -311,9 +384,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   const loadMoreMessages = () => {
+    const variables: any = {
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: 50, offset: messageOffset },
+      contactOpts: { limit: 1 },
+    };
+
+    if (groupId) {
+      variables.filter = { id: groupId.toString(), searchGroup: true };
+    }
     getSearchQuery({
       variables: {
-        filter: { id: contactId.toString() },
+        filter: { id: contactId?.toString() },
         messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
@@ -385,11 +467,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     );
   }
 
-  return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
-      {dialogBox}
+  let topChatBar;
+  let chatInputSection;
+  if (contactId) {
+    topChatBar = (
       <ContactBar
-        contactName={
+        displayName={
           conversationInfo.contact.name
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
@@ -401,7 +484,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactBspStatus={conversationInfo.contact.bspStatus}
         handleAction={handleChatClearedAction}
       />
-      {messageListContainer}
+    );
+
+    chatInputSection = (
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
@@ -409,6 +494,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
+    );
+  } else if (groupId) {
+    topChatBar = (
+      <ContactBar
+        groupId={groupId.toString()}
+        displayName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendGroupMessageHandler} />
+    );
+  }
+
+  return (
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+      {dialogBox}
+      {topChatBar}
+      {messageListContainer}
+      {chatInputSection}
     </Container>
   );
 };

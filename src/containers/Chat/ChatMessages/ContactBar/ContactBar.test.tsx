@@ -11,7 +11,7 @@ import { getPublishedFlowQuery } from '../../../../mocks/Flow';
 const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedFlowQuery];
 
 const defaultProps = {
-  contactName: 'Jane Doe',
+  displayName: 'Jane Doe',
   contactId: '2',
   lastMessageTime: new Date(),
   contactBspStatus: 'SESSION',

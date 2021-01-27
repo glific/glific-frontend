@@ -16,7 +16,8 @@ import {
 import styles from './Group.module.css';
 import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
-import { setVariables } from '../../common/constants';
+import { GROUP_SEARCH_QUERY_VARIABLES, setVariables } from '../../common/constants';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
 
 export interface GroupProps {
   match: any;
@@ -134,10 +135,16 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     setSelected(user);
   };
 
-  const refetchQueries = {
-    query: GET_GROUPS,
-    variables: setVariables(),
-  };
+  const refetchQueries = [
+    {
+      query: GET_GROUPS,
+      variables: setVariables(),
+    },
+    {
+      query: SEARCH_QUERY,
+      variables: GROUP_SEARCH_QUERY_VARIABLES,
+    },
+  ];
 
   return (
     <FormLayout
