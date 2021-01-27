@@ -28,13 +28,14 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = "You won't be able to use this group again.";
 
-const formFields = (options: any) => {
+const formFields = (options: any, validateTitle: Function) => {
   return [
     {
       component: Input,
       name: 'label',
       type: 'text',
       placeholder: 'Title',
+      validate: validateTitle,
     },
     {
       component: Input,
@@ -108,6 +109,9 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
   const { data } = useQuery(GET_USERS, {
     variables: setVariables(),
   });
+
+  const { data: groupList } = useQuery(GET_GROUPS);
+
   let options = [];
   if (data) {
     options = data.users;
@@ -139,6 +143,24 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
     variables: setVariables(),
   };
 
+  const validateTitle = (value: any) => {
+    let error;
+    if (value) {
+      let found = [];
+
+      if (groupList) {
+        found = groupList.groups.filter((search: any) => search.label === value);
+        if (groupId && found.length > 0) {
+          found = found.filter((search: any) => search.id !== groupId);
+        }
+      }
+      if (found.length > 0) {
+        error = 'Title already exists.';
+      }
+    }
+    return error;
+  };
+
   return (
     <FormLayout
       refetchQueries={refetchQueries}
@@ -152,7 +174,7 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
       validationSchema={FormSchema}
       listItemName="group"
       dialogMessage={dialogMessage}
-      formFields={formFields(options)}
+      formFields={formFields(options, validateTitle)}
       redirectionLink="group"
       listItem="group"
       icon={groupIcon}
