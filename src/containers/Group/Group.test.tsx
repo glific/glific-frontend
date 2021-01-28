@@ -18,7 +18,7 @@ const mocks = [
   getGroupQuery, // if you refetch then you need to include same mock twice
   getGroupUsersQuery,
   getGroupUsersQuery,
-  getGroupsQuery,
+  ...getGroupsQuery,
 ];
 
 const wrapper = (

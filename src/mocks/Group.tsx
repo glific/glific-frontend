@@ -36,23 +36,41 @@ export const getGroupQuery = {
   },
 };
 
-export const getGroupsQuery = {
-  request: {
-    query: GET_GROUPS,
-    variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
-  },
-  result: {
-    data: {
-      groups: [
-        {
-          id: '1',
-          label: 'Staff group',
-          isRestricted: true,
-        },
-      ],
+export const getGroupsQuery = [
+  {
+    request: {
+      query: GET_GROUPS,
+      variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
     },
   },
-};
+  {
+    request: {
+      query: GET_GROUPS,
+    },
+    result: {
+      data: {
+        groups: [
+          {
+            id: '1',
+            label: 'Staff group',
+            isRestricted: true,
+          },
+        ],
+      },
+    },
+  },
+];
 
 export const getGroupUsersQuery = {
   request: {
