@@ -53,8 +53,8 @@ const routeStaff = (
         <Chat groupId={match.params.groupId} />
       )}
     />
-    <Route path="/group" exact component={GroupList} />
-    <Route path="/group/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection" exact component={GroupList} />
+    <Route path="/collection/:id/contacts" exact component={GroupContact} />
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
@@ -74,10 +74,10 @@ const routeAdmin = (
     <Route path="/flow" exact component={FlowList} />
     <Route path="/flow/add" exact component={Flow} />
     <Route path="/flow/:id/edit" exact component={Flow} />
-    <Route path="/group" exact component={GroupList} />
-    <Route path="/group/add" exact component={Group} />
-    <Route path="/group/:id/edit" exact component={Group} />
-    <Route path="/group/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection" exact component={GroupList} />
+    <Route path="/collection/add" exact component={Group} />
+    <Route path="/collection/:id/edit" exact component={Group} />
+    <Route path="/collection/:id/contacts" exact component={GroupContact} />
 
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
