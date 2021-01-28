@@ -1,32 +1,26 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, wait, fireEvent, waitFor } from '@testing-library/react';
-import ConversationList from './ConversationList';
-
+import { render, cleanup, waitFor } from '@testing-library/react';
+import CollectionConversations from './CollectionConversations';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
+import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
-    filter: {},
+    filter: { searchGroup: true },
     messageOpts: { limit: 50 },
     contactOpts: { limit: 50 },
   },
   data: {
     search: [
       {
-        group: null,
-        contact: {
+        group: {
           id: '2',
-          name: 'Effie Cormier',
-          phone: '987654321',
-          maskedPhone: '98****321',
-          lastMessageAt: '2020-06-29T09:31:47Z',
-          status: 'VALID',
-          bspStatus: 'SESSION_AND_HSM',
+          label: 'Default Group',
         },
+        contact: null,
         messages: [
           {
             id: '1',
@@ -48,7 +42,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
-            errors: '{}',
+            errors: null,
           },
         ],
       },
@@ -60,31 +54,19 @@ const client = new ApolloClient({
   cache: cache,
   assumeImmutableResults: true,
 });
-const conversationList = (
+
+afterEach(cleanup);
+const groupConversation = (
   <ApolloProvider client={client}>
     <Router>
-      <ConversationList
-        searchVal=""
-        selectedContactId={2}
-        setSelectedContactId={jest.fn()}
-        savedSearchCriteria=""
-        searchMode={false}
-      />
+      <CollectionConversations groupId={2} />
     </Router>
   </ApolloProvider>
 );
 
-test('it should render ConversationsList properly', async () => {
-  const { container } = render(conversationList);
+test('it should render <CollectionConversations /> component correctly', async () => {
+  const { container } = render(groupConversation);
   await waitFor(() => {
     expect(container).toBeInTheDocument();
   });
-});
-
-test('it shows a conversation on clicking a contact', async () => {
-  const { getAllByTestId, getByText } = render(conversationList);
-  await waitFor(() => {
-    fireEvent.click(getAllByTestId('list')[0]);
-  });
-  expect(getByText('Hey there whats up?')).toBeInTheDocument();
 });

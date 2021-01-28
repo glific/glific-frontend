@@ -30,7 +30,7 @@ import { GET_GROUPS } from '../../../../graphql/queries/Group';
 import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
 import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
 import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT } from '../../../../graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_GROUP } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage, setNotification } from '../../../../common/notification';
@@ -48,11 +48,12 @@ import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 
 export interface ContactBarProps {
-  contactName: string;
-  contactId: string;
-  lastMessageTime: any;
-  contactStatus: string;
-  contactBspStatus: string;
+  displayName: string;
+  contactId?: string;
+  groupId?: string;
+  lastMessageTime?: any;
+  contactStatus?: string;
+  contactBspStatus?: string;
   handleAction?: any;
   isSimulator?: boolean;
 }
@@ -60,10 +61,11 @@ export interface ContactBarProps {
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const {
     contactId,
+    groupId,
     contactBspStatus,
     lastMessageTime,
     contactStatus,
-    contactName,
+    displayName,
     isSimulator,
   } = props;
   const client = useApolloClient();
@@ -95,8 +97,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   });
 
   useEffect(() => {
-    getContactGroups();
-  }, []);
+    if (contactId) {
+      getContactGroups();
+    }
+  }, [contactId]);
 
   // mutation to update the contact groups
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
@@ -129,6 +133,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     },
     onError: (error) => {
       setErrorMessage(client, error);
+    },
+  });
+
+  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+    onCompleted: () => {
+      setNotification(client, 'Flow started successfully');
     },
   });
 
@@ -176,10 +186,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const handleGroupDialogOk = (selectedGroupIds: any) => {
     const finalSelectedGroups = selectedGroupIds.filter(
-      (groupId: any) => !initialSelectedGroupIds.includes(groupId)
+      (selectedGroupId: any) => !initialSelectedGroupIds.includes(selectedGroupId)
     );
     const finalRemovedGroups = initialSelectedGroupIds.filter(
-      (groupId: any) => !selectedGroupIds.includes(groupId)
+      (gId: any) => !selectedGroupIds.includes(gId)
     );
 
     if (finalSelectedGroups.length > 0 || finalRemovedGroups.length > 0) {
@@ -214,12 +224,24 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const handleFlowSubmit = (flowId: any) => {
-    addFlow({
-      variables: {
-        flowId,
-        contactId: props.contactId,
-      },
-    });
+    const flowVariables: any = {
+      flowId,
+    };
+
+    if (props.contactId) {
+      flowVariables.contactId = props.contactId;
+      addFlow({
+        variables: flowVariables,
+      });
+    }
+
+    if (props.groupId) {
+      flowVariables.groupId = props.groupId;
+      addFlowToGroup({
+        variables: flowVariables,
+      });
+    }
+
     setShowFlowDialog(false);
   };
 
@@ -292,7 +314,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let flowButton: any;
-  if (
+  if (groupId) {
+    flowButton = (
+      <Button
+        data-testid="flowButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getFlows();
+          setShowFlowDialog(true);
+        }}
+      >
+        <FlowIcon className={styles.Icon} />
+        Start a flow
+      </Button>
+    );
+  } else if (
     (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
     !is24HourWindowOver(lastMessageTime)
   ) {
@@ -340,55 +376,64 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Button
-              className={styles.ListButtonPrimary}
-              disabled={isSimulator}
-              onClick={() => {
-                history.push(`/contact-profile/${props.contactId}`);
-              }}
-            >
-              {isSimulator ? (
-                <ProfileDisabledIcon className={styles.Icon} />
-              ) : (
-                <ProfileIcon className={styles.Icon} />
-              )}
-              View contact profile
-            </Button>
-
+            {contactId ? (
+              <Button
+                className={styles.ListButtonPrimary}
+                disabled={isSimulator}
+                onClick={() => {
+                  history.push(`/contact-profile/${props.contactId}`);
+                }}
+              >
+                {isSimulator ? (
+                  <ProfileDisabledIcon className={styles.Icon} />
+                ) : (
+                  <ProfileIcon className={styles.Icon} />
+                )}
+                View contact profile
+              </Button>
+            ) : (
+              ''
+            )}
             {flowButton}
-            <Button
-              data-testid="groupButton"
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getGroups();
-                setShowGroupDialog(true);
-              }}
-            >
-              <AddContactIcon className={styles.Icon} />
-              Add to group
-            </Button>
-            <Button
-              className={styles.ListButtonPrimary}
-              data-testid="clearChatButton"
-              onClick={() => setClearChatDialog(true)}
-            >
-              <ClearConversation className={styles.Icon} />
-              Clear conversation
-            </Button>
-            <Button
-              data-testid="blockButton"
-              className={styles.ListButtonDanger}
-              color="secondary"
-              disabled={isSimulator}
-              onClick={() => setShowBlockDialog(true)}
-            >
-              {isSimulator ? (
-                <BlockDisabledIcon className={styles.Icon} />
-              ) : (
-                <BlockIcon className={styles.Icon} />
-              )}
-              Block Contact
-            </Button>
+            {contactId ? (
+              <>
+                <Button
+                  data-testid="groupButton"
+                  className={styles.ListButtonPrimary}
+                  onClick={() => {
+                    getGroups();
+                    setShowGroupDialog(true);
+                  }}
+                >
+                  <AddContactIcon className={styles.Icon} />
+                  Add to group
+                </Button>
+                <Button
+                  className={styles.ListButtonPrimary}
+                  data-testid="clearChatButton"
+                  onClick={() => setClearChatDialog(true)}
+                >
+                  <ClearConversation className={styles.Icon} />
+                  Clear conversation
+                </Button>
+                <Button
+                  data-testid="blockButton"
+                  className={styles.ListButtonDanger}
+                  color="secondary"
+                  disabled={isSimulator}
+                  onClick={() => setShowBlockDialog(true)}
+                >
+                  {isSimulator ? (
+                    <BlockDisabledIcon className={styles.Icon} />
+                  ) : (
+                    <BlockIcon className={styles.Icon} />
+                  )}
+                  Block Contact
+                </Button>
+              </>
+            ) : (
+              ''
+            )}
           </Paper>
         </Fade>
       )}
@@ -411,35 +456,39 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
-  const sesssionAndGroupAssignedTo = (
-    <>
-      <div className={styles.SessionTimerContainer}>
-        <div className={styles.SessionTimer} data-testid="sessionTimer">
-          <span>Session Timer</span>
-          <Timer
-            time={lastMessageTime}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
+  let sesssionAndGroupAssignedTo;
+  if (contactId) {
+    sesssionAndGroupAssignedTo = (
+      <>
+        <div className={styles.SessionTimerContainer}>
+          <div className={styles.SessionTimer} data-testid="sessionTimer">
+            <span>Session Timer</span>
+            <Timer
+              time={lastMessageTime}
+              contactStatus={contactStatus}
+              contactBspStatus={contactBspStatus}
+            />
+          </div>
+          <div>
+            {assignedToGroup ? (
+              <>
+                <span className={styles.GroupHeading}>Assigned to</span>
+                <span className={styles.GroupsName}>{assignedToGroup}</span>
+              </>
+            ) : null}
+          </div>
         </div>
-        <div>
-          {assignedToGroup ? (
-            <>
-              <span className={styles.GroupHeading}>Assigned to</span>
-              <span className={styles.GroupsName}>{assignedToGroup}</span>
-            </>
-          ) : null}
-        </div>
-      </div>
-      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-        <IconButton className={styles.MobileIcon}>
-          <ChatIcon />
-        </IconButton>
+        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+          <IconButton className={styles.MobileIcon}>
+            <ChatIcon />
+          </IconButton>
 
-        <div className={styles.TitleText}>Chats</div>
-      </div>
-    </>
-  );
+          <div className={styles.TitleText}>Chats</div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div className={styles.MobileHeader}>
@@ -450,7 +499,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <div>
           <div className={styles.ContactDetails}>
             <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-              {contactName}
+              {displayName}
             </Typography>
             <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
               <div className={styles.Configure} data-testid="dropdownIcon">

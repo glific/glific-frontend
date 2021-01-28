@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
-import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import { GROUP_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
 import { getUserSession } from '../../../services/AuthService';
 import {
+  GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
@@ -33,6 +34,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     onCompleted: (conversation) => {
       if (conversation) {
         // save the conversation and update cache
+
+        // temporary fix for cache. need to check why queryvariables change
         saveConversation(conversation, client, queryVariables);
       }
     },
@@ -52,6 +55,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
       let newMessage: any;
       let contactId: number = 0;
+      let groupId: number = 0;
       let tagData: any;
       let messageStatusData: any;
       switch (action) {
@@ -64,6 +68,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           // set the sender contact id
           newMessage = subscriptionData.data.receivedMessage;
           contactId = subscriptionData.data.receivedMessage.sender.id;
+          break;
+        case 'GROUP':
+          newMessage = subscriptionData.data.sentGroupMessage;
+          groupId = subscriptionData.data.sentGroupMessage.groupId.toString();
           break;
         case 'STATUS':
           // set the receiver contact id
@@ -93,13 +101,24 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
-      cachedConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
-          conversationIndex = index;
-          conversationFound = true;
-        }
-        return null;
-      });
+
+      if (action === 'GROUP') {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === groupId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      } else {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.contact.id === contactId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      }
 
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
@@ -170,6 +189,28 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     [getContactQuery]
   );
 
+  const [loadGroupData, { subscribeToMore: groupSubscribe, data: groupData }] = useLazyQuery<any>(
+    SEARCH_QUERY,
+    {
+      variables: GROUP_SEARCH_QUERY_VARIABLES,
+      nextFetchPolicy: 'cache-only',
+      onCompleted: () => {
+        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+
+        if (groupSubscribe) {
+          // group sent subscription
+          groupSubscribe({
+            document: GROUP_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) => {
+              return updateConversations(prev, subscriptionData, 'GROUP');
+            },
+          });
+        }
+      },
+    }
+  );
+
   const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
     nextFetchPolicy: 'cache-only',
@@ -229,10 +270,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && groupData) {
       setDataLoaded(true);
     }
-  }, [data]);
+  }, [data, groupData]);
 
   useEffect(() => {
     setLoading(loading);
@@ -241,6 +282,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   useEffect(() => {
     if (!data) {
       loadData();
+      loadGroupData();
     }
   }, []);
 

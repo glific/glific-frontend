@@ -12,6 +12,7 @@
     padding: 0px !important;
     flex-direction: column;
   }
+
   .MobileHeader {
     padding: 8px 16px;
     display: flex !important;
@@ -19,16 +20,20 @@
     width: 100%;
     background-color: white;
   }
+
   .MenuIcon {
     margin-left: auto;
   }
+
   .ContactDetails {
     padding: 12px !important;
     padding-bottom: 0px !important;
   }
+
   .SessionTimerContainer {
     display: none;
   }
+
   .Chat {
     display: flex !important;
   }
@@ -41,7 +46,7 @@
 .ContactInfoContainer {
   display: flex;
   width: 100%;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .MobileHeader {

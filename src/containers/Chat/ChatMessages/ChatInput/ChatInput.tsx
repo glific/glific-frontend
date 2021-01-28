@@ -33,8 +33,8 @@ export interface ChatInputProps {
     variableParam: any
   ): any;
   handleHeightChange(newHeight: number): void;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   additionalStyle?: any;
   lastMessageTime?: any;
 }
@@ -231,7 +231,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           key={type}
           data-testid="shortcutButton"
           onClick={() => handleClick(type)}
-          onKeyDown={() => handleClick(type)}
           aria-hidden="true"
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,

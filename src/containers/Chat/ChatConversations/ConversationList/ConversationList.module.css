@@ -1,5 +1,11 @@
 .ListingContainer {
-  height: calc(100% - 165px);
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
+.groupListingContainer {
+  height: 100%;
   overflow-y: auto;
   padding: 0px !important;
 }

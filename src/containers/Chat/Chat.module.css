@@ -23,3 +23,46 @@
 .NoConversations {
   padding: 76px;
 }
+
+.IconBackground {
+  background-color: #eaedec;
+  border-radius: 50%;
+  display: flex;
+}
+
+.Icon {
+  margin: 10px 8px 8px 8px;
+}
+
+.ToolBar {
+  padding: 0 24px 0 12px !important;
+}
+
+.Title {
+  margin-left: 12px;
+  font-family: 'Heebo', sans-serif;
+}
+
+/* Overriding Typography styling */
+.TitleText {
+  font-family: 'Heebo', sans-serif !important;
+  font-size: 24px !important;
+  color: #93a29b !important;
+  margin-top: 3px !important;
+  line-height: 1.2 !important;
+}
+
+.SelectedTab {
+  color: #073f24 !important;
+  border-bottom: 3px solid #073f24;
+}
+
+.TabContainer {
+  display: flex;
+  cursor: pointer;
+}
+
+.Title a {
+  text-decoration: none;
+  color: inherit;
+}

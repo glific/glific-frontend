@@ -17,11 +17,12 @@ import { MessageType } from '../MessageType/MessageType';
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   selected: boolean;
   senderLastMessage: any;
-  onClick: (i: any) => void;
+  entityType: string;
+  onClick?: (i: any) => void;
   index: number;
   lastMessage: {
     id: number;
@@ -73,6 +74,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     senderLastMessage,
     contactStatus,
     contactBspStatus,
+    entityType,
   } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
@@ -146,6 +148,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const msgID = searchMode ? `/#search${lastMessage.id}` : '';
 
+  let redirectURL = `/chat/${contactId}${msgID}`;
+  if (entityType === 'group') {
+    redirectURL = `/chat/group/${contactId}${msgID}`;
+  }
+
   return (
     <ListItem
       data-testid="list"
@@ -155,20 +162,26 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       onClick={() => {
-        props.onClick(index);
+        if (props.onClick) props.onClick(index);
         setSearchOffset(client, props.messageNumber);
       }}
-      to={`/chat/${contactId}${msgID}`}
+      to={redirectURL}
     >
-      <div className={styles.ChatIcons}>
-        <div className={chatBubble.join(' ')} />
-        <div className={styles.Timer}>
-          <Timer
-            time={senderLastMessage}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
-        </div>
+      <div>
+        {entityType === 'contact' ? (
+          <div className={styles.ChatIcons}>
+            <div className={chatBubble.join(' ')} />
+            <div className={styles.Timer}>
+              <Timer
+                time={senderLastMessage}
+                contactStatus={contactStatus}
+                contactBspStatus={contactBspStatus}
+              />
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">

@@ -1,4 +1,5 @@
 import {
+  GROUP_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
@@ -46,6 +47,7 @@ const conversationMessageQuery = (
     data: {
       search: [
         {
+          group: null,
           contact: {
             id: contactId.toString(),
             name: contactName,
@@ -76,6 +78,55 @@ const conversationMessageQuery = (
               ],
               type: 'TEXT',
               media: null,
+              location: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+});
+
+const conversationGroupQuery = (
+  groupId: any,
+  GroupName: string,
+  contactLimit: number = 50,
+  messageLimit: object = { limit: 50 }
+) => ({
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: {
+        limit: contactLimit,
+      },
+      filter: { searchGroup: true },
+      messageOpts: messageLimit,
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          contact: null,
+          group: {
+            id: groupId.toString(),
+            label: GroupName,
+          },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+              },
+              type: 'TEXT',
+              media: null,
+              tags: [],
+              location: null,
               errors: '{}',
             },
           ],
@@ -112,7 +163,41 @@ export const messageReceivedSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
-        errors: '{}',
+        location: null,
+      },
+    },
+  },
+};
+
+export const groupSendSubscription = {
+  request: {
+    query: GROUP_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentGroupMessage: {
+        body: 'How can we help?',
+        flow: 'OUTBOUND',
+        id: '22',
+        insertedAt: '2020-07-11T14:03:28Z',
+        receiver: {
+          id: '1',
+          phone: '917834811114',
+        },
+        sender: {
+          id: '1',
+          phone: '917834811114',
+        },
+        tags: [],
+        groupId: '1',
+        type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
+        location: null,
       },
     },
   },
@@ -165,6 +250,7 @@ export const messageStatusSubscription = {
         receiver: {
           id: '2',
         },
+        location: null,
         errors: '{}',
       },
     },
@@ -195,6 +281,7 @@ export const savedSearchQuery = {
 export const conversationQuery = getConversationQuery({
   search: [
     {
+      group: null,
       contact: {
         id: '2',
         name: 'Jane Doe',
@@ -363,6 +450,7 @@ export const CONVERSATION_MOCKS = [
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  groupSendSubscription,
   messageStatusSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
@@ -371,6 +459,7 @@ export const CONVERSATION_MOCKS = [
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
+  conversationGroupQuery('2', 'Default group'),
 ];
 
 const updateMessageTagsQuery = {

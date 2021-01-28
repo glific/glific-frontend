@@ -17,6 +17,7 @@ cache.writeQuery({
   data: {
     search: [
       {
+        group: null,
         contact: {
           id: '2',
           name: 'Effie Cormier',
@@ -45,6 +46,45 @@ cache.writeQuery({
                 colorCode: '#00d084',
               },
             ],
+            type: 'TEXT',
+            media: null,
+            errors: '{}',
+          },
+        ],
+      },
+    ],
+  },
+});
+
+// add group to apollo cache
+cache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: {
+    filter: { searchGroup: true },
+    messageOpts: { limit: 50 },
+    contactOpts: { limit: 50 },
+  },
+  data: {
+    search: [
+      {
+        group: {
+          id: '2',
+          label: 'Default Group',
+        },
+        contact: null,
+        messages: [
+          {
+            id: '1',
+            body: 'Hey there whats up?',
+            insertedAt: '2020-06-25T13:36:43Z',
+            location: null,
+            receiver: {
+              id: '1',
+            },
+            sender: {
+              id: '1',
+            },
+            tags: null,
             type: 'TEXT',
             media: null,
             errors: '{}',
@@ -149,4 +189,19 @@ test('cancel after dialog box open', async () => {
   });
 
   fireEvent.click(getByText('Cancel'));
+});
+
+const chatMessagesWithGroup = (
+  <MemoryRouter>
+    <ApolloProvider client={client}>
+      <ChatMessages groupId="2" />
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+it('should have title as group name', async () => {
+  const { getByTestId } = render(chatMessagesWithGroup);
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
+  });
 });
