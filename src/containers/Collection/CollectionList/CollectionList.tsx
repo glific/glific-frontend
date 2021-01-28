@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
-import styles from './GroupList.module.css';
+import styles from './CollectionList.module.css';
 import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
@@ -24,7 +24,7 @@ import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
-export interface GroupListProps {}
+export interface CollectionListProps {}
 
 const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
 
@@ -36,7 +36,7 @@ const getColumns = ({ id, label, description }: any) => ({
   description: getDescription(description),
 });
 
-const dialogMessage = "You won't be able to use this group again.";
+const dialogMessage = "You won't be able to use this collection again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
 const groupIcon = <GroupIcon className={styles.GroupIcon} />;
 
@@ -51,7 +51,7 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const GroupList: React.SFC<GroupListProps> = () => {
+export const CollectionList: React.SFC<CollectionListProps> = () => {
   const client = useApolloClient();
   const [addFlowDialogShow, setAddFlowDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
@@ -74,7 +74,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
     onCompleted: () => {
-      setNotification(client, `Message successfully send to the group`);
+      setNotification(client, `Message successfully send to the collection`);
       setSendMessageDialogShow(false);
     },
   });
@@ -171,7 +171,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   if (sendMessageDialogShow) {
     dialog = (
       <MessageDialog
-        title="Send message to group"
+        title="Send message to collection"
         onSendMessage={sendMessageToGroup}
         handleClose={() => setSendMessageDialogShow(false)}
       />
@@ -217,7 +217,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
-        title="Add contacts to the group"
+        title="Add contacts to the collection"
         handleOk={handleGroupAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
@@ -257,7 +257,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   const additionalAction = [
     {
-      label: 'Add contacts to group',
+      label: 'Add contacts to collection',
       icon: addContactIcon,
       parameter: 'id',
       dialog: setContactsDialog,
@@ -281,13 +281,13 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     <>
       <List
         refetchQueries={refetchQueries}
-        title="Groups"
-        listItem="groups"
+        title="Collections"
+        listItem="collections"
         columnNames={['LABEL']}
-        listItemName="group"
+        listItemName="collection"
         displayListType="card"
-        button={{ show: displayUserGroups, label: '+ CREATE GROUP' }}
-        pageLink="group"
+        button={{ show: displayUserGroups, label: '+ CREATE COLLECTION' }}
+        pageLink="collection"
         listIcon={groupIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}

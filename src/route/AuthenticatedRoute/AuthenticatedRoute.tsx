@@ -8,9 +8,9 @@ import { SpeedSendPage } from '../../components/pages/Template/SpeedSendPage/Spe
 import { SpeedSend } from '../../containers/Template/Form/SpeedSend/SpeedSend';
 import { FlowList } from '../../containers/Flow/FlowList/FlowList';
 import { Flow } from '../../containers/Flow/Flow';
-import { GroupList } from '../../containers/Group/GroupList/GroupList';
-import { Group } from '../../containers/Group/Group';
-import { GroupContact } from '../../containers/Group/GroupContact/GroupContact';
+import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
+import { Group } from '../../containers/Collection/Group';
+import { GroupContact } from '../../containers/Collection/GroupContact/GroupContact';
 import { FlowEditor } from '../../components/floweditor/FlowEditor';
 import { SearchList } from '../../containers/Search/SearchList/SearchList';
 import { Search } from '../../containers/Search/Search';
@@ -53,7 +53,7 @@ const routeStaff = (
         <Chat groupId={match.params.groupId} />
       )}
     />
-    <Route path="/collection" exact component={GroupList} />
+    <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/:id/contacts" exact component={GroupContact} />
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
@@ -74,7 +74,7 @@ const routeAdmin = (
     <Route path="/flow" exact component={FlowList} />
     <Route path="/flow/add" exact component={Flow} />
     <Route path="/flow/:id/edit" exact component={Flow} />
-    <Route path="/collection" exact component={GroupList} />
+    <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/add" exact component={Group} />
     <Route path="/collection/:id/edit" exact component={Group} />
     <Route path="/collection/:id/contacts" exact component={GroupContact} />

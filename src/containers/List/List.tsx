@@ -238,8 +238,8 @@ export const List: React.SFC<ListProps> = ({
     if (userRole.length === 0) {
       checkUserRole();
     } else {
-      if (!displayUserGroups && listItem === 'groups') {
-        // if user role staff then display groups related to login user
+      if (!displayUserGroups && listItem === 'collections') {
+        // if user role staff then display collections related to login user
         fetchUserGroups();
       }
       fetchQuery();
@@ -406,7 +406,7 @@ export const List: React.SFC<ListProps> = ({
           })}
 
           {/* do not display edit & delete for staff role in group */}
-          {displayUserGroups || listItems !== 'groups' ? (
+          {displayUserGroups || listItems !== 'collections' ? (
             <>
               {editButton}
               {deleteButton(id, label)}
@@ -457,7 +457,7 @@ export const List: React.SFC<ListProps> = ({
   }
 
   if (userGroups) {
-    if (listItem === 'groups') {
+    if (listItem === 'collections') {
       itemList = formatList(userGroups.currentUser.user.groups);
     }
   }
