@@ -282,7 +282,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       <List
         refetchQueries={refetchQueries}
         title="Collections"
-        listItem="collections"
+        listItem="groups"
         columnNames={['LABEL']}
         listItemName="collection"
         displayListType="card"
