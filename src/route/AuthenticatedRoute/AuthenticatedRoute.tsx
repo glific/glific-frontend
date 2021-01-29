@@ -10,7 +10,7 @@ import { FlowList } from '../../containers/Flow/FlowList/FlowList';
 import { Flow } from '../../containers/Flow/Flow';
 import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
 import { Collection } from '../../containers/Collection/Collection';
-import { GroupContact } from '../../containers/Collection/GroupContact/GroupContact';
+import { CollectionContact } from '../../containers/Collection/CollectionContact/CollectionContact';
 import { FlowEditor } from '../../components/floweditor/FlowEditor';
 import { SearchList } from '../../containers/Search/SearchList/SearchList';
 import { Search } from '../../containers/Search/Search';
@@ -54,7 +54,7 @@ const routeStaff = (
       )}
     />
     <Route path="/collection" exact component={CollectionList} />
-    <Route path="/collection/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
@@ -77,7 +77,7 @@ const routeAdmin = (
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/add" exact component={Collection} />
     <Route path="/collection/:id/edit" exact component={Collection} />
-    <Route path="/collection/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
 
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 

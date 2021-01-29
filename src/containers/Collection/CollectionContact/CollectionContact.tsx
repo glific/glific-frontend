@@ -1,16 +1,18 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 
-import styles from './GroupContact.module.css';
-import { GroupContactList } from './GroupContactList/GroupContactList';
-import { GroupDescription } from './GroupDescription/GroupDescription';
+import styles from './CollectionContact.module.css';
+import { CollectionContactList } from './CollectionContactList/CollectionContactList';
+import { CollectionDescription } from './CollectionDescription/CollectionDescription';
 import { GET_GROUP } from '../../../graphql/queries/Group';
 
-export interface GroupContactProps {
+export interface CollectionContactProps {
   match: any;
 }
 
-export const GroupContact: React.FC<GroupContactProps> = (props: GroupContactProps) => {
+export const CollectionContact: React.FC<CollectionContactProps> = (
+  props: CollectionContactProps
+) => {
   const { match } = props;
 
   const groupId = match.params.id;
@@ -27,12 +29,12 @@ export const GroupContact: React.FC<GroupContactProps> = (props: GroupContactPro
     description = group.data.group.group.description;
   }
   return (
-    <div className={styles.GroupContactContainer}>
+    <div className={styles.CollectionContactContainer}>
       <div className={styles.ContactList}>
-        <GroupContactList {...props} title={title} />
+        <CollectionContactList {...props} title={title} />
       </div>
       <div className={styles.GroupDescription}>
-        <GroupDescription users={users} description={description} />
+        <CollectionDescription users={users} description={description} />
       </div>
     </div>
   );

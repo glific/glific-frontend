@@ -3,7 +3,7 @@ import { render, wait, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
-import { GroupContact } from './GroupContact';
+import { GroupContact } from './CollectionContact';
 import { countGroupContactsQuery } from '../../../mocks/Contact';
 import { getGroupQuery } from '../../../mocks/Group';
 

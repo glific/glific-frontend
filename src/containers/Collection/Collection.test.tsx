@@ -35,7 +35,7 @@ describe('<Collection />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Edit group')).toBeInTheDocument();
+      expect(getByText('Edit collection')).toBeInTheDocument();
     });
 
     // remove first user
