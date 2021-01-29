@@ -102,18 +102,18 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     }
   }, [contactId]);
 
-  // mutation to update the contact groups
+  // mutation to update the contact collections
   const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
     onCompleted: (result: any) => {
       const { numberDeleted, contactGroups } = result.updateContactGroups;
       const numberAdded = contactGroups.length;
-      let notification = `Added to ${numberAdded} group${numberAdded === 1 ? '' : 's'}`;
+      let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
       if (numberDeleted > 0 && numberAdded > 0) {
-        notification = `Added to ${numberDeleted} group${
+        notification = `Added to ${numberDeleted} collection${
           numberDeleted === 1 ? '' : 's  and'
-        } removed from ${numberAdded} group${numberAdded === 1 ? '' : 's '}`;
+        } removed from ${numberAdded} collection${numberAdded === 1 ? '' : 's '}`;
       } else if (numberDeleted > 0) {
-        notification = `Removed from ${numberDeleted} group${numberDeleted === 1 ? '' : 's'}`;
+        notification = `Removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's'}`;
       }
       setNotification(client, notification);
     },
@@ -215,7 +215,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     dialogBox = (
       <SearchDialogBox
         selectedOptions={initialSelectedGroupIds}
-        title="Add contact to group"
+        title="Add contact to collection"
         handleOk={handleGroupDialogOk}
         handleCancel={handleGroupDialogCancel}
         options={groupOptions}
@@ -406,7 +406,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                   }}
                 >
                   <AddContactIcon className={styles.Icon} />
-                  Add to group
+                  Add to collection
                 </Button>
                 <Button
                   className={styles.ListButtonPrimary}
@@ -448,7 +448,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (selectedGroupsName.length > 0) {
     contactGroups = (
       <div className={styles.ContactGroups}>
-        <span className={styles.GroupHeading}>Groups</span>
+        <span className={styles.GroupHeading}>Collections</span>
         <span className={styles.GroupsName} data-testid="groupNames">
           {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
         </span>
