@@ -1,7 +1,7 @@
 import React from 'react';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
 import styles from './CollectionContactList.module.css';
-import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/Groups/Dark.svg';
+import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/Collection/Dark.svg';
 import { List } from '../../../List/List';
 import { UPDATE_GROUP_CONTACTS } from '../../../../graphql/mutations/Group';
 

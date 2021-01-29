@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './CollectionList.module.css';
-import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Groups/Dark.svg';
+import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,

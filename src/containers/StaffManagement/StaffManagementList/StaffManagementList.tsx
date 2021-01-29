@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './StaffManagementList.module.css';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
 import { DELETE_USER } from '../../../graphql/mutations/User';
-import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Groups/Dark.svg';
+import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
 import { isManagerRole } from '../../../context/role';
