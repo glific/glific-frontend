@@ -182,7 +182,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     }
 
     sendMessageToCollection({
-      variables: { collectionId, input: payload },
+      variables: { groupId: collectionId, input: payload },
     });
   };
 

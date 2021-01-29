@@ -369,7 +369,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             showMessages();
             if (entityType === 'contact' && props.setSelectedContactId) {
               props.setSelectedContactId(conversation.contact.id);
-            } else if (entityType === 'group' && props.setSelectedCollectionId) {
+            } else if (entityType === 'collection' && props.setSelectedCollectionId) {
               props.setSelectedCollectionId(conversation.group.id);
             }
           }}
