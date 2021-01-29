@@ -33,7 +33,7 @@ export const CollectionContact: React.FC<CollectionContactProps> = (
       <div className={styles.ContactList}>
         <CollectionContactList {...props} title={title} />
       </div>
-      <div className={styles.GroupDescription}>
+      <div className={styles.CollectionDescription}>
         <CollectionDescription users={users} description={description} />
       </div>
     </div>

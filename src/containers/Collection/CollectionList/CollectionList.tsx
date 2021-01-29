@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './CollectionList.module.css';
-import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
+import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Groups/Dark.svg';
 import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,
@@ -28,7 +28,7 @@ export interface CollectionListProps {}
 
 const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
 
-const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
+const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
 
 const getColumns = ({ id, label, description }: any) => ({
   id,
@@ -38,7 +38,7 @@ const getColumns = ({ id, label, description }: any) => ({
 
 const dialogMessage = "You won't be able to use this collection again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
-const groupIcon = <GroupIcon className={styles.GroupIcon} />;
+const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
   countQuery: GET_GROUPS_COUNT,
@@ -275,7 +275,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     variables: setVariables(),
   };
 
-  const cardLink = { start: 'group', end: 'contacts' };
+  const cardLink = { start: 'collection', end: 'contacts' };
 
   return (
     <>
@@ -288,7 +288,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         displayListType="card"
         button={{ show: displayUserGroups, label: '+ CREATE COLLECTION' }}
         pageLink="collection"
-        listIcon={groupIcon}
+        listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         cardLink={cardLink}
