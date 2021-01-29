@@ -21,26 +21,26 @@ import CollectionConversations from './CollectionConversations/CollectionConvers
 
 export interface ChatProps {
   contactId?: number | string | null;
-  groupId?: number | null;
+  collectionId?: number | null;
 }
 
-export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
+export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [showSimulator, setShowSimulator] = useState(false);
 
   let selectedContactId = contactId;
-  let selectedGroupId = groupId;
+  let selectedCollectionId = collectionId;
 
   let simulatorId: string | null = null;
 
   // default queryvariables
   let queryVariables = SEARCH_QUERY_VARIABLES;
 
-  // contact id === group when the group id is not passed in the url
+  // contact id === collection when the collection id is not passed in the url
   let selectedTab = 'contacts';
-  if (selectedGroupId) {
+  if (selectedCollectionId) {
     queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
-    selectedTab = 'groups';
+    selectedTab = 'collections';
   }
 
   // fetch the conversations from cache
@@ -61,18 +61,18 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
     return null;
   }
 
-  // let's handle the case when group id is -1 then we set the first group
-  // as the selected group
-  if (!selectedContactId && selectedGroupId === -1 && data && data.search.length !== 0) {
+  // let's handle the case when collection id is -1 then we set the first collection
+  // as the selected collection
+  if (!selectedContactId && selectedCollectionId === -1 && data && data.search.length !== 0) {
     if (data.search[0].group) {
-      selectedGroupId = data.search[0].group.id;
+      selectedCollectionId = data.search[0].group.id;
       selectedContactId = '';
     }
   }
 
-  // let's handle the case when contact id and group id is not passed in the url then we set the
+  // let's handle the case when contact id and collection id is not passed in the url then we set the
   // first record as selected contact
-  if (!selectedContactId && !selectedGroupId && data && data.search.length !== 0) {
+  if (!selectedContactId && !selectedCollectionId && data && data.search.length !== 0) {
     if (data.search[0].contact) {
       selectedContactId = data.search[0].contact.id;
     }
@@ -88,11 +88,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
   } else {
     let listingContent;
     let contactSelectedClass = '';
-    let groupSelectedClass = '';
-    if (selectedGroupId || selectedTab === 'groups') {
-      listingContent = <CollectionConversations groupId={selectedGroupId} />;
-      // set class for groups tab
-      groupSelectedClass = `${styles.SelectedTab}`;
+    let collectionSelectedClass = '';
+    if (selectedCollectionId || selectedTab === 'collections') {
+      listingContent = <CollectionConversations groupId={selectedCollectionId} />;
+      // set class for collections tab
+      collectionSelectedClass = `${styles.SelectedTab}`;
     } else if (selectedContactId) {
       // let's enable simulator only when contact tab is shown
       const simulatedContact = data.search.filter(
@@ -119,7 +119,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
           <ChatMessages
             contactId={showSimulator && simulatorId ? simulatorId : selectedContactId}
             simulatorId={simulatorId}
-            groupId={selectedGroupId}
+            groupId={selectedCollectionId}
           />
         </div>
 
@@ -135,8 +135,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
                 </Typography>
               </div>
               <div className={styles.Title}>
-                <Typography className={`${styles.TitleText} ${groupSelectedClass}`} variant="h6">
-                  <Link to="/chat/group">Groups</Link>
+                <Typography
+                  className={`${styles.TitleText} ${collectionSelectedClass}`}
+                  variant="h6"
+                >
+                  <Link to="/chat/collection">Collections</Link>
                 </Typography>
               </div>
             </div>
@@ -153,7 +156,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, groupId }) => {
       <div className={styles.Chat} data-testid="chatContainer">
         {chatInterface}
       </div>
-      {simulatorAccess && !selectedGroupId ? (
+      {simulatorAccess && !selectedCollectionId ? (
         <Simulator setShowSimulator={setShowSimulator} showSimulator={showSimulator} />
       ) : null}
     </Paper>

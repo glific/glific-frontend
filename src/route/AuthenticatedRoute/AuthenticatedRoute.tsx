@@ -38,7 +38,7 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 const routeStaff = (
   <Switch>
     <Route path="/chat" exact component={Chat} />
-    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
+    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
@@ -48,9 +48,9 @@ const routeStaff = (
     />
     <Route
       exact
-      path="/chat/group/:groupId"
-      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
-        <Chat groupId={match.params.groupId} />
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <Chat collectionId={match.params.collectionId} />
       )}
     />
     <Route path="/collection" exact component={CollectionList} />
@@ -102,7 +102,7 @@ const routeAdmin = (
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
-    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
+    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
@@ -112,9 +112,9 @@ const routeAdmin = (
     />
     <Route
       exact
-      path="/chat/group/:groupId"
-      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
-        <Chat groupId={match.params.groupId} />
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <Chat collectionId={match.params.collectionId} />
       )}
     />
     <Route path="/" render={defaultRedirect} />
@@ -143,7 +143,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   const loadingSpinner = <Loading />;
   route = dataLoaded ? route : null;
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
-  // on chat screen, for eg: send message to group
+  // on chat screen, for eg: send message to collection
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
