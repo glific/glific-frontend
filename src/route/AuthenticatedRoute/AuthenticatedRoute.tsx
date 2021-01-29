@@ -9,7 +9,7 @@ import { SpeedSend } from '../../containers/Template/Form/SpeedSend/SpeedSend';
 import { FlowList } from '../../containers/Flow/FlowList/FlowList';
 import { Flow } from '../../containers/Flow/Flow';
 import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
-import { Group } from '../../containers/Collection/Group';
+import { Collection } from '../../containers/Collection/Collection';
 import { GroupContact } from '../../containers/Collection/GroupContact/GroupContact';
 import { FlowEditor } from '../../components/floweditor/FlowEditor';
 import { SearchList } from '../../containers/Search/SearchList/SearchList';
@@ -75,8 +75,8 @@ const routeAdmin = (
     <Route path="/flow/add" exact component={Flow} />
     <Route path="/flow/:id/edit" exact component={Flow} />
     <Route path="/collection" exact component={CollectionList} />
-    <Route path="/collection/add" exact component={Group} />
-    <Route path="/collection/:id/edit" exact component={Group} />
+    <Route path="/collection/add" exact component={Collection} />
+    <Route path="/collection/:id/edit" exact component={Collection} />
     <Route path="/collection/:id/contacts" exact component={GroupContact} />
 
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />

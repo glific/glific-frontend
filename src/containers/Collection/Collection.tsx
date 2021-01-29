@@ -13,13 +13,13 @@ import {
   DELETE_GROUP,
   UPDATE_GROUP_USERS,
 } from '../../graphql/mutations/Group';
-import styles from './Group.module.css';
-import { ReactComponent as GroupIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
+import styles from './Collection.module.css';
+import { ReactComponent as CollectionIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
 import { GROUP_SEARCH_QUERY_VARIABLES, setVariables } from '../../common/constants';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 
-export interface GroupProps {
+export interface CollectionProps {
   match: any;
 }
 
@@ -27,7 +27,7 @@ const FormSchema = Yup.object().shape({
   label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
 });
 
-const dialogMessage = "You won't be able to use this group again.";
+const dialogMessage = "You won't be able to use this collection again.";
 
 const formFields = (options: any, validateTitle: Function) => {
   return [
@@ -53,17 +53,18 @@ const formFields = (options: any, validateTitle: Function) => {
       options,
       optionLabel: 'name',
       textFieldProps: {
-        label: 'Assign staff to group',
+        label: 'Assign staff to collection',
         variant: 'outlined',
       },
       skipPayload: true,
       icon: <ContactIcon className={styles.ContactIcon} />,
-      helperText: 'Assigned staff members will be responsible to chat with contacts in this group',
+      helperText:
+        'Assigned staff members will be responsible to chat with contacts in this collection',
     },
   ];
 };
 
-const groupIcon = <GroupIcon className={styles.GroupIcon} />;
+const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
   getItemQuery: GET_GROUP,
@@ -72,7 +73,7 @@ const queries = {
   deleteItemQuery: DELETE_GROUP,
 };
 
-export const Group: React.SFC<GroupProps> = ({ match }) => {
+export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [selectedUsers, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
     fetchPolicy: 'cache-and-network',
   });
@@ -179,12 +180,12 @@ export const Group: React.SFC<GroupProps> = ({ match }) => {
       languageSupport={false}
       setStates={setStates}
       validationSchema={FormSchema}
-      listItemName="group"
+      listItemName="collection"
       dialogMessage={dialogMessage}
       formFields={formFields(options, validateTitle)}
-      redirectionLink="group"
+      redirectionLink="collection"
       listItem="group"
-      icon={groupIcon}
+      icon={collectionIcon}
     />
   );
 };

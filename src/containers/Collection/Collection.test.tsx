@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { Group } from './Group';
+import { Collection } from './Collection';
 import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
 import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
@@ -23,12 +23,12 @@ const mocks = [
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Group match={{ params: { id: 1 } }} />
+    <Collection match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
-describe('<Group />', () => {
-  test('should render Group and hit save', async () => {
+describe('<Collection />', () => {
+  test('should render Collection and hit save', async () => {
     const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
