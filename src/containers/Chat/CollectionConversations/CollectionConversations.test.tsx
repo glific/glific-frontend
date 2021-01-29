@@ -18,7 +18,7 @@ cache.writeQuery({
       {
         group: {
           id: '2',
-          label: 'Default Group',
+          label: 'Default Collection',
         },
         contact: null,
         messages: [
@@ -56,16 +56,16 @@ const client = new ApolloClient({
 });
 
 afterEach(cleanup);
-const groupConversation = (
+const collectionConversation = (
   <ApolloProvider client={client}>
     <Router>
-      <CollectionConversations groupId={2} />
+      <CollectionConversations collectionId={2} />
     </Router>
   </ApolloProvider>
 );
 
 test('it should render <CollectionConversations /> component correctly', async () => {
-  const { container } = render(groupConversation);
+  const { container } = render(collectionConversation);
   await waitFor(() => {
     expect(container).toBeInTheDocument();
   });

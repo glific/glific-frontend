@@ -80,7 +80,7 @@ export const MESSAGE_STATUS_SUBSCRIPTION = gql`
   }
 `;
 
-export const GROUP_SENT_SUBSCRIPTION = gql`
+export const COLLECTION_SENT_SUBSCRIPTION = gql`
   subscription($organizationId: ID!) {
     sentGroupMessage(organizationId: $organizationId) {
       id

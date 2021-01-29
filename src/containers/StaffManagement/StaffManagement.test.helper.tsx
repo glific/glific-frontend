@@ -5,7 +5,7 @@ import {
   GET_USER_ROLES,
 } from '../../graphql/queries/User';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { setVariables } from '../../common/constants';
 
@@ -81,7 +81,7 @@ export const STAFF_MANAGEMENT_MOCKS = [
   },
   {
     request: {
-      query: GET_GROUPS,
+      query: GET_COLLECTIONS,
       variables: setVariables(),
     },
     result: {

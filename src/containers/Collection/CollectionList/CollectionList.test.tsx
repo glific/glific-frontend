@@ -2,8 +2,12 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
-import { GroupList } from './GroupList';
-import { countGroupQuery, filterGroupQuery, getGroupContactsQuery } from '../../../mocks/Group';
+import { CollectionList } from './CollectionList';
+import {
+  countCollectionQuery,
+  filterCollectionQuery,
+  getCollectionContactsQuery,
+} from '../../../mocks/Collection';
 import { MemoryRouter } from 'react-router';
 import { getContactsQuery } from '../../../mocks/Contact';
 import { setUserSession } from '../../../services/AuthService';
@@ -13,12 +17,12 @@ import * as MessageDialog from '../../../components/UI/MessageDialog/MessageDial
 import { getPublishedFlowQuery } from '../../../mocks/Flow';
 
 const mocks = [
-  countGroupQuery,
-  filterGroupQuery,
-  filterGroupQuery,
+  countCollectionQuery,
+  filterCollectionQuery,
+  filterCollectionQuery,
   getPublishedFlowQuery,
   getPublishedFlowQuery,
-  getGroupContactsQuery,
+  getCollectionContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,
 ];
@@ -26,20 +30,20 @@ const mocks = [
 const wrapper = (
   <MemoryRouter>
     <MockedProvider mocks={mocks} addTypename={false}>
-      <GroupList />
+      <CollectionList />
     </MockedProvider>
   </MemoryRouter>
 );
 
-describe('<GroupList />', () => {
-  test('should render GroupList', async () => {
+describe('<CollectionList />', () => {
+  test('should render CollectionList', async () => {
     const { getByText } = render(wrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Groups')).toBeInTheDocument();
+      expect(getByText('Collections')).toBeInTheDocument();
     });
 
     // TODO: test flows
@@ -47,7 +51,7 @@ describe('<GroupList />', () => {
     // TODO: test delete
   });
 
-  test('it should have add contact to group dialog box ', async () => {
+  test('it should have add contact to collection dialog box ', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
     const { getByText, getAllByTestId } = render(wrapper);
 
@@ -61,7 +65,7 @@ describe('<GroupList />', () => {
       fireEvent.click(getAllByTestId('additionalButton')[0]);
     });
 
-    expect(getByText('Add contacts to the group')).toBeInTheDocument();
+    expect(getByText('Add contacts to the collection')).toBeInTheDocument();
   });
 
   test('it should have send message dialog box ', async () => {
@@ -78,7 +82,7 @@ describe('<GroupList />', () => {
       fireEvent.click(getAllByTestId('MenuItem')[0]);
     });
 
-    expect(getByText('Send message to group')).toBeInTheDocument();
+    expect(getByText('Send message to collection')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('closeButton'));
   });
@@ -99,7 +103,7 @@ describe('<GroupList />', () => {
     expect(getAllByText('Select a flow')[0]).toBeInTheDocument();
   });
 
-  test('add contacts to group', async () => {
+  test('add contacts to collection', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
     const spy = jest.spyOn(SearchDialogBox, 'SearchDialogBox');
@@ -123,7 +127,7 @@ describe('<GroupList />', () => {
     fireEvent.click(getByTestId('searchDialogBox').querySelector('button'));
   });
 
-  test('send message to group', async () => {
+  test('send message to collection', async () => {
     setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
     const spy = jest.spyOn(MessageDialog, 'MessageDialog');

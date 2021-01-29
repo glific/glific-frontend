@@ -56,7 +56,7 @@ cache.writeQuery({
   },
 });
 
-// add group to apollo cache
+// add collection to apollo cache
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
@@ -191,16 +191,16 @@ test('cancel after dialog box open', async () => {
   fireEvent.click(getByText('Cancel'));
 });
 
-const chatMessagesWithGroup = (
+const chatMessagesWithCollection = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages groupId="2" />
+      <ChatMessages collectionId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );
 
 it('should have title as group name', async () => {
-  const { getByTestId } = render(chatMessagesWithGroup);
+  const { getByTestId } = render(chatMessagesWithCollection);
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
   });

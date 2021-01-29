@@ -36,7 +36,7 @@ export const SEARCH_QUERY_VARIABLES = {
   },
 };
 
-export const GROUP_SEARCH_QUERY_VARIABLES = {
+export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: 50,
   },

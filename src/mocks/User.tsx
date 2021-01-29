@@ -21,7 +21,7 @@ export const getCurrentUserQuery = {
           groups: [
             {
               id: '1',
-              label: 'Default Group',
+              label: 'Default Collection',
               description: '',
             },
           ],

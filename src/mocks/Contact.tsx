@@ -1,5 +1,5 @@
 import {
-  GET_CONTACT_GROUPS,
+  GET_CONTACT_COLLECTIONS,
   GET_CONTACT,
   GET_CONTACT_DETAILS,
   GET_CONTACT_COUNT,
@@ -11,9 +11,9 @@ import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Or
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
 import { setVariables } from '../common/constants';
 
-export const contactGroupsQuery = {
+export const contactCollectionsQuery = {
   request: {
-    query: GET_CONTACT_GROUPS,
+    query: GET_CONTACT_COLLECTIONS,
     variables: {
       id: '2',
     },
@@ -25,12 +25,12 @@ export const contactGroupsQuery = {
           groups: [
             {
               id: '1',
-              label: 'Default Group',
+              label: 'Default Collection',
               users: [],
             },
             {
               id: '2',
-              label: 'Staff Group',
+              label: 'Staff Collection',
               users: [],
             },
           ],
@@ -82,7 +82,7 @@ export const getContactDetailsQuery = {
           groups: [
             {
               id: '1',
-              label: 'Default group',
+              label: 'Default collection',
               users: [],
             },
           ],
@@ -126,7 +126,7 @@ export const updateContactStatusQuery = {
   },
 };
 
-export const countGroupContactsQuery = {
+export const countCollectionContactsQuery = {
   request: {
     query: GET_CONTACT_COUNT,
     variables: { filter: { includeGroups: 1 } },
@@ -155,7 +155,7 @@ export const getContactsQuery = {
   },
 };
 
-export const getGroupContactsQuery = {
+export const getCollectionContactsQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
     variables: {
@@ -179,7 +179,7 @@ export const getGroupContactsQuery = {
           groups: [
             {
               id: '1',
-              label: 'Default Group',
+              label: 'Default Collection',
             },
           ],
           status: 'SESSION',

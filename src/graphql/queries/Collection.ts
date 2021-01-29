@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_GROUP = gql`
+export const GET_COLLECTION = gql`
   query getGroup($id: ID!) {
     group(id: $id) {
       group {
@@ -16,13 +16,13 @@ export const GET_GROUP = gql`
   }
 `;
 
-export const GET_GROUPS_COUNT = gql`
+export const GET_COLLECTIONS_COUNT = gql`
   query countGroups($filter: GroupFilter!) {
     countGroups(filter: $filter)
   }
 `;
 
-export const FILTER_GROUPS = gql`
+export const FILTER_COLLECTIONS = gql`
   query groups($filter: GroupFilter!, $opts: Opts!) {
     groups(filter: $filter, opts: $opts) {
       id
@@ -33,7 +33,7 @@ export const FILTER_GROUPS = gql`
   }
 `;
 
-export const GET_GROUPS = gql`
+export const GET_COLLECTIONS = gql`
   query groups($filter: GroupFilter, $opts: Opts) {
     groups(filter: $filter, opts: $opts) {
       id
@@ -43,7 +43,7 @@ export const GET_GROUPS = gql`
   }
 `;
 
-export const GET_GROUP_USERS = gql`
+export const GET_COLLECTION_USERS = gql`
   query group($id: ID!) {
     group(id: $id) {
       group {

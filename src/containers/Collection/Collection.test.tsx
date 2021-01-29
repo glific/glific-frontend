@@ -3,8 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { Group } from './Group';
-import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
+import { Collection } from './Collection';
+import {
+  getCollectionQuery,
+  getCollectionsQuery,
+  getCollectionUsersQuery,
+} from '../../mocks/Collection';
 import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import * as FormLayout from '../Form/FormLayout';
@@ -12,30 +16,30 @@ import * as FormLayout from '../Form/FormLayout';
 const mocks = [
   getUsersQuery,
   ...getOrganizationQuery,
-  getGroupQuery,
+  getCollectionQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
-  getGroupQuery, // if you refetch then you need to include same mock twice
-  getGroupUsersQuery,
-  getGroupUsersQuery,
-  ...getGroupsQuery,
+  getCollectionQuery, // if you refetch then you need to include same mock twice
+  getCollectionUsersQuery,
+  getCollectionUsersQuery,
+  ...getCollectionsQuery,
 ];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Group match={{ params: { id: 1 } }} />
+    <Collection match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
 
-describe('<Group />', () => {
-  test('should render Group and hit save', async () => {
+describe('<Collection />', () => {
+  test('should render Collection and hit save', async () => {
     const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Edit group')).toBeInTheDocument();
+      expect(getByText('Edit collection')).toBeInTheDocument();
     });
 
     // remove first user
@@ -60,15 +64,15 @@ describe('<Group />', () => {
             additionalQuery(['1']);
             mockCallback();
           }}
-          data-testid="group"
+          data-testid="collection"
         >
-          <span>Edit group</span>
+          <span>Edit collection</span>
         </div>
       );
     });
 
     const { getByTestId } = render(wrapper);
-    fireEvent.click(getByTestId('group'));
+    fireEvent.click(getByTestId('collection'));
 
     await waitFor(() => {
       expect(mockCallback).toBeCalled();

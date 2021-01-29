@@ -1,16 +1,16 @@
 import { setVariables } from '../common/constants';
-import { GET_GROUP_CONTACTS } from '../graphql/queries/Contact';
+import { GET_COLLECTION_CONTACTS } from '../graphql/queries/Contact';
 import {
-  FILTER_GROUPS,
-  GET_GROUP,
-  GET_GROUPS,
-  GET_GROUPS_COUNT,
-  GET_GROUP_USERS,
-} from '../graphql/queries/Group';
+  FILTER_COLLECTIONS,
+  GET_COLLECTION,
+  GET_COLLECTIONS,
+  GET_COLLECTIONS_COUNT,
+  GET_COLLECTION_USERS,
+} from '../graphql/queries/Collection';
 
-export const getGroupQuery = {
+export const getCollectionQuery = {
   request: {
-    query: GET_GROUP,
+    query: GET_COLLECTION,
     variables: { id: 1 },
   },
   result: {
@@ -36,10 +36,10 @@ export const getGroupQuery = {
   },
 };
 
-export const getGroupsQuery = [
+export const getCollectionsQuery = [
   {
     request: {
-      query: GET_GROUPS,
+      query: GET_COLLECTIONS,
       variables: { filter: {}, opts: { limit: null, offset: 0, order: 'ASC' } },
     },
     result: {
@@ -56,7 +56,7 @@ export const getGroupsQuery = [
   },
   {
     request: {
-      query: GET_GROUPS,
+      query: GET_COLLECTIONS,
     },
     result: {
       data: {
@@ -72,9 +72,9 @@ export const getGroupsQuery = [
   },
 ];
 
-export const getGroupUsersQuery = {
+export const getCollectionUsersQuery = {
   request: {
-    query: GET_GROUP_USERS,
+    query: GET_COLLECTION_USERS,
     variables: { id: 1 },
   },
   result: {
@@ -97,9 +97,9 @@ export const getGroupUsersQuery = {
   },
 };
 
-export const countGroupQuery = {
+export const countCollectionQuery = {
   request: {
-    query: GET_GROUPS_COUNT,
+    query: GET_COLLECTIONS_COUNT,
     variables: { filter: {} },
   },
   result: {
@@ -109,9 +109,9 @@ export const countGroupQuery = {
   },
 };
 
-export const filterGroupQuery = {
+export const filterCollectionQuery = {
   request: {
-    query: FILTER_GROUPS,
+    query: FILTER_COLLECTIONS,
     variables: {
       filter: {},
       opts: {
@@ -136,9 +136,9 @@ export const filterGroupQuery = {
   },
 };
 
-export const getGroupContactsQuery = {
+export const getCollectionContactsQuery = {
   request: {
-    query: GET_GROUP_CONTACTS,
+    query: GET_COLLECTION_CONTACTS,
     variables: { id: '1' },
   },
   result: {

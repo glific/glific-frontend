@@ -149,8 +149,8 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const msgID = searchMode ? `/#search${lastMessage.id}` : '';
 
   let redirectURL = `/chat/${contactId}${msgID}`;
-  if (entityType === 'group') {
-    redirectURL = `/chat/group/${contactId}${msgID}`;
+  if (entityType === 'collection') {
+    redirectURL = `/chat/collection/${contactId}${msgID}`;
   }
 
   return (

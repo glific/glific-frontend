@@ -8,9 +8,9 @@ import { SpeedSendPage } from '../../components/pages/Template/SpeedSendPage/Spe
 import { SpeedSend } from '../../containers/Template/Form/SpeedSend/SpeedSend';
 import { FlowList } from '../../containers/Flow/FlowList/FlowList';
 import { Flow } from '../../containers/Flow/Flow';
-import { GroupList } from '../../containers/Group/GroupList/GroupList';
-import { Group } from '../../containers/Group/Group';
-import { GroupContact } from '../../containers/Group/GroupContact/GroupContact';
+import { CollectionList } from '../../containers/Collection/CollectionList/CollectionList';
+import { Collection } from '../../containers/Collection/Collection';
+import { CollectionContact } from '../../containers/Collection/CollectionContact/CollectionContact';
 import { FlowEditor } from '../../components/floweditor/FlowEditor';
 import { SearchList } from '../../containers/Search/SearchList/SearchList';
 import { Search } from '../../containers/Search/Search';
@@ -38,7 +38,7 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 const routeStaff = (
   <Switch>
     <Route path="/chat" exact component={Chat} />
-    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
+    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
@@ -48,13 +48,13 @@ const routeStaff = (
     />
     <Route
       exact
-      path="/chat/group/:groupId"
-      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
-        <Chat groupId={match.params.groupId} />
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <Chat collectionId={match.params.collectionId} />
       )}
     />
-    <Route path="/group" exact component={GroupList} />
-    <Route path="/group/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection" exact component={CollectionList} />
+    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
@@ -74,10 +74,10 @@ const routeAdmin = (
     <Route path="/flow" exact component={FlowList} />
     <Route path="/flow/add" exact component={Flow} />
     <Route path="/flow/:id/edit" exact component={Flow} />
-    <Route path="/group" exact component={GroupList} />
-    <Route path="/group/add" exact component={Group} />
-    <Route path="/group/:id/edit" exact component={Group} />
-    <Route path="/group/:id/contacts" exact component={GroupContact} />
+    <Route path="/collection" exact component={CollectionList} />
+    <Route path="/collection/add" exact component={Collection} />
+    <Route path="/collection/:id/edit" exact component={Collection} />
+    <Route path="/collection/:id/contacts" exact component={CollectionContact} />
 
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
@@ -102,7 +102,7 @@ const routeAdmin = (
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
-    <Route exact path="/chat/group" component={() => <Chat groupId={-1} />} />
+    <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route
       exact
       path="/chat/:contactId"
@@ -112,9 +112,9 @@ const routeAdmin = (
     />
     <Route
       exact
-      path="/chat/group/:groupId"
-      component={({ match }: RouteComponentProps<{ groupId: any }>) => (
-        <Chat groupId={match.params.groupId} />
+      path="/chat/collection/:collectionId"
+      component={({ match }: RouteComponentProps<{ collectionId: any }>) => (
+        <Chat collectionId={match.params.collectionId} />
       )}
     />
     <Route path="/" render={defaultRedirect} />
@@ -143,7 +143,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   const loadingSpinner = <Loading />;
   route = dataLoaded ? route : null;
   // let's call chat subscriptions at this level so that we can listen to actions which are not performed
-  // on chat screen, for eg: send message to group
+  // on chat screen, for eg: send message to collection
   return (
     <div className={styles.App} data-testid="app">
       {toastMessage}
