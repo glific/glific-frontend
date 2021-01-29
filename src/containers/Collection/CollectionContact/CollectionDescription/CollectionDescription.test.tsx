@@ -4,7 +4,7 @@ import { CollectionDescription } from './CollectionDescription';
 
 const defaultProps = {
   users: [{ id: 1, name: 'Default User' }],
-  description: 'Default group',
+  description: 'Default collection',
 };
 
 const wrapper = <CollectionDescription {...defaultProps}></CollectionDescription>;

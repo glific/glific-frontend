@@ -1,9 +1,9 @@
 import React from 'react';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
 import styles from './CollectionContactList.module.css';
-import { ReactComponent as GroupIcon } from '../../../../assets/images/icons/Collection/Dark.svg';
+import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Collection/Dark.svg';
 import { List } from '../../../List/List';
-import { UPDATE_GROUP_CONTACTS } from '../../../../graphql/mutations/Group';
+import { UPDATE_COLLECTION_CONTACTS } from '../../../../graphql/mutations/Collection';
 
 export interface CollectionContactListProps {
   match: any;
@@ -19,24 +19,26 @@ const getName = (label: string, phone: string) => (
   </>
 );
 
-const getGroups = (groups: Array<any>) => (
-  <p className={styles.GroupsText}>{groups.map((group: any) => group.label).join(', ')}</p>
+const getCollections = (collections: Array<any>) => (
+  <p className={styles.CollectionsText}>
+    {collections.map((collection: any) => collection.label).join(', ')}
+  </p>
 );
 
 const getColumns = ({ name, maskedPhone, groups }: any) => ({
   label: getName(name, maskedPhone),
-  groups: getGroups(groups),
+  groups: getCollections(groups),
 });
 
 const dialogTitle = 'Are you sure you want to remove contact from this collection?';
 const dialogMessage = 'The contact will no longer receive messages sent to this collection';
 const columnStyles = [styles.Name, styles.Phone, styles.Actions];
-const groupIcon = <GroupIcon className={styles.GroupIcon} />;
+const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
   countQuery: GET_CONTACT_COUNT,
   filterItemsQuery: CONTACT_SEARCH_QUERY,
-  deleteItemQuery: UPDATE_GROUP_CONTACTS,
+  deleteItemQuery: UPDATE_COLLECTION_CONTACTS,
 };
 
 const columnAttributes = {
@@ -46,12 +48,12 @@ const columnAttributes = {
 
 export const CollectionContactList: React.SFC<CollectionContactListProps> = (props) => {
   const { match, title } = props;
-  const groupId = match.params.id;
+  const collectionId = match.params.id;
 
   const getDeleteQueryVariables = (id: any) => {
     return {
       input: {
-        groupId,
+        groupId: collectionId,
         addContactIds: [],
         deleteContactIds: [id],
       },
@@ -67,10 +69,10 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
       listItem="contacts"
       listItemName="contact"
       searchParameter="name"
-      filters={{ includeGroups: groupId }}
+      filters={{ includeGroups: collectionId }}
       button={{ show: false, label: '' }}
       pageLink="contact"
-      listIcon={groupIcon}
+      listIcon={collectionIcon}
       deleteModifier={{
         icon: 'cross',
         variables: getDeleteQueryVariables,

@@ -68,7 +68,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
 
   let phone = '';
   let maskedPhone = '';
-  let groups = [];
+  let collections = [];
   let lastMessage = '';
   let fields = {};
   let settings = {};
@@ -77,7 +77,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     const contactData = contact.contact;
     phone = contactData.phone;
     maskedPhone = contactData.maskedPhone;
-    groups = contactData.groups;
+    collections = contactData.groups;
     lastMessage = contactData.lastMessageAt;
     fields = contactData.fields;
     settings = contactData.settings;
@@ -110,7 +110,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           maskedPhone={maskedPhone}
           fields={fields}
           settings={settings}
-          groups={groups}
+          collections={collections}
           lastMessage={lastMessage}
         />
       </div>

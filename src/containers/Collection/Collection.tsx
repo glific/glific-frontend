@@ -5,18 +5,22 @@ import * as Yup from 'yup';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { GET_GROUP, GET_GROUP_USERS, GET_GROUPS } from '../../graphql/queries/Group';
+import {
+  GET_COLLECTION,
+  GET_COLLECTION_USERS,
+  GET_COLLECTIONS,
+} from '../../graphql/queries/Collection';
 import { GET_USERS } from '../../graphql/queries/User';
 import {
-  UPDATE_GROUP,
-  CREATE_GROUP,
-  DELETE_GROUP,
-  UPDATE_GROUP_USERS,
-} from '../../graphql/mutations/Group';
+  UPDATE_COLLECTION,
+  CREATE_COLLECTION,
+  DELETE_COLLECTION,
+  UPDATE_COLLECTION_USERS,
+} from '../../graphql/mutations/Collection';
 import styles from './Collection.module.css';
 import { ReactComponent as CollectionIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
-import { GROUP_SEARCH_QUERY_VARIABLES, setVariables } from '../../common/constants';
+import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from '../../common/constants';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 
 export interface CollectionProps {
@@ -67,25 +71,25 @@ const formFields = (options: any, validateTitle: Function) => {
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  getItemQuery: GET_GROUP,
-  createItemQuery: CREATE_GROUP,
-  updateItemQuery: UPDATE_GROUP,
-  deleteItemQuery: DELETE_GROUP,
+  getItemQuery: GET_COLLECTION,
+  createItemQuery: CREATE_COLLECTION,
+  updateItemQuery: UPDATE_COLLECTION,
+  deleteItemQuery: DELETE_COLLECTION,
 };
 
 export const Collection: React.SFC<CollectionProps> = ({ match }) => {
-  const [selectedUsers, { data: groupUsers }] = useLazyQuery(GET_GROUP_USERS, {
+  const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
     fetchPolicy: 'cache-and-network',
   });
-  const groupId = match.params.id ? match.params.id : null;
+  const collectionId = match.params.id ? match.params.id : null;
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
 
-  const [updateGroupUsers] = useMutation(UPDATE_GROUP_USERS);
+  const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
-  const updateUsers = (groupIdValue: any) => {
+  const updateUsers = (collectionIdValue: any) => {
     const initialSelectedUsers = users.map((user: any) => user.id);
     const finalSelectedUsers = selected.map((user: any) => user.id);
     const selectedUsersData = finalSelectedUsers.filter(
@@ -96,11 +100,11 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     );
 
     if (selectedUsersData.length > 0 || removedUsers.length > 0) {
-      updateGroupUsers({
+      updateCollectionUsers({
         variables: {
           input: {
             addUserIds: selectedUsersData,
-            groupId: groupIdValue,
+            groupId: collectionIdValue,
             deleteUserIds: removedUsers,
           },
         },
@@ -112,7 +116,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     variables: setVariables(),
   });
 
-  const { data: groupList } = useQuery(GET_GROUPS);
+  const { data: collectionList } = useQuery(GET_COLLECTIONS);
 
   let options = [];
   if (data) {
@@ -120,14 +124,14 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   }
 
   useEffect(() => {
-    if (groupId) {
-      selectedUsers({ variables: { id: groupId } });
+    if (collectionId) {
+      selectedUsers({ variables: { id: collectionId } });
     }
-  }, [selectedUsers, groupId]);
+  }, [selectedUsers, collectionId]);
 
   useEffect(() => {
-    if (groupUsers) setUsers(groupUsers.group.group.users);
-  }, [groupUsers]);
+    if (collectionUsers) setUsers(collectionUsers.group.group.users);
+  }, [collectionUsers]);
 
   const states = { label, description, users };
 
@@ -142,12 +146,12 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   const refetchQueries = [
     {
-      query: GET_GROUPS,
+      query: GET_COLLECTIONS,
       variables: setVariables(),
     },
     {
       query: SEARCH_QUERY,
-      variables: GROUP_SEARCH_QUERY_VARIABLES,
+      variables: COLLECTION_SEARCH_QUERY_VARIABLES,
     },
   ];
 
@@ -156,10 +160,10 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     if (value) {
       let found = [];
 
-      if (groupList) {
-        found = groupList.groups.filter((search: any) => search.label === value);
-        if (groupId && found.length > 0) {
-          found = found.filter((search: any) => search.id !== groupId);
+      if (collectionList) {
+        found = collectionList.groups.filter((search: any) => search.label === value);
+        if (collectionId && found.length > 0) {
+          found = found.filter((search: any) => search.id !== collectionId);
         }
       }
       if (found.length > 0) {

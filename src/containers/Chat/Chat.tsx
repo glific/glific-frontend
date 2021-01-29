@@ -12,7 +12,7 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { setErrorMessage } from '../../common/notification';
 import { getUserRole } from '../../context/role';
 import {
-  GROUP_SEARCH_QUERY_VARIABLES,
+  COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
   SIMULATOR_CONTACT,
 } from '../../common/constants';
@@ -39,7 +39,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
   // contact id === collection when the collection id is not passed in the url
   let selectedTab = 'contacts';
   if (selectedCollectionId) {
-    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
+    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
     selectedTab = 'collections';
   }
 
@@ -90,7 +90,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
     let contactSelectedClass = '';
     let collectionSelectedClass = '';
     if (selectedCollectionId || selectedTab === 'collections') {
-      listingContent = <CollectionConversations groupId={selectedCollectionId} />;
+      listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
       // set class for collections tab
       collectionSelectedClass = `${styles.SelectedTab}`;
     } else if (selectedContactId) {
@@ -119,7 +119,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
           <ChatMessages
             contactId={showSimulator && simulatorId ? simulatorId : selectedContactId}
             simulatorId={simulatorId}
-            groupId={selectedCollectionId}
+            collectionId={selectedCollectionId}
           />
         </div>
 

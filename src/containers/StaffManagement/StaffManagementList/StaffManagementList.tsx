@@ -12,7 +12,7 @@ export interface StaffManagementProps {}
 
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
-  const columnStyles = [styles.Name, styles.Phone, styles.Group, styles.Actions];
+  const columnStyles = [styles.Name, styles.Phone, styles.Collection, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 
   const queries = {
@@ -38,17 +38,17 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     return <p className={styles.TableText}>{text}</p>;
   };
 
-  const getGroups = (groupList: any) => {
-    const groups = groupList.map((group: any) => {
-      return group.label;
+  const getCollections = (collectionList: any) => {
+    const collections = collectionList.map((collection: any) => {
+      return collection.label;
     });
-    return <p className={styles.TableText}>{groups.join(', ')}</p>;
+    return <p className={styles.TableText}>{collections.join(', ')}</p>;
   };
 
   const getColumns = ({ name, phone, groups, roles }: any) => ({
     name: getName(name, roles),
     phone: getPhone(phone),
-    group: getGroups(groups),
+    group: getCollections(groups),
   });
 
   const dialogMessage = ' Once deleted this action cannot be undone.';

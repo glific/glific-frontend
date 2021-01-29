@@ -3,7 +3,11 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { CollectionList } from './CollectionList';
-import { countGroupQuery, filterGroupQuery, getGroupContactsQuery } from '../../../mocks/Group';
+import {
+  countCollectionQuery,
+  filterCollectionQuery,
+  getCollectionContactsQuery,
+} from '../../../mocks/Collection';
 import { MemoryRouter } from 'react-router';
 import { getContactsQuery } from '../../../mocks/Contact';
 import { setUserSession } from '../../../services/AuthService';
@@ -13,12 +17,12 @@ import * as MessageDialog from '../../../components/UI/MessageDialog/MessageDial
 import { getPublishedFlowQuery } from '../../../mocks/Flow';
 
 const mocks = [
-  countGroupQuery,
-  filterGroupQuery,
-  filterGroupQuery,
+  countCollectionQuery,
+  filterCollectionQuery,
+  filterCollectionQuery,
   getPublishedFlowQuery,
   getPublishedFlowQuery,
-  getGroupContactsQuery,
+  getCollectionContactsQuery,
   getContactsQuery,
   getCurrentUserQuery,
 ];
@@ -39,7 +43,7 @@ describe('<CollectionList />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText('Groups')).toBeInTheDocument();
+      expect(getByText('Collections')).toBeInTheDocument();
     });
 
     // TODO: test flows

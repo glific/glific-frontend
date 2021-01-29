@@ -14,7 +14,10 @@ import {
   SEARCH_OFFSET,
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
-import { GROUP_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../../../common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  SEARCH_QUERY_VARIABLES,
+} from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
 
@@ -25,12 +28,18 @@ interface ConversationListProps {
   savedSearchCriteria?: string | null;
   searchParam?: any;
   searchMode: boolean;
-  selectedGroupId?: number;
-  setSelectedGroupId?: (i: number) => void;
+  selectedCollectionId?: number;
+  setSelectedCollectionId?: (i: number) => void;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
-  const { selectedContactId, searchVal, searchParam, savedSearchCriteria, selectedGroupId } = props;
+  const {
+    selectedContactId,
+    searchVal,
+    searchParam,
+    savedSearchCriteria,
+    selectedCollectionId,
+  } = props;
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(50);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
@@ -40,8 +49,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const scrollHeight = useQuery(SCROLL_HEIGHT);
 
   let queryVariables = SEARCH_QUERY_VARIABLES;
-  if (selectedGroupId) {
-    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
+  if (selectedCollectionId) {
+    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
   // check if there is a previous scroll height
@@ -165,13 +174,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             offset: offsetValue,
           },
         };
-      } else if (props.selectedGroupId) {
+      } else if (props.selectedCollectionId) {
         loadMoreVariables = {
           contactOpts: {
             limit: 1,
           },
           filter: {
-            id: selectedGroupId,
+            id: selectedCollectionId,
             searchGroup: true,
           },
           messageOpts: {
@@ -202,8 +211,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   );
 
   useEffect(() => {
-    // Use multi search when has search value and when there is no group id
-    if (searchVal !== '' && Object.keys(searchParam).length === 0 && !selectedGroupId) {
+    // Use multi search when has search value and when there is no collection id
+    if (searchVal !== '' && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
       getFilterSearch({
         variables: filterSearch(),
       });
@@ -343,12 +352,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
       } else if (conversation.group) {
-        if (props.selectedGroupId === conversation.group.id) {
+        if (props.selectedCollectionId === conversation.group.id) {
           selectedRecord = true;
         }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
-        entityType = 'group';
+        entityType = 'collection';
       }
 
       return (
@@ -360,8 +369,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             showMessages();
             if (entityType === 'contact' && props.setSelectedContactId) {
               props.setSelectedContactId(conversation.contact.id);
-            } else if (entityType === 'group' && props.setSelectedGroupId) {
-              props.setSelectedGroupId(conversation.group.id);
+            } else if (entityType === 'group' && props.setSelectedCollectionId) {
+              props.setSelectedCollectionId(conversation.group.id);
             }
           }}
           index={index}
@@ -393,7 +402,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       },
     };
 
-    if (selectedGroupId) {
+    if (selectedCollectionId) {
       conversationLoadMoreVariables.filter = { searchGroup: true };
     }
 
@@ -431,7 +440,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   return (
     <Container
       className={`${
-        selectedContactId ? styles.ListingContainer : styles.groupListingContainer
+        selectedContactId ? styles.ListingContainer : styles.CollectionListingContainer
       } contactsContainer`}
       disableGutters
     >

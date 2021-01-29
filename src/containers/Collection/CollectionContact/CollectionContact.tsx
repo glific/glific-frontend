@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import styles from './CollectionContact.module.css';
 import { CollectionContactList } from './CollectionContactList/CollectionContactList';
 import { CollectionDescription } from './CollectionDescription/CollectionDescription';
-import { GET_GROUP } from '../../../graphql/queries/Group';
+import { GET_COLLECTION } from '../../../graphql/queries/Collection';
 
 export interface CollectionContactProps {
   match: any;
@@ -15,18 +15,18 @@ export const CollectionContact: React.FC<CollectionContactProps> = (
 ) => {
   const { match } = props;
 
-  const groupId = match.params.id;
-  const group = useQuery(GET_GROUP, {
-    variables: { id: groupId },
+  const collectionId = match.params.id;
+  const collection = useQuery(GET_COLLECTION, {
+    variables: { id: collectionId },
     fetchPolicy: 'cache-and-network',
   });
-  const title = group.data ? group.data.group.group.label : 'Group';
+  const title = collection.data ? collection.data.group.group.label : 'Collection';
   let users;
   let description;
 
-  if (group.data) {
-    users = group.data.group.group.users;
-    description = group.data.group.group.description;
+  if (collection.data) {
+    users = collection.data.group.group.users;
+    description = collection.data.group.group.description;
   }
   return (
     <div className={styles.CollectionContactContainer}>

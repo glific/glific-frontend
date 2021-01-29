@@ -17,7 +17,7 @@ import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { getUserRole, displayUserGroups } from '../../context/role';
+import { getUserRole, displayUserCollections } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
 import {
@@ -222,9 +222,10 @@ export const List: React.SFC<ListProps> = ({
   });
 
   // Get item data here
-  const [fetchUserGroups, { loading: loadingGroups, data: userGroups }] = useLazyQuery(
-    GET_CURRENT_USER
-  );
+  const [
+    fetchUserCollections,
+    { loading: loadingCollections, data: userCollections },
+  ] = useLazyQuery(GET_CURRENT_USER);
 
   const checkUserRole = () => {
     userRole = getUserRole();
@@ -238,9 +239,9 @@ export const List: React.SFC<ListProps> = ({
     if (userRole.length === 0) {
       checkUserRole();
     } else {
-      if (!displayUserGroups && listItem === 'collections') {
+      if (!displayUserCollections && listItem === 'collections') {
         // if user role staff then display collections related to login user
-        fetchUserGroups();
+        fetchUserCollections();
       }
       fetchQuery();
     }
@@ -307,7 +308,7 @@ export const List: React.SFC<ListProps> = ({
     return <Redirect to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingGroups) return <Loading />;
+  if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(client, error);
@@ -405,8 +406,8 @@ export const List: React.SFC<ListProps> = ({
             return null;
           })}
 
-          {/* do not display edit & delete for staff role in group */}
-          {displayUserGroups || listItems !== 'collections' ? (
+          {/* do not display edit & delete for staff role in collection */}
+          {displayUserCollections || listItems !== 'collections' ? (
             <>
               {editButton}
               {deleteButton(id, label)}
@@ -456,9 +457,9 @@ export const List: React.SFC<ListProps> = ({
     itemList = formatList(data[listItem]);
   }
 
-  if (userGroups) {
+  if (userCollections) {
     if (listItem === 'collections') {
-      itemList = formatList(userGroups.currentUser.user.groups);
+      itemList = formatList(userCollections.currentUser.user.groups);
     }
   }
 

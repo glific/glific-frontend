@@ -9,7 +9,7 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
-import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
 import { getUserRole, isManagerRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
@@ -58,8 +58,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       },
       {
         title: 'Staff',
-        description: `Access only to the chat section and their groups. Access can be limited to chatting
-       with all contacts or only to the ones in their assigned group.`,
+        description: `Access only to the chat section and their collections. Access can be limited to chatting
+       with all contacts or only to the ones in their assigned collection.`,
       },
       {
         title: 'None',
@@ -107,7 +107,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
 
   const { loading: loadingRoles, data: roleData } = useQuery(GET_USER_ROLES);
 
-  const { loading, data } = useQuery(GET_GROUPS, {
+  const { loading, data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),
   });
 
@@ -189,11 +189,11 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'groups',
-      placeholder: 'Assigned to group(s)',
+      placeholder: 'Assigned to collection(s)',
       options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Assigned to group(s)',
+        label: 'Assigned to collection(s)',
         variant: 'outlined',
       },
     },
@@ -205,7 +205,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {
         component: Checkbox,
         name: 'isRestricted',
-        title: 'Can chat with contacts from assigned group only',
+        title: 'Can chat with contacts from assigned collection only',
       },
     ];
   }
@@ -218,12 +218,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
 
   const setPayload = (payload: any) => {
     const payloadCopy = payload;
-    // let's build the groupIds, as backend expects the array of group ids
-    const groupIds = payloadCopy.groups.map((group: any) => {
-      return group.id;
+    // let's build the collectionIds, as backend expects the array of collection ids
+    const collectionIds = payloadCopy.groups.map((collection: any) => {
+      return collection.id;
     });
 
-    // remove groups from the payload
+    // remove collections from the payload
     delete payloadCopy.groups;
 
     let roleIds: any[] = [];
@@ -236,7 +236,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     // return modified payload
     return {
       ...payloadCopy,
-      groupIds,
+      groupIds: collectionIds,
       roles: roleIds,
     };
   };

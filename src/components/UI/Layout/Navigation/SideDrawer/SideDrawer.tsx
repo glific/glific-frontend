@@ -249,7 +249,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
                   <Tooltip title="Staff Management" placement="top">
                     <img
                       src={
-                        ['/group', '/staff-management', '/blocked-contacts'].includes(
+                        ['/collection', '/staff-management', '/blocked-contacts'].includes(
                           location.pathname
                         )
                           ? ActiveStaffIcon

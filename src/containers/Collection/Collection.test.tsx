@@ -4,7 +4,11 @@ import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { Collection } from './Collection';
-import { getGroupQuery, getGroupsQuery, getGroupUsersQuery } from '../../mocks/Group';
+import {
+  getCollectionQuery,
+  getCollectionsQuery,
+  getCollectionUsersQuery,
+} from '../../mocks/Collection';
 import { getUsersQuery } from '../../mocks/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import * as FormLayout from '../Form/FormLayout';
@@ -12,13 +16,13 @@ import * as FormLayout from '../Form/FormLayout';
 const mocks = [
   getUsersQuery,
   ...getOrganizationQuery,
-  getGroupQuery,
+  getCollectionQuery,
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQuery,
-  getGroupQuery, // if you refetch then you need to include same mock twice
-  getGroupUsersQuery,
-  getGroupUsersQuery,
-  ...getGroupsQuery,
+  getCollectionQuery, // if you refetch then you need to include same mock twice
+  getCollectionUsersQuery,
+  getCollectionUsersQuery,
+  ...getCollectionsQuery,
 ];
 
 const wrapper = (
@@ -60,15 +64,15 @@ describe('<Collection />', () => {
             additionalQuery(['1']);
             mockCallback();
           }}
-          data-testid="group"
+          data-testid="collection"
         >
-          <span>Edit group</span>
+          <span>Edit collection</span>
         </div>
       );
     });
 
     const { getByTestId } = render(wrapper);
-    fireEvent.click(getByTestId('group'));
+    fireEvent.click(getByTestId('collection'));
 
     await waitFor(() => {
       expect(mockCallback).toBeCalled();

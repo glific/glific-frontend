@@ -26,11 +26,11 @@ import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { GET_GROUPS } from '../../../../graphql/queries/Group';
-import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
-import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
+import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
+import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
+import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
 import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_GROUP } from '../../../../graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
 import { setErrorMessage, setNotification } from '../../../../common/notification';
@@ -50,7 +50,7 @@ import { showChats } from '../../../../common/responsive';
 export interface ContactBarProps {
   displayName: string;
   contactId?: string;
-  groupId?: string;
+  collectionId?: string;
   lastMessageTime?: any;
   contactStatus?: string;
   contactBspStatus?: string;
@@ -61,7 +61,7 @@ export interface ContactBarProps {
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const {
     contactId,
-    groupId,
+    collectionId,
     contactBspStatus,
     lastMessageTime,
     contactStatus,
@@ -72,13 +72,13 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
-  const [showGroupDialog, setShowGroupDialog] = useState(false);
+  const [showCollectionDialog, setShowCollectionDialog] = useState(false);
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
 
-  // get group list
-  const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
+  // get collection list
+  const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
     variables: setVariables(),
   });
 
@@ -90,20 +90,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
-  // get contact groups
-  const [getContactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
+  // get contact collections
+  const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
     variables: { id: contactId },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
     if (contactId) {
-      getContactGroups();
+      getContactCollections();
     }
   }, [contactId]);
 
   // mutation to update the contact collections
-  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
+  const [updateContactCollections] = useMutation(UPDATE_CONTACT_COLLECTIONS, {
     onCompleted: (result: any) => {
       const { numberDeleted, contactGroups } = result.updateContactGroups;
       const numberAdded = contactGroups.length;
@@ -117,7 +117,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       }
       setNotification(client, notification);
     },
-    refetchQueries: [{ query: GET_CONTACT_GROUPS, variables: { id: contactId } }],
+    refetchQueries: [{ query: GET_CONTACT_COLLECTIONS, variables: { id: contactId } }],
   });
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
@@ -136,7 +136,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     },
   });
 
-  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
       setNotification(client, 'Flow started successfully');
     },
@@ -151,31 +151,31 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     },
   });
 
-  let groupOptions = [];
+  let collectionOptions = [];
   let flowOptions = [];
-  let initialSelectedGroupIds: Array<any> = [];
-  let selectedGroupsName = [];
-  let assignedToGroup: any = [];
+  let initialSelectedCollectionIds: Array<any> = [];
+  let selectedCollectionsName = [];
+  let assignedToCollection: any = [];
 
   if (data) {
-    initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
-    selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
-    assignedToGroup = data.contact.contact.groups.map((group: any) =>
+    initialSelectedCollectionIds = data.contact.contact.groups.map((group: any) => group.id);
+    selectedCollectionsName = data.contact.contact.groups.map((group: any) => group.label);
+    assignedToCollection = data.contact.contact.groups.map((group: any) =>
       group.users.map((user: any) => user.name)
     );
 
-    assignedToGroup = Array.from(new Set([].concat(...assignedToGroup)));
-    if (assignedToGroup.length > 2) {
-      assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
-        assignedToGroup.length - 2
+    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
+    if (assignedToCollection.length > 2) {
+      assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
+        assignedToCollection.length - 2
       ).toString()}`;
     } else {
-      assignedToGroup = assignedToGroup.join(', ');
+      assignedToCollection = assignedToCollection.join(', ');
     }
   }
 
-  if (groupsData) {
-    groupOptions = groupsData.groups;
+  if (collectionsData) {
+    collectionOptions = collectionsData.groups;
   }
 
   if (flowsData) {
@@ -184,41 +184,41 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   let dialogBox = null;
 
-  const handleGroupDialogOk = (selectedGroupIds: any) => {
-    const finalSelectedGroups = selectedGroupIds.filter(
-      (selectedGroupId: any) => !initialSelectedGroupIds.includes(selectedGroupId)
+  const handleCollectionDialogOk = (selectedCollectionIds: any) => {
+    const finalSelectedCollections = selectedCollectionIds.filter(
+      (selectedCollectionId: any) => !initialSelectedCollectionIds.includes(selectedCollectionId)
     );
-    const finalRemovedGroups = initialSelectedGroupIds.filter(
-      (gId: any) => !selectedGroupIds.includes(gId)
+    const finalRemovedCollections = initialSelectedCollectionIds.filter(
+      (gId: any) => !selectedCollectionIds.includes(gId)
     );
 
-    if (finalSelectedGroups.length > 0 || finalRemovedGroups.length > 0) {
-      updateContactGroups({
+    if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
+      updateContactCollections({
         variables: {
           input: {
             contactId: props.contactId,
-            addGroupIds: finalSelectedGroups,
-            deleteGroupIds: finalRemovedGroups,
+            addGroupIds: finalSelectedCollections,
+            deleteGroupIds: finalRemovedCollections,
           },
         },
       });
     }
 
-    setShowGroupDialog(false);
+    setShowCollectionDialog(false);
   };
 
-  const handleGroupDialogCancel = () => {
-    setShowGroupDialog(false);
+  const handleCollectionDialogCancel = () => {
+    setShowCollectionDialog(false);
   };
 
-  if (showGroupDialog) {
+  if (showCollectionDialog) {
     dialogBox = (
       <SearchDialogBox
-        selectedOptions={initialSelectedGroupIds}
+        selectedOptions={initialSelectedCollectionIds}
         title="Add contact to collection"
-        handleOk={handleGroupDialogOk}
-        handleCancel={handleGroupDialogCancel}
-        options={groupOptions}
+        handleOk={handleCollectionDialogOk}
+        handleCancel={handleCollectionDialogCancel}
+        options={collectionOptions}
       />
     );
   }
@@ -235,9 +235,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       });
     }
 
-    if (props.groupId) {
-      flowVariables.groupId = props.groupId;
-      addFlowToGroup({
+    if (props.collectionId) {
+      flowVariables.groupId = props.collectionId;
+      addFlowToCollection({
         variables: flowVariables,
       });
     }
@@ -314,7 +314,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let flowButton: any;
-  if (groupId) {
+  if (collectionId) {
     flowButton = (
       <Button
         data-testid="flowButton"
@@ -398,11 +398,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             {contactId ? (
               <>
                 <Button
-                  data-testid="groupButton"
+                  data-testid="collectionButton"
                   className={styles.ListButtonPrimary}
                   onClick={() => {
-                    getGroups();
-                    setShowGroupDialog(true);
+                    getCollections();
+                    setShowCollectionDialog(true);
                   }}
                 >
                   <AddContactIcon className={styles.Icon} />
@@ -444,21 +444,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  let contactGroups: any;
-  if (selectedGroupsName.length > 0) {
-    contactGroups = (
-      <div className={styles.ContactGroups}>
-        <span className={styles.GroupHeading}>Collections</span>
-        <span className={styles.GroupsName} data-testid="groupNames">
-          {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
+  let contactCollections: any;
+  if (selectedCollectionsName.length > 0) {
+    contactCollections = (
+      <div className={styles.ContactCollections}>
+        <span className={styles.CollectionHeading}>Collections</span>
+        <span className={styles.CollectionsName} data-testid="collectionNames">
+          {selectedCollectionsName.map((collectionName: string) => collectionName).join(', ')}
         </span>
       </div>
     );
   }
 
-  let sesssionAndGroupAssignedTo;
+  let sesssionAndCollectionAssignedTo;
   if (contactId) {
-    sesssionAndGroupAssignedTo = (
+    sesssionAndCollectionAssignedTo = (
       <>
         <div className={styles.SessionTimerContainer}>
           <div className={styles.SessionTimer} data-testid="sessionTimer">
@@ -470,10 +470,10 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             />
           </div>
           <div>
-            {assignedToGroup ? (
+            {assignedToCollection ? (
               <>
-                <span className={styles.GroupHeading}>Assigned to</span>
-                <span className={styles.GroupsName}>{assignedToGroup}</span>
+                <span className={styles.CollectionHeading}>Assigned to</span>
+                <span className={styles.CollectionsName}>{assignedToCollection}</span>
               </>
             ) : null}
           </div>
@@ -507,9 +507,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               </div>
             </ClickAwayListener>
           </div>
-          {contactGroups}
+          {contactCollections}
         </div>
-        {sesssionAndGroupAssignedTo}
+        {sesssionAndCollectionAssignedTo}
       </div>
       {popper}
       {dialogBox}

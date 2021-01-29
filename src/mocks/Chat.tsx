@@ -1,5 +1,5 @@
 import {
-  GROUP_SENT_SUBSCRIPTION,
+  COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
@@ -9,7 +9,7 @@ import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversat
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
 import { filterTagsQuery, getTagsQuery } from './Tag';
-import { contactGroupsQuery } from './Contact';
+import { contactCollectionsQuery } from './Contact';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
 import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
 import { getOrganizationLanguagesQuery } from './Organization';
@@ -87,9 +87,9 @@ const conversationMessageQuery = (
   },
 });
 
-const conversationGroupQuery = (
-  groupId: any,
-  GroupName: string,
+const conversationCollectionQuery = (
+  collectionId: any,
+  collectionName: string,
   contactLimit: number = 50,
   messageLimit: object = { limit: 50 }
 ) => ({
@@ -109,8 +109,8 @@ const conversationGroupQuery = (
         {
           contact: null,
           group: {
-            id: groupId.toString(),
-            label: GroupName,
+            id: collectionId.toString(),
+            label: collectionName,
           },
           messages: [
             {
@@ -169,9 +169,9 @@ export const messageReceivedSubscription = {
   },
 };
 
-export const groupSendSubscription = {
+export const collectionSendSubscription = {
   request: {
-    query: GROUP_SENT_SUBSCRIPTION,
+    query: COLLECTION_SENT_SUBSCRIPTION,
     variables: { organizationId: '1' },
   },
   result: {
@@ -443,14 +443,14 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
-  contactGroupsQuery,
-  contactGroupsQuery,
+  contactCollectionsQuery,
+  contactCollectionsQuery,
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
-  groupSendSubscription,
+  collectionSendSubscription,
   messageStatusSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
@@ -459,7 +459,7 @@ export const CONVERSATION_MOCKS = [
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
-  conversationGroupQuery('2', 'Default group'),
+  conversationCollectionQuery('2', 'Default collection'),
 ];
 
 const updateMessageTagsQuery = {
@@ -689,7 +689,7 @@ export const searchQuerywithFilterOffset = {
 };
 
 const chatMessagesMocks = [
-  contactGroupsQuery,
+  contactCollectionsQuery,
   updateMessageTagsQuery,
   updateMessageTagsQuery,
   searchQuerywithFilter,

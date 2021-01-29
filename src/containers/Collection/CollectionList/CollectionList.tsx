@@ -9,17 +9,24 @@ import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,
 } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
-import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
-import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
+import {
+  DELETE_COLLECTION,
+  UPDATE_COLLECTION_CONTACTS,
+} from '../../../graphql/mutations/Collection';
+import {
+  GET_COLLECTIONS_COUNT,
+  FILTER_COLLECTIONS,
+  GET_COLLECTIONS,
+} from '../../../graphql/queries/Collection';
 import { GET_FLOWS } from '../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_GROUP } from '../../../graphql/mutations/Flow';
-import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import { ADD_FLOW_TO_COLLECTION } from '../../../graphql/mutations/Flow';
+import { CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
-import { displayUserGroups } from '../../../context/role';
+import { displayUserCollections } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../graphql/queries/Contact';
 import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
@@ -41,9 +48,9 @@ const columnStyles = [styles.Label, styles.Description, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  countQuery: GET_GROUPS_COUNT,
-  filterItemsQuery: FILTER_GROUPS,
-  deleteItemQuery: DELETE_GROUP,
+  countQuery: GET_COLLECTIONS_COUNT,
+  filterItemsQuery: FILTER_COLLECTIONS,
+  deleteItemQuery: DELETE_COLLECTION,
 };
 
 const columnAttributes = {
@@ -58,7 +65,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
-  const [groupId, setGroupId] = useState();
+  const [collectionId, setCollectionId] = useState();
 
   // get the published flow list
   const [getFlows, { data: flowData }] = useLazyQuery(GET_FLOWS, {
@@ -72,18 +79,20 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+  const [sendMessageToCollections] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     onCompleted: () => {
       setNotification(client, `Message successfully send to the collection`);
       setSendMessageDialogShow(false);
     },
   });
 
-  const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
-  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
+  const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
+    GET_COLLECTION_CONTACTS
+  );
+  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
     onCompleted: (data) => {
-      const { numberDeleted, groupContacts } = data.updateGroupContacts;
-      const numberAdded = groupContacts.length;
+      const { numberDeleted, collectionContacts } = data.updateCollectionContacts;
+      const numberAdded = collectionContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
           client,
@@ -104,10 +113,10 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       }
       setAddContactsDialogShow(false);
     },
-    refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
+    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
 
-  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
       setAddFlowDialogShow(false);
       setNotification(client, 'Flow started successfully');
@@ -115,15 +124,15 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   });
   let flowOptions = [];
   let contactOptions = [];
-  let groupContacts: Array<any> = [];
+  let collectionContacts: Array<any> = [];
   if (flowData) {
     flowOptions = flowData.flows;
   }
   if (contactsData) {
     contactOptions = contactsData.contacts;
   }
-  if (groupContactsData) {
-    groupContacts = groupContactsData.group.group.contacts;
+  if (collectionContactsData) {
+    collectionContacts = collectionContactsData.group.group.contacts;
   }
 
   let dialog = null;
@@ -134,30 +143,30 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
 
   const setFlowDialog = (id: any) => {
     getFlows();
-    setGroupId(id);
+    setCollectionId(id);
     setAddFlowDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
-    getGroupContacts({ variables: { id } });
+    getCollectionContacts({ variables: { id } });
     getContacts();
-    setGroupId(id);
+    setCollectionId(id);
     setAddContactsDialogShow(true);
   };
 
   const handleFlowSubmit = (value: any) => {
-    addFlowToGroup({
+    addFlowToCollection({
       variables: {
         flowId: value,
-        groupId,
+        collectionId,
       },
     });
   };
 
-  const sendMessageToGroup = (message: string) => {
-    sendMessageToGroups({
+  const sendMessageToCollection = (message: string) => {
+    sendMessageToCollections({
       variables: {
-        groupId,
+        collectionId,
         input: {
           body: message,
           senderId: 1,
@@ -172,7 +181,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     dialog = (
       <MessageDialog
         title="Send message to collection"
-        onSendMessage={sendMessageToGroup}
+        onSendMessage={sendMessageToCollection}
         handleClose={() => setSendMessageDialogShow(false)}
       />
     );
@@ -191,22 +200,23 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     );
   }
 
-  const handleGroupAdd = (value: any) => {
+  const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
-      (contact: any) => !groupContacts.map((groupContact: any) => groupContact.id).includes(contact)
+      (contact: any) =>
+        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
-    const unselectedContacts = groupContacts
-      .map((groupContact: any) => groupContact.id)
+    const unselectedContacts = collectionContacts
+      .map((collectionContact: any) => collectionContact.id)
       .filter((contact: any) => !value.includes(contact));
 
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
-      updateGroupContacts({
+      updateCollectionContacts({
         variables: {
           input: {
             addContactIds: selectedContacts,
-            groupId,
+            collectionId,
             deleteContactIds: unselectedContacts,
           },
         },
@@ -218,12 +228,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     dialog = (
       <SearchDialogBox
         title="Add contacts to the collection"
-        handleOk={handleGroupAdd}
+        handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
         asyncSearch
-        selectedOptions={groupContacts}
+        selectedOptions={collectionContacts}
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);
@@ -266,12 +276,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       label: '',
       icon: messageMenu,
       parameter: 'id',
-      dialog: setGroupId,
+      dialog: setCollectionId,
     },
   ];
 
   const refetchQueries = {
-    query: GET_GROUPS,
+    query: GET_COLLECTIONS,
     variables: setVariables(),
   };
 
@@ -286,7 +296,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         columnNames={['LABEL']}
         listItemName="collection"
         displayListType="card"
-        button={{ show: displayUserGroups, label: '+ CREATE COLLECTION' }}
+        button={{ show: displayUserCollections, label: '+ CREATE COLLECTION' }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}

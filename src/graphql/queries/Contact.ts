@@ -22,7 +22,7 @@ export const GET_CONTACT_COUNT = gql`
   }
 `;
 
-export const GET_CONTACT_GROUPS = gql`
+export const GET_CONTACT_COLLECTIONS = gql`
   query contact($id: ID!) {
     contact(id: $id) {
       contact {
@@ -38,7 +38,7 @@ export const GET_CONTACT_GROUPS = gql`
   }
 `;
 
-export const GET_GROUP_CONTACTS = gql`
+export const GET_COLLECTION_CONTACTS = gql`
   query group($id: ID!) {
     group(id: $id) {
       group {

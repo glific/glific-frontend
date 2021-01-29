@@ -9,7 +9,7 @@ let staffManagementMenu: any = [];
 /* eslint-disable */
 let settingMenu: boolean = false;
 let advanceSearch: boolean = false;
-let displayUserGroups: boolean = false;
+let displayUserCollections: boolean = false;
 let isManagerRole: boolean = false;
 /* eslint-enable */
 
@@ -49,7 +49,7 @@ const getRoleBasedAccess = () => {
     sideDrawerMenu = sideDrawerMenus;
     staffManagementMenu = staffManagementMenus;
     advanceSearch = true;
-    displayUserGroups = true;
+    displayUserCollections = true;
     settingMenu = true;
 
     if (role.includes('Manager')) {
@@ -62,7 +62,7 @@ const getRoleBasedAccess = () => {
   if (role.length === 0) {
     settingMenu = false;
     advanceSearch = false;
-    displayUserGroups = false;
+    displayUserCollections = false;
     isManagerRole = false;
   }
 
@@ -83,7 +83,7 @@ export {
   getRoleBasedAccess,
   settingMenu,
   advanceSearch,
-  displayUserGroups,
+  displayUserCollections,
   isManagerRole,
   resetRole,
 };
