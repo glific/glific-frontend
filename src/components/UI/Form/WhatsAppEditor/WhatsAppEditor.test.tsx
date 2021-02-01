@@ -1,7 +1,7 @@
 import React from 'react';
 import WhatsAppEditor from './WhatsAppEditor';
-import { render, wait, fireEvent } from '@testing-library/react';
-import { EMPTY_STATE } from './EditorState.test.helper';
+import { render, fireEvent } from '@testing-library/react';
+
 import { EditorState } from 'draft-js';
 import { WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 
