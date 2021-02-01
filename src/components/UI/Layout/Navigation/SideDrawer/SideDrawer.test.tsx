@@ -1,13 +1,11 @@
 import React from 'react';
-import { Drawer, ListItem } from '@material-ui/core';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';
-import { wait, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
 import { sideDrawerMenus } from '../../../../../config/menu';
-import { getRoleBasedAccess } from '../../../../../context/role';
 import { getCurrentUserQuery } from '../../../../../mocks/User';
 import { setUserSession } from '../../../../../services/AuthService';
 import { walletBalanceQuery, walletBalanceSubscription } from '../../../../../mocks/Organization';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, getByText, render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { Button } from './Button';
 
 describe('<Button />', () => {
@@ -22,7 +22,11 @@ describe('<Button />', () => {
   });
 
   it('should trigger onclick callback when clicked', () => {
-    const { getByTestId } = render(<Button onClick={buttonCallback} {...defaultProps}>My Button</Button>);
+    const { getByTestId } = render(
+      <Button onClick={buttonCallback} {...defaultProps}>
+        My Button
+      </Button>
+    );
     fireEvent.click(getByTestId('button'));
     expect(buttonCallback).toBeCalled();
   });

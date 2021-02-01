@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, waitFor } from '@testing-library/react';
 import moment from 'moment';
 
 import ChatMessage from './ChatMessage';

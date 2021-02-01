@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, wait, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import ConversationList from './ConversationList';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
@@ -57,7 +57,7 @@ cache.writeQuery({
 });
 
 const client = new ApolloClient({
-  cache: cache,
+  cache,
   assumeImmutableResults: true,
 });
 const conversationList = (

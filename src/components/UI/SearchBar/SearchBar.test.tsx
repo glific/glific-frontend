@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import SearchBar from './SearchBar';
-import { InputBase, IconButton } from '@material-ui/core';
 
 describe('<SearchBar/>', () => {
   const mockChange = jest.fn();
@@ -36,7 +35,7 @@ describe('<SearchBar/>', () => {
   });
 
   it('change in local search val renders change', () => {
-    const { getByTestId, getByPlaceholderText } = render(component(''));
+    const { getByPlaceholderText } = render(component(''));
     fireEvent.change(getByPlaceholderText('Search'), { target: { value: 'new val' } });
     expect(mockChange).toHaveBeenCalled();
   });

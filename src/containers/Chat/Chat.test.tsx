@@ -63,8 +63,6 @@ const client = new ApolloClient({
   assumeImmutableResults: true,
 });
 
-const mocks = CONVERSATION_MOCKS;
-
 const defaultProps = {
   contactId: 2,
 };
