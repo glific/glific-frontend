@@ -239,16 +239,21 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = {};
 
+  const updateConversationInfo = (type: string, Id: any) => {
+    allConversations.search.map((conversation: any, index: any) => {
+      if (conversation[type].id === Id.toString()) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+      return null;
+    });
+  };
+
   if (contactId) {
     // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search)
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId.toString()) {
-          conversationIndex = index;
-          conversationInfo = conversation;
-        }
-        return null;
-      });
+    if (allConversations && allConversations.search) {
+      updateConversationInfo('contact', contactId);
+    }
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
@@ -271,13 +276,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         conversationIndex = 0;
         [conversationInfo] = allConversations.search;
       } else {
-        allConversations.search.map((conversation: any, index: any) => {
-          if (conversation.group.id === collectionId.toString()) {
-            conversationIndex = index;
-            conversationInfo = conversation;
-          }
-          return null;
-        });
+        updateConversationInfo('group', collectionId);
       }
     }
 
