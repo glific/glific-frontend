@@ -1,10 +1,5 @@
 import { GET_LANGUAGES } from '../../graphql/queries/List';
-import {
-  GET_TEMPLATES_COUNT,
-  FILTER_TEMPLATES,
-  GET_TEMPLATE,
-  GET_HSM_CATEGORIES,
-} from '../../graphql/queries/Template';
+import { FILTER_TEMPLATES, GET_TEMPLATE, GET_HSM_CATEGORIES } from '../../graphql/queries/Template';
 import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
 import {
   getOrganizationLanguagesQuery,
@@ -146,6 +141,28 @@ const HSMTemplate = {
   },
 };
 
+const sessionTemplates = [
+  {
+    id: '87',
+    body: 'Hi',
+    label: 'Hello',
+    shortcode: 'test',
+    isHsm: false,
+    isReserved: false,
+    translations: '{}',
+    type: 'TEXT',
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+];
+
 const filterByBody = (body: string) => ({
   request: {
     query: FILTER_TEMPLATES,
@@ -160,27 +177,7 @@ const filterByBody = (body: string) => ({
   },
   result: {
     data: {
-      sessionTemplates: [
-        {
-          id: '87',
-          body: 'Hi',
-          label: 'Hello',
-          shortcode: 'test',
-          isHsm: false,
-          isReserved: false,
-          translations: '{}',
-          type: 'TEXT',
-          language: {
-            id: '1',
-            label: 'Hindi',
-          },
-          MessageMedia: {
-            id: 1,
-            caption: 'Test',
-            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          },
-        },
-      ],
+      sessionTemplates,
     },
   },
 });
