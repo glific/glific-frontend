@@ -6,13 +6,13 @@ import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
-const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <Search match={{ params: { id: 1 } }} />
-  </MockedProvider>
-);
+const runTest = (match: any) => {
+  const wrapper = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Search match={match} />
+    </MockedProvider>
+  );
 
-test('should load the search edit', async () => {
   const { getByText, findByTestId } = render(wrapper);
 
   // loading is show initially
@@ -20,38 +20,16 @@ test('should load the search edit', async () => {
 
   const formLayout = await findByTestId('formLayout');
   expect(formLayout).toHaveTextContent('Search');
+};
+
+test('should load the search edit', async () => {
+  runTest({ params: { id: 1 } });
 });
 
 test('should load the search', async () => {
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Search
-        match={{ params: { id: 1 }, type: 'search', search: Function, handleSave: Function }}
-      />
-    </MockedProvider>
-  );
-  const { getByText, findByTestId } = render(wrapper);
-
-  // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Search');
+  runTest({ params: { id: 1 }, type: 'search', search: Function, handleSave: Function });
 });
 
 test('should load the save Search', async () => {
-  const wrapper = (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <Search
-        match={{ params: { id: 1 }, type: 'saveSearch', search: Function, handleSave: Function }}
-      />
-    </MockedProvider>
-  );
-  const { getByText, findByTestId } = render(wrapper);
-
-  // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  const formLayout = await findByTestId('formLayout');
-  expect(formLayout).toHaveTextContent('Search');
+  runTest({ params: { id: 1 }, type: 'saveSearch', search: Function, handleSave: Function });
 });

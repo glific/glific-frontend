@@ -158,7 +158,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
-  // this function is called when the message is sent
+  const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
+    // add additional param for template
+    if (selectedTemplate) {
+      /* eslint-disable no-param-reassign */
+      payload.isHsm = selectedTemplate.isHsm;
+      payload.templateId = parseInt(selectedTemplate.id, 10);
+      payload.params = variableParam;
+    }
+    return payload;
+  };
+
+  // this function is called when the message is sent collection
   const sendCollectionMessageHandler = (
     body: string,
     mediaId: string,
@@ -174,15 +185,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       flow: 'OUTBOUND',
     };
 
-    // add additional param for template
-    if (selectedTemplate) {
-      payload.isHsm = selectedTemplate.isHsm;
-      payload.templateId = parseInt(selectedTemplate.id, 10);
-      payload.params = variableParam;
-    }
-
     sendMessageToCollection({
-      variables: { groupId: collectionId, input: payload },
+      variables: {
+        groupId: collectionId,
+        input: updatePayload(payload, selectedTemplate, variableParam),
+      },
     });
   };
 
@@ -204,15 +211,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         flow: 'OUTBOUND',
       };
 
-      // add additional param for template
-      if (selectedTemplate) {
-        payload.isHsm = selectedTemplate.isHsm;
-        payload.templateId = parseInt(selectedTemplate.id, 10);
-        payload.params = variableParam;
-      }
-
       createAndSendMessage({
-        variables: { input: payload },
+        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
     },
     [createAndSendMessage, contactId]
