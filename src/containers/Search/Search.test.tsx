@@ -6,7 +6,7 @@ import { LIST_ITEM_MOCKS } from './Search.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 
-const runTest = (match: any) => {
+const runTest = async (match: any) => {
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <Search match={match} />
@@ -22,14 +22,14 @@ const runTest = (match: any) => {
   expect(formLayout).toHaveTextContent('Search');
 };
 
-test('should load the search edit', async () => {
+test('should load the search edit', () => {
   runTest({ params: { id: 1 } });
 });
 
-test('should load the search', async () => {
+test('should load the search', () => {
   runTest({ params: { id: 1 }, type: 'search', search: Function, handleSave: Function });
 });
 
-test('should load the save Search', async () => {
+test('should load the save Search', () => {
   runTest({ params: { id: 1 }, type: 'saveSearch', search: Function, handleSave: Function });
 });
