@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_CONTACT_GROUP = gql`
+export const CREATE_CONTACT_COLLECTION = gql`
   mutation createContactGroup($input: ContactGroupInput!) {
     createContactGroup(input: $input) {
       contactGroup {
@@ -11,7 +11,7 @@ export const CREATE_CONTACT_GROUP = gql`
   }
 `;
 
-export const UPDATE_CONTACT_GROUPS = gql`
+export const UPDATE_CONTACT_COLLECTIONS = gql`
   mutation updateContactGroups($input: ContactGroupsInput!) {
     updateContactGroups(input: $input) {
       contactGroups {
@@ -23,7 +23,7 @@ export const UPDATE_CONTACT_GROUPS = gql`
   }
 `;
 
-export const DELETE_GROUP = gql`
+export const DELETE_COLLECTION = gql`
   mutation deleteGroup($id: ID!) {
     deleteGroup(id: $id) {
       errors {
@@ -34,7 +34,7 @@ export const DELETE_GROUP = gql`
   }
 `;
 
-export const CREATE_GROUP = gql`
+export const CREATE_COLLECTION = gql`
   mutation createGroup($input: GroupInput!) {
     createGroup(input: $input) {
       group {
@@ -46,7 +46,7 @@ export const CREATE_GROUP = gql`
   }
 `;
 
-export const UPDATE_GROUP = gql`
+export const UPDATE_COLLECTION = gql`
   mutation updateGroup($id: ID!, $input: GroupInput!) {
     updateGroup(id: $id, input: $input) {
       group {
@@ -58,7 +58,7 @@ export const UPDATE_GROUP = gql`
   }
 `;
 
-export const UPDATE_GROUP_USERS = gql`
+export const UPDATE_COLLECTION_USERS = gql`
   mutation updateGroupUsers($input: GroupUsersInput!) {
     updateGroupUsers(input: $input) {
       groupUsers {
@@ -69,7 +69,7 @@ export const UPDATE_GROUP_USERS = gql`
   }
 `;
 
-export const UPDATE_GROUP_CONTACTS = gql`
+export const UPDATE_COLLECTION_CONTACTS = gql`
   mutation updateGroupContacts($input: GroupContactsInput!) {
     updateGroupContacts(input: $input) {
       groupContacts {

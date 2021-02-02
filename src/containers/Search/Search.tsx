@@ -12,7 +12,7 @@ import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Select
 import { GET_SEARCH, SEARCH_LIST_QUERY } from '../../graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
-import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
@@ -53,7 +53,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
   const [includeTags, setIncludeTags] = useState([]);
-  const [includeGroups, setIncludeGroups] = useState([]);
+  const [includeCollections, setIncludeCollections] = useState([]);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
@@ -65,7 +65,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     label,
     term,
     includeTags,
-    includeGroups,
+    includeCollections,
     includeUsers,
     dateFrom,
     dateTo,
@@ -75,7 +75,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     variables: setVariables(),
   });
 
-  const { data } = useQuery(GET_GROUPS, {
+  const { data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),
   });
 
@@ -91,9 +91,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
             setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
           break;
-        case 'includeGroups':
-          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
-            setIncludeGroups(getObject(data.groups, filters.filter.includeGroups));
+        case 'includeCollections':
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeCollections'))
+            setIncludeCollections(getObject(data.groups, filters.filter.includeGroups));
           break;
         case 'includeUsers':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeUsers'))
@@ -132,7 +132,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         includeTags: props.searchParam.includeTags
           ? props.searchParam.includeTags.map((option: any) => option.id)
           : [],
-        includeGroups: props.searchParam.includeGroups
+        includeCollections: props.searchParam.includeGroups
           ? props.searchParam.includeGroups.map((option: any) => option.id)
           : [],
         includeUsers: props.searchParam.includeUsers
@@ -234,12 +234,12 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     },
     {
       component: AutoComplete,
-      name: 'includeGroups',
-      placeholder: 'Includes groups',
-      label: 'Includes groups',
+      name: 'includeCollections',
+      placeholder: 'Includes collections',
+      label: 'Includes collections',
       options: data.groups,
       optionLabel: 'label',
-      noOptionsText: 'No groups available',
+      noOptionsText: 'No collections available',
       textFieldProps: {
         variant: 'outlined',
       },

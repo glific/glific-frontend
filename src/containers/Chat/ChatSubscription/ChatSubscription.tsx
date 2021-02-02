@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
-import { GROUP_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  SEARCH_QUERY_VARIABLES,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
 import { getUserSession } from '../../../services/AuthService';
 import {
-  GROUP_SENT_SUBSCRIPTION,
+  COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
@@ -55,7 +58,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
       let newMessage: any;
       let contactId: number = 0;
-      let groupId: number = 0;
+      let collectionId: number = 0;
       let tagData: any;
       let messageStatusData: any;
       switch (action) {
@@ -69,9 +72,9 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           newMessage = subscriptionData.data.receivedMessage;
           contactId = subscriptionData.data.receivedMessage.sender.id;
           break;
-        case 'GROUP':
+        case 'COLLECTION':
           newMessage = subscriptionData.data.sentGroupMessage;
-          groupId = subscriptionData.data.sentGroupMessage.groupId.toString();
+          collectionId = subscriptionData.data.sentGroupMessage.groupId.toString();
           break;
         case 'STATUS':
           // set the receiver contact id
@@ -102,9 +105,9 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       let conversationIndex = 0;
       let conversationFound = false;
 
-      if (action === 'GROUP') {
+      if (action === 'COLLECTION') {
         cachedConversations.search.map((conversation: any, index: any) => {
-          if (conversation.group.id === groupId) {
+          if (conversation.group.id === collectionId) {
             conversationIndex = index;
             conversationFound = true;
           }
@@ -189,27 +192,27 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     [getContactQuery]
   );
 
-  const [loadGroupData, { subscribeToMore: groupSubscribe, data: groupData }] = useLazyQuery<any>(
-    SEARCH_QUERY,
-    {
-      variables: GROUP_SEARCH_QUERY_VARIABLES,
-      nextFetchPolicy: 'cache-only',
-      onCompleted: () => {
-        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+  const [
+    loadCollectionData,
+    { subscribeToMore: collectionSubscribe, data: collectionData },
+  ] = useLazyQuery<any>(SEARCH_QUERY, {
+    variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+    nextFetchPolicy: 'cache-only',
+    onCompleted: () => {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
-        if (groupSubscribe) {
-          // group sent subscription
-          groupSubscribe({
-            document: GROUP_SENT_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) => {
-              return updateConversations(prev, subscriptionData, 'GROUP');
-            },
-          });
-        }
-      },
-    }
-  );
+      if (collectionSubscribe) {
+        // collection sent subscription
+        collectionSubscribe({
+          document: COLLECTION_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'COLLECTION');
+          },
+        });
+      }
+    },
+  });
 
   const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -270,10 +273,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
 
   useEffect(() => {
-    if (data && groupData) {
+    if (data && collectionData) {
       setDataLoaded(true);
     }
-  }, [data, groupData]);
+  }, [data, collectionData]);
 
   useEffect(() => {
     setLoading(loading);
@@ -282,7 +285,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   useEffect(() => {
     if (!data) {
       loadData();
-      loadGroupData();
+      loadCollectionData();
     }
   }, []);
 

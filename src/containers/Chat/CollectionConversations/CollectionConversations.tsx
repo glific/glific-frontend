@@ -5,21 +5,21 @@ import styles from './CollectionConversations.module.css';
 import { ConversationList } from '../ChatConversations/ConversationList/ConversationList';
 
 export interface CollectionConversationsProps {
-  groupId?: number | null;
+  collectionId?: number | null;
 }
 
 const CollectionConversations: React.SFC<CollectionConversationsProps> = (props) => {
-  const { groupId } = props;
-  const [selectedGroupId, setSelectedGroupId] = useState<any>(groupId);
+  const { collectionId } = props;
+  const [selectedCollectionId, setSelectedCollectionId] = useState<any>(collectionId);
 
   return (
     <Container className={styles.CollectionConversations} disableGutters>
       <ConversationList
         searchVal=""
         searchMode={false}
-        selectedGroupId={selectedGroupId}
-        setSelectedGroupId={(i: number) => {
-          setSelectedGroupId(i);
+        selectedCollectionId={selectedCollectionId}
+        setSelectedCollectionId={(i: number) => {
+          setSelectedCollectionId(i);
         }}
       />
     </Container>

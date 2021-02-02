@@ -11,37 +11,41 @@ export interface ContactDescriptionProps {
   settings: any;
   phone: string;
   maskedPhone: string;
-  groups: any;
+  collections: any;
   lastMessage: string;
 }
 
 export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => {
-  const { phone, maskedPhone, groups, lastMessage } = props;
+  const { phone, maskedPhone, collections, lastMessage } = props;
   let { fields, settings } = props;
 
   const [showPlainPhone, setShowPlainPhone] = useState(false);
 
-  // list of groups that the contact is assigned
-  let assignedToGroup: any = Array.from(
-    new Set([].concat(...groups.map((group: any) => group.users.map((user: any) => user.name))))
+  // list of collections that the contact is assigned
+  let assignedToCollection: any = Array.from(
+    new Set(
+      [].concat(
+        ...collections.map((collection: any) => collection.users.map((user: any) => user.name))
+      )
+    )
   );
 
-  if (assignedToGroup.length > 2) {
-    assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
-      assignedToGroup.length - 2
+  if (assignedToCollection.length > 2) {
+    assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
+      assignedToCollection.length - 2
     ).toString()}`;
   } else {
-    assignedToGroup = assignedToGroup.join(', ');
+    assignedToCollection = assignedToCollection.join(', ');
   }
 
-  // list of groups that the contact belongs
-  const groupList = groups.map((group: any) => group.label).join(', ');
+  // list of collections that the contact belongs
+  const collectionList = collections.map((collection: any) => collection.label).join(', ');
 
-  const groupDetails = [
-    { label: 'Groups', value: groupList || 'None' },
+  const collectionDetails = [
+    { label: 'Collections', value: collectionList || 'None' },
     {
       label: 'Assigned to',
-      value: assignedToGroup || 'None',
+      value: assignedToCollection || 'None',
     },
   ];
 
@@ -107,11 +111,11 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
       </div>
 
       <div className={styles.DetailBlock}>
-        {groupDetails.map((groupItem: any) => (
-          <div key={groupItem.label}>
-            <div className={styles.DescriptionItem}>{groupItem.label}</div>
-            <div className={styles.DescriptionItemValue} data-testid="groups">
-              {groupItem.value}
+        {collectionDetails.map((collectionItem: any) => (
+          <div key={collectionItem.label}>
+            <div className={styles.DescriptionItem}>{collectionItem.label}</div>
+            <div className={styles.DescriptionItemValue} data-testid="collections">
+              {collectionItem.value}
             </div>
           </div>
         ))}

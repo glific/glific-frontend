@@ -1,15 +1,15 @@
 import React from 'react';
-import styles from './GroupDescription.module.css';
+import styles from './CollectionDescription.module.css';
 
-export interface GroupDescriptionProps {
+export interface CollectionDescriptionProps {
   users: Array<any>;
   description: string;
 }
 
-export const GroupDescription: React.FC<GroupDescriptionProps> = ({
+export const CollectionDescription: React.FC<CollectionDescriptionProps> = ({
   users = [],
   description,
-}: GroupDescriptionProps) => {
+}: CollectionDescriptionProps) => {
   const userList = (
     <ul className={styles.UserList}>
       {users.map((user: any) => (
@@ -18,7 +18,7 @@ export const GroupDescription: React.FC<GroupDescriptionProps> = ({
     </ul>
   );
   return (
-    <div className={styles.DescriptionContainer} data-testid="groupDescription">
+    <div className={styles.DescriptionContainer} data-testid="collectionDescription">
       <h2 className={styles.Title}>Description</h2>
       <p className={styles.Description}>{description}</p>
       <div className={styles.StaffDivider} />

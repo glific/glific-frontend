@@ -3,12 +3,12 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
-import { contactGroupsQuery } from '../../../../mocks/Contact';
+import { contactCollectionsQuery } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
-import { getGroupsQuery } from '../../../../mocks/Group';
+import { getCollectionsQuery } from '../../../../mocks/Collection';
 import { getPublishedFlowQuery } from '../../../../mocks/Flow';
 
-const mocks = [contactGroupsQuery, getGroupsQuery, getPublishedFlowQuery];
+const mocks = [contactCollectionsQuery, ...getCollectionsQuery, getPublishedFlowQuery];
 
 const defaultProps = {
   displayName: 'Jane Doe',
@@ -34,7 +34,7 @@ test('it should render the name correctly', async () => {
   expect(getByText('Jane Doe')).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(getByText('Default Group, Staff Group')).toBeInTheDocument();
+    expect(getByText('Default Collection, Staff Collection')).toBeInTheDocument();
   });
 });
 
@@ -57,10 +57,10 @@ describe('Menu test', () => {
     expect(screen.getByText('View contact profile')).toBeInTheDocument();
   });
 
-  test('clicking on add to group button should open up a dialog box', async () => {
-    fireEvent.click(screen.getByTestId('groupButton'));
+  test('clicking on add to collection button should open up a dialog box', async () => {
+    fireEvent.click(screen.getByTestId('collectionButton'));
     await waitFor(() => {
-      expect(screen.getByText('Add contact to group')).toBeInTheDocument();
+      expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
     });
   });
 

@@ -2,33 +2,40 @@ import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
-import styles from './GroupList.module.css';
-import { ReactComponent as GroupIcon } from '../../../assets/images/icons/Groups/Dark.svg';
+import styles from './CollectionList.module.css';
+import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as FlowDarkIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import ChatDarkIconSVG, {
   ReactComponent as ChatDarkIcon,
 } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
-import { DELETE_GROUP, UPDATE_GROUP_CONTACTS } from '../../../graphql/mutations/Group';
-import { GET_GROUPS_COUNT, FILTER_GROUPS, GET_GROUPS } from '../../../graphql/queries/Group';
+import {
+  DELETE_COLLECTION,
+  UPDATE_COLLECTION_CONTACTS,
+} from '../../../graphql/mutations/Collection';
+import {
+  GET_COLLECTIONS_COUNT,
+  FILTER_COLLECTIONS,
+  GET_COLLECTIONS,
+} from '../../../graphql/queries/Collection';
 import { GET_FLOWS } from '../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_GROUP } from '../../../graphql/mutations/Flow';
-import { CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION } from '../../../graphql/mutations/Chat';
+import { ADD_FLOW_TO_COLLECTION } from '../../../graphql/mutations/Flow';
+import { CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION } from '../../../graphql/mutations/Chat';
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
-import { displayUserGroups } from '../../../context/role';
+import { displayUserCollections } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { CONTACT_SEARCH_QUERY, GET_GROUP_CONTACTS } from '../../../graphql/queries/Contact';
+import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../graphql/queries/Contact';
 import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import Menu from '../../../components/UI/Menu/Menu';
 import { MessageDialog } from '../../../components/UI/MessageDialog/MessageDialog';
 
-export interface GroupListProps {}
+export interface CollectionListProps {}
 
 const getLabel = (label: string) => <p className={styles.LabelText}>{label}</p>;
 
-const getDescription = (text: string) => <p className={styles.GroupDescription}>{text}</p>;
+const getDescription = (text: string) => <p className={styles.CollectionDescription}>{text}</p>;
 
 const getColumns = ({ id, label, description }: any) => ({
   id,
@@ -36,14 +43,14 @@ const getColumns = ({ id, label, description }: any) => ({
   description: getDescription(description),
 });
 
-const dialogMessage = "You won't be able to use this group again.";
+const dialogMessage = "You won't be able to use this collection again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
-const groupIcon = <GroupIcon className={styles.GroupIcon} />;
+const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
 const queries = {
-  countQuery: GET_GROUPS_COUNT,
-  filterItemsQuery: FILTER_GROUPS,
-  deleteItemQuery: DELETE_GROUP,
+  countQuery: GET_COLLECTIONS_COUNT,
+  filterItemsQuery: FILTER_COLLECTIONS,
+  deleteItemQuery: DELETE_COLLECTION,
 };
 
 const columnAttributes = {
@@ -51,14 +58,14 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const GroupList: React.SFC<GroupListProps> = () => {
+export const CollectionList: React.SFC<CollectionListProps> = () => {
   const client = useApolloClient();
   const [addFlowDialogShow, setAddFlowDialogShow] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
   const [sendMessageDialogShow, setSendMessageDialogShow] = useState(false);
 
   const [contactSearchTerm, setContactSearchTerm] = useState('');
-  const [groupId, setGroupId] = useState();
+  const [collectionId, setCollectionId] = useState();
 
   // get the published flow list
   const [getFlows, { data: flowData }] = useLazyQuery(GET_FLOWS, {
@@ -72,15 +79,17 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     variables: setVariables({ name: contactSearchTerm }, 50),
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+  const [sendMessageToCollections] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     onCompleted: () => {
-      setNotification(client, `Message successfully send to the group`);
+      setNotification(client, `Message successfully send to the collection`);
       setSendMessageDialogShow(false);
     },
   });
 
-  const [getGroupContacts, { data: groupContactsData }] = useLazyQuery(GET_GROUP_CONTACTS);
-  const [updateGroupContacts] = useMutation(UPDATE_GROUP_CONTACTS, {
+  const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
+    GET_COLLECTION_CONTACTS
+  );
+  const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
     onCompleted: (data) => {
       const { numberDeleted, groupContacts } = data.updateGroupContacts;
       const numberAdded = groupContacts.length;
@@ -104,10 +113,10 @@ export const GroupList: React.SFC<GroupListProps> = () => {
       }
       setAddContactsDialogShow(false);
     },
-    refetchQueries: [{ query: GET_GROUP_CONTACTS, variables: { id: groupId } }],
+    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
 
-  const [addFlowToGroup] = useMutation(ADD_FLOW_TO_GROUP, {
+  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
       setAddFlowDialogShow(false);
       setNotification(client, 'Flow started successfully');
@@ -115,15 +124,15 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   });
   let flowOptions = [];
   let contactOptions = [];
-  let groupContacts: Array<any> = [];
+  let collectionContacts: Array<any> = [];
   if (flowData) {
     flowOptions = flowData.flows;
   }
   if (contactsData) {
     contactOptions = contactsData.contacts;
   }
-  if (groupContactsData) {
-    groupContacts = groupContactsData.group.group.contacts;
+  if (collectionContactsData) {
+    collectionContacts = collectionContactsData.group.group.contacts;
   }
 
   let dialog = null;
@@ -134,30 +143,30 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   const setFlowDialog = (id: any) => {
     getFlows();
-    setGroupId(id);
+    setCollectionId(id);
     setAddFlowDialogShow(true);
   };
 
   const setContactsDialog = (id: any) => {
-    getGroupContacts({ variables: { id } });
+    getCollectionContacts({ variables: { id } });
     getContacts();
-    setGroupId(id);
+    setCollectionId(id);
     setAddContactsDialogShow(true);
   };
 
   const handleFlowSubmit = (value: any) => {
-    addFlowToGroup({
+    addFlowToCollection({
       variables: {
         flowId: value,
-        groupId,
+        collectionId,
       },
     });
   };
 
-  const sendMessageToGroup = (message: string) => {
-    sendMessageToGroups({
+  const sendMessageToCollection = (message: string) => {
+    sendMessageToCollections({
       variables: {
-        groupId,
+        collectionId,
         input: {
           body: message,
           senderId: 1,
@@ -171,8 +180,8 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   if (sendMessageDialogShow) {
     dialog = (
       <MessageDialog
-        title="Send message to group"
-        onSendMessage={sendMessageToGroup}
+        title="Send message to collection"
+        onSendMessage={sendMessageToCollection}
         handleClose={() => setSendMessageDialogShow(false)}
       />
     );
@@ -191,22 +200,23 @@ export const GroupList: React.SFC<GroupListProps> = () => {
     );
   }
 
-  const handleGroupAdd = (value: any) => {
+  const handleCollectionAdd = (value: any) => {
     const selectedContacts = value.filter(
-      (contact: any) => !groupContacts.map((groupContact: any) => groupContact.id).includes(contact)
+      (contact: any) =>
+        !collectionContacts.map((collectionContact: any) => collectionContact.id).includes(contact)
     );
-    const unselectedContacts = groupContacts
-      .map((groupContact: any) => groupContact.id)
+    const unselectedContacts = collectionContacts
+      .map((collectionContact: any) => collectionContact.id)
       .filter((contact: any) => !value.includes(contact));
 
     if (selectedContacts.length === 0 && unselectedContacts.length === 0) {
       setAddContactsDialogShow(false);
     } else {
-      updateGroupContacts({
+      updateCollectionContacts({
         variables: {
           input: {
             addContactIds: selectedContacts,
-            groupId,
+            groupId: collectionId,
             deleteContactIds: unselectedContacts,
           },
         },
@@ -217,13 +227,13 @@ export const GroupList: React.SFC<GroupListProps> = () => {
   if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
-        title="Add contacts to the group"
-        handleOk={handleGroupAdd}
+        title="Add contacts to the collection"
+        handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
         asyncSearch
-        selectedOptions={groupContacts}
+        selectedOptions={collectionContacts}
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);
@@ -257,7 +267,7 @@ export const GroupList: React.SFC<GroupListProps> = () => {
 
   const additionalAction = [
     {
-      label: 'Add contacts to group',
+      label: 'Add contacts to collection',
       icon: addContactIcon,
       parameter: 'id',
       dialog: setContactsDialog,
@@ -266,29 +276,29 @@ export const GroupList: React.SFC<GroupListProps> = () => {
       label: '',
       icon: messageMenu,
       parameter: 'id',
-      dialog: setGroupId,
+      dialog: setCollectionId,
     },
   ];
 
   const refetchQueries = {
-    query: GET_GROUPS,
+    query: GET_COLLECTIONS,
     variables: setVariables(),
   };
 
-  const cardLink = { start: 'group', end: 'contacts' };
+  const cardLink = { start: 'collection', end: 'contacts' };
 
   return (
     <>
       <List
         refetchQueries={refetchQueries}
-        title="Groups"
+        title="Collections"
         listItem="groups"
         columnNames={['LABEL']}
-        listItemName="group"
+        listItemName="collection"
         displayListType="card"
-        button={{ show: displayUserGroups, label: '+ CREATE GROUP' }}
-        pageLink="group"
-        listIcon={groupIcon}
+        button={{ show: displayUserCollections, label: '+ CREATE COLLECTION' }}
+        pageLink="collection"
+        listIcon={collectionIcon}
         dialogMessage={dialogMessage}
         additionalAction={additionalAction}
         cardLink={cardLink}

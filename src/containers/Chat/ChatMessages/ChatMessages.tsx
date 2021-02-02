@@ -14,12 +14,12 @@ import {
   TIME_FORMAT,
   SEARCH_QUERY_VARIABLES,
   setVariables,
-  GROUP_SEARCH_QUERY_VARIABLES,
+  COLLECTION_SEARCH_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
-  CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION,
+  CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -29,10 +29,14 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   simulatorId?: string | null;
-  groupId?: number | string | null;
+  collectionId?: number | string | null;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId, groupId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  simulatorId,
+  collectionId,
+}) => {
   // create an instance of apolloclient
   const client = useApolloClient();
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -77,8 +81,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   // get the conversations stored from the cache
   let queryVariables = SEARCH_QUERY_VARIABLES;
 
-  if (groupId) {
-    queryVariables = GROUP_SEARCH_QUERY_VARIABLES;
+  if (collectionId) {
+    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
   }
 
   const {
@@ -150,12 +154,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     },
   });
 
-  const [sendMessageToGroups] = useMutation(CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION, {
+  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
   // this function is called when the message is sent
-  const sendGroupMessageHandler = (
+  const sendCollectionMessageHandler = (
     body: string,
     mediaId: string,
     messageType: string,
@@ -177,8 +181,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       payload.params = variableParam;
     }
 
-    sendMessageToGroups({
-      variables: { groupId, input: payload },
+    sendMessageToCollection({
+      variables: { groupId: collectionId, input: payload },
     });
   };
 
@@ -260,15 +264,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     }
   }
 
-  if (groupId) {
-    // loop through the cached conversations and find if group exists
+  if (collectionId) {
+    // loop through the cached conversations and find if collection exists
     if (allConversations && allConversations.search) {
-      if (groupId === -1) {
+      if (collectionId === -1) {
         conversationIndex = 0;
         [conversationInfo] = allConversations.search;
       } else {
         allConversations.search.map((conversation: any, index: any) => {
-          if (conversation.group.id === groupId.toString()) {
+          if (conversation.group.id === collectionId.toString()) {
             conversationIndex = index;
             conversationInfo = conversation;
           }
@@ -282,7 +286,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       if (!loading && !data) {
         getSearchQuery({
           variables: {
-            filter: { id: groupId, searchGroup: true },
+            filter: { id: collectionId, searchGroup: true },
             messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },
@@ -390,8 +394,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
       contactOpts: { limit: 1 },
     };
 
-    if (groupId) {
-      variables.filter = { id: groupId.toString(), searchGroup: true };
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
     getSearchQuery({
       variables: {
@@ -495,17 +499,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
     );
-  } else if (groupId) {
+  } else if (collectionId) {
     topChatBar = (
       <ContactBar
-        groupId={groupId.toString()}
+        collectionId={collectionId.toString()}
         displayName={conversationInfo.group.label}
         handleAction={handleChatClearedAction}
       />
     );
 
     chatInputSection = (
-      <ChatInput handleHeightChange={handleHeightChange} onSendMessage={sendGroupMessageHandler} />
+      <ChatInput
+        handleHeightChange={handleHeightChange}
+        onSendMessage={sendCollectionMessageHandler}
+      />
     );
   }
 
