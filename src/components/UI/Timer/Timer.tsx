@@ -11,11 +11,21 @@ export interface TimerProps {
   contactBspStatus?: string;
 }
 
+let timerStyle = styles.TimerNormal;
+let tooltipStyle = styles.TimerNormalTooltip;
 const link = (
   <a target="_blank" rel="noreferrer" href="https://glific.org/session-window/">
     Learn more about the WhatsApp session window here.
   </a>
 );
+const createTooltip = (title: string) => {
+  return (
+    <React.Fragment key="sessionTooltip">
+      {title} {link}
+    </React.Fragment>
+  );
+};
+let tooltip = createTooltip('Session window is open to message this contact.');
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
@@ -39,13 +49,6 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     );
   }
 
-  let timerStyle = styles.TimerNormal;
-  let tooltipStyle = styles.TimerNormalTooltip;
-  let tooltip = (
-    <React.Fragment key="sessionTooltip">
-      Session window is open to message this contact. {link}
-    </React.Fragment>
-  );
   const lastMessageTime = moment(time);
   const duration = moment.duration(currentTime.diff(lastMessageTime));
   let hours: string | number = Math.floor(duration.asHours());
@@ -59,19 +62,13 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   if (hours === 0) {
     timerStyle = styles.TimerEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip = (
-      <React.Fragment key="sessionTooltip">
-        Session message window has expired! You can only send a template message now. {link}
-      </React.Fragment>
+    tooltip = createTooltip(
+      'Session message window has expired! You can only send a template message now.'
     );
   } else if (hours < 5) {
     timerStyle = styles.TimerApproachEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip = (
-      <React.Fragment key="sessionTooltip">
-        Your message window is about to expire! {link}
-      </React.Fragment>
-    );
+    tooltip = createTooltip('Your message window is about to expire!');
   }
 
   if (hours < 10 && hours > 0) {
