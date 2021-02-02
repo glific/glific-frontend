@@ -7,7 +7,7 @@ import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery({
+export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
@@ -54,7 +54,9 @@ cache.writeQuery({
       },
     ],
   },
-});
+};
+
+cache.writeQuery(searchQuery);
 
 // add collection to apollo cache
 cache.writeQuery({

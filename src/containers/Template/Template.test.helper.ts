@@ -226,6 +226,23 @@ export const whatsappHsmCategories = [
   },
 ];
 
+const getTemplateData = {
+  sessionTemplate: {
+    sessionTemplate: {
+      id: 1,
+      label: 'important',
+      body: 'important template',
+      example: 'important template',
+      category: 'ACCOUNT_UPDATE',
+      shortcode: 'important template',
+      isActive: true,
+      language: {
+        id: 1,
+      },
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
   {
     request: {
@@ -259,22 +276,7 @@ export const TEMPLATE_MOCKS = [
       },
     },
     result: {
-      data: {
-        sessionTemplate: {
-          sessionTemplate: {
-            id: 1,
-            label: 'important',
-            body: 'important template',
-            example: 'important template',
-            category: 'ACCOUNT_UPDATE',
-            shortcode: 'important template',
-            isActive: true,
-            language: {
-              id: 1,
-            },
-          },
-        },
-      },
+      data: getTemplateData,
     },
   },
   {
@@ -285,22 +287,7 @@ export const TEMPLATE_MOCKS = [
       },
     },
     result: {
-      data: {
-        sessionTemplate: {
-          sessionTemplate: {
-            id: 1,
-            label: 'important',
-            body: 'important template',
-            example: 'important template',
-            category: 'ACCOUNT_UPDATE',
-            shortcode: 'important template',
-            isActive: true,
-            language: {
-              id: 1,
-            },
-          },
-        },
-      },
+      data: getTemplateData,
     },
   },
   {
