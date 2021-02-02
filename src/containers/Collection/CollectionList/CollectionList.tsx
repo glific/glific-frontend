@@ -91,8 +91,8 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   );
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
     onCompleted: (data) => {
-      const { numberDeleted, collectionContacts } = data.updateCollectionContacts;
-      const numberAdded = collectionContacts.length;
+      const { numberDeleted, groupContacts } = data.updateGroupContacts;
+      const numberAdded = groupContacts.length;
       if (numberDeleted > 0 && numberAdded > 0) {
         setNotification(
           client,
@@ -216,7 +216,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         variables: {
           input: {
             addContactIds: selectedContacts,
-            collectionId,
+            groupId: collectionId,
             deleteContactIds: unselectedContacts,
           },
         },

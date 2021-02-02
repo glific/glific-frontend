@@ -144,11 +144,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   let formFields: any = [];
 
   const handleRolesChange = (value: any) => {
-    const hasStaffRole = value.label === 'Staff';
-    if (hasStaffRole) {
-      setStaffRole(true);
-    } else {
-      setStaffRole(false);
+    if (value) {
+      const hasStaffRole = value.label === 'Staff';
+      if (hasStaffRole) {
+        setStaffRole(true);
+      } else {
+        setStaffRole(false);
+      }
     }
   };
 
