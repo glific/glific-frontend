@@ -4,15 +4,16 @@ import { Tooltip as TooltipElement } from '@material-ui/core';
 import styles from './Tooltip.module.css';
 
 interface TooltipProps {
-  title: String;
+  title: any;
   placement: any;
   children: any;
   tooltipClass?: string;
   tooltipArrowClass?: string;
+  interactive?: boolean;
 }
 
 export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
-  const { tooltipClass, tooltipArrowClass, title, placement, children } = props;
+  const { tooltipClass, tooltipArrowClass, title, placement, children, interactive } = props;
   // set the default styling for main tooltip
   const toolTipStyling = [styles.Tooltip];
   // let's add the class passed in props so that we can overide default properties.
@@ -34,6 +35,7 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
       placement={placement}
       arrow
       classes={{ tooltip: toolTipStyling.join(' '), arrow: toolTipArrowStyling.join(' ') }}
+      interactive={interactive}
     >
       {children}
     </TooltipElement>

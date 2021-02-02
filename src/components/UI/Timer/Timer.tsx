@@ -11,6 +11,12 @@ export interface TimerProps {
   contactBspStatus?: string;
 }
 
+const link = (
+  <a target="_blank" rel="noreferrer" href="https://glific.org/session-window/">
+    Learn more about the WhatsApp session window here.
+  </a>
+);
+
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
   const { contactStatus, contactBspStatus, time } = props;
@@ -35,8 +41,11 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
 
   let timerStyle = styles.TimerNormal;
   let tooltipStyle = styles.TimerNormalTooltip;
-  let tooltip =
-    'Session window is open to message this contact. Learn more about the WhatsApp session window here.';
+  let tooltip = (
+    <React.Fragment key="sessionTooltip">
+      Session window is open to message this contact. {link}
+    </React.Fragment>
+  );
   const lastMessageTime = moment(time);
   const duration = moment.duration(currentTime.diff(lastMessageTime));
   let hours: string | number = Math.floor(duration.asHours());
@@ -50,13 +59,19 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   if (hours === 0) {
     timerStyle = styles.TimerEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip =
-      'Session message window has expired! You can only send a template message now. Learn more about the WhatsApp session window here.';
+    tooltip = (
+      <React.Fragment key="sessionTooltip">
+        Session message window has expired! You can only send a template message now. {link}
+      </React.Fragment>
+    );
   } else if (hours < 5) {
     timerStyle = styles.TimerApproachEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip =
-      'Your message window is about to expire! Learn more about the WhatsApp session window here.';
+    tooltip = (
+      <React.Fragment key="sessionTooltip">
+        Your message window is about to expire! {link}
+      </React.Fragment>
+    );
   }
 
   if (hours < 10 && hours > 0) {
@@ -69,6 +84,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
       tooltipArrowClass={styles.TooltipArrow}
       title={tooltip}
       placement="bottom"
+      interactive
     >
       <div className={timerStyle} data-testid="timerCount">
         {hours}
