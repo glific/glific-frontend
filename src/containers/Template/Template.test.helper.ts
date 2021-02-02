@@ -17,6 +17,28 @@ const requestFilterTemplates = {
     opts: { order: 'ASC', limit: null, offset: 0 },
   },
 };
+const SpeedSendsSessionTemplates = [
+  {
+    id: '87',
+    body: 'Hey There',
+    label: 'Good message',
+    shortcode: 'test',
+    isHsm: false,
+    isReserved: false,
+    updatedAt: '2020-12-01T18:00:28Z',
+    translations: '{}',
+    type: 'TEXT',
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+];
 
 const speedSend = {
   request: {
@@ -35,28 +57,7 @@ const speedSend = {
   },
   result: {
     data: {
-      sessionTemplates: [
-        {
-          id: '87',
-          body: 'Hey There',
-          label: 'Good message',
-          shortcode: 'test',
-          isHsm: false,
-          isReserved: false,
-          updatedAt: '2020-12-01T18:00:28Z',
-          translations: '{}',
-          type: 'TEXT',
-          language: {
-            id: '1',
-            label: 'Hindi',
-          },
-          MessageMedia: {
-            id: 1,
-            caption: 'Test',
-            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          },
-        },
-      ],
+      sessionTemplates: SpeedSendsSessionTemplates,
     },
   },
 };
@@ -71,33 +72,34 @@ const speedSendOrderWith = {
   },
   result: {
     data: {
-      sessionTemplates: [
-        {
-          id: '87',
-          body: 'Hey There',
-          label: 'Good message',
-          shortcode: 'test',
-          isHsm: false,
-          isReserved: false,
-          updatedAt: '2020-12-01T18:00:28Z',
-          translations: '{}',
-          type: 'TEXT',
-          language: {
-            id: '1',
-            label: 'Hindi',
-          },
-          MessageMedia: {
-            id: 1,
-            caption: 'Test',
-            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          },
-        },
-      ],
+      sessionTemplates: SpeedSendsSessionTemplates,
     },
   },
 };
 
 const HSMTemplateCount = templateCountQuery(true, 2);
+
+const HSMSessionTemplates = [
+  {
+    id: '98',
+    body: 'This is HSM template',
+    label: 'Good message',
+    shortcode: 'test',
+    isHsm: true,
+    isReserved: false,
+    translations: '{}',
+    type: 'TEXT',
+    language: {
+      id: '1',
+      label: 'Hindi',
+    },
+    MessageMedia: {
+      id: 1,
+      caption: 'Test',
+      sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
+    },
+  },
+];
 
 const HSMTemplate = {
   request: {
@@ -116,27 +118,7 @@ const HSMTemplate = {
   },
   result: {
     data: {
-      sessionTemplates: [
-        {
-          id: '98',
-          body: 'This is HSM template',
-          label: 'Good message',
-          shortcode: 'test',
-          isHsm: true,
-          isReserved: false,
-          translations: '{}',
-          type: 'TEXT',
-          language: {
-            id: '1',
-            label: 'Hindi',
-          },
-          MessageMedia: {
-            id: 1,
-            caption: 'Test',
-            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          },
-        },
-      ],
+      sessionTemplates: HSMSessionTemplates,
     },
   },
 };
@@ -189,28 +171,7 @@ const speedSendValidation = {
   },
   result: {
     data: {
-      sessionTemplates: [
-        {
-          id: '98',
-          body: 'This is HSM template',
-          label:
-            'We are not allowing a really long title, and we should trigger validation for this',
-          shortcode: 'test',
-          isHsm: true,
-          isReserved: false,
-          translations: '{}',
-          type: 'TEXT',
-          language: {
-            id: '1',
-            label: 'Hindi',
-          },
-          MessageMedia: {
-            id: 1,
-            caption: 'Test',
-            sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          },
-        },
-      ],
+      sessionTemplates: HSMSessionTemplates,
     },
   },
 };
@@ -383,28 +344,7 @@ export const TEMPLATE_MOCKS = [
     },
     result: {
       data: {
-        sessionTemplates: [
-          {
-            id: '98',
-            body: 'This is HSM template',
-            label: 'new Template',
-            shortcode: 'test',
-            isHsm: true,
-            isReserved: false,
-            updatedAt: '2020-12-01T18:00:32Z',
-            translations: '{}',
-            type: 'TEXT',
-            language: {
-              id: '1',
-              label: 'Hindi',
-            },
-            MessageMedia: {
-              id: 1,
-              caption: 'Test',
-              sourceUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-            },
-          },
-        ],
+        sessionTemplates: HSMSessionTemplates,
       },
     },
   },
