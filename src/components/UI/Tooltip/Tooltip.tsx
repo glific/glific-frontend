@@ -16,14 +16,14 @@ export const Tooltip: React.SFC<TooltipProps> = (props: TooltipProps) => {
   const { tooltipClass, tooltipArrowClass, title, placement, children, interactive } = props;
   // set the default styling for main tooltip
   const toolTipStyling = [styles.Tooltip];
-  // let's add the class passed in props so that we can overide default properties.
+  // let's add the class passed in props so that we can override default properties.
   if (tooltipClass) {
     toolTipStyling.push(tooltipClass);
   }
 
   // set the default styling for tooltip arrow
   const toolTipArrowStyling = [styles.TooltipArrow];
-  // let's add the class passed in props so that we can overide default properties.
+  // let's add the class passed in props so that we can override default properties.
   if (tooltipArrowClass) {
     toolTipArrowStyling.push(tooltipArrowClass);
   }

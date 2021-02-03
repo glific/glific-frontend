@@ -11,10 +11,13 @@ export interface TimerProps {
   contactBspStatus?: string;
 }
 
-let timerStyle = styles.TimerNormal;
-let tooltipStyle = styles.TimerNormalTooltip;
 const link = (
-  <a target="_blank" rel="noreferrer" href="https://glific.org/session-window/">
+  <a
+    className={styles.TooltipArrow}
+    target="_blank"
+    rel="noreferrer"
+    href="https://glific.org/session-window/"
+  >
     Learn more about the WhatsApp session window here.
   </a>
 );
@@ -49,6 +52,8 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     );
   }
 
+  let timerStyle = styles.TimerNormal;
+  let tooltipStyle = styles.TimerNormalTooltip;
   const lastMessageTime = moment(time);
   const duration = moment.duration(currentTime.diff(lastMessageTime));
   let hours: string | number = Math.floor(duration.asHours());
