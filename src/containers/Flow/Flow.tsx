@@ -20,11 +20,11 @@ export interface FlowProps {
   match: any;
 }
 
-const regex = /^[a-z]+(,[a-z]+)*$/g;
+const regex = /^[a-z0-9]+(,[a-z0-9]+)*$/g;
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
-  keywords: Yup.string().matches(regex, 'Only lowercase are allowed.'),
+  keywords: Yup.string().matches(regex, 'Only lowercase alphanumeric characters are allowed.'),
 });
 
 const dialogMessage = "You won't be able to use this flow again.";
