@@ -28,7 +28,6 @@ const createTooltip = (title: string) => {
     </React.Fragment>
   );
 };
-let tooltip = createTooltip('Session window is open to message this contact.');
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
@@ -52,6 +51,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     );
   }
 
+  let tooltip = createTooltip('Session window is open to message this contact.');
   let timerStyle = styles.TimerNormal;
   let tooltipStyle = styles.TimerNormalTooltip;
   const lastMessageTime = moment(time);
