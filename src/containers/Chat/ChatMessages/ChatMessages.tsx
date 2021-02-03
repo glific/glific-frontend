@@ -159,14 +159,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   });
 
   const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
+    const payloadCopy = payload;
     // add additional param for template
     if (selectedTemplate) {
-      /* eslint-disable no-param-reassign */
-      payload.isHsm = selectedTemplate.isHsm;
-      payload.templateId = parseInt(selectedTemplate.id, 10);
-      payload.params = variableParam;
+      payloadCopy.isHsm = selectedTemplate.isHsm;
+      payloadCopy.templateId = parseInt(selectedTemplate.id, 10);
+      payloadCopy.params = variableParam;
     }
-    return payload;
+    return payloadCopy;
   };
 
   // this function is called when the message is sent collection
