@@ -158,7 +158,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     addFlowToCollection({
       variables: {
         flowId: value,
-        collectionId,
+        groupId: collectionId,
       },
     });
   };
@@ -166,7 +166,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   const sendMessageToCollection = (message: string) => {
     sendMessageToCollections({
       variables: {
-        collectionId,
+        groupId: collectionId,
         input: {
           body: message,
           senderId: 1,
