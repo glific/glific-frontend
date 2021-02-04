@@ -25,7 +25,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
 
   useEffect(() => {
     if (balanceData) {
-      const balance = JSON.parse(balanceData.bspbalance.value);
+      const balance = JSON.parse(balanceData.bspbalance);
       setDisplayBalance(balance.balance);
     }
   }, [balanceData]);
