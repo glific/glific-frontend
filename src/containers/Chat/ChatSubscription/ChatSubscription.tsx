@@ -20,6 +20,7 @@ import {
 } from '../../../graphql/subscriptions/Tag';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
+import { Collection } from '../../Collection/Collection';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
@@ -45,7 +46,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
-      console.log(action);
       // if there is no message data then return previous conversations
       if (!subscriptionData.data) {
         return cachedConversations;
