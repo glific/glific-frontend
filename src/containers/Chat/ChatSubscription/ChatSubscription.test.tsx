@@ -21,6 +21,7 @@ describe('<ChatSubscription />', () => {
       </MockedProvider>
     );
 
+    // there is nothing to assert here just waiting for all the mock calls working
     await waitFor(() => {});
     await waitFor(() => {});
   });

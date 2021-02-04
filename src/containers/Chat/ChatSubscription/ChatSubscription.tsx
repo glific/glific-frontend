@@ -20,7 +20,6 @@ import {
 } from '../../../graphql/subscriptions/Tag';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
-import { Collection } from '../../Collection/Collection';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
