@@ -191,7 +191,7 @@ export const collectionSendSubscription = {
           phone: '917834811114',
         },
         tags: [],
-        groupId: '1',
+        groupId: '2',
         type: 'TEXT',
         media: {
           caption: null,
