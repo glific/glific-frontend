@@ -4,13 +4,17 @@ import UserEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import { TimePicker } from './TimePicker';
 
-describe('<TimePicker />', () => {
-  const props = {
+const timePickerProps = (disabled: boolean) => {
+  return {
     placeholder: 'TimePicker',
-    disabled: false,
+    disabled,
     field: { name: 'example', value: null },
     form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
   };
+};
+
+describe('<TimePicker />', () => {
+  const props = timePickerProps(false);
 
   const wrapper = <TimePicker {...props} />;
 
@@ -19,6 +23,12 @@ describe('<TimePicker />', () => {
     const authContainer = await findByTestId('time-picker');
     expect(authContainer).toHaveTextContent('TimePicker');
   });
+});
+
+describe('<TimePicker />', () => {
+  const props = timePickerProps(false);
+
+  const wrapper = <TimePicker {...props} />;
 
   it('test empty time event', async () => {
     render(wrapper);
@@ -43,13 +53,7 @@ describe('<TimePicker />', () => {
 });
 
 describe('Disable <TimePicker />', () => {
-  const props = {
-    placeholder: 'TimePicker',
-    disabled: true,
-    field: { name: 'example', value: null },
-    form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
-  };
-
+  const props = timePickerProps(true);
   const wrapper = <TimePicker {...props} />;
 
   it('test time change event not allow', async () => {

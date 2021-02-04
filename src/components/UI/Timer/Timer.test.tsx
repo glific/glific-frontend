@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import { Timer } from './Timer';
 
-const timer = (time: Date) => <Timer time={time}></Timer>;
+const timer = (time: Date) => <Timer time={time} />;
 
 test('it should render timer component', () => {
   render(timer(new Date()));

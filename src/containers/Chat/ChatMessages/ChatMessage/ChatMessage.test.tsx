@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, waitFor } from '@testing-library/react';
 import moment from 'moment';
 
 import ChatMessage from './ChatMessage';
@@ -32,37 +32,37 @@ const mocks = [
   },
 ];
 
+const insertedAt = '2020-06-19T18:44:02Z';
+const Props = (link: any) => {
+  return {
+    id: 1,
+    body: '*Hello there!* visit google.com',
+    contactId: 2,
+    receiver: {
+      id: 1,
+    },
+    sender: {
+      id: 2,
+    },
+    showMessage: true,
+    popup: 1,
+    open: true,
+    insertedAt,
+    tags: [
+      {
+        id: 1,
+        label: 'important',
+      },
+    ],
+    type: link,
+    media: { url: 'http://glific.com' },
+    errors: '{}',
+  };
+};
+
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 describe('<ChatMessage />', () => {
-  const insertedAt = '2020-06-19T18:44:02Z';
-  const Props = (link: any) => {
-    return {
-      id: 1,
-      body: '*Hello there!* visit google.com',
-      contactId: 2,
-      receiver: {
-        id: 1,
-      },
-      sender: {
-        id: 2,
-      },
-      showMessage: true,
-      popup: 1,
-      open: true,
-      insertedAt,
-      tags: [
-        {
-          id: 1,
-          label: 'important',
-        },
-      ],
-      type: link,
-      media: { url: 'http://glific.com' },
-      errors: '{}',
-    };
-  };
-
   const chatMessage = (type: any) => (
     <MockedProvider mocks={mocks} addTypename={false}>
       <ChatMessage {...Props(type)} />
@@ -115,7 +115,7 @@ describe('<ChatMessage />', () => {
     });
   });
 
-  test('it should detect a link in messsage', async () => {
+  test('it should detect a link in message', async () => {
     const { getByTestId } = render(chatMessageText);
     expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
   });

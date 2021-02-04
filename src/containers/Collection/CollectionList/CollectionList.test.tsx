@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { CollectionList } from './CollectionList';
 import {
@@ -112,7 +111,7 @@ describe('<CollectionList />', () => {
       return (
         <div data-testid="searchDialogBox">
           <input onChange={(value) => onChange(value)} />
-          <button onClick={() => handleCancel()}></button>
+          <button onClick={() => handleCancel()} />
         </div>
       );
     });
@@ -133,7 +132,7 @@ describe('<CollectionList />', () => {
     const spy = jest.spyOn(MessageDialog, 'MessageDialog');
     spy.mockImplementation((props: any) => {
       const { onSendMessage } = props;
-      return <div data-testid="messageDialog" onClick={() => onSendMessage('hello')}></div>;
+      return <div data-testid="messageDialog" onClick={() => onSendMessage('hello')} />;
     });
 
     const { getByText, getAllByTestId, getByTestId } = render(wrapper);

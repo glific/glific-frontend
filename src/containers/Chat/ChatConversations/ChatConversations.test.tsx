@@ -57,7 +57,7 @@ cache.writeQuery({
 });
 
 const client = new ApolloClient({
-  cache: cache,
+  cache,
   assumeImmutableResults: true,
 });
 

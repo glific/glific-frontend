@@ -58,7 +58,7 @@ const searchQuery = (
     request: {
       query: SEARCH_QUERY,
       variables: {
-        filter: filter,
+        filter,
         messageOpts: messageLimit,
         contactOpts: { limit: contactLimit },
       },
@@ -81,9 +81,9 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
     request: {
       query: SEARCH_MULTI_QUERY,
       variables: {
-        searchFilter: { term: term },
-        messageOpts: { limit: limit, order: 'ASC' },
-        contactOpts: { order: 'DESC', limit: limit },
+        searchFilter: { term },
+        messageOpts: { limit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit },
       },
     },
     result: {

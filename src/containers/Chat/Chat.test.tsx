@@ -2,7 +2,6 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
 import { Chat } from './Chat';
-import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import { setUserSession } from '../../services/AuthService';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
@@ -22,7 +21,7 @@ cache.writeQuery({
         group: null,
         contact: {
           id: '2',
-          name: 'Jane Doe',
+          name: 'Effie Cormier',
           phone: '987654321',
           maskedPhone: '98****321',
           lastMessageAt: '2020-06-29T09:31:47Z',
@@ -50,7 +49,7 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
-            errors: null,
+            errors: '{}',
           },
         ],
       },
@@ -62,8 +61,6 @@ const client = new ApolloClient({
   cache: cache,
   assumeImmutableResults: true,
 });
-
-const mocks = CONVERSATION_MOCKS;
 
 const defaultProps = {
   contactId: 2,
@@ -92,7 +89,7 @@ describe('<Chat />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
     // check if chat conversations are displayed
     const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Jane Doe');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
 
     // check if tags are displayed in the ChatMessages
     const ConversationTag = await findAllByText('important');
@@ -103,6 +100,6 @@ describe('<Chat />', () => {
     const { findByTestId } = render(wrapper);
 
     const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Jane Doe');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
   });
 });

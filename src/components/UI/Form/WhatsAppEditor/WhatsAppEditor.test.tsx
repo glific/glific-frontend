@@ -1,7 +1,6 @@
 import React from 'react';
 import WhatsAppEditor from './WhatsAppEditor';
-import { render, wait, fireEvent } from '@testing-library/react';
-import { EMPTY_STATE } from './EditorState.test.helper';
+import { render, fireEvent } from '@testing-library/react';
 import { EditorState } from 'draft-js';
 import { WhatsAppToDraftEditor } from '../../../../common/RichEditor';
 
@@ -38,10 +37,9 @@ jest.mock('react-resize-detector', () => (...props: any) => {
 });
 
 describe('<WhatsAppEditor/>', () => {
-  let handleHeightChange = jest.fn();
-  let sendMessage = jest.fn();
-  let editorState = EditorState.createEmpty();
-  let setEditorState = jest.fn();
+  const handleHeightChange = jest.fn();
+  const sendMessage = jest.fn();
+  const setEditorState = jest.fn();
 
   const defaultProps = (editorState: any) => {
     return {

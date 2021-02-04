@@ -1,15 +1,14 @@
 import React from 'react';
 import ChatInput from './ChatInput';
-import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, act, fireEvent, getByTestId, wait } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
-  const onSendMessageHandler = (message: string) => {
+  const onSendMessageHandler = () => {
     inputSubmitted = true;
   };
   const handleHeightChange = jest.fn();
