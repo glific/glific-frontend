@@ -2,8 +2,6 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { DropdownDialog } from './DropdownDialog';
 
-import { Dropdown } from '../Form/Dropdown/Dropdown';
-
 jest.mock('../Form/Dropdown/Dropdown', () => {
   return {
     Dropdown: (...props: any) => {

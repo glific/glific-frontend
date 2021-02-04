@@ -53,7 +53,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
   const [includeTags, setIncludeTags] = useState([]);
-  const [includeCollections, setIncludeCollections] = useState([]);
+  const [includeGroups, setIncludeGroups] = useState([]);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
@@ -65,7 +65,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     label,
     term,
     includeTags,
-    includeCollections,
+    includeGroups,
     includeUsers,
     dateFrom,
     dateTo,
@@ -91,9 +91,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
             setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
           break;
-        case 'includeCollections':
-          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeCollections'))
-            setIncludeCollections(getObject(data.groups, filters.filter.includeGroups));
+        case 'includeGroups':
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
+            setIncludeGroups(getObject(data.groups, filters.filter.includeGroups));
           break;
         case 'includeUsers':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeUsers'))
@@ -132,7 +132,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         includeTags: props.searchParam.includeTags
           ? props.searchParam.includeTags.map((option: any) => option.id)
           : [],
-        includeCollections: props.searchParam.includeGroups
+        includeGroups: props.searchParam.includeGroups
           ? props.searchParam.includeGroups.map((option: any) => option.id)
           : [],
         includeUsers: props.searchParam.includeUsers
@@ -234,7 +234,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     },
     {
       component: AutoComplete,
-      name: 'includeCollections',
+      name: 'includeGroups',
       placeholder: 'Includes collections',
       label: 'Includes collections',
       options: data.groups,

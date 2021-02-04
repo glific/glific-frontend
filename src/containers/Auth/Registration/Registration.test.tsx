@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen, wait } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -38,21 +38,19 @@ describe('<Registration />', () => {
     // click on continue
     const continueButton = screen.getByText('CONTINUE');
 
-    act(()=>{
+    act(() => {
       UserEvent.click(continueButton);
-    })
-   
+    });
 
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
- 
   });
 
   test('it should submit the form correctly and give error', async () => {
     const { container } = render(wrapper);
     const inputElements = screen.getAllByRole('textbox');
-    
+
     UserEvent.type(inputElements[0], 'JaneDoe');
     UserEvent.type(inputElements[1], '+919978776554');
 
@@ -66,6 +64,5 @@ describe('<Registration />', () => {
     // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
-   
   });
 });

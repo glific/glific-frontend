@@ -4,7 +4,7 @@ import ChatMessageType from './ChatMessageType';
 
 const defaultProps = (type: string) => {
   return {
-    type: type,
+    type,
     body: 'Default body',
     media: {
       thumbnail: '',

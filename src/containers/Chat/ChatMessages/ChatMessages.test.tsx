@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, act, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
@@ -7,7 +7,7 @@ import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 
 const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery({
+export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
@@ -54,7 +54,9 @@ cache.writeQuery({
       },
     ],
   },
-});
+};
+
+cache.writeQuery(searchQuery);
 
 // add collection to apollo cache
 cache.writeQuery({
@@ -131,7 +133,7 @@ it('should contain the mock message', async () => {
 });
 
 test('click on assign tag should open a dialog box with already assigned tags', async () => {
-  const { getByTestId, getByText } = render(chatMessages);
+  const { getByTestId } = render(chatMessages);
   await waitFor(() => {
     fireEvent.click(getByTestId('messageOptions'));
   });

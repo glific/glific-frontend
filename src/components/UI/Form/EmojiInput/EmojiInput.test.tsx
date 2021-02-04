@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
-import { Editor, EditorState } from 'draft-js';
+import { EditorState } from 'draft-js';
 
 const setFieldValueMock = jest.fn();
 

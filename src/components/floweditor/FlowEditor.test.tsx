@@ -2,7 +2,7 @@ import React from 'react';
 import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { wait, render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { getFlowDetailsQuery } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
 

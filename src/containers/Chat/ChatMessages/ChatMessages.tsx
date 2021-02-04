@@ -158,7 +158,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
-  // this function is called when the message is sent
+  const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
+    const payloadCopy = payload;
+    // add additional param for template
+    if (selectedTemplate) {
+      payloadCopy.isHsm = selectedTemplate.isHsm;
+      payloadCopy.templateId = parseInt(selectedTemplate.id, 10);
+      payloadCopy.params = variableParam;
+    }
+    return payloadCopy;
+  };
+
+  // this function is called when the message is sent collection
   const sendCollectionMessageHandler = (
     body: string,
     mediaId: string,
@@ -174,15 +185,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       flow: 'OUTBOUND',
     };
 
-    // add additional param for template
-    if (selectedTemplate) {
-      payload.isHsm = selectedTemplate.isHsm;
-      payload.templateId = parseInt(selectedTemplate.id, 10);
-      payload.params = variableParam;
-    }
-
     sendMessageToCollection({
-      variables: { groupId: collectionId, input: payload },
+      variables: {
+        groupId: collectionId,
+        input: updatePayload(payload, selectedTemplate, variableParam),
+      },
     });
   };
 
@@ -204,15 +211,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         flow: 'OUTBOUND',
       };
 
-      // add additional param for template
-      if (selectedTemplate) {
-        payload.isHsm = selectedTemplate.isHsm;
-        payload.templateId = parseInt(selectedTemplate.id, 10);
-        payload.params = variableParam;
-      }
-
       createAndSendMessage({
-        variables: { input: payload },
+        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
     },
     [createAndSendMessage, contactId]
@@ -239,16 +239,21 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = {};
 
+  const updateConversationInfo = (type: string, Id: any) => {
+    allConversations.search.map((conversation: any, index: any) => {
+      if (conversation[type].id === Id.toString()) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+      return null;
+    });
+  };
+
   if (contactId) {
     // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search)
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId.toString()) {
-          conversationIndex = index;
-          conversationInfo = conversation;
-        }
-        return null;
-      });
+    if (allConversations && allConversations.search) {
+      updateConversationInfo('contact', contactId);
+    }
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
@@ -271,13 +276,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         conversationIndex = 0;
         [conversationInfo] = allConversations.search;
       } else {
-        allConversations.search.map((conversation: any, index: any) => {
-          if (conversation.group.id === collectionId.toString()) {
-            conversationIndex = index;
-            conversationInfo = conversation;
-          }
-          return null;
-        });
+        updateConversationInfo('group', collectionId);
       }
     }
 

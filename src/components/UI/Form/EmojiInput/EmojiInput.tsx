@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Editor, RichUtils, Modifier, EditorState } from 'draft-js';
+import { RichUtils, Modifier, EditorState } from 'draft-js';
+import Editor from '@draft-js-plugins/editor';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -15,11 +16,22 @@ export interface EmojiInputProps {
   rows: number;
 }
 
+const DraftField = React.forwardRef(function DraftField(inputProps: any, ref: any) {
+  const { component: Component, editorRef, ...other } = inputProps;
+  React.useImperativeHandle(ref, () => ({
+    focus: () => {
+      editorRef?.current?.focus();
+    },
+  }));
+
+  return <Component ref={editorRef} {...other} />;
+});
+
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
   ...props
 }: EmojiInputProps) => {
-  const ref = React.useRef();
+  const inputRef = React.useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleKeyCommand = (command: any, editorState: any) => {
@@ -47,31 +59,20 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     props.form.setFieldValue(rest.name, updatedEditorState);
   };
 
-  const InputWrapper = (inputProps: any) => {
-    const { component: Component, inputRef, ...other } = inputProps;
-
-    React.useImperativeHandle(inputRef, () => ({
-      focus: () => {
-        const current: any = ref;
-        if (current) current.current.focus();
-      },
-    }));
-
-    return <Component ref={ref} {...other} />;
-  };
   const draftJsChange = (editorState: any) => {
     props.form.setFieldValue(rest.name, editorState);
   };
-  const inputComponent = InputWrapper;
+
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
     handleKeyCommand,
+    editorRef: inputRef,
     onBlur: props.form.handleBlur,
     onChange: draftJsChange,
   };
 
-  const editor = { inputComponent, inputProps };
+  const editor = { inputComponent: DraftField, inputProps };
 
   const emojiPicker = showEmojiPicker ? (
     <Picker
