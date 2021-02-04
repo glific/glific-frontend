@@ -21,3 +21,18 @@ test('contact profile should render', async () => {
     expect(getByTestId('ContactProfile')).toBeInTheDocument();
   });
 });
+
+test('contact should have a name or number', async () => {
+  const { getAllByTestId, getByTestId } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <ContactProfile {...defaultProps} />
+    </MockedProvider>
+  );
+  await waitFor(() => {
+    expect(getByTestId('ContactProfile')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    expect(getByTestId('outlinedInput').querySelector('input')?.value).toBe('Default User');
+  });
+});

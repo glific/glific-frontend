@@ -111,6 +111,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
               {attachmentType !== '' ? (
                 <div className={styles.CrossIcon}>
                   <CrossIcon
+                    data-testid="crossIcon"
                     onClick={() => {
                       setAttachmentType('');
                       setAttachmentURL('');
