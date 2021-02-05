@@ -2,7 +2,7 @@ import { UPDATE_CURRENT_USER } from '../graphql/mutations/User';
 import { GET_CURRENT_USER, GET_USERS } from '../graphql/queries/User';
 import { setVariables } from '../common/constants';
 
-export const getCurrentUserQuery = {
+export const getCurrentUserQuery = (roles = ['admin']) => ({
   request: {
     query: GET_CURRENT_USER,
   },
@@ -14,7 +14,7 @@ export const getCurrentUserQuery = {
           name: 'John Doe',
           phone: '+919820198765',
           maskedPhone: '+919820198765',
-          roles: ['admin'],
+          roles,
           contact: {
             id: '1',
           },
@@ -32,7 +32,7 @@ export const getCurrentUserQuery = {
       },
     },
   },
-};
+});
 
 export const getUsersQuery = {
   request: {
