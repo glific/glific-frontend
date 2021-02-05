@@ -8,7 +8,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Login } from './Login';
 import { getCurrentUserQuery } from '../../../mocks/User';
 
-const mocks = [getCurrentUserQuery()];
+const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
 
