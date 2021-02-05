@@ -20,7 +20,7 @@ export interface FlowProps {
   match: any;
 }
 
-const regex = /^[a-z0-9]+(,[a-z0-9]+)*$/g;
+const regex = /^\s*[a-z0-9]+\s*(,\s*[a-z0-9]+\s*)*$/g;
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
