@@ -37,9 +37,11 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
         document: PERIODIC_INFO_SUBSCRIPTION,
         variables,
         updateQuery: (prev, { subscriptionData }) => {
-          if (subscriptionData.data.periodicInfo.bsp_balance) {
-            const balance = JSON.parse(subscriptionData.data.periodicInfo.bsp_balance);
-            setDisplayBalance(balance.balance);
+          if (subscriptionData.data.periodicInfo) {
+            const balance = JSON.parse(subscriptionData.data.periodicInfo);
+            if (balance.balance !== undefined) {
+              setDisplayBalance(balance.balance);
+            }
           }
         },
       });
