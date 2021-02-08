@@ -25,7 +25,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
 
   useEffect(() => {
     if (balanceData) {
-      const balance = JSON.parse(balanceData.bspbalance.value);
+      const balance = JSON.parse(balanceData.bspbalance);
       setDisplayBalance(balance.balance);
     }
   }, [balanceData]);
@@ -37,9 +37,11 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
         document: PERIODIC_INFO_SUBSCRIPTION,
         variables,
         updateQuery: (prev, { subscriptionData }) => {
-          if (subscriptionData.data.periodicInfo.key === 'bsp_balance') {
-            const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-            setDisplayBalance(balance.balance);
+          if (subscriptionData.data.periodicInfo) {
+            const balance = JSON.parse(subscriptionData.data.periodicInfo);
+            if (balance.balance !== undefined) {
+              setDisplayBalance(balance.balance);
+            }
           }
         },
       });
@@ -108,11 +110,13 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const updateBalance = (
     <div
       className={`${styles.WalletBalance} ${
-        displayBalance && displayBalance > 1 ? styles.WalletBalanceHigh : styles.WalletBalanceLow
+        displayBalance !== null && displayBalance > 1
+          ? styles.WalletBalanceHigh
+          : styles.WalletBalanceLow
       }`}
       data-testid="WalletBalance"
     >
-      {displayBalance ? updateBody() : errorBody()}
+      {displayBalance !== null ? updateBody() : errorBody()}
     </div>
   );
 

@@ -2,10 +2,7 @@ import { gql } from '@apollo/client';
 
 const PERIODIC_INFO_SUBSCRIPTION = gql`
   subscription($organizationId: ID!) {
-    periodicInfo(organizationId: $organizationId) {
-      key
-      value
-    }
+    periodicInfo(organizationId: $organizationId)
   }
 `;
 
