@@ -399,10 +399,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
-        },
+        periodicInfo: '{"balance":0.787}',
       },
     },
   },
@@ -413,10 +410,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
-        },
+        periodicInfo: '{"balance":0.787}',
       },
     },
   },
@@ -430,10 +424,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":10.787}',
-        },
+        periodicInfo: '{"balance":10.379}',
       },
     },
   },
@@ -444,10 +435,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":10.787}',
-        },
+        periodicInfo: '{"balance":10.379}',
       },
     },
   },
@@ -461,10 +449,7 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
-        },
+        bspbalance: '{"balance":0.628}',
       },
     },
   },
@@ -475,10 +460,7 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
-        },
+        bspbalance: '{"balance":0.628}',
       },
     },
   },
@@ -492,10 +474,7 @@ export const walletBalanceHighQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
+        bspbalance: '{"balance":10.379}',
       },
     },
   },
@@ -506,10 +485,7 @@ export const walletBalanceHighQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
+        bspbalance: '{"balance":10.379}',
       },
     },
   },
