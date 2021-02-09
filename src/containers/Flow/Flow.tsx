@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 
 import { useLocation } from 'react-router-dom';
