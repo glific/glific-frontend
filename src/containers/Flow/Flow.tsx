@@ -20,11 +20,11 @@ export interface FlowProps {
   match: any;
 }
 
-const regex = /^\s*[a-z0-9]+\s*(,\s*[a-z0-9]+\s*)*$/g;
+const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./ ]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./ ]+\s*)*$/g;
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
-  keywords: Yup.string().matches(regex, 'Only lowercase alphanumeric characters are allowed.'),
+  keywords: Yup.string().matches(regex, 'Special symbols are not allowed'),
 });
 
 const dialogMessage = "You won't be able to use this flow again.";
