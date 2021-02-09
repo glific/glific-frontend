@@ -24,7 +24,7 @@ export const setErrorMessage = (client: any, error: any) => {
     };
 
     if ('key' in error) {
-      errorMessage.message = `${error.key}:${error.message}`;
+      errorMessage.message = `${error.key}: ${error.message}`;
     }
   } else {
     errorMessage = '';
