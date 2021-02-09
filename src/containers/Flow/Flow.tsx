@@ -24,7 +24,7 @@ const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./ ]+\s*(,\s*[^-!$%^&*()+|~=`{}[
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
-  keywords: Yup.string().matches(regex, 'Special symbols are not allowed'),
+  keywords: Yup.string().matches(regex, 'Sorry, special characters are not allowed'),
 });
 
 const dialogMessage = "You won't be able to use this flow again.";
