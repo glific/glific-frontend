@@ -20,7 +20,7 @@ export interface FlowProps {
   match: any;
 }
 
-const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./ ]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./ ]+\s*)*$/g;
+const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Name is required.'),
@@ -102,7 +102,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       // remove white spaces
       const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
       // convert to array
-      formattedKeywords = inputKeywords.split(',');
+      formattedKeywords = payload.keywords.split(',');
     }
 
     // return modified payload
