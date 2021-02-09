@@ -194,7 +194,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
       if (data[itemCreated].errors) {
-        console.log(data[itemCreated].errors);
         setErrorMessage(client, data[itemCreated].errors[0]);
       } else {
         if (additionalQuery) {
@@ -221,7 +220,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     onError: (e: ApolloError) => {
       onSaveClick(false);
-      console.log(e);
       setErrorMessage(client, e);
       return null;
     },
