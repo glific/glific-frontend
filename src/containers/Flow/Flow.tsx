@@ -102,7 +102,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       // remove white spaces
       const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
       // convert to array
-      formattedKeywords = payload.keywords.split(',');
+      formattedKeywords = inputKeywords.split(',');
     }
 
     // return modified payload
