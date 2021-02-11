@@ -16,11 +16,10 @@ import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
-  simulator: any;
 }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
-  const { contactId, simulator } = props;
+  const { contactId } = props;
   // get the conversations stored from the cache
   const [searchVal, setSearchVal] = useState('');
   const [searchParam, setSearchParam] = useState<any>({});
@@ -46,12 +45,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   useEffect(() => {
     setSelectedContactId(contactId?.toString());
   }, [contactId]);
-
-  useEffect(() => {
-    if (selectedContactId === simulator.simulatorId) {
-      simulator.setShowSimulator(true);
-    }
-  }, [selectedContactId]);
 
   const handleChange = (event: any) => {
     if (event.target.param) {

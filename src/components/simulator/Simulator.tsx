@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -14,14 +14,16 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 
 import styles from './Simulator.module.css';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { SEARCH_QUERY_VARIABLES, TIME_FORMAT, SIMULATOR_CONTACT } from '../../common/constants';
+import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
+import { GET_SIMULATOR } from '../../graphql/queries/Simulator';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -37,6 +39,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
+  const history = useHistory();
 
   let messages = [];
   let simulatorId = '';
@@ -46,10 +49,20 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'cache-only',
   });
 
-  if (allConversations) {
+  const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
+    onCompleted: () => {
+      setShowSimulator(!showSimulator);
+    },
+  });
+
+  useEffect(() => {
+    if (showSimulator === true) history.push(`/chat/${data.simulatorGet.id}`);
+  }, [showSimulator]);
+
+  if (allConversations && data) {
     // currently setting the simulated contact as the default receiver
     const simulatedContact = allConversations.search.filter(
-      (item: any) => item.contact.phone === SIMULATOR_CONTACT
+      (item: any) => item.contact.id === data.simulatorGet.id
     );
     if (simulatedContact.length > 0) {
       messages = simulatedContact[0].messages;
@@ -106,8 +119,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
           },
           sender: {
             // this number will be the simulated contact number
-            phone: SIMULATOR_CONTACT,
-            name: 'Simulator',
+            phone: data.simulatorGet.phone,
+            name: data.simulatorGet.name,
           },
         },
       },
@@ -191,7 +204,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   );
 
   const handleSimulator = () => {
-    setShowSimulator(!showSimulator);
+    getSimulator();
   };
 
   return (
