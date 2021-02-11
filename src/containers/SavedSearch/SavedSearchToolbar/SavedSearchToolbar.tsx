@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
 
 import styles from './SavedSearchToolbar.module.css';
@@ -8,6 +8,8 @@ import { ReactComponent as OptionsIconSelected } from '../../../assets/images/ic
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { COLLECTION_COUNT_SUBSCRIPTION } from '../../../graphql/subscriptions/PeriodicInfo';
+import { getUserSession } from '../../../services/AuthService';
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;
@@ -25,6 +27,29 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [anchorEl, setAnchorEl] = useState(null);
   const Ref = useRef(null);
   const open = Boolean(anchorEl);
+  const variables = { organizationId: getUserSession('organizationId') };
+
+  const { data: collectionCount } = useSubscription(COLLECTION_COUNT_SUBSCRIPTION, { variables });
+
+  useEffect(() => {
+    if (collectionCount) {
+      const countData = JSON.parse(collectionCount.collectionCount);
+
+      const updateCounts = (savedSearches: any) => {
+        return savedSearches.map((search: any) => {
+          const searchCopy = JSON.parse(JSON.stringify(search));
+          if (search.id in countData.Collection_count) {
+            searchCopy.count = countData.Collection_count[search.id];
+          }
+          return searchCopy;
+        });
+      };
+      const updatedFixedSearches = updateCounts(fixedSearches);
+      const updatedAdditionalSearch = updateCounts(additionalSearch);
+      setFixedSearches(updatedFixedSearches);
+      setAdditionalSearch(updatedAdditionalSearch);
+    }
+  }, [collectionCount]);
 
   // default queryvariables
   const queryVariables = {
