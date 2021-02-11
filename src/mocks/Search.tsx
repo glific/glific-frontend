@@ -1,5 +1,6 @@
 import { CREATE_SEARCH } from '../graphql/mutations/Search';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
+import { COLLECTION_COUNT_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
 
 export const createSearchQuery = {
   request: {
@@ -113,6 +114,18 @@ export const getSearch = {
           shortcode: 'Save Search collection',
         },
       },
+    },
+  },
+};
+
+export const collectionCountSubscription = {
+  request: {
+    query: COLLECTION_COUNT_SUBSCRIPTION,
+    variables: { organizationId: null },
+  },
+  result: {
+    data: {
+      collectionCount: `{"Collection_count":{"1":5}}`,
     },
   },
 };
