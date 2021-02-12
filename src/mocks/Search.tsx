@@ -125,7 +125,7 @@ export const collectionCountSubscription = {
   },
   result: {
     data: {
-      collectionCount: `{"Collection_count":{"1":5}}`,
+      collectionCount: `{"collection":{"All":5}}`,
     },
   },
 };
