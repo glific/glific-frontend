@@ -38,8 +38,8 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       const updateCounts = (savedSearches: any) => {
         return savedSearches.map((search: any) => {
           const searchCopy = JSON.parse(JSON.stringify(search));
-          if (search.id in countData.Collection_count) {
-            searchCopy.count = countData.Collection_count[search.id];
+          if (search.shortcode in countData.collection) {
+            searchCopy.count = countData.collection[search.shortcode];
           }
           return searchCopy;
         });
