@@ -9,3 +9,11 @@ export const GET_SIMULATOR = gql`
     }
   }
 `;
+
+export const RELEASE_SIMULATOR = gql`
+  query MyQuery {
+    simulatorRelease {
+      id
+    }
+  }
+`;

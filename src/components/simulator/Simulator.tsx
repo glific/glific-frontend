@@ -14,7 +14,6 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
 
 import styles from './Simulator.module.css';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
@@ -23,11 +22,12 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
-import { GET_SIMULATOR } from '../../graphql/queries/Simulator';
+import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
 
 export interface SimulatorProps {
   showSimulator: boolean;
   setShowSimulator: any;
+  setSimulatorId?: any;
   simulatorIcon?: boolean;
   message?: any;
 }
@@ -35,11 +35,11 @@ export interface SimulatorProps {
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setShowSimulator,
+  setSimulatorId,
   simulatorIcon = true,
   message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
-  const history = useHistory();
 
   let messages = [];
   let simulatorId = '';
@@ -50,14 +50,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
   });
 
   const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
-    onCompleted: () => {
-      setShowSimulator(!showSimulator);
+    fetchPolicy: 'network-only',
+    onCompleted: (data1) => {
+      setShowSimulator(true);
+      console.log(data1);
+      setSimulatorId(data1.simulatorGet.id);
     },
   });
 
-  useEffect(() => {
-    if (showSimulator === true) history.push(`/chat/${data.simulatorGet.id}`);
-  }, [showSimulator]);
+  const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
+    fetchPolicy: 'network-only',
+  });
 
   if (allConversations && data) {
     // currently setting the simulated contact as the default receiver
@@ -72,6 +75,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const getStyleForDirection = (direction: string): string => {
     return direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
+  };
+
+  const releaseUserSimulator = () => {
+    releaseSimulator();
+    setShowSimulator(false);
   };
 
   const renderMessage = (
@@ -151,7 +159,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <div id="simulator" className={styles.Simulator}>
             <ClearIcon
               className={styles.ClearIcon}
-              onClick={() => setShowSimulator(false)}
+              onClick={() => {
+                releaseUserSimulator();
+              }}
               data-testid="clearIcon"
             />
             <div className={styles.Screen}>
