@@ -5,6 +5,7 @@ export const GET_SIMULATOR = gql`
     simulatorGet {
       id
       phone
+      name
     }
   }
 `;
