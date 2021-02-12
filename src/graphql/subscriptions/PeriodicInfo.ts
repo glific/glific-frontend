@@ -1,12 +1,13 @@
 import { gql } from '@apollo/client';
 
-const PERIODIC_INFO_SUBSCRIPTION = gql`
+export const BSP_BALANCE_SUBSCRIPTION = gql`
   subscription($organizationId: ID!) {
-    periodicInfo(organizationId: $organizationId) {
-      key
-      value
-    }
+    bspBalance(organizationId: $organizationId)
   }
 `;
 
-export { PERIODIC_INFO_SUBSCRIPTION as default };
+export const COLLECTION_COUNT_SUBSCRIPTION = gql`
+  subscription($organizationId: ID!) {
+    collectionCount(organizationId: $organizationId)
+  }
+`;

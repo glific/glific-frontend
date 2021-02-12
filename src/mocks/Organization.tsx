@@ -5,7 +5,7 @@ import {
   GET_CREDENTIAL,
   BSPBALANCE,
 } from '../graphql/queries/Organization';
-import PERIODIC_INFO_SUBSCRIPTION from '../graphql/subscriptions/PeriodicInfo';
+import { BSP_BALANCE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
 
 export const getOrganizationQuery = [
   {
@@ -394,29 +394,23 @@ export const getOrganizationLanguagesQueryByOrder = {
 export const walletBalanceSubscription = [
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: null },
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
-        },
+        periodicInfo: '{"balance":0.787}',
       },
     },
   },
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: '1' },
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":0.787}',
-        },
+        periodicInfo: '{"balance":0.787}',
       },
     },
   },
@@ -425,29 +419,23 @@ export const walletBalanceSubscription = [
 export const walletBalanceHighSubscription = [
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: null },
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":10.787}',
-        },
+        periodicInfo: '{"balance":10.379}',
       },
     },
   },
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: '1' },
     },
     result: {
       data: {
-        periodicInfo: {
-          key: 'bsp_balance',
-          value: '{"balance":10.787}',
-        },
+        periodicInfo: '{"balance":10.379}',
       },
     },
   },
@@ -461,10 +449,7 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
-        },
+        bspbalance: '{"balance":0.628}',
       },
     },
   },
@@ -475,10 +460,7 @@ export const walletBalanceQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":0.628}',
-        },
+        bspbalance: '{"balance":0.628}',
       },
     },
   },
@@ -492,10 +474,7 @@ export const walletBalanceHighQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
+        bspbalance: '{"balance":10.379}',
       },
     },
   },
@@ -506,10 +485,7 @@ export const walletBalanceHighQuery = [
     },
     result: {
       data: {
-        bspbalance: {
-          key: 'bsp_balance',
-          value: '{"balance":10.379}',
-        },
+        bspbalance: '{"balance":10.379}',
       },
     },
   },

@@ -36,6 +36,16 @@ export const SEARCH_QUERY_VARIABLES = {
   },
 };
 
+export const COLLECTION_SEARCH_QUERY_VARIABLES = {
+  contactOpts: {
+    limit: 50,
+  },
+  filter: { searchGroup: true },
+  messageOpts: {
+    limit: 50,
+  },
+};
+
 export const setVariables = (
   filter: any = {},
   limit: any = null,

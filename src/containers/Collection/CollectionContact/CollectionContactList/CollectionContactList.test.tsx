@@ -3,21 +3,21 @@ import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
-import { GroupContactList } from './GroupContactList';
-import { countGroupContactsQuery, getGroupContactsQuery } from '../../../../mocks/Contact';
+import { CollectionContactList } from './CollectionContactList';
+import { countCollectionContactsQuery, getCollectionContactsQuery } from '../../../../mocks/Contact';
 import { setUserSession } from '../../../../services/AuthService';
 
-const mocks = [countGroupContactsQuery, getGroupContactsQuery, getGroupContactsQuery];
+const mocks = [countCollectionContactsQuery, getCollectionContactsQuery, getCollectionContactsQuery];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <GroupContactList match={{ params: { id: 1 } }} title={'Default Group'} />
+      <CollectionContactList match={{ params: { id: 1 } }} title={'Default Collection'} />
     </MemoryRouter>
   </MockedProvider>
 );
 
-describe('<GroupContactList />', () => {
-  test('should render GroupContactList', async () => {
+describe('<CollectionContactList />', () => {
+  test('should render CollectionContactList', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getByText } = render(wrapper);
 

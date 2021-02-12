@@ -7,7 +7,7 @@ const defaultProps = {
   data: [
     {
       id: '1',
-      label: 'Staff Management Group',
+      label: 'Staff Management Collection',
       description: 'All staff members of the organization',
       operations: null,
     },
@@ -23,7 +23,7 @@ const card = (
 
 test('it should have correct label', () => {
   const { getByTestId } = render(card);
-  expect(getByTestId('label')).toHaveTextContent('Staff Management Group');
+  expect(getByTestId('label')).toHaveTextContent('Staff Management Collection');
 });
 
 test('it should have correct description', () => {

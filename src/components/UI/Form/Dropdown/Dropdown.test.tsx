@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { Select, InputLabel } from '@material-ui/core';
 import { Dropdown } from './Dropdown';
 
 describe('<Dropdown />', () => {

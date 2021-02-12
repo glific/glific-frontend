@@ -22,6 +22,8 @@ import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { validateMedia } from '../../../common/utils';
 
+const regexForShortcode = /^[a-z0-9_]+$/g;
+
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => {
@@ -29,7 +31,12 @@ const HSMValidation = {
     })
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
-  shortcode: Yup.string().required('Element name is required.'),
+  shortcode: Yup.string()
+    .required('Element name is required.')
+    .matches(
+      regexForShortcode,
+      'Only lowercase alphanumeric characters and underscores are allowed.'
+    ),
 };
 
 const dialogMessage = ' It will stop showing when you are drafting a customized message.';

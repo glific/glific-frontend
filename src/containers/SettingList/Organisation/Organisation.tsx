@@ -309,7 +309,7 @@ export const Organisation: React.SFC = () => {
       listItemName="Settings"
       dialogMessage=""
       formFields={formFields}
-      refetchQueries={{ query: USER_LANGUAGES }}
+      refetchQueries={[{ query: USER_LANGUAGES }]}
       redirectionLink="settings"
       cancelLink="settings"
       linkParameter="id"

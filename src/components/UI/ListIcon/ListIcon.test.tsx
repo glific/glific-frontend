@@ -39,7 +39,7 @@ describe('list icon tests', () => {
   });
 
   it('renders appropriate icons', () => {
-    let keys = Object.keys(iconList);
+    const keys = Object.keys(iconList);
 
     for (let i = 0; i < keys.length; i++) {
       const { container } = render(createIcon(keys[i], false));

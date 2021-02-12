@@ -10,10 +10,16 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
+import {
+  TIME_FORMAT,
+  SEARCH_QUERY_VARIABLES,
+  setVariables,
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -21,14 +27,18 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
-  contactId: number | string;
+  contactId?: number | string | null;
   simulatorId?: string | null;
+  collectionId?: number | string | null;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  simulatorId,
+  collectionId,
+}) => {
   // create an instance of apolloclient
   const client = useApolloClient();
-
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
@@ -69,7 +79,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
+
+  if (collectionId) {
+    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+  }
 
   const {
     loading: conversationLoad,
@@ -97,7 +111,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId.toString()) {
+          if (conversationObj.contact.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -140,6 +154,45 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     },
   });
 
+  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
+    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+  });
+
+  const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
+    const payloadCopy = payload;
+    // add additional param for template
+    if (selectedTemplate) {
+      payloadCopy.isHsm = selectedTemplate.isHsm;
+      payloadCopy.templateId = parseInt(selectedTemplate.id, 10);
+      payloadCopy.params = variableParam;
+    }
+    return payloadCopy;
+  };
+
+  // this function is called when the message is sent collection
+  const sendCollectionMessageHandler = (
+    body: string,
+    mediaId: string,
+    messageType: string,
+    selectedTemplate: any,
+    variableParam: any
+  ) => {
+    const payload: any = {
+      body,
+      senderId: 1,
+      mediaId,
+      type: messageType,
+      flow: 'OUTBOUND',
+    };
+
+    sendMessageToCollection({
+      variables: {
+        groupId: collectionId,
+        input: updatePayload(payload, selectedTemplate, variableParam),
+      },
+    });
+  };
+
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
     (
@@ -158,15 +211,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         flow: 'OUTBOUND',
       };
 
-      // add additional param for template
-      if (selectedTemplate) {
-        payload.isHsm = selectedTemplate.isHsm;
-        payload.templateId = parseInt(selectedTemplate.id, 10);
-        payload.params = variableParam;
-      }
-
       createAndSendMessage({
-        variables: { input: payload },
+        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
     },
     [createAndSendMessage, contactId]
@@ -174,7 +220,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (data && data.search[0].contact.status === 'BLOCKED') {
+  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
     return <Redirect to="/chat" />;
   }
 
@@ -193,16 +239,21 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = {};
 
+  const updateConversationInfo = (type: string, Id: any) => {
+    allConversations.search.map((conversation: any, index: any) => {
+      if (conversation[type].id === Id.toString()) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+      return null;
+    });
+  };
+
   if (contactId) {
     // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search)
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId.toString()) {
-          conversationIndex = index;
-          conversationInfo = conversation;
-        }
-        return null;
-      });
+    if (allConversations && allConversations.search) {
+      updateConversationInfo('contact', contactId);
+    }
 
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
@@ -211,6 +262,31 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
           variables: {
             filter: { id: contactId },
             messageOpts: { limit: 200, offset: 0 },
+            contactOpts: { limit: 50 },
+          },
+        });
+      }
+    }
+  }
+
+  if (collectionId) {
+    // loop through the cached conversations and find if collection exists
+    if (allConversations && allConversations.search) {
+      if (collectionId === -1) {
+        conversationIndex = 0;
+        [conversationInfo] = allConversations.search;
+      } else {
+        updateConversationInfo('group', collectionId);
+      }
+    }
+
+    // if conversation is not present then fetch the group
+    if (conversationIndex < 0) {
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            filter: { id: collectionId, searchGroup: true },
+            messageOpts: { limit: 50, offset: 0 },
             contactOpts: { limit: 50 },
           },
         });
@@ -311,9 +387,18 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   const loadMoreMessages = () => {
+    const variables: any = {
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: 50, offset: messageOffset },
+      contactOpts: { limit: 1 },
+    };
+
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
+    }
     getSearchQuery({
       variables: {
-        filter: { id: contactId.toString() },
+        filter: { id: contactId?.toString() },
         messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
       },
@@ -385,11 +470,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     );
   }
 
-  return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
-      {dialogBox}
+  let topChatBar;
+  let chatInputSection;
+  if (contactId) {
+    topChatBar = (
       <ContactBar
-        contactName={
+        displayName={
           conversationInfo.contact.name
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
@@ -401,7 +487,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactBspStatus={conversationInfo.contact.bspStatus}
         handleAction={handleChatClearedAction}
       />
-      {messageListContainer}
+    );
+
+    chatInputSection = (
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
@@ -409,6 +497,30 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
+    );
+  } else if (collectionId) {
+    topChatBar = (
+      <ContactBar
+        collectionId={collectionId.toString()}
+        displayName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <ChatInput
+        handleHeightChange={handleHeightChange}
+        onSendMessage={sendCollectionMessageHandler}
+      />
+    );
+  }
+
+  return (
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+      {dialogBox}
+      {topChatBar}
+      {messageListContainer}
+      {chatInputSection}
     </Container>
   );
 };

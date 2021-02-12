@@ -1,4 +1,5 @@
 import {
+  COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
@@ -8,7 +9,7 @@ import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversat
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
 import { filterTagsQuery, getTagsQuery } from './Tag';
-import { contactGroupsQuery } from './Contact';
+import { contactCollectionsQuery } from './Contact';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
 import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
 import { getOrganizationLanguagesQuery } from './Organization';
@@ -46,6 +47,7 @@ const conversationMessageQuery = (
     data: {
       search: [
         {
+          group: null,
           contact: {
             id: contactId.toString(),
             name: contactName,
@@ -76,6 +78,55 @@ const conversationMessageQuery = (
               ],
               type: 'TEXT',
               media: null,
+              location: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+});
+
+const conversationCollectionQuery = (
+  collectionId: any,
+  collectionName: string,
+  contactLimit: number = 50,
+  messageLimit: object = { limit: 50 }
+) => ({
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: {
+        limit: contactLimit,
+      },
+      filter: { searchGroup: true },
+      messageOpts: messageLimit,
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          contact: null,
+          group: {
+            id: collectionId.toString(),
+            label: collectionName,
+          },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+              },
+              type: 'TEXT',
+              media: null,
+              tags: [],
+              location: null,
               errors: '{}',
             },
           ],
@@ -112,6 +163,42 @@ export const messageReceivedSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
+        location: null,
+        errors: '{}',
+      },
+    },
+  },
+};
+
+export const collectionSendSubscription = {
+  request: {
+    query: COLLECTION_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentGroupMessage: {
+        body: 'How can we help?',
+        flow: 'OUTBOUND',
+        id: '22',
+        insertedAt: '2020-07-11T14:03:28Z',
+        receiver: {
+          id: '1',
+          phone: '917834811114',
+        },
+        sender: {
+          id: '1',
+          phone: '917834811114',
+        },
+        tags: [],
+        groupId: '2',
+        type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
+        location: null,
         errors: '{}',
       },
     },
@@ -139,6 +226,7 @@ const messageSubscriptionData = {
       url:
         'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
     },
+    location: null,
     errors: '{}',
   },
 };
@@ -160,11 +248,12 @@ export const messageStatusSubscription = {
   },
   result: {
     data: {
-      sentMessage: {
+      updateMessageStatus: {
         id: '22',
         receiver: {
           id: '2',
         },
+        location: null,
         errors: '{}',
       },
     },
@@ -195,6 +284,7 @@ export const savedSearchQuery = {
 export const conversationQuery = getConversationQuery({
   search: [
     {
+      group: null,
       contact: {
         id: '2',
         name: 'Jane Doe',
@@ -356,13 +446,14 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
-  contactGroupsQuery,
-  contactGroupsQuery,
+  contactCollectionsQuery,
+  contactCollectionsQuery,
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  collectionSendSubscription,
   messageStatusSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
@@ -371,6 +462,7 @@ export const CONVERSATION_MOCKS = [
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
   conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
   conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
+  conversationCollectionQuery('2', 'Default collection'),
 ];
 
 const updateMessageTagsQuery = {
@@ -600,7 +692,7 @@ export const searchQuerywithFilterOffset = {
 };
 
 const chatMessagesMocks = [
-  contactGroupsQuery,
+  contactCollectionsQuery,
   updateMessageTagsQuery,
   updateMessageTagsQuery,
   searchQuerywithFilter,

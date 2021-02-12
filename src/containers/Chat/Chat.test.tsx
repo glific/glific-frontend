@@ -1,12 +1,66 @@
 import React from 'react';
-import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
 import { Chat } from './Chat';
-import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import { setUserSession } from '../../services/AuthService';
 
-const mocks = CONVERSATION_MOCKS;
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
+
+const cache = new InMemoryCache({ addTypename: false });
+cache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    messageOpts: { limit: 50 },
+    contactOpts: { limit: 50 },
+  },
+  data: {
+    search: [
+      {
+        group: null,
+        contact: {
+          id: '2',
+          name: 'Effie Cormier',
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: '2020-06-29T09:31:47Z',
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+        },
+        messages: [
+          {
+            id: '1',
+            body: 'Hey there whats up?',
+            insertedAt: '2020-06-25T13:36:43Z',
+            location: null,
+            receiver: {
+              id: '1',
+            },
+            sender: {
+              id: '2',
+            },
+            tags: [
+              {
+                id: '1',
+                label: 'important',
+                colorCode: '#00d084',
+              },
+            ],
+            type: 'TEXT',
+            media: null,
+            errors: '{}',
+          },
+        ],
+      },
+    ],
+  },
+});
+
+const client = new ApolloClient({
+  cache: cache,
+  assumeImmutableResults: true,
+});
 
 const defaultProps = {
   contactId: 2,
@@ -17,11 +71,11 @@ window.HTMLElement.prototype.scrollIntoView = function () {};
 afterEach(cleanup);
 
 const wrapper = (
-  <MockedProvider mocks={mocks} addTypename={false}>
+  <ApolloProvider client={client}>
     <MemoryRouter>
       <Chat {...defaultProps} />
     </MemoryRouter>
-  </MockedProvider>
+  </ApolloProvider>
 );
 
 // set user session
@@ -35,10 +89,10 @@ describe('<Chat />', () => {
     expect(getByText('Loading...')).toBeInTheDocument();
     // check if chat conversations are displayed
     const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Jane Doe');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
 
     // check if tags are displayed in the ChatMessages
-    const ConversationTag = await findAllByText('Unread');
+    const ConversationTag = await findAllByText('important');
     expect(ConversationTag[0]).toBeInTheDocument();
   });
 
@@ -46,6 +100,6 @@ describe('<Chat />', () => {
     const { findByTestId } = render(wrapper);
 
     const ChatConversation = await findByTestId('beneficiaryName');
-    expect(ChatConversation).toHaveTextContent('Jane Doe');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
   });
 });

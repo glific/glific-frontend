@@ -3,8 +3,6 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SearchDialogBox } from './SearchDialogBox';
-import { DialogBox } from '../DialogBox/DialogBox';
-import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
 const mockHandleOk = jest.fn();
 const mockHandleCancel = jest.fn();

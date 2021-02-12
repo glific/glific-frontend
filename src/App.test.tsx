@@ -1,7 +1,7 @@
 import React from 'react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { waitFor, render, getByTestId } from '@testing-library/react';
+import { waitFor, render } from '@testing-library/react';
 
 import App from './App';
 import { CONVERSATION_MOCKS } from './mocks/Chat';
@@ -18,12 +18,11 @@ const app = (
 );
 
 describe('<App /> ', () => {
-  test('it should render <App /> component correctly',async () => {
+  test('it should render <App /> component correctly', async () => {
     const { container } = render(app);
-    await waitFor(()=>{
+    await waitFor(() => {
       expect(container).toBeInTheDocument();
-    })
-   
+    });
   });
 
   test('it should render <Login /> component by default', async () => {
@@ -52,6 +51,4 @@ describe('<App /> ', () => {
       expect(container.querySelector('.MuiToolbar-root')).toBeInTheDocument();
     });
   });
-
- 
 });

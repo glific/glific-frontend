@@ -26,14 +26,14 @@ import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { GET_GROUPS } from '../../../../graphql/queries/Group';
-import { UPDATE_CONTACT_GROUPS } from '../../../../graphql/mutations/Group';
-import { GET_CONTACT_GROUPS } from '../../../../graphql/queries/Contact';
+import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
+import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
+import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
 import { GET_FLOWS } from '../../../../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT } from '../../../../graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../../../../graphql/mutations/Flow';
 import { UPDATE_CONTACT } from '../../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../../graphql/queries/Search';
-import { setNotification } from '../../../../common/notification';
+import { setErrorMessage, setNotification } from '../../../../common/notification';
 import {
   FLOW_STATUS_PUBLISHED,
   is24HourWindowOver,
@@ -48,11 +48,12 @@ import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 
 export interface ContactBarProps {
-  contactName: string;
-  contactId: string;
-  lastMessageTime: any;
-  contactStatus: string;
-  contactBspStatus: string;
+  displayName: string;
+  contactId?: string;
+  collectionId?: string;
+  lastMessageTime?: any;
+  contactStatus?: string;
+  contactBspStatus?: string;
   handleAction?: any;
   isSimulator?: boolean;
 }
@@ -60,23 +61,24 @@ export interface ContactBarProps {
 export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const {
     contactId,
+    collectionId,
     contactBspStatus,
     lastMessageTime,
     contactStatus,
-    contactName,
+    displayName,
     isSimulator,
   } = props;
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
-  const [showGroupDialog, setShowGroupDialog] = useState(false);
+  const [showCollectionDialog, setShowCollectionDialog] = useState(false);
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
 
-  // get group list
-  const [getGroups, { data: groupsData }] = useLazyQuery(GET_GROUPS, {
+  // get collection list
+  const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
     variables: setVariables(),
   });
 
@@ -88,32 +90,34 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
 
-  // get contact groups
-  const [getContactGroups, { data }] = useLazyQuery(GET_CONTACT_GROUPS, {
+  // get contact collections
+  const [getContactCollections, { data }] = useLazyQuery(GET_CONTACT_COLLECTIONS, {
     variables: { id: contactId },
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
-    getContactGroups();
-  }, []);
+    if (contactId) {
+      getContactCollections();
+    }
+  }, [contactId]);
 
-  // mutation to update the contact groups
-  const [updateContactGroups] = useMutation(UPDATE_CONTACT_GROUPS, {
+  // mutation to update the contact collections
+  const [updateContactCollections] = useMutation(UPDATE_CONTACT_COLLECTIONS, {
     onCompleted: (result: any) => {
       const { numberDeleted, contactGroups } = result.updateContactGroups;
       const numberAdded = contactGroups.length;
-      let notification = `Added to ${numberAdded} group${numberAdded === 1 ? '' : 's'}`;
+      let notification = `Added to ${numberAdded} collection${numberAdded === 1 ? '' : 's'}`;
       if (numberDeleted > 0 && numberAdded > 0) {
-        notification = `Added to ${numberDeleted} group${
+        notification = `Added to ${numberDeleted} collection${
           numberDeleted === 1 ? '' : 's  and'
-        } removed from ${numberAdded} group${numberAdded === 1 ? '' : 's '}`;
+        } removed from ${numberAdded} collection${numberAdded === 1 ? '' : 's '}`;
       } else if (numberDeleted > 0) {
-        notification = `Removed from ${numberDeleted} group${numberDeleted === 1 ? '' : 's'}`;
+        notification = `Removed from ${numberDeleted} collection${numberDeleted === 1 ? '' : 's'}`;
       }
       setNotification(client, notification);
     },
-    refetchQueries: [{ query: GET_CONTACT_GROUPS, variables: { id: contactId } }],
+    refetchQueries: [{ query: GET_CONTACT_COLLECTIONS, variables: { id: contactId } }],
   });
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
@@ -125,7 +129,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
-      setShowFlowDialog(false);
+      setNotification(client, 'Flow started successfully');
+    },
+    onError: (error) => {
+      setErrorMessage(client, error);
+    },
+  });
+
+  const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
+    onCompleted: () => {
       setNotification(client, 'Flow started successfully');
     },
   });
@@ -139,31 +151,31 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     },
   });
 
-  let groupOptions = [];
+  let collectionOptions = [];
   let flowOptions = [];
-  let initialSelectedGroupIds: Array<any> = [];
-  let selectedGroupsName = [];
-  let assignedToGroup: any = [];
+  let initialSelectedCollectionIds: Array<any> = [];
+  let selectedCollectionsName = [];
+  let assignedToCollection: any = [];
 
   if (data) {
-    initialSelectedGroupIds = data.contact.contact.groups.map((group: any) => group.id);
-    selectedGroupsName = data.contact.contact.groups.map((group: any) => group.label);
-    assignedToGroup = data.contact.contact.groups.map((group: any) =>
+    initialSelectedCollectionIds = data.contact.contact.groups.map((group: any) => group.id);
+    selectedCollectionsName = data.contact.contact.groups.map((group: any) => group.label);
+    assignedToCollection = data.contact.contact.groups.map((group: any) =>
       group.users.map((user: any) => user.name)
     );
 
-    assignedToGroup = Array.from(new Set([].concat(...assignedToGroup)));
-    if (assignedToGroup.length > 2) {
-      assignedToGroup = `${assignedToGroup.slice(0, 2).join(', ')} +${(
-        assignedToGroup.length - 2
+    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
+    if (assignedToCollection.length > 2) {
+      assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
+        assignedToCollection.length - 2
       ).toString()}`;
     } else {
-      assignedToGroup = assignedToGroup.join(', ');
+      assignedToCollection = assignedToCollection.join(', ');
     }
   }
 
-  if (groupsData) {
-    groupOptions = groupsData.groups;
+  if (collectionsData) {
+    collectionOptions = collectionsData.groups;
   }
 
   if (flowsData) {
@@ -172,52 +184,65 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   let dialogBox = null;
 
-  const handleGroupDialogOk = (selectedGroupIds: any) => {
-    const finalSelectedGroups = selectedGroupIds.filter(
-      (groupId: any) => !initialSelectedGroupIds.includes(groupId)
+  const handleCollectionDialogOk = (selectedCollectionIds: any) => {
+    const finalSelectedCollections = selectedCollectionIds.filter(
+      (selectedCollectionId: any) => !initialSelectedCollectionIds.includes(selectedCollectionId)
     );
-    const finalRemovedGroups = initialSelectedGroupIds.filter(
-      (groupId: any) => !selectedGroupIds.includes(groupId)
+    const finalRemovedCollections = initialSelectedCollectionIds.filter(
+      (gId: any) => !selectedCollectionIds.includes(gId)
     );
 
-    if (finalSelectedGroups.length > 0 || finalRemovedGroups.length > 0) {
-      updateContactGroups({
+    if (finalSelectedCollections.length > 0 || finalRemovedCollections.length > 0) {
+      updateContactCollections({
         variables: {
           input: {
             contactId: props.contactId,
-            addGroupIds: finalSelectedGroups,
-            deleteGroupIds: finalRemovedGroups,
+            addGroupIds: finalSelectedCollections,
+            deleteGroupIds: finalRemovedCollections,
           },
         },
       });
     }
 
-    setShowGroupDialog(false);
+    setShowCollectionDialog(false);
   };
 
-  const handleGroupDialogCancel = () => {
-    setShowGroupDialog(false);
+  const handleCollectionDialogCancel = () => {
+    setShowCollectionDialog(false);
   };
 
-  if (showGroupDialog) {
+  if (showCollectionDialog) {
     dialogBox = (
       <SearchDialogBox
-        selectedOptions={initialSelectedGroupIds}
-        title="Add contact to group"
-        handleOk={handleGroupDialogOk}
-        handleCancel={handleGroupDialogCancel}
-        options={groupOptions}
+        selectedOptions={initialSelectedCollectionIds}
+        title="Add contact to collection"
+        handleOk={handleCollectionDialogOk}
+        handleCancel={handleCollectionDialogCancel}
+        options={collectionOptions}
       />
     );
   }
 
   const handleFlowSubmit = (flowId: any) => {
-    addFlow({
-      variables: {
-        flowId,
-        contactId: props.contactId,
-      },
-    });
+    const flowVariables: any = {
+      flowId,
+    };
+
+    if (props.contactId) {
+      flowVariables.contactId = props.contactId;
+      addFlow({
+        variables: flowVariables,
+      });
+    }
+
+    if (props.collectionId) {
+      flowVariables.groupId = props.collectionId;
+      addFlowToCollection({
+        variables: flowVariables,
+      });
+    }
+
+    setShowFlowDialog(false);
   };
 
   const closeFlowDialogBox = () => {
@@ -289,7 +314,21 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   let flowButton: any;
-  if (
+  if (collectionId) {
+    flowButton = (
+      <Button
+        data-testid="flowButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getFlows();
+          setShowFlowDialog(true);
+        }}
+      >
+        <FlowIcon className={styles.Icon} />
+        Start a flow
+      </Button>
+    );
+  } else if (
     (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
     !is24HourWindowOver(lastMessageTime)
   ) {
@@ -337,55 +376,64 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            <Button
-              className={styles.ListButtonPrimary}
-              disabled={isSimulator}
-              onClick={() => {
-                history.push(`/contact-profile/${props.contactId}`);
-              }}
-            >
-              {isSimulator ? (
-                <ProfileDisabledIcon className={styles.Icon} />
-              ) : (
-                <ProfileIcon className={styles.Icon} />
-              )}
-              View contact profile
-            </Button>
-
+            {contactId ? (
+              <Button
+                className={styles.ListButtonPrimary}
+                disabled={isSimulator}
+                onClick={() => {
+                  history.push(`/contact-profile/${props.contactId}`);
+                }}
+              >
+                {isSimulator ? (
+                  <ProfileDisabledIcon className={styles.Icon} />
+                ) : (
+                  <ProfileIcon className={styles.Icon} />
+                )}
+                View contact profile
+              </Button>
+            ) : (
+              ''
+            )}
             {flowButton}
-            <Button
-              data-testid="groupButton"
-              className={styles.ListButtonPrimary}
-              onClick={() => {
-                getGroups();
-                setShowGroupDialog(true);
-              }}
-            >
-              <AddContactIcon className={styles.Icon} />
-              Add to group
-            </Button>
-            <Button
-              className={styles.ListButtonPrimary}
-              data-testid="clearChatButton"
-              onClick={() => setClearChatDialog(true)}
-            >
-              <ClearConversation className={styles.Icon} />
-              Clear conversation
-            </Button>
-            <Button
-              data-testid="blockButton"
-              className={styles.ListButtonDanger}
-              color="secondary"
-              disabled={isSimulator}
-              onClick={() => setShowBlockDialog(true)}
-            >
-              {isSimulator ? (
-                <BlockDisabledIcon className={styles.Icon} />
-              ) : (
-                <BlockIcon className={styles.Icon} />
-              )}
-              Block Contact
-            </Button>
+            {contactId ? (
+              <>
+                <Button
+                  data-testid="collectionButton"
+                  className={styles.ListButtonPrimary}
+                  onClick={() => {
+                    getCollections();
+                    setShowCollectionDialog(true);
+                  }}
+                >
+                  <AddContactIcon className={styles.Icon} />
+                  Add to collection
+                </Button>
+                <Button
+                  className={styles.ListButtonPrimary}
+                  data-testid="clearChatButton"
+                  onClick={() => setClearChatDialog(true)}
+                >
+                  <ClearConversation className={styles.Icon} />
+                  Clear conversation
+                </Button>
+                <Button
+                  data-testid="blockButton"
+                  className={styles.ListButtonDanger}
+                  color="secondary"
+                  disabled={isSimulator}
+                  onClick={() => setShowBlockDialog(true)}
+                >
+                  {isSimulator ? (
+                    <BlockDisabledIcon className={styles.Icon} />
+                  ) : (
+                    <BlockIcon className={styles.Icon} />
+                  )}
+                  Block Contact
+                </Button>
+              </>
+            ) : (
+              ''
+            )}
           </Paper>
         </Fade>
       )}
@@ -396,47 +444,51 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  let contactGroups: any;
-  if (selectedGroupsName.length > 0) {
-    contactGroups = (
-      <div className={styles.ContactGroups}>
-        <span className={styles.GroupHeading}>Groups</span>
-        <span className={styles.GroupsName} data-testid="groupNames">
-          {selectedGroupsName.map((groupName: string) => groupName).join(', ')}
+  let contactCollections: any;
+  if (selectedCollectionsName.length > 0) {
+    contactCollections = (
+      <div className={styles.ContactCollections}>
+        <span className={styles.CollectionHeading}>Collections</span>
+        <span className={styles.CollectionsName} data-testid="collectionNames">
+          {selectedCollectionsName.map((collectionName: string) => collectionName).join(', ')}
         </span>
       </div>
     );
   }
 
-  const sesssionAndGroupAssignedTo = (
-    <>
-      <div className={styles.SessionTimerContainer}>
-        <div className={styles.SessionTimer} data-testid="sessionTimer">
-          <span>Session Timer</span>
-          <Timer
-            time={lastMessageTime}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
+  let sesssionAndCollectionAssignedTo;
+  if (contactId) {
+    sesssionAndCollectionAssignedTo = (
+      <>
+        <div className={styles.SessionTimerContainer}>
+          <div className={styles.SessionTimer} data-testid="sessionTimer">
+            <span>Session Timer</span>
+            <Timer
+              time={lastMessageTime}
+              contactStatus={contactStatus}
+              contactBspStatus={contactBspStatus}
+            />
+          </div>
+          <div>
+            {assignedToCollection ? (
+              <>
+                <span className={styles.CollectionHeading}>Assigned to</span>
+                <span className={styles.CollectionsName}>{assignedToCollection}</span>
+              </>
+            ) : null}
+          </div>
         </div>
-        <div>
-          {assignedToGroup ? (
-            <>
-              <span className={styles.GroupHeading}>Assigned to</span>
-              <span className={styles.GroupsName}>{assignedToGroup}</span>
-            </>
-          ) : null}
-        </div>
-      </div>
-      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-        <IconButton className={styles.MobileIcon}>
-          <ChatIcon />
-        </IconButton>
+        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+          <IconButton className={styles.MobileIcon}>
+            <ChatIcon />
+          </IconButton>
 
-        <div className={styles.TitleText}>Chats</div>
-      </div>
-    </>
-  );
+          <div className={styles.TitleText}>Chats</div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div className={styles.MobileHeader}>
@@ -447,7 +499,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <div>
           <div className={styles.ContactDetails}>
             <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-              {contactName}
+              {displayName}
             </Typography>
             <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
               <div className={styles.Configure} data-testid="dropdownIcon">
@@ -455,9 +507,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               </div>
             </ClickAwayListener>
           </div>
-          {contactGroups}
+          {contactCollections}
         </div>
-        {sesssionAndGroupAssignedTo}
+        {sesssionAndCollectionAssignedTo}
       </div>
       {popper}
       {dialogBox}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, wait } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';

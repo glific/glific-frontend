@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 const menuList = [
   {
     title: 'My Account',
-    path: '/group',
+    path: '/collection',
   },
 ];
 

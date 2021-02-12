@@ -1,4 +1,4 @@
-import { GET_GROUPS } from '../../graphql/queries/Group';
+import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { FILTER_TAGS_NAME, GET_TAGS } from '../../graphql/queries/Tag';
 import { GET_LANGUAGES } from '../../graphql/queries/List';
 import { GET_USERS } from '../../graphql/queries/User';
@@ -19,7 +19,7 @@ export const LIST_ITEM_MOCKS = [
   getSearch,
   {
     request: {
-      query: GET_GROUPS,
+      query: GET_COLLECTIONS,
       variables: setVariables(),
     },
     result: {

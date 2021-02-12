@@ -12,6 +12,10 @@ export const SEARCH_QUERY = gql`
         status
         bspStatus
       }
+      group {
+        id
+        label
+      }
       messages {
         id
         body
@@ -156,6 +160,7 @@ export const SEARCH_LIST_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
       count
     }
