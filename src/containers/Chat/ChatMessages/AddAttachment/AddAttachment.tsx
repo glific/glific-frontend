@@ -41,7 +41,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
         return null;
       });
     }
-    return true;
+    return null;
   };
 
   const input = {
