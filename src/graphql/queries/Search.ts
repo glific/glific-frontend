@@ -160,6 +160,7 @@ export const SEARCH_LIST_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
       count
     }

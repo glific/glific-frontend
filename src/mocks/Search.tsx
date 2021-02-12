@@ -68,6 +68,7 @@ export const getSearchesQuery = [
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
+            isReserved: false,
             label: 'Test search',
             shortcode: 'Save Search',
           },
@@ -85,6 +86,7 @@ export const getSearchesQuery = [
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
+            isReserved: false,
             label: 'Test search',
             shortcode: 'Save Search',
           },
