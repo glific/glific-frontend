@@ -96,7 +96,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />
           </div>
-          {media.caption}
+          <MessagesWithLinks message={media.caption} />
         </div>
       );
       break;
