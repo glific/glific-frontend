@@ -26,29 +26,29 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
-// show conversation load more if count is greater than below
-export const SHOW_CONVERSATION_LOAD_MORE = 24;
+// default contact limit for search
+export const DEFAULT_CONTACT_LIMIT = 24;
 
-// show message load more if count is greater than below
-export const SHOW_MESSAGE_LOAD_MORE = 19;
+// default message limit for search
+export const DEFAULT_MESSAGE_LIMIT = 19;
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 25,
+    limit: DEFAULT_CONTACT_LIMIT,
   },
   filter: {},
   messageOpts: {
-    limit: 20,
+    limit: DEFAULT_MESSAGE_LIMIT,
   },
 };
 
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 25,
+    limit: DEFAULT_CONTACT_LIMIT,
   },
   filter: { searchGroup: true },
   messageOpts: {
-    limit: 20,
+    limit: DEFAULT_MESSAGE_LIMIT,
   },
 };
 

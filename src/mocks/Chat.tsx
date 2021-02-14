@@ -11,7 +11,11 @@ import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
 import { filterTagsQuery, getTagsQuery } from './Tag';
 import { contactCollectionsQuery } from './Contact';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
-import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
+import {
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  SEARCH_QUERY_VARIABLES as queryVariables,
+} from '../common/constants';
 import { getOrganizationLanguagesQuery } from './Organization';
 
 const getConversationQuery = (data: any) => {
@@ -30,8 +34,8 @@ const conversationMessageQuery = (
   contactId: any,
   contactName: string,
   contactNumber: string,
-  contactLimit: number = 25,
-  messageLimit: object = { limit: 20 }
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -90,8 +94,8 @@ const conversationMessageQuery = (
 const conversationCollectionQuery = (
   collectionId: any,
   collectionName: string,
-  contactLimit: number = 25,
-  messageLimit: object = { limit: 20 }
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -348,8 +352,8 @@ export const conversationQuery = getConversationQuery({
 
 export const searchMultiQuery = (
   term: string = '',
-  contactLimit: number = 25,
-  messageLimit: number = 20
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
 ) => {
   return {
     request: {
@@ -463,9 +467,16 @@ export const CONVERSATION_MOCKS = [
   deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 25, { limit: 20 }),
-  conversationMessageQuery('3', 'Jane Monroe', '919090709009', 25, { limit: 20 }),
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 20, offset: 0 }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  }),
+  conversationMessageQuery('3', 'Jane Monroe', '919090709009', DEFAULT_CONTACT_LIMIT, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+    offset: 0,
+  }),
   conversationCollectionQuery('2', 'Default collection'),
 ];
 
@@ -678,7 +689,11 @@ const searchQueryResult = {
 export const searchQuerywithFilter = {
   request: {
     query: SEARCH_QUERY,
-    variables: { contactOpts: { limit: 25 }, filter: { id: '2' }, messageOpts: { limit: 20 } },
+    variables: {
+      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      filter: { id: '2' },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
   },
   result: searchQueryResult,
 };
@@ -687,9 +702,9 @@ export const searchQuerywithFilterOffset = {
   request: {
     query: SEARCH_QUERY,
     variables: {
-      contactOpts: { limit: 25 },
+      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
       filter: { id: '2' },
-      messageOpts: { limit: 20, offset: 20 },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: DEFAULT_MESSAGE_LIMIT },
     },
   },
   result: searchQueryResult,

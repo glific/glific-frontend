@@ -17,7 +17,8 @@ import { setErrorMessage } from '../../../../common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
-  SHOW_CONVERSATION_LOAD_MORE,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -44,7 +45,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
-  const [loadingOffset, setLoadingOffset] = useState(25);
+  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
@@ -118,11 +119,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
     return {
       contactOpts: {
-        limit: 25,
+        limit: DEFAULT_CONTACT_LIMIT,
       },
       filter,
       messageOpts: {
-        limit: 20,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
   };
@@ -130,14 +131,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const filterSearch = () => {
     return {
       contactOpts: {
+        limit: DEFAULT_CONTACT_LIMIT,
         order: 'DESC',
-        limit: 25,
       },
       searchFilter: {
         term: props.searchVal,
       },
       messageOpts: {
-        limit: 20,
+        limit: DEFAULT_MESSAGE_LIMIT,
         order: 'ASC',
       },
     };
@@ -160,7 +161,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     let offsetValue = 0;
     if (offset.data) {
-      offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
+      offsetValue = offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0 ? 0 : offset.data.offset - 10; // calculate offset
     }
     if (offsetValue) {
       let loadMoreVariables;
@@ -173,7 +174,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             id: selectedContactId,
           },
           messageOpts: {
-            limit: 20,
+            limit: DEFAULT_MESSAGE_LIMIT,
             offset: offsetValue,
           },
         };
@@ -187,7 +188,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             searchGroup: true,
           },
           messageOpts: {
-            limit: 20,
+            limit: DEFAULT_MESSAGE_LIMIT,
             offset: offsetValue,
           },
         };
@@ -402,7 +403,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       },
       filter: {},
       messageOpts: {
-        limit: 20,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
 
@@ -452,7 +453,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-          {showLoadMore && conversations.length > SHOW_CONVERSATION_LOAD_MORE ? (
+          {showLoadMore && conversations.length > DEFAULT_CONTACT_LIMIT - 1 ? (
             <div className={styles.LoadMore}>
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />
