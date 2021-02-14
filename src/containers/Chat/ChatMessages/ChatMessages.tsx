@@ -17,6 +17,7 @@ import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -392,7 +393,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     const variables: any = {
       contactOpts: { limit: 1 },
       filter: { id: contactId?.toString() },
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
+      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
     };
 
     if (collectionId) {
@@ -402,7 +403,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       variables: {
         filter: { id: contactId?.toString() },
         contactOpts: { limit: 1 },
-        messageOpts: { limit: 20, offset: messageOffset },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
       },
     });
     const messageContainer = document.querySelector('.messageContainer');

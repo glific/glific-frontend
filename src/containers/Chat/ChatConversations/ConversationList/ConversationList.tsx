@@ -19,6 +19,7 @@ import {
   SEARCH_QUERY_VARIABLES,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
+  DEFAULT_CONTACT_LOADMORE_LIMIT,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -152,7 +153,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         // save the conversation and update cache
         updateConversations(searchData, client, queryVariables);
 
-        setLoadingOffset(loadingOffset + 10);
+        setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
       }
     },
   });
@@ -161,7 +162,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     let offsetValue = 0;
     if (offset.data) {
-      offsetValue = offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0 ? 0 : offset.data.offset - 10; // calculate offset
+      offsetValue =
+        offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0
+          ? 0
+          : offset.data.offset - DEFAULT_CONTACT_LOADMORE_LIMIT; // calculate offset
     }
     if (offsetValue) {
       let loadMoreVariables;
@@ -398,7 +402,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const loadMoreMessages = () => {
     const conversationLoadMoreVariables = {
       contactOpts: {
-        limit: 10,
+        limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
         offset: loadingOffset,
       },
       filter: {},

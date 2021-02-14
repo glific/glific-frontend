@@ -27,10 +27,16 @@ export const CONTACT_STATUS = [
 ];
 
 // default contact limit for search
-export const DEFAULT_CONTACT_LIMIT = 24;
+export const DEFAULT_CONTACT_LIMIT = 25;
+
+// load more contact limit
+export const DEFAULT_CONTACT_LOADMORE_LIMIT = 10;
 
 // default message limit for search
-export const DEFAULT_MESSAGE_LIMIT = 19;
+export const DEFAULT_MESSAGE_LIMIT = 20;
+
+// load more message limit
+export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 10;
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
