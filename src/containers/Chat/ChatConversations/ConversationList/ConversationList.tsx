@@ -448,7 +448,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-          {showLoadMore && conversations.length > 19 ? (
+          {showLoadMore && conversations.length > 24 ? (
             <div className={styles.LoadMore}>
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />
