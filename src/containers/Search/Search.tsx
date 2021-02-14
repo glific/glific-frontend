@@ -123,9 +123,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
   const restoreSearch = () => {
     const args = {
-      messageOpts: {
+      contactOpts: {
         offset: 0,
-        limit: 10,
+        limit: 25,
       },
       filter: {
         term: props.searchParam.term,
@@ -139,7 +139,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           ? props.searchParam.includeUsers.map((option: any) => option.id)
           : [],
       },
-      contactOpts: {
+      messageOpts: {
         offset: 0,
         limit: 20,
       },
@@ -274,9 +274,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     if (search) search(payload);
 
     const args = {
-      messageOpts: {
+      contactOpts: {
         offset: 0,
-        limit: 10,
+        limit: 25,
       },
       filter: {
         term: payload.term,
@@ -288,7 +288,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           ? payload.includeUsers.map((option: any) => option.id)
           : [],
       },
-      contactOpts: {
+      messageOpts: {
         offset: 0,
         limit: 20,
       },
