@@ -15,6 +15,7 @@ import {
   SEARCH_QUERY_VARIABLES,
   setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
+  SHOW_MESSAGE_LOAD_MORE,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -419,7 +420,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > 19 ? (
+        {showLoadMore && conversationInfo.messages.length > SHOW_MESSAGE_LOAD_MORE ? (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />

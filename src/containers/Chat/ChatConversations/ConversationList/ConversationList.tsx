@@ -17,6 +17,7 @@ import { setErrorMessage } from '../../../../common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
+  SHOW_CONVERSATION_LOAD_MORE,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -126,16 +127,16 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   const filterSearch = () => {
     return {
+      contactOpts: {
+        order: 'DESC',
+        limit: 25,
+      },
       searchFilter: {
         term: props.searchVal,
       },
       messageOpts: {
         limit: 20,
         order: 'ASC',
-      },
-      contactOpts: {
-        order: 'DESC',
-        limit: 25,
       },
     };
   };
@@ -448,7 +449,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-          {showLoadMore && conversations.length > 24 ? (
+          {showLoadMore && conversations.length > SHOW_CONVERSATION_LOAD_MORE ? (
             <div className={styles.LoadMore}>
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />

@@ -26,6 +26,12 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
+// show conversation load more if count is greater than below
+export const SHOW_CONVERSATION_LOAD_MORE = 24;
+
+// show message load more if count is greater than below
+export const SHOW_MESSAGE_LOAD_MORE = 19;
+
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
     limit: 25,
