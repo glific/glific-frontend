@@ -129,11 +129,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         getContactQuery({
           variables: {
             contactOpts: {
-              limit: 50,
+              limit: 25,
             },
             filter: { id: contactId },
             messageOpts: {
-              limit: 50,
+              limit: 20,
             },
           },
         });

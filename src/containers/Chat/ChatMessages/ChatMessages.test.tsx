@@ -11,8 +11,8 @@ export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    contactOpts: { limit: 25 },
+    messageOpts: { limit: 20 },
   },
   data: {
     search: [
@@ -63,8 +63,8 @@ cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
     filter: { searchGroup: true },
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    contactOpts: { limit: 25 },
+    messageOpts: { limit: 20 },
   },
   data: {
     search: [

@@ -41,7 +41,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
-  const [loadingOffset, setLoadingOffset] = useState(50);
+  const [loadingOffset, setLoadingOffset] = useState(25);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
@@ -114,12 +114,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     return {
+      contactOpts: {
+        limit: 25,
+      },
       filter,
       messageOpts: {
-        limit: 50,
-      },
-      contactOpts: {
-        limit: 50,
+        limit: 20,
       },
     };
   };
@@ -130,12 +130,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         term: props.searchVal,
       },
       messageOpts: {
-        limit: 50,
+        limit: 20,
         order: 'ASC',
       },
       contactOpts: {
         order: 'DESC',
-        limit: 50,
+        limit: 25,
       },
     };
   };
@@ -170,7 +170,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             id: selectedContactId,
           },
           messageOpts: {
-            limit: 50,
+            limit: 20,
             offset: offsetValue,
           },
         };
@@ -184,7 +184,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             searchGroup: true,
           },
           messageOpts: {
-            limit: 50,
+            limit: 20,
             offset: offsetValue,
           },
         };
@@ -398,7 +398,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       },
       filter: {},
       messageOpts: {
-        limit: 50,
+        limit: 20,
       },
     };
 
@@ -448,7 +448,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-          {showLoadMore && conversations.length > 49 ? (
+          {showLoadMore && conversations.length > 19 ? (
             <div className={styles.LoadMore}>
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />

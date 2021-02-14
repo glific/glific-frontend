@@ -9,9 +9,9 @@ const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
+    contactOpts: { limit: 25 },
     filter: { searchGroup: true },
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    messageOpts: { limit: 20 },
   },
   data: {
     search: [

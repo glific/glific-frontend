@@ -28,21 +28,21 @@ export const CONTACT_STATUS = [
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 50,
+    limit: 25,
   },
   filter: {},
   messageOpts: {
-    limit: 50,
+    limit: 20,
   },
 };
 
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 50,
+    limit: 25,
   },
   filter: { searchGroup: true },
   messageOpts: {
-    limit: 50,
+    limit: 20,
   },
 };
 

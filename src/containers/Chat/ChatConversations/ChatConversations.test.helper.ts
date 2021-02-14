@@ -68,22 +68,26 @@ const searchQuery = (
 };
 
 export const chatConversationsMocks = [
-  searchQuery({ limit: 50 }, 50, {}),
-  searchQuery({ limit: 50 }, 50, { term: 'a' }, false),
-  searchQuery({ limit: 50 }, 50, { term: '' }),
-  searchQuery({ limit: 5 }, 10, { includeTags: ['12'] }, false),
-  searchQuery({ limit: 50 }, 1, {}, false),
-  searchQuery({ limit: 50, offset: 0 }, 1, { id: '6' }, false),
+  searchQuery({ limit: 25 }, 20, {}),
+  searchQuery({ limit: 25 }, 20, { term: 'a' }, false),
+  searchQuery({ limit: 25 }, 20, { term: '' }),
+  searchQuery({ limit: 25 }, 20, { includeTags: ['12'] }, false),
+  searchQuery({ limit: 25 }, 1, {}, false),
+  searchQuery({ limit: 25, offset: 0 }, 1, { id: '6' }, false),
 ];
 
-export const searchMultiQuery = (term: string = '', limit: number = 50) => {
+export const searchMultiQuery = (
+  term: string = '',
+  contactLimit: number = 25,
+  messageLimit: number = 20
+) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
       variables: {
+        contactOpts: { order: 'DESC', contactLimit },
         searchFilter: { term },
-        messageOpts: { limit, order: 'ASC' },
-        contactOpts: { order: 'DESC', limit },
+        messageOpts: { messageLimit, order: 'ASC' },
       },
     },
     result: {
@@ -208,5 +212,5 @@ export const ChatConversationMocks = [
   searchOffset,
 ];
 
-export const searchQueryMock = searchQuery({ limit: 50 }, 50, { term: '' });
-export const searchQueryEmptyMock = searchQuery({ limit: 50 }, 50, {});
+export const searchQueryMock = searchQuery({ limit: 25 }, 20, { term: '' });
+export const searchQueryEmptyMock = searchQuery({ limit: 25 }, 20, {});

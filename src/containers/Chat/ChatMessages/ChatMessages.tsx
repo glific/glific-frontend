@@ -49,7 +49,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(50);
+  const [messageOffset, setMessageOffset] = useState(20);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         } else {
-          setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + 20);
         }
       }
     },
@@ -261,8 +261,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 200, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: 25 },
+            messageOpts: { limit: 20, offset: 0 },
           },
         });
       }
@@ -286,8 +286,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: collectionId, searchGroup: true },
-            messageOpts: { limit: 50, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: 25 },
+            messageOpts: { limit: 20, offset: 0 },
           },
         });
       }
@@ -388,9 +388,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const loadMoreMessages = () => {
     const variables: any = {
-      filter: { id: contactId?.toString() },
-      messageOpts: { limit: 50, offset: messageOffset },
       contactOpts: { limit: 1 },
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: 20, offset: messageOffset },
     };
 
     if (collectionId) {
@@ -399,8 +399,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     getSearchQuery({
       variables: {
         filter: { id: contactId?.toString() },
-        messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
+        messageOpts: { limit: 20, offset: messageOffset },
       },
     });
     const messageContainer = document.querySelector('.messageContainer');
@@ -419,7 +419,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > 49 ? (
+        {showLoadMore && conversationInfo.messages.length > 19 ? (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
