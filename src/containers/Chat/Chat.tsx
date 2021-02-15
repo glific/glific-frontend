@@ -22,7 +22,7 @@ export interface ChatProps {
 
 export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
-  const [showSimulator, setShowSimulator] = useState(false);
+
   const [simulatorId, setSimulatorId] = useState(0);
 
   let selectedContactId = contactId;
@@ -92,7 +92,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
       // let's enable simulator only when contact tab is shown
 
       listingContent = (
-        <ChatConversations contactId={simulatorId ? simulatorId : selectedContactId} />
+        <ChatConversations contactId={simulatorId > 0 ? simulatorId : selectedContactId} />
       );
 
       // set class for contacts tab
@@ -103,7 +103,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
-            contactId={simulatorId ? simulatorId : selectedContactId}
+            contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
         </div>
@@ -142,11 +142,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
         {chatInterface}
       </div>
       {simulatorAccess && !selectedCollectionId ? (
-        <Simulator
-          setShowSimulator={setShowSimulator}
-          setSimulatorId={setSimulatorId}
-          showSimulator={showSimulator}
-        />
+        <Simulator setSimulatorId={setSimulatorId} showSimulator={simulatorId > 0} />
       ) : null}
     </Paper>
   );

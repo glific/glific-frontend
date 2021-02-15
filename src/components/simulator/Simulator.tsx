@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -23,23 +23,24 @@ import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
+import { getUserSession } from '../../services/AuthService';
 
 export interface SimulatorProps {
   showSimulator: boolean;
-  setShowSimulator: any;
-  setSimulatorId?: any;
+  setSimulatorId: any;
   simulatorIcon?: boolean;
   message?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
-  setShowSimulator,
   setSimulatorId,
   simulatorIcon = true,
   message = {},
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
+  const variables = { organizationId: getUserSession('organizationId') };
 
   let messages = [];
   let simulatorId = '';
@@ -49,11 +50,20 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'cache-only',
   });
 
+  const { data: simulator1 }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    variables,
+  });
+
+  useEffect(() => {
+    console.log(simulator1);
+    if (simulator1) {
+      setSimulatorId(0);
+    }
+  }, [simulator1]);
+
   const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
     fetchPolicy: 'network-only',
     onCompleted: (data1) => {
-      setShowSimulator(true);
-      console.log(data1);
       setSimulatorId(data1.simulatorGet.id);
     },
   });
@@ -79,7 +89,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const releaseUserSimulator = () => {
     releaseSimulator();
-    setShowSimulator(false);
+    setSimulatorId(0);
   };
 
   const renderMessage = (

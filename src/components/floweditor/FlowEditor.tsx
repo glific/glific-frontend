@@ -142,7 +142,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
-  const [showSimulator, setShowSimulator] = useState(false);
+  const [simulatorId, setSimulatorId] = useState(0);
+
   const config = setConfig(uuid);
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: () => {
@@ -308,15 +309,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
           data-testid="previewButton"
           className={styles.Button}
           onClick={() => {
-            setShowSimulator(!showSimulator);
+            setSimulatorId(0);
           }}
         >
           Preview
-          {showSimulator ? (
+          {simulatorId > 0 ? (
             <CancelOutlinedIcon
               className={styles.CrossIcon}
               onClick={() => {
-                setShowSimulator(false);
+                setSimulatorId(0);
               }}
             />
           ) : null}
@@ -331,10 +332,10 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      {showSimulator ? (
+      {simulatorId > 0 ? (
         <Simulator
-          showSimulator={showSimulator}
-          setShowSimulator={setShowSimulator}
+          showSimulator={simulatorId > 0}
+          setSimulatorId={setSimulatorId}
           message={{ type: 'draft', keyword: flowKeyword }}
         />
       ) : null}
