@@ -1,5 +1,6 @@
 import { CREATE_SEARCH } from '../graphql/mutations/Search';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT, GET_SEARCH } from '../graphql/queries/Search';
+import { COLLECTION_COUNT_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
 
 export const createSearchQuery = {
   request: {
@@ -64,7 +65,6 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            count: 4,
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
@@ -81,7 +81,6 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            count: 4,
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
@@ -107,12 +106,23 @@ export const getSearch = {
         savedSearch: {
           args:
             '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-          count: 0,
           id: '1',
           label: 'Test search',
           shortcode: 'Save Search collection',
         },
       },
+    },
+  },
+};
+
+export const collectionCountSubscription = {
+  request: {
+    query: COLLECTION_COUNT_SUBSCRIPTION,
+    variables: { organizationId: null },
+  },
+  result: {
+    data: {
+      collectionCount: `{"collection":{"All":5}}`,
     },
   },
 };

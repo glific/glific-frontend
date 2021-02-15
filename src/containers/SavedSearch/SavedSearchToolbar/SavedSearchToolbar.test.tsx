@@ -3,8 +3,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import SavedSearchToolbar from './SavedSearchToolbar';
 import { savedSearchQuery } from '../../../mocks/Chat';
+import { collectionCountSubscription } from '../../../mocks/Search';
 
-const mocks = [savedSearchQuery];
+const mocks = [savedSearchQuery, collectionCountSubscription];
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {

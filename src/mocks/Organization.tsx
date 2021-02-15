@@ -5,7 +5,7 @@ import {
   GET_CREDENTIAL,
   BSPBALANCE,
 } from '../graphql/queries/Organization';
-import PERIODIC_INFO_SUBSCRIPTION from '../graphql/subscriptions/PeriodicInfo';
+import { BSP_BALANCE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
 
 export const getOrganizationQuery = [
   {
@@ -394,7 +394,7 @@ export const getOrganizationLanguagesQueryByOrder = {
 export const walletBalanceSubscription = [
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: null },
     },
     result: {
@@ -405,7 +405,7 @@ export const walletBalanceSubscription = [
   },
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: '1' },
     },
     result: {
@@ -419,7 +419,7 @@ export const walletBalanceSubscription = [
 export const walletBalanceHighSubscription = [
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: null },
     },
     result: {
@@ -430,7 +430,7 @@ export const walletBalanceHighSubscription = [
   },
   {
     request: {
-      query: PERIODIC_INFO_SUBSCRIPTION,
+      query: BSP_BALANCE_SUBSCRIPTION,
       variables: { organizationId: '1' },
     },
     result: {

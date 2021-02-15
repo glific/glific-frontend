@@ -7,7 +7,7 @@ import { ReactComponent as WhiteIcon } from '../../assets/images/icons/White.svg
 import { ReactComponent as SelectWhiteIcon } from '../../assets/images/icons/SelectWhite.svg';
 import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from '../../graphql/queries/Organization';
-import PERIODIC_INFO_SUBSCRIPTION from '../../graphql/subscriptions/PeriodicInfo';
+import { BSP_BALANCE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 
 export interface WalletBalanceProps {
@@ -34,14 +34,12 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   useEffect(() => {
     if (subscribeToMore) {
       subscribeToMore({
-        document: PERIODIC_INFO_SUBSCRIPTION,
+        document: BSP_BALANCE_SUBSCRIPTION,
         variables,
         updateQuery: (prev, { subscriptionData }) => {
-          if (subscriptionData.data.periodicInfo) {
-            const balance = JSON.parse(subscriptionData.data.periodicInfo);
-            if (balance.balance !== undefined) {
-              setDisplayBalance(balance.balance);
-            }
+          if (subscriptionData.data.bspBalance) {
+            const balance = JSON.parse(subscriptionData.data.bspBalance);
+            setDisplayBalance(balance.balance);
           }
         },
       });

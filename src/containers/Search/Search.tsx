@@ -17,7 +17,7 @@ import { GET_USERS } from '../../graphql/queries/User';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { setVariables } from '../../common/constants';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from '../../common/constants';
 import { getObject } from '../../common/utils';
 
 export interface SearchProps {
@@ -123,9 +123,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
   const restoreSearch = () => {
     const args = {
-      messageOpts: {
+      contactOpts: {
         offset: 0,
-        limit: 10,
+        limit: DEFAULT_CONTACT_LIMIT,
       },
       filter: {
         term: props.searchParam.term,
@@ -139,9 +139,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           ? props.searchParam.includeUsers.map((option: any) => option.id)
           : [],
       },
-      contactOpts: {
+      messageOpts: {
         offset: 0,
-        limit: 20,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
 
@@ -274,9 +274,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     if (search) search(payload);
 
     const args = {
-      messageOpts: {
+      contactOpts: {
         offset: 0,
-        limit: 10,
+        limit: DEFAULT_CONTACT_LIMIT,
       },
       filter: {
         term: payload.term,
@@ -288,9 +288,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           ? payload.includeUsers.map((option: any) => option.id)
           : [],
       },
-      contactOpts: {
+      messageOpts: {
         offset: 0,
-        limit: 20,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
 

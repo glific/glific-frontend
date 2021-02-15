@@ -53,7 +53,6 @@ export const SAVED_SEARCH_QUERY = gql`
       shortcode
       label
       args
-      count
     }
   }
 `;
@@ -160,6 +159,7 @@ export const SEARCH_LIST_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
       count
     }
