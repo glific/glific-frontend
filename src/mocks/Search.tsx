@@ -65,11 +65,9 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            count: 4,
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
-            isReserved: false,
             label: 'Test search',
             shortcode: 'Save Search',
           },
@@ -83,11 +81,9 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            count: 4,
             args:
               '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
-            isReserved: false,
             label: 'Test search',
             shortcode: 'Save Search',
           },
@@ -110,7 +106,6 @@ export const getSearch = {
         savedSearch: {
           args:
             '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
-          count: 0,
           id: '1',
           label: 'Test search',
           shortcode: 'Save Search collection',
