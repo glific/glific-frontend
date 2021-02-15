@@ -130,7 +130,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         aria-hidden="true"
       >
         <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
-        <div className={countClass.join(' ')}>{savedSearch.count}</div>
+        <div className={countClass.join(' ')}>{savedSearch.count ? savedSearch.count : 0}</div>
       </div>
     );
   });
@@ -154,7 +154,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
                   aria-hidden="true"
                 >
                   <span className={styles.Label}>{search.shortcode}</span>
-                  <span className={styles.Count}>{search.count}</span>
+                  <span className={styles.Count}>{search.count ? search.count : 0}</span>
                 </div>
               );
             })}

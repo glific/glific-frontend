@@ -5,14 +5,15 @@ import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
@@ -63,8 +64,8 @@ cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
     filter: { searchGroup: true },
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
