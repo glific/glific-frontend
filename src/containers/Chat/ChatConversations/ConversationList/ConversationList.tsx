@@ -42,7 +42,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     searchVal,
     searchParam,
     savedSearchCriteria,
-    savedSearchCriteriaId,
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
@@ -224,7 +223,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else if (savedSearchCriteriaId) {
+    } else {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
       getFilterConvos({
