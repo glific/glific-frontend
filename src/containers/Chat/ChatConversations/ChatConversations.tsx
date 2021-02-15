@@ -243,6 +243,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           setSelectedContactId(i);
         }}
         savedSearchCriteria={savedSearchCriteria}
+        savedSearchCriteriaId={savedSearchCriteriaId}
       />
       {saveSearchButton}
       {dialogBox}

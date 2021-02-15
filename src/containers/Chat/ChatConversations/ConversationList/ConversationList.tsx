@@ -17,6 +17,9 @@ import { setErrorMessage } from '../../../../common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  DEFAULT_CONTACT_LOADMORE_LIMIT,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -26,6 +29,7 @@ interface ConversationListProps {
   selectedContactId?: number;
   setSelectedContactId?: (i: number) => void;
   savedSearchCriteria?: string | null;
+  savedSearchCriteriaId?: number | null;
   searchParam?: any;
   searchMode: boolean;
   selectedCollectionId?: number;
@@ -38,10 +42,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     searchVal,
     searchParam,
     savedSearchCriteria,
+    savedSearchCriteriaId,
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
-  const [loadingOffset, setLoadingOffset] = useState(50);
+  const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
@@ -114,28 +119,28 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     return {
+      contactOpts: {
+        limit: DEFAULT_CONTACT_LIMIT,
+      },
       filter,
       messageOpts: {
-        limit: 50,
-      },
-      contactOpts: {
-        limit: 50,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
   };
 
   const filterSearch = () => {
     return {
+      contactOpts: {
+        limit: DEFAULT_CONTACT_LIMIT,
+        order: 'DESC',
+      },
       searchFilter: {
         term: props.searchVal,
       },
       messageOpts: {
-        limit: 50,
+        limit: DEFAULT_MESSAGE_LIMIT,
         order: 'ASC',
-      },
-      contactOpts: {
-        order: 'DESC',
-        limit: 50,
       },
     };
   };
@@ -148,7 +153,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         // save the conversation and update cache
         updateConversations(searchData, client, queryVariables);
 
-        setLoadingOffset(loadingOffset + 10);
+        setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
       }
     },
   });
@@ -157,7 +162,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     let offsetValue = 0;
     if (offset.data) {
-      offsetValue = offset.data.offset - 25 <= 0 ? 0 : offset.data.offset - 10; // calculate offset
+      offsetValue =
+        offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0
+          ? 0
+          : offset.data.offset - DEFAULT_CONTACT_LOADMORE_LIMIT; // calculate offset
     }
     if (offsetValue) {
       let loadMoreVariables;
@@ -170,7 +178,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             id: selectedContactId,
           },
           messageOpts: {
-            limit: 50,
+            limit: DEFAULT_MESSAGE_LIMIT,
             offset: offsetValue,
           },
         };
@@ -184,7 +192,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
             searchGroup: true,
           },
           messageOpts: {
-            limit: 50,
+            limit: DEFAULT_MESSAGE_LIMIT,
             offset: offsetValue,
           },
         };
@@ -216,8 +224,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       getFilterSearch({
         variables: filterSearch(),
       });
-    } else {
-      // This is used for filtering the searches, when you click on it
+    } else if (savedSearchCriteriaId) {
+      // This is used for filtering the searches, when you click on it, so only call it
+      // when user clicks and savedSearchCriteriaId is set.
       getFilterConvos({
         variables: filterVariables(),
       });
@@ -393,12 +402,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const loadMoreMessages = () => {
     const conversationLoadMoreVariables = {
       contactOpts: {
-        limit: 10,
+        limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
         offset: loadingOffset,
       },
       filter: {},
       messageOpts: {
-        limit: 50,
+        limit: DEFAULT_MESSAGE_LIMIT,
       },
     };
 
@@ -448,7 +457,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {conversationList ? (
         <List className={styles.StyledList}>
           {conversationList}
-          {showLoadMore && conversations.length > 49 ? (
+          {showLoadMore && conversations.length > DEFAULT_CONTACT_LIMIT - 1 ? (
             <div className={styles.LoadMore}>
               {showLoading ? (
                 <CircularProgress className={styles.Progress} />

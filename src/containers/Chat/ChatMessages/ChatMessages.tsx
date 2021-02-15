@@ -15,6 +15,9 @@ import {
   SEARCH_QUERY_VARIABLES,
   setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
+  DEFAULT_MESSAGE_LIMIT,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -49,7 +52,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(50);
+  const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
@@ -130,7 +133,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         } else {
-          setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
       }
     },
@@ -261,8 +264,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 200, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
           },
         });
       }
@@ -286,8 +289,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: collectionId, searchGroup: true },
-            messageOpts: { limit: 50, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
           },
         });
       }
@@ -388,9 +391,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const loadMoreMessages = () => {
     const variables: any = {
-      filter: { id: contactId?.toString() },
-      messageOpts: { limit: 50, offset: messageOffset },
       contactOpts: { limit: 1 },
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
     };
 
     if (collectionId) {
@@ -399,8 +402,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     getSearchQuery({
       variables: {
         filter: { id: contactId?.toString() },
-        messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
       },
     });
     const messageContainer = document.querySelector('.messageContainer');
@@ -419,7 +422,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > 49 ? (
+        {showLoadMore && conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ? (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
