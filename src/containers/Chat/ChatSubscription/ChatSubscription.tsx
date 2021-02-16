@@ -3,6 +3,8 @@ import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
   SEARCH_QUERY_VARIABLES,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
@@ -129,11 +131,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         getContactQuery({
           variables: {
             contactOpts: {
-              limit: 50,
+              limit: DEFAULT_CONTACT_LIMIT,
             },
             filter: { id: contactId },
             messageOpts: {
-              limit: 50,
+              limit: DEFAULT_MESSAGE_LIMIT,
             },
           },
         });
