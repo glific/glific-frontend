@@ -90,13 +90,17 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   const handleAdditionalSavedSearch = (search: any) => {
-    const removedSearches = fixedSearches[fixedSearches.length - 1];
-    const fixedSearchesCopy = fixedSearches.slice(0, fixedSearches.length - 1);
-    fixedSearchesCopy.push(search);
-    const moreSearches = additionalSearch.filter((searc: any) => searc.id !== search.id);
-    moreSearches.unshift(removedSearches);
-    setFixedSearches(fixedSearchesCopy);
-    setAdditionalSearch(moreSearches);
+    const replaceSearchIndex = fixedSearches
+      .map((savedSearch: any) => savedSearch.id)
+      .indexOf(search.id);
+    const fixedSearchesCopy = fixedSearches;
+    if (replaceSearchIndex !== -1) {
+      [fixedSearches[replaceSearchIndex], fixedSearches[2]] = [
+        fixedSearches[2],
+        fixedSearches[replaceSearchIndex],
+      ];
+      setFixedSearches(fixedSearchesCopy);
+    }
     handlerSavedSearchCriteria(search.args, search.id);
   };
 
