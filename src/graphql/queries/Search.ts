@@ -185,3 +185,9 @@ export const GET_SEARCH = gql`
     }
   }
 `;
+
+export const SEARCHES_COUNT = gql`
+  query count($organizationId: ID!) {
+    collectionStats(organizationId: $organizationId)
+  }
+`;
