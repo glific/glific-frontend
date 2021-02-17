@@ -46,17 +46,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   useEffect(() => {
     if (collectionCount) {
       const countDataSubscription = JSON.parse(collectionCount.collectionCount);
-      const updateCounts = (savedSearches: any) => {
-        return savedSearches.map((search: any) => {
-          const searchCopy = JSON.parse(JSON.stringify(search));
-          if (search.shortcode in countDataSubscription.collection) {
-            searchCopy.count = countDataSubscription.collection[search.shortcode];
-          }
-          return searchCopy;
-        });
-      };
-      const updatedFixedSearches = updateCounts(fixedSearches);
-      setFixedSearches(updatedFixedSearches);
+      setSearchesCount(countDataSubscription.collection);
     }
   }, [collectionCount]);
 
