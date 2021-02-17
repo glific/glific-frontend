@@ -18,6 +18,7 @@ import {
 } from '../../common/constants';
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
+import { Logs } from '../../components/Logs/Logs';
 
 export interface ChatProps {
   contactId?: number | string | null;
@@ -86,6 +87,8 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
       </Typography>
     );
   } else {
+    <Logs message="Test" />;
+
     let listingContent;
     let contactSelectedClass = '';
     let collectionSelectedClass = '';

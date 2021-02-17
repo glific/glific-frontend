@@ -1,19 +1,28 @@
 import React from 'react';
+import pino from 'pino';
+import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
 
-const winston = require('winston');
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    //
-    // - Write all logs with level `error` and below to `error.log`
-    // - Write all logs with level `info` and below to `combined.log`
-    //
-    // new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    // new winston.transports.File({ filename: 'combined.log' }),
-  ],
+// create pino-logflare stream
+const stream = createWriteStream({
+  apiKey: 'vV5sj8-sZZIa',
+  sourceToken: '1a0516df-58b6-46a8-88c6-85ed26c8de08',
 });
+
+// create pino-logflare browser stream
+const send = createPinoBrowserSend({
+  apiKey: 'vV5sj8-sZZIa',
+  sourceToken: '1a0516df-58b6-46a8-88c6-85ed26c8de08',
+});
+
+// create pino logger
+const logger = pino(
+  {
+    browser: {
+      transmit: {},
+    },
+  },
+  stream
+);
 
 export interface Props {
   message: string;
@@ -21,11 +30,10 @@ export interface Props {
 
 export const Logs: React.SFC<Props> = ({ ...props }) => {
   const { message } = props;
-
-  logger.log({
-    level: 'info',
-    message,
-  });
+  // info: test message my string {}
+  // log some events
+  logger.info(message);
+  logger.error(new Error('things got bad'), 'error message');
 
   return null;
 };
