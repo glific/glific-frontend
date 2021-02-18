@@ -89,6 +89,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
       body
       flow
       type
+      isRead
       groupId
       location {
         latitude
