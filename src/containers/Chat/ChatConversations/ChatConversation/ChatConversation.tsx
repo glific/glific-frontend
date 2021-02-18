@@ -153,9 +153,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       onClick={() => {
         if (props.onClick) props.onClick(index);
         setSearchOffset(client, props.messageNumber);
-        markAsRead({
-          variables: { contactId: contactId.toString() },
-        });
+        if (entityType === 'contact') {
+          markAsRead({
+            variables: { contactId: contactId.toString() },
+          });
+        }
       }}
       to={redirectURL}
     >
