@@ -28,7 +28,6 @@ export interface WalletBalanceProps {
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
-  const [isBalanceNull, setIsBalanceNull] = useState<any>(false);
 
   // get gupshup balance
   const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
@@ -38,8 +37,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const updateBalanceValue = (balance: any) => {
     if (balance && balance !== null) {
       setDisplayBalance(balance);
-    } else if (balance === null) {
-      setIsBalanceNull(true);
     }
   };
 
@@ -77,7 +74,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   }
 
   const errorBody = () => {
-    if (isBalanceNull || displayBalance === null) {
+    if (displayBalance === null && !error) {
       return nullBalance();
     }
     return (
