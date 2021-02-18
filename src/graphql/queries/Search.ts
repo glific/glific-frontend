@@ -162,7 +162,6 @@ export const SEARCH_LIST_QUERY = gql`
       label
       isReserved
       args
-      count
     }
   }
 `;
@@ -181,7 +180,6 @@ export const GET_SEARCH = gql`
         shortcode
         label
         args
-        count
       }
     }
   }
