@@ -8,7 +8,6 @@ export const CREATE_SEARCH = gql`
         label
         shortcode
         args
-        count
       }
       errors {
         key
@@ -26,7 +25,6 @@ export const UPDATE_SEARCH = gql`
         label
         shortcode
         args
-        count
       }
       errors {
         key
