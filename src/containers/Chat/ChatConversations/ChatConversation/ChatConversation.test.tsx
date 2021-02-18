@@ -37,6 +37,7 @@ const defaultProps = {
     insertedAt,
   },
   lastMessage: {
+    isRead: true,
     body: 'Hello there!',
     insertedAt,
     type: 'TEXT',
@@ -83,11 +84,4 @@ test('check the condition with empty tags', () => {
   propswithEmptyTags.lastMessage.tags = [];
   const { container } = render(wrapperContainer(propswithEmptyTags));
   expect(container.querySelector('.ChatInfoRead')).toBeInTheDocument();
-});
-
-test('check the condition with tag unread', () => {
-  const propsWithTagUnread = defaultProps;
-  propsWithTagUnread.lastMessage.tags = [{ id: 2, label: 'Unread' }];
-  const { container } = render(wrapperContainer(propsWithTagUnread));
-  expect(container.querySelector('.ChatInfoUnread')).toBeInTheDocument();
 });
