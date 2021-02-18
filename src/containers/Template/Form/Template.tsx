@@ -269,10 +269,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (!response.data.is_valid) {
           return response.data.message;
         }
-        return null;
+        return false;
       });
     }
-    return true;
+    return false;
   };
 
   const displayWarning = () => {
@@ -285,8 +285,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
           </ol>
         </div>
       );
-    }
-    if (type.id === 'AUDIO') {
+    } else if (type.id === 'AUDIO') {
       setWarning(
         <div className={styles.Warning}>
           <ol>
@@ -294,8 +293,14 @@ const Template: React.SFC<TemplateProps> = (props) => {
           </ol>
         </div>
       );
+    } else {
+      setWarning(null);
     }
   };
+
+  useEffect(() => {
+    displayWarning();
+  }, [type]);
 
   const attachmentField = [
     {
@@ -312,7 +317,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       onChange: (event: any) => {
         if (event) {
           setType({ id: event.id, label: event.id });
-          displayWarning();
         }
       },
     },
