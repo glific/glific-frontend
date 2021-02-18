@@ -10,6 +10,17 @@ import { BSPBALANCE } from '../../graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 
+const nullBalance = () => {
+  return (
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
+      <div className={styles.WalletBalanceText}>
+        <SelectWhiteIcon className={styles.Icon} />
+        Wallet balance is okay
+      </div>
+    </div>
+  );
+};
+
 export interface WalletBalanceProps {
   fullOpen: boolean;
 }
@@ -17,11 +28,20 @@ export interface WalletBalanceProps {
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
+  const [isBalanceNull, setIsBalanceNull] = useState<any>(false);
 
   // get gupshup balance
   const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
     variables,
   });
+
+  const updateBalanceValue = (balance: any) => {
+    if (balance && balance !== null) {
+      setDisplayBalance(balance);
+    } else if (balance === null) {
+      setIsBalanceNull(true);
+    }
+  };
 
   useEffect(() => {
     if (balanceData) {
@@ -39,7 +59,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
         updateQuery: (prev, { subscriptionData }) => {
           if (subscriptionData.data.bspBalance) {
             const balance = JSON.parse(subscriptionData.data.bspBalance);
-            setDisplayBalance(balance.balance);
+            updateBalanceValue(balance.balance);
           }
         },
       });
@@ -57,6 +77,9 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   }
 
   const errorBody = () => {
+    if (isBalanceNull || displayBalance === null) {
+      return nullBalance();
+    }
     return (
       <Tooltip title="For any help, please contact the Glific team" placement="top-start">
         <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
