@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -74,7 +74,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     contactBspStatus,
     entityType,
   } = props;
-  let unread = false;
+
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: () => {
       updateMessageCache(client, lastMessage.id);
@@ -88,7 +88,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     if (!lastMessage.isRead) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
-      unread = true;
     }
   }
 
@@ -117,14 +116,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     }
     return text;
   };
-
-  useEffect(() => {
-    if (unread && selected) {
-      markAsRead({
-        variables: { contactId: contactId.toString() },
-      });
-    }
-  }, [unread, selected, contactId, markAsRead]);
 
   const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
@@ -162,6 +153,9 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       onClick={() => {
         if (props.onClick) props.onClick(index);
         setSearchOffset(client, props.messageNumber);
+        markAsRead({
+          variables: { contactId: contactId.toString() },
+        });
       }}
       to={redirectURL}
     >
