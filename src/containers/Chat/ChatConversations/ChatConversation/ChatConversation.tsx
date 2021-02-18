@@ -27,6 +27,7 @@ export interface ChatConversationProps {
   lastMessage: {
     id: number;
     body: string;
+    isRead: boolean;
     insertedAt: string;
     type: string;
     media: any;
@@ -39,25 +40,22 @@ export interface ChatConversationProps {
   highlightSearch?: string;
   searchMode?: any;
 }
-
-const updateMessageCache = (client: any, data: any) => {
-  data.map((messageId: any) => {
-    const message = client.readFragment({
-      id: `Message:${messageId}`,
-      fragment: MESSAGE_FRAGMENT,
-    });
-    const messageCopy = JSON.parse(JSON.stringify(message));
-    messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
-    client.writeFragment({
-      id: `Message:${messageId}`,
-      fragment: MESSAGE_FRAGMENT,
-      data: messageCopy,
-    });
-
-    return null;
+const updateMessageCache = (client: any, id: any) => {
+  const message = client.readFragment({
+    id: `Message:${id}`,
+    fragment: MESSAGE_FRAGMENT,
   });
-};
 
+  const messageCopy = JSON.parse(JSON.stringify(message));
+  messageCopy.isRead = true;
+  client.writeFragment({
+    id: `Message:${id}`,
+    fragment: MESSAGE_FRAGMENT,
+    data: messageCopy,
+  });
+
+  return null;
+};
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
@@ -78,16 +76,16 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   } = props;
   let unread = false;
   const [markAsRead] = useMutation(MARK_AS_READ, {
-    onCompleted: (mydata) => {
-      updateMessageCache(client, mydata.markContactMessagesAsRead);
+    onCompleted: () => {
+      updateMessageCache(client, lastMessage.id);
     },
   });
-
   // there might be some cases when there are no conversations againist the contact. So need to handle that
   // Also handle unread formatting only if tags array is set.
-  if (Object.keys(lastMessage).length > 0 && lastMessage.tags.length > 0) {
+  if (Object.keys(lastMessage).length > 0) {
     // TODO: Need check with the backend on unique identifier for this.
-    if (lastMessage.tags.filter((tag) => tag.label === 'Unread').length > 0) {
+
+    if (!lastMessage.isRead) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
       unread = true;

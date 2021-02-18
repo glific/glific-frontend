@@ -19,6 +19,7 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
+        isRead
         insertedAt
         receiver {
           id
