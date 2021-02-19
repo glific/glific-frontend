@@ -42,6 +42,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     searchVal,
     searchParam,
     savedSearchCriteria,
+    savedSearchCriteriaId,
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
@@ -84,6 +85,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       });
     }
   }, []);
+
+  // reset offset value on saved search changes
+  useEffect(() => {
+    if (savedSearchCriteriaId) {
+      setLoadingOffset(DEFAULT_CONTACT_LIMIT + 10);
+    }
+  }, [savedSearchCriteriaId]);
 
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
