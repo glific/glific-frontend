@@ -5,6 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { Tag } from './Tag';
 import { LIST_ITEM_MOCKS } from '../Form/FormLayout.test.helper';
 
+jest.mock('axios');
 const mocks = LIST_ITEM_MOCKS;
 
 const wrapper = (
