@@ -297,7 +297,7 @@ export const collectionCountQuery = {
   },
   result: {
     data: {
-      collectionStats: '{"1":{"Unread":3,"Optout":0,"Not replied":2,"Not Responded":13,"All":15}}',
+      collectionStats: '{"1":{"All":15}}',
     },
   },
 };
