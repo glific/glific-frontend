@@ -19,10 +19,11 @@
   padding: 0px 2px;
   justify-content: center;
   align-items: center;
+  line-height: 1;
 }
 
 .SavedSearchItemLabel {
-  padding: 4px 4px;
+  padding: 0px 4px;
   text-align: center;
 }
 
