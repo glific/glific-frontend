@@ -42,6 +42,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     searchVal,
     searchParam,
     savedSearchCriteria,
+    savedSearchCriteriaId,
     selectedCollectionId,
   } = props;
   const client = useApolloClient();
@@ -55,6 +56,10 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   let queryVariables = SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
     queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+  }
+  if (savedSearchCriteria) {
+    const variables = JSON.parse(savedSearchCriteria);
+    queryVariables = variables;
   }
 
   // check if there is a previous scroll height
@@ -81,6 +86,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   }, []);
 
+  // reset offset value on saved search changes
+  useEffect(() => {
+    if (savedSearchCriteriaId) {
+      setLoadingOffset(DEFAULT_CONTACT_LIMIT + 10);
+    }
+  }, [savedSearchCriteriaId]);
+
   const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
     SEARCH_QUERY,
     {
@@ -97,7 +109,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
 
     const filter: any = {};
-
     if (props.searchVal) {
       filter.term = props.searchVal;
     }
@@ -151,6 +162,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       } else {
         // save the conversation and update cache
         updateConversations(searchData, client, queryVariables);
+        setShowLoadMore(true);
 
         setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
       }
@@ -219,7 +231,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
-    if (searchVal !== '' && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
+    if (searchVal && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
       getFilterSearch({
         variables: filterSearch(),
       });
@@ -259,7 +271,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   // If no cache, assign conversations data from search query.
-  if (called && (searchVal !== '' || savedSearchCriteria || searchParam)) {
+  if (called && (searchVal || savedSearchCriteria || searchParam)) {
     conversations = searchData.search;
   }
 
@@ -306,7 +318,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
   let conversationList: any;
   // If a search term is used, use the SearchMulti API. For searches term, this is not applicable.
-  if (searchVal !== '' && searchMultiData && Object.keys(searchParam).length === 0) {
+  if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
     const searchArray = { contacts: [], tags: [], messages: [] };
@@ -399,12 +411,18 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
+    let filter = {};
+    // for saved search use filter value of selected search
+    if (savedSearchCriteria) {
+      const variables = JSON.parse(savedSearchCriteria);
+      filter = variables.filter;
+    }
     const conversationLoadMoreVariables = {
       contactOpts: {
         limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
         offset: loadingOffset,
       },
-      filter: {},
+      filter,
       messageOpts: {
         limit: DEFAULT_MESSAGE_LIMIT,
       },
