@@ -118,7 +118,7 @@ export const getSearch = {
 export const collectionCountSubscription = {
   request: {
     query: COLLECTION_COUNT_SUBSCRIPTION,
-    variables: { organizationId: 1 },
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
