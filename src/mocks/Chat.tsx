@@ -293,7 +293,7 @@ export const savedSearchQuery = {
 export const collectionCountQuery = {
   request: {
     query: SEARCHES_COUNT,
-    variables: { organizationId: null },
+    variables: { organizationId: '1' },
   },
   result: {
     data: {
