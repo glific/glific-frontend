@@ -4,7 +4,12 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
+import {
+  SAVED_SEARCH_QUERY,
+  SEARCH_QUERY,
+  SEARCH_MULTI_QUERY,
+  SEARCHES_COUNT,
+} from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
@@ -281,6 +286,18 @@ export const savedSearchQuery = {
           count: 10,
         },
       ],
+    },
+  },
+};
+
+export const collectionCountQuery = {
+  request: {
+    query: SEARCHES_COUNT,
+    variables: { organizationId: null },
+  },
+  result: {
+    data: {
+      collectionStats: '{"1":{"Unread":3,"Optout":0,"Not replied":2,"Not Responded":13,"All":15}}',
     },
   },
 };
