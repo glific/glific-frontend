@@ -123,13 +123,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const submitMessage = (message: string) => {
     if (!message) return;
 
-    // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
-
     if (attachmentAdded) {
       createMediaMessage({
         variables: {
@@ -144,6 +137,13 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
     }
+
+    // Resetting the EditorState
+    setEditorState(
+      EditorState.moveFocusToEnd(
+        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+      )
+    );
   };
 
   const handleClick = (title: string) => {
