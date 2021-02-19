@@ -24,6 +24,8 @@ const simulator = (
 test('simulator should open on click of simulator icon', async () => {
   const { getByTestId } = render(simulator);
   fireEvent.click(getByTestId('simulatorIcon'));
+  const responseData = { data: {} };
+  axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
   await waitFor(() => {
     expect(mockSetShowSimulator).toBeCalled();
   });
