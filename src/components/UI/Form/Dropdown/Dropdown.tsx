@@ -32,13 +32,11 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
   const { onChange, value, ...rest } = field;
 
   const optionsList = options
-    ? options.map((option: any) => {
-        return (
-          <MenuItem value={option.id} key={option.id}>
-            {option.label ? option.label : option.name}
-          </MenuItem>
-        );
-      })
+    ? options.map((option: any) => (
+        <MenuItem value={option.id} key={option.id}>
+          {option.label ? option.label : option.name}
+        </MenuItem>
+      ))
     : null;
   return (
     <div className={styles.Dropdown} data-testid="dropdown">

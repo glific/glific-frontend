@@ -124,26 +124,24 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               />
             ))
           }
-          renderOption={(option, { selected }) => {
-            return (
-              <>
-                {multiple ? (
-                  <Checkbox
-                    icon={icon}
-                    checked={
-                      asyncSearch
-                        ? asyncValues.value.map((value: any) => value.id).includes(option.id)
-                        : selected
-                    }
-                    color="primary"
-                  />
-                ) : (
-                  ''
-                )}
-                {option[optionLabel]}
-              </>
-            );
-          }}
+          renderOption={(option: any, { selected }) => (
+            <>
+              {multiple ? (
+                <Checkbox
+                  icon={icon}
+                  checked={
+                    asyncSearch
+                      ? asyncValues.value.map((value: any) => value.id).includes(option.id)
+                      : selected
+                  }
+                  color="primary"
+                />
+              ) : (
+                ''
+              )}
+              {option[optionLabel]}
+            </>
+          )}
           renderInput={(params: any) => {
             const asyncChange = asyncSearch
               ? {
