@@ -183,9 +183,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     refetchQueries: () => {
       if (refetchQueries)
-        return refetchQueries.map((refetchQuery: any) => {
-          return { query: refetchQuery.query, variables: refetchQuery.variables };
-        });
+        return refetchQueries.map((refetchQuery: any) => ({
+          query: refetchQuery.query,
+          variables: refetchQuery.variables,
+        }));
       return [];
     },
   });
@@ -212,9 +213,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     refetchQueries: () => {
       if (refetchQueries)
-        return refetchQueries.map((refetchQuery: any) => {
-          return { query: refetchQuery.query, variables: refetchQuery.variables };
-        });
+        return refetchQueries.map((refetchQuery: any) => ({
+          query: refetchQuery.query,
+          variables: refetchQuery.variables,
+        }));
 
       return [];
     },
@@ -333,9 +335,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     ? organization.data.currentUser.user.organization.activeLanguages.slice()
     : [];
   // sort languages by their name
-  languageOptions.sort((first: any, second: any) => {
-    return first.label > second.label ? 1 : -1;
-  });
+  languageOptions.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+
   const language = languageSupport
     ? {
         component: Dropdown,
