@@ -22,21 +22,19 @@ const Menu: React.SFC<MenuProps> = (props) => {
     setAnchorEl(null);
   };
 
-  const menuList = menus.map((menu: any) => {
-    return (
-      <div key={menu.title}>
-        <MenuItem
-          onClickHandler={() => {
-            if (menu.onClick) {
-              menu.onClick();
-            }
-            handleClose();
-          }}
-          {...menu}
-        />
-      </div>
-    );
-  });
+  const menuList = menus.map((menu: any) => (
+    <div key={menu.title}>
+      <MenuItem
+        onClickHandler={() => {
+          if (menu.onClick) {
+            menu.onClick();
+          }
+          handleClose();
+        }}
+        {...menu}
+      />
+    </div>
+  ));
 
   return (
     <div data-testid="Menu">

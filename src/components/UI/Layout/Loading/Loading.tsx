@@ -5,15 +5,13 @@ import styles from './Loading.module.css';
 
 export interface LoadingProps {}
 
-export const Loading: React.SFC<LoadingProps> = () => {
-  return (
-    <div className={styles.CenterItems} data-testid="loader">
-      <div className={styles.LoadingPadding}>
-        <CircularProgress />
-      </div>
-      <Typography variant="h5">Loading...</Typography>
+export const Loading: React.SFC<LoadingProps> = () => (
+  <div className={styles.CenterItems} data-testid="loader">
+    <div className={styles.LoadingPadding}>
+      <CircularProgress />
     </div>
-  );
-};
+    <Typography variant="h5">Loading...</Typography>
+  </div>
+);
 
 export default Loading;
