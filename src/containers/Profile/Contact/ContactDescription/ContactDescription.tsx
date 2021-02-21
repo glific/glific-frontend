@@ -129,9 +129,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
               <div className={styles.DescriptionItem}>{key}</div>
               <div className={styles.DescriptionItemValue}>
                 {Object.keys(settings[key])
-                  .filter((settingKey) => {
-                    return settings[key][settingKey] === true;
-                  })
+                  .filter((settingKey) => settings[key][settingKey] === true)
                   .join(', ')}
               </div>
             </div>
