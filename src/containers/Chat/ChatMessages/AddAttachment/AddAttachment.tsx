@@ -11,9 +11,10 @@ import { MEDIA_MESSAGE_TYPES } from '../../../../common/constants';
 import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
 import { validateMedia } from '../../../../common/utils';
 
-const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-  return { id: option, label: <MessageType type={option} color="dark" /> };
-});
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({
+  id: option,
+  label: <MessageType type={option} color="dark" />,
+}));
 
 export interface AddAttachmentPropTypes {
   setAttachment: any;
@@ -148,9 +149,9 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             alignButtons="left"
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
-              {formFieldItems.map((field: any) => {
-                return <Field {...field} key={field.name} validateURL={errors} />;
-              })}
+              {formFieldItems.map((field: any) => (
+                <Field {...field} key={field.name} validateURL={errors} />
+              ))}
               {attachmentType !== '' ? (
                 <div className={styles.CrossIcon}>
                   <CrossIcon

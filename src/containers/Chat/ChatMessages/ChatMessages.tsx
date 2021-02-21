@@ -105,9 +105,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         const conversationCopy = JSON.parse(JSON.stringify(searchData));
         conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
+          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
           .reverse();
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
         let isContactCached = false;
@@ -364,9 +362,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             if (messageTags.length > 0) {
               messageTags = messageTags[0].tags;
             }
-            const messageTagId = messageTags.map((tag: any) => {
-              return tag.id;
-            });
+            const messageTagId = messageTags.map((tag: any) => tag.id);
             setSelectedMessageTags(messageTagId);
             setPreviousMessageTags(messageTagId);
             setDialogbox(!dialog);
@@ -383,9 +379,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     });
 
     messageList = reverseConversation
-      .sort((currentMessage: any, nextMessage: any) => {
-        return currentMessage.id - nextMessage.id;
-      })
+      .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
       .reverse();
   }
 

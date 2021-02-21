@@ -166,22 +166,20 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const toolTip = 'The search will be updated as per new filters';
 
-  const buildButton = (toolTipTitle: string, type: string, label: string) => {
-    return (
-      <Tooltip title={toolTipTitle} placement="top">
-        <Button
-          color="primary"
-          variant="outlined"
-          className={styles.BackgroundWhite}
-          onClick={(e: any) => {
-            handleClick(e, 'saveSearch', type);
-          }}
-        >
-          {label}
-        </Button>
-      </Tooltip>
-    );
-  };
+  const buildButton = (toolTipTitle: string, type: string, label: string) => (
+    <Tooltip title={toolTipTitle} placement="top">
+      <Button
+        color="primary"
+        variant="outlined"
+        className={styles.BackgroundWhite}
+        onClick={(e: any) => {
+          handleClick(e, 'saveSearch', type);
+        }}
+      >
+        {label}
+      </Button>
+    </Tooltip>
+  );
 
   const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
 
