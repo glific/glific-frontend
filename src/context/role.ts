@@ -74,9 +74,7 @@ const resetRole = () => {
   getRoleBasedAccess();
 };
 
-export const getStaffManagementMenus = () => {
-  return staffManagementMenu;
-};
+export const getStaffManagementMenus = () => staffManagementMenu;
 
 export {
   getUserRole,

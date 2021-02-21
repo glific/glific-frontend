@@ -26,9 +26,7 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((current, original) => {
-      return original.getCurrentContent().getPlainText();
-    })
+    .transform((current, original) => original.getCurrentContent().getPlainText())
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string()
@@ -48,9 +46,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-  return { id: option, label: option };
-});
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({ id: option, label: option }));
 
 const formIsActive = {
   component: Checkbox,
@@ -185,9 +181,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (languages) {
       const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
       // sort languages by their name
-      lang.sort((first: any, second: any) => {
-        return first.label > second.label ? 1 : -1;
-      });
+      lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+
       setLanguageOptions(lang);
       if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
@@ -474,9 +469,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
     body: Yup.string()
-      .transform((current, original) => {
-        return original.getCurrentContent().getPlainText();
-      })
+      .transform((current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
         is: (val) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
         then: Yup.string().required('Message is required.'),

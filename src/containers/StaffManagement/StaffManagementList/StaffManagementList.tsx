@@ -22,9 +22,8 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   };
 
   const getName = (text: string, roleList: any) => {
-    const roles = roleList.map((role: any) => {
-      return role;
-    });
+    const roles = roleList.map((role: any) => role);
+
     return (
       <p className={`${styles.TableText} ${styles.NameText}`}>
         {text}
@@ -34,14 +33,10 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     );
   };
 
-  const getPhone = (text: string) => {
-    return <p className={styles.TableText}>{text}</p>;
-  };
+  const getPhone = (text: string) => <p className={styles.TableText}>{text}</p>;
 
   const getCollections = (collectionList: any) => {
-    const collections = collectionList.map((collection: any) => {
-      return collection.label;
-    });
+    const collections = collectionList.map((collection: any) => collection.label);
     return <p className={styles.TableText}>{collections.join(', ')}</p>;
   };
 

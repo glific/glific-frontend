@@ -47,9 +47,7 @@ export const saveConversation = (conversation: any, client: any, queryVariables:
 
   // TODOS: need to check why we need this.
   conversationCopy.search[0].messages
-    .sort((currentMessage: any, nextMessage: any) => {
-      return currentMessage.id - nextMessage.id;
-    })
+    .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
     .reverse();
 
   updateConversations(conversation, client, queryVariables);
