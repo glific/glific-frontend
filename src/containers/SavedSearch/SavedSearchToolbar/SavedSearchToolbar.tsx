@@ -5,7 +5,7 @@ import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui
 import styles from './SavedSearchToolbar.module.css';
 import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
 import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
-import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from '../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../common/notification';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { COLLECTION_COUNT_SUBSCRIPTION } from '../../../graphql/subscriptions/PeriodicInfo';
@@ -23,6 +23,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [selectedSavedSearch, setSelectedSavedSearch] = useState<number | null>(null);
   const [optionsSelected, setOptionsSelected] = useState(false);
   const [fixedSearches, setFixedSearches] = useState<any>([]);
+  const [searchesCount, setSearchesCount] = useState<any>({});
   const [additionalSearch, setAdditionalSearch] = useState<any>([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const Ref = useRef(null);
@@ -31,23 +32,21 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   const { data: collectionCount } = useSubscription(COLLECTION_COUNT_SUBSCRIPTION, { variables });
 
+  const { data: countData } = useQuery<any>(SEARCHES_COUNT, {
+    variables,
+  });
+
+  useEffect(() => {
+    if (countData) {
+      const collectionStats = JSON.parse(countData.collectionStats);
+      setSearchesCount(collectionStats[variables.organizationId]);
+    }
+  }, [countData]);
+
   useEffect(() => {
     if (collectionCount) {
-      const countData = JSON.parse(collectionCount.collectionCount);
-
-      const updateCounts = (savedSearches: any) => {
-        return savedSearches.map((search: any) => {
-          const searchCopy = JSON.parse(JSON.stringify(search));
-          if (search.shortcode in countData.collection) {
-            searchCopy.count = countData.collection[search.shortcode];
-          }
-          return searchCopy;
-        });
-      };
-      const updatedFixedSearches = updateCounts(fixedSearches);
-      const updatedAdditionalSearch = updateCounts(additionalSearch);
-      setFixedSearches(updatedFixedSearches);
-      setAdditionalSearch(updatedAdditionalSearch);
+      const countDataSubscription = JSON.parse(collectionCount.collectionCount);
+      setSearchesCount(countDataSubscription.collection);
     }
   }, [collectionCount]);
 
@@ -67,8 +66,8 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      setFixedSearches(data.savedSearches.slice(0, 3));
-      setAdditionalSearch(data.savedSearches.slice(3));
+      setFixedSearches(data.savedSearches.slice(0, 5));
+      setAdditionalSearch(data.savedSearches.slice(5));
     },
   });
 
@@ -81,13 +80,17 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   const handleAdditionalSavedSearch = (search: any) => {
-    const removedSearches = fixedSearches[fixedSearches.length - 1];
-    const fixedSearchesCopy = fixedSearches.slice(0, fixedSearches.length - 1);
-    fixedSearchesCopy.push(search);
-    const moreSearches = additionalSearch.filter((searc: any) => searc.id !== search.id);
-    moreSearches.unshift(removedSearches);
-    setFixedSearches(fixedSearchesCopy);
-    setAdditionalSearch(moreSearches);
+    const replaceSearchIndex = fixedSearches
+      .map((savedSearch: any) => savedSearch.id)
+      .indexOf(search.id);
+    const fixedSearchesCopy = fixedSearches;
+    if (replaceSearchIndex !== -1) {
+      [fixedSearches[replaceSearchIndex], fixedSearches[2]] = [
+        fixedSearches[2],
+        fixedSearches[replaceSearchIndex],
+      ];
+      setFixedSearches(fixedSearchesCopy);
+    }
     handlerSavedSearchCriteria(search.args, search.id);
   };
 
@@ -105,7 +108,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     return null;
   }
 
-  const savedSearchList = fixedSearches.map((savedSearch: any) => {
+  const savedSearchList = fixedSearches.slice(0, 3).map((savedSearch: any) => {
     // set the selected class if the button is clicked
     const labelClass = [styles.SavedSearchItemLabel];
     const countClass = [styles.SavedSearchCount];
@@ -130,7 +133,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
         aria-hidden="true"
       >
         <div className={labelClass.join(' ')}>{savedSearch.shortcode}</div>
-        <div className={countClass.join(' ')}>{savedSearch.count ? savedSearch.count : 0}</div>
+        <div className={countClass.join(' ')}>
+          {searchesCount[savedSearch.shortcode] ? searchesCount[savedSearch.shortcode] : 0}
+        </div>
       </div>
     );
   });
@@ -145,6 +150,21 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
+            {fixedSearches.slice(3, 5).map((search: any) => {
+              return (
+                <div
+                  key={search.id}
+                  className={styles.LabelContainer}
+                  onClick={() => handleAdditionalSavedSearch(search)}
+                  aria-hidden="true"
+                >
+                  <span className={styles.Label}>{search.shortcode}</span>
+                  <span className={styles.Count}>
+                    {searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0}
+                  </span>
+                </div>
+              );
+            })}
             {additionalSearch.map((search: any) => {
               return (
                 <div
@@ -154,7 +174,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
                   aria-hidden="true"
                 >
                   <span className={styles.Label}>{search.shortcode}</span>
-                  <span className={styles.Count}>{search.count ? search.count : 0}</span>
                 </div>
               );
             })}

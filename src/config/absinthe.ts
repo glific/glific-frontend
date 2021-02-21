@@ -1,6 +1,6 @@
 import { SOCKET } from '.';
 import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
-import { getAuthSession } from '../services/AuthService';
+import { getAuthSession, renewAuthToken, setAuthSession } from '../services/AuthService';
 
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
@@ -15,6 +15,7 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
     if (getAuthSession('access_token')) {
       return { token: getAuthSession('access_token') };
     }
+
     return {};
   },
 });
@@ -24,7 +25,13 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
 // watch for websocket error event using onError
 
 let connectionFailureCounter = 0;
-socketConnection.onError(() => {
+socketConnection.onError(async () => {
+  if (connectionFailureCounter === 0) {
+    const authtoken = await renewAuthToken();
+    if (authtoken.data) {
+      setAuthSession(JSON.stringify(authtoken.data.data));
+    }
+  }
   // increment the counter when error occurs
   connectionFailureCounter += 1;
   // let's disconnect the socket connection if there are 5 failures

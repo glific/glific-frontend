@@ -2,10 +2,11 @@ import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import SavedSearchToolbar from './SavedSearchToolbar';
-import { savedSearchQuery } from '../../../mocks/Chat';
+import { collectionCountQuery, savedSearchQuery } from '../../../mocks/Chat';
 import { collectionCountSubscription } from '../../../mocks/Search';
+import { setUserSession } from '../../../services/AuthService';
 
-const mocks = [savedSearchQuery, collectionCountSubscription];
+const mocks = [savedSearchQuery, collectionCountSubscription, collectionCountQuery];
 
 describe('testing <SavedSearchToolbar />', () => {
   const defaultProps = {
@@ -13,6 +14,8 @@ describe('testing <SavedSearchToolbar />', () => {
     refetchData: { savedSearchCollection: null },
     onSelect: jest.fn,
   };
+
+  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
   test('it should render <SavedSearchToolbar /> component correctly', async () => {
     const { getByText, container } = render(

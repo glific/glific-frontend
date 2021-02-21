@@ -19,6 +19,7 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
+        isRead
         insertedAt
         receiver {
           id
@@ -161,7 +162,6 @@ export const SEARCH_LIST_QUERY = gql`
       label
       isReserved
       args
-      count
     }
   }
 `;
@@ -180,8 +180,13 @@ export const GET_SEARCH = gql`
         shortcode
         label
         args
-        count
       }
     }
+  }
+`;
+
+export const SEARCHES_COUNT = gql`
+  query count($organizationId: ID!) {
+    collectionStats(organizationId: $organizationId)
   }
 `;

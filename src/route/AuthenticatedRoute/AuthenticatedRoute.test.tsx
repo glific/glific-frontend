@@ -9,6 +9,9 @@ import { setUserSession } from '../../services/AuthService';
 import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import * as Chat from '../../containers/Chat/Chat';
 import * as ChatSubscription from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import axios from 'axios';
+
+jest.mock('axios');
 
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription, ...CONVERSATION_MOCKS];
 window.HTMLElement.prototype.scrollIntoView = function () {};

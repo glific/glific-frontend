@@ -121,7 +121,9 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  const capitalListItemName = listItemName
+    ? listItemName[0].toUpperCase() + listItemName.slice(1)
+    : '';
   let defaultColumnSort = columnNames[0];
 
   // check if there is a default column set for sorting
@@ -199,12 +201,16 @@ export const List: React.SFC<ListProps> = ({
   }
   filter = { ...filter, ...filters };
   const filterPayload = useCallback(() => {
+    let order = 'ASC';
+    if (tableVals.sortDirection) {
+      order = tableVals.sortDirection.toUpperCase();
+    }
     return {
       filter,
       opts: {
         limit: tableVals.pageRows,
         offset: tableVals.pageNum * tableVals.pageRows,
-        order: tableVals.sortDirection.toUpperCase(),
+        order,
         orderWith: tableVals.sortCol,
       },
     };

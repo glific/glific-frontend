@@ -21,7 +21,7 @@ export interface ChatConversationsProps {
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const { contactId } = props;
   // get the conversations stored from the cache
-  const [searchVal, setSearchVal] = useState('');
+  const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
@@ -66,7 +66,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   };
 
   const resetSearch = () => {
-    setSearchVal('');
+    setSearchVal(undefined);
   };
 
   useEffect(() => {
@@ -213,7 +213,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         refetchData={{ savedSearches }}
         onSelect={() => {
           // on select searches remove search value & disable search mode
-          setSearchVal('');
+          setSearchVal(undefined);
           if (enableSearchMode) setEnableSearchMode(false);
         }}
         searchMode={enableSearchMode}
