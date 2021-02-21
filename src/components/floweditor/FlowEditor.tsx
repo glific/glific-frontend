@@ -222,7 +222,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         }
       });
       // clearing all timeouts when component unmounts
-      const highestTimeoutId = setTimeout(() => {});
+      const highestTimeoutId: any = setTimeout(() => {});
       for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
         clearTimeout(timeoutId);
       }

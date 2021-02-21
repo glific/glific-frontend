@@ -471,19 +471,19 @@ const Template: React.SFC<TemplateProps> = (props) => {
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
       .when('type', {
-        is: (val) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
+        is: (val: string) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
         then: Yup.string().required('Message is required.'),
       }),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {
-        is: (val) => val && val !== '',
+        is: (val: string) => val && val !== '',
         then: Yup.object().required('Type is required.'),
       }),
     attachmentURL: Yup.string()
       .nullable()
       .when('type', {
-        is: (val) => val && val.id,
+        is: (val: any) => val && val.id,
         then: Yup.string().required('Attachment URL is required.'),
       }),
   };
