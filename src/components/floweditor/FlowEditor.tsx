@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
@@ -294,7 +294,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           data-testid="saveDraftButton"
-          className={styles.Button}
+          className={styles.Draft}
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
@@ -303,25 +303,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         >
           Save as draft
         </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="previewButton"
-          className={styles.Button}
-          onClick={() => {
-            setSimulatorId(0);
-          }}
-        >
-          Preview
-          {simulatorId > 0 ? (
-            <CancelOutlinedIcon
-              className={styles.CrossIcon}
-              onClick={() => {
-                setSimulatorId(0);
-              }}
-            />
-          ) : null}
-        </Button>
+
         <Button
           variant="contained"
           color="primary"
@@ -332,13 +314,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      {simulatorId > 0 ? (
-        <Simulator
-          showSimulator={simulatorId > 0}
-          setSimulatorId={setSimulatorId}
-          message={{ type: 'draft', keyword: flowKeyword }}
-        />
-      ) : null}
+
+      <Simulator
+        showSimulator={simulatorId > 0}
+        setSimulatorId={setSimulatorId}
+        flowSimulator
+        message={{ type: 'draft', keyword: flowKeyword }}
+      />
+
       {modal}
       <Prompt when message={handleBlockedNavigation} />
 

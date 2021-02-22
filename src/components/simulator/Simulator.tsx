@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLazyQuery, useQuery, useSubscription } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -14,8 +14,10 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
 import moment from 'moment';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import styles from './Simulator.module.css';
+import { Button as FormButton } from '../UI/Form/Button/Button';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
@@ -25,12 +27,14 @@ import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/
 import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
+import { setErrorMessage } from '../../common/notification';
 
 export interface SimulatorProps {
   showSimulator: boolean;
   setSimulatorId: any;
   simulatorIcon?: boolean;
   message?: any;
+  flowSimulator?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -38,10 +42,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
   setSimulatorId,
   simulatorIcon = true,
   message = {},
+  flowSimulator,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const variables = { organizationId: getUserSession('organizationId') };
-
+  const client = useApolloClient();
   let messages = [];
   let simulatorId = '';
 
@@ -50,21 +55,27 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'cache-only',
   });
 
-  const { data: simulator1 }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
     variables,
   });
 
   useEffect(() => {
-    console.log(simulator1);
-    if (simulator1) {
-      setSimulatorId(0);
+    if (simulatorSubscribe) {
+      const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
+      if (userId === getUserSession('id')) {
+        setSimulatorId(0);
+      }
     }
-  }, [simulator1]);
+  }, [simulatorSubscribe]);
 
   const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
     fetchPolicy: 'network-only',
-    onCompleted: (data1) => {
-      setSimulatorId(data1.simulatorGet.id);
+    onCompleted: (simulatorData) => {
+      if (simulatorData.simulatorGet) {
+        setSimulatorId(simulatorData.simulatorGet.id);
+      } else {
+        setErrorMessage(client, 'No more simulators are available right now');
+      }
     },
   });
 
@@ -147,10 +158,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   useEffect(() => {
-    if (message.keyword !== undefined) {
+    if (message.keyword !== undefined && data) {
       sendMessage();
     }
-  }, [message.keyword]);
+  }, [message.keyword, data]);
 
   const messageRef = useCallback(
     (node: any) => {
@@ -236,6 +247,27 @@ export const Simulator: React.FC<SimulatorProps> = ({
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
           onClick={() => handleSimulator()}
         />
+      ) : null}
+
+      {flowSimulator ? (
+        <div className={styles.PreviewButton}>
+          <FormButton
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            className={styles.Button}
+            onClick={() => {
+              if (showSimulator) {
+                releaseUserSimulator();
+              } else {
+                handleSimulator();
+              }
+            }}
+          >
+            Preview
+            {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
+          </FormButton>
+        </div>
       ) : null}
     </>
   );
