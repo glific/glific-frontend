@@ -74,7 +74,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (simulatorData.simulatorGet) {
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
-        setErrorMessage(client, 'No more simulators are available right now');
+        setErrorMessage(client, { message: 'No more simulators are available right now' });
       }
     },
   });
