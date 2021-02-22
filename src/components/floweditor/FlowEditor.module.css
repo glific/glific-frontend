@@ -71,3 +71,16 @@
   margin-right: 110px !important;
   background-color: white !important;
 }
+
+.DialogError {
+  text-align: center;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #dd1f1f;
+}
+
+.ErrorMsgIcon {
+  vertical-align: middle;
+  height: 16px;
+}
