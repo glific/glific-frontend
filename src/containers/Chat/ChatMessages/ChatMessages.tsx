@@ -32,9 +32,14 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
+  isSimulator?: boolean;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collectionId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  collectionId,
+  isSimulator,
+}) => {
   // create an instance of apolloclient
   const client = useApolloClient();
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -478,7 +483,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={false}
+        isSimulator={isSimulator}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
