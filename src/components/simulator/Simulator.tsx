@@ -61,9 +61,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   useEffect(() => {
     if (simulatorSubscribe) {
-      console.log(simulatorSubscribe);
       const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
-      if (userId === getUserSession('id')) {
+      if (userId.toString() === getUserSession('id')) {
         setSimulatorId(0);
       }
     }
