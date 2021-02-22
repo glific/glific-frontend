@@ -156,13 +156,11 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: (data) => {
-      if (data.publishFlow.success) {
-        setPublished(true);
-        setIsError(false);
-        setNotification(client, 'The flow has been published');
-      } else {
+      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
+        setFlowValidation(data.publishFlow.errors);
         setIsError(true);
-        setFlowValidation(data.publishFlow.errors[0].message);
+      } else if (data.publishFlow.success) {
+        setPublished(true);
       }
     },
   });
@@ -260,12 +258,18 @@ export const FlowEditor = (props: FlowEditorProps) => {
     setFlowValidation('');
   };
 
-  const errorMsg = (
+  const errorMsg = () => (
     <p className={styles.DialogError}>
-      Errors were detected in the flow.
+      Errors were detected in the flow. Would you like to continue modifying?
       <div>
-        <WarningIcon className={styles.ErrorMsgIcon} />
-        {flowValidation}
+        {flowValidation.map((message: any) => {
+          return (
+            <div>
+              <WarningIcon className={styles.ErrorMsgIcon} />
+              {message.message}
+            </div>
+          );
+        })}
       </div>
     </p>
   );
@@ -275,19 +279,37 @@ export const FlowEditor = (props: FlowEditorProps) => {
       <DialogBox
         title="Are you ready to publish the flow?"
         buttonOk="Publish"
-        skipOk={IsError}
         handleOk={() => handlePublishFlow()}
         handleCancel={() => handleCancelFlow()}
         alignButtons="center"
-        buttonCancel={flowValidation ? 'Modify' : 'Cancel'}
+        buttonCancel="Cancel"
       >
         <p className={styles.DialogDescription}>New changes will be activated for the users</p>
-        {IsError ? errorMsg : ''}
       </DialogBox>
     );
   }
 
-  if (published) {
+  if (IsError) {
+    dialog = (
+      <DialogBox
+        title=""
+        buttonOk="Publish"
+        handleOk={() => {
+          setPublishDialog(false);
+          setIsError(false);
+          setPublished(true);
+        }}
+        handleCancel={() => handleCancelFlow()}
+        alignButtons="center"
+        buttonCancel="Modify"
+      >
+        {IsError ? errorMsg() : ''}
+      </DialogBox>
+    );
+  }
+
+  if (published && !IsError) {
+    setNotification(client, 'The flow has been published');
     return <Redirect to="/flow" />;
   }
 
