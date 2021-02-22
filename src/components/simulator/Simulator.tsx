@@ -27,7 +27,7 @@ import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/
 import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
-import { setErrorMessage } from '../../common/notification';
+import { setErrorMessage, setNotification } from '../../common/notification';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -74,7 +74,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (simulatorData.simulatorGet) {
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
-        setErrorMessage(client, { message: 'No more simulators are available right now' });
+        setNotification(client, 'No more simulators are available right now', 'warning');
       }
     },
   });
