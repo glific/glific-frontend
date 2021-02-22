@@ -61,6 +61,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   useEffect(() => {
     if (simulatorSubscribe) {
+      console.log(simulatorSubscribe);
       const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
       if (userId === getUserSession('id')) {
         setSimulatorId(0);
@@ -148,8 +149,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
           },
           sender: {
             // this number will be the simulated contact number
-            phone: data.simulatorGet.phone,
-            name: data.simulatorGet.name,
+            phone: data ? data.simulatorGet.phone : '',
+            name: data ? data.simulatorGet.name : '',
           },
         },
       },
