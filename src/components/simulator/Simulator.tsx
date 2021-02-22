@@ -83,7 +83,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'network-only',
   });
 
-  if (allConversations && data) {
+  if (allConversations && data && data.simulatorGet) {
     // currently setting the simulated contact as the default receiver
     const simulatedContact = allConversations.search.filter(
       (item: any) => item.contact.id === data.simulatorGet.id
