@@ -4,17 +4,16 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import styles from './Loading.module.css';
 
 export interface LoadingProps {
-  massage?: string;
+  message?: string;
 }
 
-export const Loading: React.SFC<LoadingProps> = (props) => {
-  const { massage = 'Loading...' } = props;
+export const Loading: React.SFC<LoadingProps> = ({ message = 'Loading...' }) => {
   return (
     <div className={styles.CenterItems} data-testid="loader">
       <div className={styles.LoadingPadding}>
         <CircularProgress />
       </div>
-      <Typography variant="h5">{massage}</Typography>
+      <Typography variant="h5">{message}</Typography>
     </div>
   );
 };
