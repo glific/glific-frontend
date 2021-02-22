@@ -67,6 +67,11 @@
   border: unset !important;
 }
 
+.Draft {
+  margin-right: 110px !important;
+  background-color: white !important;
+}
+
 .DialogError {
   text-align: center;
   margin: 0;

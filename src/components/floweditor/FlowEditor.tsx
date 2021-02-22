@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
@@ -143,7 +143,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
-  const [showSimulator, setShowSimulator] = useState(false);
+  const [simulatorId, setSimulatorId] = useState(0);
+
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -321,7 +322,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           data-testid="saveDraftButton"
-          className={styles.Button}
+          className={styles.Draft}
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
@@ -330,25 +331,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         >
           Save as draft
         </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="previewButton"
-          className={styles.Button}
-          onClick={() => {
-            setShowSimulator(!showSimulator);
-          }}
-        >
-          Preview
-          {showSimulator ? (
-            <CancelOutlinedIcon
-              className={styles.CrossIcon}
-              onClick={() => {
-                setShowSimulator(false);
-              }}
-            />
-          ) : null}
-        </Button>
+
         <Button
           variant="contained"
           color="primary"
@@ -359,13 +342,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      {showSimulator ? (
-        <Simulator
-          showSimulator={showSimulator}
-          setShowSimulator={setShowSimulator}
-          message={{ type: 'draft', keyword: flowKeyword }}
-        />
-      ) : null}
+
+      <Simulator
+        showSimulator={simulatorId > 0}
+        setSimulatorId={setSimulatorId}
+        flowSimulator
+        message={{ type: 'draft', keyword: flowKeyword }}
+      />
+
       {modal}
       <Prompt when message={handleBlockedNavigation} />
 
