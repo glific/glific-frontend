@@ -8,6 +8,7 @@ import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as WarningIcon } from '../../assets/images/icons/Warning.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { Simulator } from '../simulator/Simulator';
@@ -144,18 +145,27 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [publishDialog, setPublishDialog] = useState(false);
   const [showSimulator, setShowSimulator] = useState(false);
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: () => {
-      setNotification(client, 'The flow has been published');
-    },
-  });
   const [published, setPublished] = useState(false);
-  let dialog = null;
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
-
+  const [flowValidation, setFlowValidation] = useState<any>();
+  const [IsError, setIsError] = useState(false);
   let modal = null;
+  let dialog = null;
+
+  const [publishFlow] = useMutation(PUBLISH_FLOW, {
+    onCompleted: (data) => {
+      if (data.publishFlow.success) {
+        setPublished(true);
+        setIsError(false);
+        setNotification(client, 'The flow has been published');
+      } else {
+        setIsError(true);
+        setFlowValidation(data.publishFlow.errors[0].message);
+      }
+    },
+  });
 
   const closeModal = () => {
     setModalVisible(false);
@@ -242,19 +252,37 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
-    setPublished(true);
   };
+
+  const handleCancelFlow = () => {
+    setPublishDialog(false);
+    setIsError(false);
+    setFlowValidation('');
+  };
+
+  const errorMsg = (
+    <p className={styles.DialogError}>
+      Errors were detected in the flow.
+      <div>
+        <WarningIcon className={styles.ErrorMsgIcon} />
+        {flowValidation}
+      </div>
+    </p>
+  );
 
   if (publishDialog) {
     dialog = (
       <DialogBox
         title="Are you ready to publish the flow?"
         buttonOk="Publish"
+        skipOk={IsError}
         handleOk={() => handlePublishFlow()}
-        handleCancel={() => setPublishDialog(false)}
+        handleCancel={() => handleCancelFlow()}
         alignButtons="center"
+        buttonCancel={flowValidation ? 'Modify' : 'Cancel'}
       >
         <p className={styles.DialogDescription}>New changes will be activated for the users</p>
+        {IsError ? errorMsg : ''}
       </DialogBox>
     );
   }
