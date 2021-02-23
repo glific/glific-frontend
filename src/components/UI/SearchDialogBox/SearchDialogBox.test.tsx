@@ -40,20 +40,18 @@ test('it should contain the selected option', () => {
   expect(getByTestId('searchChip').querySelector('span')).toHaveTextContent('something');
 });
 
-test('async search', () => {
-  const { getByText } = render(searchDialog(asyncSearchProps));
-});
-
-test('test OK', () => {
+test('save with normal props', () => {
   const { getByText } = render(searchDialog(defaultProps));
   fireEvent.click(getByText('Save'));
+  // need assertions here
 });
-test('test OK', () => {
+test('save with async prop', () => {
   const { getByText } = render(searchDialog(asyncSearchProps));
   fireEvent.click(getByText('Save'));
+  // need assertions here
 });
 
-test('test OK', () => {
+test('change value in dialog box', () => {
   const spy = jest.spyOn(AutoComplete, 'AutoComplete');
   spy.mockImplementation((props: any) => {
     const { form, onChange } = props;
@@ -73,4 +71,6 @@ test('test OK', () => {
   fireEvent.change(getByTestId('searchDialogBox').querySelector('input'), {
     target: { value: 'change' },
   });
+
+  // need assertions here
 });
