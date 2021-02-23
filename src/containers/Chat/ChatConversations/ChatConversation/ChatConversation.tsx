@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { ListItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -17,15 +17,17 @@ import { MessageType } from '../MessageType/MessageType';
 export interface ChatConversationProps {
   contactId: number;
   contactName: string;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   selected: boolean;
   senderLastMessage: any;
-  onClick: (i: any) => void;
+  entityType: string;
+  onClick?: (i: any) => void;
   index: number;
   lastMessage: {
     id: number;
     body: string;
+    isRead: boolean;
     insertedAt: string;
     type: string;
     media: any;
@@ -38,25 +40,22 @@ export interface ChatConversationProps {
   highlightSearch?: string;
   searchMode?: any;
 }
-
-const updateMessageCache = (client: any, data: any) => {
-  data.map((messageId: any) => {
-    const message = client.readFragment({
-      id: `Message:${messageId}`,
-      fragment: MESSAGE_FRAGMENT,
-    });
-    const messageCopy = JSON.parse(JSON.stringify(message));
-    messageCopy.tags = messageCopy.tags.filter((tag: any) => tag.label !== 'Unread');
-    client.writeFragment({
-      id: `Message:${messageId}`,
-      fragment: MESSAGE_FRAGMENT,
-      data: messageCopy,
-    });
-
-    return null;
+const updateMessageCache = (client: any, id: any) => {
+  const message = client.readFragment({
+    id: `Message:${id}`,
+    fragment: MESSAGE_FRAGMENT,
   });
-};
 
+  const messageCopy = JSON.parse(JSON.stringify(message));
+  messageCopy.isRead = true;
+  client.writeFragment({
+    id: `Message:${id}`,
+    fragment: MESSAGE_FRAGMENT,
+    data: messageCopy,
+  });
+
+  return null;
+};
 const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   // check if message is unread and style it differently
   const client = useApolloClient();
@@ -73,22 +72,22 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     senderLastMessage,
     contactStatus,
     contactBspStatus,
+    entityType,
   } = props;
-  let unread = false;
+
   const [markAsRead] = useMutation(MARK_AS_READ, {
-    onCompleted: (mydata) => {
-      updateMessageCache(client, mydata.markContactMessagesAsRead);
+    onCompleted: () => {
+      updateMessageCache(client, lastMessage.id);
     },
   });
-
   // there might be some cases when there are no conversations againist the contact. So need to handle that
   // Also handle unread formatting only if tags array is set.
-  if (Object.keys(lastMessage).length > 0 && lastMessage.tags.length > 0) {
+  if (Object.keys(lastMessage).length > 0) {
     // TODO: Need check with the backend on unique identifier for this.
-    if (lastMessage.tags.filter((tag) => tag.label === 'Unread').length > 0) {
+
+    if (!lastMessage.isRead) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
-      unread = true;
     }
   }
 
@@ -118,14 +117,6 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     return text;
   };
 
-  useEffect(() => {
-    if (unread && selected) {
-      markAsRead({
-        variables: { contactId: contactId.toString() },
-      });
-    }
-  }, [unread, selected, contactId, markAsRead]);
-
   const name = contactName.length > 20 ? `${contactName.slice(0, 20)}...` : contactName;
 
   const { type, body } = lastMessage;
@@ -146,6 +137,11 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   const msgID = searchMode ? `/#search${lastMessage.id}` : '';
 
+  let redirectURL = `/chat/${contactId}${msgID}`;
+  if (entityType === 'collection') {
+    redirectURL = `/chat/collection/${contactId}${msgID}`;
+  }
+
   return (
     <ListItem
       data-testid="list"
@@ -155,20 +151,31 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       component={Link}
       selected={selected}
       onClick={() => {
-        props.onClick(index);
+        if (props.onClick) props.onClick(index);
         setSearchOffset(client, props.messageNumber);
+        if (entityType === 'contact') {
+          markAsRead({
+            variables: { contactId: contactId.toString() },
+          });
+        }
       }}
-      to={`/chat/${contactId}${msgID}`}
+      to={redirectURL}
     >
       <div>
-        <div className={chatBubble.join(' ')} />
-        <div className={styles.Timer}>
-          <Timer
-            time={senderLastMessage}
-            contactStatus={contactStatus}
-            contactBspStatus={contactBspStatus}
-          />
-        </div>
+        {entityType === 'contact' ? (
+          <div className={styles.ChatIcons}>
+            <div className={chatBubble.join(' ')} />
+            <div className={styles.Timer}>
+              <Timer
+                time={senderLastMessage}
+                contactStatus={contactStatus}
+                contactBspStatus={contactBspStatus}
+              />
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <div className={chatInfoClass.join(' ')}>
         <div className={styles.ChatName} data-testid="name">

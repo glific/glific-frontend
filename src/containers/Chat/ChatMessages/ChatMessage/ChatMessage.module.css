@@ -82,6 +82,26 @@
   white-space: pre-line;
 }
 
+.ErrorContent {
+  border-radius: 12px;
+  border: 2px solid #ff0000;
+}
+
+.ErrorMsgIcon {
+  margin: auto 12px;
+  flex: none;
+}
+
+.WarningTooltip {
+  background-color: white !important;
+  color: #ff0000 !important;
+  border: 1px solid #ff0000;
+}
+
+.ArrowTooltip {
+  color: #ff0000 !important;
+}
+
 .Content a {
   text-decoration: none;
 }
@@ -176,4 +196,10 @@
 .StickerBackground {
   background-color: #00000000;
   box-shadow: none;
+}
+
+.ErrorMessage {
+  color: red;
+  font-size: 12px;
+  font-weight: 600;
 }

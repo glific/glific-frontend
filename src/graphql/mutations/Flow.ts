@@ -47,11 +47,14 @@ export const PUBLISH_FLOW = gql`
   mutation publishFlow($uuid: UUID!) {
     publishFlow(uuid: $uuid) {
       success
+      errors {
+        message
+      }
     }
   }
 `;
 
-export const ADD_FLOW_TO_GROUP = gql`
+export const ADD_FLOW_TO_COLLECTION = gql`
   mutation startGroupFlow($flowId: ID!, $groupId: ID!) {
     startGroupFlow(flowId: $flowId, groupId: $groupId) {
       success

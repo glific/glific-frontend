@@ -14,7 +14,7 @@ export interface AutocompleteProps {
   icon?: any;
   form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
-  helperText?: string;
+  helperText?: any;
   multiple?: boolean;
   disabled?: boolean;
   helpLink?: any;

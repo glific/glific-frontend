@@ -12,6 +12,7 @@
     padding: 0px !important;
     flex-direction: column;
   }
+
   .MobileHeader {
     padding: 8px 16px;
     display: flex !important;
@@ -19,21 +20,25 @@
     width: 100%;
     background-color: white;
   }
+
   .MenuIcon {
     margin-left: auto;
   }
+
   .ContactDetails {
     padding: 12px !important;
     padding-bottom: 0px !important;
   }
+
   .SessionTimerContainer {
     display: none;
   }
+
   .Chat {
     display: flex !important;
   }
 
-  .ContactGroups {
+  .ContactCollections {
     padding-left: 12px;
   }
 }
@@ -41,7 +46,7 @@
 .ContactInfoContainer {
   display: flex;
   width: 100%;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .MobileHeader {
@@ -165,19 +170,19 @@
   width: 270px;
 }
 
-.ContactGroups {
+.ContactCollections {
   flex-direction: row;
 }
 
-.GroupHeading {
+.CollectionHeading {
   font-weight: 500;
   line-height: 1;
   color: #cacaca;
   font-size: 12px;
 }
 
-.GroupsName {
-  composes: GroupHeading;
+.CollectionsName {
+  composes: CollectionHeading;
   margin-left: 6px;
   color: #93a29b;
 }

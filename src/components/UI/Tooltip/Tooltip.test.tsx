@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Tooltip } from './Tooltip';
-import * as TooltipElement from '@material-ui/core/Tooltip';
 
 jest.mock('@material-ui/core/Tooltip', () => (...props: any) => {
   const { children, classes } = props[0];
@@ -30,7 +29,7 @@ describe('Tooltip test', () => {
   });
 
   it('should add the classes send as props', () => {
-    const { container, getByTestId } = render(
+    const { container } = render(
       createTooltip({ tooltipArrowClass: 'tooltipArrow', tooltipClass: 'tooltip' })
     );
     expect(container.querySelector('.tooltipArrow')).toBeInTheDocument();

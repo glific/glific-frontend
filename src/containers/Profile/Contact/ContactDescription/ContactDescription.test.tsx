@@ -8,18 +8,18 @@ const defaultProps = {
   phone: '9987399299',
   maskedPhone: '9987399299',
   settings: '{"Status":"Active"}',
-  groups: [{ id: 1, label: 'Default Group', users: [{ name: 'Glific' }] }],
+  collections: [{ id: 1, label: 'Default Collection', users: [{ name: 'Glific' }] }],
   lastMessage: new Date(),
 };
-const propsWithMultipleGroups = {
+const propsWithMultipleCollections = {
   fields: {},
   phone: '9987399299',
   maskedPhone: '9987399299',
   settings: {},
-  groups: [
-    { id: 1, label: 'Default Group', users: [{ name: 'Glific' }] },
-    { id: 2, label: 'Poetry Group', users: [{ name: 'Admin' }] },
-    { id: 2, label: 'Staff Group', users: [{ name: 'Staff manager' }] },
+  collections: [
+    { id: 1, label: 'Default Collection', users: [{ name: 'Glific' }] },
+    { id: 2, label: 'Poetry Collection', users: [{ name: 'Admin' }] },
+    { id: 2, label: 'Staff Collection', users: [{ name: 'Staff manager' }] },
   ],
   lastMessage: new Date(),
 };
@@ -36,14 +36,16 @@ test('it should display contact number', () => {
   expect(getByTestId('phone')).toHaveTextContent('+9987399299');
 });
 
-test('it should display contact groups', () => {
+test('it should display contact collections', () => {
   const { getAllByTestId } = render(wrapper);
-  expect(getAllByTestId('groups')[0]).toHaveTextContent('Default Group');
+  expect(getAllByTestId('collections')[0]).toHaveTextContent('Default Collection');
 });
 
-test('it should display multiple groups properly', () => {
+test('it should display multiple collections properly', () => {
   const { getAllByTestId } = render(
-    <ContactDescription {...propsWithMultipleGroups}></ContactDescription>
+    <ContactDescription {...propsWithMultipleCollections}></ContactDescription>
   );
-  expect(getAllByTestId('groups')[0]).toHaveTextContent('Default Group, Poetry Group, Staff Group');
+  expect(getAllByTestId('collections')[0]).toHaveTextContent(
+    'Default Collection, Poetry Collection, Staff Collection'
+  );
 });

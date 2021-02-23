@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import styles from './ChatMessage.module.css';
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as WarningIcon } from '../../../../assets/images/icons/Warning.svg';
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
@@ -17,6 +18,7 @@ import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
+import { parseTextMethod } from '../../../../common/utils';
 
 export interface ChatMessageProps {
   id: number;
@@ -38,6 +40,7 @@ export interface ChatMessageProps {
   focus?: boolean;
   showMessage: boolean;
   location: any;
+  errors: any;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -51,7 +54,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const popperId = open ? 'simple-popper' : undefined;
   let displayTag: any;
   let deleteId: string | number;
-
   const {
     popup,
     focus,
@@ -66,6 +68,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     media,
     body,
     location,
+    errors,
   } = props;
 
   useEffect(() => {
@@ -98,6 +101,36 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let tagContainer: string | null = styles.TagContainerSender;
   let tagMargin: string | null = styles.TagMargin;
   let messageDetails = styles.MessageDetails;
+  const messageError = errors ? parseTextMethod(errors) : {};
+  let messageErrorStatus: any = false;
+  let tooltipTitle: any = moment(insertedAt).format(DATE_FORMAT);
+
+  // Check if the message has an error after sending the message.
+  if (Object.prototype.hasOwnProperty.call(messageError, 'payload')) {
+    messageErrorStatus = true;
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageError.payload.payload.reason}</div>
+      </>
+    );
+  } else if (Object.prototype.hasOwnProperty.call(messageError, 'message')) {
+    messageErrorStatus = parseTextMethod(messageError.message);
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageErrorStatus[0]}</div>
+      </>
+    );
+  } else if (Object.keys(messageError).length !== 0) {
+    messageErrorStatus = true;
+    tooltipTitle = (
+      <>
+        {tooltipTitle}
+        <div className={styles.ErrorMessage}>{messageError}</div>
+      </>
+    );
+  }
 
   const isSender = sender.id === contactId;
 
@@ -206,21 +239,32 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     />
   );
 
+  const ErrorIcon = messageErrorStatus ? (
+    <Tooltip
+      title="Something went wrong! This message could not be sent"
+      placement={isSender ? 'right' : 'left'}
+      tooltipClass={styles.WarningTooltip}
+      tooltipArrowClass={styles.ArrowTooltip}
+    >
+      <WarningIcon className={styles.ErrorMsgIcon} />
+    </Tooltip>
+  ) : null;
+
   return (
     <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
-
+        {ErrorIcon}
         <div
           className={`${styles.ChatMessage} ${mineColor} ${
             type === 'STICKER' ? styles.StickerBackground : ''
           }`}
         >
-          <Tooltip
-            title={moment(insertedAt).format(DATE_FORMAT)}
-            placement={isSender ? 'right' : 'left'}
-          >
-            <div className={styles.Content} data-testid="content">
+          <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
+            <div
+              className={`${styles.Content} ${messageErrorStatus ? styles.ErrorContent : ''}`}
+              data-testid="content"
+            >
               <div>
                 <ChatMessageType
                   type={type}

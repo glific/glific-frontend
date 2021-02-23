@@ -9,7 +9,7 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
 import { ReactComponent as VariableIcon } from '../../../../assets/images/icons/Template/Variable.svg';
-import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
+import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Clear.svg';
 
 import styles from './ChatInput.module.css';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
@@ -33,8 +33,8 @@ export interface ChatInputProps {
     variableParam: any
   ): any;
   handleHeightChange(newHeight: number): void;
-  contactStatus: string;
-  contactBspStatus: string;
+  contactStatus?: string;
+  contactBspStatus?: string;
   additionalStyle?: any;
   lastMessageTime?: any;
 }
@@ -54,7 +54,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
   const [attachment, setAttachment] = useState(false);
   const [attachmentAdded, setAttachmentAdded] = useState(false);
-  const [attachmentType, setAttachmentType] = useState('');
+  const [attachmentType, setAttachmentType] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState('');
   const [variable, setVariable] = useState(false);
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
@@ -123,13 +123,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const submitMessage = (message: string) => {
     if (!message) return;
 
-    // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
-
     if (attachmentAdded) {
       createMediaMessage({
         variables: {
@@ -144,6 +137,13 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
     }
+
+    // Resetting the EditorState
+    setEditorState(
+      EditorState.moveFocusToEnd(
+        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+      )
+    );
   };
 
   const handleClick = (title: string) => {
@@ -231,7 +231,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           key={type}
           data-testid="shortcutButton"
           onClick={() => handleClick(type)}
-          onKeyDown={() => handleClick(type)}
           aria-hidden="true"
           className={clsx(styles.QuickSend, {
             [styles.QuickSendSelected]: selectedTab === type,
@@ -328,14 +327,15 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           {quickSendButtons(quickSendTypes)}
         </div>
       </ClickAwayListener>
+
+      {showJumpToLatest === true ? jumpToLatest : null}
+
       <div
         className={clsx(styles.ChatInputElements, {
           [styles.Unrounded]: selectedTab !== '',
           [styles.Rounded]: selectedTab === '',
         })}
       >
-        {showJumpToLatest === true ? jumpToLatest : null}
-
         <WhatsAppEditor
           editorState={
             updatedEditorState
@@ -354,6 +354,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
               onClick={() => {
                 resetVariable();
+                resetAttachment();
               }}
             >
               <CrossIcon />

@@ -33,8 +33,8 @@ export const sideDrawerMenus = [
 
 export const staffManagementMenus = [
   {
-    title: 'Groups',
-    path: '/group',
+    title: 'Collections',
+    path: '/collection',
   },
   {
     title: 'Staff Management',

@@ -17,7 +17,7 @@ import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { getUserRole, displayUserGroups } from '../../context/role';
+import { getUserRole, displayUserCollections } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
 import {
@@ -121,7 +121,9 @@ export const List: React.SFC<ListProps> = ({
 
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
+  const capitalListItemName = listItemName
+    ? listItemName[0].toUpperCase() + listItemName.slice(1)
+    : '';
   let defaultColumnSort = columnNames[0];
 
   // check if there is a default column set for sorting
@@ -129,52 +131,69 @@ export const List: React.SFC<ListProps> = ({
     defaultColumnSort = defaultSortBy;
   }
 
-  // get the last sort value from local storage if exist else set the default column and order
-  const getSortCriteria = (listItemNameValue: string, columnName: string = '') => {
-    // let's determine if we are retrieving sort column or direction
-    // if columnName is empty then we want to get the sort direction
-    // also set the default values
-    let returnValue;
-    let isDirection = false;
+  // get the last sort column value from local storage if exist else set the default column
+  const getSortColumn = (listItemNameValue: string, columnName: string) => {
+    // set the column name
+    let columnnNameValue;
     if (columnName) {
-      returnValue = columnName;
-    } else {
-      // return default direction
-      returnValue = 'asc';
-      isDirection = true;
+      columnnNameValue = columnName;
     }
 
     // check if we have sorting stored in local storage
-    const sortValue = getLastListSessionValues(listItemNameValue, isDirection);
+    const sortValue = getLastListSessionValues(listItemNameValue, false);
 
+    // update column name from the local storage
     if (sortValue) {
-      returnValue = sortValue;
+      columnnNameValue = sortValue;
     }
 
-    return setColumnToBackendTerms(listItemName, returnValue);
+    return setColumnToBackendTerms(listItemName, columnnNameValue);
+  };
+
+  // get the last sort direction value from local storage if exist else set the default order
+  const getSortDirection = (listItemNameValue: string) => {
+    // set column direction
+    let sortDirection: any = 'asc';
+
+    // check if we have sorting stored in local storage
+    const sortValue = getLastListSessionValues(listItemNameValue, true);
+
+    if (sortValue) {
+      sortDirection = sortValue;
+    }
+
+    return sortDirection;
   };
 
   // Table attributes
   const [tableVals, setTableVals] = useState<TableVals>({
     pageNum: 0,
     pageRows: 50,
-    sortCol: getSortCriteria(listItemName, defaultColumnSort),
-    sortDirection: getSortCriteria(listItemName),
+    sortCol: getSortColumn(listItemName, defaultColumnSort),
+    sortDirection: getSortDirection(listItemName),
   });
 
   let userRole: any = getUserRole();
 
   const handleTableChange = (attribute: string, newVal: any) => {
-    const value = setColumnToBackendTerms(listItemName, newVal);
+    let updatedList;
+    let attributeValue = newVal;
+    if (attribute === 'sortCol') {
+      attributeValue = setColumnToBackendTerms(listItemName, newVal);
+      updatedList = getUpdatedList(listItemName, newVal, false);
+    } else {
+      updatedList = getUpdatedList(listItemName, newVal, true);
+    }
 
-    const updatedList = getUpdatedList(listItemName, newVal, attribute === 'sortDirection');
+    // set the sort criteria in localstorage
     setListSession(JSON.stringify(updatedList));
 
     setTableVals({
       ...tableVals,
-      [attribute]: value,
+      [attribute]: attributeValue,
     });
   };
+
   let filter: any = {};
 
   if (searchVal !== '') {
@@ -182,12 +201,16 @@ export const List: React.SFC<ListProps> = ({
   }
   filter = { ...filter, ...filters };
   const filterPayload = useCallback(() => {
+    let order = 'ASC';
+    if (tableVals.sortDirection) {
+      order = tableVals.sortDirection.toUpperCase();
+    }
     return {
       filter,
       opts: {
         limit: tableVals.pageRows,
         offset: tableVals.pageNum * tableVals.pageRows,
-        order: tableVals.sortDirection.toUpperCase(),
+        order,
         orderWith: tableVals.sortCol,
       },
     };
@@ -205,9 +228,10 @@ export const List: React.SFC<ListProps> = ({
   });
 
   // Get item data here
-  const [fetchUserGroups, { loading: loadingGroups, data: userGroups }] = useLazyQuery(
-    GET_CURRENT_USER
-  );
+  const [
+    fetchUserCollections,
+    { loading: loadingCollections, data: userCollections },
+  ] = useLazyQuery(GET_CURRENT_USER);
 
   const checkUserRole = () => {
     userRole = getUserRole();
@@ -221,9 +245,9 @@ export const List: React.SFC<ListProps> = ({
     if (userRole.length === 0) {
       checkUserRole();
     } else {
-      if (!displayUserGroups && listItem === 'groups') {
-        // if user role staff then display groups related to login user
-        fetchUserGroups();
+      if (!displayUserCollections && listItem === 'collections') {
+        // if user role staff then display collections related to login user
+        fetchUserCollections();
       }
       fetchQuery();
     }
@@ -290,7 +314,7 @@ export const List: React.SFC<ListProps> = ({
     return <Redirect to={`/${pageLink}/add`} />;
   }
 
-  if (loading || l || loadingGroups) return <Loading />;
+  if (loading || l || loadingCollections) return <Loading />;
   if (error || e) {
     if (error) {
       setErrorMessage(client, error);
@@ -388,8 +412,8 @@ export const List: React.SFC<ListProps> = ({
             return null;
           })}
 
-          {/* do not display edit & delete for staff role in group */}
-          {displayUserGroups || listItems !== 'groups' ? (
+          {/* do not display edit & delete for staff role in collection */}
+          {displayUserCollections || listItems !== 'collections' ? (
             <>
               {editButton}
               {deleteButton(id, label)}
@@ -421,8 +445,8 @@ export const List: React.SFC<ListProps> = ({
     setTableVals({
       pageNum: 0,
       pageRows: 50,
-      sortCol: getSortCriteria(listItemName, defaultColumnSort),
-      sortDirection: getSortCriteria(listItemName),
+      sortCol: getSortColumn(listItemName, defaultColumnSort),
+      sortDirection: getSortDirection(listItemName),
     });
   };
 
@@ -439,9 +463,9 @@ export const List: React.SFC<ListProps> = ({
     itemList = formatList(data[listItem]);
   }
 
-  if (userGroups) {
-    if (listItem === 'groups') {
-      itemList = formatList(userGroups.currentUser.user.groups);
+  if (userCollections) {
+    if (listItem === 'collections') {
+      itemList = formatList(userCollections.currentUser.user.groups);
     }
   }
 

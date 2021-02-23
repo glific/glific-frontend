@@ -1,22 +1,24 @@
 import React from 'react';
-import { render, wait, act, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
 const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery({
+export const searchQuery = {
   query: SEARCH_QUERY,
   variables: {
     filter: {},
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
       {
+        group: null,
         contact: {
           id: '2',
           name: 'Effie Cormier',
@@ -32,6 +34,7 @@ cache.writeQuery({
             body: 'Hey there whats up?',
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
+            isRead: true,
             receiver: {
               id: '1',
             },
@@ -47,6 +50,49 @@ cache.writeQuery({
             ],
             type: 'TEXT',
             media: null,
+            errors: '{}',
+          },
+        ],
+      },
+    ],
+  },
+};
+
+cache.writeQuery(searchQuery);
+
+// add collection to apollo cache
+cache.writeQuery({
+  query: SEARCH_QUERY,
+  variables: {
+    filter: { searchGroup: true },
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        group: {
+          id: '2',
+          label: 'Default Group',
+        },
+        contact: null,
+        messages: [
+          {
+            id: '1',
+            body: 'Hey there whats up?',
+            insertedAt: '2020-06-25T13:36:43Z',
+            location: null,
+            receiver: {
+              id: '1',
+            },
+            isRead: true,
+            sender: {
+              id: '1',
+            },
+            tags: null,
+            type: 'TEXT',
+            media: null,
+            errors: '{}',
           },
         ],
       },
@@ -90,7 +136,7 @@ it('should contain the mock message', async () => {
 });
 
 test('click on assign tag should open a dialog box with already assigned tags', async () => {
-  const { getByTestId, getByText } = render(chatMessages);
+  const { getByTestId } = render(chatMessages);
   await waitFor(() => {
     fireEvent.click(getByTestId('messageOptions'));
   });
@@ -148,4 +194,19 @@ test('cancel after dialog box open', async () => {
   });
 
   fireEvent.click(getByText('Cancel'));
+});
+
+const chatMessagesWithCollection = (
+  <MemoryRouter>
+    <ApolloProvider client={client}>
+      <ChatMessages collectionId="2" />
+    </ApolloProvider>
+  </MemoryRouter>
+);
+
+it('should have title as group name', async () => {
+  const { getByTestId } = render(chatMessagesWithCollection);
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
+  });
 });

@@ -1,13 +1,20 @@
 import React, { useCallback, useEffect } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
-import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
+import {
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  SEARCH_QUERY_VARIABLES,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
 import { getUserSession } from '../../../services/AuthService';
 import {
+  COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
+  MESSAGE_STATUS_SUBSCRIPTION,
 } from '../../../graphql/subscriptions/Chat';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
@@ -32,6 +39,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     onCompleted: (conversation) => {
       if (conversation) {
         // save the conversation and update cache
+
+        // temporary fix for cache. need to check why queryvariables change
         saveConversation(conversation, client, queryVariables);
       }
     },
@@ -51,18 +60,28 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
       let newMessage: any;
       let contactId: number = 0;
+      let collectionId: number = 0;
       let tagData: any;
+      let messageStatusData: any;
       switch (action) {
         case 'SENT':
           // set the receiver contact id
           newMessage = subscriptionData.data.sentMessage;
           contactId = subscriptionData.data.sentMessage.receiver.id;
-
           break;
         case 'RECEIVED':
           // set the sender contact id
           newMessage = subscriptionData.data.receivedMessage;
           contactId = subscriptionData.data.receivedMessage.sender.id;
+          break;
+        case 'COLLECTION':
+          newMessage = subscriptionData.data.sentGroupMessage;
+          collectionId = subscriptionData.data.sentGroupMessage.groupId.toString();
+          break;
+        case 'STATUS':
+          // set the receiver contact id
+          messageStatusData = subscriptionData.data.updateMessageStatus;
+          contactId = subscriptionData.data.updateMessageStatus.receiver.id;
           break;
         case 'TAG_ADDED':
         case 'TAG_DELETED':
@@ -87,13 +106,24 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // loop through the cached conversations and find if contact exists
       let conversationIndex = 0;
       let conversationFound = false;
-      cachedConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
-          conversationIndex = index;
-          conversationFound = true;
-        }
-        return null;
-      });
+
+      if (action === 'COLLECTION') {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.group.id === collectionId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      } else {
+        cachedConversations.search.map((conversation: any, index: any) => {
+          if (conversation.contact.id === contactId) {
+            conversationIndex = index;
+            conversationFound = true;
+          }
+          return null;
+        });
+      }
 
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
@@ -101,11 +131,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         getContactQuery({
           variables: {
             contactOpts: {
-              limit: 50,
+              limit: DEFAULT_CONTACT_LIMIT,
             },
             filter: { id: contactId },
             messageOpts: {
-              limit: 50,
+              limit: DEFAULT_MESSAGE_LIMIT,
             },
           },
         });
@@ -135,7 +165,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // let's add/delete tags for the message
         // tag object: tagData.tag
         updatedConversation[0].messages.forEach((message: any) => {
-          if (message.id === tagData.message.id) {
+          if (tagData && message.id === tagData.message.id) {
             // let's add tag if action === "TAG_ADDED"
             if (action === 'TAG_ADDED') {
               message.tags.push(tagData.tag);
@@ -145,6 +175,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
               // eslint-disable-next-line
               message.tags = message.tags.filter((tag: any) => tag.id !== tagData.tag.id);
             }
+          }
+
+          if (messageStatusData && message.id === messageStatusData.id) {
+            // eslint-disable-next-line
+            message.errors = messageStatusData.errors;
           }
         });
       }
@@ -158,6 +193,28 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     },
     [getContactQuery]
   );
+
+  const [
+    loadCollectionData,
+    { subscribeToMore: collectionSubscribe, data: collectionData },
+  ] = useLazyQuery<any>(SEARCH_QUERY, {
+    variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+    nextFetchPolicy: 'cache-only',
+    onCompleted: () => {
+      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+
+      if (collectionSubscribe) {
+        // collection sent subscription
+        collectionSubscribe({
+          document: COLLECTION_SENT_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'COLLECTION');
+          },
+        });
+      }
+    },
+  });
 
   const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
     variables: queryVariables,
@@ -184,6 +241,18 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           },
         });
 
+        // message status subscription
+        subscribeToMore({
+          document: MESSAGE_STATUS_SUBSCRIPTION,
+          variables: subscriptionVariables,
+          updateQuery: (prev, { subscriptionData }) => {
+            return updateConversations(prev, subscriptionData, 'STATUS');
+          },
+          onError: (e) => {
+            console.log('e', e);
+          },
+        });
+
         // tag added subscription
         subscribeToMore({
           document: ADD_MESSAGE_TAG_SUBSCRIPTION,
@@ -206,10 +275,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && collectionData) {
       setDataLoaded(true);
     }
-  }, [data]);
+  }, [data, collectionData]);
 
   useEffect(() => {
     setLoading(loading);
@@ -218,6 +287,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   useEffect(() => {
     if (!data) {
       loadData();
+      loadCollectionData();
     }
   }, []);
 

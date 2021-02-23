@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen, wait, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -32,7 +32,7 @@ describe('<Login />', () => {
   });
 
   it('test the login form submission with correct creds', async () => {
-    const { container,getByText } = render(wrapper);
+    const { container } = render(wrapper);
     const phone = screen.getByRole('textbox');
     UserEvent.type(phone, '+919978776554');
 
@@ -48,7 +48,6 @@ describe('<Login />', () => {
     act(() => {
       axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     });
-
   });
 
   it('test the login form submission with incorrect creds', async () => {

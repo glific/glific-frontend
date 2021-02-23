@@ -5,19 +5,18 @@ import { MockedProvider } from '@apollo/client/testing';
 import { HSMPage } from './HSMPage';
 import { getHSMTemplateCountQuery } from '../../../../mocks/Template';
 
-const mocks=[getHSMTemplateCountQuery]
+const mocks = [getHSMTemplateCountQuery];
 
 describe('<HSMPage />', () => {
-  it('should display the HSM Page',async () => {
+  it('should display the HSM Page', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <HSMPage />
       </MockedProvider>
     );
 
-    await waitFor(()=>{
+    await waitFor(() => {
       expect(getByTestId('listHeader')).toBeInTheDocument();
-    })
-    
+    });
   });
 });

@@ -8,9 +8,13 @@ import { walletBalanceQuery, walletBalanceSubscription } from '../../mocks/Organ
 import { setUserSession } from '../../services/AuthService';
 import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import * as Chat from '../../containers/Chat/Chat';
+import * as ChatSubscription from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import axios from 'axios';
+
+jest.mock('axios');
 
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription, ...CONVERSATION_MOCKS];
-
+window.HTMLElement.prototype.scrollIntoView = function () {};
 describe('<AuthenticatedRoute />', () => {
   test('it should render', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -25,6 +29,11 @@ describe('<AuthenticatedRoute />', () => {
     const spy = jest.spyOn(Chat, 'Chat');
     spy.mockImplementation((props: any) => {
       return <div data-testid="chat"></div>;
+    });
+
+    const spyOnSubscription = jest.spyOn(ChatSubscription, 'ChatSubscription');
+    spyOnSubscription.mockImplementation((props: any) => {
+      return <div data-testid="chatSubscription"></div>;
     });
 
     await waitFor(() => {

@@ -7,8 +7,19 @@ import { ReactComponent as WhiteIcon } from '../../assets/images/icons/White.svg
 import { ReactComponent as SelectWhiteIcon } from '../../assets/images/icons/SelectWhite.svg';
 import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { BSPBALANCE } from '../../graphql/queries/Organization';
-import PERIODIC_INFO_SUBSCRIPTION from '../../graphql/subscriptions/PeriodicInfo';
+import { BSP_BALANCE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
+
+const nullBalance = () => {
+  return (
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
+      <div className={styles.WalletBalanceText}>
+        <SelectWhiteIcon className={styles.Icon} />
+        Wallet balance is okay
+      </div>
+    </div>
+  );
+};
 
 export interface WalletBalanceProps {
   fullOpen: boolean;
@@ -23,9 +34,15 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     variables,
   });
 
+  const updateBalanceValue = (balance: any) => {
+    if (balance && balance !== null) {
+      setDisplayBalance(balance);
+    }
+  };
+
   useEffect(() => {
     if (balanceData) {
-      const balance = JSON.parse(balanceData.bspbalance.value);
+      const balance = JSON.parse(balanceData.bspbalance);
       setDisplayBalance(balance.balance);
     }
   }, [balanceData]);
@@ -34,12 +51,12 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   useEffect(() => {
     if (subscribeToMore) {
       subscribeToMore({
-        document: PERIODIC_INFO_SUBSCRIPTION,
+        document: BSP_BALANCE_SUBSCRIPTION,
         variables,
         updateQuery: (prev, { subscriptionData }) => {
-          if (subscriptionData.data.periodicInfo.key === 'bsp_balance') {
-            const balance = JSON.parse(subscriptionData.data.periodicInfo.value);
-            setDisplayBalance(balance.balance);
+          if (subscriptionData.data.bspBalance) {
+            const balance = JSON.parse(subscriptionData.data.bspBalance);
+            updateBalanceValue(balance.balance);
           }
         },
       });
@@ -57,6 +74,9 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   }
 
   const errorBody = () => {
+    if (displayBalance === null && !error) {
+      return nullBalance();
+    }
     return (
       <Tooltip title="For any help, please contact the Glific team" placement="top-start">
         <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
@@ -108,11 +128,13 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const updateBalance = (
     <div
       className={`${styles.WalletBalance} ${
-        displayBalance && displayBalance > 1 ? styles.WalletBalanceHigh : styles.WalletBalanceLow
+        displayBalance !== null && displayBalance > 1
+          ? styles.WalletBalanceHigh
+          : styles.WalletBalanceLow
       }`}
       data-testid="WalletBalance"
     >
-      {displayBalance ? updateBody() : errorBody()}
+      {displayBalance !== null ? updateBody() : errorBody()}
     </div>
   );
 

@@ -1,11 +1,13 @@
 import { savedSearchQuery } from '../../../mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from '../../../graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
 const withResult = {
   data: {
     search: [
       {
         __typename: 'Conversation',
+        group: null,
         contact: {
           id: '6',
           name: 'Red Sparrow',
@@ -37,6 +39,7 @@ const withResult = {
             ],
             type: 'TEXT',
             media: null,
+            errors: '{}',
           },
         ],
       },
@@ -56,7 +59,7 @@ const searchQuery = (
     request: {
       query: SEARCH_QUERY,
       variables: {
-        filter: filter,
+        filter,
         messageOpts: messageLimit,
         contactOpts: { limit: contactLimit },
       },
@@ -66,22 +69,31 @@ const searchQuery = (
 };
 
 export const chatConversationsMocks = [
-  searchQuery({ limit: 50 }, 50, {}),
-  searchQuery({ limit: 50 }, 50, { term: 'a' }, false),
-  searchQuery({ limit: 50 }, 50, { term: '' }),
-  searchQuery({ limit: 5 }, 10, { includeTags: ['12'] }, false),
-  searchQuery({ limit: 50 }, 1, {}, false),
-  searchQuery({ limit: 50, offset: 0 }, 1, { id: '6' }, false),
+  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, {}),
+  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, { term: 'a' }, false),
+  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, DEFAULT_MESSAGE_LIMIT, { term: '' }),
+  searchQuery(
+    { limit: DEFAULT_CONTACT_LIMIT },
+    DEFAULT_MESSAGE_LIMIT,
+    { includeTags: ['12'] },
+    false
+  ),
+  searchQuery({ limit: DEFAULT_CONTACT_LIMIT }, 1, {}, false),
+  searchQuery({ limit: DEFAULT_CONTACT_LIMIT, offset: 0 }, 1, { id: '6' }, false),
 ];
 
-export const searchMultiQuery = (term: string = '', limit: number = 50) => {
+export const searchMultiQuery = (
+  term: string = '',
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
+) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
       variables: {
-        searchFilter: { term: term },
-        messageOpts: { limit: limit, order: 'ASC' },
-        contactOpts: { order: 'DESC', limit: limit },
+        contactOpts: { order: 'DESC', contactLimit },
+        searchFilter: { term },
+        messageOpts: { messageLimit, order: 'ASC' },
       },
     },
     result: {
@@ -206,5 +218,13 @@ export const ChatConversationMocks = [
   searchOffset,
 ];
 
-export const searchQueryMock = searchQuery({ limit: 50 }, 50, { term: '' });
-export const searchQueryEmptyMock = searchQuery({ limit: 50 }, 50, {});
+export const searchQueryMock = searchQuery(
+  { limit: DEFAULT_CONTACT_LIMIT },
+  DEFAULT_MESSAGE_LIMIT,
+  { term: '' }
+);
+export const searchQueryEmptyMock = searchQuery(
+  { limit: DEFAULT_CONTACT_LIMIT },
+  DEFAULT_MESSAGE_LIMIT,
+  {}
+);

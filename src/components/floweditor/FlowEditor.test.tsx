@@ -2,11 +2,22 @@ import React from 'react';
 import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { wait, render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { getFlowDetailsQuery } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
+import {
+  simulatorGetQuery,
+  simulatorReleaseQuery,
+  simulatorReleaseSubscription,
+} from '../../mocks/Simulator';
 
-const mocks = [getFlowDetailsQuery, conversationQuery];
+const mocks = [
+  getFlowDetailsQuery,
+  conversationQuery,
+  simulatorReleaseSubscription,
+  simulatorReleaseQuery,
+  simulatorGetQuery,
+];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
@@ -47,8 +58,10 @@ test('it should have save as draft button', () => {
   expect(getByTestId('saveDraftButton')).toBeInTheDocument();
 });
 
-test('click on preview button should open simulator', () => {
+test('click on preview button should open simulator', async () => {
   const { getByTestId } = render(wrapper);
   fireEvent.click(getByTestId('previewButton'));
-  expect(getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
+  await waitFor(() => {
+    expect(getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
+  });
 });

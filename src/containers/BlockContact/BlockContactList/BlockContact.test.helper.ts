@@ -27,7 +27,7 @@ const contactSearchQuery = {
           groups: [
             {
               id: '1',
-              label: 'Default group',
+              label: 'Default collection',
             },
           ],
           status: 'BLOCKED',
@@ -63,7 +63,7 @@ const contactSearchQueryBlocked = {
           groups: [
             {
               id: '1',
-              label: 'Default group',
+              label: 'Default collection',
             },
           ],
           status: 'BLOCKED',

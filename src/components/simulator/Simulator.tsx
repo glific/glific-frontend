@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useApolloClient, useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { Button } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -14,31 +14,39 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
 import moment from 'moment';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import styles from './Simulator.module.css';
+import { Button as FormButton } from '../UI/Form/Button/Button';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { SEARCH_QUERY_VARIABLES, TIME_FORMAT, SIMULATOR_CONTACT } from '../../common/constants';
+import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
+import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
+import { getUserSession } from '../../services/AuthService';
+import { setNotification } from '../../common/notification';
 
 export interface SimulatorProps {
   showSimulator: boolean;
-  setShowSimulator: any;
+  setSimulatorId: any;
   simulatorIcon?: boolean;
   message?: any;
+  flowSimulator?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
-  setShowSimulator,
+  setSimulatorId,
   simulatorIcon = true,
   message = {},
+  flowSimulator,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
-  const messageRef: any = useRef<HTMLDivElement>();
-
+  const variables = { organizationId: getUserSession('organizationId') };
+  const client = useApolloClient();
   let messages = [];
   let simulatorId = '';
 
@@ -47,10 +55,38 @@ export const Simulator: React.FC<SimulatorProps> = ({
     fetchPolicy: 'cache-only',
   });
 
-  if (allConversations) {
+  const { data: simulatorSubscribe }: any = useSubscription(SIMULATOR_RELEASE_SUBSCRIPTION, {
+    variables,
+  });
+
+  useEffect(() => {
+    if (simulatorSubscribe) {
+      const userId = JSON.parse(simulatorSubscribe.simulatorRelease).simulator_release.user_id;
+      if (userId.toString() === getUserSession('id')) {
+        setSimulatorId(0);
+      }
+    }
+  }, [simulatorSubscribe]);
+
+  const [getSimulator, { data }]: any = useLazyQuery(GET_SIMULATOR, {
+    fetchPolicy: 'network-only',
+    onCompleted: (simulatorData) => {
+      if (simulatorData.simulatorGet) {
+        setSimulatorId(simulatorData.simulatorGet.id);
+      } else {
+        setNotification(client, 'No more simulators are available right now', 'warning');
+      }
+    },
+  });
+
+  const [releaseSimulator]: any = useLazyQuery(RELEASE_SIMULATOR, {
+    fetchPolicy: 'network-only',
+  });
+
+  if (allConversations && data && data.simulatorGet) {
     // currently setting the simulated contact as the default receiver
     const simulatedContact = allConversations.search.filter(
-      (item: any) => item.contact.phone === SIMULATOR_CONTACT
+      (item: any) => item.contact.id === data.simulatorGet.id
     );
     if (simulatedContact.length > 0) {
       messages = simulatedContact[0].messages;
@@ -60,6 +96,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const getStyleForDirection = (direction: string): string => {
     return direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
+  };
+
+  const releaseUserSimulator = () => {
+    releaseSimulator();
+    setSimulatorId(0);
   };
 
   const renderMessage = (
@@ -107,8 +148,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
           },
           sender: {
             // this number will be the simulated contact number
-            phone: SIMULATOR_CONTACT,
-            name: 'Simulator',
+            phone: data ? data.simulatorGet.phone : '',
+            name: data ? data.simulatorGet.name : '',
           },
         },
       },
@@ -117,17 +158,20 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   useEffect(() => {
-    if (message.keyword !== undefined) {
+    if (message.keyword !== undefined && data) {
       sendMessage();
     }
-  }, [message.keyword]);
+  }, [message.keyword, data]);
 
-  useEffect(() => {
-    const messageContainer: any = messageRef.current;
-    if (messageContainer) {
-      messageContainer.scrollTop = messageContainer.scrollHeight;
-    }
-  }, [messages]);
+  const messageRef = useCallback(
+    (node: any) => {
+      if (node !== null) {
+        const nodeCopy = node;
+        nodeCopy.scrollTop = node.scrollHeight;
+      }
+    },
+    [messages]
+  );
 
   const simulator = (
     <Draggable>
@@ -136,7 +180,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <div id="simulator" className={styles.Simulator}>
             <ClearIcon
               className={styles.ClearIcon}
-              onClick={() => setShowSimulator(false)}
+              onClick={() => {
+                releaseUserSimulator();
+              }}
               data-testid="clearIcon"
             />
             <div className={styles.Screen}>
@@ -189,7 +235,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   );
 
   const handleSimulator = () => {
-    setShowSimulator(!showSimulator);
+    getSimulator();
   };
 
   return (
@@ -199,8 +245,35 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-          onClick={() => handleSimulator()}
+          onClick={() => {
+            if (showSimulator) {
+              releaseUserSimulator();
+            } else {
+              handleSimulator();
+            }
+          }}
         />
+      ) : null}
+
+      {flowSimulator ? (
+        <div className={styles.PreviewButton}>
+          <FormButton
+            variant="outlined"
+            color="primary"
+            data-testid="previewButton"
+            className={styles.Button}
+            onClick={() => {
+              if (showSimulator) {
+                releaseUserSimulator();
+              } else {
+                handleSimulator();
+              }
+            }}
+          >
+            Preview
+            {showSimulator ? <CancelOutlinedIcon className={styles.CrossIcon} /> : null}
+          </FormButton>
+        </div>
       ) : null}
     </>
   );

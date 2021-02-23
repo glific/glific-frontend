@@ -10,10 +10,19 @@ import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
 import { setNotification, setErrorMessage } from '../../../common/notification';
-import { TIME_FORMAT, SEARCH_QUERY_VARIABLES, setVariables } from '../../../common/constants';
+import {
+  TIME_FORMAT,
+  SEARCH_QUERY_VARIABLES,
+  setVariables,
+  COLLECTION_SEARCH_QUERY_VARIABLES,
+  DEFAULT_MESSAGE_LIMIT,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
+} from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
+  CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
   UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -21,14 +30,18 @@ import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Sel
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 
 export interface ChatMessagesProps {
-  contactId: number | string;
-  simulatorId?: string | null;
+  contactId?: number | string | null;
+  collectionId?: number | string | null;
+  isSimulator?: boolean;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulatorId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  collectionId,
+  isSimulator,
+}) => {
   // create an instance of apolloclient
   const client = useApolloClient();
-
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
@@ -39,7 +52,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(50);
+  const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
@@ -69,7 +82,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
-  const queryVariables = SEARCH_QUERY_VARIABLES;
+  let queryVariables = SEARCH_QUERY_VARIABLES;
+
+  if (collectionId) {
+    queryVariables = COLLECTION_SEARCH_QUERY_VARIABLES;
+  }
 
   const {
     loading: conversationLoad,
@@ -83,40 +100,40 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData) {
+        // get the conversations from cache
+        const conversations = getCachedConverations(client, queryVariables);
+
+        const conversationCopy = JSON.parse(JSON.stringify(searchData));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => {
+            return currentMessage.id - nextMessage.id;
+          })
+          .reverse();
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        let isContactCached = false;
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          const conversationObj = conversation;
+          // If the contact is present in the cache
+          if (conversationObj.contact.id === contactId?.toString()) {
+            isContactCached = true;
+            conversationObj.messages = [
+              ...conversationObj.messages,
+              ...conversationCopy.search[0].messages,
+            ];
+          }
+          return conversationObj;
+        });
+        // If the contact is NOT present in the cache
+        if (!isContactCached) {
+          conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
+        }
+        // update the conversation cache
+        updateConversationsCache(conversationsCopy, client, queryVariables);
+
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         } else {
-          // get the conversations from cache
-          const conversations = getCachedConverations(client, queryVariables);
-
-          const conversationCopy = JSON.parse(JSON.stringify(searchData));
-          conversationCopy.search[0].messages
-            .sort((currentMessage: any, nextMessage: any) => {
-              return currentMessage.id - nextMessage.id;
-            })
-            .reverse();
-          const conversationsCopy = JSON.parse(JSON.stringify(conversations));
-          let isContactCached = false;
-          conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
-            const conversationObj = conversation;
-            // If the contact is present in the cache
-            if (conversationObj.contact.id === contactId.toString()) {
-              isContactCached = true;
-              conversationObj.messages = [
-                ...conversationObj.messages,
-                ...conversationCopy.search[0].messages,
-              ];
-            }
-            return conversationObj;
-          });
-          // If the contact is NOT present in the cache
-          if (!isContactCached) {
-            conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
-          }
-          // update the conversation cache
-          updateConversationsCache(conversationsCopy, client, queryVariables);
-
-          setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
       }
     },
@@ -140,6 +157,45 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     },
   });
 
+  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
+    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+  });
+
+  const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
+    const payloadCopy = payload;
+    // add additional param for template
+    if (selectedTemplate) {
+      payloadCopy.isHsm = selectedTemplate.isHsm;
+      payloadCopy.templateId = parseInt(selectedTemplate.id, 10);
+      payloadCopy.params = variableParam;
+    }
+    return payloadCopy;
+  };
+
+  // this function is called when the message is sent collection
+  const sendCollectionMessageHandler = (
+    body: string,
+    mediaId: string,
+    messageType: string,
+    selectedTemplate: any,
+    variableParam: any
+  ) => {
+    const payload: any = {
+      body,
+      senderId: 1,
+      mediaId,
+      type: messageType,
+      flow: 'OUTBOUND',
+    };
+
+    sendMessageToCollection({
+      variables: {
+        groupId: collectionId,
+        input: updatePayload(payload, selectedTemplate, variableParam),
+      },
+    });
+  };
+
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
     (
@@ -158,15 +214,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         flow: 'OUTBOUND',
       };
 
-      // add additional param for template
-      if (selectedTemplate) {
-        payload.isHsm = selectedTemplate.isHsm;
-        payload.templateId = parseInt(selectedTemplate.id, 10);
-        payload.params = variableParam;
-      }
-
       createAndSendMessage({
-        variables: { input: payload },
+        variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
     },
     [createAndSendMessage, contactId]
@@ -174,7 +223,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (data && data.search[0].contact.status === 'BLOCKED') {
+  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
     return <Redirect to="/chat" />;
   }
 
@@ -193,25 +242,55 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   // use contact id to filter if it is passed via url, else use the first conversation
   let conversationInfo: any = {};
 
+  const updateConversationInfo = (type: string, Id: any) => {
+    allConversations.search.map((conversation: any, index: any) => {
+      if (conversation[type].id === Id.toString()) {
+        conversationIndex = index;
+        conversationInfo = conversation;
+      }
+      return null;
+    });
+  };
+
   if (contactId) {
     // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search)
-      allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId.toString()) {
-          conversationIndex = index;
-          conversationInfo = conversation;
-        }
-        return null;
-      });
+    if (allConversations && allConversations.search) {
+      updateConversationInfo('contact', contactId);
+    }
 
     // if conversation is not present then fetch for contact
+    if (conversationIndex < 0) {
+      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
+        getSearchQuery({
+          variables: {
+            filter: { id: contactId },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+          },
+        });
+      }
+    }
+  }
+
+  if (collectionId) {
+    // loop through the cached conversations and find if collection exists
+    if (allConversations && allConversations.search) {
+      if (collectionId === -1) {
+        conversationIndex = 0;
+        [conversationInfo] = allConversations.search;
+      } else {
+        updateConversationInfo('group', collectionId);
+      }
+    }
+
+    // if conversation is not present then fetch the group
     if (conversationIndex < 0) {
       if (!loading && !data) {
         getSearchQuery({
           variables: {
-            filter: { id: contactId },
-            messageOpts: { limit: 50, offset: 0 },
-            contactOpts: { limit: 50 },
+            filter: { id: collectionId, searchGroup: true },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
           },
         });
       }
@@ -311,11 +390,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
   }
 
   const loadMoreMessages = () => {
+    const variables: any = {
+      contactOpts: { limit: 1 },
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
+    };
+
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
+    }
     getSearchQuery({
       variables: {
-        filter: { id: contactId.toString() },
-        messageOpts: { limit: 50, offset: messageOffset },
+        filter: { id: contactId?.toString() },
         contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
       },
     });
     const messageContainer = document.querySelector('.messageContainer');
@@ -334,7 +422,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > 49 ? (
+        {showLoadMore && conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ? (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
@@ -385,23 +473,26 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
     );
   }
 
-  return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
-      {dialogBox}
+  let topChatBar;
+  let chatInputSection;
+  if (contactId) {
+    topChatBar = (
       <ContactBar
-        contactName={
+        displayName={
           conversationInfo.contact.name
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={contactId === simulatorId}
+        isSimulator={isSimulator}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
         handleAction={handleChatClearedAction}
       />
-      {messageListContainer}
+    );
+
+    chatInputSection = (
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendMessageHandler}
@@ -409,6 +500,30 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, simulato
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
       />
+    );
+  } else if (collectionId) {
+    topChatBar = (
+      <ContactBar
+        collectionId={collectionId.toString()}
+        displayName={conversationInfo.group.label}
+        handleAction={handleChatClearedAction}
+      />
+    );
+
+    chatInputSection = (
+      <ChatInput
+        handleHeightChange={handleHeightChange}
+        onSendMessage={sendCollectionMessageHandler}
+      />
+    );
+  }
+
+  return (
+    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+      {dialogBox}
+      {topChatBar}
+      {messageListContainer}
+      {chatInputSection}
     </Container>
   );
 };

@@ -43,11 +43,8 @@ export const UPDATE_MESSAGE_TAGS = gql`
 `;
 
 export const MESSAGE_FRAGMENT = gql`
-  fragment tags on Message {
-    tags {
-      id
-      label
-    }
+  fragment isRead on Message {
+    isRead
   }
 `;
 
@@ -57,7 +54,7 @@ export const MARK_AS_READ = gql`
   }
 `;
 
-export const CREATE_AND_SEND_MESSAGE_TO_GROUP_MUTATION = gql`
+export const CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION = gql`
   mutation createAndSendMessageToGroup($groupId: ID!, $input: MessageInput!) {
     createAndSendMessageToGroup(groupId: $groupId, input: $input) {
       success

@@ -1,5 +1,5 @@
 import React from 'react';
-import {render} from "@testing-library/react";
+import { render } from '@testing-library/react';
 import { AutoComplete } from './AutoComplete';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
@@ -14,12 +14,12 @@ describe('<AutoComplete />', () => {
     },
   ];
 
-  const mockHandleChange=jest.fn()
+  const mockHandleChange = jest.fn();
   const props = {
     label: 'Example',
     options: option,
     optionLabel: 'label',
-    onChange:mockHandleChange,
+    onChange: mockHandleChange,
     field: { name: 'example', value: [] },
     form: { dirty: false, touched: false, errors: false, setFieldValue: mockHandleChange },
   };

@@ -12,9 +12,14 @@ export const SEARCH_QUERY = gql`
         status
         bspStatus
       }
+      group {
+        id
+        label
+      }
       messages {
         id
         body
+        isRead
         insertedAt
         receiver {
           id
@@ -37,6 +42,7 @@ export const SEARCH_QUERY = gql`
           url
           caption
         }
+        errors
       }
     }
   }
@@ -49,7 +55,6 @@ export const SAVED_SEARCH_QUERY = gql`
       shortcode
       label
       args
-      count
     }
   }
 `;
@@ -156,8 +161,8 @@ export const SEARCH_LIST_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
-      count
     }
   }
 `;
@@ -176,8 +181,13 @@ export const GET_SEARCH = gql`
         shortcode
         label
         args
-        count
       }
     }
+  }
+`;
+
+export const SEARCHES_COUNT = gql`
+  query count($organizationId: ID!) {
+    collectionStats(organizationId: $organizationId)
   }
 `;

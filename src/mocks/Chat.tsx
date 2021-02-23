@@ -1,15 +1,26 @@
 import {
+  COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
+  MESSAGE_STATUS_SUBSCRIPTION,
 } from '../graphql/subscriptions/Chat';
-import { SAVED_SEARCH_QUERY, SEARCH_QUERY, SEARCH_MULTI_QUERY } from '../graphql/queries/Search';
+import {
+  SAVED_SEARCH_QUERY,
+  SEARCH_QUERY,
+  SEARCH_MULTI_QUERY,
+  SEARCHES_COUNT,
+} from '../graphql/queries/Search';
 import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
 import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
 import { filterTagsQuery, getTagsQuery } from './Tag';
-import { contactGroupsQuery } from './Contact';
+import { contactCollectionsQuery } from './Contact';
 import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
-import { SEARCH_QUERY_VARIABLES as queryVariables } from '../common/constants';
+import {
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LIMIT,
+  SEARCH_QUERY_VARIABLES as queryVariables,
+} from '../common/constants';
 import { getOrganizationLanguagesQuery } from './Organization';
 
 const getConversationQuery = (data: any) => {
@@ -28,8 +39,8 @@ const conversationMessageQuery = (
   contactId: any,
   contactName: string,
   contactNumber: string,
-  contactLimit: number = 50,
-  messageLimit: object = { limit: 50 }
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
   request: {
     query: SEARCH_QUERY,
@@ -45,6 +56,7 @@ const conversationMessageQuery = (
     data: {
       search: [
         {
+          group: null,
           contact: {
             id: contactId.toString(),
             name: contactName,
@@ -75,6 +87,56 @@ const conversationMessageQuery = (
               ],
               type: 'TEXT',
               media: null,
+              location: null,
+            },
+          ],
+        },
+      ],
+    },
+  },
+});
+
+const conversationCollectionQuery = (
+  collectionId: any,
+  collectionName: string,
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
+) => ({
+  request: {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: {
+        limit: contactLimit,
+      },
+      filter: { searchGroup: true },
+      messageOpts: messageLimit,
+    },
+  },
+  result: {
+    data: {
+      search: [
+        {
+          contact: null,
+          group: {
+            id: collectionId.toString(),
+            label: collectionName,
+          },
+          messages: [
+            {
+              id: '1',
+              body: 'Hello',
+              insertedAt: '2020-06-25T13:36:43Z',
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+              },
+              type: 'TEXT',
+              media: null,
+              tags: [],
+              location: null,
+              errors: '{}',
             },
           ],
         },
@@ -110,8 +172,71 @@ export const messageReceivedSubscription = {
           url:
             'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
+        location: null,
+        errors: '{}',
       },
     },
+  },
+};
+
+export const collectionSendSubscription = {
+  request: {
+    query: COLLECTION_SENT_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      sentGroupMessage: {
+        body: 'How can we help?',
+        flow: 'OUTBOUND',
+        id: '22',
+        insertedAt: '2020-07-11T14:03:28Z',
+        receiver: {
+          id: '1',
+          phone: '917834811114',
+        },
+        sender: {
+          id: '1',
+          phone: '917834811114',
+        },
+        tags: [],
+        groupId: '2',
+        type: 'TEXT',
+        media: {
+          caption: null,
+          url:
+            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+        },
+        location: null,
+        errors: '{}',
+      },
+    },
+  },
+};
+
+const messageSubscriptionData = {
+  sentMessage: {
+    body: 'How can we help?',
+    flow: 'OUTBOUND',
+    id: '22',
+    insertedAt: '2020-07-11T14:03:28Z',
+    receiver: {
+      id: '2',
+      phone: '919090909009',
+    },
+    sender: {
+      id: '1',
+      phone: '917834811114',
+    },
+    tags: [],
+    type: 'TEXT',
+    media: {
+      caption: null,
+      url:
+        'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+    },
+    location: null,
+    errors: '{}',
   },
 };
 
@@ -121,27 +246,24 @@ export const messageSendSubscription = {
     variables: { organizationId: '1' },
   },
   result: {
+    data: messageSubscriptionData,
+  },
+};
+
+export const messageStatusSubscription = {
+  request: {
+    query: MESSAGE_STATUS_SUBSCRIPTION,
+    variables: { organizationId: '1' },
+  },
+  result: {
     data: {
-      sentMessage: {
-        body: 'How can we help?',
-        flow: 'OUTBOUND',
+      updateMessageStatus: {
         id: '22',
-        insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
           id: '2',
-          phone: '919090909009',
         },
-        sender: {
-          id: '1',
-          phone: '917834811114',
-        },
-        tags: [],
-        type: 'TEXT',
-        media: {
-          caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
-        },
+        location: null,
+        errors: '{}',
       },
     },
   },
@@ -168,9 +290,22 @@ export const savedSearchQuery = {
   },
 };
 
+export const collectionCountQuery = {
+  request: {
+    query: SEARCHES_COUNT,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      collectionStats: '{"1":{"Unread":15}}',
+    },
+  },
+};
+
 export const conversationQuery = getConversationQuery({
   search: [
     {
+      group: null,
       contact: {
         id: '2',
         name: 'Jane Doe',
@@ -202,6 +337,7 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
+          errors: '{}',
         },
         {
           id: '2',
@@ -224,20 +360,25 @@ export const conversationQuery = getConversationQuery({
           ],
           type: 'TEXT',
           media: null,
+          errors: '{}',
         },
       ],
     },
   ],
 });
 
-export const searchMultiQuery = (term: string = '', limit: number = 50) => {
+export const searchMultiQuery = (
+  term: string = '',
+  contactLimit: number = DEFAULT_CONTACT_LIMIT,
+  messageLimit: number = DEFAULT_MESSAGE_LIMIT
+) => {
   return {
     request: {
       query: SEARCH_MULTI_QUERY,
       variables: {
         searchFilter: { term: term },
-        messageOpts: { limit: limit, order: 'ASC' },
-        contactOpts: { order: 'DESC', limit: limit },
+        messageOpts: { limit: contactLimit, order: 'ASC' },
+        contactOpts: { order: 'DESC', limit: messageLimit },
       },
     },
     result: {
@@ -330,20 +471,30 @@ export const searchMultiQuery = (term: string = '', limit: number = 50) => {
 
 export const CONVERSATION_MOCKS = [
   conversationQuery,
-  contactGroupsQuery,
-  contactGroupsQuery,
+  contactCollectionsQuery,
+  contactCollectionsQuery,
   searchQuery,
   searchEmptyQuery,
   conversationQuery,
   messageReceivedSubscription,
   messageSendSubscription,
+  collectionSendSubscription,
+  messageStatusSubscription,
   addMessageTagSubscription,
   deleteMessageTagSubscription,
   savedSearchQuery,
   getOrganizationLanguagesQuery,
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 50, { limit: 50 }),
-  conversationMessageQuery('3', 'Jane Monroe', '919090709009', 50, { limit: 50 }),
-  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, { limit: 50, offset: 0 }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', DEFAULT_CONTACT_LIMIT, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  }),
+  conversationMessageQuery('3', 'Jane Monroe', '919090709009', DEFAULT_CONTACT_LIMIT, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+  }),
+  conversationMessageQuery('2', 'Jane Doe', '919090909009', 1, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+    offset: 0,
+  }),
+  conversationCollectionQuery('2', 'Default collection'),
 ];
 
 const updateMessageTagsQuery = {
@@ -555,7 +706,11 @@ const searchQueryResult = {
 export const searchQuerywithFilter = {
   request: {
     query: SEARCH_QUERY,
-    variables: { contactOpts: { limit: 50 }, filter: { id: '2' }, messageOpts: { limit: 50 } },
+    variables: {
+      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      filter: { id: '2' },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
   },
   result: searchQueryResult,
 };
@@ -564,16 +719,16 @@ export const searchQuerywithFilterOffset = {
   request: {
     query: SEARCH_QUERY,
     variables: {
-      contactOpts: { limit: 50 },
+      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
       filter: { id: '2' },
-      messageOpts: { limit: 50, offset: 50 },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: DEFAULT_MESSAGE_LIMIT },
     },
   },
   result: searchQueryResult,
 };
 
 const chatMessagesMocks = [
-  contactGroupsQuery,
+  contactCollectionsQuery,
   updateMessageTagsQuery,
   updateMessageTagsQuery,
   searchQuerywithFilter,

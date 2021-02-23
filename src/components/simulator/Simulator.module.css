@@ -258,3 +258,19 @@
 .Image {
   width: 175px;
 }
+
+.PreviewButton {
+  z-index: 1000;
+  position: fixed;
+  right: 120px;
+  bottom: 12px;
+}
+
+.Button {
+  background-color: white !important;
+}
+
+.CrossIcon {
+  margin-left: 15px;
+  color: grey;
+}

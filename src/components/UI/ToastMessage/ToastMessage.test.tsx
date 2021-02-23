@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import ToastMessage from './ToastMessage';
-import Alert from '@material-ui/lab/Alert';
 
 jest.useFakeTimers();
 
