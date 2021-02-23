@@ -245,7 +245,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <SimulatorIcon
           data-testid="simulatorIcon"
           className={showSimulator ? styles.SimulatorIconClicked : styles.SimulatorIconNormal}
-          onClick={() => handleSimulator()}
+          onClick={() => {
+            if (showSimulator) {
+              releaseUserSimulator();
+            } else {
+              handleSimulator();
+            }
+          }}
         />
       ) : null}
 
