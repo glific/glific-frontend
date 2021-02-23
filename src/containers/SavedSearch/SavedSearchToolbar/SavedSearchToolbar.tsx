@@ -39,9 +39,13 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   useEffect(() => {
     if (countData) {
       const collectionStats = JSON.parse(countData.collectionStats);
-      setSearchesCount(collectionStats[variables.organizationId]);
+      if (collectionStats[variables.organizationId]) {
+        setSearchesCount(collectionStats[variables.organizationId]);
+      }
     }
   }, [countData]);
+
+  console.log(searchesCount);
 
   useEffect(() => {
     if (collectionCount) {
