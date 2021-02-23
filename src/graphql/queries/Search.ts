@@ -79,6 +79,7 @@ export const SEARCH_MULTI_QUERY = gql`
         id
         body
         messageNumber
+        isRead
         insertedAt
         contact {
           id
