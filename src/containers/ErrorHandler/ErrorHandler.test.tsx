@@ -9,7 +9,7 @@ const resolvers = {
   Query: {
     errorMessage: () => {
       return {
-        message: 'An error has occured!',
+        message: 'An error has occurred!',
         type: 'Error',
         networkError: 'Unable to fetch',
         graphqlError: null,
@@ -33,7 +33,7 @@ describe('<ErrorHandler />', () => {
       //check if error message is displayed
     });
 
-    const errorMessageText = getByText('An error has occured!');
+    const errorMessageText = getByText('An error has occurred!');
     expect(errorMessageText).toBeInTheDocument();
 
     // click ok and close
