@@ -26,16 +26,13 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
+  const [imageUrl, setImageUrl] = useState(ImageThumbnail);
   useEffect(() => {
     if (type === 'IMAGE') {
-      const image: any = document.querySelector(`#a${media.id}`);
-      console.log(image);
+      const image: any = document.querySelector(`#image${media.id}`);
       if (image) {
         image.onload = () => {
-          alert('Image loaded');
-        };
-        image.onerror = () => {
-          alert('Image not loaded');
+          setImageUrl('');
         };
       }
     }
@@ -52,13 +49,13 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         <div
           className={styles.Image}
           style={{
-            background: `transparent url('${ImageThumbnail}') center no-repeat`,
+            background: `transparent url('${imageUrl}') center no-repeat`,
           }}
         >
           <img
             alt="img"
             src={media.url}
-            id={`a${media.id}`}
+            id={`image${media.id}`}
             data-testid="imageMessage"
             onClick={() => setShowViewer(true)}
             aria-hidden="true"
