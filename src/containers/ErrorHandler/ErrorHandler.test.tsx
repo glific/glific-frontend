@@ -46,3 +46,40 @@ describe('<ErrorHandler />', () => {
     await waitFor(() => {});
   });
 });
+
+test('it should render <ErrorHandler /> component with custom message', async () => {
+  const resolvers = {
+    Query: {
+      errorMessage: () => {
+        return {
+          message: [{ message: 'An error has occurred!' }],
+          type: 'Error',
+          networkError: 'Unable to fetch',
+          graphqlError: null,
+        };
+      },
+    },
+  };
+  const { getByText } = render(
+    <MockedProvider resolvers={resolvers} addTypename={false}>
+      <ErrorHandler />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog')).toBeInTheDocument();
+    //check if error message is displayed
+  });
+
+  const errorMessageText = getByText('An error has occurred!');
+  expect(errorMessageText).toBeInTheDocument();
+
+  // click ok and close
+  const okButton: any = screen
+    .queryByRole('dialog')
+    ?.querySelector('button.MuiButton-containedSecondary');
+  fireEvent.click(okButton);
+
+  //need to assert something here
+  await waitFor(() => {});
+});
