@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
+import styles from './ErrorHandler.module.css';
 
 import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
@@ -41,7 +42,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   // for multiple message
   if (Array.isArray(data.errorMessage.message)) {
     message = data.errorMessage.message.map((e: any) => {
-      return <p>{e.message}</p>;
+      return <div>{e.message}</div>;
     });
   }
 
@@ -57,7 +58,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
           skipCancel
           alignButtons="center"
         >
-          <p style={{ textAlign: 'center' }}>{message}</p>
+          <p className={styles.Message}>{message}</p>
         </DialogBox>
       </div>
     </Container>
