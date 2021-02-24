@@ -232,6 +232,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
         optionLabel="name"
+        additionalOptionLabel="phone"
         asyncSearch
         selectedOptions={collectionContacts}
         onChange={(value: any) => {

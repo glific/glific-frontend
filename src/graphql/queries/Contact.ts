@@ -45,6 +45,7 @@ export const GET_COLLECTION_CONTACTS = gql`
         contacts {
           id
           name
+          phone
         }
       }
     }

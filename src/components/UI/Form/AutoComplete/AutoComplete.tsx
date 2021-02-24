@@ -10,6 +10,7 @@ import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Cl
 export interface AutocompleteProps {
   options: any;
   optionLabel: string;
+  additionalOptionLabel?: string;
   field: any;
   icon?: any;
   form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
@@ -31,6 +32,7 @@ export interface AutocompleteProps {
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
   options,
   optionLabel,
+  additionalOptionLabel,
   field,
   icon,
   chipIcon,
@@ -76,6 +78,16 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     return field.value;
   })();
 
+  const getLabel = (option: any) => {
+    if (option[optionLabel]) {
+      return option[optionLabel];
+    }
+    if (additionalOptionLabel) {
+      return option[additionalOptionLabel];
+    }
+    return '';
+  };
+
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
@@ -118,7 +130,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
                 style={{ backgroundColor: '#e2f1ea' }}
                 className={styles.Chip}
                 icon={chipIcon}
-                label={option[optionLabel]}
+                label={getLabel(option)}
                 {...getTagProps({ index })}
                 deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
               />
@@ -140,7 +152,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
                 ) : (
                   ''
                 )}
-                {option[optionLabel]}
+                {getLabel(option)}
               </>
             );
           }}
