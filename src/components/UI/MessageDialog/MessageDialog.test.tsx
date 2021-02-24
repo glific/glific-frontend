@@ -1,8 +1,17 @@
 import React from 'react';
-
 import { fireEvent, render } from '@testing-library/react';
-import { MessageDialog } from './MessageDialog';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { MessageDialog } from './MessageDialog';
+
+// add mockl resize observer
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+window.ResizeObserver = ResizeObserver;
 
 const handleClose = jest.fn();
 
