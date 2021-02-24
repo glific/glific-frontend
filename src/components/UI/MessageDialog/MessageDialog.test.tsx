@@ -4,7 +4,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
 
-// add mockl resize observer
+// add mock for the resize observer
 class ResizeObserver {
   observe() {}
   unobserve() {}

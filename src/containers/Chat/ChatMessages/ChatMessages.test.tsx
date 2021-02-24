@@ -7,6 +7,15 @@ import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
+// add mock for the resize observer
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+window.ResizeObserver = ResizeObserver;
+
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
