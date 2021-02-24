@@ -46,13 +46,16 @@ const updateMessageCache = (client: any, id: any) => {
     fragment: MESSAGE_FRAGMENT,
   });
 
-  const messageCopy = JSON.parse(JSON.stringify(message));
-  messageCopy.isRead = true;
-  client.writeFragment({
-    id: `Message:${id}`,
-    fragment: MESSAGE_FRAGMENT,
-    data: messageCopy,
-  });
+  if (message) {
+    const messageCopy = JSON.parse(JSON.stringify(message));
+
+    messageCopy.isRead = true;
+    client.writeFragment({
+      id: `Message:${id}`,
+      fragment: MESSAGE_FRAGMENT,
+      data: messageCopy,
+    });
+  }
 
   return null;
 };
@@ -76,8 +79,10 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
-    onCompleted: () => {
-      updateMessageCache(client, lastMessage.id);
+    onCompleted: (data) => {
+      if (data.markContactMessagesAsRead) {
+        updateMessageCache(client, lastMessage.id);
+      }
     },
   });
   // there might be some cases when there are no conversations againist the contact. So need to handle that
@@ -85,7 +90,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   if (Object.keys(lastMessage).length > 0) {
     // TODO: Need check with the backend on unique identifier for this.
 
-    if (!lastMessage.isRead) {
+    if (lastMessage.isRead !== undefined && !lastMessage.isRead) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
     }
