@@ -14,7 +14,7 @@
     "@appsignal/plugin-path-decorator": "^1.0.6",
     "@appsignal/plugin-window-events": "^1.0.6",
     "@appsignal/react": "^1.0.7",
-    "@date-io/date-fns": "2.10.8",
+    "@date-io/date-fns": "1.x",
     "@draft-js-plugins/editor": "^4.1.0",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.11.3",
