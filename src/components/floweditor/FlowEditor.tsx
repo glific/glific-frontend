@@ -261,14 +261,12 @@ export const FlowEditor = (props: FlowEditorProps) => {
     <p className={styles.DialogError}>
       Errors were detected in the flow. Would you like to continue modifying?
       <div>
-        {flowValidation.map((message: any) => {
-          return (
-            <div>
-              <WarningIcon className={styles.ErrorMsgIcon} />
-              {message.message}
-            </div>
-          );
-        })}
+        {flowValidation.map((message: any) => (
+          <div>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {message.message}
+          </div>
+        ))}
       </div>
     </p>
   );
