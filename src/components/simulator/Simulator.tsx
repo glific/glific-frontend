@@ -14,6 +14,7 @@ import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import ClearIcon from '@material-ui/icons/Clear';
 import axios from 'axios';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import styles from './Simulator.module.css';
@@ -142,6 +143,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       data: {
         type: 'message',
         payload: {
+          id: uuidv4(),
           type: 'text',
           payload: {
             text: sendMessageText,
