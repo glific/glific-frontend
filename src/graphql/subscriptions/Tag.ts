@@ -13,7 +13,6 @@ export const ADD_MESSAGE_TAG_SUBSCRIPTION = gql`
           id
         }
         media {
-          id
           url
           caption
         }
@@ -40,7 +39,6 @@ export const DELETE_MESSAGE_TAG_SUBSCRIPTION = gql`
           id
         }
         media {
-          id
           url
           caption
         }
