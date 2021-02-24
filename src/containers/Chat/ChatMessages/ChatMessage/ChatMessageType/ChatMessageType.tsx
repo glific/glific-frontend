@@ -46,31 +46,34 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   switch (type) {
     case 'IMAGE':
       messageBody = (
-        <div
-          className={styles.Image}
-          style={{
-            background: `transparent url('${imageUrl}') center no-repeat`,
-          }}
-        >
-          <img
-            alt="img"
-            src={media.url}
-            id={`image${media.id}`}
-            data-testid="imageMessage"
-            onClick={() => setShowViewer(true)}
-            aria-hidden="true"
-          />
-
-          <Viewer
-            visible={showViewer}
-            onClose={() => {
-              setShowViewer(false);
+        <>
+          <div
+            className={styles.Image}
+            style={{
+              background: `transparent url('${imageUrl}') center no-repeat`,
             }}
-            images={[{ src: media.url, alt: '' }]}
-          />
+          >
+            <img
+              alt="img"
+              src={media.url}
+              id={`image${media.id}`}
+              data-testid="imageMessage"
+              onClick={() => setShowViewer(true)}
+              aria-hidden="true"
+            />
+
+            <Viewer
+              visible={showViewer}
+              onClose={() => {
+                setShowViewer(false);
+              }}
+              images={[{ src: media.url, alt: '' }]}
+            />
+          </div>
           <MessagesWithLinks message={media.caption} />
-        </div>
+        </>
       );
+
       break;
 
     case 'STICKER':
