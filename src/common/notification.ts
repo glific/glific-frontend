@@ -16,7 +16,7 @@ export const setErrorMessage = (client: any, error: any, title?: string) => {
   // error === '' when we are resetting the error
   if (error !== '') {
     errorMessage = {
-      title: title,
+      title,
       message: error.message,
       type: error.name,
       networkError: error.networkError,
