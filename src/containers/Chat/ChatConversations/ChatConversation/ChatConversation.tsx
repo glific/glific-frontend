@@ -85,7 +85,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   if (Object.keys(lastMessage).length > 0) {
     // TODO: Need check with the backend on unique identifier for this.
 
-    if (!lastMessage.isRead) {
+    if (lastMessage.isRead !== undefined && !lastMessage.isRead) {
       chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
       chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
     }
