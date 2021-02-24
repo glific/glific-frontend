@@ -27,6 +27,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         colorCode
       }
       media {
+        id
         url
         caption
       }
@@ -62,6 +63,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
         colorCode
       }
       media {
+        id
         url
         caption
       }
@@ -110,6 +112,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
         colorCode
       }
       media {
+        id
         url
         caption
       }

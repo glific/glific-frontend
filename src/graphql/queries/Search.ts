@@ -103,6 +103,7 @@ export const SEARCH_MULTI_QUERY = gql`
         }
         type
         media {
+          id
           url
           caption
         }
@@ -134,6 +135,7 @@ export const SEARCH_MULTI_QUERY = gql`
         }
         type
         media {
+          id
           url
           caption
         }
