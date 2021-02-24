@@ -15,6 +15,7 @@ import {
 } from '../../graphql/mutations/Flow';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW } from '../../graphql/queries/Flow';
+import { setErrorMessage } from '../../common/notification';
 
 export interface FlowProps {
   match: any;
@@ -84,7 +85,6 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       placeholder: 'Keywords',
       helperText: 'Enter comma separated keywords that trigger this flow',
     },
-
     {
       component: Checkbox,
       name: 'ignoreKeywords',
@@ -123,6 +123,19 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     queries.updateItemQuery = UPDATE_FLOW;
   }
 
+  const customHandler = (client: any, data: any) => {
+    let dataCopy = data;
+    if (data[0].key === 'keywords') {
+      const error: { message: any }[] = [];
+      const messages = dataCopy[0].message.split(',');
+      messages.forEach((message: any) => {
+        error.push({ message });
+      });
+      dataCopy = error;
+    }
+    setErrorMessage(client, { message: dataCopy }, 'Sorry! An error occurred!');
+  };
+
   return (
     <FormLayout
       {...queries}
@@ -143,6 +156,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       languageSupport={false}
       title={title}
       type={type}
+      customHandler={customHandler}
     />
   );
 };

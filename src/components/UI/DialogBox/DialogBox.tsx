@@ -95,7 +95,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
-          {title}
+          <div className={styles.Title}>{title}</div>
         </DialogTitle>
         <DialogContent>
           {contentText ? (

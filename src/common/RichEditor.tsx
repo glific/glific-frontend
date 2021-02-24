@@ -72,7 +72,7 @@ export const convertToWhatsApp = (editorState: any) => {
   });
 
   // let's return 0 element as map() always returns an array
-  return finalString.join();
+  return finalString.join('');
 };
 
 // Converts WhatsApp message formatting into HTML elements.

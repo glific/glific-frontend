@@ -39,7 +39,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   useEffect(() => {
     if (countData) {
       const collectionStats = JSON.parse(countData.collectionStats);
-      setSearchesCount(collectionStats[variables.organizationId]);
+      if (collectionStats[variables.organizationId]) {
+        setSearchesCount(collectionStats[variables.organizationId]);
+      }
     }
   }, [countData]);
 
@@ -50,7 +52,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     }
   }, [collectionCount]);
 
-  // default queryvariables
+  // default query variables
   const queryVariables = {
     filter: {},
     opts: {
@@ -66,8 +68,8 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      setFixedSearches(data.savedSearches.slice(0, 5));
-      setAdditionalSearch(data.savedSearches.slice(5));
+      setFixedSearches(data.savedSearches.slice(0, 6));
+      setAdditionalSearch(data.savedSearches.slice(6));
     },
   });
 
@@ -150,7 +152,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
-            {fixedSearches.slice(3, 5).map((search: any) => (
+            {fixedSearches.slice(3, 6).map((search: any) => (
               <div
                 key={search.id}
                 className={styles.LabelContainer}

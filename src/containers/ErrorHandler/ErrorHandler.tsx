@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
+import styles from './ErrorHandler.module.css';
 
 import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
@@ -10,6 +11,7 @@ export interface ErrorHandlerProps {}
 
 export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   const { data, client } = useQuery(ERROR_MESSAGE);
+  let { message } = data ? data.errorMessage : '';
 
   if (!data) {
     return null;
@@ -32,6 +34,18 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
     title = 'A network error has occurred!';
   }
 
+  if (data.errorMessage.title) {
+    // set specific title for error
+    title = data.errorMessage.title;
+  }
+
+  // for multiple message
+  if (Array.isArray(data.errorMessage.message)) {
+    message = data.errorMessage.message.map((e: any) => {
+      return <div>{e.message}</div>;
+    });
+  }
+
   return (
     <Container>
       <div data-testid="errorMessage">
@@ -44,7 +58,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
           skipCancel
           alignButtons="center"
         >
-          <p style={{ textAlign: 'center' }}>{data.errorMessage.message}</p>
+          <p className={styles.Message}>{message}</p>
         </DialogBox>
       </div>
     </Container>

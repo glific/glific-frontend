@@ -31,14 +31,14 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
-  simulatorId?: string | null;
   collectionId?: number | string | null;
+  isSimulator?: boolean;
 }
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   contactId,
-  simulatorId,
   collectionId,
+  isSimulator,
 }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
@@ -477,7 +477,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={contactId === simulatorId}
+        isSimulator={isSimulator}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}

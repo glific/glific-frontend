@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as WarningIcon } from '../../assets/images/icons/Warning.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { Simulator } from '../simulator/Simulator';
@@ -140,20 +141,28 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
-  const [showSimulator, setShowSimulator] = useState(false);
+  const [simulatorId, setSimulatorId] = useState(0);
+
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: () => {
-      setNotification(client, 'The flow has been published');
-    },
-  });
   const [published, setPublished] = useState(false);
-  let dialog = null;
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
-
+  const [flowValidation, setFlowValidation] = useState<any>();
+  const [IsError, setIsError] = useState(false);
   let modal = null;
+  let dialog = null;
+
+  const [publishFlow] = useMutation(PUBLISH_FLOW, {
+    onCompleted: (data) => {
+      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
+        setFlowValidation(data.publishFlow.errors);
+        setIsError(true);
+      } else if (data.publishFlow.success) {
+        setPublished(true);
+      }
+    },
+  });
 
   const closeModal = () => {
     setModalVisible(false);
@@ -240,8 +249,29 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
-    setPublished(true);
   };
+
+  const handleCancelFlow = () => {
+    setPublishDialog(false);
+    setIsError(false);
+    setFlowValidation('');
+  };
+
+  const errorMsg = () => (
+    <p className={styles.DialogError}>
+      Errors were detected in the flow. Would you like to continue modifying?
+      <div>
+        {flowValidation.map((message: any) => {
+          return (
+            <div>
+              <WarningIcon className={styles.ErrorMsgIcon} />
+              {message.message}
+            </div>
+          );
+        })}
+      </div>
+    </p>
+  );
 
   if (publishDialog) {
     dialog = (
@@ -249,15 +279,36 @@ export const FlowEditor = (props: FlowEditorProps) => {
         title="Are you ready to publish the flow?"
         buttonOk="Publish"
         handleOk={() => handlePublishFlow()}
-        handleCancel={() => setPublishDialog(false)}
+        handleCancel={() => handleCancelFlow()}
         alignButtons="center"
+        buttonCancel="Cancel"
       >
         <p className={styles.DialogDescription}>New changes will be activated for the users</p>
       </DialogBox>
     );
   }
 
-  if (published) {
+  if (IsError) {
+    dialog = (
+      <DialogBox
+        title=""
+        buttonOk="Publish"
+        handleOk={() => {
+          setPublishDialog(false);
+          setIsError(false);
+          setPublished(true);
+        }}
+        handleCancel={() => handleCancelFlow()}
+        alignButtons="center"
+        buttonCancel="Modify"
+      >
+        {IsError ? errorMsg() : ''}
+      </DialogBox>
+    );
+  }
+
+  if (published && !IsError) {
+    setNotification(client, 'The flow has been published');
     return <Redirect to="/flow" />;
   }
 
@@ -291,7 +342,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           data-testid="saveDraftButton"
-          className={styles.Button}
+          className={styles.Draft}
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
@@ -300,25 +351,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         >
           Save as draft
         </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="previewButton"
-          className={styles.Button}
-          onClick={() => {
-            setShowSimulator(!showSimulator);
-          }}
-        >
-          Preview
-          {showSimulator ? (
-            <CancelOutlinedIcon
-              className={styles.CrossIcon}
-              onClick={() => {
-                setShowSimulator(false);
-              }}
-            />
-          ) : null}
-        </Button>
+
         <Button
           variant="contained"
           color="primary"
@@ -329,13 +362,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      {showSimulator ? (
-        <Simulator
-          showSimulator={showSimulator}
-          setShowSimulator={setShowSimulator}
-          message={{ type: 'draft', keyword: flowKeyword }}
-        />
-      ) : null}
+
+      <Simulator
+        showSimulator={simulatorId > 0}
+        setSimulatorId={setSimulatorId}
+        flowSimulator
+        message={{ type: 'draft', keyword: flowKeyword }}
+      />
+
       {modal}
       <Prompt when message={handleBlockedNavigation} />
 

@@ -11,3 +11,9 @@ export const COLLECTION_COUNT_SUBSCRIPTION = gql`
     collectionCount(organizationId: $organizationId)
   }
 `;
+
+export const SIMULATOR_RELEASE_SUBSCRIPTION = gql`
+  subscription($organizationId: ID!) {
+    simulatorRelease(organizationId: $organizationId)
+  }
+`;
