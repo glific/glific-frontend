@@ -315,7 +315,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       {dialog}
       <div className={styles.ButtonContainer}>
         <a
-          href="https://app.rapidpro.io/video/"
+          href="https://glific.slab.com/public/3-flows-e2mlrud4"
           className={styles.Link}
           target="_blank"
           rel="noopener noreferrer"
