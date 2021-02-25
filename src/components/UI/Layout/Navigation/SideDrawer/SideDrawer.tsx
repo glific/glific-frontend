@@ -34,6 +34,7 @@ import {
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
 import { Button } from '../../../Form/Button/Button';
+import { GLIFIC_DOCS_URL } from '../../../../../config/index';
 
 export interface SideDrawerProps {}
 
@@ -191,7 +192,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
+  let helpButtonStyle = styles.HelpButton;
   if (!fullOpen) {
+    helpButtonStyle = styles.HelpButtonHide;
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
@@ -237,7 +240,15 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
           }}
           variant="permanent"
         >
-          <Button variant="contained" color="primary" className={styles.HelpButton}>
+          <Button
+            variant="outlined"
+            color="primary"
+            data-testid="helpButton"
+            className={helpButtonStyle}
+            onClick={() => {
+              window.open(GLIFIC_DOCS_URL, '_blank');
+            }}
+          >
             Help
           </Button>
           <div className={bottonMenuClasses.join(' ')}>

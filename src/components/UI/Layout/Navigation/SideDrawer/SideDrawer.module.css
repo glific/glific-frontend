@@ -29,7 +29,11 @@
 }
 
 .HelpButton {
-  position: absolute;
+  position: absolute !important;
   bottom: 110px;
   left: 10px;
+}
+
+.HelpButtonHide {
+  display: none !important;
 }

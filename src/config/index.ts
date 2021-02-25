@@ -31,3 +31,4 @@ export const FLOW_EDITOR_CONFIGURE_LINK = `${PROTOCOL}//${window.location.host}/
 export const GUPSHUP_CALLBACK_URL = `${GLIFIC_BACKEND_URL}/gupshup`;
 export const APPSIGNAL_API_KEY = envVariables.REACT_APP_APPSIGNAL_API_KEY;
 export const APP_NAME = appName || 'Glific: Two way communication platform';
+export const GLIFIC_DOCS_URL = 'https://docs.glific.org';
