@@ -74,9 +74,7 @@ const queries = {
   deleteItemQuery: null,
 };
 
-const restrictedAction = () => {
-  return { delete: false, edit: false };
-};
+const restrictedAction = () => ({ delete: false, edit: false });
 
 export const WebhookLogsList: React.SFC<TagListProps> = () => {
   const client = useApolloClient();

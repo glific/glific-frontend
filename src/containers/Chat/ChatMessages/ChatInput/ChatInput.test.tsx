@@ -6,6 +6,15 @@ import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 
 const mocks = TEMPLATE_MOCKS;
 
+// add mock for the resize observer
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+window.ResizeObserver = ResizeObserver;
+
 describe('<ChatInput />', () => {
   let inputSubmitted = false;
   const onSendMessageHandler = () => {

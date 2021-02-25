@@ -350,8 +350,8 @@ export const List: React.SFC<ListProps> = ({
       ) : null;
     }
 
-    const deleteButton = (Id: any, text: string) => {
-      return allowedAction.delete ? (
+    const deleteButton = (Id: any, text: string) =>
+      allowedAction.delete ? (
         <IconButton
           aria-label="Delete"
           color="default"
@@ -363,7 +363,6 @@ export const List: React.SFC<ListProps> = ({
           </Tooltip>
         </IconButton>
       ) : null;
-    };
 
     if (id) {
       return (

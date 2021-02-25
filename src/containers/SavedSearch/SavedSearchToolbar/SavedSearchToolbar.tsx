@@ -152,33 +152,29 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
-            {fixedSearches.slice(3, 6).map((search: any) => {
-              return (
-                <div
-                  key={search.id}
-                  className={styles.LabelContainer}
-                  onClick={() => handleAdditionalSavedSearch(search)}
-                  aria-hidden="true"
-                >
-                  <span className={styles.Label}>{search.shortcode}</span>
-                  <span className={styles.Count}>
-                    {searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0}
-                  </span>
-                </div>
-              );
-            })}
-            {additionalSearch.map((search: any) => {
-              return (
-                <div
-                  key={search.id}
-                  className={styles.LabelContainer}
-                  onClick={() => handleAdditionalSavedSearch(search)}
-                  aria-hidden="true"
-                >
-                  <span className={styles.Label}>{search.shortcode}</span>
-                </div>
-              );
-            })}
+            {fixedSearches.slice(3, 6).map((search: any) => (
+              <div
+                key={search.id}
+                className={styles.LabelContainer}
+                onClick={() => handleAdditionalSavedSearch(search)}
+                aria-hidden="true"
+              >
+                <span className={styles.Label}>{search.shortcode}</span>
+                <span className={styles.Count}>
+                  {searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0}
+                </span>
+              </div>
+            ))}
+            {additionalSearch.map((search: any) => (
+              <div
+                key={search.id}
+                className={styles.LabelContainer}
+                onClick={() => handleAdditionalSavedSearch(search)}
+                aria-hidden="true"
+              >
+                <span className={styles.Label}>{search.shortcode}</span>
+              </div>
+            ))}
           </Paper>
         </Fade>
       )}

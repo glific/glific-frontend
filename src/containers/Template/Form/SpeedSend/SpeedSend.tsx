@@ -10,14 +10,12 @@ export interface SpeedSendProps {
 
 const speedSendIcon = <SpeedSendIcon className={styles.SpeedSendIcon} />;
 
-export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => {
-  return (
-    <Template
-      match={match}
-      listItemName="Speed send"
-      redirectionLink="speed-send"
-      icon={speedSendIcon}
-      customStyle={styles.AttachmentFields}
-    />
-  );
-};
+export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => (
+  <Template
+    match={match}
+    listItemName="Speed send"
+    redirectionLink="speed-send"
+    icon={speedSendIcon}
+    customStyle={styles.AttachmentFields}
+  />
+);

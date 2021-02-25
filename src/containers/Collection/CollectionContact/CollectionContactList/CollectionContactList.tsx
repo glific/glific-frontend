@@ -50,15 +50,13 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
   const { match, title } = props;
   const collectionId = match.params.id;
 
-  const getDeleteQueryVariables = (id: any) => {
-    return {
-      input: {
-        groupId: collectionId,
-        addContactIds: [],
-        deleteContactIds: [id],
-      },
-    };
-  };
+  const getDeleteQueryVariables = (id: any) => ({
+    input: {
+      groupId: collectionId,
+      addContactIds: [],
+      deleteContactIds: [id],
+    },
+  });
 
   return (
     <List

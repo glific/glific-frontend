@@ -33,40 +33,38 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = "You won't be able to use this collection again.";
 
-const formFields = (options: any, validateTitle: Function) => {
-  return [
-    {
-      component: Input,
-      name: 'label',
-      type: 'text',
-      placeholder: 'Title',
-      validate: validateTitle,
+const formFields = (options: any, validateTitle: Function) => [
+  {
+    component: Input,
+    name: 'label',
+    type: 'text',
+    placeholder: 'Title',
+    validate: validateTitle,
+  },
+  {
+    component: Input,
+    name: 'description',
+    type: 'text',
+    placeholder: 'Description',
+    rows: 3,
+    textArea: true,
+  },
+  {
+    component: AutoComplete,
+    name: 'users',
+    additionalState: 'users',
+    options,
+    optionLabel: 'name',
+    textFieldProps: {
+      label: 'Assign staff to collection',
+      variant: 'outlined',
     },
-    {
-      component: Input,
-      name: 'description',
-      type: 'text',
-      placeholder: 'Description',
-      rows: 3,
-      textArea: true,
-    },
-    {
-      component: AutoComplete,
-      name: 'users',
-      additionalState: 'users',
-      options,
-      optionLabel: 'name',
-      textFieldProps: {
-        label: 'Assign staff to collection',
-        variant: 'outlined',
-      },
-      skipPayload: true,
-      icon: <ContactIcon className={styles.ContactIcon} />,
-      helperText:
-        'Assigned staff members will be responsible to chat with contacts in this collection',
-    },
-  ];
-};
+    skipPayload: true,
+    icon: <ContactIcon className={styles.ContactIcon} />,
+    helperText:
+      'Assigned staff members will be responsible to chat with contacts in this collection',
+  },
+];
 
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 

@@ -139,21 +139,19 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     };
   };
 
-  const filterSearch = () => {
-    return {
-      contactOpts: {
-        limit: DEFAULT_CONTACT_LIMIT,
-        order: 'DESC',
-      },
-      searchFilter: {
-        term: props.searchVal,
-      },
-      messageOpts: {
-        limit: DEFAULT_MESSAGE_LIMIT,
-        order: 'ASC',
-      },
-    };
-  };
+  const filterSearch = () => ({
+    contactOpts: {
+      limit: DEFAULT_CONTACT_LIMIT,
+      order: 'DESC',
+    },
+    searchFilter: {
+      term: props.searchVal,
+    },
+    messageOpts: {
+      limit: DEFAULT_MESSAGE_LIMIT,
+      order: 'ASC',
+    },
+  });
 
   const [loadMoreConversations, { data: contactsData }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
@@ -329,9 +327,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           <Typography className={styles.TitleText}>{dataArray}</Typography>
         </div>
       );
-      conversationsData = conversations[dataArray].map((conversation: any, index: number) => {
-        return buildChatConversation(index, header, conversation);
-      });
+      conversationsData = conversations[dataArray].map((conversation: any, index: number) =>
+        buildChatConversation(index, header, conversation)
+      );
       // Check if its not empty
       if (conversationsData.length > 0) {
         if (!conversationList) conversationList = [];

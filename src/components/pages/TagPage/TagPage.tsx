@@ -3,10 +3,8 @@ import { TagList } from '../../../containers/Tag/TagList/TagList';
 
 export interface TagPageProps {}
 
-export const TagPage: React.SFC<TagPageProps> = () => {
-  return (
-    <div>
-      <TagList />
-    </div>
-  );
-};
+export const TagPage: React.SFC<TagPageProps> = () => (
+  <div>
+    <TagList />
+  </div>
+);

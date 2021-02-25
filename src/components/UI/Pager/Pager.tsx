@@ -138,36 +138,34 @@ const tableHeadColumns = (
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}
-      {columnNames.map((name: string, i: number) => {
-        return (
-          <TableCell
-            key={name}
-            className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
-          >
-            {i !== columnNames.length - 1 && !removeSortBy?.includes(name) ? (
-              <TableSortLabel
-                active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
-                direction={tableVals.sortDirection}
-                onClick={() => {
-                  if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
-                    handleTableChange('sortCol', name);
-                  } else {
-                    handleTableChange('sortCol', name);
-                    handleTableChange(
-                      'sortDirection',
-                      tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
-                    );
-                  }
-                }}
-              >
-                {name}
-              </TableSortLabel>
-            ) : (
-              name
-            )}
-          </TableCell>
-        );
-      })}
+      {columnNames.map((name: string, i: number) => (
+        <TableCell
+          key={name}
+          className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
+        >
+          {i !== columnNames.length - 1 && !removeSortBy?.includes(name) ? (
+            <TableSortLabel
+              active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
+              direction={tableVals.sortDirection}
+              onClick={() => {
+                if (setColumnToBackendTerms(listName, name) !== tableVals.sortCol) {
+                  handleTableChange('sortCol', name);
+                } else {
+                  handleTableChange('sortCol', name);
+                  handleTableChange(
+                    'sortDirection',
+                    tableVals.sortDirection === 'asc' ? 'desc' : 'asc'
+                  );
+                }
+              }}
+            >
+              {name}
+            </TableSortLabel>
+          ) : (
+            name
+          )}
+        </TableCell>
+      ))}
     </TableRow>
   );
 };
