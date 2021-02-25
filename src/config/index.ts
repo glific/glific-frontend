@@ -33,3 +33,4 @@ export const APPSIGNAL_API_KEY = envVariables.REACT_APP_APPSIGNAL_API_KEY;
 export const APP_NAME = appName || 'Glific: Two way communication platform';
 export const LOGFLARE_API = envVariables.LOGFLARE_API_KEY;
 export const LOGFLARE_SOURCE = envVariables.LOGFLARE_SOURCE_TOKEN;
+export const GLIFIC_DOCS_URL = 'http://docs.glific.org';

@@ -50,4 +50,10 @@ describe('side drawer testing', () => {
       expect(getAllByTestId('list-item')[i]).toHaveTextContent(sideDrawerMenus[i].title);
     }
   });
+
+  it('should contain a help button', () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    const { getByTestId } = render(component);
+    expect(getByTestId('helpButton')).toBeInTheDocument();
+  });
 });
