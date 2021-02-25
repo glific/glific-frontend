@@ -470,10 +470,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
-      .when('type', {
-        is: (val: string) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
-        then: Yup.string().required('Message is required.'),
-      }),
+      .required('Message is required.'),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {
