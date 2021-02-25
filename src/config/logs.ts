@@ -42,4 +42,5 @@ export const setLogs = (message: any, type: string) => {
       break;
   }
 };
+
 export { setLogs as default };

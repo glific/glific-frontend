@@ -6,6 +6,7 @@ import styles from './ErrorHandler.module.css';
 import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from '../../common/notification';
+import setLogs from '../../config/logs';
 
 export interface ErrorHandlerProps {}
 
@@ -43,6 +44,9 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   if (Array.isArray(data.errorMessage.message)) {
     message = data.errorMessage.message.map((e: any) => <div>{e.message}</div>);
   }
+
+  // logged error in logflare
+  setLogs(message, 'error');
 
   return (
     <Container>
