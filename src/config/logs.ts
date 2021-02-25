@@ -1,33 +1,37 @@
 import pino from 'pino';
 import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
+import { LOGFLARE_API, LOGFLARE_SOURCE } from '.';
 
-const apiKey: string = 'vV5sj8-sZZIa';
-const sourceToken: string = '1a0516df-58b6-46a8-88c6-85ed26c8de08';
+let logger: any;
 
-// create pino-logflare stream
-const stream = createWriteStream({
-  apiKey,
-  sourceToken,
-});
+if (LOGFLARE_API && LOGFLARE_SOURCE) {
+  const apiKey = LOGFLARE_API;
+  const sourceToken = LOGFLARE_SOURCE;
+  // create pino-logflare stream
+  const stream = createWriteStream({
+    apiKey,
+    sourceToken,
+  });
 
-// create pino-logflare browser stream
-const send = createPinoBrowserSend({
-  apiKey,
-  sourceToken,
-});
+  // create pino-logflare browser stream
+  const send = createPinoBrowserSend({
+    apiKey,
+    sourceToken,
+  });
 
-// create pino logger
-const logger = pino(
-  {
-    browser: {
-      transmit: {
-        // @ts-ignore
-        send,
+  // create pino logger
+  logger = pino(
+    {
+      browser: {
+        transmit: {
+          // @ts-ignore
+          send,
+        },
       },
     },
-  },
-  stream
-);
+    stream
+  );
+}
 
 export const setLogs = (message: any, type: string) => {
   // log some events
