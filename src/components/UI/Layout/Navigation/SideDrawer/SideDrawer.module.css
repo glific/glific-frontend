@@ -27,3 +27,9 @@
   padding-top: 10px;
   width: 52px;
 }
+
+.HelpButton {
+  position: absolute;
+  bottom: 110px;
+  left: 10px;
+}

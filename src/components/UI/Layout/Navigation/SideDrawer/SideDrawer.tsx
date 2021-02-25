@@ -33,6 +33,7 @@ import {
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
+import { Button } from '../../../Form/Button/Button';
 
 export interface SideDrawerProps {}
 
@@ -236,6 +237,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
           }}
           variant="permanent"
         >
+          <Button variant="contained" color="primary" className={styles.HelpButton}>
+            Help
+          </Button>
           <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
             <div
