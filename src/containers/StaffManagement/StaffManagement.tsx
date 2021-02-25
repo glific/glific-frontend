@@ -213,7 +213,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
     phone: Yup.string().required('Phone is required'),
-    roles: Yup.string().nullable().required('Roles is required'),
+    roles: Yup.object().nullable().required('Roles is required'),
   });
 
   const setPayload = (payload: any) => {
