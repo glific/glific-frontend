@@ -15,9 +15,8 @@ interface ChatTemplatesProps {
 }
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
-  const filterVariables = () => {
-    return setVariables({ term: props.searchVal });
-  };
+  const filterVariables = () => setVariables({ term: props.searchVal });
+
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
   });

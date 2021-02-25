@@ -44,42 +44,40 @@ export const SettingList: React.SFC = () => {
     <>
       {heading}
       <div className={styles.CardContainer}>
-        {CardList.map((data: any) => {
-          return (
-            <Card
-              variant="outlined"
-              className={styles.Card}
-              key={data.shortcode}
-              data-testid={data.shortcode}
-            >
-              <CardContent className={styles.CardContent}>
-                <div data-testid="label" className={styles.Label}>
-                  {data.name}
-                </div>
-                <Typography
-                  variant="body2"
-                  component="div"
-                  data-testid="description"
-                  className={styles.Description}
-                >
-                  {data.description}
-                </Typography>
-              </CardContent>
-              <CardActions className={styles.CardActions}>
-                <Link
-                  to={{
-                    pathname: `settings/${data.shortcode}`,
-                  }}
-                  className={styles.Link}
-                >
-                  <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-                    <EditIcon />
-                  </IconButton>
-                </Link>
-              </CardActions>
-            </Card>
-          );
-        })}
+        {CardList.map((data: any) => (
+          <Card
+            variant="outlined"
+            className={styles.Card}
+            key={data.shortcode}
+            data-testid={data.shortcode}
+          >
+            <CardContent className={styles.CardContent}>
+              <div data-testid="label" className={styles.Label}>
+                {data.name}
+              </div>
+              <Typography
+                variant="body2"
+                component="div"
+                data-testid="description"
+                className={styles.Description}
+              >
+                {data.description}
+              </Typography>
+            </CardContent>
+            <CardActions className={styles.CardActions}>
+              <Link
+                to={{
+                  pathname: `settings/${data.shortcode}`,
+                }}
+                className={styles.Link}
+              >
+                <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
+                  <EditIcon />
+                </IconButton>
+              </Link>
+            </CardActions>
+          </Card>
+        ))}
       </div>
     </>
   );

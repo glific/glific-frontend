@@ -95,9 +95,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }
 
-  const getStyleForDirection = (direction: string): string => {
-    return direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
-  };
+  const getStyleForDirection = (direction: string): string =>
+    direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
 
   const releaseUserSimulator = () => {
     releaseSimulator();
@@ -112,17 +111,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
     type: string,
     media: any,
     location: any
-  ) => {
-    return (
-      <div className={getStyleForDirection(direction)} key={index}>
-        <ChatMessageType type={type} media={media} body={text} location={location} />
-        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-          {moment(insertedAt).format(TIME_FORMAT)}
-        </span>
-        {direction === 'send' ? <DoneAllIcon /> : null}
-      </div>
-    );
-  };
+  ) => (
+    <div className={getStyleForDirection(direction)} key={index}>
+      <ChatMessageType type={type} media={media} body={text} location={location} />
+      <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+        {moment(insertedAt).format(TIME_FORMAT)}
+      </span>
+      {direction === 'send' ? <DoneAllIcon /> : null}
+    </div>
+  );
 
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {

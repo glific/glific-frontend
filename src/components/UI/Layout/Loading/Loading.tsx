@@ -7,15 +7,13 @@ export interface LoadingProps {
   message?: string;
 }
 
-export const Loading: React.SFC<LoadingProps> = ({ message = 'Loading...' }) => {
-  return (
-    <div className={styles.CenterItems} data-testid="loader">
-      <div className={styles.LoadingPadding}>
-        <CircularProgress />
-      </div>
-      <Typography variant="h5">{message}</Typography>
+export const Loading: React.SFC<LoadingProps> = ({ message = 'Loading...' }) => (
+  <div className={styles.CenterItems} data-testid="loader">
+    <div className={styles.LoadingPadding}>
+      <CircularProgress />
     </div>
-  );
-};
+    <Typography variant="h5">{message}</Typography>
+  </div>
+);
 
 export default Loading;

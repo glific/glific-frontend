@@ -90,11 +90,30 @@ const contactCountQuery = {
   },
 };
 
+const contactSearchQueryBlockedCount = {
+  request: {
+    query: GET_CONTACT_COUNT,
+    variables: {
+      filter: {
+        name: '',
+        status: 'BLOCKED',
+      },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
+    },
+  },
+  result: {
+    data: {
+      countContacts: 1,
+    },
+  },
+};
+
 export const CONTACT_LIST_MOCKS = [
   contactSearchQuery,
   contactSearchQuery,
   contactSearchQuery,
   contactSearchQueryBlocked,
+  contactSearchQueryBlockedCount,
   updateContactStatusQuery,
   contactCountQuery,
   contactCountQuery,

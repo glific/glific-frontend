@@ -63,20 +63,17 @@ export const setVariables = (
   limit: any = null,
   offset: number = 0,
   order: string = 'ASC'
-) => {
-  return {
-    filter,
-    opts: {
-      limit,
-      offset,
-      order,
-    },
-  };
-};
+) => ({
+  filter,
+  opts: {
+    limit,
+    offset,
+    order,
+  },
+});
 
-export const is24HourWindowOver = (time: any) => {
-  return moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
-};
+export const is24HourWindowOver = (time: any) =>
+  moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;

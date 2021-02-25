@@ -41,9 +41,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
 
   // for multiple message
   if (Array.isArray(data.errorMessage.message)) {
-    message = data.errorMessage.message.map((e: any) => {
-      return <div>{e.message}</div>;
-    });
+    message = data.errorMessage.message.map((e: any) => <div>{e.message}</div>);
   }
 
   return (

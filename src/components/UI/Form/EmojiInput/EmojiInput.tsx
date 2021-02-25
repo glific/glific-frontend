@@ -16,7 +16,7 @@ export interface EmojiInputProps {
   rows: number;
 }
 
-const DraftField = React.forwardRef(function DraftField(inputProps: any, ref: any) {
+const DraftField = React.forwardRef((inputProps: any, ref: any) => {
   const { component: Component, editorRef, ...other } = inputProps;
   React.useImperativeHandle(ref, () => ({
     focus: () => {
