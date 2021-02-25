@@ -25,14 +25,13 @@ export const parseText = (text: string) => {
 
 export { parseText as parseTextMethod };
 
-const validateMediaMethod = (URL: string, attachmentType: string) => {
-  return new Promise((resolve) => {
+const validateMediaMethod = (URL: string, attachmentType: string) =>
+  new Promise((resolve) => {
     axios
       .get(`${FLOW_EDITOR_API}validate-media?url=${URL}&type=${attachmentType.toLowerCase()}`)
       .then((response: any) => {
         resolve(response);
       });
   });
-};
 
 export { validateMediaMethod as validateMedia };

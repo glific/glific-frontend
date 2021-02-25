@@ -10,16 +10,14 @@ import { BSPBALANCE } from '../../graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 
-const nullBalance = () => {
-  return (
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
-      <div className={styles.WalletBalanceText}>
-        <SelectWhiteIcon className={styles.Icon} />
-        Wallet balance is okay
-      </div>
+const nullBalance = () => (
+  <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
+    <div className={styles.WalletBalanceText}>
+      <SelectWhiteIcon className={styles.Icon} />
+      Wallet balance is okay
     </div>
-  );
-};
+  </div>
+);
 
 export interface WalletBalanceProps {
   fullOpen: boolean;

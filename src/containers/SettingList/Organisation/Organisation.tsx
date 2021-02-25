@@ -88,9 +88,7 @@ export const Organisation: React.SFC = () => {
 
   const [getOrg, { data: orgData }] = useLazyQuery<any>(GET_ORGANIZATION);
 
-  const getEnabledDays = (data: any) => {
-    return data.filter((option: any) => option.enabled);
-  };
+  const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
   const setOutOfOffice = (data: any) => {
     setStartTime(data.startTime);
@@ -98,9 +96,7 @@ export const Organisation: React.SFC = () => {
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const getFlow = (id: string) => {
-    return flow.flows.filter((option: any) => option.id === id)[0];
-  };
+  const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
 
   const setStates = ({
     name: nameValue,
@@ -268,9 +264,7 @@ export const Organisation: React.SFC = () => {
     const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
-    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => {
-      return language.id;
-    });
+    const activeLanguageIds = payloadCopy.activeLanguages.map((language: any) => language.id);
 
     // remove activeLanguages from the payload
     delete payloadCopy.activeLanguages;

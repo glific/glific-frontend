@@ -204,25 +204,23 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   };
 
   if (tags && tags.length > 0)
-    displayTag = tags.map((tag: any) => {
-      return (
-        <div
-          key={tag.id}
-          className={`${styles.Tag} ${tagMargin}`}
-          style={{ color: tag.colorCode }}
-          data-testid="tags"
-        >
-          <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
-          {tag.label}
-          <CloseIcon
-            className={styles.CloseIcon}
-            onClick={deleteTagHandler}
-            data-id={tag.id}
-            data-testid="deleteIcon"
-          />
-        </div>
-      );
-    });
+    displayTag = tags.map((tag: any) => (
+      <div
+        key={tag.id}
+        className={`${styles.Tag} ${tagMargin}`}
+        style={{ color: tag.colorCode }}
+        data-testid="tags"
+      >
+        <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
+        {tag.label}
+        <CloseIcon
+          className={styles.CloseIcon}
+          onClick={deleteTagHandler}
+          data-id={tag.id}
+          data-testid="deleteIcon"
+        />
+      </div>
+    ));
 
   const date = showMessage ? (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">

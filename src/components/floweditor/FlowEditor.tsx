@@ -50,88 +50,86 @@ const loadfiles = () => {
 
 const glificBase = FLOW_EDITOR_API;
 
-const setConfig = (uuid: any) => {
-  return {
-    flow: uuid,
-    flowType: 'message',
-    localStorage: true,
-    mutable: true,
-    filters: ['whatsapp'],
+const setConfig = (uuid: any) => ({
+  flow: uuid,
+  flowType: 'message',
+  localStorage: true,
+  mutable: true,
+  filters: ['whatsapp'],
 
-    excludeTypes: [
-      'add_contact_urn',
-      'send_email',
-      'set_run_result',
-      'call_resthook',
-      'start_session',
-      'open_ticket',
-      'transfer_airtime',
-      'split_by_intent',
-      'split_by_contact_field',
-      'split_by_random',
-      'split_by_groups',
-      'split_by_scheme',
-    ],
+  excludeTypes: [
+    'add_contact_urn',
+    'send_email',
+    'set_run_result',
+    'call_resthook',
+    'start_session',
+    'open_ticket',
+    'transfer_airtime',
+    'split_by_intent',
+    'split_by_contact_field',
+    'split_by_random',
+    'split_by_groups',
+    'split_by_scheme',
+  ],
 
-    excludeOperators: [
-      'has_beginning',
-      'has_text',
-      'has_number_lt',
-      'has_number_lte',
-      'has_number_gte',
-      'has_number_gt',
-      'has_date',
-      'has_date_category',
-      'has_date_lt',
-      'has_number_lte',
-      'has_number_gte',
-      'has_number_gt',
-      'has_date',
-      'has_date_category',
-      'has_date_lt',
-      'has_date_eq',
-      'has_date_gt',
-      'has_time',
-      'has_group',
-      'has_category',
-      'has_state',
-      'has_state_category',
-      'has_district',
-      'has_ward',
-      'has_error',
-      'has_value',
-      'has_pattern',
-    ],
-    help: {
-      legacy_extra: 'help.html',
-      missing_dependency: 'help.html',
-      invalid_regex: 'help.html',
-    },
-    endpoints: {
-      simulateStart: false,
-      simulateResume: false,
-      globals: `${glificBase}globals`,
-      groups: `${glificBase}groups`,
-      fields: `${glificBase}fields`,
-      labels: `${glificBase}labels`,
-      channels: `${glificBase}channels`,
-      classifiers: `${glificBase}classifiers`,
-      ticketers: `${glificBase}ticketers`,
-      resthooks: `${glificBase}resthooks`,
-      templates: `${glificBase}templates`,
-      languages: `${glificBase}languages`,
-      environment: `${glificBase}environment`,
-      recipients: `${glificBase}recipients`,
-      completion: `${glificBase}completion`,
-      activity: `${glificBase}activity`,
-      flows: `${glificBase}flows`,
-      revisions: `${glificBase}revisions/${uuid}`,
-      functions: `${glificBase}functions`,
-      editor: FLOW_EDITOR_CONFIGURE_LINK,
-      validateMedia: `${glificBase}validate-media`,
-    },
-  };
-};
+  excludeOperators: [
+    'has_beginning',
+    'has_text',
+    'has_number_lt',
+    'has_number_lte',
+    'has_number_gte',
+    'has_number_gt',
+    'has_date',
+    'has_date_category',
+    'has_date_lt',
+    'has_number_lte',
+    'has_number_gte',
+    'has_number_gt',
+    'has_date',
+    'has_date_category',
+    'has_date_lt',
+    'has_date_eq',
+    'has_date_gt',
+    'has_time',
+    'has_group',
+    'has_category',
+    'has_state',
+    'has_state_category',
+    'has_district',
+    'has_ward',
+    'has_error',
+    'has_value',
+    'has_pattern',
+  ],
+  help: {
+    legacy_extra: 'help.html',
+    missing_dependency: 'help.html',
+    invalid_regex: 'help.html',
+  },
+  endpoints: {
+    simulateStart: false,
+    simulateResume: false,
+    globals: `${glificBase}globals`,
+    groups: `${glificBase}groups`,
+    fields: `${glificBase}fields`,
+    labels: `${glificBase}labels`,
+    channels: `${glificBase}channels`,
+    classifiers: `${glificBase}classifiers`,
+    ticketers: `${glificBase}ticketers`,
+    resthooks: `${glificBase}resthooks`,
+    templates: `${glificBase}templates`,
+    languages: `${glificBase}languages`,
+    environment: `${glificBase}environment`,
+    recipients: `${glificBase}recipients`,
+    completion: `${glificBase}completion`,
+    activity: `${glificBase}activity`,
+    flows: `${glificBase}flows`,
+    revisions: `${glificBase}revisions/${uuid}`,
+    functions: `${glificBase}functions`,
+    editor: FLOW_EDITOR_CONFIGURE_LINK,
+    validateMedia: `${glificBase}validate-media`,
+  },
+});
 
 export interface FlowEditorProps {
   match: any;
@@ -233,7 +231,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         }
       });
       // clearing all timeouts when component unmounts
-      const highestTimeoutId = setTimeout(() => {});
+      const highestTimeoutId: any = setTimeout(() => {});
       for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
         clearTimeout(timeoutId);
       }
@@ -263,14 +261,12 @@ export const FlowEditor = (props: FlowEditorProps) => {
     <p className={styles.DialogError}>
       Errors were detected in the flow. Would you like to continue modifying?
       <div>
-        {flowValidation.map((message: any) => {
-          return (
-            <div>
-              <WarningIcon className={styles.ErrorMsgIcon} />
-              {message.message}
-            </div>
-          );
-        })}
+        {flowValidation.map((message: any) => (
+          <div>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {message.message}
+          </div>
+        ))}
       </div>
     </p>
   );

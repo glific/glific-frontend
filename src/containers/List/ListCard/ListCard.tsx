@@ -12,9 +12,8 @@ interface ListCardProps {
 export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
   const { data } = props;
 
-  const link = (id: any) => {
-    return `/${props.link.start}/${id}/${props.link.end}`;
-  };
+  const link = (id: any) => `/${props.link.start}/${id}/${props.link.end}`;
+
   const viewDetails = (id: any) => (
     <Link to={link(id)} className={styles.Link}>
       <p>View Details</p>
@@ -22,23 +21,21 @@ export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
   );
   return (
     <div className={styles.CardContainer}>
-      {data.map((dataInfo: any) => {
-        return (
-          <Card variant="outlined" className={styles.Card} key={dataInfo.id}>
-            <CardContent className={styles.CardContent}>
-              <div data-testid="label">{dataInfo.label}</div>
+      {data.map((dataInfo: any) => (
+        <Card variant="outlined" className={styles.Card} key={dataInfo.id}>
+          <CardContent className={styles.CardContent}>
+            <div data-testid="label">{dataInfo.label}</div>
 
-              <Typography variant="body2" component="div" data-testid="description">
-                {dataInfo.description}
-              </Typography>
-            </CardContent>
-            <CardActions className={styles.CardActions}>
-              {viewDetails(dataInfo.id)}
-              {dataInfo.operations}
-            </CardActions>
-          </Card>
-        );
-      })}
+            <Typography variant="body2" component="div" data-testid="description">
+              {dataInfo.description}
+            </Typography>
+          </CardContent>
+          <CardActions className={styles.CardActions}>
+            {viewDetails(dataInfo.id)}
+            {dataInfo.operations}
+          </CardActions>
+        </Card>
+      ))}
     </div>
   );
 };

@@ -21,13 +21,11 @@ const link = (
     Learn more about the WhatsApp session window here.
   </a>
 );
-const createTooltip = (title: string) => {
-  return (
-    <React.Fragment key="sessionTooltip">
-      {title} {link}
-    </React.Fragment>
-  );
-};
+const createTooltip = (title: string) => (
+  <React.Fragment key="sessionTooltip">
+    {title} {link}
+  </React.Fragment>
+);
 
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));

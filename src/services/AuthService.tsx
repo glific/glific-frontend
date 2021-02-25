@@ -38,9 +38,7 @@ export const renewAuthToken = () => {
 
   return axios
     .post(RENEW_TOKEN)
-    .then((response: any) => {
-      return response;
-    })
+    .then((response: any) => response)
     .catch((error: any) => {
       // if we are not able to renew the token for some wierd reason or if refresh token
       throw error;
@@ -79,21 +77,18 @@ export const clearAuthSession = () => {
 };
 
 // service to sent the OTP based on the phone number
-export const sendOTP = (phoneNumber: string, registration = 'false') => {
-  return axios
+export const sendOTP = (phoneNumber: string, registration = 'false') =>
+  axios
     .post(REACT_APP_GLIFIC_AUTHENTICATION_API, {
       user: {
         phone: phoneNumber,
         registration,
       },
     })
-    .then((response) => {
-      return response;
-    })
+    .then((response) => response)
     .catch((error) => {
       throw error;
     });
-};
 
 // set user object
 export const setUserSession = (user: string) => {

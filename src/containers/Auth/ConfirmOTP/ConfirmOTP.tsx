@@ -27,9 +27,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   const handleResend = () => {
     sendOTP(location.state.phoneNumber, 'true')
-      .then((response) => {
-        return response;
-      })
+      .then((response) => response)
       .catch(() => {
         setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });

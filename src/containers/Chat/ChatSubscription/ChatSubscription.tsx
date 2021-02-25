@@ -208,9 +208,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         collectionSubscribe({
           document: COLLECTION_SENT_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'COLLECTION');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'COLLECTION'),
         });
       }
     },
@@ -227,27 +226,24 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         subscribeToMore({
           document: MESSAGE_RECEIVED_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'RECEIVED');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'RECEIVED'),
         });
 
         // message sent subscription
         subscribeToMore({
           document: MESSAGE_SENT_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'SENT');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'SENT'),
         });
 
         // message status subscription
         subscribeToMore({
           document: MESSAGE_STATUS_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'STATUS');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'STATUS'),
           onError: (e) => {
             console.log('e', e);
           },
@@ -257,18 +253,16 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         subscribeToMore({
           document: ADD_MESSAGE_TAG_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'TAG_ADDED');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'TAG_ADDED'),
         });
 
         // tag delete subscription
         subscribeToMore({
           document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
           variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) => {
-            return updateConversations(prev, subscriptionData, 'TAG_DELETED');
-          },
+          updateQuery: (prev, { subscriptionData }) =>
+            updateConversations(prev, subscriptionData, 'TAG_DELETED'),
         });
       }
     },
