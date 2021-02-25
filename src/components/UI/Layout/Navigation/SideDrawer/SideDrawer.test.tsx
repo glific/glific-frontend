@@ -51,7 +51,7 @@ describe('side drawer testing', () => {
     }
   });
 
-  it('should contain a help buttom', () => {
+  it('should contain a help button', () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getByTestId } = render(component);
     expect(getByTestId('helpButton')).toBeInTheDocument();
