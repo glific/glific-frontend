@@ -38,6 +38,7 @@
   box-shadow: 0 5px 10px 0px #00000034;
   border-radius: 15px;
   cursor: pointer;
+  font-size: 12px;
   padding: 0 0 0 10px;
   align-items: center;
 }
