@@ -25,6 +25,7 @@ import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
 import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
+import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
 import { userAccountMenus } from '../../../../../config/menu';
 import {
   getStaffManagementMenus,
@@ -33,7 +34,6 @@ import {
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
-import { Button } from '../../../Form/Button/Button';
 import { GLIFIC_DOCS_URL } from '../../../../../config/index';
 
 export interface SideDrawerProps {}
@@ -240,17 +240,17 @@ export const SideDrawer: React.SFC<SideDrawerProps> = () => {
           }}
           variant="permanent"
         >
-          <Button
-            variant="outlined"
-            color="primary"
+          <div
             data-testid="helpButton"
+            aria-hidden="true"
             className={helpButtonStyle}
             onClick={() => {
               window.open(GLIFIC_DOCS_URL, '_blank');
             }}
           >
-            Help
-          </Button>
+            Help documents
+            <QuestionIcon />
+          </div>
           <div className={bottonMenuClasses.join(' ')}>
             {settingMenus}
             <div
