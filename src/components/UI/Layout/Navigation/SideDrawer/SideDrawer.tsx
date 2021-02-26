@@ -36,7 +36,10 @@ import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
 import { GLIFIC_DOCS_URL } from '../../../../../config/index';
 
-export interface SideDrawerProps {}
+export interface SideDrawerProps {
+  fullOpen: boolean;
+  setFullOpen: any;
+}
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
@@ -121,11 +124,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SideDrawer: React.SFC<SideDrawerProps> = () => {
+export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }) => {
   const location = useLocation();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [fullOpen, setFullOpen] = useState(true);
   const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
 
   // get menu for role
