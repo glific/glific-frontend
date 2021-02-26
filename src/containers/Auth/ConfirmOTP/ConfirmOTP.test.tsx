@@ -6,7 +6,10 @@ import axios from 'axios';
 
 import { ConfirmOTP } from './ConfirmOTP';
 
-jest.mock('axios');
+const mockAxios = jest.genMockFromModule('axios');
+
+// this is the key to fix the axios.create() undefined error!
+mockAxios.create = jest.fn(() => mockAxios);
 
 const defaultProps = { location: { state: { name: '', phoneNumber: '', password: '' } } };
 
@@ -43,7 +46,7 @@ describe('<ConfirmOTP />', () => {
 
     // let's mock successful otp submission
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     await wait();
   });
 
@@ -60,7 +63,7 @@ describe('<ConfirmOTP />', () => {
 
     // let's mock error response on otp submission
     const errorMessage = 'We are unable to register, kindly contact your technical team.';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     await wait();
   });
 
@@ -71,7 +74,7 @@ describe('<ConfirmOTP />', () => {
     const responseData = {
       data: { message: 'OTP sent successfully to 919967665667', phone: '919967665667' },
     };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
     await wait();
 
     // click on resend button
@@ -84,7 +87,7 @@ describe('<ConfirmOTP />', () => {
 
     // set the mock
     const errorMessage = 'Cannot send the otp to 919967665667';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    mockAxios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     await wait();
 
     // click on resend button

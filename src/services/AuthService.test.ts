@@ -35,12 +35,15 @@ describe('AuthService', () => {
   });
 
   test('testing renewAuthToken with error while renewing', async () => {
+    jest.mock('axios', () => ({
+      post: jest.fn(() => Promise.resolve()),
+    }));
     // set the session
     setAuthSession(session);
 
     // let's mock the axios call
     const invalidErrorMessage = 'Invalid token';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
+    axios.post(() => Promise.reject(new Error(invalidErrorMessage)));
     await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
   });
 
