@@ -2,7 +2,7 @@ import pino from 'pino';
 import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
 import { LOGFLARE_API, LOGFLARE_SOURCE } from '.';
 
-let logger: any;
+let logger: pino.BaseLogger & { [key: string]: pino.LogFn };
 
 if (LOGFLARE_API && LOGFLARE_SOURCE) {
   const apiKey = LOGFLARE_API;
