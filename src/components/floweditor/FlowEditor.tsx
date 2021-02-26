@@ -340,7 +340,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           data-testid="saveDraftButton"
-          className={styles.Draft}
+          className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
