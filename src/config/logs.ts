@@ -36,10 +36,10 @@ export const setLogs = (message: any, type: string) => {
     // log some events
     switch (type) {
       case 'info':
-        logger.log('info', message);
+        logger.log('info', JSON.stringify(message));
         break;
       case 'error':
-        logger.error(message);
+        logger.error(JSON.stringify(message));
         break;
       default:
         break;
