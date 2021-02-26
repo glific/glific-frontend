@@ -1,6 +1,7 @@
 import { SOCKET } from '.';
 import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
 import { getAuthSession, renewAuthToken, setAuthSession } from '../services/AuthService';
+import setLogs from './logs';
 
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
@@ -25,7 +26,9 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
 // watch for websocket error event using onError
 
 let connectionFailureCounter = 0;
-socketConnection.onError(async () => {
+socketConnection.onError(async (error: any) => {
+  // add logs in logflare
+  setLogs(error, 'error');
   if (connectionFailureCounter === 0) {
     const authtoken = await renewAuthToken();
     if (authtoken.data) {
