@@ -14,6 +14,7 @@ import {
 } from '../services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
 import { Logout } from '../containers/Auth/Logout/Logout';
+import setLogs from './logs';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -37,6 +38,8 @@ const gqlClient = (history: any) => {
       /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
+      // logged error in logflare
+      setLogs(err, 'error');
       /* eslint-enable */
       // gracefully logout
       return Logout;
@@ -58,10 +61,15 @@ const gqlClient = (history: any) => {
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
+      graphQLErrors.map(({ message, locations, path }) => {
         // eslint-disable-next-line
-        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-      );
+        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+        // logged error in logflare
+        return setLogs(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+          'error'
+        );
+      });
 
     if (networkError) {
       // @ts-ignore
@@ -72,6 +80,8 @@ const gqlClient = (history: any) => {
         default:
           // eslint-disable-next-line
           console.log(`[Network error]: ${networkError}`);
+          // logged error in logflare
+          setLogs(`[Network error]: ${networkError}`, 'error');
       }
     }
   });

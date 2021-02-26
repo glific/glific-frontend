@@ -3,14 +3,16 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Simulator } from './Simulator';
 import { MockedProvider } from '@apollo/client/testing';
 import { conversationQuery } from '../../mocks/Chat';
-import axios from 'axios';
 import {
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
 
-jest.mock('axios');
+const mockAxios = jest.genMockFromModule('axios');
+
+// this is the key to fix the axios.create() undefined error!
+mockAxios.create = jest.fn(() => mockAxios);
 
 const mockSetShowSimulator = jest.fn();
 
@@ -54,7 +56,7 @@ test('send a message from the simulator', async () => {
   });
 
   const responseData = { data: {} };
-  axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
   await waitFor(() => {
     expect(input).toHaveTextContent('');
   });

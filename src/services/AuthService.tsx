@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../config/index';
+import setLogs from '../config/logs';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -40,7 +41,10 @@ export const renewAuthToken = () => {
     .post(RENEW_TOKEN)
     .then((response: any) => response)
     .catch((error: any) => {
-      // if we are not able to renew the token for some wierd reason or if refresh token
+      // add log's
+      setLogs(`renewalToken:${renewalToken} URL:${RENEW_TOKEN}`, 'info');
+      setLogs(error, 'error');
+      // if we are not able to renew the token for some weird reason or if refresh token
       throw error;
     });
 };
@@ -87,6 +91,12 @@ export const sendOTP = (phoneNumber: string, registration = 'false') =>
     })
     .then((response) => response)
     .catch((error) => {
+      // add log's
+      setLogs(
+        `phoneNumber:${phoneNumber} registration:${registration} URL:${REACT_APP_GLIFIC_AUTHENTICATION_API}`,
+        'info'
+      );
+      setLogs(error, 'error');
       throw error;
     });
 
