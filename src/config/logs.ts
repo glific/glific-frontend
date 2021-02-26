@@ -32,17 +32,18 @@ export const setLogs = (message: any, type: string) => {
       },
       stream
     );
-  }
-  // log some events
-  switch (type) {
-    case 'info':
-      logger.log('info', message);
-      break;
-    case 'error':
-      logger.error(message);
-      break;
-    default:
-      break;
+
+    // log some events
+    switch (type) {
+      case 'info':
+        logger.log('info', message);
+        break;
+      case 'error':
+        logger.error(message);
+        break;
+      default:
+        break;
+    }
   }
 };
 
