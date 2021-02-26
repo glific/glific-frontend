@@ -29,7 +29,7 @@ describe('<ConfirmOTP />', () => {
 
     const authContainer = await findByTestId('AuthContainer');
     expect(authContainer).toHaveTextContent(
-      'Please confirm the OTP received at your whatsapp number.'
+      'Please confirm the OTP received at your WhatsApp number.'
     );
   });
 
