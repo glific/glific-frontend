@@ -35,9 +35,6 @@ describe('AuthService', () => {
   });
 
   test('testing renewAuthToken with error while renewing', async () => {
-    jest.mock('axios', () => ({
-      post: jest.fn(() => Promise.resolve()),
-    }));
     // set the session
     setAuthSession(session);
 
