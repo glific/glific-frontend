@@ -29,6 +29,7 @@ import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulato
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 import { setNotification } from '../../common/notification';
+import setLogs from '../../config/logs';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -152,6 +153,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
           },
         },
       },
+    }).catch((error) => {
+      // add log's
+      setLogs(
+        `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+        'info'
+      );
+      setLogs(error, 'error');
     });
     setInputMessage('');
   };
