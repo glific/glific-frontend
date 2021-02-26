@@ -50,7 +50,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      helperText: 'Please confirm the OTP received at your WhatsApp number.',
       endAdornmentCallback: handleResend,
     },
   ];
@@ -82,7 +82,6 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
             user: {
               name: props.location.state.name,
               phone: props.location.state.phoneNumber,
-              password: props.location.state.password,
               otp: values.OTP,
             },
           }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,
