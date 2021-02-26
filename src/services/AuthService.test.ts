@@ -40,7 +40,7 @@ describe('AuthService', () => {
 
     // let's mock the axios call
     const invalidErrorMessage = 'Invalid token';
-    axios.post(() => Promise.reject(new Error(invalidErrorMessage)));
+    axios.post.mockImplementationOnce(() => Promise.reject(new Error(invalidErrorMessage)));
     await expect(renewAuthToken()).rejects.toThrow(invalidErrorMessage);
   });
 
