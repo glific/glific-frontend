@@ -76,7 +76,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (simulatorData.simulatorGet) {
         setSimulatorId(simulatorData.simulatorGet.id);
       } else {
-        setNotification(client, 'No more simulators are available right now', 'warning');
+        setNotification(
+          client,
+          'Sorry! Simulators are in use by other staff members right now. Please wait for it to be idle',
+          'warning'
+        );
       }
     },
   });

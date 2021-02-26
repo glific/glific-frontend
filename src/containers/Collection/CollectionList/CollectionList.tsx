@@ -24,7 +24,7 @@ import { CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION } from '../../../graphql
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
-import { displayUserCollections } from '../../../context/role';
+import { displayUserCollections, getUserRole } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../graphql/queries/Contact';
 import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
@@ -286,11 +286,21 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     variables: setVariables(),
   };
 
+  const getRestrictedAction = () => {
+    const action: any = { edit: true, delete: true };
+    if (getUserRole().includes('Staff')) {
+      action.edit = false;
+      action.delete = false;
+    }
+    return action;
+  };
+
   const cardLink = { start: 'collection', end: 'contacts' };
 
   return (
     <>
       <List
+        restrictedAction={getRestrictedAction}
         refetchQueries={refetchQueries}
         title="Collections"
         listItem="groups"
