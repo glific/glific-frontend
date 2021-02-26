@@ -14,14 +14,24 @@ import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
 export interface FlowListProps {}
 
-const getName = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getName = (text: string, keywordsList: any) => {
+  const keywords = keywordsList.map((keyword: any) => keyword);
+
+  return (
+    <p className={`${styles.TableText} ${styles.NameText}`}>
+      {text}
+      <br />
+      <div className={styles.Keyword}>{keywords.join(', ')}</div>
+    </p>
+  );
+};
 
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
 
-const getColumns = ({ name, updatedAt }: any) => ({
-  name: getName(name),
+const getColumns = ({ name, updatedAt, keywords }: any) => ({
+  name: getName(name, keywords),
   updatedAt: getUpdatedAt(updatedAt),
 });
 
