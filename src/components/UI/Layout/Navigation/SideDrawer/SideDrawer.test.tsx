@@ -16,7 +16,7 @@ describe('side drawer testing', () => {
   const component = (
     <MockedProvider mocks={mocks}>
       <Router>
-        <SideDrawer />
+        <SideDrawer fullOpen={true} setFullOpen={jest.fn()} />
       </Router>
     </MockedProvider>
   );
@@ -26,14 +26,6 @@ describe('side drawer testing', () => {
     await waitFor(() => {
       expect(getByTestId('navbar')).toBeInTheDocument();
     });
-  });
-
-  test('opening and closing of side drawer', () => {
-    const { getAllByTestId, queryByTestId } = render(component);
-    fireEvent.click(getAllByTestId('drawer-button')[0]);
-    expect(queryByTestId('drawer-button')).toBe(null);
-    fireEvent.click(getAllByTestId('drawer-button-closed')[0]);
-    expect(getAllByTestId('drawer-button')[0]).toBeInTheDocument();
   });
 
   it('should open bottom menus', () => {

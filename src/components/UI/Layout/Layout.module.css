@@ -2,6 +2,10 @@
   width: calc(100% - 233px);
 }
 
+.MainFullWidth {
+  width: 100%;
+}
+
 @media only screen and (max-width: 768px) {
   .Main {
     width: 100%;
