@@ -41,6 +41,7 @@
     "@types/styled-components": "^5.1.7",
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.11",
+    "@types/pino": "^6.3.6",
     "ajv-keywords": "^4.0.0",
     "apollo-link-token-refresh": "^0.3.2",
     "axios": "^0.21.1",
@@ -130,7 +131,6 @@
     ]
   },
   "devDependencies": {
-    "@types/pino": "^6.3.6",
     "@types/react-test-renderer": "^17.0.1",
     "prettier": "^2.2.1",
     "react-test-renderer": "^17.0.1"
