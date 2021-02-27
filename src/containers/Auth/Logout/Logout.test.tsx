@@ -10,7 +10,7 @@ describe('<Logout />', () => {
     render(
       <MockedProvider>
         <MemoryRouter>
-          <Logout match={{ params: { user: 'false' } }} />
+          <Logout match={{ params: { user: 'true' } }} />
         </MemoryRouter>
       </MockedProvider>
     );

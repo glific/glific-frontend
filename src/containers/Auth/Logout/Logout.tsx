@@ -16,7 +16,7 @@ export interface LogoutProps {
 
 export const Logout: React.SFC<LogoutProps> = (props: any) => {
   const { setAuthenticated } = useContext(SessionContext);
-  const [redirect, setRedirect] = useState(true);
+  const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
 
   // let's notify the backend when user logs out
@@ -51,9 +51,9 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
 
   useEffect(() => {
     // if user click on logout menu
-    if (props.match.params.user !== 'true') {
+    if (props.match.params.user === 'true') {
       handleLogout();
-      setRedirect(false);
+      setRedirect(true);
     }
   }, []);
 
