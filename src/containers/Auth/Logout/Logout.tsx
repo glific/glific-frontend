@@ -10,11 +10,13 @@ import { USER_SESSION } from '../../../config';
 import { clearListSession } from '../../../services/ListService';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
-export interface LogoutProps {}
+export interface LogoutProps {
+  match?: any;
+}
 
 export const Logout: React.SFC<LogoutProps> = (props: any) => {
   const { setAuthenticated } = useContext(SessionContext);
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(true);
   const client = useApolloClient();
 
   // let's notify the backend when user logs out
@@ -49,9 +51,9 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
 
   useEffect(() => {
     // if user click on logout menu
-    if (props.match.params.user === 'true') {
+    if (props.match.params.user !== 'true') {
       handleLogout();
-      setRedirect(true);
+      setRedirect(false);
     }
   }, []);
 
