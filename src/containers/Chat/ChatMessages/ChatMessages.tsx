@@ -99,7 +99,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
-      if (searchData && searchData.search > 0) {
+      if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
         const conversations = getCachedConverations(client, queryVariables);
 
