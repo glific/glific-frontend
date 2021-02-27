@@ -31,7 +31,6 @@ const loadfiles = () => {
         script.src = filesToLoad[fileName].slice(1);
         script.id = `flowEditorScript${index}`;
         script.async = false;
-        document.body.appendChild(script);
         files.push(script);
       }
 
@@ -44,6 +43,12 @@ const loadfiles = () => {
       }
     }
   });
+
+  // loading the largest file first
+  document.body.appendChild(files[3]);
+  document.body.appendChild(files[0]);
+  document.body.appendChild(files[2]);
+  document.body.appendChild(files[1]);
 
   return files;
 };
@@ -208,7 +213,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   let flowTitle: any;
   let flowKeyword: any;
-  if (flowName) {
+
+  // flowname can return an emty array if the uuid present is not correct
+  if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
     [flowKeyword] = flowName.flows[0].keywords;
   }
@@ -239,7 +246,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, []);
 
   useEffect(() => {
-    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript4');
+    // check if runtime main file is present and then load
+    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
     if (lastFile) {
       lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
