@@ -242,7 +242,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
-      history.push('/logout');
+      history.push('/logout/true');
     }
   };
 

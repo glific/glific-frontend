@@ -43,5 +43,11 @@ socketConnection.onError(async (error: any) => {
   }
 });
 
+socketConnection.onClose((error: any) => {
+  /* eslint-disable */
+  console.warn(`WebSocket connection error:${error}`);
+  setLogs(error, 'error');
+});
+
 // wrap the Phoenix socket in an AbsintheSocket and export
 export default SocketApolloLink.createAbsintheSocketLink(AbsintheSocket.create(socketConnection));

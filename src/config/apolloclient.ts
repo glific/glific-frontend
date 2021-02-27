@@ -75,7 +75,7 @@ const gqlClient = (history: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          history.push('/logout');
+          history.push('/logout/true');
           break;
         default:
           // eslint-disable-next-line
