@@ -25,12 +25,18 @@ const gqlClient = (history: any) => {
     fetchAccessToken: async () => renewAuthToken(),
     handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
-      // lets set the session
-      setAuthSession(JSON.stringify(response.data.data));
-
-      // we need to return below as handleFetch expects it
+      // here we can both success and failures hence need to check for those conditions
       const tokenResponse: any = [];
-      tokenResponse[accessTokenField] = response.data.data.access_token;
+
+      // in case of successful token renewal
+      if (response.data) {
+        // lets set the session
+        setAuthSession(JSON.stringify(response.data.data));
+
+        // we need to return below as handleFetch expects it
+        tokenResponse[accessTokenField] = response.data.data.access_token;
+      }
+
       return tokenResponse;
     },
     handleError: (err: Error) => {
