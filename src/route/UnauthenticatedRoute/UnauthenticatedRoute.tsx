@@ -14,7 +14,7 @@ export const UnauthenticatedRoute: React.SFC = () => (
     <Route path="/confirmotp" exact component={ConfirmOTP} />
     <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
     <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
-    <Route path="/" render={() => <Redirect to="/logout/true" />} />
+    <Route path="/" render={() => <Redirect to="/logout/user" />} />
   </Switch>
 );
 

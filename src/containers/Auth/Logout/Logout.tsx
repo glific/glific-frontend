@@ -51,7 +51,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
 
   useEffect(() => {
     // if user click on logout menu
-    if (props.match.params.user === 'true') {
+    if (props.match.params.mode === 'user') {
       handleLogout();
       setRedirect(true);
     }

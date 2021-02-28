@@ -57,7 +57,7 @@ export const userAccountMenus = [
   },
   {
     title: 'Logout',
-    path: '/logout/true',
+    path: '/logout/user',
     className: 'Danger',
   },
 ];

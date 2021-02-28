@@ -25,7 +25,7 @@ const gqlClient = (history: any) => {
     fetchAccessToken: async () => renewAuthToken(),
     handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
-      // here we can both success and failures hence need to check for those conditions
+      // here we can both success and failures
       const tokenResponse: any = [];
 
       // in case of successful token renewal
@@ -81,7 +81,7 @@ const gqlClient = (history: any) => {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          history.push('/logout/true');
+          history.push('/logout/session');
           break;
         default:
           // eslint-disable-next-line
