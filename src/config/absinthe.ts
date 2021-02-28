@@ -33,6 +33,7 @@ socketConnection.onError(async (error: any) => {
     const authtoken = await renewAuthToken();
     if (authtoken.data) {
       setAuthSession(JSON.stringify(authtoken.data.data));
+      setLogs('Successful token renewal by websocket', 'info');
     }
   }
   // increment the counter when error occurs
@@ -41,12 +42,6 @@ socketConnection.onError(async (error: any) => {
   if (connectionFailureCounter >= CONNECTION_RECONNECT_ATTEMPTS) {
     socketConnection.disconnect();
   }
-});
-
-socketConnection.onClose((error: any) => {
-  /* eslint-disable */
-  console.warn(`WebSocket connection error:${error}`);
-  setLogs(error, 'error');
 });
 
 // wrap the Phoenix socket in an AbsintheSocket and export
