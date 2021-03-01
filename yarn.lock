@@ -1733,9 +1733,9 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.11.9.6":
+"@nyaruka/flow-editor@glific/floweditor#v1.11.9.7":
   version "1.11.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/dcee76d97bfdeebd8cd4e3b71ae6dea89fae7afa"
+  resolved "https://codeload.github.com/glific/floweditor/tar.gz/6cff9eb17b8d278d716ee390a22948388ff6f1af"
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
