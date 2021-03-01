@@ -222,12 +222,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   // HOOKS ESTABLISHED ABOVE
 
   // check if the search API results nothing for a particular contact ID and redirect to chat
-  if (contactId && data && data.search.length === 0) {
-    return <Redirect to="/chat" />;
-  }
-
-  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
-    return <Redirect to="/chat" />;
+  if (contactId && data) {
+    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
+      return <Redirect to="/chat" />;
+    }
   }
 
   // Run through these cases to ensure data always exists
