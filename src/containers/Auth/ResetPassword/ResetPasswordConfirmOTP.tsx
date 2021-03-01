@@ -45,7 +45,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      helperText: 'Please confirm the OTP received at your WhatsApp number.',
       endAdornmentCallback: handleResend,
     },
     {

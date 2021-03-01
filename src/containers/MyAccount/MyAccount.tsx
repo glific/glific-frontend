@@ -17,6 +17,14 @@ import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
 
 export interface MyAccountProps {}
 
+// setup form schema base on Yup
+const FormSchema = Yup.object().shape({
+  otp: Yup.string().required('Input required'),
+  password: Yup.string()
+    .min(6, 'Password must be at least 8 characters long.')
+    .required('Input required'),
+});
+
 export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
@@ -95,7 +103,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   };
 
   // set up toast message display, we use this for showing backend validation errors like
-  // invalid OTP and also display success message on password updat
+  // invalid OTP and also display success message on password update
   let displayToastMessage: any;
   if (toastMessageInfo.message.length > 0) {
     displayToastMessage = (
@@ -107,14 +115,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     );
   }
 
-  // setup form schema base on Yup
-  const FormSchema = Yup.object().shape({
-    otp: Yup.string().required('Input required'),
-    password: Yup.string()
-      .min(6, 'Password must be at least 8 characters long.')
-      .required('Input required'),
-  });
-
   // for configuration that needs to be rendered
   const formFields = [
     {
@@ -122,7 +122,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       type: 'otp',
       name: 'otp',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      helperText: 'Please confirm the OTP received at your WhatsApp number.',
       endAdornmentCallback: sendOTPHandler,
     },
     {

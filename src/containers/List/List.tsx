@@ -185,7 +185,7 @@ export const List: React.SFC<ListProps> = ({
       updatedList = getUpdatedList(listItemName, newVal, true);
     }
 
-    // set the sort criteria in localstorage
+    // set the sort criteria in local storage
     setListSession(JSON.stringify(updatedList));
 
     setTableVals({
