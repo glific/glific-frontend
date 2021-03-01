@@ -43,10 +43,9 @@ describe('<List />', () => {
 
     await waitFor(() => {
       expect(container.querySelector('table')).toBeInTheDocument();
-    });
-
-    fireEvent.change(getByTestId('searchInput')?.querySelector('input'), {
-      target: { value: 'Unread' },
+      fireEvent.change(getByTestId('searchInput')?.querySelector('input'), {
+        target: { value: 'Unread' },
+      });
     });
 
     await waitFor(() => {
