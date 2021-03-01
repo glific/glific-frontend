@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -9,6 +9,12 @@ import { Input } from '../../../../components/UI/Form/Input/Input';
 import { MessageType } from '../../ChatConversations/MessageType/MessageType';
 import { MEDIA_MESSAGE_TYPES } from '../../../../common/constants';
 import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
+import { validateMedia } from '../../../../common/utils';
+
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({
+  id: option,
+  label: <MessageType type={option} color="dark" />,
+}));
 
 export interface AddAttachmentPropTypes {
   setAttachment: any;
@@ -27,15 +33,45 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   attachmentURL,
   attachmentType,
 }: AddAttachmentPropTypes) => {
-  const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-    return { id: option, label: <MessageType type={option} color="dark" /> };
-  });
+  const [onSubmit, setOnSubmit] = useState(false);
+  const [errors, setErrors] = useState<any>(null);
+
+  const validateURL = () => {
+    if (attachmentURL && attachmentType && onSubmit) {
+      setErrors('Please wait for the attachment URL verification');
+
+      validateMedia(attachmentURL, attachmentType).then((response: any) => {
+        if (!response.data.is_valid) {
+          setErrors(response.data.message);
+        } else if (response.data.is_valid) {
+          setAttachmentAdded(true);
+          setAttachment(false);
+          setOnSubmit(false);
+          setErrors(null);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    validateURL();
+  }, [attachmentURL, attachmentType, onSubmit]);
+
+  const validate = (value: any) => {
+    if (value !== attachmentURL) {
+      setOnSubmit(false);
+      setAttachmentURL(value);
+    } else if (!value) {
+      setErrors(null);
+    }
+  };
 
   const input = {
     component: Input,
     name: 'attachmentURL',
     type: 'text',
     placeholder: 'Attachment URL',
+    validate,
   };
 
   let formFieldItems: any = [
@@ -47,6 +83,8 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       fieldValue: attachmentType,
       fieldChange: (event: any) => {
         setAttachmentType(event?.target.value);
+        setOnSubmit(false);
+        setErrors(null);
       },
     },
   ];
@@ -78,16 +116,19 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     );
   };
 
+  const onSubmitHandle = (itemData: { attachmentURL: any; attachmentType: any }) => {
+    setAttachmentType(itemData.attachmentType);
+    setAttachmentURL(itemData.attachmentURL);
+  };
+
   const form = (
     <Formik
       enableReinitialize
       initialValues={{ attachmentURL, attachmentType }}
       validationSchema={validationSchema}
       onSubmit={(itemData) => {
-        setAttachmentType(itemData.attachmentType);
-        setAttachmentURL(itemData.attachmentURL);
-        setAttachmentAdded(true);
-        setAttachment(false);
+        setOnSubmit(true);
+        onSubmitHandle(itemData);
       }}
     >
       {({ submitForm }) => (
@@ -100,14 +141,17 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             }}
             handleCancel={() => {
               setAttachment(false);
+              setAttachmentType('');
+              setAttachmentURL('');
+              setAttachmentAdded(false);
             }}
             buttonOk="Add"
             alignButtons="left"
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
-              {formFieldItems.map((field: any) => {
-                return <Field {...field} key={field.name} />;
-              })}
+              {formFieldItems.map((field: any) => (
+                <Field {...field} key={field.name} validateURL={errors} />
+              ))}
               {attachmentType !== '' ? (
                 <div className={styles.CrossIcon}>
                   <CrossIcon
@@ -116,10 +160,12 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
                       setAttachmentType('');
                       setAttachmentURL('');
                       setAttachmentAdded(false);
+                      setErrors(null);
                     }}
                   />
                 </div>
               ) : null}
+              <div className={styles.FormError}>{errors}</div>
               {attachmentType === 'STICKER' || attachmentType === 'AUDIO' ? displayWarning() : null}
             </div>
           </DialogBox>

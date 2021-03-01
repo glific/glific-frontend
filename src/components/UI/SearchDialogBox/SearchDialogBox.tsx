@@ -13,6 +13,7 @@ export interface SearchDialogBoxProps {
   selectedOptions: any;
   icon?: any;
   optionLabel?: string;
+  additionalOptionLabel?: string;
   onChange?: any;
   asyncSearch?: boolean;
 }
@@ -26,6 +27,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     title,
     handleOk,
     optionLabel,
+    additionalOptionLabel,
     handleCancel,
     onChange,
   } = props;
@@ -70,6 +72,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
             options={options}
             optionLabel={optionLabel || 'label'}
+            additionalOptionLabel={additionalOptionLabel}
             field={{ value: selectedOption }}
             onChange={(value: any) => {
               if (onChange) {

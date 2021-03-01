@@ -19,6 +19,7 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
+        isRead
         insertedAt
         receiver {
           id
@@ -53,7 +54,6 @@ export const SAVED_SEARCH_QUERY = gql`
       shortcode
       label
       args
-      count
     }
   }
 `;
@@ -79,6 +79,7 @@ export const SEARCH_MULTI_QUERY = gql`
         id
         body
         messageNumber
+        isRead
         insertedAt
         contact {
           id
@@ -160,8 +161,8 @@ export const SEARCH_LIST_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
-      count
     }
   }
 `;
@@ -180,8 +181,13 @@ export const GET_SEARCH = gql`
         shortcode
         label
         args
-        count
       }
     }
+  }
+`;
+
+export const SEARCHES_COUNT = gql`
+  query count($organizationId: ID!) {
+    collectionStats(organizationId: $organizationId)
   }
 `;

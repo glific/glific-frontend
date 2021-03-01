@@ -48,3 +48,7 @@
 .OutlineInput :global(.public-DraftEditor-content) {
   padding-bottom: 81px;
 }
+
+.DangerText {
+  margin-left: 16px !important;
+}

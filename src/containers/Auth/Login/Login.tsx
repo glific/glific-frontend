@@ -18,6 +18,7 @@ import {
 } from '../../../services/AuthService';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
 import { getRoleBasedAccess } from '../../../context/role';
+import setLogs from '../../../config/logs';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 
@@ -114,8 +115,11 @@ export const Login: React.SFC<LoginProps> = () => {
         getCurrentUser();
         setAuthSession(responseString);
       })
-      .catch(() => {
+      .catch((error) => {
         setAuthError('Invalid phone or password.');
+        // add log's
+        setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
+        setLogs(error, 'error');
       });
   };
 

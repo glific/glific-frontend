@@ -77,3 +77,8 @@
 .Button {
   margin-right: 24px !important;
 }
+
+.Warning {
+  color: #ff0000;
+  margin-left: -43px;
+}

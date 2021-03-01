@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+
 import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as WarningIcon } from '../../assets/images/icons/Warning.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { Simulator } from '../simulator/Simulator';
@@ -30,7 +31,6 @@ const loadfiles = () => {
         script.src = filesToLoad[fileName].slice(1);
         script.id = `flowEditorScript${index}`;
         script.async = false;
-        document.body.appendChild(script);
         files.push(script);
       }
 
@@ -44,93 +44,97 @@ const loadfiles = () => {
     }
   });
 
+  // loading the largest file first
+  document.body.appendChild(files[3]);
+  document.body.appendChild(files[0]);
+  document.body.appendChild(files[2]);
+  document.body.appendChild(files[1]);
+
   return files;
 };
 
 const glificBase = FLOW_EDITOR_API;
 
-const setConfig = (uuid: any) => {
-  return {
-    flow: uuid,
-    flowType: 'message',
-    localStorage: true,
-    mutable: true,
-    filters: ['whatsapp'],
+const setConfig = (uuid: any) => ({
+  flow: uuid,
+  flowType: 'message',
+  localStorage: true,
+  mutable: true,
+  filters: ['whatsapp'],
 
-    excludeTypes: [
-      'add_contact_urn',
-      'send_email',
-      'set_run_result',
-      'call_resthook',
-      'start_session',
-      'open_ticket',
-      'transfer_airtime',
-      'split_by_intent',
-      'split_by_contact_field',
-      'split_by_random',
-      'split_by_groups',
-      'split_by_scheme',
-    ],
+  excludeTypes: [
+    'add_contact_urn',
+    'send_email',
+    'set_run_result',
+    'call_resthook',
+    'start_session',
+    'open_ticket',
+    'transfer_airtime',
+    'split_by_intent',
+    'split_by_contact_field',
+    'split_by_random',
+    'split_by_groups',
+    'split_by_scheme',
+  ],
 
-    excludeOperators: [
-      'has_beginning',
-      'has_text',
-      'has_number_lt',
-      'has_number_lte',
-      'has_number_gte',
-      'has_number_gt',
-      'has_date',
-      'has_date_category',
-      'has_date_lt',
-      'has_number_lte',
-      'has_number_gte',
-      'has_number_gt',
-      'has_date',
-      'has_date_category',
-      'has_date_lt',
-      'has_date_eq',
-      'has_date_gt',
-      'has_time',
-      'has_group',
-      'has_category',
-      'has_state',
-      'has_state_category',
-      'has_district',
-      'has_ward',
-      'has_error',
-      'has_value',
-      'has_pattern',
-    ],
-    help: {
-      legacy_extra: 'help.html',
-      missing_dependency: 'help.html',
-      invalid_regex: 'help.html',
-    },
-    endpoints: {
-      simulateStart: false,
-      simulateResume: false,
-      globals: `${glificBase}globals`,
-      groups: `${glificBase}groups`,
-      fields: `${glificBase}fields`,
-      labels: `${glificBase}labels`,
-      channels: `${glificBase}channels`,
-      classifiers: `${glificBase}classifiers`,
-      ticketers: `${glificBase}ticketers`,
-      resthooks: `${glificBase}resthooks`,
-      templates: `${glificBase}templates`,
-      languages: `${glificBase}languages`,
-      environment: `${glificBase}environment`,
-      recipients: `${glificBase}recipients`,
-      completion: `${glificBase}completion`,
-      activity: `${glificBase}activity`,
-      flows: `${glificBase}flows`,
-      revisions: `${glificBase}revisions/${uuid}`,
-      functions: `${glificBase}functions`,
-      editor: FLOW_EDITOR_CONFIGURE_LINK,
-      validateMedia: `${glificBase}validate-media`,
-    },
-  };
-};
+  excludeOperators: [
+    'has_beginning',
+    'has_text',
+    'has_number_lt',
+    'has_number_lte',
+    'has_number_gte',
+    'has_number_gt',
+    'has_date',
+    'has_date_category',
+    'has_date_lt',
+    'has_number_lte',
+    'has_number_gte',
+    'has_number_gt',
+    'has_date',
+    'has_date_category',
+    'has_date_lt',
+    'has_date_eq',
+    'has_date_gt',
+    'has_time',
+    'has_group',
+    'has_category',
+    'has_state',
+    'has_state_category',
+    'has_district',
+    'has_ward',
+    'has_error',
+    'has_value',
+    'has_pattern',
+  ],
+  help: {
+    legacy_extra: 'help.html',
+    missing_dependency: 'help.html',
+    invalid_regex: 'help.html',
+  },
+  endpoints: {
+    simulateStart: false,
+    simulateResume: false,
+    globals: `${glificBase}globals`,
+    groups: `${glificBase}groups`,
+    fields: `${glificBase}fields`,
+    labels: `${glificBase}labels`,
+    channels: `${glificBase}channels`,
+    classifiers: `${glificBase}classifiers`,
+    ticketers: `${glificBase}ticketers`,
+    resthooks: `${glificBase}resthooks`,
+    templates: `${glificBase}templates`,
+    languages: `${glificBase}languages`,
+    environment: `${glificBase}environment`,
+    recipients: `${glificBase}recipients`,
+    completion: `${glificBase}completion`,
+    activity: `${glificBase}activity`,
+    flows: `${glificBase}flows`,
+    revisions: `${glificBase}revisions/${uuid}`,
+    functions: `${glificBase}functions`,
+    editor: FLOW_EDITOR_CONFIGURE_LINK,
+    validateMedia: `${glificBase}validate-media`,
+  },
+});
 
 export interface FlowEditorProps {
   match: any;
@@ -142,20 +146,28 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const history = useHistory();
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
-  const [showSimulator, setShowSimulator] = useState(false);
+  const [simulatorId, setSimulatorId] = useState(0);
+
   const config = setConfig(uuid);
-  const [publishFlow] = useMutation(PUBLISH_FLOW, {
-    onCompleted: () => {
-      setNotification(client, 'The flow has been published');
-    },
-  });
   const [published, setPublished] = useState(false);
-  let dialog = null;
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
-
+  const [flowValidation, setFlowValidation] = useState<any>();
+  const [IsError, setIsError] = useState(false);
   let modal = null;
+  let dialog = null;
+
+  const [publishFlow] = useMutation(PUBLISH_FLOW, {
+    onCompleted: (data) => {
+      if (data.publishFlow.errors && data.publishFlow.errors.length > 0) {
+        setFlowValidation(data.publishFlow.errors);
+        setIsError(true);
+      } else if (data.publishFlow.success) {
+        setPublished(true);
+      }
+    },
+  });
 
   const closeModal = () => {
     setModalVisible(false);
@@ -201,7 +213,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   let flowTitle: any;
   let flowKeyword: any;
-  if (flowName) {
+
+  // flowname can return an emty array if the uuid present is not correct
+  if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
     [flowKeyword] = flowName.flows[0].keywords;
   }
@@ -224,7 +238,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         }
       });
       // clearing all timeouts when component unmounts
-      const highestTimeoutId = setTimeout(() => {});
+      const highestTimeoutId: any = setTimeout(() => {});
       for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
         clearTimeout(timeoutId);
       }
@@ -232,7 +246,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, []);
 
   useEffect(() => {
-    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript4');
+    // check if runtime main file is present and then load
+    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
     if (lastFile) {
       lastFile.onload = () => {
         showFlowEditor(document.getElementById('flow'), config);
@@ -242,8 +257,27 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
-    setPublished(true);
   };
+
+  const handleCancelFlow = () => {
+    setPublishDialog(false);
+    setIsError(false);
+    setFlowValidation('');
+  };
+
+  const errorMsg = () => (
+    <p className={styles.DialogError}>
+      Errors were detected in the flow. Would you like to continue modifying?
+      <div>
+        {flowValidation.map((message: any) => (
+          <div>
+            <WarningIcon className={styles.ErrorMsgIcon} />
+            {message.message}
+          </div>
+        ))}
+      </div>
+    </p>
+  );
 
   if (publishDialog) {
     dialog = (
@@ -251,15 +285,36 @@ export const FlowEditor = (props: FlowEditorProps) => {
         title="Are you ready to publish the flow?"
         buttonOk="Publish"
         handleOk={() => handlePublishFlow()}
-        handleCancel={() => setPublishDialog(false)}
+        handleCancel={() => handleCancelFlow()}
         alignButtons="center"
+        buttonCancel="Cancel"
       >
         <p className={styles.DialogDescription}>New changes will be activated for the users</p>
       </DialogBox>
     );
   }
 
-  if (published) {
+  if (IsError) {
+    dialog = (
+      <DialogBox
+        title=""
+        buttonOk="Publish"
+        handleOk={() => {
+          setPublishDialog(false);
+          setIsError(false);
+          setPublished(true);
+        }}
+        handleCancel={() => handleCancelFlow()}
+        alignButtons="center"
+        buttonCancel="Modify"
+      >
+        {IsError ? errorMsg() : ''}
+      </DialogBox>
+    );
+  }
+
+  if (published && !IsError) {
+    setNotification(client, 'The flow has been published');
     return <Redirect to="/flow" />;
   }
 
@@ -268,7 +323,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       {dialog}
       <div className={styles.ButtonContainer}>
         <a
-          href="https://app.rapidpro.io/video/"
+          href="https://glific.slab.com/public/3-flows-e2mlrud4"
           className={styles.Link}
           target="_blank"
           rel="noopener noreferrer"
@@ -293,7 +348,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           variant="outlined"
           color="primary"
           data-testid="saveDraftButton"
-          className={styles.Button}
+          className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
             setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
@@ -302,25 +357,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         >
           Save as draft
         </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          data-testid="previewButton"
-          className={styles.Button}
-          onClick={() => {
-            setShowSimulator(!showSimulator);
-          }}
-        >
-          Preview
-          {showSimulator ? (
-            <CancelOutlinedIcon
-              className={styles.CrossIcon}
-              onClick={() => {
-                setShowSimulator(false);
-              }}
-            />
-          ) : null}
-        </Button>
+
         <Button
           variant="contained"
           color="primary"
@@ -331,13 +368,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
           Publish
         </Button>
       </div>
-      {showSimulator ? (
-        <Simulator
-          showSimulator={showSimulator}
-          setShowSimulator={setShowSimulator}
-          message={{ type: 'draft', keyword: flowKeyword }}
-        />
-      ) : null}
+
+      <Simulator
+        showSimulator={simulatorId > 0}
+        setSimulatorId={setSimulatorId}
+        flowSimulator
+        message={{ type: 'draft', keyword: flowKeyword }}
+      />
+
       {modal}
       <Prompt when message={handleBlockedNavigation} />
 

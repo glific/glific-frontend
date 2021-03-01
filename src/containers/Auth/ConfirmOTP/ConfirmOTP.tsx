@@ -7,6 +7,7 @@ import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../config/index';
 import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { sendOTP } from '../../../services/AuthService';
+import setLogs from '../../../config/logs';
 
 // let's define registration success message
 const successMessage = (
@@ -27,9 +28,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   const handleResend = () => {
     sendOTP(location.state.phoneNumber, 'true')
-      .then((response) => {
-        return response;
-      })
+      .then((response) => response)
       .catch(() => {
         setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
       });
@@ -51,7 +50,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your whatsapp number.',
+      helperText: 'Please confirm the OTP received at your WhatsApp number.',
       endAdornmentCallback: handleResend,
     },
   ];
@@ -75,8 +74,20 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       .then(() => {
         setAuthSuccess(successMessage);
       })
-      .catch(() => {
+      .catch((error) => {
         setAuthError('We are unable to register, kindly contact your technical team.');
+        // add log's
+        setLogs(
+          `onSubmitOTP:${{
+            user: {
+              name: props.location.state.name,
+              phone: props.location.state.phoneNumber,
+              otp: values.OTP,
+            },
+          }} URL:${REACT_APP_GLIFIC_REGISTRATION_API}`,
+          'info'
+        );
+        setLogs(error, 'error');
       });
   };
 

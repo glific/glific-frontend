@@ -10,36 +10,28 @@ export const TextReplacements: any = [
     bold: {
       char: '*',
       tag: 'b',
-      replace: (text: string) => {
-        return <b key={text}>{text}</b>;
-      },
+      replace: (text: string) => <b key={text}>{text}</b>,
     },
   },
   {
     italics: {
       char: '_',
       tag: 'i',
-      replace: (text: string) => {
-        return <i>{text}</i>;
-      },
+      replace: (text: string) => <i>{text}</i>,
     },
   },
   {
     strikethrough: {
       char: '~',
       tag: 's',
-      replace: (text: string) => {
-        return <s>{text}</s>;
-      },
+      replace: (text: string) => <s>{text}</s>,
     },
   },
   {
     codeBlock: {
       char: '``',
       tag: 'code',
-      replace: (text: string) => {
-        return <code>{text}</code>;
-      },
+      replace: (text: string) => <code>{text}</code>,
     },
   },
 ];
@@ -80,16 +72,14 @@ export const convertToWhatsApp = (editorState: any) => {
   });
 
   // let's return 0 element as map() always returns an array
-  return finalString.join();
+  return finalString.join('');
 };
 
 // Converts WhatsApp message formatting into HTML elements.
 export const WhatsAppToDraftEditor = (text: string) => {
   const regexforBold = /[*][^*]*[*]/gi;
 
-  const addedBold = text.replace(regexforBold, (str: any) => {
-    return `*${str}*`;
-  });
+  const addedBold = text.replace(regexforBold, (str: any) => `*${str}*`);
 
   const rawData = MarkDownConvertor.markdownToDraft(addedBold, {
     preserveNewlines: true,
@@ -104,13 +94,11 @@ export const WhatsAppToJsx = (text: any) => {
   const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
 
   complexFormatting.forEach((expression) => {
-    modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => {
-      return (
-        <b key={i}>
-          <i>{match.slice(2, match.length - 2)}</i>
-        </b>
-      );
-    });
+    modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => (
+      <b key={i}>
+        <i>{match.slice(2, match.length - 2)}</i>
+      </b>
+    ));
   });
 
   replacements.forEach((replacement: any) => {

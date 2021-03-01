@@ -30,19 +30,17 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
 
   messagebody = (
     <Linkify
-      componentDecorator={(decoratedHref, decoratedText, key) => {
-        return (
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={decoratedHref}
-            key={key}
-            data-testid="messageLink"
-          >
-            {decoratedText}
-          </a>
-        );
-      }}
+      componentDecorator={(decoratedHref, decoratedText, key) => (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={decoratedHref}
+          key={key}
+          data-testid="messageLink"
+        >
+          {decoratedText}
+        </a>
+      )}
     >
       {messagebody}
     </Linkify>

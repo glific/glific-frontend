@@ -16,13 +16,12 @@ import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
   contactId?: number | string;
-  simulator: any;
 }
 
 export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
-  const { contactId, simulator } = props;
+  const { contactId } = props;
   // get the conversations stored from the cache
-  const [searchVal, setSearchVal] = useState('');
+  const [searchVal, setSearchVal] = useState<any>();
   const [searchParam, setSearchParam] = useState<any>({});
   const [selectedContactId, setSelectedContactId] = useState<any>(contactId);
   const [savedSearchCriteria, setSavedSearchCriteria] = useState<string>('');
@@ -47,12 +46,6 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSelectedContactId(contactId?.toString());
   }, [contactId]);
 
-  useEffect(() => {
-    if (selectedContactId === simulator.simulatorId) {
-      simulator.setShowSimulator(true);
-    }
-  }, [selectedContactId]);
-
   const handleChange = (event: any) => {
     if (event.target.param) {
       setSearchParam(event.target.param);
@@ -73,7 +66,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   };
 
   const resetSearch = () => {
-    setSearchVal('');
+    setSearchVal(undefined);
   };
 
   useEffect(() => {
@@ -166,22 +159,20 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const toolTip = 'The search will be updated as per new filters';
 
-  const buildButton = (toolTipTitle: string, type: string, label: string) => {
-    return (
-      <Tooltip title={toolTipTitle} placement="top">
-        <Button
-          color="primary"
-          variant="outlined"
-          className={styles.BackgroundWhite}
-          onClick={(e: any) => {
-            handleClick(e, 'saveSearch', type);
-          }}
-        >
-          {label}
-        </Button>
-      </Tooltip>
-    );
-  };
+  const buildButton = (toolTipTitle: string, type: string, label: string) => (
+    <Tooltip title={toolTipTitle} placement="top">
+      <Button
+        color="primary"
+        variant="outlined"
+        className={styles.BackgroundWhite}
+        onClick={(e: any) => {
+          handleClick(e, 'saveSearch', type);
+        }}
+      >
+        {label}
+      </Button>
+    </Tooltip>
+  );
 
   const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
 
@@ -220,7 +211,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         refetchData={{ savedSearches }}
         onSelect={() => {
           // on select searches remove search value & disable search mode
-          setSearchVal('');
+          setSearchVal(undefined);
           if (enableSearchMode) setEnableSearchMode(false);
         }}
         searchMode={enableSearchMode}
@@ -243,6 +234,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
           setSelectedContactId(i);
         }}
         savedSearchCriteria={savedSearchCriteria}
+        savedSearchCriteriaId={savedSearchCriteriaId}
       />
       {saveSearchButton}
       {dialogBox}

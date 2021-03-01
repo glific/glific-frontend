@@ -14,6 +14,7 @@ import {
 } from '../services/AuthService';
 import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
 import { Logout } from '../containers/Auth/Logout/Logout';
+import setLogs from './logs';
 
 const subscribe = require('@jumpn/utils-graphql');
 
@@ -24,12 +25,18 @@ const gqlClient = (history: any) => {
     fetchAccessToken: async () => renewAuthToken(),
     handleFetch: () => {},
     handleResponse: (_operation, accessTokenField) => (response: any) => {
-      // lets set the session
-      setAuthSession(JSON.stringify(response.data.data));
-
-      // we need to return below as handleFetch expects it
+      // here we can both success and failures
       const tokenResponse: any = [];
-      tokenResponse[accessTokenField] = response.data.data.access_token;
+
+      // in case of successful token renewal
+      if (response.data) {
+        // lets set the session
+        setAuthSession(JSON.stringify(response.data.data));
+
+        // we need to return below as handleFetch expects it
+        tokenResponse[accessTokenField] = response.data.data.access_token;
+      }
+
       return tokenResponse;
     },
     handleError: (err: Error) => {
@@ -37,6 +44,8 @@ const gqlClient = (history: any) => {
       /* eslint-disable */
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
+      // logged error in logflare
+      setLogs(err, 'error');
       /* eslint-enable */
       // gracefully logout
       return Logout;
@@ -58,20 +67,27 @@ const gqlClient = (history: any) => {
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
+      graphQLErrors.map(({ message, locations, path }) => {
         // eslint-disable-next-line
-        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-      );
+        console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+        // logged error in logflare
+        return setLogs(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+          'error'
+        );
+      });
 
     if (networkError) {
       // @ts-ignore
       switch (networkError.statusCode) {
         case 401:
-          history.push('/logout');
+          history.push('/logout/session');
           break;
         default:
           // eslint-disable-next-line
           console.log(`[Network error]: ${networkError}`);
+          // logged error in logflare
+          setLogs(`[Network error]: ${networkError}`, 'error');
       }
     }
   });

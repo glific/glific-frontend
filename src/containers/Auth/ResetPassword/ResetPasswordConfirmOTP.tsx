@@ -8,6 +8,7 @@ import { Auth } from '../Auth';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from '../../../services/AuthService';
+import setLogs from '../../../config/logs';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;
@@ -80,8 +81,14 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       .then(() => {
         setRedirect(true);
       })
-      .catch(() => {
+      .catch((error) => {
         setAuthError('We are unable to update your password, please enter the correct OTP.');
+        // add log's
+        setLogs(
+          `phoneNumber:${values.phoneNumber} otp: ${values.OTP} URL:${RESET_PASSWORD}`,
+          'info'
+        );
+        setLogs(error, 'error');
       });
   };
 

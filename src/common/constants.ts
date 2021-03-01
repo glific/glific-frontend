@@ -26,23 +26,35 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
+// default contact limit for search
+export const DEFAULT_CONTACT_LIMIT = 25;
+
+// load more contact limit
+export const DEFAULT_CONTACT_LOADMORE_LIMIT = 10;
+
+// default message limit for search
+export const DEFAULT_MESSAGE_LIMIT = 20;
+
+// load more message limit
+export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 10;
+
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 50,
+    limit: DEFAULT_CONTACT_LIMIT,
   },
   filter: {},
   messageOpts: {
-    limit: 50,
+    limit: DEFAULT_MESSAGE_LIMIT,
   },
 };
 
 export const COLLECTION_SEARCH_QUERY_VARIABLES = {
   contactOpts: {
-    limit: 50,
+    limit: DEFAULT_CONTACT_LIMIT,
   },
   filter: { searchGroup: true },
   messageOpts: {
-    limit: 50,
+    limit: DEFAULT_MESSAGE_LIMIT,
   },
 };
 
@@ -51,20 +63,17 @@ export const setVariables = (
   limit: any = null,
   offset: number = 0,
   order: string = 'ASC'
-) => {
-  return {
-    filter,
-    opts: {
-      limit,
-      offset,
-      order,
-    },
-  };
-};
+) => ({
+  filter,
+  opts: {
+    limit,
+    offset,
+    order,
+  },
+});
 
-export const is24HourWindowOver = (time: any) => {
-  return moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
-};
+export const is24HourWindowOver = (time: any) =>
+  moment.duration(moment(new Date()).diff(moment(time))).asHours() > 24;
 
 // connection retry attempt configuration
 export const CONNECTION_RECONNECT_ATTEMPTS = 5;

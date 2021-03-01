@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
@@ -9,10 +9,15 @@ export interface LayoutProps {
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
   const { children } = props;
+  const [fullOpen, setFullOpen] = useState(true);
+  let mainStyle = styles.Main;
+  if (!fullOpen) {
+    mainStyle = styles.MainFullWidth;
+  }
   return (
     <>
-      <SideDrawer />
-      <main className={styles.Main} data-testid="layout">
+      <SideDrawer fullOpen={fullOpen} setFullOpen={setFullOpen} />
+      <main className={mainStyle} data-testid="layout">
         <div>{children}</div>
       </main>
     </>

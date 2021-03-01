@@ -9,6 +9,12 @@
   background-size: cover !important;
 }
 
+.Image img {
+  overflow: hidden;
+  max-width: 200px;
+  height: 200px;
+}
+
 .Document {
   composes: Image;
   height: 100px;

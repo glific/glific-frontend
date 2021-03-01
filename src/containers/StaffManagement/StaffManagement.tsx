@@ -74,14 +74,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         buttonCancel="Close"
         handleCancel={() => setHelpDialog(false)}
       >
-        {rolesHelp.map((role: any) => {
-          return (
-            <div className={styles.RolesHelp}>
-              <span>{role.title}: </span>
-              {role.description}
-            </div>
-          );
-        })}
+        {rolesHelp.map((role: any) => (
+          <div className={styles.RolesHelp}>
+            <span>{role.title}: </span>
+            {role.description}
+          </div>
+        ))}
       </DialogBox>
     );
   }
@@ -215,15 +213,13 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required('Name is required.'),
     phone: Yup.string().required('Phone is required'),
-    roles: Yup.string().nullable().required('Roles is required'),
+    roles: Yup.object().nullable().required('Roles is required'),
   });
 
   const setPayload = (payload: any) => {
     const payloadCopy = payload;
     // let's build the collectionIds, as backend expects the array of collection ids
-    const collectionIds = payloadCopy.groups.map((collection: any) => {
-      return collection.id;
-    });
+    const collectionIds = payloadCopy.groups.map((collection: any) => collection.id);
 
     // remove collections from the payload
     delete payloadCopy.groups;
@@ -246,7 +242,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const checkAfterSave = (updatedUser: any) => {
     const { id, roles: userRoles } = updatedUser.updateUser.user;
     if (isAdmin && getUserSession('id') === id && !userRoles.includes('Admin')) {
-      history.push('/logout');
+      history.push('/logout/user');
     }
   };
 

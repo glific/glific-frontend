@@ -1,7 +1,6 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-
 import { Flow } from './Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from '../../mocks/Flow';
@@ -13,28 +12,55 @@ const mocks = [
   filterFlowQuery,
   getOrganizationLanguagesQuery,
 ];
-const flow = (
+const flow = (match: any) => (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
-      <Flow match={{ params: { id: 1 } }} />
+      <Flow match={match} />
     </MemoryRouter>
   </MockedProvider>
 );
 
 it('should render Flow', async () => {
-  const wrapper = render(flow);
+  const wrapper = render(flow({ params: { id: 1 } }));
   await waitFor(() => {
     expect(wrapper.container).toBeInTheDocument();
   });
 });
 
-it('should convert comma separated keywords into array', async () => {
-  const { getByText } = render(flow);
-  await waitFor(() => {
-    const button = getByText('Save');
-    fireEvent.click(button);
-  });
+it('should support keywords in a separate language', async () => {
+  const { container, getByText, findByText } = render(flow({ params: {} }));
 
-  //Need an assertion here
   await waitFor(() => {});
+  fireEvent.change(container.querySelector('input[name="name"]'), {
+    target: { value: 'New Flow' },
+  });
+  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+    target: { value: 'मदद' },
+  });
+  const button = getByText('Save');
+  fireEvent.click(button);
+
+  await waitFor(() => {});
+
+  // testing if we don't have element for error message
+  expect(container.querySelectorAll('.MuiFormHelperText-root').length).toBe(1);
+});
+
+it('should not allow special characters in keywords', async () => {
+  const { container, getByText } = render(flow({ params: {} }));
+
+  await waitFor(() => {});
+  fireEvent.change(container.querySelector('input[name="name"]'), {
+    target: { value: 'New Flow' },
+  });
+  fireEvent.change(container.querySelector('input[name="keywords"]'), {
+    target: { value: 'Hey&' },
+  });
+  const button = getByText('Save');
+  fireEvent.click(button);
+
+  await waitFor(() => {
+    // error if a special character is introduced in the keyword
+    expect(getByText('Sorry, special characters are not allowed'));
+  });
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
@@ -26,8 +26,18 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
-  let messageBody;
+  const [imageUrl, setImageUrl] = useState(ImageThumbnail);
+  const ref = useRef(null);
 
+  useEffect(() => {
+    if (ref && ref.current) {
+      const image: any = ref.current;
+      image.onload = () => {
+        setImageUrl('');
+      };
+    }
+  }, [ref]);
+  let messageBody;
   // manage validation if there is no media
   if (type !== 'LOCATION' && !media) {
     return <MessagesWithLinks message={body} />;
@@ -38,25 +48,32 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <>
           <div
-            data-testid="imageMessage"
-            style={{
-              background: `url("${media.url}"), url('${ImageThumbnail}') no-repeat`,
-            }}
             className={styles.Image}
-            onClick={() => setShowViewer(true)}
-            onKeyDown={() => setShowViewer(true)}
-            aria-hidden="true"
-          />
-          <Viewer
-            visible={showViewer}
-            onClose={() => {
-              setShowViewer(false);
+            style={{
+              background: `transparent url('${imageUrl}') center no-repeat`,
             }}
-            images={[{ src: media.url, alt: '' }]}
-          />
+          >
+            <img
+              alt="img"
+              src={media.url}
+              ref={ref}
+              data-testid="imageMessage"
+              onClick={() => setShowViewer(true)}
+              aria-hidden="true"
+            />
+
+            <Viewer
+              visible={showViewer}
+              onClose={() => {
+                setShowViewer(false);
+              }}
+              images={[{ src: media.url, alt: '' }]}
+            />
+          </div>
           <MessagesWithLinks message={media.caption} />
         </>
       );
+
       break;
 
     case 'STICKER':
@@ -79,7 +96,6 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           <audio controls data-testid="audioMessage" controlsList="nodownload">
             <source src={media.url} type="audio/ogg" />
           </audio>
-          {media.caption}
         </div>
       );
       break;
@@ -96,7 +112,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />
           </div>
-          {media.caption}
+          <MessagesWithLinks message={media.caption} />
         </div>
       );
       break;

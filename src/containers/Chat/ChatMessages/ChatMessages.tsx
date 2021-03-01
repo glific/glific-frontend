@@ -15,6 +15,9 @@ import {
   SEARCH_QUERY_VARIABLES,
   setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
+  DEFAULT_MESSAGE_LIMIT,
+  DEFAULT_CONTACT_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -28,14 +31,14 @@ import { getCachedConverations, updateConversationsCache } from '../../../servic
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
-  simulatorId?: string | null;
   collectionId?: number | string | null;
+  isSimulator?: boolean;
 }
 
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   contactId,
-  simulatorId,
   collectionId,
+  isSimulator,
 }) => {
   // create an instance of apolloclient
   const client = useApolloClient();
@@ -49,7 +52,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(50);
+  const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
@@ -96,15 +99,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
-      if (searchData) {
+      if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
         const conversations = getCachedConverations(client, queryVariables);
 
         const conversationCopy = JSON.parse(JSON.stringify(searchData));
         conversationCopy.search[0].messages
-          .sort((currentMessage: any, nextMessage: any) => {
-            return currentMessage.id - nextMessage.id;
-          })
+          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
           .reverse();
         const conversationsCopy = JSON.parse(JSON.stringify(conversations));
         let isContactCached = false;
@@ -130,7 +131,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         } else {
-          setMessageOffset(messageOffset + 50);
+          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
       }
     },
@@ -220,8 +221,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
-    return <Redirect to="/chat" />;
+  // check if the search API results nothing for a particular contact ID and redirect to chat
+  if (contactId && data) {
+    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
+      return <Redirect to="/chat" />;
+    }
   }
 
   // Run through these cases to ensure data always exists
@@ -261,8 +265,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            messageOpts: { limit: 200, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
           },
         });
       }
@@ -286,8 +290,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: collectionId, searchGroup: true },
-            messageOpts: { limit: 50, offset: 0 },
-            contactOpts: { limit: 50 },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
           },
         });
       }
@@ -361,9 +365,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             if (messageTags.length > 0) {
               messageTags = messageTags[0].tags;
             }
-            const messageTagId = messageTags.map((tag: any) => {
-              return tag.id;
-            });
+            const messageTagId = messageTags.map((tag: any) => tag.id);
             setSelectedMessageTags(messageTagId);
             setPreviousMessageTags(messageTagId);
             setDialogbox(!dialog);
@@ -380,17 +382,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     });
 
     messageList = reverseConversation
-      .sort((currentMessage: any, nextMessage: any) => {
-        return currentMessage.id - nextMessage.id;
-      })
+      .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
       .reverse();
   }
 
   const loadMoreMessages = () => {
     const variables: any = {
-      filter: { id: contactId?.toString() },
-      messageOpts: { limit: 50, offset: messageOffset },
       contactOpts: { limit: 1 },
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
     };
 
     if (collectionId) {
@@ -399,8 +399,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     getSearchQuery({
       variables: {
         filter: { id: contactId?.toString() },
-        messageOpts: { limit: 200, offset: messageOffset },
         contactOpts: { limit: 1 },
+        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
       },
     });
     const messageContainer = document.querySelector('.messageContainer');
@@ -419,7 +419,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > 49 ? (
+        {showLoadMore && conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ? (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
@@ -480,7 +480,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={contactId === simulatorId}
+        isSimulator={isSimulator}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}

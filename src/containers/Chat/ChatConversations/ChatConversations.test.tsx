@@ -5,14 +5,15 @@ import ChatConversations from './ChatConversations';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
   query: SEARCH_QUERY,
   variables: {
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
     filter: {},
-    messageOpts: { limit: 50 },
-    contactOpts: { limit: 50 },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
     search: [
@@ -33,6 +34,7 @@ cache.writeQuery({
             body: 'Hey there whats up?',
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
+            isRead: true,
             receiver: {
               id: '1',
             },

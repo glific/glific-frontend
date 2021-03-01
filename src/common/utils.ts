@@ -1,3 +1,7 @@
+import axios from 'axios';
+import { FLOW_EDITOR_API } from '../config';
+import setLogs from '../config/logs';
+
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
   if (arr && data) {
@@ -21,3 +25,19 @@ export const parseText = (text: string) => {
 };
 
 export { parseText as parseTextMethod };
+
+const validateMediaMethod = (URL: string, attachmentType: string) =>
+  new Promise((resolve) => {
+    axios
+      .get(`${FLOW_EDITOR_API}validate-media?url=${URL}&type=${attachmentType.toLowerCase()}`)
+      .then((response: any) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        // add log's
+        setLogs(`attachmentType:${attachmentType} URL:${URL}`, 'info');
+        setLogs(error, 'error');
+      });
+  });
+
+export { validateMediaMethod as validateMedia };

@@ -4,6 +4,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
 
+import styles from './Template.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
@@ -19,14 +20,13 @@ import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoCompl
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
+import { validateMedia } from '../../../common/utils';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
 const HSMValidation = {
   example: Yup.string()
-    .transform((current, original) => {
-      return original.getCurrentContent().getPlainText();
-    })
+    .transform((current, original) => original.getCurrentContent().getPlainText())
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string()
@@ -46,29 +46,7 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-const options = MEDIA_MESSAGE_TYPES.map((option: string) => {
-  return { id: option, label: option };
-});
-
-const attachmentField = [
-  {
-    component: AutoComplete,
-    name: 'type',
-    options,
-    optionLabel: 'label',
-    multiple: false,
-    textFieldProps: {
-      variant: 'outlined',
-      label: 'Attachment Type',
-    },
-  },
-  {
-    component: Input,
-    name: 'attachmentURL',
-    type: 'text',
-    placeholder: 'Attachment URL',
-  },
-];
+const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({ id: option, label: option }));
 
 const formIsActive = {
   component: Checkbox,
@@ -115,6 +93,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [languageOptions, setLanguageOptions] = useState<any>([]);
   const [category, setCategory] = useState<any>({});
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [warning, setWarning] = useState<any>();
 
   const states = {
     language,
@@ -202,9 +181,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (languages) {
       const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
       // sort languages by their name
-      lang.sort((first: any, second: any) => {
-        return first.label > second.label ? 1 : -1;
-      });
+      lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+
       setLanguageOptions(lang);
       if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguageId(lang[0]);
     }
@@ -279,6 +257,72 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
     if (value) setLanguageId(value);
   };
+
+  const validateURL = (value: string) => {
+    if (value && type) {
+      return validateMedia(value, type.id).then((response: any) => {
+        if (!response.data.is_valid) {
+          return response.data.message;
+        }
+        return false;
+      });
+    }
+    return false;
+  };
+
+  const displayWarning = () => {
+    if (type.id === 'STICKER') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>Animated stickers are not supported.</li>
+            <li>Captions along with stickers are not supported.</li>
+          </ol>
+        </div>
+      );
+    } else if (type.id === 'AUDIO') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>Captions along with audio are not supported.</li>
+          </ol>
+        </div>
+      );
+    } else {
+      setWarning(null);
+    }
+  };
+
+  useEffect(() => {
+    displayWarning();
+  }, [type]);
+
+  const attachmentField = [
+    {
+      component: AutoComplete,
+      name: 'type',
+      options,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: 'Attachment Type',
+      },
+      helperText: warning,
+      onChange: (event: any) => {
+        if (event) {
+          setType({ id: event.id, label: event.id });
+        }
+      },
+    },
+    {
+      component: Input,
+      name: 'attachmentURL',
+      type: 'text',
+      placeholder: 'Attachment URL',
+      validate: validateURL,
+    },
+  ];
 
   const formFields = [
     {
@@ -425,23 +469,18 @@ const Template: React.SFC<TemplateProps> = (props) => {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
     body: Yup.string()
-      .transform((current, original) => {
-        return original.getCurrentContent().getPlainText();
-      })
-      .when('type', {
-        is: (val) => (!defaultAttribute.isHsm && !val) || defaultAttribute.isHsm,
-        then: Yup.string().required('Message is required.'),
-      }),
+      .transform((current, original) => original.getCurrentContent().getPlainText())
+      .required('Message is required.'),
     type: Yup.object()
       .nullable()
       .when('attachmentURL', {
-        is: (val) => val && val !== '',
+        is: (val: string) => val && val !== '',
         then: Yup.object().required('Type is required.'),
       }),
     attachmentURL: Yup.string()
       .nullable()
       .when('type', {
-        is: (val) => val && val.id,
+        is: (val: any) => val && val.id,
         then: Yup.string().required('Attachment URL is required.'),
       }),
   };

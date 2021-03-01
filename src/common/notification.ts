@@ -11,12 +11,12 @@ export const setNotification = (
   });
 };
 
-export const setErrorMessage = (client: any, error: any) => {
+export const setErrorMessage = (client: any, error: any, title?: string) => {
   let errorMessage;
-
-  // error === '' when we are reseting the error
+  // error === '' when we are resetting the error
   if (error !== '') {
     errorMessage = {
+      title,
       message: error.message,
       type: error.name,
       networkError: error.networkError,
@@ -24,7 +24,7 @@ export const setErrorMessage = (client: any, error: any) => {
     };
 
     if ('key' in error) {
-      errorMessage.message = `${error.key}:${error.message}`;
+      errorMessage.message = `${error.key}: ${error.message}`;
     }
   } else {
     errorMessage = '';

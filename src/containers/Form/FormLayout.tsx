@@ -53,6 +53,7 @@ export interface FormLayoutProps {
   isAttachment?: boolean;
   getMediaId?: any;
   customStyles?: any;
+  customHandler?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -91,6 +92,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   isAttachment = false,
   getMediaId,
   customStyles = null,
+  customHandler,
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -156,7 +158,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       const itemUpdated = Object.keys(data)[0];
 
       if (data[itemUpdated] && data[itemUpdated].errors) {
-        setErrorMessage(client, data[itemUpdated].errors[0]);
+        if (customHandler) {
+          customHandler(client, data[itemUpdated].errors);
+        } else {
+          setErrorMessage(client, data[itemUpdated].errors[0]);
+        }
       } else {
         if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
         if (additionalQuery) {
@@ -183,9 +189,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     refetchQueries: () => {
       if (refetchQueries)
-        return refetchQueries.map((refetchQuery: any) => {
-          return { query: refetchQuery.query, variables: refetchQuery.variables };
-        });
+        return refetchQueries.map((refetchQuery: any) => ({
+          query: refetchQuery.query,
+          variables: refetchQuery.variables,
+        }));
       return [];
     },
   });
@@ -194,7 +201,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     onCompleted: (data) => {
       const itemCreated = `create${camelCaseItem}`;
       if (data[itemCreated].errors) {
-        setErrorMessage(client, data[itemCreated].errors[0]);
+        if (customHandler) {
+          customHandler(client, data[itemCreated].errors);
+        } else {
+          setErrorMessage(client, data[itemCreated].errors[0]);
+        }
       } else {
         if (additionalQuery) {
           additionalQuery(data[`create${camelCaseItem}`][listItem].id);
@@ -212,9 +223,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     },
     refetchQueries: () => {
       if (refetchQueries)
-        return refetchQueries.map((refetchQuery: any) => {
-          return { query: refetchQuery.query, variables: refetchQuery.variables };
-        });
+        return refetchQueries.map((refetchQuery: any) => ({
+          query: refetchQuery.query,
+          variables: refetchQuery.variables,
+        }));
 
       return [];
     },
@@ -333,9 +345,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     ? organization.data.currentUser.user.organization.activeLanguages.slice()
     : [];
   // sort languages by their name
-  languageOptions.sort((first: any, second: any) => {
-    return first.label > second.label ? 1 : -1;
-  });
+  languageOptions.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
+
   const language = languageSupport
     ? {
         component: Dropdown,

@@ -16,7 +16,7 @@ describe('side drawer testing', () => {
   const component = (
     <MockedProvider mocks={mocks}>
       <Router>
-        <SideDrawer />
+        <SideDrawer fullOpen={true} setFullOpen={jest.fn()} />
       </Router>
     </MockedProvider>
   );
@@ -26,14 +26,6 @@ describe('side drawer testing', () => {
     await waitFor(() => {
       expect(getByTestId('navbar')).toBeInTheDocument();
     });
-  });
-
-  test('opening and closing of side drawer', () => {
-    const { getAllByTestId, queryByTestId } = render(component);
-    fireEvent.click(getAllByTestId('drawer-button')[0]);
-    expect(queryByTestId('drawer-button')).toBe(null);
-    fireEvent.click(getAllByTestId('drawer-button-closed')[0]);
-    expect(getAllByTestId('drawer-button')[0]).toBeInTheDocument();
   });
 
   it('should open bottom menus', () => {
@@ -49,5 +41,11 @@ describe('side drawer testing', () => {
     for (let i = 0; i < menuItems.length / 2; i++) {
       expect(getAllByTestId('list-item')[i]).toHaveTextContent(sideDrawerMenus[i].title);
     }
+  });
+
+  it('should contain a help button', () => {
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
+    const { getByTestId } = render(component);
+    expect(getByTestId('helpButton')).toBeInTheDocument();
   });
 });

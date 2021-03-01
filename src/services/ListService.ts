@@ -35,9 +35,7 @@ export const getUpdatedList = (listItemName: string, newVal: string, isDirection
   }
 
   // check if current list name matches
-  const isListNamePresent = finaList.filter((listItem: any) => {
-    return listItem.name === listItemName;
-  });
+  const isListNamePresent = finaList.filter((listItem: any) => listItem.name === listItemName);
 
   if (isListNamePresent.length > 0) {
     finaList = finaList.map((listItem: any) => {

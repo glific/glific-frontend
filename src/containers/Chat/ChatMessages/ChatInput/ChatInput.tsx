@@ -123,13 +123,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const submitMessage = (message: string) => {
     if (!message) return;
 
-    // Resetting the EditorState
-    setEditorState(
-      EditorState.moveFocusToEnd(
-        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
-      )
-    );
-
     if (attachmentAdded) {
       createMediaMessage({
         variables: {
@@ -144,6 +137,13 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
     }
+
+    // Resetting the EditorState
+    setEditorState(
+      EditorState.moveFocusToEnd(
+        EditorState.push(editorState, ContentState.createFromText(''), 'remove-range')
+      )
+    );
   };
 
   const handleClick = (title: string) => {
@@ -225,21 +225,19 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   const quickSendButtons = (quickSendTypes: any) => {
-    const buttons = quickSendTypes.map((type: string) => {
-      return (
-        <div
-          key={type}
-          data-testid="shortcutButton"
-          onClick={() => handleClick(type)}
-          aria-hidden="true"
-          className={clsx(styles.QuickSend, {
-            [styles.QuickSendSelected]: selectedTab === type,
-          })}
-        >
-          {type}
-        </div>
-      );
-    });
+    const buttons = quickSendTypes.map((type: string) => (
+      <div
+        key={type}
+        data-testid="shortcutButton"
+        onClick={() => handleClick(type)}
+        aria-hidden="true"
+        className={clsx(styles.QuickSend, {
+          [styles.QuickSendSelected]: selectedTab === type,
+        })}
+      >
+        {type}
+      </div>
+    ));
     return <div className={styles.QuickSendButtons}>{buttons}</div>;
   };
 

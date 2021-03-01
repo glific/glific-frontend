@@ -2,6 +2,7 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
 import App from './App';
 import { CONVERSATION_MOCKS } from './mocks/Chat';
@@ -45,10 +46,10 @@ describe('<App /> ', () => {
 
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-    const { container } = render(app);
-
-    await waitFor(() => {
-      expect(container.querySelector('.MuiToolbar-root')).toBeInTheDocument();
+    act(() => {
+      render(app);
     });
+
+    expect(document.querySelector('.MuiToolbar-root')).toBeInTheDocument();
   });
 });
