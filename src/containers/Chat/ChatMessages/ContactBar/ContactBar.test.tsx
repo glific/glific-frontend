@@ -90,6 +90,10 @@ describe('Menu test', () => {
     });
   });
 
+  test('view contact profile', async () => {
+    fireEvent.click(screen.getByTestId('viewProfile'));
+  });
+
   const componentWithBspStatusNone = (
     <MockedProvider mocks={mocks} addTypename={false}>
       <MemoryRouter>
@@ -107,5 +111,27 @@ describe('Menu test', () => {
     await waitFor(() => {
       expect(getByTestId('disabledFlowButton')).toBeInTheDocument();
     });
+  });
+});
+
+describe('Collection test', () => {
+  const collectionDefaultProps = {
+    displayName: 'Default Collection',
+    collectionId: '2',
+  };
+
+  const component = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <MemoryRouter>
+        <ContactBar {...collectionDefaultProps} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+  test('It should render the collection name correctly', () => {
+    const { getByText } = render(component);
+
+    const contactBarComponent = screen.getByTestId('beneficiaryName');
+    expect(contactBarComponent).toBeInTheDocument();
+    expect(getByText('Default Collection')).toBeInTheDocument();
   });
 });
