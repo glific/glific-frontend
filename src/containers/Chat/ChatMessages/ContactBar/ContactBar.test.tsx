@@ -88,6 +88,8 @@ describe('Menu test', () => {
     await waitFor(() => {
       expect(screen.getByText('Do you want to block this contact')).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByText('Cancel'));
   });
 
   test('view contact profile', async () => {
@@ -133,5 +135,25 @@ describe('Collection test', () => {
     const contactBarComponent = screen.getByTestId('beneficiaryName');
     expect(contactBarComponent).toBeInTheDocument();
     expect(getByText('Default Collection')).toBeInTheDocument();
+  });
+
+  test('It should render the collection name correctly', () => {
+    const { getByText } = render(component);
+
+    const contactBarComponent = screen.getByTestId('beneficiaryName');
+    expect(contactBarComponent).toBeInTheDocument();
+    expect(getByText('Default Collection')).toBeInTheDocument();
+  });
+
+  test('clicking on Start flow should open up a dialog box', async () => {
+    render(component);
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg'));
+    });
+    fireEvent.click(screen.getByTestId('flowButton'));
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+    });
   });
 });
