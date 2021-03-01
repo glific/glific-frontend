@@ -1,5 +1,5 @@
 {
-  "Typescript": {
+  "TYPESCRIPT": {
     "ARITY": [5, 6, 7, 8],
     "LOC": [25, 30, 40, 80],
     "ABC": [20, 25, 40, 60]
