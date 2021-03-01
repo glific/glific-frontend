@@ -99,7 +99,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
-      if (searchData) {
+      if (searchData && searchData.search.length > 0) {
         // get the conversations from cache
         const conversations = getCachedConverations(client, queryVariables);
 
@@ -221,8 +221,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   // HOOKS ESTABLISHED ABOVE
 
-  if (contactId && data && data.search[0].contact.status === 'BLOCKED') {
-    return <Redirect to="/chat" />;
+  // check if the search API results nothing for a particular contact ID and redirect to chat
+  if (contactId && data) {
+    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
+      return <Redirect to="/chat" />;
+    }
   }
 
   // Run through these cases to ensure data always exists
