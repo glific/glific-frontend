@@ -214,10 +214,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let flowTitle: any;
   let flowKeyword: any;
 
-  // flowname can return an emty array if the uuid present is not correct
+  // flowname can return an empty array if the uuid present is not correct
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
-    [flowKeyword] = flowName.flows[0].keywords;
+
+    if (flowName.flows[0].keywords.length > 0) {
+      flowKeyword = `draft:${flowName.flows[0].keywords[0]}`;
+    } else {
+      flowKeyword = 'No keyword found';
+    }
   }
 
   useEffect(() => {
@@ -373,7 +378,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         showSimulator={simulatorId > 0}
         setSimulatorId={setSimulatorId}
         flowSimulator
-        message={{ type: 'draft', keyword: flowKeyword }}
+        message={flowKeyword}
       />
 
       {modal}
