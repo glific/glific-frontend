@@ -34,6 +34,51 @@ const queries = {
   deleteItemQuery: DELETE_TAG,
 };
 
+const formFields = (validateTitle: any, tags: any, colorCode: string) => [
+  {
+    component: Input,
+    name: 'label',
+    type: 'text',
+    placeholder: 'Title',
+    validate: validateTitle,
+  },
+  {
+    component: Input,
+    name: 'description',
+    type: 'text',
+    placeholder: 'Description',
+    rows: 3,
+    textArea: true,
+  },
+  {
+    component: Input,
+    name: 'keywords',
+    type: 'text',
+    placeholder: 'Keywords',
+    rows: 3,
+    helperText: 'Use commas to separate the keywords',
+    textArea: true,
+  },
+  {
+    component: AutoComplete,
+    name: 'parentId',
+    placeholder: 'Parent tag',
+    options: tags,
+    optionLabel: 'label',
+    multiple: false,
+    textFieldProps: {
+      label: 'Parent tag',
+      variant: 'outlined',
+    },
+  },
+  {
+    component: ColorPicker,
+    name: 'colorCode',
+    colorCode,
+    helperText: 'Tag color',
+  },
+];
+
 export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
@@ -109,51 +154,6 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     setLanguageId(value);
   };
 
-  const formFields = [
-    {
-      component: Input,
-      name: 'label',
-      type: 'text',
-      placeholder: 'Title',
-      validate: validateTitle,
-    },
-    {
-      component: Input,
-      name: 'description',
-      type: 'text',
-      placeholder: 'Description',
-      rows: 3,
-      textArea: true,
-    },
-    {
-      component: Input,
-      name: 'keywords',
-      type: 'text',
-      placeholder: 'Keywords',
-      rows: 3,
-      helperText: 'Use commas to separate the keywords',
-      textArea: true,
-    },
-    {
-      component: AutoComplete,
-      name: 'parentId',
-      placeholder: 'Parent tag',
-      options: tags,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        label: 'Parent tag',
-        variant: 'outlined',
-      },
-    },
-    {
-      component: ColorPicker,
-      name: 'colorCode',
-      colorCode,
-      helperText: 'Tag color',
-    },
-  ];
-
   const setPayload = (payload: any) => {
     const payloadCopy = payload;
     if (payloadCopy.parentId) {
@@ -178,7 +178,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
       validationSchema={FormSchema}
       listItemName="tag"
       dialogMessage={dialogMessage}
-      formFields={formFields}
+      formFields={formFields(validateTitle, tags, colorCode)}
       redirectionLink="tag"
       listItem="tag"
       icon={tagIcon}

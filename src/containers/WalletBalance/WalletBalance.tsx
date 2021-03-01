@@ -19,6 +19,46 @@ const nullBalance = () => (
   </div>
 );
 
+const gupshupSettings = (fullOpen: boolean) => (
+  <Tooltip title="For any help, please contact the Glific team" placement="top-start">
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
+      {fullOpen ? (
+        <div className={styles.WalletBalanceText}>
+          <WhiteIcon className={styles.Icon} />
+          Verify Gupshup settings
+        </div>
+      ) : (
+        <div className={styles.WalletBalanceText}>
+          <WhiteIcon className={styles.Icon} />
+        </div>
+      )}
+    </div>
+  </Tooltip>
+);
+
+const balanceOkay = (fullOpen: boolean, displayBalance: any) =>
+  fullOpen ? (
+    <div className={styles.WalletBalanceText}>
+      <SelectWhiteIcon className={styles.Icon} />
+      Wallet balance is okay: ${displayBalance}
+    </div>
+  ) : (
+    <div className={styles.WalletBalanceText}>${displayBalance}</div>
+  );
+
+const balanceLow = (fullOpen: boolean, displayBalance: any) => (
+  <Tooltip title="You will be unable to send messages without recharge" placement="top-start">
+    {fullOpen ? (
+      <div className={styles.WalletBalanceText}>
+        <WhiteIcon className={styles.Icon} />
+        Wallet balance is low: ${displayBalance}
+      </div>
+    ) : (
+      <div className={styles.WalletBalanceText}>${displayBalance}</div>
+    )}
+  </Tooltip>
+);
+
 export interface WalletBalanceProps {
   fullOpen: boolean;
 }
@@ -75,22 +115,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     if (displayBalance === null && !error) {
       return nullBalance();
     }
-    return (
-      <Tooltip title="For any help, please contact the Glific team" placement="top-start">
-        <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
-          {fullOpen ? (
-            <div className={styles.WalletBalanceText}>
-              <WhiteIcon className={styles.Icon} />
-              Verify Gupshup settings
-            </div>
-          ) : (
-            <div className={styles.WalletBalanceText}>
-              <WhiteIcon className={styles.Icon} />
-            </div>
-          )}
-        </div>
-      </Tooltip>
-    );
+    return gupshupSettings(fullOpen);
   };
 
   if (error) {
@@ -99,28 +124,10 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
 
   const updateBody = () => {
     if (displayBalance > 1) {
-      return fullOpen ? (
-        <div className={styles.WalletBalanceText}>
-          <SelectWhiteIcon className={styles.Icon} />
-          Wallet balance is okay: ${displayBalance}
-        </div>
-      ) : (
-        <div className={styles.WalletBalanceText}>${displayBalance}</div>
-      );
+      return balanceOkay(fullOpen, displayBalance);
     }
 
-    return (
-      <Tooltip title="You will be unable to send messages without recharge" placement="top-start">
-        {fullOpen ? (
-          <div className={styles.WalletBalanceText}>
-            <WhiteIcon className={styles.Icon} />
-            Wallet balance is low: ${displayBalance}
-          </div>
-        ) : (
-          <div className={styles.WalletBalanceText}>${displayBalance}</div>
-        )}
-      </Tooltip>
-    );
+    return balanceLow(fullOpen, displayBalance);
   };
 
   const updateBalance = (

@@ -40,11 +40,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       if (conversation) {
         // save the conversation and update cache
 
-        // temporary fix for cache. need to check why queryvariables change
+        // temporary fix for cache. need to check why query variables change
         saveConversation(conversation, client, queryVariables);
       }
     },
   });
+
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
       // if there is no message data then return previous conversations
