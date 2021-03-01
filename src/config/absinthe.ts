@@ -33,6 +33,7 @@ socketConnection.onError(async (error: any) => {
     const authtoken = await renewAuthToken();
     if (authtoken.data) {
       setAuthSession(JSON.stringify(authtoken.data.data));
+      setLogs('Successful token renewal by websocket', 'info');
     }
   }
   // increment the counter when error occurs
