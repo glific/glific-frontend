@@ -26,17 +26,17 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
-  const [imageUrl, setImageUrl] = useState(ImageThumbnail);
+  const [imageUrl, setImageUrl] = useState(true);
   const ref = useRef(null);
 
   useEffect(() => {
     if (ref && ref.current) {
       const image: any = ref.current;
       image.onload = () => {
-        setImageUrl('');
+        setImageUrl(false);
       };
     }
-  }, [ref]);
+  }, [ref, type]);
   let messageBody;
   // manage validation if there is no media
   if (type !== 'LOCATION' && !media) {
@@ -47,12 +47,8 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'IMAGE':
       messageBody = (
         <>
-          <div
-            className={styles.Image}
-            style={{
-              background: `transparent url('${imageUrl}') center no-repeat`,
-            }}
-          >
+          <div className={styles.Image}>
+            {imageUrl ? <img alt="img" src={ImageThumbnail} /> : null}
             <img
               alt="img"
               src={media.url}
@@ -61,7 +57,6 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
               onClick={() => setShowViewer(true)}
               aria-hidden="true"
             />
-
             <Viewer
               visible={showViewer}
               onClose={() => {
