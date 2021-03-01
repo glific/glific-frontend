@@ -4,6 +4,7 @@ import Linkify from 'react-linkify';
 
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import styles from './MessagesWithLinks.module.css';
+import { CORS_PROXY_URL } from '../../../../config';
 
 export interface MessagesWithLinksProps {
   message: any;
@@ -23,7 +24,14 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   if (linkMessage) {
     linkPreview = (
       <div className={styles.LinkPreview}>
-        <ReactTinyLink cardSize="small" showGraphic maxLine={2} minLine={1} url={linkMessage[0]} />
+        <ReactTinyLink
+          cardSize="small"
+          showGraphic
+          maxLine={2}
+          minLine={1}
+          url={linkMessage[0]}
+          proxyUrl={CORS_PROXY_URL}
+        />
       </div>
     );
   }

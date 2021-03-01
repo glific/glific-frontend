@@ -1,8 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import ChatMessageType from './ChatMessageType';
+import Viewer from 'react-viewer';
 
-const defaultProps = (type: string) => {
+const defaultProps: any = (type: string) => {
   return {
     type,
     body: 'Default body',
@@ -11,8 +12,14 @@ const defaultProps = (type: string) => {
       url: '',
     },
     insertedAt: '2020-06-25T13:36:43Z',
+    location: null,
   };
 };
+
+jest.mock('react-viewer', () => (props) => {
+  const { onClose } = props;
+  return <div data-testid="reactViewer" onClick={() => onClose()} />;
+});
 
 test('it shows image when type of message is image', () => {
   const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
@@ -38,4 +45,33 @@ test('it loads document when type of message is document', () => {
 test('it loads document when type of message is sticker', () => {
   const { getByTestId } = render(<ChatMessageType {...defaultProps('STICKER')} />);
   expect(getByTestId('stickerMessage')).toBeInTheDocument();
+});
+
+test('it shows the text if type of message is text', () => {
+  const { getByText } = render(<ChatMessageType {...defaultProps('TEXT')} />);
+  expect(getByText('Default body')).toBeInTheDocument();
+});
+
+test('it loads document when type of message is location', () => {
+  const props = defaultProps('LOCATION');
+  props.location = { latitude: 10, longitude: 20 };
+  const { getByTestId } = render(<ChatMessageType {...props} />);
+  expect(getByTestId('locationMessage')).toBeInTheDocument();
+});
+
+test('check condition if no media object is present', () => {
+  const props = defaultProps('IMAGE');
+  props.media = null;
+  const { getByText } = render(<ChatMessageType {...props} />);
+  expect(getByText('Default body')).toBeInTheDocument();
+});
+
+test('show image on viewer', () => {
+  const props = defaultProps('IMAGE');
+  props.media.url = 'https://google.com';
+  const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
+  //opens the image with react viewer
+  fireEvent.click(getByTestId('imageMessage'));
+  expect(getByTestId('reactViewer')).toBeInTheDocument();
+  fireEvent.click(getByTestId('reactViewer'));
 });
