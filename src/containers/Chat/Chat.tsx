@@ -15,6 +15,11 @@ import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../..
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 
+const noConversations = (
+  <Typography variant="h5" className={styles.NoConversations}>
+    There are no chat conversations to display.
+  </Typography>
+);
 export interface ChatProps {
   contactId?: number | string | null;
   collectionId?: number | null;
@@ -28,7 +33,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
   let selectedContactId = contactId;
   let selectedCollectionId = collectionId;
 
-  // default queryvariables
+  // default query variables
   let queryVariables = SEARCH_QUERY_VARIABLES;
 
   // contact id === collection when the collection id is not passed in the url
@@ -75,11 +80,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
 
   let chatInterface: any;
   if (data && data.search.length === 0) {
-    chatInterface = (
-      <Typography variant="h5" className={styles.NoConversations}>
-        There are no chat conversations to display.
-      </Typography>
-    );
+    chatInterface = noConversations;
   } else {
     let listingContent;
     let contactSelectedClass = '';
