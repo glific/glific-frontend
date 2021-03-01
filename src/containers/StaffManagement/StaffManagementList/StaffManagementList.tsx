@@ -10,6 +10,12 @@ import { isManagerRole } from '../../../context/role';
 
 export interface StaffManagementProps {}
 
+const dialogMessage = ' Once deleted this action cannot be undone.';
+const chatIcon = <ChatIcon />;
+const additionalAction = [
+  { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: 'Send Message' },
+];
+
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Collection, styles.Actions];
@@ -46,18 +52,11 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     group: getCollections(groups),
   });
 
-  const dialogMessage = ' Once deleted this action cannot be undone.';
-
   const columnAttributes = {
     columnNames,
     columns: getColumns,
     columnStyles,
   };
-
-  const chatIcon = <ChatIcon />;
-  const additionalAction = [
-    { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: 'Send Message' },
-  ];
 
   const getRestrictedAction = (param: any) => {
     const action: any = { chat: true, edit: true, delete: true };

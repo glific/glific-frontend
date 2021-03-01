@@ -66,6 +66,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
       +{maskedPhone}
     </div>
   );
+
   if (phone) {
     let phoneDisplayValue = maskedPhone;
     let visibilityElement = (
