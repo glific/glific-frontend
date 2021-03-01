@@ -141,7 +141,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           rel="noreferrer"
           data-testid="locationMessage"
         >
-          <MapIcon  />
+          <MapIcon />
         </a>
       );
       break;
