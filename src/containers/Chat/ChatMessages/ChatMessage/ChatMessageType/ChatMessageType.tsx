@@ -139,8 +139,9 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           href={`https://maps.google.com/?q=${location.latitude},${location.longitude}`}
           target="_blank"
           rel="noreferrer"
+          data-testid="locationMessage"
         >
-          <MapIcon />
+          <MapIcon  />
         </a>
       );
       break;
