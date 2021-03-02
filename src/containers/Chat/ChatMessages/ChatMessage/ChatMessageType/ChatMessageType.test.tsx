@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import ChatMessageType from './ChatMessageType';
 import Viewer from 'react-viewer';
 
@@ -66,12 +66,18 @@ test('check condition if no media object is present', () => {
   expect(getByText('Default body')).toBeInTheDocument();
 });
 
-test('show image on viewer', () => {
+test('show image on viewer', async () => {
   const props = defaultProps('IMAGE');
   props.media.url = 'https://google.com';
   const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
+
   //opens the image with react viewer
   fireEvent.click(getByTestId('imageMessage'));
+
+  // trigger onload function manually
+  await waitFor(() => {
+    getByTestId('imageMessage').onload();
+  });
   expect(getByTestId('reactViewer')).toBeInTheDocument();
   fireEvent.click(getByTestId('reactViewer'));
 });
