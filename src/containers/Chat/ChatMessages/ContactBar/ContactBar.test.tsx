@@ -3,12 +3,19 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
-import { contactCollectionsQuery } from '../../../../mocks/Contact';
+import { blockContactQuery, contactCollectionsQuery } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getCollectionsQuery } from '../../../../mocks/Collection';
 import { getPublishedFlowQuery } from '../../../../mocks/Flow';
+import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 
-const mocks = [contactCollectionsQuery, ...getCollectionsQuery, getPublishedFlowQuery];
+const mocks = [
+  ...CONVERSATION_MOCKS,
+  contactCollectionsQuery,
+  ...getCollectionsQuery,
+  getPublishedFlowQuery,
+  blockContactQuery,
+];
 
 const defaultProps = {
   displayName: 'Jane Doe',
@@ -80,6 +87,8 @@ describe('Menu test', () => {
         screen.getByText('Are you sure you want to clear all conversation for this contact?')
       ).toBeInTheDocument();
     });
+    // click on cancel
+    fireEvent.click(screen.getByText('MAYBE LATER'));
   });
 
   test('clicking on block button should open up a dialog box', async () => {
@@ -90,6 +99,15 @@ describe('Menu test', () => {
     });
 
     fireEvent.click(screen.getByText('Cancel'));
+  });
+
+  test('block a contact', async () => {
+    fireEvent.click(screen.getByTestId('blockButton'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Do you want to block this contact')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Confirm'));
   });
 
   test('view contact profile', async () => {
