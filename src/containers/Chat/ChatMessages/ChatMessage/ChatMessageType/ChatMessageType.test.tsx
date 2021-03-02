@@ -60,7 +60,7 @@ test('it loads document when type of message is location', () => {
 });
 
 test('check condition if no media object is present', () => {
-  const props = defaultProps('IMAGE');
+  const props = defaultProps('TEXT');
   props.media = null;
   const { getByText } = render(<ChatMessageType {...props} />);
   expect(getByText('Default body')).toBeInTheDocument();
