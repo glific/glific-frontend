@@ -7,6 +7,7 @@ import { Img } from 'react-image';
 
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
+import loadingImage from '../../../../../assets/images/loading.gif';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
@@ -38,7 +39,11 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <>
           <div className={styles.Image} data-testid="imageMessage">
-            <Img src={media.url} onClick={() => setShowViewer(true)} />
+            <Img
+              src={media.url}
+              onClick={() => setShowViewer(true)}
+              loader={<img src={loadingImage} alt="loader" />}
+            />
             <Viewer
               visible={showViewer}
               onClose={() => {
