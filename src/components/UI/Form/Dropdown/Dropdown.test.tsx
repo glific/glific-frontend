@@ -1,14 +1,32 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { Dropdown } from './Dropdown';
 
+jest.mock('@material-ui/core/Select', () => (props: any) => {
+  const { onChange, children } = props;
+  return (
+    <div>
+      <select
+        data-testid="mock-select"
+        onChange={() => {
+          onChange();
+        }}
+      >
+        {children}
+      </select>
+    </div>
+  );
+});
+
+const changeValue = jest.fn();
 describe('<Dropdown />', () => {
   const defaultProps = {
     options: [{ id: '1', label: 'Default' }],
     label: 'Title',
     form: { errors: { dropdown: 'Required' } },
     placeholder: 'Input your title',
-    field: { value: '1' },
+    field: { value: '1', onChange: changeValue },
+    fieldChange: jest.fn(),
   };
 
   it('renders <Dropdown /> component', () => {
@@ -23,6 +41,12 @@ describe('<Dropdown />', () => {
 
   it('should have an initial value', () => {
     const wrapper = render(<Dropdown {...defaultProps} />);
-    expect(wrapper.container.querySelector('.MuiSelect-root')).toHaveTextContent('Default');
+    expect(wrapper.getByTestId('mock-select')).toHaveTextContent('Default');
+  });
+
+  it('should call onChange function if the dropdown value is changed', () => {
+    const wrapper = render(<Dropdown {...defaultProps} />);
+    fireEvent.change(wrapper.getByTestId('mock-select'), { target: { value: '1' } });
+    expect(changeValue).toHaveBeenCalled();
   });
 });

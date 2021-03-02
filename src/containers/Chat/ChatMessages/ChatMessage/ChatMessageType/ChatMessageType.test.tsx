@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import ChatMessageType from './ChatMessageType';
 import Viewer from 'react-viewer';
+import * as Img from 'react-image';
 
 const defaultProps: any = (type: string) => {
   return {
@@ -66,12 +67,19 @@ test('check condition if no media object is present', () => {
   expect(getByText('Default body')).toBeInTheDocument();
 });
 
-test('show image on viewer', () => {
+test('show image on viewer', async () => {
   const props = defaultProps('IMAGE');
   props.media.url = 'https://google.com';
+  const spy = jest.spyOn(Img, 'Img');
+
+  spy.mockImplementation((props: any) => {
+    const { onClick } = props;
+    return <img data-testid="mock-image" onClick={() => onClick()}></img>;
+  });
   const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
   //opens the image with react viewer
-  fireEvent.click(getByTestId('imageMessage'));
+  fireEvent.click(getByTestId('mock-image'));
+
   expect(getByTestId('reactViewer')).toBeInTheDocument();
   fireEvent.click(getByTestId('reactViewer'));
 });
