@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, getByTestId, render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { Dropdown } from './Dropdown';
 
 jest.mock('@material-ui/core/Select', () => (props: any) => {
