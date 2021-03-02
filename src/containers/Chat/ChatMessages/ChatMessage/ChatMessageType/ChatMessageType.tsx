@@ -29,7 +29,6 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   const [imageUrl, setImageUrl] = useState(true);
   const ref = useRef(null);
 
-  console.log(imageUrl);
   useEffect(() => {
     if (ref && ref.current) {
       const image: any = ref.current;
