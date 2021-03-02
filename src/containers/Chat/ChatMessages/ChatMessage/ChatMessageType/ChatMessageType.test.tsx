@@ -74,10 +74,6 @@ test('show image on viewer', async () => {
   //opens the image with react viewer
   fireEvent.click(getByTestId('imageMessage'));
 
-  // trigger onload function manually
-  await waitFor(() => {
-    getByTestId('imageMessage').onload();
-  });
   expect(getByTestId('reactViewer')).toBeInTheDocument();
   fireEvent.click(getByTestId('reactViewer'));
 });

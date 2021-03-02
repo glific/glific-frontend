@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { Img } from 'react-image';
 
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
-import ImageThumbnail from '../../../../../assets/images/loading.gif';
-import NotLoadedThumbnail from '../../../../../assets/images/notloaded.webp';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
 
@@ -27,21 +26,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [imageUrl, setImageUrl] = useState(type === 'IMAGE' ? media.url : '');
-  const ref = useRef(null);
 
-  useEffect(() => {
-    if (ref && ref.current) {
-      const image: any = ref.current;
-      image.onload = () => {
-        setLoading(false);
-      };
-      image.onerror = () => {
-        setImageUrl(NotLoadedThumbnail);
-      };
-    }
-  }, [ref, type]);
   let messageBody;
   // manage validation if there is no media
   if (type !== 'LOCATION' && !media) {
@@ -52,17 +37,8 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'IMAGE':
       messageBody = (
         <>
-          <div className={styles.Image}>
-            {loading ? <img alt="img" src={ImageThumbnail} /> : null}
-            <img
-              className={loading ? styles.ImageLoading : ''}
-              alt="img"
-              src={imageUrl}
-              ref={ref}
-              data-testid="imageMessage"
-              onClick={() => setShowViewer(true)}
-              aria-hidden="true"
-            />
+          <div className={styles.Image} data-testid="imageMessage">
+            <Img src={media.url} onClick={() => setShowViewer(true)} />
             <Viewer
               visible={showViewer}
               onClose={() => {
