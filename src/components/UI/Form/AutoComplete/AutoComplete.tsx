@@ -193,6 +193,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             onKeyDown={() => helpLink.handleClick()}
             onClick={() => helpLink.handleClick()}
             role="button"
+            data-testid="helpButton"
             tabIndex={0}
           >
             {helpLink.label}
