@@ -8,6 +8,7 @@ import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import ImageThumbnail from '../../../../../assets/images/loading.gif';
+import NotLoadedThumbnail from '../../../../../assets/images/notloaded.webp';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
 
@@ -26,14 +27,18 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   location,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
-  const [imageUrl, setImageUrl] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState(type === 'IMAGE' ? media.url : '');
   const ref = useRef(null);
 
   useEffect(() => {
     if (ref && ref.current) {
       const image: any = ref.current;
       image.onload = () => {
-        setImageUrl(false);
+        setLoading(false);
+      };
+      image.onerror = () => {
+        setImageUrl(NotLoadedThumbnail);
       };
     }
   }, [ref, type]);
@@ -48,11 +53,11 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       messageBody = (
         <>
           <div className={styles.Image}>
-            {imageUrl ? <img alt="img" src={ImageThumbnail} /> : null}
+            {loading ? <img alt="img" src={ImageThumbnail} /> : null}
             <img
-              className={imageUrl ? styles.ImageLoading : ''}
+              className={loading ? styles.ImageLoading : ''}
               alt="img"
-              src={media.url}
+              src={imageUrl}
               ref={ref}
               data-testid="imageMessage"
               onClick={() => setShowViewer(true)}
