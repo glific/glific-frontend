@@ -60,20 +60,18 @@ test('it loads document when type of message is location', () => {
 });
 
 test('check condition if no media object is present', () => {
-  const props = defaultProps('TEXT');
+  const props = defaultProps('IMAGE');
   props.media = null;
   const { getByText } = render(<ChatMessageType {...props} />);
   expect(getByText('Default body')).toBeInTheDocument();
 });
 
-test('show image on viewer', async () => {
+test('show image on viewer', () => {
   const props = defaultProps('IMAGE');
   props.media.url = 'https://google.com';
   const { getByTestId } = render(<ChatMessageType {...defaultProps('IMAGE')} />);
-
   //opens the image with react viewer
   fireEvent.click(getByTestId('imageMessage'));
-
   expect(getByTestId('reactViewer')).toBeInTheDocument();
   fireEvent.click(getByTestId('reactViewer'));
 });
