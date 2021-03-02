@@ -58,6 +58,26 @@ const formIsActive = {
   ),
 };
 
+const validation = {
+  language: Yup.object().nullable().required('Language is required.'),
+  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
+  body: Yup.string()
+    .transform((current, original) => original.getCurrentContent().getPlainText())
+    .required('Message is required.'),
+  type: Yup.object()
+    .nullable()
+    .when('attachmentURL', {
+      is: (val: string) => val && val !== '',
+      then: Yup.object().required('Type is required.'),
+    }),
+  attachmentURL: Yup.string()
+    .nullable()
+    .when('type', {
+      is: (val: any) => val && val.id,
+      then: Yup.string().required('Attachment URL is required.'),
+    }),
+};
+
 export interface TemplateProps {
   match: any;
   listItemName: string;
@@ -91,7 +111,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
-  const [category, setCategory] = useState<any>({});
+  const [category, setCategory] = useState<any>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
 
@@ -463,26 +483,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       },
     });
     return data;
-  };
-
-  const validation = {
-    language: Yup.object().nullable().required('Language is required.'),
-    label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
-    body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
-      .required('Message is required.'),
-    type: Yup.object()
-      .nullable()
-      .when('attachmentURL', {
-        is: (val: string) => val && val !== '',
-        then: Yup.object().required('Type is required.'),
-      }),
-    attachmentURL: Yup.string()
-      .nullable()
-      .when('type', {
-        is: (val: any) => val && val.id,
-        then: Yup.string().required('Attachment URL is required.'),
-      }),
   };
 
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;

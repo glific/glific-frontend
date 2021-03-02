@@ -43,7 +43,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setSimulatorId,
   simulatorIcon = true,
-  message = {},
+  message,
   flowSimulator,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
@@ -137,8 +137,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .reverse();
 
   const sendMessage = () => {
-    const sendMessageText =
-      inputMessage === '' && message ? `${message.type}:${message.keyword}` : inputMessage;
+    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
@@ -169,10 +168,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   useEffect(() => {
-    if (message.keyword !== undefined && data) {
+    if (message !== undefined && data) {
       sendMessage();
     }
-  }, [message.keyword, data]);
+  }, [message, data]);
 
   const messageRef = useCallback(
     (node: any) => {

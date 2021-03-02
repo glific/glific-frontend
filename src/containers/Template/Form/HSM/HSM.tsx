@@ -9,6 +9,39 @@ import { Input } from '../../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
 
+const getFields = (match: { params: { id: any } }, categoryOpns: any, validateShortcode: any) => [
+  {
+    component: EmojiInput,
+    name: 'example',
+    placeholder: 'Sample message*',
+    rows: 5,
+    convertToWhatsApp: true,
+    textArea: true,
+    disabled: match.params.id,
+    helperText:
+      'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
+  },
+  {
+    component: AutoComplete,
+    name: 'category',
+    options: categoryOpns,
+    optionLabel: 'label',
+    multiple: false,
+    textFieldProps: {
+      variant: 'outlined',
+      label: 'Category*',
+    },
+    disabled: match.params.id,
+    helperText: 'Select the most relevant category',
+  },
+  {
+    component: Input,
+    name: 'shortcode',
+    placeholder: 'Element name*',
+    validate: validateShortcode,
+    disabled: match.params.id,
+  },
+];
 export interface HSMProps {
   match: any;
 }
@@ -42,57 +75,20 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
 
   const validateShortcode = (value: any) => {
     let error;
-    if (value) {
-      let found = [];
-      if (sessionTemplates) {
-        // need to check exact shortcode
-        found = sessionTemplates.sessionTemplates.filter(
-          (search: any) => search.shortcode === value
-        );
-        if (match.params.id && found.length > 0) {
-          found = found.filter((search: any) => search.id !== match.params.id);
-        }
-      }
-      if (found.length > 0) {
-        error = 'Shortcode already exists.';
+    let found = [];
+    if (sessionTemplates && value) {
+      // need to check exact shortcode
+      found = sessionTemplates.sessionTemplates.filter((search: any) => search.shortcode === value);
+      if (match.params.id && found.length > 0) {
+        found = found.filter((search: any) => search.id !== match.params.id);
       }
     }
+    if (found.length > 0) {
+      error = 'Element name already exists.';
+    }
+
     return error;
   };
-
-  const formFields = [
-    {
-      component: EmojiInput,
-      name: 'example',
-      placeholder: 'Sample message*',
-      rows: 5,
-      convertToWhatsApp: true,
-      textArea: true,
-      disabled: match.params.id,
-      helperText:
-        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-    },
-    {
-      component: AutoComplete,
-      name: 'category',
-      options: categoryOpns,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: 'Category*',
-      },
-      disabled: match.params.id,
-      helperText: 'Select the most relevant category',
-    },
-    {
-      component: Input,
-      name: 'shortcode',
-      placeholder: 'Element name*',
-      validate: validateShortcode,
-      disabled: match.params.id,
-    },
-  ];
 
   return (
     <Template
@@ -101,7 +97,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       redirectionLink="template"
       icon={templateIcon}
       defaultAttribute={defaultAttribute}
-      formField={formFields}
+      formField={getFields(match, categoryOpns, validateShortcode)}
       getSessionTemplatesCallBack={getSessionTemplates}
       customStyle={styles.HSMTemplate}
     />

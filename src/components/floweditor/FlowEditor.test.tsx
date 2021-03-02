@@ -11,6 +11,8 @@ import {
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
 
+import * as Simulator from '../simulator/Simulator';
+
 const mocks = [
   getFlowDetailsQuery,
   conversationQuery,
@@ -63,5 +65,20 @@ test('click on preview button should open simulator', async () => {
   fireEvent.click(getByTestId('previewButton'));
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
+  });
+});
+
+test('start with a keyword message if the simulator opens in floweditor screen', async () => {
+  const { getByTestId } = render(wrapper);
+  fireEvent.click(getByTestId('previewButton'));
+  const spy = jest.spyOn(Simulator, 'Simulator');
+
+  spy.mockImplementation((props: any) => {
+    const { message } = props;
+    return <div data-testid="message">{message}</div>;
+  });
+
+  await waitFor(() => {
+    expect(getByTestId('message')).toHaveTextContent('draft:help');
   });
 });

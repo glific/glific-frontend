@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -33,8 +33,8 @@ describe('<Login />', () => {
 
   it('test the login form submission with correct creds', async () => {
     const { container } = render(wrapper);
-    const phone = screen.getByRole('textbox');
-    UserEvent.type(phone, '+919978776554');
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     const password = container.querySelector('input[type="password"]');
     UserEvent.type(password, 'pass123456');
@@ -45,15 +45,22 @@ describe('<Login />', () => {
 
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = jest.fn(() => Promise.resolve(responseData));
+
     act(() => {
-      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+      axios.post.mockImplementationOnce(() => successPromise());
+    });
+
+    await waitFor(() => {
+      expect(successPromise).toHaveBeenCalled();
     });
   });
 
   it('test the login form submission with incorrect creds', async () => {
     const { container } = render(wrapper);
-    const phone = screen.getByRole('textbox');
-    UserEvent.type(phone, '+919978776554');
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     const password = container.querySelector('input[type="password"]');
     UserEvent.type(password, 'pass123456');
@@ -61,11 +68,16 @@ describe('<Login />', () => {
     // click on login
     const loginButton = screen.getByText('LOGIN');
     UserEvent.click(loginButton);
-
     // set the mock error case while login
     const errorMessage = 'Cannot login';
+    const rejectPromise = jest.fn(() => Promise.reject(errorMessage));
+
     act(() => {
-      axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+      axios.post.mockImplementationOnce(() => rejectPromise());
+    });
+
+    await waitFor(() => {
+      expect(rejectPromise).toHaveBeenCalled();
     });
   });
 });
