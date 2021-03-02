@@ -30,10 +30,14 @@ const createTooltip = (title: string) => (
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
   const { contactStatus, contactBspStatus, time } = props;
+
+  let intervalID: any;
   useEffect(() => {
-    setInterval(() => {
+    intervalID = setInterval(() => {
       setCurrentTime(moment(new Date()));
     }, 60000);
+
+    return () => clearInterval(intervalID);
   }, []);
 
   if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE' || !time) {
