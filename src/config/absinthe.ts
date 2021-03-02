@@ -21,9 +21,12 @@ const socketConnection = new PhoenixSocket.Socket(SOCKET, {
   },
 });
 
+// function to reconnect the web socket connection
 const resetWSConnection = async (wsConnection: any) => {
+  // let's renew the token
   const authToken = await renewAuthToken();
   if (authToken.data) {
+    // update localstore
     setAuthSession(JSON.stringify(authToken.data.data));
     setLogs('Successful token renewal by websocket', 'info');
 
@@ -35,7 +38,6 @@ const resetWSConnection = async (wsConnection: any) => {
 // we should try to reconnect ws connection only finite (5) times and then abort and prevent
 // unnecessary load on the server
 // watch for websocket error event using onError
-
 let connectionFailureCounter = 0;
 socketConnection.onError(async (error: any) => {
   // add logs in logflare
