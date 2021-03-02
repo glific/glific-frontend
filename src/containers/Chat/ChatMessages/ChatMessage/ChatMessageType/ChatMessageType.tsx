@@ -50,6 +50,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
           <div className={styles.Image}>
             {imageUrl ? <img alt="img" src={ImageThumbnail} /> : null}
             <img
+              className={imageUrl ? styles.ImageLoading : ''}
               alt="img"
               src={media.url}
               ref={ref}
