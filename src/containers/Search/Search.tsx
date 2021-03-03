@@ -83,6 +83,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     variables: setVariables(),
   });
 
+  /* istanbul ignore next */
   const setArgs = (args: any) => {
     const filters = JSON.parse(args);
     Object.keys(filters.filter).map((key) => {
