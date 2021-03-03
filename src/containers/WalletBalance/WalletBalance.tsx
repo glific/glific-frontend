@@ -118,7 +118,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     return gupshupSettings(fullOpen);
   };
 
-  console.log(error);
   if (error) {
     errorBody();
   }

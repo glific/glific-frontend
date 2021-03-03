@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
+import { render, waitFor, cleanup, fireEvent, getByTestId } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { WebhookLogsList } from './WebhookLogsList';
@@ -44,7 +44,7 @@ test('Webhook logs are loaded', async () => {
 });
 
 test('Show data on popup', async () => {
-  const { getAllByTestId, getAllByText, getByText } = render(webhookLogs);
+  const { getAllByTestId, getAllByText, getByText, getByTestId } = render(webhookLogs);
 
   // check if the URL is loaded
   await waitFor(() => {
@@ -57,13 +57,13 @@ test('Show data on popup', async () => {
   });
   // click on copy button
   fireEvent.click(getAllByText('Copy text')[0]);
-  fireEvent.click(getAllByText('Copy text')[1]);
+  fireEvent.click(getByTestId('copyToClipboard'));
   // click on done button to close the popup
   fireEvent.click(getByText('Done'));
 });
 
 test('copy data to clipboard', async () => {
-  const { getAllByTestId, getByText, getByTestId } = render(webhookLogs);
+  const { getAllByTestId, getByText } = render(webhookLogs);
 
   // check if the URL is loaded
   await waitFor(() => {
