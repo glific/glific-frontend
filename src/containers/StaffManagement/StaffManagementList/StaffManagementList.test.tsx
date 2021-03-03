@@ -4,12 +4,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { StaffManagementList } from './StaffManagementList';
 import { STAFF_MANAGEMENT_MOCKS } from '../StaffManagement.test.helper';
-import { List } from '../../List/List';
 import { setUserSession } from '../../../services/AuthService';
 
 jest.mock('../../List/List', () => {
   return {
-    List: (...props) => {
+    List: (...props: any) => {
       const { restrictedAction } = props[0];
       return (
         <div onClick={() => restrictedAction({ roles: ['Admin'] })} data-testid="staffList">
@@ -38,7 +37,6 @@ test('StaffManagementList is rendered correctly', async () => {
   });
 });
 
-
 test('check restricted action with manager role', async () => {
   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
@@ -47,4 +45,3 @@ test('check restricted action with manager role', async () => {
     fireEvent.click(getByTestId('staffList'));
   });
 });
-

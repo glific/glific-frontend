@@ -4,7 +4,6 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { Tag } from './Tag';
 import { LIST_ITEM_MOCKS } from '../Form/FormLayout.test.helper';
-import axios from 'axios';
 
 jest.mock('axios');
 const mocks = LIST_ITEM_MOCKS;
