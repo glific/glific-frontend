@@ -490,3 +490,17 @@ export const walletBalanceHighQuery = [
     },
   },
 ];
+
+export const errorBalanceQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      error: {
+        message: 'Not able to fetch data',
+      },
+    },
+  },
+];

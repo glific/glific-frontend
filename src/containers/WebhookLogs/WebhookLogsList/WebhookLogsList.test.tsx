@@ -57,12 +57,13 @@ test('Show data on popup', async () => {
   });
   // click on copy button
   fireEvent.click(getAllByText('Copy text')[0]);
+  fireEvent.click(getAllByText('Copy text')[1]);
   // click on done button to close the popup
   fireEvent.click(getByText('Done'));
 });
 
 test('copy data to clipboard', async () => {
-  const { getAllByTestId, queryByTestId, getByText } = render(webhookLogs);
+  const { getAllByTestId, getByText, getByTestId } = render(webhookLogs);
 
   // check if the URL is loaded
   await waitFor(() => {
