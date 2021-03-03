@@ -380,7 +380,7 @@ export const List: React.SFC<ListProps> = ({
 
             if (action.link) {
               return (
-                <Link to={`${action?.link}/${additionalActionParameter}`} key={key}>
+                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
                   <IconButton
                     color="default"
                     className={styles.additonalButton}
