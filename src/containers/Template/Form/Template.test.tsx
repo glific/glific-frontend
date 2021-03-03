@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, within, fireEvent, cleanup } from '@testing-library/react';
+import { render, waitFor, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import Template from './Template';

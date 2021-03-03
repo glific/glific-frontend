@@ -199,7 +199,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (languages) {
-      const lang = languages ? languages.currentUser.user.organization.activeLanguages.slice() : [];
+      const lang = languages.currentUser.user.organization.activeLanguages.slice();
       // sort languages by their name
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 

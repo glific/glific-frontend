@@ -49,22 +49,22 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   if (helpDialog) {
     const rolesHelp = [
       {
+        key: 1,
         title: 'Admin',
         description: 'Complete access to all the parts of the platform.',
       },
       {
+        key: 2,
         title: 'Manager',
         description: 'Complete access to the platform except settings and staff management.',
       },
       {
+        key: 3,
         title: 'Staff',
         description: `Access only to the chat section and their collections. Access can be limited to chatting
        with all contacts or only to the ones in their assigned collection.`,
       },
-      {
-        title: 'None',
-        description: 'No access to the platform. They can’t login.',
-      },
+      { key: 4, title: 'None', description: 'No access to the platform. They can’t login.' },
     ];
     dialog = (
       <DialogBox
@@ -75,7 +75,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         handleCancel={() => setHelpDialog(false)}
       >
         {rolesHelp.map((role: any) => (
-          <div className={styles.RolesHelp}>
+          <div className={styles.RolesHelp} key={role.key}>
             <span>{role.title}: </span>
             {role.description}
           </div>
