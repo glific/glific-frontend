@@ -14,7 +14,7 @@ describe('<ChatSubscription />', () => {
   afterEach(cleanup);
 
   test('it should render <ChatSubscription /> component correctly', async () => {
-    const {} = render(
+    render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatSubscription setDataLoaded={jest.fn()} setLoading={jest.fn()} />
       </MockedProvider>
