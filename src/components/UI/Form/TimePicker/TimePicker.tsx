@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import moment from 'moment';
+import ScheduleIcon from '@material-ui/icons/Schedule';
 
 import styles from './TimePicker.module.css';
 
@@ -45,6 +46,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           value={dateValue}
           disabled={disabled}
           onChange={(date) => handleDateChange(date)}
+          keyboardIcon={<ScheduleIcon />}
         />
       </Grid>
     </MuiPickersUtilsProvider>

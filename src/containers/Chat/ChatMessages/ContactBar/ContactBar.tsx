@@ -349,15 +349,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     const toolTip = 'Option disabled because the 24hr window expired';
     flowButton = (
       <Tooltip title={toolTip} placement="right">
-        <Button
-          data-testid="disabledFlowButton"
-          className={styles.ListButtonPrimary}
-          onClick={() => {
-            getFlows();
-            setShowFlowDialog(true);
-          }}
-          disabled
-        >
+        <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
           <FlowUnselectedIcon className={styles.Icon} />
           Start a flow
         </Button>
@@ -380,6 +372,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
               <Button
                 className={styles.ListButtonPrimary}
                 disabled={isSimulator}
+                data-testid="viewProfile"
                 onClick={() => {
                   history.push(`/contact-profile/${props.contactId}`);
                 }}

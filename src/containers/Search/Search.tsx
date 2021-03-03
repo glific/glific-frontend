@@ -83,21 +83,28 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     variables: setVariables(),
   });
 
+  /* istanbul ignore next */
   const setArgs = (args: any) => {
     const filters = JSON.parse(args);
     Object.keys(filters.filter).map((key) => {
       switch (key) {
         case 'includeTags':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
-            setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
+            if (dataT) {
+              setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
+            }
           break;
         case 'includeGroups':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
-            setIncludeGroups(getObject(data.groups, filters.filter.includeGroups));
+            if (data) {
+              setIncludeGroups(getObject(data.groups, filters.filter.includeGroups));
+            }
           break;
         case 'includeUsers':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeUsers'))
-            setIncludeUsers(getObject(dataUser.users, filters.filter.includeUsers));
+            if (dataUser) {
+              setIncludeUsers(getObject(dataUser.users, filters.filter.includeUsers));
+            }
           break;
         case 'dateRange':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'dateRange')) {

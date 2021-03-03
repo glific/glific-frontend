@@ -23,17 +23,13 @@ test('should load the staff user edit form', async () => {
   expect(formLayout).toHaveTextContent('Username');
 });
 
-test('should display help popup', async () => {
-  const { getByText } = render(staffManagement);
+test('it should have a help link', async () => {
+  const { getByText, findByTestId } = render(staffManagement);
 
   // loading is show initially
   expect(getByText('Loading...')).toBeInTheDocument();
 
-  await waitForElement(() => getByText('help?'));
-  const help = getByText('help?');
-  expect(help).toBeInTheDocument();
-  fireEvent.click(help);
-
-  const header = getByText('User roles');
-  expect(header).toBeInTheDocument();
+  const helpButton = await findByTestId('helpButton');
+  fireEvent.click(helpButton);
+  expect(getByText('User roles')).toBeInTheDocument();
 });

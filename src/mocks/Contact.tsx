@@ -190,3 +190,25 @@ export const getCollectionContactsQuery = {
     },
   },
 };
+
+export const blockContactQuery = {
+  request: {
+    query: UPDATE_CONTACT,
+    variables: {
+      id: '2',
+      input: {
+        status: 'BLOCKED',
+      },
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        id: '2',
+        name: 'Default Receiver',
+        phone: '99399393303',
+        language: null,
+      },
+    },
+  },
+};
