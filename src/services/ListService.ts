@@ -49,7 +49,8 @@ export const getUpdatedList = (listItemName: string, newVal: string, isDirection
       }
       // update direction for current list
       if (listItem.name === listItemName && isDirection) {
-        return { name: listItem.name, column: listItem.column, direction: newVal };
+        const direction = newVal === 'asc' ? 'asc' : 'desc';
+        return { name: listItem.name, column: listItem.column, direction };
       }
       return listItem;
     });
