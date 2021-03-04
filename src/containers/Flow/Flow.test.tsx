@@ -1,11 +1,11 @@
 import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Flow } from './Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { getFlowQuery, filterFlowQuery } from '../../mocks/Flow';
 import { MemoryRouter, Router } from 'react-router-dom';
-import { createLocation, createBrowserHistory } from 'history';
+import { createBrowserHistory } from 'history';
 
 const mocks = [
   ...getOrganizationQuery,
