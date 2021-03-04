@@ -5,7 +5,6 @@ import { WalletBalance } from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import {
   errorBalanceQuery,
-  errorBalanceSubscription,
   walletBalanceHighQuery,
   walletBalanceHighSubscription,
   walletBalanceQuery,
