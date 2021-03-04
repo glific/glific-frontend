@@ -491,7 +491,6 @@ export const List: React.SFC<ListProps> = ({
       />
     );
   } else if (displayListType === 'card') {
-    /* istanbul ignore next */
     displayList = (
       <>
         <ListCard data={itemList} link={cardLink} />
