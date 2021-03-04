@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
 import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -491,7 +491,29 @@ export const List: React.SFC<ListProps> = ({
       />
     );
   } else if (displayListType === 'card') {
-    displayList = <ListCard data={itemList} link={cardLink} />;
+    displayList = (
+      <>
+        <ListCard data={itemList} link={cardLink} />
+        <TableFooter className={styles.TableFooter} data-testid="tableFooter">
+          <TableRow>
+            <TablePagination
+              className={styles.FooterRow}
+              colSpan={columnNames.length}
+              count={itemCount}
+              onChangePage={(eee, newPage) => {
+                handleTableChange('pageNum', newPage);
+              }}
+              onChangeRowsPerPage={(ee) => {
+                handleTableChange('pageRows', parseInt(ee.target.value, 10));
+              }}
+              page={tableVals.pageNum}
+              rowsPerPage={tableVals.pageRows}
+              rowsPerPageOptions={[50, 75, 100, 150, 200]}
+            />
+          </TableRow>
+        </TableFooter>
+      </>
+    );
   }
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
