@@ -22,6 +22,7 @@ const defaultProps = {
   contactId: '2',
   lastMessageTime: new Date(),
   contactBspStatus: 'SESSION',
+  handleAction: jest.fn(),
 };
 const propsWithBspStatusNone = { ...defaultProps, contactBspStatus: 'NONE' };
 
@@ -138,6 +139,7 @@ describe('Collection test', () => {
   const collectionDefaultProps = {
     displayName: 'Default Collection',
     collectionId: '2',
+    handleAction: jest.fn(),
   };
 
   const component = (
