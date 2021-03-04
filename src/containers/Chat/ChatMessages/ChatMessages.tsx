@@ -19,7 +19,7 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../common/constants';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { SEARCH_OFFSET, SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -54,10 +54,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
-
-  useEffect(() => {
-    setShowLoadMore(true);
-  }, [contactId]);
+  const [conversationInfo, setConversationInfo] = useState<any>({});
+  const offset = useQuery(SEARCH_OFFSET);
 
   // Instantiate these to be used later.
 
@@ -112,7 +110,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          if (conversationObj.contact && conversationObj.contact.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -130,8 +128,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
-        } else {
-          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
       }
     },
@@ -241,62 +237,76 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = {};
-
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
-        conversationInfo = conversation;
+        setConversationInfo(conversation);
+        console.log('conversationInfo', conversationInfo);
+        if (messageOffset <= conversation.messages.length) {
+          setMessageOffset(conversation.messages.length);
+        }
       }
       return null;
     });
   };
 
-  if (contactId) {
-    // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search) {
-      updateConversationInfo('contact', contactId);
-    }
+  useEffect(() => {
+    setShowLoadMore(true);
+    console.log('contactId', contactId);
+    if (contactId) {
+      // loop through the cached conversations and find if contact exists
+      if (allConversations && allConversations.search) {
+        updateConversationInfo('contact', contactId);
+      }
 
-    // if conversation is not present then fetch for contact
-    if (conversationIndex < 0) {
-      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
-        getSearchQuery({
-          variables: {
-            filter: { id: contactId },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          },
-        });
+      // if conversation is not present then fetch for contact
+      if (conversationIndex < 0) {
+        if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
+          getSearchQuery({
+            variables: {
+              filter: { id: contactId },
+              contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+              messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+            },
+          });
+
+          if (offset.data) {
+            setMessageOffset(offset.data.offset + DEFAULT_MESSAGE_LIMIT);
+          } else {
+            setMessageOffset(DEFAULT_MESSAGE_LIMIT);
+          }
+        }
       }
     }
-  }
+  }, [contactId, allConversations]);
 
-  if (collectionId) {
-    // loop through the cached conversations and find if collection exists
-    if (allConversations && allConversations.search) {
-      if (collectionId === -1) {
-        conversationIndex = 0;
-        [conversationInfo] = allConversations.search;
-      } else {
-        updateConversationInfo('group', collectionId);
+  useEffect(() => {
+    if (collectionId) {
+      // loop through the cached conversations and find if collection exists
+      if (allConversations && allConversations.search) {
+        if (collectionId === -1) {
+          conversationIndex = 0;
+          setConversationInfo(allConversations.search);
+        } else {
+          updateConversationInfo('group', collectionId);
+        }
+      }
+
+      // if conversation is not present then fetch the group
+      if (conversationIndex < 0) {
+        if (!loading && !data) {
+          getSearchQuery({
+            variables: {
+              filter: { id: collectionId, searchGroup: true },
+              contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+              messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+            },
+          });
+        }
       }
     }
-
-    // if conversation is not present then fetch the group
-    if (conversationIndex < 0) {
-      if (!loading && !data) {
-        getSearchQuery({
-          variables: {
-            filter: { id: collectionId, searchGroup: true },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          },
-        });
-      }
-    }
-  }
+  }, [collectionId]);
 
   const closeDialogBox = () => {
     setDialogbox(false);
@@ -344,7 +354,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     setEditTagsMessageId(id);
     setShowDropdown(id);
   };
-
+  console.log('conversationInfo111111', conversationInfo);
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -396,13 +406,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
+    console.log('Load more', variables);
     getSearchQuery({
-      variables: {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
-      },
+      variables,
     });
+
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
       setLastScrollHeight(messageContainer.scrollHeight);
