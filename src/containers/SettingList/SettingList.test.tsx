@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, wait, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { SettingList } from './SettingList';
 import { MockedProvider } from '@apollo/client/testing';
 import { LIST_ITEM_MOCKS } from './SettingList.test.helper';

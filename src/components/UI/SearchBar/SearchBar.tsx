@@ -33,11 +33,11 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
   const [localSearchValue, setLocalSearchValue] = useState('');
   // use local state value so that we can set the defaults correctly
   // local value is needed for list component
-  let inputValue: string | undefined = searchMode ? searchVal : '';
+  let inputValue: string = '';
   if (localSearchValue && searchMode) {
     inputValue = localSearchValue;
-  } else {
-    inputValue = searchVal || '';
+  } else if (searchVal) {
+    inputValue = searchVal;
   }
 
   // display reset button only if value is entered
