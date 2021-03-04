@@ -399,7 +399,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":0.787}',
+        bspBalance: '{"balance":0.787}',
       },
     },
   },
@@ -410,7 +410,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":0.787}',
+        bspBalance: '{"balance":0.787}',
       },
     },
   },
@@ -424,7 +424,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":10.379}',
+        bspBalance: '{"balance":10.379}',
       },
     },
   },
@@ -435,7 +435,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":10.379}',
+        bspBalance: '{"balance":10.379}',
       },
     },
   },
@@ -488,5 +488,15 @@ export const walletBalanceHighQuery = [
         bspbalance: '{"balance":10.379}',
       },
     },
+  },
+];
+
+export const errorBalanceQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    error: new Error('An error occured'),
   },
 ];

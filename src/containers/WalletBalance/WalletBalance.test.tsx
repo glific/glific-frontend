@@ -4,6 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { WalletBalance } from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import {
+  errorBalanceQuery,
   walletBalanceHighQuery,
   walletBalanceHighSubscription,
   walletBalanceQuery,
@@ -49,6 +50,27 @@ describe('<WalletBalance />', () => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
       expect(walletBalance).toHaveTextContent('$10.379');
+    });
+  });
+});
+
+describe('<WalletBalance />', () => {
+  const mocks = [...errorBalanceQuery, ...walletBalanceHighSubscription];
+
+  test('Query returns error', async () => {
+    render(
+      <MockedProvider mocks={mocks}>
+        <WalletBalance fullOpen={false} />
+      </MockedProvider>
+    );
+
+    // display initial loading
+    const loading = screen.getByTestId('loading');
+    expect(loading).toBeInTheDocument();
+
+    await waitFor(() => {
+      const walletBalance = screen.getByTestId('WalletBalance');
+      expect(walletBalance).toBeInTheDocument();
     });
   });
 });
