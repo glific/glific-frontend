@@ -5,6 +5,7 @@ import { WalletBalance } from './WalletBalance';
 import { MockedProvider } from '@apollo/client/testing';
 import {
   errorBalanceQuery,
+  errorBalanceSubscription,
   walletBalanceHighQuery,
   walletBalanceHighSubscription,
   walletBalanceQuery,
@@ -55,7 +56,7 @@ describe('<WalletBalance />', () => {
 });
 
 describe('<WalletBalance />', () => {
-  const mocks = [...errorBalanceQuery, ...walletBalanceSubscription];
+  const mocks = [...errorBalanceQuery, ...walletBalanceHighSubscription];
 
   test('Query fetches error', async () => {
     render(
@@ -71,7 +72,6 @@ describe('<WalletBalance />', () => {
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
-      expect(walletBalance).toHaveTextContent('Wallet balance is okay');
     });
   });
 });
