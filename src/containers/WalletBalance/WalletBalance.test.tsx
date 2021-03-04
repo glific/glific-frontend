@@ -57,7 +57,7 @@ describe('<WalletBalance />', () => {
 describe('<WalletBalance />', () => {
   const mocks = [...errorBalanceQuery, ...walletBalanceHighSubscription];
 
-  test('Query fetches error', async () => {
+  test('Query returns error', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <WalletBalance fullOpen={false} />
