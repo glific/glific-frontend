@@ -2,11 +2,13 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ColorPicker } from './ColorPicker';
 
+const serFieldValueMock = jest.fn();
+
 const props = {
   name: 'colorCode',
   colorCode: '#0C976D',
   helperText: 'Tag color',
-  form: { setFieldValue: Function },
+  form: { setFieldValue: serFieldValueMock },
 };
 
 const wrapper = <ColorPicker {...props} />;
@@ -39,7 +41,7 @@ describe('<ColorPicker />', () => {
 });
 
 describe('Test choose color', () => {
-  it('chose color', async () => {
+  it('choose color', async () => {
     const { findByTestId } = render(wrapper);
     const container = await findByTestId('ChooseColor');
     fireEvent.click(container);
