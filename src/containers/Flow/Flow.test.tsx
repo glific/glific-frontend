@@ -94,3 +94,18 @@ it('should create copy of flow', async () => {
     // );
   });
 });
+
+it('should edit the flow', async () => {
+  const history: any = createBrowserHistory();
+  history.push({ pathname: `/flow/1/edit` });
+
+  const editFlow = (match: any) => (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router history={history}>
+        <Flow match={match} />
+      </Router>
+    </MockedProvider>
+  );
+  const { container, getByTestId } = render(editFlow({ params: { id: 1 } }));
+  await waitFor(() => {});
+});
