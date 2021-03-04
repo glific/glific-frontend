@@ -197,7 +197,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       updateContactCollections({
         variables: {
           input: {
-            contactId: contactId,
+            contactId,
             addGroupIds: finalSelectedCollections,
             deleteGroupIds: finalRemovedCollections,
           },
