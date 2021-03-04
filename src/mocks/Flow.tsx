@@ -1,5 +1,11 @@
-import { GET_FLOW, GET_FLOWS, GET_FLOW_COUNT, GET_FLOW_DETAILS } from '../graphql/queries/Flow';
-import { FILTER_FLOW } from '../graphql/queries/Flow';
+import {
+  GET_FLOW,
+  GET_FLOWS,
+  GET_FLOW_COUNT,
+  GET_FLOW_DETAILS,
+  FILTER_FLOW,
+} from '../graphql/queries/Flow';
+import { ADD_FLOW_TO_CONTACT } from '../graphql/mutations/Flow';
 
 export const getFlowQuery = {
   request: {
@@ -19,6 +25,24 @@ export const getFlowQuery = {
           keywords: ['help'],
           ignoreKeywords: false,
         },
+      },
+    },
+  },
+};
+
+export const addFlowToContactQuery = {
+  request: {
+    query: ADD_FLOW_TO_CONTACT,
+    variables: {
+      contactId: '11',
+      flowId: '11',
+    },
+  },
+
+  result: {
+    data: {
+      startContactFlow: {
+        success: true,
       },
     },
   },

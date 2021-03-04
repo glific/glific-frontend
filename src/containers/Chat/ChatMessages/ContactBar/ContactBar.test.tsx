@@ -1,16 +1,16 @@
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
 import {
   blockContactQuery,
   contactCollectionsQuery,
   updateContactCollectionQuery,
+  clearMessagesQuery,
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getCollectionsQuery } from '../../../../mocks/Collection';
-import { getPublishedFlowQuery } from '../../../../mocks/Flow';
+import { getPublishedFlowQuery, addFlowToContactQuery } from '../../../../mocks/Flow';
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 
 const mocks = [
@@ -20,6 +20,8 @@ const mocks = [
   getPublishedFlowQuery,
   blockContactQuery,
   updateContactCollectionQuery,
+  addFlowToContactQuery,
+  clearMessagesQuery,
 ];
 
 const defaultProps = {
@@ -27,6 +29,7 @@ const defaultProps = {
   contactId: '2',
   lastMessageTime: new Date(),
   contactBspStatus: 'SESSION',
+  handleAction: jest.fn(),
 };
 const propsWithBspStatusNone = { ...defaultProps, contactBspStatus: 'NONE' };
 
@@ -80,12 +83,39 @@ describe('Menu test', () => {
     });
   });
 
+  test('close add to collection popup on click of cancel button', async () => {
+    fireEvent.click(screen.getByTestId('collectionButton'));
+    await waitFor(() => {
+      expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
+      const button = screen.getByText('Cancel');
+      fireEvent.click(button);
+    });
+  });
+
   test('clicking on Start flow should open up a dialog box', async () => {
     fireEvent.click(screen.getByTestId('flowButton'));
-
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+      const button = screen.getByText('Start');
+      fireEvent.click(button);
     });
+  });
+
+  test('close start a flow popup on click of cancel button', async () => {
+    fireEvent.click(screen.getByTestId('flowButton'));
+    await waitFor(() => {
+      const button = screen.getByText('Cancel');
+      fireEvent.click(button);
+    });
+  });
+
+  test('check Chats option is present if screen size is less than 768', async () => {
+    // Change the viewport to 500px.
+    global.innerWidth = 500;
+    // Trigger the window resize event.
+    global.dispatchEvent(new Event('resize'));
+
+    expect(screen.getByText('Chats')).toBeInTheDocument();
   });
 
   test('clicking on clear chat button should open up a dialog box', async () => {
@@ -97,7 +127,19 @@ describe('Menu test', () => {
       ).toBeInTheDocument();
     });
     // click on cancel
-    fireEvent.click(screen.getByText('MAYBE LATER'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+  });
+
+  test('close clear conversation popup on click of cancel', async () => {
+    fireEvent.click(screen.getByTestId('clearChatButton'));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Are you sure you want to clear all conversation for this contact?')
+      ).toBeInTheDocument();
+    });
+    // click on cancel
+    fireEvent.click(screen.getByTestId('cancel-button'));
   });
 
   test('clicking on block button should open up a dialog box', async () => {
