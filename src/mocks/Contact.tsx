@@ -9,6 +9,7 @@ import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
+import { UPDATE_CONTACT_COLLECTIONS } from '../graphql/mutations/Collection';
 import { setVariables } from '../common/constants';
 
 export const contactCollectionsQuery = {
@@ -34,6 +35,25 @@ export const contactCollectionsQuery = {
               users: [],
             },
           ],
+        },
+      },
+    },
+  },
+};
+
+export const updateContactCollectionQuery = {
+  request: {
+    query: UPDATE_CONTACT_COLLECTIONS,
+    variables: {
+      input: { contactId: '2', addGroupIds: [], deleteGroupIds: ['1', '2'] },
+    },
+  },
+  result: {
+    data: {
+      updateContactGroups: {
+        contactGroups: {
+          id: '18',
+          value: null,
         },
       },
     },

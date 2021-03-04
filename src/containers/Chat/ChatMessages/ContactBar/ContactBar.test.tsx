@@ -3,7 +3,11 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 
 import { MockedProvider } from '@apollo/client/testing';
 import ContactBar from './ContactBar';
-import { blockContactQuery, contactCollectionsQuery } from '../../../../mocks/Contact';
+import {
+  blockContactQuery,
+  contactCollectionsQuery,
+  updateContactCollectionQuery,
+} from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getCollectionsQuery } from '../../../../mocks/Collection';
 import { getPublishedFlowQuery } from '../../../../mocks/Flow';
@@ -15,6 +19,7 @@ const mocks = [
   ...getCollectionsQuery,
   getPublishedFlowQuery,
   blockContactQuery,
+  updateContactCollectionQuery,
 ];
 
 const defaultProps = {
@@ -68,6 +73,10 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('collectionButton'));
     await waitFor(() => {
       expect(screen.getByText('Add contact to collection')).toBeInTheDocument();
+      expect(screen.getAllByText('Search')[1]).toBeInTheDocument();
+      fireEvent.click(screen.getAllByText('Search')[1]);
+      const button = screen.getByText('Save');
+      fireEvent.click(button);
     });
   });
 
