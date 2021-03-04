@@ -54,9 +54,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
-
+  console.log('initial messageOffset', messageOffset);
   useEffect(() => {
     setShowLoadMore(true);
+    setMessageOffset(DEFAULT_MESSAGE_LIMIT);
   }, [contactId]);
 
   // Instantiate these to be used later.
@@ -387,6 +388,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   const loadMoreMessages = () => {
+    console.log('loadmore offset', messageOffset);
     const variables: any = {
       contactOpts: { limit: 1 },
       filter: { id: contactId?.toString() },
@@ -396,6 +398,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
+
     getSearchQuery({
       variables: {
         filter: { id: contactId?.toString() },
