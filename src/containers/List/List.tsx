@@ -561,7 +561,7 @@ export const List: React.SFC<ListProps> = ({
       {backLink}
       {/* Rendering list of items */}
 
-      {itemList.length > 0 ? displayList : <div>There are no {listItemName}s.</div>}
+      {itemList ? displayList : <div>There are no {listItemName}s.</div>}
     </>
   );
 };
