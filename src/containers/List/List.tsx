@@ -500,11 +500,11 @@ export const List: React.SFC<ListProps> = ({
               className={styles.FooterRow}
               colSpan={columnNames.length}
               count={itemCount}
-              onChangePage={(eee, newPage) => {
+              onChangePage={(event, newPage) => {
                 handleTableChange('pageNum', newPage);
               }}
-              onChangeRowsPerPage={(ee) => {
-                handleTableChange('pageRows', parseInt(ee.target.value, 10));
+              onChangeRowsPerPage={(event) => {
+                handleTableChange('pageRows', parseInt(event.target.value, 10));
               }}
               page={tableVals.pageNum}
               rowsPerPage={tableVals.pageRows}
