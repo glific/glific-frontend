@@ -5,7 +5,7 @@ import {
   GET_FLOW_DETAILS,
   FILTER_FLOW,
 } from '../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT } from '../graphql/mutations/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../graphql/mutations/Flow';
 
 export const getFlowQuery = {
   request: {
@@ -42,6 +42,24 @@ export const addFlowToContactQuery = {
   result: {
     data: {
       startContactFlow: {
+        success: true,
+      },
+    },
+  },
+};
+
+export const addFlowToCollectionQuery = {
+  request: {
+    query: ADD_FLOW_TO_COLLECTION,
+    variables: {
+      flowId: '',
+      groupId: '2',
+    },
+  },
+
+  result: {
+    data: {
+      startGroupFlow: {
         success: true,
       },
     },
@@ -134,8 +152,8 @@ export const getPublishedFlowQuery = {
       flows: [
         {
           id: '1',
-          name: 'help workflow',
-          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+          name: 'Help Workflow',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         },
       ],
     },

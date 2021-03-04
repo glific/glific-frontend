@@ -57,6 +57,7 @@ export const updateContactCollectionQuery = {
           id: '18',
           value: null,
         },
+        numberDeleted: 1,
       },
     },
   },

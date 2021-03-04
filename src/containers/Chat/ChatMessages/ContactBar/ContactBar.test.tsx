@@ -10,7 +10,11 @@ import {
 } from '../../../../mocks/Contact';
 import { MemoryRouter } from 'react-router';
 import { getCollectionsQuery } from '../../../../mocks/Collection';
-import { getPublishedFlowQuery, addFlowToContactQuery } from '../../../../mocks/Flow';
+import {
+  getPublishedFlowQuery,
+  addFlowToContactQuery,
+  addFlowToCollectionQuery,
+} from '../../../../mocks/Flow';
 import { CONVERSATION_MOCKS } from '../../../../mocks/Chat';
 
 const mocks = [
@@ -21,6 +25,7 @@ const mocks = [
   blockContactQuery,
   updateContactCollectionQuery,
   addFlowToContactQuery,
+  addFlowToCollectionQuery,
   clearMessagesQuery,
 ];
 
@@ -110,9 +115,9 @@ describe('Menu test', () => {
   });
 
   test('check Chats option is present if screen size is less than 768', async () => {
-    // Change the viewport to 500px.
+    // // Change the viewport to 500px.
     global.innerWidth = 500;
-    // Trigger the window resize event.
+    // // Trigger the window resize event.
     global.dispatchEvent(new Event('resize'));
 
     expect(screen.getByText('Chats')).toBeInTheDocument();
@@ -223,6 +228,8 @@ describe('Collection test', () => {
 
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+      const button = screen.getByText('Start');
+      fireEvent.click(button);
     });
   });
 });
