@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { ContactDescription } from './ContactDescription';
 
-const date = new Date();
 const defaultProps = {
   fields: '{"Age":"14"}',
   phone: '9987399299',

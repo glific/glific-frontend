@@ -68,6 +68,14 @@ test('click on preview button should open simulator', async () => {
   });
 });
 
+test('publish flow which has error', async () => {
+  const { getByTestId } = render(wrapper);
+  expect(getByTestId('button')).toBeInTheDocument();
+  fireEvent.click(getByTestId('button'));
+  expect(getByTestId('ok-button')).toBeInTheDocument();
+  fireEvent.click(getByTestId('ok-button'));
+});
+
 test('start with a keyword message if the simulator opens in floweditor screen', async () => {
   const { getByTestId } = render(wrapper);
   fireEvent.click(getByTestId('previewButton'));

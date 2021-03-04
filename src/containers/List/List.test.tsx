@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, screen, cleanup, act } from '@testing-library/react';
+import { render, screen, cleanup, act } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Tag } from '../Tag/Tag';

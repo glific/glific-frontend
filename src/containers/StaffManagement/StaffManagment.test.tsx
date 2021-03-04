@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { StaffManagement } from './StaffManagement';
@@ -12,6 +12,7 @@ const staffManagement = (
     <StaffManagement match={{ params: { id: 1 } }} />
   </MockedProvider>
 );
+
 test('should load the staff user edit form', async () => {
   const { getByText, findByTestId } = render(staffManagement);
 

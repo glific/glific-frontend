@@ -275,7 +275,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       Errors were detected in the flow. Would you like to continue modifying?
       <div>
         {flowValidation.map((message: any) => (
-          <div>
+          <div key={message.message}>
             <WarningIcon className={styles.ErrorMsgIcon} />
             {message.message}
           </div>
@@ -313,7 +313,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         alignButtons="center"
         buttonCancel="Modify"
       >
-        {IsError ? errorMsg() : ''}
+        {errorMsg()}
       </DialogBox>
     );
   }
