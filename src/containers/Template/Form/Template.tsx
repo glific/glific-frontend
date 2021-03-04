@@ -278,6 +278,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (value) setLanguageId(value);
   };
 
+  /* istanbul ignore next */
   const validateURL = (value: string) => {
     if (value && type) {
       return validateMedia(value, type.id).then((response: any) => {
@@ -386,6 +387,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     ? [formIsActive, ...formFields, ...formField, ...attachmentField]
     : [...formFields, ...attachmentField];
 
+  /* istanbul ignore next */
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
