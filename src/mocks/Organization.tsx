@@ -500,3 +500,39 @@ export const errorBalanceQuery = [
     error: new Error('An error occured'),
   },
 ];
+
+export const walletBalanceNull = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        bspbalance: '{"balance":null}',
+      },
+    },
+  },
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        bspbalance: '{"balance":null}',
+      },
+    },
+  },
+  {
+    request: {
+      query: BSP_BALANCE_SUBSCRIPTION,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        bspBalance: '{"balance":null}',
+      },
+    },
+  },
+];
