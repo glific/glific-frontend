@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, wait, within, fireEvent, cleanup, waitFor, screen } from '@testing-library/react';
+import { render, wait, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
