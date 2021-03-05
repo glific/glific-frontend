@@ -278,7 +278,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (value) setLanguageId(value);
   };
 
- 
   const validateURL = (value: string) => {
     if (value && type) {
       return validateMedia(value, type.id).then((response: any) => {
@@ -386,7 +385,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const fields = defaultAttribute.isHsm
     ? [formIsActive, ...formFields, ...formField, ...attachmentField]
     : [...formFields, ...attachmentField];
-
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
