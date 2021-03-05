@@ -159,3 +159,48 @@ export const getPublishedFlowQuery = {
     },
   },
 };
+
+export const filterFlowNewQuery = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { name: 'Help Workflow' },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
+      },
+    },
+  },
+
+  result: {
+    data: {
+      flows: [
+        {
+          id: '1',
+          ignoreKeywords: true,
+          keywords: ['help', 'मदद'],
+          name: 'Help Workflow',
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+      ],
+    },
+  },
+};
+
+export const getFlowCountNewQuery = {
+  request: {
+    query: GET_FLOW_COUNT,
+    variables: {
+      filter: { name: 'Help Workflow' },
+    },
+  },
+
+  result: {
+    data: {
+      countFlows: 1,
+    },
+  },
+};
