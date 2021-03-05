@@ -101,6 +101,8 @@ describe('Menu test', () => {
     fireEvent.click(screen.getByTestId('flowButton'));
     await waitFor(() => {
       expect(screen.getAllByText('Select flow')[0]).toBeInTheDocument();
+    });
+    await waitFor(() => {
       const button = screen.getByText('Start');
       fireEvent.click(button);
     });

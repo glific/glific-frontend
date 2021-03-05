@@ -34,8 +34,8 @@ export const addFlowToContactQuery = {
   request: {
     query: ADD_FLOW_TO_CONTACT,
     variables: {
-      contactId: '11',
-      flowId: '11',
+      contactId: '1',
+      flowId: '1',
     },
   },
 
@@ -70,13 +70,12 @@ export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: {
-        keyword: 'help',
-      },
+      filter: {},
       opts: {
-        order: 'ASC',
-        limit: null,
+        limit: 50,
         offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
       },
     },
   },
@@ -86,10 +85,11 @@ export const filterFlowQuery = {
       flows: [
         {
           id: '1',
-          name: 'help workflow',
-          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
-          keywords: ['help'],
-          ignoreKeywords: false,
+          ignoreKeywords: true,
+          keywords: ['help', 'मदद'],
+          name: 'Help Workflow',
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         },
       ],
     },
@@ -129,7 +129,7 @@ export const getFlowCountQuery = {
 
   result: {
     data: {
-      countFlows: 3,
+      countFlows: 1,
     },
   },
 };
