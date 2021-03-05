@@ -242,7 +242,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
         setConversationInfo(conversation);
-        console.log('conversationInfo', conversationInfo);
         if (messageOffset <= conversation.messages.length) {
           setMessageOffset(conversation.messages.length);
         }
@@ -252,8 +251,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   };
 
   useEffect(() => {
+    // by default set load more
     setShowLoadMore(true);
-    console.log('contactId', contactId);
+
     if (contactId) {
       // loop through the cached conversations and find if contact exists
       if (allConversations && allConversations.search) {
@@ -271,8 +271,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             },
           });
 
-          if (offset.data) {
+          // for multi-search we need to updated offset of search contact message
+          if (offset.data && offset.data.offset > 0) {
             setMessageOffset(offset.data.offset + DEFAULT_MESSAGE_LIMIT);
+
+            // reset offset to zero
+            client.writeQuery({
+              query: SEARCH_OFFSET,
+              data: { offset: 0 },
+            });
           } else {
             setMessageOffset(DEFAULT_MESSAGE_LIMIT);
           }
@@ -354,7 +361,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     setEditTagsMessageId(id);
     setShowDropdown(id);
   };
-  console.log('conversationInfo111111', conversationInfo);
+
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -406,7 +413,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
-    console.log('Load more', variables);
+
     getSearchQuery({
       variables,
     });
