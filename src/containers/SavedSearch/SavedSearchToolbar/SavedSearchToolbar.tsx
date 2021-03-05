@@ -66,7 +66,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      console.log(data);
       setFixedSearches(data.savedSearches.filter((searches: any) => searches.isReserved));
       setAdditionalSearch(data.savedSearches.filter((searches: any) => !searches.isReserved));
     },
