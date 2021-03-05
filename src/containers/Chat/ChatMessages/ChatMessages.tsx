@@ -19,7 +19,7 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../common/constants';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { SEARCH_OFFSET, SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
@@ -54,10 +54,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
-  console.log('initial messageOffset', messageOffset);
+  const offset = useQuery(SEARCH_OFFSET);
+
   useEffect(() => {
     setShowLoadMore(true);
-    setMessageOffset(DEFAULT_MESSAGE_LIMIT);
+    let offsetValue = DEFAULT_MESSAGE_LIMIT;
+    if (offset.data && offset.data.offset) {
+      offsetValue = offset.data.offset;
+    }
+    setMessageOffset(offsetValue);
   }, [contactId]);
 
   // Instantiate these to be used later.
@@ -113,7 +118,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          if (conversationObj.contact && conversationObj.contact.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
@@ -388,7 +393,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   const loadMoreMessages = () => {
-    console.log('loadmore offset', messageOffset);
     const variables: any = {
       contactOpts: { limit: 1 },
       filter: { id: contactId?.toString() },
@@ -400,11 +404,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     }
 
     getSearchQuery({
-      variables: {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
-      },
+      variables,
     });
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
