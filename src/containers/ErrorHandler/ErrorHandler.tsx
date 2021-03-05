@@ -46,7 +46,7 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   // logged error in logflare
-  setLogs(message, 'error');
+  setLogs(data.errorMessage, 'error');
 
   return (
     <Container>

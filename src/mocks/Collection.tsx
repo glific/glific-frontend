@@ -1,4 +1,3 @@
-import { setVariables } from '../common/constants';
 import { GET_COLLECTION_CONTACTS } from '../graphql/queries/Contact';
 import {
   FILTER_COLLECTIONS,
