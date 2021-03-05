@@ -56,7 +56,7 @@ const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
 );
 
-const getTranslations = (id: string, language: any, data: string) => {
+const getTranslations = (language: any, data: string) => {
   const dataObj = JSON.parse(data);
   if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
     delete dataObj[language.id];
@@ -109,7 +109,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       columns.status = getStatus(status);
     } else {
       columns.updatedAt = getUpdatedAt(updatedAt);
-      columns.translations = getTranslations(id, language, translations);
+      columns.translations = getTranslations(language, translations);
     }
     return columns;
   };
