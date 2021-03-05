@@ -55,9 +55,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   // default query variables
   const queryVariables = {
     filter: {},
-    opts: {
-      limit: 10,
-    },
+    opts: {},
   };
 
   // remove selected searches on search
@@ -68,8 +66,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      setFixedSearches(data.savedSearches.slice(0, 6));
-      setAdditionalSearch(data.savedSearches.slice(6));
+      console.log(data);
+      setFixedSearches(data.savedSearches.filter((searches: any) => searches.isReserved));
+      setAdditionalSearch(data.savedSearches.filter((searches: any) => !searches.isReserved));
     },
   });
 
@@ -148,7 +147,13 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   };
 
   const additionalOptions = (
-    <Popper open={open} anchorEl={anchorEl} placement="bottom" transition>
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      placement="bottom"
+      transition
+      className={styles.PopperContainer}
+    >
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Popper}>
