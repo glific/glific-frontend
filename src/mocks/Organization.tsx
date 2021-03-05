@@ -399,7 +399,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":0.787}',
+        bspBalance: '{"balance":0.787}',
       },
     },
   },
@@ -410,7 +410,7 @@ export const walletBalanceSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":0.787}',
+        bspBalance: '{"balance":0.787}',
       },
     },
   },
@@ -424,7 +424,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":10.379}',
+        bspBalance: '{"balance":10.379}',
       },
     },
   },
@@ -435,7 +435,7 @@ export const walletBalanceHighSubscription = [
     },
     result: {
       data: {
-        periodicInfo: '{"balance":10.379}',
+        bspBalance: '{"balance":10.379}',
       },
     },
   },
@@ -486,6 +486,52 @@ export const walletBalanceHighQuery = [
     result: {
       data: {
         bspbalance: '{"balance":10.379}',
+      },
+    },
+  },
+];
+
+export const errorBalanceQuery = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    error: new Error('An error occured'),
+  },
+];
+
+export const walletBalanceNull = [
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: '1' },
+    },
+    result: {
+      data: {
+        bspbalance: '{"balance":null}',
+      },
+    },
+  },
+  {
+    request: {
+      query: BSPBALANCE,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        bspbalance: '{"balance":null}',
+      },
+    },
+  },
+  {
+    request: {
+      query: BSP_BALANCE_SUBSCRIPTION,
+      variables: { organizationId: null },
+    },
+    result: {
+      data: {
+        bspBalance: '{"balance":null}',
       },
     },
   },

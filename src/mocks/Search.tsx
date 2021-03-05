@@ -46,7 +46,7 @@ export const countSearchesQuery = {
 
 const searchListQuery = (QUERY: any, filter: any, limit: number, offset: number, order: string) => {
   return {
-    query: SEARCH_LIST_QUERY,
+    query: QUERY,
     variables: {
       filter: filter,
       opts: {

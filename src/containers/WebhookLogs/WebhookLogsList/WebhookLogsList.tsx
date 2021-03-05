@@ -19,6 +19,7 @@ const getTime = (time: string) => (
   <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
 );
 
+/* istanbul ignore next */
 const getStatus = (status: string) => {
   let showStatus;
   switch (status) {
@@ -172,7 +173,11 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>
       <div className={styles.PopoverActions}>
-        <span onClick={() => copyToClipboard(text)} aria-hidden="true">
+        <span
+          onClick={() => copyToClipboard(text)}
+          aria-hidden="true"
+          data-testid="copyToClipboard"
+        >
           <img src={CopyIcon} alt="copy" />
           Copy text
         </span>

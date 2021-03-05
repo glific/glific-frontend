@@ -1739,6 +1739,8 @@
   dependencies:
     react "^16.8.6"
     react-dom "^16.8.6"
+    react-icons "4.1.0"
+    react-notifications "1.7.2"
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
