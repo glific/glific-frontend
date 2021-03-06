@@ -41,7 +41,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   collectionId,
   isSimulator,
 }) => {
-  // create an instance of apolloclient
+  // create an instance of apollo client
   const client = useApolloClient();
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
@@ -141,6 +141,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
           }
           return conversationObj;
         });
+
         // If the contact is NOT present in the cache
         if (!isContactCached) {
           conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
@@ -582,14 +583,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   console.log('conversationInfo', conversationInfo);
   console.log(
     'conversationInfo.messages[0].messageNumber',
-    conversationInfo.messages[0].messageNumber
+    conversationInfo.messages[0]?.messageNumber
   );
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {topChatBar}
       {messageListContainer}
-      {showJumpToLatest || conversationInfo.messages[0].messageNumber !== 0 ? jumpToLatest : null}
+      {conversationInfo.messages.length &&
+      (showJumpToLatest || conversationInfo.messages[0]?.messageNumber !== 0)
+        ? jumpToLatest
+        : null}
       {chatInputSection}
     </Container>
   );
