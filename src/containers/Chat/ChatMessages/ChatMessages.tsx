@@ -538,24 +538,33 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const showLatestMessage = () => {
     setShowJumpToLatest(false);
 
+    // check if we have offset 0 (messageNumber === offset)
+    if (conversationInfo.messages[0].messageNumber !== 0) {
+      // set limit upto current message number
+      const limit =
+        conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber + 20;
+
+      // set variable for contact chats
+      const variables: any = {
+        contactOpts: { limit: 1 },
+        filter: { id: contactId?.toString() },
+        messageOpts: { limit, offset: 0 },
+      };
+
+      // if collection, replace id with collection id
+      if (collectionId) {
+        variables.filter = { id: collectionId.toString(), searchGroup: true };
+      }
+
+      getSearchQuery({
+        variables,
+      });
+    }
+
     const container: any = document.querySelector('.messageContainer');
     if (container) {
       container.scrollTop = container.scrollHeight - container.clientHeight;
     }
-    // fetch latest data
-    const variables: any = {
-      contactOpts: { limit: 1 },
-      filter: { id: contactId?.toString() },
-      messageOpts: { limit: 20, offset: 0 },
-    };
-
-    if (collectionId) {
-      variables.filter = { id: collectionId.toString(), searchGroup: true };
-    }
-
-    getSearchQuery({
-      variables,
-    });
   };
 
   const jumpToLatest = (
