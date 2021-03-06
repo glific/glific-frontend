@@ -3,6 +3,7 @@ import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/cl
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import styles from './ChatMessages.module.css';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -54,10 +55,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
   const [showLoadMore, setShowLoadMore] = useState(true);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
   useEffect(() => {
     setShowLoadMore(true);
+    setShowJumpToLatest(false);
   }, [contactId]);
+
+  useEffect(() => {
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.addEventListener('scroll', (event: any) => {
+        const messageContainerTarget = event.target;
+        if (
+          Math.round(messageContainerTarget.scrollTop) ===
+          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
+        ) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
+  }, [setShowJumpToLatest, contactId, reducedHeight]);
 
   // Instantiate these to be used later.
 
@@ -515,11 +535,48 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     );
   }
 
+  const showLatestMessage = () => {
+    setShowJumpToLatest(false);
+
+    const container: any = document.querySelector('.messageContainer');
+    if (container) {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
+    // fetch latest data
+    const variables: any = {
+      contactOpts: { limit: 1 },
+      filter: { id: contactId?.toString() },
+      messageOpts: { limit: 20, offset: 0 },
+    };
+
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
+    }
+
+    getSearchQuery({
+      variables,
+    });
+  };
+
+  const jumpToLatest = (
+    <div
+      data-testid="jumpToLatest"
+      className={styles.JumpToLatest}
+      onClick={() => showLatestMessage()}
+      onKeyDown={() => showLatestMessage()}
+      aria-hidden="true"
+    >
+      Jump to latest
+      <ExpandMoreIcon />
+    </div>
+  );
+
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {topChatBar}
       {messageListContainer}
+      {showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}
     </Container>
   );
