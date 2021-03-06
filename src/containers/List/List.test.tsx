@@ -132,3 +132,27 @@ describe('<List /> actions', () => {
     });
   });
 });
+
+describe('Card list type', () => {
+  const cardTypeProps = defaultProps;
+  cardTypeProps.displayListType = 'card';
+  cardTypeProps.cardLink = {
+    start: 'collection',
+    end: 'contacts',
+  };
+  const card = (
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Router>
+        <List {...cardTypeProps} />
+      </Router>
+    </MockedProvider>
+  );
+
+  test('list type is card', async () => {
+    const { getAllByTestId } = render(card);
+
+    await waitFor(() => {
+      expect(getAllByTestId('description')[0]).toBeInTheDocument();
+    });
+  });
+});
