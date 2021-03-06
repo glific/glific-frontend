@@ -45,6 +45,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
+  const urlString = new URL(window.location.href);
+  let messageParameterOffset: any = urlString.searchParams.get('search');
+  messageParameterOffset =
+    messageParameterOffset !== null ? parseInt(messageParameterOffset, 10) : DEFAULT_MESSAGE_LIMIT;
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -52,11 +56,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
+  const [messageOffset, setMessageOffset] = useState(messageParameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
     setShowLoadMore(true);
+    setMessageOffset(messageParameterOffset);
   }, [contactId]);
 
   // Instantiate these to be used later.
@@ -95,6 +100,36 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }: any = useQuery(SEARCH_QUERY, {
     variables: queryVariables,
     fetchPolicy: 'cache-only',
+  });
+
+  const [
+    getSearchParameterQuery,
+    { called: parameterCalled, data: parameterdata, loading: parameterLoading },
+  ] = useLazyQuery<any>(SEARCH_QUERY, {
+    onCompleted: (searchData) => {
+      if (searchData && searchData.search.length > 0) {
+        // get the conversations from cache
+        const conversations = getCachedConverations(client, queryVariables);
+
+        const conversationCopy = JSON.parse(JSON.stringify(searchData));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+          .reverse();
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          const conversationObj = conversation;
+          // If the contact is present in the cache
+          if (conversationObj.contact.id === contactId?.toString()) {
+            conversationObj.messages = conversationCopy.search[0].messages;
+          }
+          return conversationObj;
+        });
+
+        // update the conversation cache
+        updateConversationsCache(conversationsCopy, client, queryVariables);
+      }
+    },
   });
 
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
@@ -265,8 +300,28 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset !== null ? parseInt(messageParameterOffset, 10) : 0,
+            },
+          },
+        });
+      }
+      // lets not get from cache if parameter is present
+    } else if (conversationIndex > -1 && messageParameterOffset) {
+      if (
+        (!parameterLoading && !parameterCalled) ||
+        (parameterdata && parameterdata.search[0].contact.id !== contactId)
+      ) {
+        getSearchParameterQuery({
+          variables: {
+            filter: { id: contactId },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: parseInt(messageParameterOffset, 10),
+            },
           },
         });
       }

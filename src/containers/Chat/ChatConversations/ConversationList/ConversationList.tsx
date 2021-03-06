@@ -11,7 +11,6 @@ import {
   SEARCH_QUERY,
   SEARCH_MULTI_QUERY,
   SCROLL_HEIGHT,
-  SEARCH_OFFSET,
 } from '../../../../graphql/queries/Search';
 import { setErrorMessage } from '../../../../common/notification';
 import {
@@ -50,7 +49,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
-  const offset = useQuery(SEARCH_OFFSET);
   const scrollHeight = useQuery(SCROLL_HEIGHT);
 
   let queryVariables = SEARCH_QUERY_VARIABLES;
@@ -167,51 +165,51 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
   });
 
-  // We are using this after the search to get selected search data.
-  useEffect(() => {
-    let offsetValue = 0;
-    if (offset.data) {
-      offsetValue =
-        offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0
-          ? 0
-          : offset.data.offset - DEFAULT_CONTACT_LOADMORE_LIMIT; // calculate offset
-    }
-    if (offsetValue) {
-      let loadMoreVariables;
-      if (props.selectedContactId) {
-        loadMoreVariables = {
-          contactOpts: {
-            limit: 1,
-          },
-          filter: {
-            id: selectedContactId,
-          },
-          messageOpts: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-            offset: offsetValue,
-          },
-        };
-      } else if (props.selectedCollectionId) {
-        loadMoreVariables = {
-          contactOpts: {
-            limit: 1,
-          },
-          filter: {
-            id: selectedCollectionId,
-            searchGroup: true,
-          },
-          messageOpts: {
-            limit: DEFAULT_MESSAGE_LIMIT,
-            offset: offsetValue,
-          },
-        };
-      }
+  // // We are using this after the search to get selected search data.
+  // useEffect(() => {
+  //   let offsetValue = 0;
+  //   if (offset.data) {
+  //     offsetValue =
+  //       offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0
+  //         ? 0
+  //         : offset.data.offset - DEFAULT_CONTACT_LOADMORE_LIMIT; // calculate offset
+  //   }
+  //   if (offsetValue) {
+  //     let loadMoreVariables;
+  //     if (props.selectedContactId) {
+  //       loadMoreVariables = {
+  //         contactOpts: {
+  //           limit: 1,
+  //         },
+  //         filter: {
+  //           id: selectedContactId,
+  //         },
+  //         messageOpts: {
+  //           limit: DEFAULT_MESSAGE_LIMIT,
+  //           offset: offsetValue,
+  //         },
+  //       };
+  //     } else if (props.selectedCollectionId) {
+  //       loadMoreVariables = {
+  //         contactOpts: {
+  //           limit: 1,
+  //         },
+  //         filter: {
+  //           id: selectedCollectionId,
+  //           searchGroup: true,
+  //         },
+  //         messageOpts: {
+  //           limit: DEFAULT_MESSAGE_LIMIT,
+  //           offset: offsetValue,
+  //         },
+  //       };
+  //     }
 
-      loadMoreConversations({
-        variables: loadMoreVariables,
-      });
-    }
-  }, [offset, selectedContactId]);
+  //     loadMoreConversations({
+  //       variables: loadMoreVariables,
+  //     });
+  //   }
+  // }, [offset, selectedContactId]);
 
   useEffect(() => {
     if (contactsData) {
