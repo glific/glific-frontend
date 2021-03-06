@@ -579,13 +579,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       <ExpandMoreIcon />
     </div>
   );
-
+  console.log('conversationInfo', conversationInfo);
+  console.log(
+    'conversationInfo.messages[0].messageNumber',
+    conversationInfo.messages[0].messageNumber
+  );
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {topChatBar}
       {messageListContainer}
-      {showJumpToLatest ? jumpToLatest : null}
+      {showJumpToLatest || conversationInfo.messages[0].messageNumber !== 0 ? jumpToLatest : null}
       {chatInputSection}
     </Container>
   );
