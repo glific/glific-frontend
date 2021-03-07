@@ -48,7 +48,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const urlString = new URL(window.location.href);
   let messageParameterOffset: any = urlString.searchParams.get('search');
   messageParameterOffset =
-    messageParameterOffset !== null ? parseInt(messageParameterOffset, 10) : DEFAULT_MESSAGE_LIMIT;
+    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
+      ? parseInt(messageParameterOffset, 10) - 10
+      : 0;
+
+  const parameterOffset =
+    messageParameterOffset !== 0 ? messageParameterOffset + 20 : DEFAULT_MESSAGE_LIMIT;
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -56,12 +61,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(messageParameterOffset);
+  const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
 
   useEffect(() => {
     setShowLoadMore(true);
-    setMessageOffset(messageParameterOffset);
+    setMessageOffset(parameterOffset);
   }, [contactId]);
 
   // Instantiate these to be used later.
@@ -165,8 +170,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
-        } else {
-          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
       }
     },
@@ -320,7 +323,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             contactOpts: { limit: 1 },
             messageOpts: {
               limit: DEFAULT_MESSAGE_LIMIT,
-              offset: parseInt(messageParameterOffset, 10),
+              offset: messageParameterOffset,
             },
           },
         });
@@ -443,8 +446,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const loadMoreMessages = () => {
     const variables: any = {
-      contactOpts: { limit: 1 },
       filter: { id: contactId?.toString() },
+      contactOpts: { limit: 1 },
       messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
     };
 
@@ -452,12 +455,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
     getSearchQuery({
-      variables: {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
-      },
+      variables,
     });
+    setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
       setLastScrollHeight(messageContainer.scrollHeight);
