@@ -147,8 +147,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
-          // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          if (collectionId) {
+            // If the collection(group) is present in the cache
+            if (conversationObj.group?.id === collectionId?.toString()) {
+              conversationObj.messages = conversationCopy.search[0].messages;
+            }
+            // If the contact is present in the cache
+          } else if (conversationObj.contact?.id === contactId?.toString()) {
             conversationObj.messages = conversationCopy.search[0].messages;
           }
           return conversationObj;
@@ -176,14 +181,25 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         let isContactCached = false;
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
+          // If the collection(group) is present in the cache
+          if (collectionId) {
+            if (conversationObj.group?.id === collectionId?.toString()) {
+              isContactCached = true;
+              conversationObj.messages = [
+                ...conversationObj.messages,
+                ...conversationCopy.search[0].messages,
+              ];
+            }
+          }
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          else if (conversationObj.contact?.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
               ...conversationCopy.search[0].messages,
             ];
           }
+
           return conversationObj;
         });
         // If the contact is NOT present in the cache
