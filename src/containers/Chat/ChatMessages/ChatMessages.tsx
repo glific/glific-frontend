@@ -63,10 +63,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
+  const [scrolledToMessage, setScrolledToMessage] = useState(false);
 
   useEffect(() => {
     setShowLoadMore(true);
     setMessageOffset(parameterOffset);
+    setScrolledToMessage(false);
   }, [contactId]);
 
   // Instantiate these to be used later.
@@ -107,6 +109,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     fetchPolicy: 'cache-only',
   });
 
+  const getScrollToMessage = () => {
+    if (!scrolledToMessage) {
+      // scroll to message after click from search
+      setTimeout(() => {
+        const element = document.querySelector(`#search${urlString.searchParams.get('search')}`);
+        if (element) {
+          element.scrollIntoView();
+        }
+        setScrolledToMessage(true);
+      }, 1000);
+    }
+  };
+
   const [
     getSearchParameterQuery,
     { called: parameterCalled, data: parameterdata, loading: parameterLoading },
@@ -133,6 +148,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         // update the conversation cache
         updateConversationsCache(conversationsCopy, client, queryVariables);
+
+        getScrollToMessage();
       }
     },
   });
@@ -171,6 +188,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         }
+
+        getScrollToMessage();
       }
     },
   });
