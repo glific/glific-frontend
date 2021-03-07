@@ -76,6 +76,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     contactStatus,
     contactBspStatus,
     entityType,
+    messageNumber,
   } = props;
 
   const [markAsRead] = useMutation(MARK_AS_READ, {
@@ -140,7 +141,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     });
   };
 
-  const msgID = searchMode ? `/#search${lastMessage.id}` : '';
+  const msgID = searchMode && messageNumber ? `?search=${messageNumber}` : '';
 
   let redirectURL = `/chat/${contactId}${msgID}`;
   if (entityType === 'collection') {

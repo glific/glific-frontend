@@ -46,6 +46,23 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
   });
+  const urlString = new URL(window.location.href);
+
+  // get the message number from url
+  let messageParameterOffset: any = urlString.searchParams.get('search');
+
+  // check if the message number is greater than 10 otherwise set the initial offset to 0
+  messageParameterOffset =
+    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
+      ? parseInt(messageParameterOffset, 10) - 10
+      : 0;
+
+  // check if there is message number present in url and set the base for the loadmore increment otherwise set the base increment to default
+  const parameterOffset =
+    messageParameterOffset !== 0
+      ? messageParameterOffset + DEFAULT_MESSAGE_LOADMORE_LIMIT
+      : DEFAULT_MESSAGE_LIMIT;
+
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -53,12 +70,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(DEFAULT_MESSAGE_LIMIT);
+  const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
+  const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
   useEffect(() => {
     setShowLoadMore(true);
+    setMessageOffset(parameterOffset);
+    setScrolledToMessage(false);
     setShowJumpToLatest(false);
   }, [contactId]);
 
@@ -117,6 +137,51 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     fetchPolicy: 'cache-only',
   });
 
+  // scroll to the particular message after loading
+  const getScrollToMessage = () => {
+    if (!scrolledToMessage) {
+      setTimeout(() => {
+        const element = document.querySelector(`#search${urlString.searchParams.get('search')}`);
+        if (element) {
+          element.scrollIntoView();
+        }
+        setScrolledToMessage(true);
+      }, 1000);
+    }
+  };
+
+  const [
+    getSearchParameterQuery,
+    { called: parameterCalled, data: parameterdata, loading: parameterLoading },
+  ] = useLazyQuery<any>(SEARCH_QUERY, {
+    onCompleted: (searchData) => {
+      if (searchData && searchData.search.length > 0) {
+        // get the conversations from cache
+        const conversations = getCachedConverations(client, queryVariables);
+
+        const conversationCopy = JSON.parse(JSON.stringify(searchData));
+        conversationCopy.search[0].messages
+          .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
+          .reverse();
+        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+        conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
+          const conversationObj = conversation;
+          // If the contact is present in the cache
+          if (conversationObj.contact.id === contactId?.toString()) {
+            conversationObj.messages = conversationCopy.search[0].messages;
+          }
+          return conversationObj;
+        });
+
+        // update the conversation cache
+        updateConversationsCache(conversationsCopy, client, queryVariables);
+
+        getScrollToMessage();
+      }
+    },
+  });
+
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
@@ -151,9 +216,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
-        } else {
-          setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
         }
+
+        getScrollToMessage();
       }
     },
   });
@@ -286,8 +351,28 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         getSearchQuery({
           variables: {
             filter: { id: contactId },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+          },
+        });
+      }
+      // lets not get from cache if parameter is present
+    } else if (conversationIndex > -1 && messageParameterOffset) {
+      if (
+        (!parameterLoading && !parameterCalled) ||
+        (parameterdata && parameterdata.search[0].contact.id !== contactId)
+      ) {
+        getSearchParameterQuery({
+          variables: {
+            filter: { id: contactId },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
           },
         });
       }
@@ -409,8 +494,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const loadMoreMessages = () => {
     const variables: any = {
-      contactOpts: { limit: 1 },
       filter: { id: contactId?.toString() },
+      contactOpts: { limit: 1 },
       messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
     };
 
@@ -418,12 +503,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
     getSearchQuery({
-      variables: {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: messageOffset },
-      },
+      variables,
     });
+    setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
       setLastScrollHeight(messageContainer.scrollHeight);

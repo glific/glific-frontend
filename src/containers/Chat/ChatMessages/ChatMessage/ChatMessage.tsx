@@ -30,6 +30,7 @@ export interface ChatMessageProps {
   sender: {
     id: number;
   };
+  messageNumber?: any;
   type: string;
   media: any;
   insertedAt: string;
@@ -67,6 +68,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     type,
     media,
     body,
+    messageNumber,
     location,
     errors,
   } = props;
@@ -249,7 +251,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   ) : null;
 
   return (
-    <div className={additionalClass} ref={messageRef} data-testid="message" id={`#search${id}`}>
+    <div
+      className={additionalClass}
+      ref={messageRef}
+      data-testid="message"
+      id={`search${messageNumber}`}
+    >
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         {ErrorIcon}
