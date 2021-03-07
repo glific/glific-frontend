@@ -149,7 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
           const conversationObj = conversation;
           if (collectionId) {
             // If the collection(group) is present in the cache
-            if (conversationObj.group?.id === collectionId?.toString()) {
+            if (conversationObj.group?.id === collectionId.toString()) {
               conversationObj.messages = conversationCopy.search[0].messages;
             }
             // If the contact is present in the cache
@@ -183,7 +183,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
           const conversationObj = conversation;
           // If the collection(group) is present in the cache
           if (collectionId) {
-            if (conversationObj.group?.id === collectionId?.toString()) {
+            if (conversationObj.group?.id === collectionId.toString()) {
               isContactCached = true;
               conversationObj.messages = [
                 ...conversationObj.messages,
