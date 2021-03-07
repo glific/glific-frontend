@@ -165,52 +165,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
   });
 
-  // // We are using this after the search to get selected search data.
-  // useEffect(() => {
-  //   let offsetValue = 0;
-  //   if (offset.data) {
-  //     offsetValue =
-  //       offset.data.offset - DEFAULT_CONTACT_LIMIT <= 0
-  //         ? 0
-  //         : offset.data.offset - DEFAULT_CONTACT_LOADMORE_LIMIT; // calculate offset
-  //   }
-  //   if (offsetValue) {
-  //     let loadMoreVariables;
-  //     if (props.selectedContactId) {
-  //       loadMoreVariables = {
-  //         contactOpts: {
-  //           limit: 1,
-  //         },
-  //         filter: {
-  //           id: selectedContactId,
-  //         },
-  //         messageOpts: {
-  //           limit: DEFAULT_MESSAGE_LIMIT,
-  //           offset: offsetValue,
-  //         },
-  //       };
-  //     } else if (props.selectedCollectionId) {
-  //       loadMoreVariables = {
-  //         contactOpts: {
-  //           limit: 1,
-  //         },
-  //         filter: {
-  //           id: selectedCollectionId,
-  //           searchGroup: true,
-  //         },
-  //         messageOpts: {
-  //           limit: DEFAULT_MESSAGE_LIMIT,
-  //           offset: offsetValue,
-  //         },
-  //       };
-  //     }
-
-  //     loadMoreConversations({
-  //       variables: loadMoreVariables,
-  //     });
-  //   }
-  // }, [offset, selectedContactId]);
-
   useEffect(() => {
     if (contactsData) {
       setShowLoading(false);
@@ -452,12 +406,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       <KeyboardArrowUpIcon />
     </div>
   );
-
-  // scroll to message after click from search
-  const element = document.getElementById(window.location.hash);
-  if (element) {
-    element.scrollIntoView();
-  }
 
   return (
     <Container

@@ -325,7 +325,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             contactOpts: { limit: 1 },
             messageOpts: {
               limit: DEFAULT_MESSAGE_LIMIT,
-              offset: messageParameterOffset !== null ? parseInt(messageParameterOffset, 10) : 0,
+              offset: messageParameterOffset,
             },
           },
         });
