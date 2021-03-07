@@ -56,8 +56,8 @@ describe('<FlowList />', () => {
   test('click on Make a copy', async () => {
     const { container } = render(flowList);
     await waitFor(() => {
-      expect(container.querySelector('#copy-icon')).toBeInTheDocument();
-      fireEvent.click(container.querySelector('#copy-icon'));
+      expect(container.querySelector('#additionalButton-icon')).toBeInTheDocument();
+      fireEvent.click(container.querySelector('#additionalButton-icon'));
     });
   });
 

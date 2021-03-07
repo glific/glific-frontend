@@ -399,7 +399,7 @@ export const List: React.SFC<ListProps> = ({
                   color="default"
                   data-testid="additionalButton"
                   className={styles.additonalButton}
-                  id="copy-icon"
+                  id="additionalButton-icon"
                   onClick={() => action.dialog(additionalActionParameter)}
                   key={key}
                 >
