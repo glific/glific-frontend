@@ -415,29 +415,25 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       disableGutters
     >
       {showJumpToLatest && !showLoading ? scrollToTop : null}
-      {conversationList ? (
-        <List className={styles.StyledList}>
-          {conversationList}
-          {showLoadMore && conversations.length > DEFAULT_CONTACT_LIMIT - 1 ? (
-            <div className={styles.LoadMore}>
-              {showLoading ? (
-                <CircularProgress className={styles.Progress} />
-              ) : (
-                <div
-                  onClick={loadMoreMessages}
-                  onKeyDown={loadMoreMessages}
-                  className={styles.LoadMoreButton}
-                  aria-hidden="true"
-                >
-                  Load more chats
-                </div>
-              )}
-            </div>
-          ) : null}
-        </List>
-      ) : (
-        { conversationList }
-      )}
+      <List className={styles.StyledList}>
+        {conversationList}
+        {showLoadMore && conversations.length > DEFAULT_CONTACT_LIMIT - 1 ? (
+          <div className={styles.LoadMore}>
+            {showLoading ? (
+              <CircularProgress className={styles.Progress} />
+            ) : (
+              <div
+                onClick={loadMoreMessages}
+                onKeyDown={loadMoreMessages}
+                className={styles.LoadMoreButton}
+                aria-hidden="true"
+              >
+                Load more chats
+              </div>
+            )}
+          </div>
+        ) : null}
+      </List>
     </Container>
   );
 };
