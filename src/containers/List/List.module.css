@@ -96,3 +96,23 @@
 .BackLink svg {
   margin-right: 6px;
 }
+
+.TableFooter {
+  position: fixed;
+  display: flex !important;
+  justify-content: flex-end !important;
+  width: calc(100% - 243px);
+  background: #fafafa;
+  bottom: 0px;
+  right: 4px;
+}
+
+.FooterRow {
+  border: 0px !important;
+  font-size: 16px !important;
+  color: #073f24 !important;
+}
+
+.FooterRow > div {
+  min-height: 55px;
+}
