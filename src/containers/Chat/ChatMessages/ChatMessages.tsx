@@ -46,14 +46,22 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     variables: setVariables(),
   });
   const urlString = new URL(window.location.href);
+
+  // get the message number from url
   let messageParameterOffset: any = urlString.searchParams.get('search');
+
+  // check if the message number is greater than 10 otherwise set the initial offset to 0
   messageParameterOffset =
     messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
       ? parseInt(messageParameterOffset, 10) - 10
       : 0;
 
+  // check if there is message number present in url and set the base for the loadmore increment otherwise set the base increment to default
   const parameterOffset =
-    messageParameterOffset !== 0 ? messageParameterOffset + 20 : DEFAULT_MESSAGE_LIMIT;
+    messageParameterOffset !== 0
+      ? messageParameterOffset + DEFAULT_MESSAGE_LOADMORE_LIMIT
+      : DEFAULT_MESSAGE_LIMIT;
+
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -109,9 +117,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     fetchPolicy: 'cache-only',
   });
 
+  // scroll to the particular message after loading
   const getScrollToMessage = () => {
     if (!scrolledToMessage) {
-      // scroll to message after click from search
       setTimeout(() => {
         const element = document.querySelector(`#search${urlString.searchParams.get('search')}`);
         if (element) {
