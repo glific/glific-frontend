@@ -1,9 +1,11 @@
 import React from 'react';
-import { render, waitFor, cleanup } from '@testing-library/react';
+import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
+
+import * as FormLayout from '../../Form/FormLayout';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
@@ -25,4 +27,28 @@ test('HSM form is loaded correctly in edit mode', async () => {
   await waitFor(() => {
     expect(getByText('Edit HSM Template')).toBeInTheDocument();
   });
+});
+
+test('save media in template', async () => {
+  const spy = jest.spyOn(FormLayout, 'FormLayout');
+  spy.mockImplementation((props: any) => {
+    const { getMediaId } = props;
+    return (
+      <div
+        onClick={() => {
+          getMediaId({ body: 'hey', attachmentURL: 'https://glific.com' });
+        }}
+        data-testid="getMedia"
+      ></div>
+    );
+  });
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Template {...defaultProps} />
+    </MockedProvider>
+  );
+
+  fireEvent.click(getByTestId('getMedia'));
+
+  await waitFor(() => {});
 });
