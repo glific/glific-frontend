@@ -44,6 +44,7 @@ export const searchQuery = {
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
             isRead: true,
+            messageNumber: 48,
             receiver: {
               id: '1',
             },
@@ -91,10 +92,11 @@ cache.writeQuery({
             body: 'Hey there whats up?',
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
+            messageNumber: 48,
+            isRead: true,
             receiver: {
               id: '1',
             },
-            isRead: true,
             sender: {
               id: '1',
             },
