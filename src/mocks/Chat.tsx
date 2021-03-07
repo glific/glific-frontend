@@ -274,7 +274,7 @@ export const messageStatusSubscription = {
 export const savedSearchQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: { limit: 10 } },
+    variables: { filter: {}, opts: {} },
   },
   result: {
     data: {
@@ -285,6 +285,7 @@ export const savedSearchQuery = {
           id: '1',
           label: 'All unread conversations',
           shortcode: 'Unread',
+          isReserved: true,
           count: 10,
         },
       ],
