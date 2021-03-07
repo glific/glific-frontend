@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
@@ -17,7 +16,6 @@ import { ReactComponent as SendMessageIcon } from '../../../../assets/images/ico
 import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
-import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
@@ -49,7 +47,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [selectedTab, setSelectedTab] = useState('');
-  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');
   const [attachment, setAttachment] = useState(false);
@@ -62,7 +59,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [variableParam, setVariableParam] = useState<any>([]);
   const speedSends = 'Speed sends';
   const templates = 'Templates';
-  const client = useApolloClient();
 
   let dialog;
 
@@ -102,23 +98,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
-
-  useEffect(() => {
-    const messageContainer: any = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      messageContainer.addEventListener('scroll', (event: any) => {
-        const messageContainerTarget = event.target;
-        if (
-          messageContainerTarget.scrollTop ===
-          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
-        ) {
-          setShowJumpToLatest(false);
-        } else if (showJumpToLatest === false) {
-          setShowJumpToLatest(true);
-        }
-      });
-    }
-  }, [setShowJumpToLatest]);
 
   const submitMessage = (message: string) => {
     if (!message) return;
@@ -271,32 +250,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
-  const showLatestMessage = () => {
-    const container: any = document.querySelector('.messageContainer');
-    if (container) {
-      container.scrollTop = container.scrollHeight - container.clientHeight;
-    }
-    // set offset to zero to fetch latest data
-    client.writeQuery({
-      query: SEARCH_OFFSET,
-      data: { offset: 0 },
-    });
-    setShowJumpToLatest(false);
-  };
-
-  const jumpToLatest = (
-    <div
-      data-testid="jumpToLatest"
-      className={styles.JumpToLatest}
-      onClick={() => showLatestMessage()}
-      onKeyDown={showLatestMessage}
-      aria-hidden="true"
-    >
-      Jump to latest
-      <ExpandMoreIcon />
-    </div>
-  );
-
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -325,8 +278,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           {quickSendButtons(quickSendTypes)}
         </div>
       </ClickAwayListener>
-
-      {showJumpToLatest === true ? jumpToLatest : null}
 
       <div
         className={clsx(styles.ChatInputElements, {

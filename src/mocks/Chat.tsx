@@ -156,6 +156,7 @@ export const messageReceivedSubscription = {
         body: 'hello',
         flow: 'INBOUND',
         id: '21',
+        messageNumber: 0,
         insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
           id: '1',
@@ -219,6 +220,7 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     flow: 'OUTBOUND',
     id: '22',
+    messageNumber: 0,
     insertedAt: '2020-07-11T14:03:28Z',
     receiver: {
       id: '2',

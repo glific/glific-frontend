@@ -3,6 +3,7 @@ import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/cl
 import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import styles from './ChatMessages.module.css';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -40,7 +41,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   collectionId,
   isSimulator,
 }) => {
-  // create an instance of apolloclient
+  // create an instance of apollo client
   const client = useApolloClient();
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
     variables: setVariables(),
@@ -72,12 +73,31 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
-
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+    
   useEffect(() => {
     setShowLoadMore(true);
     setMessageOffset(parameterOffset);
     setScrolledToMessage(false);
+    setShowJumpToLatest(false);
   }, [contactId]);
+
+  useEffect(() => {
+    const messageContainer: any = document.querySelector('.messageContainer');
+    if (messageContainer) {
+      messageContainer.addEventListener('scroll', (event: any) => {
+        const messageContainerTarget = event.target;
+        if (
+          Math.round(messageContainerTarget.scrollTop) ===
+          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
+        ) {
+          setShowJumpToLatest(false);
+        } else if (showJumpToLatest === false) {
+          setShowJumpToLatest(true);
+        }
+      });
+    }
+  }, [setShowJumpToLatest, contactId, reducedHeight]);
 
   // Instantiate these to be used later.
 
@@ -202,6 +222,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
           return conversationObj;
         });
+
         // If the contact is NOT present in the cache
         if (!isContactCached) {
           conversationsCopy.search = [...conversationsCopy.search, searchData.search[0]];
@@ -613,11 +634,60 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     );
   }
 
+  const showLatestMessage = () => {
+    setShowJumpToLatest(false);
+
+    // check if we have offset 0 (messageNumber === offset)
+    if (conversationInfo.messages[0].messageNumber !== 0) {
+      // set limit upto current message number
+      const limit =
+        conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber + 20;
+
+      // set variable for contact chats
+      const variables: any = {
+        contactOpts: { limit: 1 },
+        filter: { id: contactId?.toString() },
+        messageOpts: { limit, offset: 0 },
+      };
+
+      // if collection, replace id with collection id
+      if (collectionId) {
+        variables.filter = { id: collectionId.toString(), searchGroup: true };
+      }
+
+      getSearchQuery({
+        variables,
+      });
+    }
+
+    const container: any = document.querySelector('.messageContainer');
+    if (container) {
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
+  };
+
+  const jumpToLatest = (
+    <div
+      data-testid="jumpToLatest"
+      className={styles.JumpToLatest}
+      onClick={() => showLatestMessage()}
+      onKeyDown={() => showLatestMessage()}
+      aria-hidden="true"
+    >
+      Jump to latest
+      <ExpandMoreIcon />
+    </div>
+  );
+
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
       {topChatBar}
       {messageListContainer}
+      {conversationInfo.messages.length &&
+      (showJumpToLatest || conversationInfo.messages[0]?.messageNumber !== 0)
+        ? jumpToLatest
+        : null}
       {chatInputSection}
     </Container>
   );
