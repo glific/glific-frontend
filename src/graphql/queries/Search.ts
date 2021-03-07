@@ -54,6 +54,7 @@ export const SAVED_SEARCH_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
     }
   }
