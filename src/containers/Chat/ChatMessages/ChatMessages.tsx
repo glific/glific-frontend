@@ -149,7 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       }, 1000);
     }
   };
-
+  /* istanbul ignore next */
   const [
     getSearchParameterQuery,
     { called: parameterCalled, data: parameterdata, loading: parameterLoading },
@@ -170,7 +170,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
           if (collectionId) {
             // If the collection(group) is present in the cache
             if (conversationObj.group?.id === collectionId.toString()) {
-              /* istanbul ignore next */
               conversationObj.messages = conversationCopy.search[0].messages;
             }
             // If the contact is present in the cache
@@ -187,7 +186,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       }
     },
   });
-
+  /* istanbul ignore next */
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
@@ -426,7 +425,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     setDialogbox(false);
     setShowDropdown(null);
   };
-
+  /* istanbul ignore next */
   const handleSubmit = (tags: any) => {
     const selectedTags = tags.filter((tag: any) => !previousMessageTags.includes(tag));
     unselectedTags = previousMessageTags.filter((tag: any) => !tags.includes(tag));

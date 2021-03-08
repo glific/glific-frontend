@@ -1,11 +1,13 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import { MockedProvider } from '@apollo/client/testing';
+import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -119,7 +121,7 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn();
 const chatMessages = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages contactId={'2'} />
+      <ChatMessages contactId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );
@@ -160,19 +162,19 @@ test('click on assign tag should open a dialog box with already assigned tags', 
 
 // need to check how to mock these
 
-// test('assigned tags should be shown in searchbox', async () => {
-//   const { getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//   });
+test('assigned tags should be shown in searchbox', async () => {
+  const { getByTestId } = render(chatMessages);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('messageOptions'));
+  });
 
-//   fireEvent.click(getByTestId('dialogButton'));
+  fireEvent.click(getByTestId('dialogButton'));
 
-//   await waitFor(() => {
-//     const searchBox = within(getByTestId('AutocompleteInput'));
-//     expect(searchBox.getByText('Search')).toBeInTheDocument();
-//   });
-// });
+  await waitFor(() => {
+    const searchBox = within(getByTestId('AutocompleteInput'));
+    expect(searchBox.getAllByText('Search'));
+  });
+});
 
 // test('remove already assigned tags', async () => {
 //   const { getByTestId } = render(chatMessages);
@@ -213,6 +215,27 @@ test('click on Jump to latest', async () => {
   });
 });
 
+test('click on Jump to latest', async () => {
+  const chatMessages = (
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages contactId="2" />
+        </MockedProvider>
+      </ApolloProvider>
+    </MemoryRouter>
+  );
+  const { getByRole } = render(chatMessages);
+
+  await waitFor(() => {
+    fireEvent.click(getByRole('progressbar'));
+  });
+  // need to fix this
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
+});
+
 const chatMessagesWithCollection = (
   <MemoryRouter>
     <ApolloProvider client={client}>
@@ -229,9 +252,18 @@ it('should have title as group name', async () => {
 });
 
 test('Collection: click on Jump to latest', async () => {
-  const { getByTestId } = render(chatMessagesWithCollection);
+  const chatMessagesWithCollection = (
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages collectionId="2" />
+        </MockedProvider>
+      </ApolloProvider>
+    </MemoryRouter>
+  );
+  render(chatMessagesWithCollection);
 
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
 });

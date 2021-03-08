@@ -126,6 +126,7 @@ const conversationCollectionQuery = (
               id: '1',
               body: 'Hello',
               insertedAt: '2020-06-25T13:36:43Z',
+              messageNumber: 48,
               receiver: {
                 id: '1',
               },
