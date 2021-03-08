@@ -93,6 +93,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
       type
       isRead
       groupId
+      messageNumber
       location {
         latitude
         longitude
