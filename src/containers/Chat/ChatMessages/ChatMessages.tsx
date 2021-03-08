@@ -655,7 +655,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         variables.filter = { id: collectionId.toString(), searchGroup: true };
       }
 
-      getSearchQuery({
+      getSearchParameterQuery({
         variables,
       });
     }
