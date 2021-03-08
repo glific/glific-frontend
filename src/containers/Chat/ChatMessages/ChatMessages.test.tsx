@@ -16,6 +16,30 @@ class ResizeObserver {
 
 window.ResizeObserver = ResizeObserver;
 
+const body = {
+  id: '1',
+  body: 'Hey there whats up?',
+  insertedAt: '2020-06-25T13:36:43Z',
+  location: null,
+  isRead: true,
+  messageNumber: 48,
+  receiver: {
+    id: '1',
+  },
+  sender: {
+    id: '2',
+  },
+  tags: [
+    {
+      id: '1',
+      label: 'important',
+      colorCode: '#00d084',
+    },
+  ],
+  type: 'TEXT',
+  media: null,
+  errors: '{}',
+};
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
@@ -37,32 +61,7 @@ export const searchQuery = {
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
         },
-        messages: [
-          {
-            id: '1',
-            body: 'Hey there whats up?',
-            insertedAt: '2020-06-25T13:36:43Z',
-            location: null,
-            isRead: true,
-            messageNumber: 48,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '2',
-            },
-            tags: [
-              {
-                id: '1',
-                label: 'important',
-                colorCode: '#00d084',
-              },
-            ],
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-          },
-        ],
+        messages: [body],
       },
     ],
   },
@@ -207,6 +206,13 @@ test('cancel after dialog box open', async () => {
   fireEvent.click(getByText('Cancel'));
 });
 
+test('click on Jump to latest', async () => {
+  const { getByTestId } = render(chatMessages);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
+});
+
 const chatMessagesWithCollection = (
   <MemoryRouter>
     <ApolloProvider client={client}>
@@ -219,5 +225,12 @@ it('should have title as group name', async () => {
   const { getByTestId } = render(chatMessagesWithCollection);
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
+  });
+});
+
+test('Collection: click on Jump to latest', async () => {
+  const { getByTestId } = render(chatMessages);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
   });
 });

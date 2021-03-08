@@ -548,6 +548,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
                 onClick={loadMoreMessages}
                 onKeyDown={loadMoreMessages}
                 aria-hidden="true"
+                data-testid="loadMoreMessages"
               >
                 Load more messages
               </div>
