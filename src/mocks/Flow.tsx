@@ -1,5 +1,11 @@
-import { GET_FLOW, GET_FLOWS, GET_FLOW_COUNT, GET_FLOW_DETAILS } from '../graphql/queries/Flow';
-import { FILTER_FLOW } from '../graphql/queries/Flow';
+import {
+  GET_FLOW,
+  GET_FLOWS,
+  GET_FLOW_COUNT,
+  GET_FLOW_DETAILS,
+  FILTER_FLOW,
+} from '../graphql/queries/Flow';
+import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../graphql/mutations/Flow';
 
 export const getFlowQuery = {
   request: {
@@ -24,17 +30,52 @@ export const getFlowQuery = {
   },
 };
 
+export const addFlowToContactQuery = {
+  request: {
+    query: ADD_FLOW_TO_CONTACT,
+    variables: {
+      contactId: '1',
+      flowId: '1',
+    },
+  },
+
+  result: {
+    data: {
+      startContactFlow: {
+        success: true,
+      },
+    },
+  },
+};
+
+export const addFlowToCollectionQuery = {
+  request: {
+    query: ADD_FLOW_TO_COLLECTION,
+    variables: {
+      flowId: '',
+      groupId: '2',
+    },
+  },
+
+  result: {
+    data: {
+      startGroupFlow: {
+        success: true,
+      },
+    },
+  },
+};
+
 export const filterFlowQuery = {
   request: {
     query: FILTER_FLOW,
     variables: {
-      filter: {
-        keyword: 'help',
-      },
+      filter: {},
       opts: {
-        order: 'ASC',
-        limit: null,
+        limit: 50,
         offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
       },
     },
   },
@@ -44,10 +85,11 @@ export const filterFlowQuery = {
       flows: [
         {
           id: '1',
-          name: 'help workflow',
-          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
-          keywords: ['help'],
-          ignoreKeywords: false,
+          ignoreKeywords: true,
+          keywords: ['help', 'मदद'],
+          name: 'Help Workflow',
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         },
       ],
     },
@@ -87,7 +129,7 @@ export const getFlowCountQuery = {
 
   result: {
     data: {
-      countFlows: 3,
+      countFlows: 1,
     },
   },
 };
@@ -110,10 +152,55 @@ export const getPublishedFlowQuery = {
       flows: [
         {
           id: '1',
-          name: 'help workflow',
-          uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+          name: 'Help Workflow',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
         },
       ],
+    },
+  },
+};
+
+export const filterFlowNewQuery = {
+  request: {
+    query: FILTER_FLOW,
+    variables: {
+      filter: { name: 'Help Workflow' },
+      opts: {
+        limit: 50,
+        offset: 0,
+        order: 'ASC',
+        orderWith: 'name',
+      },
+    },
+  },
+
+  result: {
+    data: {
+      flows: [
+        {
+          id: '1',
+          ignoreKeywords: true,
+          keywords: ['help', 'मदद'],
+          name: 'Help Workflow',
+          updatedAt: '2021-03-05T04:32:23Z',
+          uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+        },
+      ],
+    },
+  },
+};
+
+export const getFlowCountNewQuery = {
+  request: {
+    query: GET_FLOW_COUNT,
+    variables: {
+      filter: { name: 'Help Workflow' },
+    },
+  },
+
+  result: {
+    data: {
+      countFlows: 1,
     },
   },
 };

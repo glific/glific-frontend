@@ -7,8 +7,11 @@ import {
 } from '../graphql/queries/Contact';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
+import { addFlowToContactQuery } from '../mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
 import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
+import { UPDATE_CONTACT_COLLECTIONS } from '../graphql/mutations/Collection';
+import { CLEAR_MESSAGES } from '../graphql/mutations/Chat';
 import { setVariables } from '../common/constants';
 
 export const contactCollectionsQuery = {
@@ -40,6 +43,26 @@ export const contactCollectionsQuery = {
   },
 };
 
+export const updateContactCollectionQuery = {
+  request: {
+    query: UPDATE_CONTACT_COLLECTIONS,
+    variables: {
+      input: { contactId: '2', addGroupIds: [], deleteGroupIds: ['1', '2'] },
+    },
+  },
+  result: {
+    data: {
+      updateContactGroups: {
+        contactGroups: {
+          id: '18',
+          value: null,
+        },
+        numberDeleted: 1,
+      },
+    },
+  },
+};
+
 export const getContactQuery = {
   request: {
     query: GET_CONTACT,
@@ -60,6 +83,23 @@ export const getContactQuery = {
           fields: {},
           tags: [],
         },
+      },
+    },
+  },
+};
+
+export const clearMessagesQuery = {
+  request: {
+    query: CLEAR_MESSAGES,
+    variables: {
+      contactId: '2',
+    },
+  },
+  result: {
+    data: {
+      clearMessages: {
+        errors: null,
+        success: true,
       },
     },
   },
@@ -102,8 +142,9 @@ export const LOGGED_IN_USER_MOCK = [
   filterTagsQuery,
   getCurrentUserQuery,
   getContactQuery,
-  getContactQuery,
   getContactDetailsQuery,
+  addFlowToContactQuery,
+  clearMessagesQuery,
   ...getOrganizationQuery,
 ];
 
@@ -139,6 +180,7 @@ export const countCollectionContactsQuery = {
     },
   },
 };
+
 export const getContactsQuery = {
   request: {
     query: CONTACT_SEARCH_QUERY,
