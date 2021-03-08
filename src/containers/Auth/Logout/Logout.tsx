@@ -80,10 +80,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
       skipCancel
       alignButtons="center"
     >
-      <div style={divStyle}>
-        Since the platform was idle for too long, you have been logged out. Please login again to
-        continue.
-      </div>
+      <div style={divStyle}>Please login again to continue.</div>
     </DialogBox>
   );
 
