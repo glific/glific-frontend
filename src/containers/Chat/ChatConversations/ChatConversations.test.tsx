@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, waitFor, fireEvent, cleanup, wait } from '@testing-library/react';
+import { render, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import ChatConversations from './ChatConversations';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
