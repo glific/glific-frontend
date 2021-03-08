@@ -74,7 +74,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
-    
+
   useEffect(() => {
     setShowLoadMore(true);
     setMessageOffset(parameterOffset);
