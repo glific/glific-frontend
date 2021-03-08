@@ -6,6 +6,7 @@ import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import { MockedProvider } from '@apollo/client/testing';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -213,15 +214,66 @@ test('click on Jump to latest', async () => {
   });
 });
 
+const mocks = [
+  {
+    query: SEARCH_QUERY,
+    variables: {
+      contactOpts: { limit: 1 },
+      filter: { id: '2' },
+      messageOpts: { limit: 68, offset: 0 },
+    },
+    data: {
+      search: [
+        {
+          group: {
+            id: '2',
+            label: 'Default Group',
+          },
+          contact: null,
+          messages: [
+            {
+              id: '1',
+              body: 'Hey there whats up?',
+              insertedAt: '2020-06-25T13:36:43Z',
+              location: null,
+              messageNumber: 0,
+              isRead: true,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '1',
+              },
+              tags: null,
+              type: 'TEXT',
+              media: null,
+              errors: '{}',
+            },
+          ],
+        },
+      ],
+    },
+  },
+];
+
 const chatMessagesWithCollection = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages collectionId="2" />
+      <MockedProvider mocks={mocks}>
+        <ChatMessages collectionId="2" />
+      </MockedProvider>
     </ApolloProvider>
   </MemoryRouter>
 );
 
 it('should have title as group name', async () => {
+  const chatMessagesWithCollection = (
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <ChatMessages collectionId="2" />
+      </ApolloProvider>
+    </MemoryRouter>
+  );
   const { getByTestId } = render(chatMessagesWithCollection);
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
