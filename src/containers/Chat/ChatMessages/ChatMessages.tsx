@@ -149,7 +149,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       }, 1000);
     }
   };
-
+  /* istanbul ignore next */
   const [
     getSearchParameterQuery,
     { called: parameterCalled, data: parameterdata, loading: parameterLoading },
@@ -167,8 +167,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
-          // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          if (collectionId) {
+            // If the collection(group) is present in the cache
+            if (conversationObj.group?.id === collectionId.toString()) {
+              conversationObj.messages = conversationCopy.search[0].messages;
+            }
+            // If the contact is present in the cache
+          } else if (conversationObj.contact?.id === contactId?.toString()) {
             conversationObj.messages = conversationCopy.search[0].messages;
           }
           return conversationObj;
@@ -181,7 +186,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       }
     },
   });
-
+  /* istanbul ignore next */
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
@@ -196,14 +201,26 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         let isContactCached = false;
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
+          // If the collection(group) is present in the cache
+          if (collectionId) {
+            /* istanbul ignore next */
+            if (conversationObj.group?.id === collectionId.toString()) {
+              isContactCached = true;
+              conversationObj.messages = [
+                ...conversationObj.messages,
+                ...conversationCopy.search[0].messages,
+              ];
+            }
+          }
           // If the contact is present in the cache
-          if (conversationObj.contact.id === contactId?.toString()) {
+          else if (conversationObj.contact?.id === contactId?.toString()) {
             isContactCached = true;
             conversationObj.messages = [
               ...conversationObj.messages,
               ...conversationCopy.search[0].messages,
             ];
           }
+
           return conversationObj;
         });
 
@@ -408,7 +425,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     setDialogbox(false);
     setShowDropdown(null);
   };
-
+  /* istanbul ignore next */
   const handleSubmit = (tags: any) => {
     const selectedTags = tags.filter((tag: any) => !previousMessageTags.includes(tag));
     unselectedTags = previousMessageTags.filter((tag: any) => !tags.includes(tag));
@@ -532,6 +549,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
                 onClick={loadMoreMessages}
                 onKeyDown={loadMoreMessages}
                 aria-hidden="true"
+                data-testid="loadMoreMessages"
               >
                 Load more messages
               </div>
@@ -639,7 +657,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
         variables.filter = { id: collectionId.toString(), searchGroup: true };
       }
 
-      getSearchQuery({
+      getSearchParameterQuery({
         variables,
       });
     }

@@ -1,11 +1,13 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import { MockedProvider } from '@apollo/client/testing';
+import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -16,6 +18,30 @@ class ResizeObserver {
 
 window.ResizeObserver = ResizeObserver;
 
+const body = {
+  id: '1',
+  body: 'Hey there whats up?',
+  insertedAt: '2020-06-25T13:36:43Z',
+  location: null,
+  isRead: true,
+  messageNumber: 48,
+  receiver: {
+    id: '1',
+  },
+  sender: {
+    id: '2',
+  },
+  tags: [
+    {
+      id: '1',
+      label: 'important',
+      colorCode: '#00d084',
+    },
+  ],
+  type: 'TEXT',
+  media: null,
+  errors: '{}',
+};
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
@@ -37,32 +63,7 @@ export const searchQuery = {
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
         },
-        messages: [
-          {
-            id: '1',
-            body: 'Hey there whats up?',
-            insertedAt: '2020-06-25T13:36:43Z',
-            location: null,
-            isRead: true,
-            messageNumber: 48,
-            receiver: {
-              id: '1',
-            },
-            sender: {
-              id: '2',
-            },
-            tags: [
-              {
-                id: '1',
-                label: 'important',
-                colorCode: '#00d084',
-              },
-            ],
-            type: 'TEXT',
-            media: null,
-            errors: '{}',
-          },
-        ],
+        messages: [body],
       },
     ],
   },
@@ -120,7 +121,7 @@ window.HTMLElement.prototype.scrollIntoView = jest.fn();
 const chatMessages = (
   <MemoryRouter>
     <ApolloProvider client={client}>
-      <ChatMessages contactId={'2'} />
+      <ChatMessages contactId="2" />
     </ApolloProvider>
   </MemoryRouter>
 );
@@ -161,19 +162,19 @@ test('click on assign tag should open a dialog box with already assigned tags', 
 
 // need to check how to mock these
 
-// test('assigned tags should be shown in searchbox', async () => {
-//   const { getByTestId } = render(chatMessages);
-//   await waitFor(() => {
-//     fireEvent.click(getByTestId('messageOptions'));
-//   });
+test('assigned tags should be shown in searchbox', async () => {
+  const { getByTestId } = render(chatMessages);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('messageOptions'));
+  });
 
-//   fireEvent.click(getByTestId('dialogButton'));
+  fireEvent.click(getByTestId('dialogButton'));
 
-//   await waitFor(() => {
-//     const searchBox = within(getByTestId('AutocompleteInput'));
-//     expect(searchBox.getByText('Search')).toBeInTheDocument();
-//   });
-// });
+  await waitFor(() => {
+    const searchBox = within(getByTestId('AutocompleteInput'));
+    expect(searchBox.getAllByText('Search'));
+  });
+});
 
 // test('remove already assigned tags', async () => {
 //   const { getByTestId } = render(chatMessages);
@@ -207,6 +208,34 @@ test('cancel after dialog box open', async () => {
   fireEvent.click(getByText('Cancel'));
 });
 
+test('click on Jump to latest', async () => {
+  const { getByTestId } = render(chatMessages);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
+});
+
+test('click on Jump to latest', async () => {
+  const chatMessages = (
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages contactId="2" />
+        </MockedProvider>
+      </ApolloProvider>
+    </MemoryRouter>
+  );
+  const { getByRole } = render(chatMessages);
+
+  await waitFor(() => {
+    fireEvent.click(getByRole('progressbar'));
+  });
+  // need to fix this
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
+});
+
 const chatMessagesWithCollection = (
   <MemoryRouter>
     <ApolloProvider client={client}>
@@ -220,4 +249,21 @@ it('should have title as group name', async () => {
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Default Group');
   });
+});
+
+test('Collection: click on Jump to latest', async () => {
+  const chatMessagesWithCollection = (
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+          <ChatMessages collectionId="2" />
+        </MockedProvider>
+      </ApolloProvider>
+    </MemoryRouter>
+  );
+  render(chatMessagesWithCollection);
+
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
 });
