@@ -126,6 +126,7 @@ const conversationCollectionQuery = (
               id: '1',
               body: 'Hello',
               insertedAt: '2020-06-25T13:36:43Z',
+              messageNumber: 48,
               receiver: {
                 id: '1',
               },
@@ -156,6 +157,7 @@ export const messageReceivedSubscription = {
         body: 'hello',
         flow: 'INBOUND',
         id: '21',
+        messageNumber: 0,
         insertedAt: '2020-07-11T14:03:28Z',
         receiver: {
           id: '1',
@@ -219,6 +221,7 @@ const messageSubscriptionData = {
     body: 'How can we help?',
     flow: 'OUTBOUND',
     id: '22',
+    messageNumber: 0,
     insertedAt: '2020-07-11T14:03:28Z',
     receiver: {
       id: '2',
@@ -272,7 +275,7 @@ export const messageStatusSubscription = {
 export const savedSearchQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: { limit: 10 } },
+    variables: { filter: {}, opts: {} },
   },
   result: {
     data: {
@@ -283,6 +286,7 @@ export const savedSearchQuery = {
           id: '1',
           label: 'All unread conversations',
           shortcode: 'Unread',
+          isReserved: true,
           count: 10,
         },
       ],
@@ -680,6 +684,7 @@ const searchQueryResult = {
             id: '1',
             body: 'Hey there whats up?',
             insertedAt: '2020-06-25T13:36:43Z',
+            messageNumber: 0,
             receiver: {
               id: '1',
             },

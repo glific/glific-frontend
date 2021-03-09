@@ -86,3 +86,8 @@
   width: 24px;
   height: 24px;
 }
+
+.PopperContainer {
+  max-height: 280px !important;
+  overflow: auto;
+}
