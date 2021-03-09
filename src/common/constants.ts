@@ -26,6 +26,16 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
+export const dayList = [
+  { id: 1, label: 'Monday' },
+  { id: 2, label: 'Tuesday' },
+  { id: 3, label: 'Wednesday' },
+  { id: 4, label: 'Thursday' },
+  { id: 5, label: 'Friday' },
+  { id: 6, label: 'Saturday' },
+  { id: 7, label: 'Sunday' },
+];
+
 // default contact limit for search
 export const DEFAULT_CONTACT_LIMIT = 25;
 

@@ -244,6 +244,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   }
 
   const performTask = (payload: any) => {
+    console.log(payload);
     if (itemId) {
       updateItem({
         variables: {
@@ -261,6 +262,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
+    console.log(itemData);
     let payload = {
       ...itemData,
       ...defaultAttribute,

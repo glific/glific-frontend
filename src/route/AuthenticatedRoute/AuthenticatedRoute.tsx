@@ -32,6 +32,7 @@ import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList';
 import Loading from '../../components/UI/Layout/Loading/Loading';
+import { Trigger } from '../../containers/Trigger/Trigger';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -84,6 +85,9 @@ const routeAdmin = (
     <Route path="/search" exact component={SearchList} />
     <Route path="/search/add" exact component={Search} />
     <Route path="/search/:id/edit" exact component={Search} />
+
+    <Route path="/trigger/add" exact component={Trigger} />
+    <Route path="/trigger/:id/edit" exact component={Trigger} />
 
     <Route path="/chat" exact component={Chat} />
     <Route path="/staff-management" exact component={StaffManagementList} />
