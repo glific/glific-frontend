@@ -21,6 +21,7 @@ export const SEARCH_QUERY = gql`
         body
         isRead
         insertedAt
+        messageNumber
         receiver {
           id
         }
@@ -53,6 +54,7 @@ export const SAVED_SEARCH_QUERY = gql`
       id
       shortcode
       label
+      isReserved
       args
     }
   }

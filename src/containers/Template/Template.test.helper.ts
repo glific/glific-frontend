@@ -7,6 +7,7 @@ import {
   getOrganizationQuery,
 } from '../../mocks/Organization';
 import { templateCountQuery } from '../../mocks/Template';
+import { CREATE_MEDIA_MESSAGE } from '../../graphql/mutations/Chat';
 
 const count = templateCountQuery(false, 2);
 
@@ -263,6 +264,23 @@ export const TEMPLATE_MOCKS = [
             body: 'new Template body',
             id: '121',
             label: 'new Template',
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: CREATE_MEDIA_MESSAGE,
+      variables: {
+        input: { caption: 'hey', sourceUrl: 'https://glific.com', url: 'https://glific.com' },
+      },
+    },
+    result: {
+      data: {
+        createMessageMedia: {
+          messageMedia: {
+            id: '121',
           },
         },
       },
