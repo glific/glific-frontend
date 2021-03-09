@@ -32,6 +32,8 @@ import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList';
 import Loading from '../../components/UI/Layout/Loading/Loading';
+import { TriggerList } from '../../containers/Triggers/TriggerList/TriggerList';
+import { Triggers } from '../../containers/Triggers/Triggers';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -117,6 +119,10 @@ const routeAdmin = (
         <Chat collectionId={match.params.collectionId} />
       )}
     />
+    <Route path="/trigger" exact component={TriggerList} />
+    <Route path="/trigger/add" exact component={Triggers} />
+    <Route path="/trigger/:id/edit" exact component={Triggers} />
+
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );

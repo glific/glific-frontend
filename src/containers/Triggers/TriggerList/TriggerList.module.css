@@ -1,0 +1,37 @@
+.EndDate {
+  width: 180px;
+}
+
+.Name {
+  width: 291px;
+}
+
+.Collections {
+  width: 291px;
+}
+
+.Icon {
+  width: 29px;
+  height: 29px;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.StartDate {
+  width: 185px;
+  padding-top: 12px;
+  color: #93a29b;
+}
+
+.Collection {
+  color: #93a29b;
+}
