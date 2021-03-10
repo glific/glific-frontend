@@ -251,7 +251,6 @@ export const Organisation: React.SFC = () => {
   };
 
   const setPayload = (payload: any) => {
-    console.log(payload);
     const payloadCopy = payload;
     let object: any = {};
     // set active Language Ids
@@ -277,8 +276,6 @@ export const Organisation: React.SFC = () => {
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
     };
-
-    console.log(object);
 
     return object;
   };

@@ -94,10 +94,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     },
   });
 
-  console.log(insertedAt);
-
-  console.log(moment(insertedAt));
-
   let iconLeft = false;
   let placement: any = 'bottom-end';
   let additionalClass = styles.Mine;
