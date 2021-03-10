@@ -7,7 +7,7 @@
 }
 
 .Collections {
-  width: 291px;
+  width: 403px;
 }
 
 .Icon {
@@ -30,8 +30,10 @@
   width: 185px;
   padding-top: 12px;
   color: #93a29b;
+  font-size: 17px;
 }
 
 .Collection {
   color: #93a29b;
+  font-size: 17px;
 }

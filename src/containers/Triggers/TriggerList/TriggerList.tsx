@@ -1,34 +1,35 @@
 import React from 'react';
 import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 
 import styles from './TriggerList.module.css';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Dark.svg';
+import { ReactComponent as TriggerIcon } from '../../../assets/images/icons/Trigger/Union.svg';
+import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
 import { DELETE_SEARCH } from '../../../graphql/mutations/Search';
-import { DATE_TIME_FORMAT } from '../../../common/constants';
+import { FULL_DATE_FORMAT } from '../../../common/constants';
 
 export interface TriggerListProps {}
 
-const getName = (flow: any) => <p className={styles.LabelText}>{flow.name}</p>;
+const getName = (name: any) => <p className={styles.LabelText}>{name}</p>;
 
 const getStartAt = (date: any) => (
-  <div className={styles.StartDate}>{moment(date.startAt).format(DATE_TIME_FORMAT)}</div>
+  <div className={styles.StartDate}>{moment(date).format(FULL_DATE_FORMAT)}</div>
 );
 
 const getCollections = (group: any) => <p className={styles.Collection}>{group.label}</p>;
 
-const getColumns = ({ flow, startAt, group }: any) => ({
-  name: getName(flow),
+const getColumns = ({ name, startAt, group }: any) => ({
+  name: getName(name),
   startAt: getStartAt(startAt),
   collections: getCollections(group),
 });
 
 const columnNames = ['NAME', 'END DATE', 'COLLECTION'];
-const dialogMessage =
-  'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.';
+const dialogMessage = "You won't be able to use this trigger.";
 const columnStyles = [styles.Name, styles.EndDate, styles.Collections];
-const searchIcon = <SearchIcon className={styles.Icon} />;
+const triggerIcon = <TriggerIcon className={styles.Icon} />;
 
 const queries = {
   countQuery: TRIGGER_QUERY_COUNT,
@@ -42,17 +43,35 @@ const columnAttributes = {
   columnStyles,
 };
 
-export const TriggerList: React.SFC<TriggerListProps> = () => (
-  <List
-    title="Triggers"
-    listItem="triggers"
-    listItemName="Search"
-    pageLink="trigger"
-    button={{ show: true, label: '+ CREATE TRIGGER' }}
-    listIcon={searchIcon}
-    dialogMessage={dialogMessage}
-    {...queries}
-    {...columnAttributes}
-    searchParameter="label"
-  />
-);
+export const TriggerList: React.SFC<TriggerListProps> = () => {
+  const history = useHistory();
+
+  const setDialog = (id: any) => {
+    history.push({ pathname: `/trigger/${id}/edit`, state: 'copy' });
+  };
+
+  const additionalAction = [
+    {
+      label: 'Make a copy',
+      icon: <DuplicateIcon />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
+
+  return (
+    <List
+      title="Triggers"
+      listItem="triggers"
+      listItemName="Trigger"
+      pageLink="trigger"
+      button={{ show: true, label: '+ CREATE TRIGGER' }}
+      listIcon={triggerIcon}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+      searchParameter="name"
+      additionalAction={additionalAction}
+    />
+  );
+};

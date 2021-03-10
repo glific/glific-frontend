@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client';
 
 export const TRIGGER_LIST_QUERY = gql`
-  query triggers($filter: TriggerFilter) {
-    triggers(filter: $filter) {
+  query triggers($filter: TriggerFilter, $opts: Opts) {
+    triggers(filter: $filter, opts: $opts) {
+      id
+      name
       flow {
         id
         name

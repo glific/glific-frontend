@@ -2,6 +2,7 @@ import moment from 'moment';
 
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
+export const FULL_DATE_FORMAT = 'DD/MM/YYYY';
 export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
