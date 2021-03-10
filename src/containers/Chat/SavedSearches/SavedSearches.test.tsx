@@ -16,14 +16,16 @@ const client = new ApolloClient({
 
 describe('<SavedSearches />', () => {
   test('it should mount', () => {
-    render(
+    const { getByText } = render(
       <ApolloProvider client={client}>
         <SavedSearches />
       </ApolloProvider>
     );
 
-    const savedSearches = screen.getByTestId('SavedSearches');
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+    // const savedSearches = screen.getByTestId('SavedSearches');
 
-    expect(savedSearches).toBeInTheDocument();
+    // expect(savedSearches).toBeInTheDocument();
   });
 });
