@@ -14,6 +14,7 @@ import { getUserRole } from '../../context/role';
 import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../common/constants';
 import selectedChatIcon from '../../assets/images/icons/Chat/Selected.svg';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
+import SavedSearches from './SavedSearches/SavedSearches';
 
 const noConversations = (
   <Typography variant="h5" className={styles.NoConversations}>
@@ -23,9 +24,10 @@ const noConversations = (
 export interface ChatProps {
   contactId?: number | string | null;
   collectionId?: number | null;
+  savedSearches?: boolean;
 }
 
-export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
+export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearches }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
 
   const [simulatorId, setSimulatorId] = useState(0);
@@ -79,17 +81,20 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
   }
 
   let chatInterface: any;
+  let listingContent;
+
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
   } else {
-    let listingContent;
     let contactSelectedClass = '';
     let collectionSelectedClass = '';
-    if (selectedCollectionId || selectedTab === 'collections') {
+    let savedSearchClass = '';
+
+    if (selectedCollectionId || (selectedTab === 'collections' && !savedSearches)) {
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
       // set class for collections tab
       collectionSelectedClass = `${styles.SelectedTab}`;
-    } else if (selectedContactId) {
+    } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
       listingContent = (
@@ -98,6 +103,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
 
       // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
+    } else if (savedSearches) {
+      // set class for saved search
+      savedSearchClass = `${styles.SelectedTab}`;
+      // for saved search
+      listingContent = <SavedSearches />;
     }
 
     chatInterface = (
@@ -110,7 +120,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
           />
         </div>
 
-        <div className={`${styles.ChatConversations} chatConversations`}>
+        <div className={`${styles.ChatConversations} ChatConversations`}>
           <Toolbar className={styles.ToolBar}>
             <div className={styles.IconBackground}>
               <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
@@ -127,6 +137,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId }) => {
                   variant="h6"
                 >
                   <Link to="/chat/collection">Collections</Link>
+                </Typography>
+              </div>
+              <div className={styles.Title}>
+                <Typography className={`${styles.TitleText} ${savedSearchClass}`} variant="h6">
+                  <Link to="/chat/saved-searches">Saved searches</Link>
                 </Typography>
               </div>
             </div>

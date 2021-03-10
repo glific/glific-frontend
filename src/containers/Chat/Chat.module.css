@@ -35,7 +35,7 @@
 }
 
 .ToolBar {
-  padding: 0 24px 0 12px !important;
+  padding: 0 0px 0 12px !important;
 }
 
 .Title {
@@ -60,6 +60,7 @@
 .TabContainer {
   display: flex;
   cursor: pointer;
+  overflow-x: auto;
 }
 
 .Title a {

@@ -1,0 +1,27 @@
+.SavedSearchesAutocomplete {
+  width: 93%;
+  padding: 0px;
+  margin: auto;
+  margin-top: 10.5px;
+  margin-bottom: 12px;
+  /* height: 37px; */
+}
+
+.ChatConversations {
+  font-family: 'heebo';
+  padding: 0px 6px;
+}
+
+.CollectionListingContainer {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
+.ChatConversations {
+  width: 100%;
+  height: calc(100vh - 64px);
+  padding-left: 10px;
+  overflow-y: hidden;
+  position: relative;
+}
