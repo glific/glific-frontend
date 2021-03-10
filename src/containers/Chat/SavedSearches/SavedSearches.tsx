@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
 import React, { useState } from 'react';
+import { setErrorMessage } from '../../../common/notification';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import ConversationList from '../ChatConversations/ConversationList/ConversationList';
 import styles from './SavedSearches.module.css';
@@ -21,16 +23,15 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   const [savedSearch, setSavedSearch] = useState({ id: 0, args: '{}' });
   const [Open, setOpen] = useState(true);
 
-  const { loading, error, data } = useQuery<any>(SAVED_SEARCH_QUERY, {
+  const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
   });
 
-  if (loading) {
-    return <>Loading...</>;
-  }
+  if (loading) return <Loading />;
 
   if (error) {
-    return <>error</>;
+    setErrorMessage(client, error);
+    return null;
   }
 
   let options = [];
@@ -71,6 +72,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
           selectedContactId={savedSearch.id}
           savedSearchCriteria={savedSearch.args}
           savedSearchCriteriaId={savedSearch.id}
+          entityType="savedSearch"
         />
       ) : null}
     </Container>

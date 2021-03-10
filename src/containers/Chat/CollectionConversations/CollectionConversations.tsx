@@ -21,6 +21,7 @@ const CollectionConversations: React.SFC<CollectionConversationsProps> = (props)
         setSelectedCollectionId={(i: number) => {
           setSelectedCollectionId(i);
         }}
+        entityType="collection"
       />
     </Container>
   );

@@ -235,6 +235,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         }}
         savedSearchCriteria={savedSearchCriteria}
         savedSearchCriteriaId={savedSearchCriteriaId}
+        entityType="contact"
       />
       {saveSearchButton}
       {dialogBox}
