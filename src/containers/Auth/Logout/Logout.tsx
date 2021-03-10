@@ -11,10 +11,6 @@ import { clearListSession } from '../../../services/ListService';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 const divStyle: CSSProperties = {
-  height: '60px',
-  left: '37.03%',
-  right: '37.11%',
-  top: 'calc(50% - 60px/2 - 184px)',
   fontFamily: 'Heebo',
   fontStyle: 'normal',
   fontWeight: 'normal',
@@ -22,7 +18,6 @@ const divStyle: CSSProperties = {
   lineHeight: '20px',
   textAlign: 'center',
   color: '#073F24',
-  width: '331px',
 };
 export interface LogoutProps {
   match?: any;
@@ -80,10 +75,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
       skipCancel
       alignButtons="center"
     >
-      <div style={divStyle}>
-        Since the platform was idle for too long, you have been logged out. Please login again to
-        continue.
-      </div>
+      <div style={divStyle}>Please login again to continue.</div>
     </DialogBox>
   );
 
