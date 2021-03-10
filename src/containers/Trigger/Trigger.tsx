@@ -115,9 +115,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         variant: 'outlined',
         label: 'Select flow',
       },
-
-      helperText:
-        'the selected flow will be triggered for messages received outside hours of operations',
     },
     {
       component: Calendar,
