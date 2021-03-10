@@ -9,17 +9,22 @@ import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Fl
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
 import { DELETE_SEARCH } from '../../../graphql/mutations/Search';
-import { FULL_DATE_FORMAT } from '../../../common/constants';
+import { setVariables, FULL_DATE_FORMAT } from '../../../common/constants';
+import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
 export interface TriggerListProps {}
+
+const tooltipTitle: any = 'Repeat: Weekly(Mon, Wed, Fri)'; // added static for now, it will be dynamic based on trigger
 
 const getName = (name: any) => (
   <p className={styles.LabelText}>
     {name}
     <br />
-    <span className={styles.TriggerIcon}>
-      <ClockIcon />
-    </span>
+    <Tooltip title={tooltipTitle} placement="right">
+      <span className={styles.TriggerIcon}>
+        <ClockIcon />
+      </span>
+    </Tooltip>
   </p>
 );
 
@@ -77,6 +82,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       button={{ show: true, label: '+ CREATE TRIGGER' }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
+      refetchQueries={{ query: TRIGGER_LIST_QUERY, variables: setVariables() }}
       {...queries}
       {...columnAttributes}
       searchParameter="name"
