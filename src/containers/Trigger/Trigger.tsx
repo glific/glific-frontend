@@ -100,7 +100,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: Checkbox,
       name: 'isActive',
       title: (
-        <Typography variant="h6" style={styles.IsActive}>
+        <Typography variant="h6" className={styles.IsActive}>
           Is active?
         </Typography>
       ),

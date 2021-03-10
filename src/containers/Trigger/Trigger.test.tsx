@@ -4,8 +4,9 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { Trigger } from './Trigger';
 import { getTriggerQuery } from '../../mocks/Trigger';
-
-const mocks = [getTriggerQuery];
+import { LIST_ITEM_MOCKS } from '../SettingList/SettingList.test.helper';
+import { LIST_ITEM_MOCKS as SearchMocks } from '../Search/Search.test.helper';
+const mocks = [getTriggerQuery, ...LIST_ITEM_MOCKS, ...SearchMocks];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -20,6 +21,6 @@ test('should load trigger edit form', async () => {
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
     const formLayout = getByTestId('formLayout');
-    expect(formLayout).toHaveTextContent('Keywords');
+    expect(formLayout).toHaveTextContent('days');
   });
 });
