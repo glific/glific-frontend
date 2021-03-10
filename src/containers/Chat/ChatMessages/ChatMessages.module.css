@@ -1,3 +1,9 @@
+@media only screen and (max-width: 768px) {
+  .JumpToLatest {
+    display: none !important;
+  }
+}
+
 .ChatMessages {
   display: flex;
   padding-left: 0px !important;
@@ -86,4 +92,25 @@
 
 .Loading {
   margin: 0 auto;
+}
+
+.JumpToLatest {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  font-weight: 500;
+  line-height: 1;
+  align-items: center;
+  margin: 0 auto;
+  background-color: #073f24;
+  padding: 3px 8px;
+  color: #edf6f2;
+  border-radius: 12px 12px 0 0;
+  z-index: 100;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+html {
+  scroll-behavior: smooth;
 }
