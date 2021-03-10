@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import styles from './TriggerList.module.css';
 import { ReactComponent as TriggerIcon } from '../../../assets/images/icons/Trigger/Union.svg';
+import { ReactComponent as ClockIcon } from '../../../assets/images/icons/Trigger/Clock.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
@@ -12,7 +13,15 @@ import { FULL_DATE_FORMAT } from '../../../common/constants';
 
 export interface TriggerListProps {}
 
-const getName = (name: any) => <p className={styles.LabelText}>{name}</p>;
+const getName = (name: any) => (
+  <p className={styles.LabelText}>
+    {name}
+    <br />
+    <div className={styles.TriggerIcon}>
+      <ClockIcon />
+    </div>
+  </p>
+);
 
 const getStartAt = (date: any) => (
   <div className={styles.StartDate}>{moment(date).format(FULL_DATE_FORMAT)}</div>
