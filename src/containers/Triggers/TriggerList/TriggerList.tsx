@@ -17,9 +17,9 @@ const getName = (name: any) => (
   <p className={styles.LabelText}>
     {name}
     <br />
-    <div className={styles.TriggerIcon}>
+    <p className={styles.TriggerIcon}>
       <ClockIcon />
-    </div>
+    </p>
   </p>
 );
 
