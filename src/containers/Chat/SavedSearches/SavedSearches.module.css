@@ -25,3 +25,12 @@
   overflow-y: hidden;
   position: relative;
 }
+
+.SearchIcon {
+  display: flex;
+}
+
+.SearchIcon img {
+  margin-top: -3px;
+  padding-right: 8px;
+}

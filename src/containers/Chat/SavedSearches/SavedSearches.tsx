@@ -7,7 +7,7 @@ import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { SAVED_SEARCH_QUERY } from '../../../graphql/queries/Search';
 import ConversationList from '../ChatConversations/ConversationList/ConversationList';
 import styles from './SavedSearches.module.css';
-// import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
+import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
 
 export interface SavedSearchesProps {
   collectionId?: number | null;
@@ -18,6 +18,12 @@ const queryVariables = {
   filter: {},
   opts: {},
 };
+
+const label = (
+  <div className={styles.SearchIcon}>
+    <img src={searchIcon} alt="Search" /> Search
+  </div>
+);
 
 const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   const [savedSearch, setSavedSearch] = useState({ id: 0, args: '{}' });
@@ -57,7 +63,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
           field={{}}
           form={{ setFieldValue: changeValue }}
           textFieldProps={{
-            label: 'Search',
+            label,
             variant: 'outlined',
           }}
           multiple={false}
