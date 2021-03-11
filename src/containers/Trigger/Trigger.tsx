@@ -1,16 +1,15 @@
 // @ts-nocheck
 /* eslint-disable */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
 
 import styles from './Trigger.module.css';
 
-import { FILTER_TAGS_NAME, GET_TAG, GET_TAGS } from '../../graphql/queries/Tag';
-import { UPDATE_TAG, CREATE_TAG, DELETE_TAG } from '../../graphql/mutations/Tag';
+import { GET_TAGS } from '../../graphql/queries/Tag';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
@@ -24,6 +23,7 @@ import { GET_FLOWS } from '../../graphql/queries/Flow';
 import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { GET_TRIGGER } from '../../graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from '../../graphql/mutations/Trigger';
+import { useLocation } from 'react-router';
 
 export interface TriggerProps {
   match: any;
@@ -65,6 +65,13 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>({});
+  const location = useLocation();
+
+  if (location.state === 'copy') {
+    queries.updateItemQuery = CREATE_TRIGGER;
+  } else {
+    queries.updateItemQuery = UPDATE_TRIGGER;
+  }
 
   const states = {
     flowId,
