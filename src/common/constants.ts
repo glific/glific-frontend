@@ -26,7 +26,7 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
-export const dayList = [
+export const dayList: any = [
   { id: 1, label: 'Monday' },
   { id: 2, label: 'Tuesday' },
   { id: 3, label: 'Wednesday' },

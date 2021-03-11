@@ -1,6 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
-
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
@@ -9,13 +6,11 @@ import moment from 'moment';
 
 import styles from './Trigger.module.css';
 
-import { GET_TAGS } from '../../graphql/queries/Tag';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
-import { getObject } from '../../common/utils';
 import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
 import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
@@ -23,7 +18,6 @@ import { GET_FLOWS } from '../../graphql/queries/Flow';
 import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { GET_TRIGGER } from '../../graphql/queries/Trigger';
 import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from '../../graphql/mutations/Trigger';
-import { useLocation } from 'react-router';
 
 export interface TriggerProps {
   match: any;
@@ -57,21 +51,14 @@ const queries = {
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState({});
   const [isActive, setIsActive] = useState(false);
-  const [startTime, setStartTime] = useState();
-  const [startDate, setStartDate] = useState();
+  const [startTime, setStartTime] = useState('');
+  const [startDate, setStartDate] = useState('');
   const [frequency, setfrequency] = useState({});
-  const [endDate, setEndDate] = useState();
+  const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>({});
-  const location = useLocation();
-
-  if (location.state === 'copy') {
-    queries.updateItemQuery = CREATE_TRIGGER;
-  } else {
-    queries.updateItemQuery = UPDATE_TRIGGER;
-  }
 
   const states = {
     flowId,
@@ -93,10 +80,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   });
 
   const { data: collections } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
-  });
-
-  const { data } = useQuery(GET_TAGS, {
     variables: setVariables(),
   });
 
@@ -151,7 +134,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         label: 'Repeat',
         variant: 'outlined',
       },
-      onChange: (value) => {
+      onChange: (value: any) => {
         if (value.value === 'weekly') {
           setDaysDisabled(false);
         } else {
@@ -187,24 +170,24 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const setStates = ({
     days: daysValue,
-    endDate,
+    endDate: endDateValue,
     flow: flowValue,
     frequency: frequencyValue,
-    group,
-    isActive,
-    isRepeating,
-    startAt,
+    group: groupValue,
+    isActive: isActiveValue,
+    isRepeating: isRepeatingValue,
+    startAt: startAtValue,
   }: any) => {
-    setIsRepeating(isRepeating);
-    setIsActive(isActive);
-    setEndDate(moment(endDate).format('yyyy-MM-DD'));
-    setDays(dayList.filter((day) => daysValue.includes(day.id)));
-    setStartDate(moment(startAt).format('yyyy-MM-DD'));
-    setStartTime(moment(startAt).format('Thh:mm:ss'));
+    setIsRepeating(isRepeatingValue);
+    setIsActive(isActiveValue);
+    setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
+    setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
+    setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
+    setStartTime(moment(startAtValue).format('Thh:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
-    setFlowId(flow.flows.filter((flow) => flow.id === flowValue.id)[0]);
-    setGroupId(collections.groups.filter((collection) => collection.id === group.id)[0]);
+    setFlowId(flow.flows.filter((flows: any) => flows.id === flowValue.id)[0]);
+    setGroupId(collections.groups.filter((collection: any) => collection.id === groupValue.id)[0]);
   };
 
   const setPayload = (payload: any) => {
@@ -213,7 +196,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       isActive: payloadCopy.isActive,
       isRepeating: true,
       flowId: payloadCopy.flowId.id,
-      days: payloadCopy.days.map((day) => day.id),
+      days: payloadCopy.days.map((day: any) => day.id),
       groupId: payloadCopy.groupId.id,
       startDate: moment(payloadCopy.startDate).format('yyyy-MM-DD'),
       endDate: moment(payloadCopy.endDate).format('yyyy-MM-DD'),
