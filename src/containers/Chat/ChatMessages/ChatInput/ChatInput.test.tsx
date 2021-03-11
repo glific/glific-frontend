@@ -100,27 +100,6 @@ describe('<ChatInput />', () => {
     });
   });
 
-  test('jump to latest', async () => {
-    const { getByTestId, queryByTestId } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <div>
-          <ChatInput {...defaultProps} />
-          <div className="messageContainer" data-testid="messageContainer"></div>
-        </div>
-      </MockedProvider>
-    );
-
-    const messageContainer = getByTestId('messageContainer');
-    jest.spyOn(messageContainer, 'scrollHeight', 'get').mockImplementation(() => 100);
-
-    fireEvent.scroll(getByTestId('messageContainer'), { target: { scrollY: 100 } });
-
-    const jumpToLatestButton = getByTestId('jumpToLatest');
-    fireEvent.click(jumpToLatestButton);
-
-    expect(queryByTestId('jumpToLatest')).toBe(null);
-  });
-
   test('when bsp status is none', async () => {
     const propsWithBspStatusNone = defaultProps;
     propsWithBspStatusNone.contactBspStatus = 'NONE';
