@@ -132,9 +132,17 @@ const tableHeadColumns = (
   removeSortBy?: Array<any>
 ) => {
   let batchAction = null;
+  let sortColFirst = columnNames.length - 1;
+  let sortColSecond = columnNames.length - 0;
+
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
+  if (listName === 'Trigger') {
+    sortColFirst = columnNames.length - 1;
+    sortColSecond = columnNames.length - 2;
+  }
+
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}
@@ -143,7 +151,7 @@ const tableHeadColumns = (
           key={name}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 && !removeSortBy?.includes(name) ? (
+          {i !== sortColFirst && i !== sortColSecond && !removeSortBy?.includes(name) ? (
             <TableSortLabel
               active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
               direction={tableVals.sortDirection}

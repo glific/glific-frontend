@@ -8,7 +8,7 @@ import { ReactComponent as ClockIcon } from '../../../assets/images/icons/Trigge
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
-import { DELETE_SEARCH } from '../../../graphql/mutations/Search';
+import { DELETE_TRIGGER } from '../../../graphql/mutations/Trigger';
 import { setVariables, FULL_DATE_FORMAT, daysList } from '../../../common/constants';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
@@ -51,15 +51,15 @@ const getColumns = ({ name, endDate, group, frequency, days }: any) => ({
   collections: getCollections(group),
 });
 
-const columnNames = ['NAME', 'END DATE', 'COLLECTION'];
+const columnNames = ['NAME', 'END DATE', 'COLLECTION', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this trigger.";
-const columnStyles = [styles.Name, styles.EndDate, styles.Collections];
+const columnStyles = [styles.Name, styles.EndDate, styles.Collections, styles.Actions];
 const triggerIcon = <TriggerIcon className={styles.Icon} />;
 
 const queries = {
   countQuery: TRIGGER_QUERY_COUNT,
   filterItemsQuery: TRIGGER_LIST_QUERY,
-  deleteItemQuery: DELETE_SEARCH,
+  deleteItemQuery: DELETE_TRIGGER,
 };
 
 const columnAttributes = {
@@ -98,6 +98,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       {...columnAttributes}
       searchParameter="name"
       additionalAction={additionalAction}
+      defaultSortBy="name"
     />
   );
 };
