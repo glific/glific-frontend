@@ -1,4 +1,3 @@
-import { setVariables } from '../common/constants';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../graphql/queries/Trigger';
 
 export const triggerListQuery = {
