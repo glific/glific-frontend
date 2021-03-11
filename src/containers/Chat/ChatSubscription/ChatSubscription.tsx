@@ -37,7 +37,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
-      if (conversation) {
+      if (conversation && conversation.search.length > 0) {
         // save the conversation and update cache
 
         // temporary fix for cache. need to check why query variables change
