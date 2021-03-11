@@ -37,7 +37,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
 
   if (error) {
     setErrorMessage(client, error);
-    return null;
+    return <div>error</div>;
   }
 
   let options = [];

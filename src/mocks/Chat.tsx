@@ -303,6 +303,16 @@ export const savedSearchQuery = {
   },
 };
 
+export const savedSearchQueryError = {
+  request: {
+    query: SAVED_SEARCH_QUERY,
+    variables: { filter: {}, opts: {} },
+  },
+  result: {
+    errors: [new Error('An error occurred')],
+  },
+};
+
 export const collectionCountQuery = {
   request: {
     query: SEARCHES_COUNT,
