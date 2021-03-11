@@ -284,9 +284,18 @@ export const savedSearchQuery = {
           args:
             '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
+          isReserved: true,
           label: 'All unread conversations',
           shortcode: 'Unread',
-          isReserved: true,
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: false,
+          label: 'test',
+          shortcode: 'test',
           count: 10,
         },
       ],

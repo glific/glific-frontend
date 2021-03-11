@@ -1,31 +1,27 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import SavedSearches from './SavedSearches';
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-
-import { searchQuery } from '../ChatMessages/ChatMessages.test';
-
-const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery(searchQuery);
-
-const client = new ApolloClient({
-  cache,
-  assumeImmutableResults: true,
-});
+import { MockedProvider } from '@apollo/client/testing';
+import { savedSearchQuery } from '../../../mocks/Chat';
+import { setUserSession } from '../../../services/AuthService';
 
 describe('<SavedSearches />', () => {
-  test('it should mount', () => {
+  test('it should mount', async () => {
     const { getByText } = render(
-      <ApolloProvider client={client}>
+      <MockedProvider mocks={[savedSearchQuery]}>
         <SavedSearches />
-      </ApolloProvider>
+      </MockedProvider>
     );
+    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    // const savedSearches = screen.getByTestId('SavedSearches');
 
-    // expect(savedSearches).toBeInTheDocument();
+    await waitFor(() => {
+      const savedSearches = screen.getByTestId('SavedSearches');
+
+      expect(savedSearches).toBeInTheDocument();
+    });
   });
 });
