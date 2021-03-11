@@ -5,6 +5,8 @@ export const TRIGGER_LIST_QUERY = gql`
     triggers(filter: $filter, opts: $opts) {
       id
       name
+      days
+      frequency
       flow {
         id
         name
@@ -13,6 +15,7 @@ export const TRIGGER_LIST_QUERY = gql`
         id
         label
       }
+      endDate
       isActive
       isRepeating
       startAt

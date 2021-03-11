@@ -9,18 +9,29 @@ import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Fl
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
 import { DELETE_SEARCH } from '../../../graphql/mutations/Search';
-import { setVariables, FULL_DATE_FORMAT } from '../../../common/constants';
+import { setVariables, FULL_DATE_FORMAT, daysList } from '../../../common/constants';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
 export interface TriggerListProps {}
 
-const tooltipTitle: any = 'Repeat: Weekly(Mon, Wed, Fri)'; // added static for now, it will be dynamic based on trigger
+const getTooltip = (frequency: any, days: any) => {
+  const obj: any = [];
 
-const getName = (name: any) => (
+  days.forEach((option: number) => {
+    daysList.forEach((value: any) => {
+      if (value.id === option) {
+        obj.push(value.label);
+      }
+    });
+  });
+  return `Repeat: ${frequency}(${obj.toString()})`;
+};
+
+const getName = (name: any, frequency: any, days: any) => (
   <p className={styles.LabelText}>
     {name}
     <br />
-    <Tooltip title={tooltipTitle} placement="right">
+    <Tooltip title={getTooltip(frequency, days)} placement="right">
       <span className={styles.TriggerIcon}>
         <ClockIcon />
       </span>
@@ -28,15 +39,15 @@ const getName = (name: any) => (
   </p>
 );
 
-const getStartAt = (date: any) => (
-  <div className={styles.StartDate}>{moment(date).format(FULL_DATE_FORMAT)}</div>
+const getEndDate = (date: any) => (
+  <div className={styles.EndDateVal}>{moment(date).format(FULL_DATE_FORMAT)}</div>
 );
 
 const getCollections = (group: any) => <p className={styles.Collection}>{group.label}</p>;
 
-const getColumns = ({ name, startAt, group }: any) => ({
-  name: getName(name),
-  startAt: getStartAt(startAt),
+const getColumns = ({ name, endDate, group, frequency, days }: any) => ({
+  name: getName(name, frequency, days),
+  startAt: getEndDate(endDate),
   collections: getCollections(group),
 });
 
