@@ -36,7 +36,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
 
   let options = [];
   if (data) {
-    options = data.savedSearches.filter((searches: any) => searches.isReserved === false);
+    options = data.savedSearches.filter((searches: any) => !searches.isReserved);
   }
 
   const changeValue = (event: any, value: any) => {

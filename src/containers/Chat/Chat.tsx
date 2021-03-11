@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
@@ -29,8 +29,8 @@ export interface ChatProps {
 
 export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearches }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
-
   const [simulatorId, setSimulatorId] = useState(0);
+  let tabRef: any = useRef(null);
 
   let selectedContactId = contactId;
   let selectedCollectionId = collectionId;
@@ -83,6 +83,14 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
   let chatInterface: any;
   let listingContent;
 
+  const scrollToRef = (ref: any) => {
+    if (ref) {
+      tabRef = ref;
+      tabRef.current.scrollLeft += 300;
+    }
+  };
+  const executeScroll = () => scrollToRef(tabRef);
+
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
   } else {
@@ -125,13 +133,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
             <div className={styles.IconBackground}>
               <img src={selectedChatIcon} height="24" className={styles.Icon} alt="Conversation" />
             </div>
-            <div className={styles.TabContainer}>
-              <div className={styles.Title}>
+            <div className={styles.TabContainer} ref={tabRef}>
+              <div className={styles.Title} onClick={executeScroll} aria-hidden="true">
                 <Typography className={`${styles.TitleText} ${contactSelectedClass}`} variant="h6">
                   <Link to="/chat">Contacts</Link>
                 </Typography>
               </div>
-              <div className={styles.Title}>
+              <div className={styles.Title} onClick={executeScroll} aria-hidden="true">
                 <Typography
                   className={`${styles.TitleText} ${collectionSelectedClass}`}
                   variant="h6"
@@ -139,7 +147,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                   <Link to="/chat/collection">Collections</Link>
                 </Typography>
               </div>
-              <div className={styles.Title}>
+              <div className={styles.Title} onClick={executeScroll} aria-hidden="true">
                 <Typography className={`${styles.TitleText} ${savedSearchClass}`} variant="h6">
                   <Link to="/chat/saved-searches">Saved searches</Link>
                 </Typography>
