@@ -16,7 +16,6 @@ export const GET_TRIGGER = gql`
         id
         isActive
         isRepeating
-        name
         startAt
       }
     }
