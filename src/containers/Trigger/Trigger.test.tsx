@@ -8,7 +8,7 @@ import { LIST_ITEM_MOCKS } from '../SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from '../Search/Search.test.helper';
 import * as AutoComplete from '../../components/UI/Form/AutoComplete/AutoComplete';
 
-describe('yo', () => {
+describe('trigger with daily frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
   const frequencyDailyWrapper = (
@@ -32,7 +32,7 @@ describe('yo', () => {
   });
 });
 
-describe('yo1', () => {
+describe('trigger with no frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('none'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
   const frequencyDailyWrapper = (
@@ -56,7 +56,7 @@ describe('yo1', () => {
   });
 });
 
-describe('hey', () => {
+describe('trigger with weekly frequency', () => {
   const mocks = [getTriggerQuery('weekly'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
   const wrapper = (
