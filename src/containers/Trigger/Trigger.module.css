@@ -6,3 +6,8 @@
 .IsActive {
   color: #073f24;
 }
+
+.TriggerIcon {
+  width: 29px;
+  height: 29px;
+}

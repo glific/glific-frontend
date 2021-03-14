@@ -7,7 +7,7 @@ import moment from 'moment';
 import styles from './Trigger.module.css';
 
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as TriggerIcon } from '../../assets/images/icons/Trigger/Union.svg';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
@@ -39,7 +39,7 @@ const FormSchema = Yup.object().shape({
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
 
-const tagIcon = <TagIcon className={styles.TagIcon} />;
+const triggerIcon = <TriggerIcon className={styles.TriggerIcon} />;
 
 const queries = {
   getItemQuery: GET_TRIGGER,
@@ -50,7 +50,7 @@ const queries = {
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState({});
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [startDate, setStartDate] = useState('');
   const [frequency, setfrequency] = useState({});
@@ -227,7 +227,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="trigger"
       listItem="trigger"
-      icon={tagIcon}
+      icon={triggerIcon}
       customStyles={styles.Triggers}
     />
   );
