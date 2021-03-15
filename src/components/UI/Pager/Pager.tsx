@@ -132,11 +132,9 @@ const tableHeadColumns = (
   removeSortBy?: Array<any>
 ) => {
   let batchAction = null;
-
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
-
   return (
     <TableRow className={styles.TableHeadRow}>
       {batchAction}
