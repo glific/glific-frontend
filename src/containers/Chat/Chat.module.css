@@ -20,14 +20,16 @@
     width: 100% !important;
   }
 }
+
 .NoConversations {
   padding: 76px;
 }
 
 .IconBackground {
-  background-color: #eaedec;
-  border-radius: 50%;
-  display: flex;
+  height: 24px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .Icon {
@@ -40,17 +42,15 @@
 }
 
 .Title {
-  margin-left: 12px;
   font-family: 'Heebo', sans-serif;
 }
 
 /* Overriding Typography styling */
 .TitleText {
-  font-family: 'Heebo', sans-serif !important;
-  font-size: 24px !important;
-  color: #93a29b !important;
-  margin-top: 3px !important;
-  line-height: 1.2 !important;
+  font-size: 16px !important;
+  margin: 10px !important;
+  color: #93a29b;
+  cursor: pointer;
 }
 
 .SelectedTab {
@@ -60,9 +60,7 @@
 
 .TabContainer {
   display: -webkit-inline-box;
-  cursor: pointer;
-  overflow-x: hidden;
-  width: 366px !important;
+  width: 345px;
 }
 
 .Title a {
