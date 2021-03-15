@@ -18,7 +18,7 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -37,16 +37,6 @@ const queries = {
   updateItemQuery: UPDATE_ORGANIZATION,
   deleteItemQuery: DELETE_ORGANIZATION,
 };
-
-const dayList = [
-  { id: 1, label: 'Monday' },
-  { id: 2, label: 'Tuesday' },
-  { id: 3, label: 'Wednesday' },
-  { id: 4, label: 'Thursday' },
-  { id: 5, label: 'Friday' },
-  { id: 6, label: 'Saturday' },
-  { id: 7, label: 'Sunday' },
-];
 
 export const Organisation: React.SFC = () => {
   const client = useApolloClient();

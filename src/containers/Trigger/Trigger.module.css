@@ -1,0 +1,13 @@
+.Triggers > div:nth-child(5),
+.Triggers > div:nth-child(5) > div {
+  width: 100%;
+}
+
+.IsActive {
+  color: #073f24;
+}
+
+.TriggerIcon {
+  width: 29px;
+  height: 29px;
+}
