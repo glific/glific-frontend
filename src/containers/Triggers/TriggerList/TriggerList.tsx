@@ -9,7 +9,7 @@ import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Fl
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
 import { DELETE_TRIGGER } from '../../../graphql/mutations/Trigger';
-import { setVariables, FULL_DATE_FORMAT, daysList } from '../../../common/constants';
+import { setVariables, FULL_DATE_FORMAT, dayList } from '../../../common/constants';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
 export interface TriggerListProps {}
@@ -18,7 +18,7 @@ const getTooltip = (frequency: any, days: any) => {
   const obj: any = [];
 
   days.forEach((option: number) => {
-    daysList.forEach((value: any) => {
+    dayList.forEach((value: any) => {
       if (value.id === option) {
         obj.push(value.label);
       }

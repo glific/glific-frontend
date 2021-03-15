@@ -109,9 +109,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           endAdornment={fieldEndAdorment}
         />
         {form && form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText className={styles.DangerText}>
-            {form && form.errors[field.name]}
-          </FormHelperText>
+          <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>

@@ -54,7 +54,7 @@ export interface ContactBarProps {
   lastMessageTime?: any;
   contactStatus?: string;
   contactBspStatus?: string;
-  handleAction?: any;
+  handleAction: any;
   isSimulator?: boolean;
 }
 
@@ -66,6 +66,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     lastMessageTime,
     contactStatus,
     displayName,
+    handleAction,
     isSimulator,
   } = props;
   const client = useApolloClient();
@@ -196,7 +197,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       updateContactCollections({
         variables: {
           input: {
-            contactId: props.contactId,
+            contactId,
             addGroupIds: finalSelectedCollections,
             deleteGroupIds: finalRemovedCollections,
           },
@@ -228,15 +229,15 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       flowId,
     };
 
-    if (props.contactId) {
-      flowVariables.contactId = props.contactId;
+    if (contactId) {
+      flowVariables.contactId = contactId;
       addFlow({
         variables: flowVariables,
       });
     }
 
-    if (props.collectionId) {
-      flowVariables.groupId = props.collectionId;
+    if (collectionId) {
+      flowVariables.groupId = collectionId;
       addFlowToCollection({
         variables: flowVariables,
       });
@@ -265,7 +266,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const handleClearChatSubmit = () => {
     clearMessages();
     setClearChatDialog(false);
-    props.handleAction();
+    handleAction();
   };
 
   if (showClearChatDialog) {
@@ -289,7 +290,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const handleBlock = () => {
     blockContact({
       variables: {
-        id: props.contactId,
+        id: contactId,
         input: {
           status: 'BLOCKED',
         },
@@ -374,7 +375,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 disabled={isSimulator}
                 data-testid="viewProfile"
                 onClick={() => {
-                  history.push(`/contact-profile/${props.contactId}`);
+                  history.push(`/contact-profile/${contactId}`);
                 }}
               >
                 {isSimulator ? (

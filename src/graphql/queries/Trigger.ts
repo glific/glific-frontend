@@ -23,6 +23,28 @@ export const TRIGGER_LIST_QUERY = gql`
   }
 `;
 
+export const GET_TRIGGER = gql`
+  query getTrigger($id: ID!) {
+    trigger(id: $id) {
+      trigger {
+        days
+        endDate
+        flow {
+          id
+        }
+        frequency
+        group {
+          id
+        }
+        id
+        isActive
+        isRepeating
+        startAt
+      }
+    }
+  }
+`;
+
 export const TRIGGER_QUERY_COUNT = gql`
   query countTriggers($filter: TriggerFilter!) {
     countTriggers(filter: $filter)

@@ -10,4 +10,49 @@ export const DELETE_TRIGGER = gql`
     }
   }
 `;
-export default DELETE_TRIGGER;
+
+export const CREATE_TRIGGER = gql`
+  mutation createTrigger($input: TriggerInput!) {
+    createTrigger(input: $input) {
+      trigger {
+        days
+        endDate
+        flow {
+          id
+        }
+        frequency
+        group {
+          id
+        }
+        id
+        isActive
+        isRepeating
+        name
+        startAt
+      }
+    }
+  }
+`;
+
+export const UPDATE_TRIGGER = gql`
+  mutation updateTrigger($id: ID!, $input: TriggerUpdateInput!) {
+    updateTrigger(id: $id, input: $input) {
+      trigger {
+        days
+        endDate
+        flow {
+          id
+        }
+        frequency
+        group {
+          id
+        }
+        id
+        isActive
+        isRepeating
+        name
+        startAt
+      }
+    }
+  }
+`;

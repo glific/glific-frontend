@@ -33,6 +33,7 @@ import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSub
 import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList';
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { TriggerList } from '../../containers/Triggers/TriggerList/TriggerList';
+import { Trigger } from '../../containers/Trigger/Trigger';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -86,6 +87,9 @@ const routeAdmin = (
     <Route path="/search/add" exact component={Search} />
     <Route path="/search/:id/edit" exact component={Search} />
 
+    <Route path="/trigger/add" exact component={Trigger} />
+    <Route path="/trigger/:id/edit" exact component={Trigger} />
+
     <Route path="/chat" exact component={Chat} />
     <Route path="/staff-management" exact component={StaffManagementList} />
     <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
@@ -104,6 +108,14 @@ const routeAdmin = (
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
+    <Route exact path="/chat/saved-searches" component={() => <Chat savedSearches />} />
+    <Route
+      exact
+      path="/chat/saved-searches/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <Chat savedSearches contactId={match.params.contactId} />
+      )}
+    />
     <Route
       exact
       path="/chat/:contactId"

@@ -94,9 +94,8 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const search = (data: any) => {
     const target = { value: data.term, param: data };
-    if (handleChange) {
-      handleChange({ target });
-    }
+    handleChange({ target });
+
     // After search close dialogbox
     closeDialogBox();
     if (dialogType === 'saveSearch') {
@@ -235,6 +234,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         }}
         savedSearchCriteria={savedSearchCriteria}
         savedSearchCriteriaId={savedSearchCriteriaId}
+        entityType="contact"
       />
       {saveSearchButton}
       {dialogBox}
