@@ -31,11 +31,17 @@ const triggerFrequency = [
 ];
 
 const FormSchema = Yup.object().shape({
-  flowId: Yup.object().nullable().required('Flow is required'),
+  flowId: Yup.object().required('Flow is required'),
   startTime: Yup.string().required('Description is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
   frequency: Yup.object().nullable().required('This is a required field'),
-  groupId: Yup.object().nullable().required('Collection is required'),
+  days: Yup.object()
+    .nullable()
+    .when('frequency', {
+      is: (val: any) => val && val.value === 'weekly',
+      then: Yup.object().nullable().required('Date is required'),
+    }),
+  groupId: Yup.object().required('Collection is required'),
 });
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
@@ -50,16 +56,16 @@ const queries = {
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
-  const [flowId, setFlowId] = useState({});
+  const [flowId, setFlowId] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [startDate, setStartDate] = useState('');
-  const [frequency, setfrequency] = useState({});
+  const [frequency, setfrequency] = useState<any>('');
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
-  const [groupId, setGroupId] = useState<any>({});
+  const [groupId, setGroupId] = useState<any>('');
   const location = useLocation();
 
   const states = {
@@ -146,7 +152,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         variant: 'outlined',
       },
       onChange: (value: any) => {
-        if (value.value === 'weekly') {
+        if (value && value.value === 'weekly') {
           setDaysDisabled(false);
         } else {
           setDaysDisabled(true);
