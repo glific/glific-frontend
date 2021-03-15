@@ -196,6 +196,7 @@ describe('Collection test', () => {
   const collectionDefaultProps = {
     displayName: 'Default Collection',
     collectionId: '2',
+    handleAction: jest.fn(),
   };
 
   const component = (
