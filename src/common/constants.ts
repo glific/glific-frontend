@@ -94,6 +94,7 @@ export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STIC
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
+    'END DATE': 'updated_at',
     NAME: 'name',
     LABEL: 'label',
     BODY: 'body',
