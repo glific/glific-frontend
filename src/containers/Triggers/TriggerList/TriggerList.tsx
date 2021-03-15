@@ -98,7 +98,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       {...columnAttributes}
       searchParameter="name"
       additionalAction={additionalAction}
-      defaultSortBy="name"
+      removeSortBy={['COLLECTION']}
     />
   );
 };
