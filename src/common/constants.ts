@@ -2,6 +2,7 @@ import moment from 'moment';
 
 export const SIDE_DRAWER_WIDTH = 233;
 export const DATE_FORMAT = 'DD/MM/YY';
+export const FULL_DATE_FORMAT = 'DD/MM/YYYY';
 export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
@@ -93,6 +94,7 @@ export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STIC
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
   const backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
+    'END DATE': 'updated_at',
     NAME: 'name',
     LABEL: 'label',
     BODY: 'body',

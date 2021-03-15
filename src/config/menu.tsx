@@ -20,6 +20,11 @@ export const sideDrawerMenus = [
     icon: 'flow',
   },
   {
+    title: 'Triggers',
+    path: '/trigger',
+    icon: 'trigger',
+  },
+  {
     title: 'Searches',
     path: '/search',
     icon: 'search',

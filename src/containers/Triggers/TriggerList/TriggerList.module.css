@@ -1,0 +1,45 @@
+.EndDate {
+  width: 180px;
+}
+
+.Name {
+  width: 300px;
+}
+
+.Collections {
+  width: 300px;
+}
+
+.Icon {
+  width: 29px;
+  height: 29px;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.EndDateVal {
+  width: 185px;
+  padding-top: 12px;
+  color: #93a29b;
+  font-size: 17px;
+}
+
+.Collection {
+  color: #93a29b;
+  font-size: 17px;
+}
+
+.Actions {
+  width: 200px;
+  justify-content: flex-end;
+  margin-left: auto;
+}

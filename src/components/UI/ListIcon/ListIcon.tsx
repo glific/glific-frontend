@@ -19,6 +19,8 @@ import searchSelectedIcon from '../../../assets/images/icons/Search/Selected.svg
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
+import triggerSelectedIcon from '../../../assets/images/icons/Trigger/Selected.svg';
+import triggerIcon from '../../../assets/images/icons/Trigger/Unselected.svg';
 
 export interface ListIconProps {
   icon: string;
@@ -38,6 +40,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     analytics: analyticsIcon,
     'speed-send': speedSendIcon,
     template: templateIcon,
+    trigger: triggerIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
@@ -50,6 +53,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     analytics: analyticsSelectedIcon,
     'speed-send': speedSendSelectedIcon,
     template: templateSelectedIcon,
+    trigger: triggerSelectedIcon,
   };
 
   return (
