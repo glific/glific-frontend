@@ -14,7 +14,7 @@ describe('trigger with daily frequency', () => {
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[{ state: 'copy' }]}>
         <Trigger match={{ params: { id: '1' } }} />
       </MemoryRouter>
     </MockedProvider>
