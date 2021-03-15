@@ -54,6 +54,7 @@ export interface FormLayoutProps {
   getMediaId?: any;
   customStyles?: any;
   customHandler?: any;
+  copyNotification?: string;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -93,6 +94,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   getMediaId,
   customStyles = null,
   customHandler,
+  copyNotification = '',
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -176,7 +178,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         // display successful message after update
         let message = `${capitalListItemName} edited successfully!`;
         if (type === 'copy') {
-          message = 'Copy of the flow has been created!';
+          message = copyNotification;
         }
         setNotification(client, message);
       }
@@ -460,12 +462,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     );
   }
 
+  let formTitle = title || itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`;
+  formTitle = type === 'copy' ? `Copy ${listItemName} ` : formTitle;
+
   let heading = (
     <Typography variant="h5" className={styles.Title}>
       <IconButton disabled className={styles.Icon}>
         {icon}
       </IconButton>
-      {title || itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`}
+      {formTitle}
     </Typography>
   );
 
