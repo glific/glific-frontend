@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
+import { useLocation } from 'react-router-dom';
 
 import styles from './Trigger.module.css';
 
@@ -59,6 +60,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>({});
+  const location = useLocation();
 
   const states = {
     flowId,
@@ -71,6 +73,15 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     groupId,
     isActive,
   };
+
+  let type;
+
+  if (location.state === 'copy') {
+    queries.updateItemQuery = CREATE_TRIGGER;
+    type = 'copy';
+  } else {
+    queries.updateItemQuery = UPDATE_TRIGGER;
+  }
 
   const { data: flow } = useQuery(GET_FLOWS, {
     variables: setVariables({
@@ -227,6 +238,8 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       formFields={formFields}
       redirectionLink="trigger"
       listItem="trigger"
+      type={type}
+      copyNotification="Copy of the trigger has been created!"
       icon={triggerIcon}
       customStyles={styles.Triggers}
     />

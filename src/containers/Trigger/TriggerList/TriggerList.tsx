@@ -24,7 +24,7 @@ const getTooltip = (frequency: any, days: any) => {
       }
     });
   });
-  return `Repeat: ${frequency}(${obj.toString()})`;
+  return `Repeat: ${frequency}${frequency === 'weekly' ? `(${obj.toString()})` : ''}`;
 };
 
 const getName = (name: any, frequency: any, days: any) => (

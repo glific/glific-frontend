@@ -32,7 +32,7 @@ import { useToast } from '../../services/ToastService';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList';
 import Loading from '../../components/UI/Layout/Loading/Loading';
-import { TriggerList } from '../../containers/Triggers/TriggerList/TriggerList';
+import { TriggerList } from '../../containers/Trigger/TriggerList/TriggerList';
 import { Trigger } from '../../containers/Trigger/Trigger';
 
 const defaultRedirect = () => <Redirect to="/chat" />;

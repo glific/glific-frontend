@@ -156,6 +156,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       languageSupport={false}
       title={title}
       type={type}
+      copyNotification="Copy of the flow has been created!"
       customHandler={customHandler}
     />
   );
