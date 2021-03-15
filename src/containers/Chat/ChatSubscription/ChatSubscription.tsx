@@ -34,6 +34,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 }) => {
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const client = useApolloClient();
+  let subscriptionRequests: any = [];
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -46,6 +47,29 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     },
   });
 
+  // function to determine if we should continue to use subscription or use refetch
+  const switchSubscriptionToRefetch = () => {
+    const useRefetch = false;
+    console.log('subscriptionRequests', subscriptionRequests);
+    return useRefetch;
+  };
+
+  // function to record the number of subscription calls
+  const recordRequests = () => {
+    const requestTrimThreshold = 5000;
+    const requestTrimSize = 4000;
+
+    subscriptionRequests.push(Date.now());
+
+    // now keep requests array from growing forever
+    if (subscriptionRequests.length > requestTrimThreshold) {
+      subscriptionRequests = subscriptionRequests.slice(
+        0,
+        subscriptionRequests.length - requestTrimSize
+      );
+    }
+  };
+
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
       // if there is no message data then return previous conversations
@@ -57,6 +81,19 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // TODO: Need to investigate why this happens
       if (!cachedConversations) {
         return null;
+      }
+
+      // let's record message sent and received subscriptions
+      if (action === 'SENT' || action === 'RECEIVED') {
+        // build the request array
+        recordRequests();
+
+        // determine if we should use subscriptions or refetch the query
+        if (switchSubscriptionToRefetch()) {
+          // let's refetch and return
+          // refetch();
+          // return null;
+        }
       }
 
       let newMessage: any;
