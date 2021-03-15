@@ -27,6 +27,7 @@ export interface AutocompleteProps {
   onChange?: any;
   asyncSearch?: boolean;
   roleSelection?: any;
+  openOptions?: boolean;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -48,6 +49,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   asyncSearch = false,
   helpLink,
   noOptionsText = 'No options available',
+  openOptions,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -174,7 +176,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
               />
             );
           }}
-          open={open}
+          open={openOptions || open}
           onOpen={() => {
             setOpen(true);
           }}

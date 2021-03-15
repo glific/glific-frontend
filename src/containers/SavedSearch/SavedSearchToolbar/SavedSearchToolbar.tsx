@@ -24,7 +24,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const [optionsSelected, setOptionsSelected] = useState(false);
   const [fixedSearches, setFixedSearches] = useState<any>([]);
   const [searchesCount, setSearchesCount] = useState<any>({});
-  const [additionalSearch, setAdditionalSearch] = useState<any>([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const Ref = useRef(null);
   const open = Boolean(anchorEl);
@@ -67,7 +66,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     variables: queryVariables,
     onCompleted: (data) => {
       setFixedSearches(data.savedSearches.filter((searches: any) => searches.isReserved));
-      setAdditionalSearch(data.savedSearches.filter((searches: any) => !searches.isReserved));
     },
   });
 
@@ -167,16 +165,6 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
                 <span className={styles.Count}>
                   {searchesCount[search.shortcode] ? searchesCount[search.shortcode] : 0}
                 </span>
-              </div>
-            ))}
-            {additionalSearch.map((search: any) => (
-              <div
-                key={search.id}
-                className={styles.LabelContainer}
-                onClick={() => handleAdditionalSavedSearch(search)}
-                aria-hidden="true"
-              >
-                <span className={styles.Label}>{search.shortcode}</span>
               </div>
             ))}
           </Paper>

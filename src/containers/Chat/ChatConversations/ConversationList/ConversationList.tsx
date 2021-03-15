@@ -33,6 +33,7 @@ interface ConversationListProps {
   searchMode: boolean;
   selectedCollectionId?: number;
   setSelectedCollectionId?: (i: number) => void;
+  entityType?: string;
 }
 
 export const ConversationList: React.SFC<ConversationListProps> = (props) => {
@@ -43,6 +44,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     savedSearchCriteria,
     savedSearchCriteriaId,
     selectedCollectionId,
+    entityType = 'contact',
   } = props;
   const client = useApolloClient();
   const [loadingOffset, setLoadingOffset] = useState(DEFAULT_CONTACT_LIMIT);
@@ -228,7 +230,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const buildChatConversation = (index: number, header: any, conversation: any) => {
     // We don't have the contact data in the case of contacts.
     let contact = conversation;
-    const entityType = 'contact';
     if (conversation.contact) {
       contact = conversation.contact;
     }
@@ -306,7 +307,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       let senderLastMessage = '';
       let contactStatus = '';
       let contactBspStatus = '';
-      let entityType = 'contact';
       let selectedRecord = false;
       if (conversation.contact) {
         if (props.selectedContactId === conversation.contact.id) {
@@ -327,7 +327,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         }
         entityId = conversation.group.id;
         displayName = conversation.group.label;
-        entityType = 'collection';
       }
 
       return (

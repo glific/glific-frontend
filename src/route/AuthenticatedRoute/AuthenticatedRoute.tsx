@@ -103,6 +103,14 @@ const routeAdmin = (
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
+    <Route exact path="/chat/saved-searches" component={() => <Chat savedSearches />} />
+    <Route
+      exact
+      path="/chat/saved-searches/:contactId"
+      component={({ match }: RouteComponentProps<{ contactId: any }>) => (
+        <Chat savedSearches contactId={match.params.contactId} />
+      )}
+    />
     <Route
       exact
       path="/chat/:contactId"
