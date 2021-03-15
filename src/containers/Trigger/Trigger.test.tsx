@@ -7,13 +7,16 @@ import { getTriggerQuery } from '../../mocks/Trigger';
 import { LIST_ITEM_MOCKS } from '../SettingList/SettingList.test.helper';
 import { LIST_ITEM_MOCKS as SearchMocks } from '../Search/Search.test.helper';
 import * as AutoComplete from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { MemoryRouter } from 'react-router';
 
 describe('trigger with daily frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <Trigger match={{ params: { id: '1' } }} />
+      <MemoryRouter>
+        <Trigger match={{ params: { id: '1' } }} />
+      </MemoryRouter>
     </MockedProvider>
   );
 
@@ -37,7 +40,9 @@ describe('trigger with no frequency', () => {
 
   const frequencyDailyWrapper = (
     <MockedProvider mocks={frequencyDailyMocks} addTypename={false}>
-      <Trigger match={{ params: { id: '1' } }} />
+      <MemoryRouter>
+        <Trigger match={{ params: { id: '1' } }} />
+      </MemoryRouter>
     </MockedProvider>
   );
 
@@ -61,7 +66,9 @@ describe('trigger with weekly frequency', () => {
 
   const wrapper = (
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Trigger match={{ params: { id: '1' } }} />
+      <MemoryRouter>
+        <Trigger match={{ params: { id: '1' } }} />
+      </MemoryRouter>
     </MockedProvider>
   );
 
