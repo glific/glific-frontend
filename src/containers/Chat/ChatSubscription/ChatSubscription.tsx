@@ -127,7 +127,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
             // refetch();
           }, waitTime);
 
-          return null;
+          return cachedConversations;
         }
       }
 
@@ -200,7 +200,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
-      if (!conversationFound) {
+      // let's also skip fetching contact when we trigger this via group subscriptions
+      if (!conversationFound && !newMessage.groupId) {
         getContactQuery({
           variables: {
             contactOpts: {
