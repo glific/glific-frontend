@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
@@ -59,12 +57,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
       ? parseInt(messageParameterOffset, 10) - 10
       : 0;
-
-  // check if there is message number present in url and set the base for the loadmore increment otherwise set the base increment to default
-  const parameterOffset =
-    messageParameterOffset !== 0
-      ? messageParameterOffset + DEFAULT_MESSAGE_LOADMORE_LIMIT
-      : DEFAULT_MESSAGE_LIMIT;
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
