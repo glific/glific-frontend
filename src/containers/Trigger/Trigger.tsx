@@ -34,13 +34,8 @@ const FormSchema = Yup.object().shape({
   flowId: Yup.object().nullable().required('Flow is required'),
   startTime: Yup.string().required('Description is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
-  frequency: Yup.object().nullable().required('This is a required field'),
-  days: Yup.object()
-    .nullable()
-    .when('frequency', {
-      is: (val: any) => val && val.value === 'weekly',
-      then: Yup.object().nullable().required('Date is required'),
-    }),
+  endDate: Yup.string().nullable().required('End date is required'),
+  frequency: Yup.object().nullable().required('Frequency is a required'),
   groupId: Yup.object().nullable().required('Collection is required'),
 });
 
@@ -127,7 +122,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: Calendar,
       type: 'date',
       name: 'startDate',
-      placeholder: 'Starting date',
+      placeholder: 'Start date',
     },
     {
       component: Calendar,
