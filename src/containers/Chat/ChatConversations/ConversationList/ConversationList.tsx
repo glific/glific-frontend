@@ -19,6 +19,7 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -166,6 +167,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
         setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
       }
+      setShowLoading(false);
     },
   });
 
@@ -204,6 +206,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         } else {
           setShowLoadMore(false);
         }
+        setShowLoading(false);
       },
     }
   );
@@ -386,11 +389,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
+    setShowLoading(true);
     // load more for multi search
     if (searchVal) {
       const variables = filterSearch();
       variables.messageOpts = {
-        limit: 50,
+        limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
         offset: conversations.messages.length,
         order: 'ASC',
       };
