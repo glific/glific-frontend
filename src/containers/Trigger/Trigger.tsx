@@ -169,12 +169,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'groupId',
-      placeholder: 'Select collections',
+      placeholder: 'Select collection',
       options: collections.groups,
       multiple: false,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Select collections',
+        label: 'Select collection',
         variant: 'outlined',
       },
     },
@@ -198,8 +198,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setStartTime(moment(startAtValue).format('Thh:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
-    setFlowId(flow.flows.filter((flows: any) => flows.id === flowValue.id)[0]);
-    setGroupId(collections.groups.filter((collection: any) => collection.id === groupValue.id)[0]);
+    const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
+    const getcollectionId = collections.groups.filter(
+      (collection: any) => collection.id === groupValue.id
+    );
+    setFlowId(getFlowId.length > 0 ? getFlowId[0] : '');
+    setGroupId(getcollectionId.length > 0 ? getcollectionId[0] : '');
   };
 
   const setPayload = (payload: any) => {
