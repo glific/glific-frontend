@@ -234,6 +234,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         optionLabel="name"
         additionalOptionLabel="phone"
         asyncSearch
+        disableClearable
         selectedOptions={collectionContacts}
         onChange={(value: any) => {
           if (typeof value === 'string') {
