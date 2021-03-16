@@ -5,7 +5,10 @@ import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
+  REFETCH_WAIT_TIME,
   SEARCH_QUERY_VARIABLES,
+  SUBSCRIPTION_ALLOWED_DURATION,
+  SUBSCRIPTION_ALLOWED_NUMBER,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { saveConversation } from '../../../services/ChatService';
@@ -35,6 +38,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const queryVariables = SEARCH_QUERY_VARIABLES;
   const client = useApolloClient();
   let subscriptionRequests: any = [];
+  let refetchTimer: any = null;
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -49,8 +53,26 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   // function to determine if we should continue to use subscription or use refetch
   const switchSubscriptionToRefetch = () => {
-    const useRefetch = false;
-    console.log('subscriptionRequests', subscriptionRequests);
+    let useRefetch = false;
+
+    const now = Date.now();
+    const allowedDuration = now - 1000 * SUBSCRIPTION_ALLOWED_DURATION;
+    let requestCount = 0;
+
+    // as recent requests are at the end of the array, search the array
+    // from back to front
+    for (let i = subscriptionRequests.length - 1; i >= 0; i -= 1) {
+      if (subscriptionRequests[i] >= allowedDuration) {
+        requestCount += 1;
+      } else {
+        break;
+      }
+    }
+
+    if (requestCount >= SUBSCRIPTION_ALLOWED_NUMBER) {
+      useRefetch = true;
+    }
+
     return useRefetch;
   };
 
@@ -91,8 +113,21 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // determine if we should use subscriptions or refetch the query
         if (switchSubscriptionToRefetch()) {
           // let's refetch and return
-          // refetch();
-          // return null;
+          console.log('skip cache update');
+          const waitTime = REFETCH_WAIT_TIME * 1000;
+
+          // let's clear the timeout to prevent multiple fetch calls
+          if (refetchTimer) {
+            clearTimeout(refetchTimer);
+          }
+
+          refetchTimer = setTimeout(() => {
+            console.log('calling refetch in ', waitTime);
+            // let's call refetch once all subscriptions are done
+            // refetch();
+          }, waitTime);
+
+          return null;
         }
       }
 
