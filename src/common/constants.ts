@@ -47,7 +47,7 @@ export const DEFAULT_CONTACT_LOADMORE_LIMIT = 10;
 export const DEFAULT_MESSAGE_LIMIT = 20;
 
 // load more message limit
-export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 20;
+export const DEFAULT_MESSAGE_LOADMORE_LIMIT = 50;
 
 export const SEARCH_QUERY_VARIABLES = {
   contactOpts: {
