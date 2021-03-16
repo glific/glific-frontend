@@ -474,7 +474,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         {conversationList}
         {showLoadMore &&
         (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
-          conversations?.messages.length > DEFAULT_MESSAGE_LIMIT - 1)
+          conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore
           : null}
       </List>
