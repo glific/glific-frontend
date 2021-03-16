@@ -31,7 +31,7 @@ const triggerFrequency = [
 ];
 
 const FormSchema = Yup.object().shape({
-  flowId: Yup.object().required('Flow is required'),
+  flowId: Yup.object().nullable().required('Flow is required'),
   startTime: Yup.string().required('Description is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
   frequency: Yup.object().nullable().required('This is a required field'),
@@ -41,7 +41,7 @@ const FormSchema = Yup.object().shape({
       is: (val: any) => val && val.value === 'weekly',
       then: Yup.object().nullable().required('Date is required'),
     }),
-  groupId: Yup.object().required('Collection is required'),
+  groupId: Yup.object().nullable().required('Collection is required'),
 });
 
 const dialogMessage = "You won't be able to use this for tagging messages.";
