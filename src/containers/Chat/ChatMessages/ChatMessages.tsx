@@ -1,3 +1,5 @@
+// @ts-ignore
+/* eslint-disable */
 import React, { useCallback, useState, useEffect } from 'react';
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { CircularProgress, Container } from '@material-ui/core';
@@ -29,6 +31,7 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
+import { GET_MESSAGE_NUMBER } from '../../../graphql/queries/Message';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -70,14 +73,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
   useEffect(() => {
     setShowLoadMore(true);
-    setMessageOffset(parameterOffset);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
   }, [contactId]);
@@ -240,6 +241,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     },
   });
   let messageList: any;
+
+  const [getMessageQuery] = useLazyQuery<any>(GET_MESSAGE_NUMBER, {
+    onCompleted: ({ message }) => {
+      const variables: any = {
+        filter: { id: contactId?.toString() },
+        contactOpts: { limit: 1 },
+        messageOpts: {
+          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
+          offset: message.message.messageNumber + 1,
+        },
+      };
+
+      if (collectionId) {
+        variables.filter = { id: collectionId.toString(), searchGroup: true };
+      }
+
+      getSearchQuery({
+        variables,
+      });
+    },
+  });
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -510,19 +532,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   const loadMoreMessages = () => {
-    const variables: any = {
-      filter: { id: contactId?.toString() },
-      contactOpts: { limit: 1 },
-      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
-    };
+    const lastMessageId = conversationInfo.messages[conversationInfo.messages.length - 1].id;
 
-    if (collectionId) {
-      variables.filter = { id: collectionId.toString(), searchGroup: true };
-    }
-    getSearchQuery({
-      variables,
-    });
-    setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
+    getMessageQuery({ variables: { id: lastMessageId } });
+
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
       setLastScrollHeight(messageContainer.scrollHeight);
