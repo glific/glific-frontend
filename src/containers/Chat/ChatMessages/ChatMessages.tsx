@@ -116,10 +116,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   });
 
   useEffect(() => {
-    let clickListener: any;
+    const clickListener = () => setShowDropdown(null);
     if (editTagsMessageId) {
       // need to check why we are doing this
-      clickListener = window.addEventListener('click', () => setShowDropdown(null), true);
+      window.addEventListener('click', clickListener, true);
     }
     return () => {
       window.removeEventListener('click', clickListener);
