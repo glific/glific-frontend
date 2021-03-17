@@ -20,22 +20,21 @@ const getTooltip = (frequency: any, days: any) => {
   days.forEach((option: number) => {
     dayList.forEach((value: any) => {
       if (value.id === option) {
-        obj.push(value.label);
+        obj.push(value.label.slice(0, 3));
       }
     });
   });
   return `Repeat: ${frequency}${frequency === 'weekly' ? `(${obj.toString()})` : ''}`;
 };
 
-const getName = (name: any, frequency: any, days: any) => (
+const getName = (flow: any, startAt: any, frequency: any, days: any) => (
   <p className={styles.LabelText}>
-    {name}
-    <br />
-    <Tooltip title={getTooltip(frequency, days)} placement="right">
+    <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
       <span className={styles.TriggerIcon}>
         <ClockIcon />
       </span>
     </Tooltip>
+    {`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}
   </p>
 );
 
@@ -45,8 +44,8 @@ const getEndDate = (date: any) => (
 
 const getCollections = (group: any) => <p className={styles.Collection}>{group.label}</p>;
 
-const getColumns = ({ name, endDate, group, frequency, days }: any) => ({
-  name: getName(name, frequency, days),
+const getColumns = ({ endDate, group, frequency, days, flow, startAt }: any) => ({
+  name: getName(flow, startAt, frequency, days),
   startAt: getEndDate(endDate),
   collections: getCollections(group),
 });
