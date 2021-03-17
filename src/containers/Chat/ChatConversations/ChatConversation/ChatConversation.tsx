@@ -19,6 +19,7 @@ export interface ChatConversationProps {
   contactName: string;
   contactStatus?: string;
   contactBspStatus?: string;
+  contactIsOrgRead: boolean;
   selected: boolean;
   senderLastMessage: any;
   entityType: string;
@@ -27,7 +28,6 @@ export interface ChatConversationProps {
   lastMessage: {
     id: number;
     body: string;
-    isRead: boolean;
     insertedAt: string;
     type: string;
     media: any;
@@ -75,6 +75,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     senderLastMessage,
     contactStatus,
     contactBspStatus,
+    contactIsOrgRead,
     entityType,
     messageNumber,
   } = props;
@@ -86,15 +87,13 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
       }
     },
   });
-  // there might be some cases when there are no conversations againist the contact. So need to handle that
-  // Also handle unread formatting only if tags array is set.
-  if (Object.keys(lastMessage).length > 0) {
-    // TODO: Need check with the backend on unique identifier for this.
 
-    if (lastMessage.isRead !== undefined && !lastMessage.isRead) {
-      chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
-      chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
-    }
+  // Need to handle following cases:
+  // a. there might be some cases when there are no conversations against the contact
+  // b. handle unread formatting only if tags array is set
+  if (!contactIsOrgRead) {
+    chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
+    chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
   // display highlighted search message

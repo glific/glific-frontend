@@ -23,7 +23,6 @@ const body = {
   body: 'Hey there whats up?',
   insertedAt: '2020-06-25T13:36:43Z',
   location: null,
-  isRead: true,
   messageNumber: 48,
   receiver: {
     id: '1',
@@ -42,6 +41,7 @@ const body = {
   media: null,
   errors: '{}',
 };
+
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
