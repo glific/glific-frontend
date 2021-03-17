@@ -194,7 +194,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
     setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
-    setStartTime(moment(startAtValue).format('Thh:mm:ss'));
+    setStartTime(moment(startAtValue).format('HH:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
     setFlowId(flow.flows.filter((flows: any) => flows.id === flowValue.id)[0]);
