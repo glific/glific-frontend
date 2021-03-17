@@ -202,8 +202,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
     );
-    setFlowId(getFlowId.length > 0 ? getFlowId[0] : '');
-    setGroupId(getcollectionId.length > 0 ? getcollectionId[0] : '');
+    if (getFlowId.length > 0) {
+      setFlowId(getFlowId[0]);
+    }
+    if (getcollectionId.length > 0) {
+      setGroupId(getcollectionId[0]);
+    }
   };
 
   const setPayload = (payload: any) => {
