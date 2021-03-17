@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import {
@@ -39,6 +39,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const client = useApolloClient();
   let subscriptionRequests: any = [];
   let refetchTimer: any = null;
+  const [triggerRefetch, setTriggerRefetch] = useState(false);
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -125,6 +126,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
             console.log('calling refetch in ', waitTime);
             // let's call refetch once all subscriptions are done
             // refetch();
+            setTriggerRefetch(true);
           }, waitTime);
 
           return cachedConversations;
@@ -363,6 +365,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   if (error) {
     setErrorMessage(client, error);
     return null;
+  }
+
+  if (triggerRefetch) {
+    console.log('fetch new data!');
+    loadData();
+    setTriggerRefetch(false);
   }
 
   return null;
