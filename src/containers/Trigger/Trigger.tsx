@@ -32,10 +32,24 @@ const triggerFrequency = [
 
 const FormSchema = Yup.object().shape({
   flowId: Yup.object().nullable().required('Flow is required'),
-  startTime: Yup.string().required('Description is required.'),
+  startTime: Yup.string().required('Time is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
-  endDate: Yup.string().nullable().required('End date is required'),
-  frequency: Yup.object().nullable().required('Frequency is a required'),
+  endDate: Yup.string()
+    .nullable()
+    .required('End date is required')
+    .when('startDate', (startDate: any, schema: any) =>
+      schema.test({
+        test: (endDate: any) => startDate && moment(endDate).isAfter(startDate, 'days'),
+        message: 'End date should be greater than the start date',
+      })
+    ),
+  days: Yup.array()
+    .nullable()
+    .when('frequency', {
+      is: (frequency: any) => frequency && frequency.value === 'weekly',
+      then: Yup.array().min(1, 'Please select a day'),
+    }),
+  frequency: Yup.object().nullable().required('Repeat is required'),
   groupId: Yup.object().nullable().required('Collection is required'),
 });
 
@@ -151,6 +165,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
           setDaysDisabled(false);
         } else {
           setDaysDisabled(true);
+          setDays([]);
         }
       },
     },
@@ -195,7 +210,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
     setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
-    setStartTime(moment(startAtValue).format('Thh:mm:ss'));
+    setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
@@ -212,15 +227,20 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const setPayload = (payload: any) => {
     const payloadCopy = payload;
+
+    // covert the time to UTC
+    const startAt = moment(`
+      ${moment(payloadCopy.startDate).format('yyyy-MM-DD')}${payloadCopy.startTime}`).utc();
+
     const newPayload = {
       isActive: payloadCopy.isActive,
       isRepeating: true,
       flowId: payloadCopy.flowId.id,
       days: payloadCopy.days.map((day: any) => day.id),
       groupId: payloadCopy.groupId.id,
-      startDate: moment(payloadCopy.startDate).format('yyyy-MM-DD'),
-      endDate: moment(payloadCopy.endDate).format('yyyy-MM-DD'),
-      startTime: payloadCopy.startTime,
+      startDate: moment(startAt).utc().format('yyyy-MM-DD'),
+      endDate: moment(payloadCopy.endDate).utc().format('yyyy-MM-DD'),
+      startTime: moment(startAt).utc().format('THH:mm:ss'),
       frequency: payloadCopy.frequency.value,
     };
 

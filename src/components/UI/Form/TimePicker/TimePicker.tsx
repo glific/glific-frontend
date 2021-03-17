@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import moment from 'moment';
+import { getIn } from 'formik';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 
 import styles from './TimePicker.module.css';
@@ -21,12 +22,16 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   variant = 'inline',
   inputVariant = 'outlined',
   field,
-  form: { setFieldValue },
+  form: { setFieldValue, touched, errors },
   placeholder,
   disabled = false,
 }) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
+
+  const errorText = getIn(errors, field.name);
+  const touchedVal = getIn(touched, field.name);
+  const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
     const value = time ? moment(time).format('THH:mm:ss') : null;
@@ -38,6 +43,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
       <Grid className={styles.TimePicker}>
         <KeyboardTimePicker
           autoOk
+          error={hasError ? errorText : ''}
           variant={variant}
           inputVariant={inputVariant}
           label={placeholder}
@@ -47,6 +53,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           disabled={disabled}
           onChange={(date) => handleDateChange(date)}
           keyboardIcon={<ScheduleIcon />}
+          helperText={hasError ? errorText : ''}
         />
       </Grid>
     </MuiPickersUtilsProvider>
