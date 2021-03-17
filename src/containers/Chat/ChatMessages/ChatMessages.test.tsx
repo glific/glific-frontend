@@ -62,6 +62,7 @@ export const searchQuery = {
           lastMessageAt: '2020-06-29T09:31:47Z',
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
         },
         messages: [body],
       },
