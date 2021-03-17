@@ -34,7 +34,8 @@ const FormSchema = Yup.object().shape({
   flowId: Yup.object().nullable().required('Flow is required'),
   startTime: Yup.string().required('Description is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
-  frequency: Yup.object().nullable().required('This is a required field'),
+  endDate: Yup.string().nullable().required('End date is required'),
+  frequency: Yup.object().nullable().required('Frequency is a required'),
   groupId: Yup.object().nullable().required('Collection is required'),
 });
 
@@ -50,16 +51,16 @@ const queries = {
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
-  const [flowId, setFlowId] = useState({});
+  const [flowId, setFlowId] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [startDate, setStartDate] = useState('');
-  const [frequency, setfrequency] = useState({});
+  const [frequency, setfrequency] = useState<any>('');
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
-  const [groupId, setGroupId] = useState<any>({});
+  const [groupId, setGroupId] = useState<any>('');
   const location = useLocation();
 
   const states = {
@@ -121,7 +122,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: Calendar,
       type: 'date',
       name: 'startDate',
-      placeholder: 'Starting date',
+      placeholder: 'Start date',
     },
     {
       component: Calendar,
@@ -146,7 +147,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         variant: 'outlined',
       },
       onChange: (value: any) => {
-        if (value.value === 'weekly') {
+        if (value && value.value === 'weekly') {
           setDaysDisabled(false);
         } else {
           setDaysDisabled(true);
@@ -168,12 +169,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'groupId',
-      placeholder: 'Select collections',
+      placeholder: 'Select collection',
       options: collections.groups,
       multiple: false,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Select collections',
+        label: 'Select collection',
         variant: 'outlined',
       },
     },
@@ -197,8 +198,16 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setStartTime(moment(startAtValue).format('Thh:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
-    setFlowId(flow.flows.filter((flows: any) => flows.id === flowValue.id)[0]);
-    setGroupId(collections.groups.filter((collection: any) => collection.id === groupValue.id)[0]);
+    const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
+    const getcollectionId = collections.groups.filter(
+      (collection: any) => collection.id === groupValue.id
+    );
+    if (getFlowId.length > 0) {
+      setFlowId(getFlowId[0]);
+    }
+    if (getcollectionId.length > 0) {
+      setGroupId(getcollectionId[0]);
+    }
   };
 
   const setPayload = (payload: any) => {

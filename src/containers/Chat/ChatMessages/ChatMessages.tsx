@@ -109,9 +109,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   });
 
   useEffect(() => {
+    const clickListener = () => setShowDropdown(null);
     if (editTagsMessageId) {
-      window.addEventListener('click', () => setShowDropdown(null), true);
+      // need to check why we are doing this
+      window.addEventListener('click', clickListener, true);
     }
+    return () => {
+      window.removeEventListener('click', clickListener);
+    };
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
