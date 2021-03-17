@@ -19,6 +19,7 @@ import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
+  DEFAULT_MESSAGE_LOADMORE_LIMIT,
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
@@ -51,6 +52,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
+  const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
 
   let queryVariables = SEARCH_QUERY_VARIABLES;
@@ -149,6 +151,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     },
     messageOpts: {
       limit: DEFAULT_MESSAGE_LIMIT,
+      offset: 0,
       order: 'ASC',
     },
   });
@@ -164,6 +167,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
 
         setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
       }
+      setShowLoading(false);
     },
   });
 
@@ -177,8 +181,34 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     SEARCH_QUERY
   );
 
-  const [getFilterSearch, { loading: loadingSearch, data: searchMultiData }] = useLazyQuery<any>(
-    SEARCH_MULTI_QUERY
+  // fetch data when typing for search
+  const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {
+    onCompleted: (multiSearch) => {
+      setSearchMultiData(multiSearch);
+    },
+  });
+
+  // load more messages for multi search load more
+  const [getLoadMoreFilterSearch, { loading: loadingSearch }] = useLazyQuery<any>(
+    SEARCH_MULTI_QUERY,
+    {
+      onCompleted: (multiSearch) => {
+        if (!searchMultiData) {
+          setSearchMultiData(multiSearch);
+        } else if (multiSearch && multiSearch.searchMulti.messages.length !== 0) {
+          const searchMultiDataCopy = JSON.parse(JSON.stringify(searchMultiData));
+          // append new messages to existing messages
+          searchMultiDataCopy.searchMulti.messages = [
+            ...searchMultiData.searchMulti.messages,
+            ...multiSearch.searchMulti.messages,
+          ];
+          setSearchMultiData(searchMultiDataCopy);
+        } else {
+          setShowLoadMore(false);
+        }
+        setShowLoading(false);
+      },
+    }
   );
 
   useEffect(() => {
@@ -197,7 +227,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }, [searchVal, searchParam, savedSearchCriteria]);
 
   // Other cases
-  if ((called && loading) || conversationLoading || loadingSearch) return <Loading />;
+  if ((called && loading) || conversationLoading) return <Loading />;
 
   if ((called && error) || conversationError) {
     if (error) {
@@ -274,7 +304,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     // to set search response sequence
     const searchArray = { contacts: [], tags: [], messages: [] };
     let conversationsData;
-    Object.keys(searchArray).map((dataArray: any) => {
+    Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (
         <div className={styles.Title}>
           <Typography className={styles.TitleText}>{dataArray}</Typography>
@@ -288,13 +318,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         if (!conversationList) conversationList = [];
         conversationList.push(conversationsData);
       }
-      return null;
     });
   }
 
   // build the conversation list only if there are conversations
   if (!conversationList && conversations && conversations.length > 0) {
-    // TODO: Need to check why test is not returing correct result
+    // TODO: Need to check why test is not returning correct result
     conversationList = conversations.map((conversation: any, index: number) => {
       let lastMessage = [];
       if (conversation.messages.length > 0) {
@@ -360,31 +389,45 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   const loadMoreMessages = () => {
-    let filter = {};
-    // for saved search use filter value of selected search
-    if (savedSearchCriteria) {
-      const variables = JSON.parse(savedSearchCriteria);
-      filter = variables.filter;
-    }
-    const conversationLoadMoreVariables = {
-      contactOpts: {
-        limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
-        offset: loadingOffset,
-      },
-      filter,
-      messageOpts: {
-        limit: DEFAULT_MESSAGE_LIMIT,
-      },
-    };
-
-    if (selectedCollectionId) {
-      conversationLoadMoreVariables.filter = { searchGroup: true };
-    }
-
-    loadMoreConversations({
-      variables: conversationLoadMoreVariables,
-    });
     setShowLoading(true);
+    // load more for multi search
+    if (searchVal) {
+      const variables = filterSearch();
+      variables.messageOpts = {
+        limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
+        offset: conversations.messages.length,
+        order: 'ASC',
+      };
+
+      getLoadMoreFilterSearch({
+        variables,
+      });
+    } else {
+      let filter = {};
+      // for saved search use filter value of selected search
+      if (savedSearchCriteria) {
+        const variables = JSON.parse(savedSearchCriteria);
+        filter = variables.filter;
+      }
+      const conversationLoadMoreVariables = {
+        contactOpts: {
+          limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
+          offset: loadingOffset,
+        },
+        filter,
+        messageOpts: {
+          limit: DEFAULT_MESSAGE_LIMIT,
+        },
+      };
+
+      if (selectedCollectionId) {
+        conversationLoadMoreVariables.filter = { searchGroup: true };
+      }
+
+      loadMoreConversations({
+        variables: conversationLoadMoreVariables,
+      });
+    }
   };
 
   const showLatestContact = () => {
@@ -406,6 +449,23 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     </div>
   );
 
+  const loadMore = (
+    <div className={styles.LoadMore}>
+      {showLoading || loadingSearch ? (
+        <CircularProgress className={styles.Progress} />
+      ) : (
+        <div
+          onClick={loadMoreMessages}
+          onKeyDown={loadMoreMessages}
+          className={styles.LoadMoreButton}
+          aria-hidden="true"
+        >
+          Load more chats
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <Container
       className={`${
@@ -416,22 +476,11 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       {showJumpToLatest && !showLoading ? scrollToTop : null}
       <List className={styles.StyledList}>
         {conversationList}
-        {showLoadMore && conversations.length > DEFAULT_CONTACT_LIMIT - 1 ? (
-          <div className={styles.LoadMore}>
-            {showLoading ? (
-              <CircularProgress className={styles.Progress} />
-            ) : (
-              <div
-                onClick={loadMoreMessages}
-                onKeyDown={loadMoreMessages}
-                className={styles.LoadMoreButton}
-                aria-hidden="true"
-              >
-                Load more chats
-              </div>
-            )}
-          </div>
-        ) : null}
+        {showLoadMore &&
+        (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
+          conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
+          ? loadMore
+          : null}
       </List>
     </Container>
   );
