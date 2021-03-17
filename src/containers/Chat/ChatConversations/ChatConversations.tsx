@@ -71,7 +71,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   useEffect(() => {
     // reset search if empty searchVal
-    if (!searchVal || searchVal === '') {
+    if (!searchVal) {
       client.writeQuery({
         query: SEARCH_OFFSET,
         data: { offset: 0, search: null },
