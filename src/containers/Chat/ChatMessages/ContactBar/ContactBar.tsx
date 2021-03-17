@@ -330,7 +330,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Button>
     );
   } else if (
-    (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
+    (contactBspStatus === 'SESSION' ||
+      contactBspStatus === 'SESSION_AND_HSM' ||
+      contactBspStatus === 'HSM') &&
     !is24HourWindowOver(lastMessageTime)
   ) {
     flowButton = (
