@@ -34,3 +34,15 @@ test('click on Make a copy', async () => {
     fireEvent.click(container.querySelector('#additionalButton-icon'));
   });
 });
+
+test('hover over tooltip', async () => {
+  const { container, getAllByTestId, getByText } = render(wrapper);
+  await waitFor(() => {
+    const tooltip = getAllByTestId('tooltip')[0];
+    fireEvent.mouseOver(tooltip);
+  });
+
+  await waitFor(() => {
+    expect(getByText('Repeat: weekly(Mon,Tue)'));
+  });
+});
