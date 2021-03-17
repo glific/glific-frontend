@@ -10,7 +10,7 @@ import { DATE_FORMAT } from '../../../../common/constants';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 
-import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
+import { MARK_AS_READ, CONTACT_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { MessageType } from '../MessageType/MessageType';
 
@@ -40,20 +40,20 @@ export interface ChatConversationProps {
   highlightSearch?: string;
   searchMode?: any;
 }
-const updateMessageCache = (client: any, id: any) => {
-  const message = client.readFragment({
-    id: `Message:${id}`,
-    fragment: MESSAGE_FRAGMENT,
+const updateContactCache = (client: any, id: any) => {
+  const contact = client.readFragment({
+    id: `Contact:${id}`,
+    fragment: CONTACT_FRAGMENT,
   });
 
-  if (message) {
-    const messageCopy = JSON.parse(JSON.stringify(message));
+  if (contact) {
+    const contactCopy = JSON.parse(JSON.stringify(contact));
 
-    messageCopy.isRead = true;
+    contactCopy.isOrgRead = true;
     client.writeFragment({
-      id: `Message:${id}`,
-      fragment: MESSAGE_FRAGMENT,
-      data: messageCopy,
+      id: `Contact:${id}`,
+      fragment: CONTACT_FRAGMENT,
+      data: contactCopy,
     });
   }
 
@@ -83,7 +83,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
       if (data.markContactMessagesAsRead) {
-        updateMessageCache(client, lastMessage.id);
+        updateContactCache(client, contactId);
       }
     },
   });
