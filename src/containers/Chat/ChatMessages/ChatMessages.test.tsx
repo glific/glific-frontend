@@ -23,7 +23,6 @@ const body = {
   body: 'Hey there whats up?',
   insertedAt: '2020-06-25T13:36:43Z',
   location: null,
-  isRead: true,
   messageNumber: 48,
   receiver: {
     id: '1',
@@ -42,6 +41,7 @@ const body = {
   media: null,
   errors: '{}',
 };
+
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {
   query: SEARCH_QUERY,
@@ -62,6 +62,7 @@ export const searchQuery = {
           lastMessageAt: '2020-06-29T09:31:47Z',
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
         },
         messages: [body],
       },
@@ -94,7 +95,6 @@ cache.writeQuery({
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
             messageNumber: 48,
-            isRead: true,
             receiver: {
               id: '1',
             },

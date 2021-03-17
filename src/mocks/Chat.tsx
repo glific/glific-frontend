@@ -65,6 +65,7 @@ const conversationMessageQuery = (
             lastMessageAt: '2020-06-25T13:36:43Z',
             status: 'VALID',
             bspStatus: 'SESSION_AND_HSM',
+            isOrgRead: true,
           },
           messages: [
             {

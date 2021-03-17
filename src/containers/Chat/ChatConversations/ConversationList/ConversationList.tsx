@@ -289,6 +289,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           senderLastMessage={contact.lastMessageAt}
           contactStatus={contact.status}
           contactBspStatus={contact.bspStatus}
+          contactIsOrgRead={contact.isOrgRead}
           highlightSearch={props.searchVal}
           messageNumber={conversation.messageNumber}
           searchMode={props.searchMode}
@@ -336,6 +337,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       let senderLastMessage = '';
       let contactStatus = '';
       let contactBspStatus = '';
+      let contactIsOrgRead = false;
       let selectedRecord = false;
       if (conversation.contact) {
         if (props.selectedContactId === conversation.contact.id) {
@@ -350,6 +352,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         senderLastMessage = conversation.contact.lastMessageAt;
         contactStatus = conversation.contact.status;
         contactBspStatus = conversation.contact.bspStatus;
+        contactIsOrgRead = conversation.contact.isOrgRead;
       } else if (conversation.group) {
         if (props.selectedCollectionId === conversation.group.id) {
           selectedRecord = true;
@@ -379,6 +382,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           senderLastMessage={senderLastMessage}
           contactStatus={contactStatus}
           contactBspStatus={contactBspStatus}
+          contactIsOrgRead={contactIsOrgRead}
         />
       );
     });
