@@ -32,9 +32,25 @@ const triggerFrequency = [
 
 const FormSchema = Yup.object().shape({
   flowId: Yup.object().nullable().required('Flow is required'),
-  startTime: Yup.string().required('Description is required.'),
+  startTime: Yup.string().required('Time is required.'),
   startDate: Yup.string().nullable().required('Start date is required'),
-  endDate: Yup.string().nullable().required('End date is required'),
+  endDate: Yup.string()
+    .nullable()
+    .required('End date is required')
+    .when('startDate', (startDate: any, schema: any) =>
+      schema.test({
+        test: (endDate: any) => startDate && moment(endDate).isAfter(startDate, 'days'),
+        message: 'End date should be greater than the start date',
+      })
+    ),
+  days: Yup.array()
+    .nullable()
+    .when('frequency', {
+      is: (frequency: any) => {
+        return frequency && frequency.value === 'weekly';
+      },
+      then: Yup.array().min(1),
+    }),
   frequency: Yup.object().nullable().required('Frequency is a required'),
   groupId: Yup.object().nullable().required('Collection is required'),
 });
