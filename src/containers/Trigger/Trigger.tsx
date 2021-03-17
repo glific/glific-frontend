@@ -204,6 +204,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const setPayload = (payload: any) => {
     const payloadCopy = payload;
 
+    // covert the time to UTC
     const startAt = moment(`
       ${moment(payloadCopy.startDate).format('yyyy-MM-DD')}${payloadCopy.startTime}`).utc();
 
@@ -214,7 +215,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       days: payloadCopy.days.map((day: any) => day.id),
       groupId: payloadCopy.groupId.id,
       startDate: moment(startAt).utc().format('yyyy-MM-DD'),
-      endDate: moment(payloadCopy.endDate).format('yyyy-MM-DD'),
+      endDate: moment(payloadCopy.endDate).utc().format('yyyy-MM-DD'),
       startTime: moment(startAt).utc().format('Thh:mm:ss'),
       frequency: payloadCopy.frequency.value,
     };
