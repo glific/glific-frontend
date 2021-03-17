@@ -165,6 +165,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
           setDaysDisabled(false);
         } else {
           setDaysDisabled(true);
+          setDays([]);
         }
       },
     },
@@ -209,7 +210,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
     setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
-    setStartTime(moment(startAtValue).format('HH:mm:ss'));
+    setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
@@ -239,7 +240,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       groupId: payloadCopy.groupId.id,
       startDate: moment(startAt).utc().format('yyyy-MM-DD'),
       endDate: moment(payloadCopy.endDate).utc().format('yyyy-MM-DD'),
-      startTime: moment(startAt).utc().format('Thh:mm:ss'),
+      startTime: moment(startAt).utc().format('THH:mm:ss'),
       frequency: payloadCopy.frequency.value,
     };
 
