@@ -94,7 +94,6 @@ cache.writeQuery({
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
             messageNumber: 48,
-            isRead: true,
             receiver: {
               id: '1',
             },
