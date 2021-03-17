@@ -47,9 +47,9 @@ const FormSchema = Yup.object().shape({
     .nullable()
     .when('frequency', {
       is: (frequency: any) => frequency && frequency.value === 'weekly',
-      then: Yup.array().min(1),
+      then: Yup.array().min(1, 'Please select a day'),
     }),
-  frequency: Yup.object().nullable().required('Frequency is a required'),
+  frequency: Yup.object().nullable().required('Repeat is required'),
   groupId: Yup.object().nullable().required('Collection is required'),
 });
 
