@@ -7,6 +7,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
       body
       flow
       type
+      groupId
       messageNumber
       location {
         latitude
@@ -42,6 +43,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
       body
       flow
       type
+      groupId
       messageNumber
       location {
         latitude
