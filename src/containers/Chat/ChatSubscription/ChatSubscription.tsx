@@ -122,7 +122,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           }
 
           refetchTimer = setTimeout(() => {
-            console.log('calling refetch in ', waitTime);
             // let's call refetch once all subscriptions are done
             setTriggerRefetch(true);
           }, waitTime);
