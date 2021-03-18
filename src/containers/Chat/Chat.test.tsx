@@ -37,6 +37,7 @@ cache.writeQuery({
           lastMessageAt: '2020-06-29T09:31:47Z',
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
         },
         messages: [
           {
@@ -44,7 +45,6 @@ cache.writeQuery({
             body: 'Hey there whats up?',
             insertedAt: '2020-06-25T13:36:43Z',
             location: null,
-            isRead: true,
             messageNumber: 48,
             receiver: {
               id: '1',

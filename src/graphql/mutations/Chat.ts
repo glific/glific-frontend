@@ -42,9 +42,9 @@ export const UPDATE_MESSAGE_TAGS = gql`
   }
 `;
 
-export const MESSAGE_FRAGMENT = gql`
-  fragment isRead on Message {
-    isRead
+export const CONTACT_FRAGMENT = gql`
+  fragment isOrgRead on Contact {
+    isOrgRead
   }
 `;
 

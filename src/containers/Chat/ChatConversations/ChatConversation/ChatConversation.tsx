@@ -10,7 +10,7 @@ import { DATE_FORMAT } from '../../../../common/constants';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { Timer } from '../../../../components/UI/Timer/Timer';
 
-import { MARK_AS_READ, MESSAGE_FRAGMENT } from '../../../../graphql/mutations/Chat';
+import { MARK_AS_READ, CONTACT_FRAGMENT } from '../../../../graphql/mutations/Chat';
 import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
 import { MessageType } from '../MessageType/MessageType';
 
@@ -19,6 +19,7 @@ export interface ChatConversationProps {
   contactName: string;
   contactStatus?: string;
   contactBspStatus?: string;
+  contactIsOrgRead: boolean;
   selected: boolean;
   senderLastMessage: any;
   entityType: string;
@@ -27,7 +28,6 @@ export interface ChatConversationProps {
   lastMessage: {
     id: number;
     body: string;
-    isRead: boolean;
     insertedAt: string;
     type: string;
     media: any;
@@ -40,20 +40,20 @@ export interface ChatConversationProps {
   highlightSearch?: string;
   searchMode?: any;
 }
-const updateMessageCache = (client: any, id: any) => {
-  const message = client.readFragment({
-    id: `Message:${id}`,
-    fragment: MESSAGE_FRAGMENT,
+const updateContactCache = (client: any, id: any) => {
+  const contact = client.readFragment({
+    id: `Contact:${id}`,
+    fragment: CONTACT_FRAGMENT,
   });
 
-  if (message) {
-    const messageCopy = JSON.parse(JSON.stringify(message));
+  if (contact) {
+    const contactCopy = JSON.parse(JSON.stringify(contact));
 
-    messageCopy.isRead = true;
+    contactCopy.isOrgRead = true;
     client.writeFragment({
-      id: `Message:${id}`,
-      fragment: MESSAGE_FRAGMENT,
-      data: messageCopy,
+      id: `Contact:${id}`,
+      fragment: CONTACT_FRAGMENT,
+      data: contactCopy,
     });
   }
 
@@ -75,6 +75,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
     senderLastMessage,
     contactStatus,
     contactBspStatus,
+    contactIsOrgRead,
     entityType,
     messageNumber,
   } = props;
@@ -82,19 +83,17 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const [markAsRead] = useMutation(MARK_AS_READ, {
     onCompleted: (data) => {
       if (data.markContactMessagesAsRead) {
-        updateMessageCache(client, lastMessage.id);
+        updateContactCache(client, contactId);
       }
     },
   });
-  // there might be some cases when there are no conversations againist the contact. So need to handle that
-  // Also handle unread formatting only if tags array is set.
-  if (Object.keys(lastMessage).length > 0) {
-    // TODO: Need check with the backend on unique identifier for this.
 
-    if (lastMessage.isRead !== undefined && !lastMessage.isRead) {
-      chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
-      chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
-    }
+  // Need to handle following cases:
+  // a. there might be some cases when there are no conversations against the contact
+  // b. handle unread formatting only if tags array is set
+  if (!contactIsOrgRead) {
+    chatInfoClass = [styles.ChatInfo, styles.ChatInfoUnread];
+    chatBubble = [styles.ChatBubble, styles.ChatBubbleUnread];
   }
 
   // display highlighted search message
