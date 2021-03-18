@@ -344,6 +344,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     },
   });
 
+  // let's fetch fresh data and update the cache
+  const [fetchData] = useLazyQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
     if (data && collectionData) {
       setDataLoaded(true);
@@ -369,7 +375,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   if (triggerRefetch) {
     console.log('fetch new data!');
-    loadData();
+    fetchData();
     setTriggerRefetch(false);
   }
 
