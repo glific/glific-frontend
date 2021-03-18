@@ -34,14 +34,9 @@ import { GET_MESSAGE_NUMBER } from '../../../graphql/queries/Message';
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
-  isSimulator?: boolean;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({
-  contactId,
-  collectionId,
-  isSimulator,
-}) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collectionId }) => {
   // create an instance of apollo client
   const client = useApolloClient();
   const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -611,7 +606,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={isSimulator}
+        isSimulator={conversationInfo.contact.phone.startsWith('9876543210')}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}

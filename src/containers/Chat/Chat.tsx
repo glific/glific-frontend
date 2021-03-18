@@ -121,7 +121,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
           <ChatMessages
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
-            isSimulator={simulatorId > 0}
           />
         </div>
 
