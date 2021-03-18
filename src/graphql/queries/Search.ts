@@ -11,6 +11,7 @@ export const SEARCH_QUERY = gql`
         lastMessageAt
         status
         bspStatus
+        isOrgRead
       }
       group {
         id
@@ -19,7 +20,6 @@ export const SEARCH_QUERY = gql`
       messages {
         id
         body
-        isRead
         insertedAt
         messageNumber
         receiver {
@@ -71,6 +71,7 @@ export const SEARCH_MULTI_QUERY = gql`
         lastMessageAt
         status
         bspStatus
+        isOrgRead
         tags {
           id
           label
@@ -81,7 +82,6 @@ export const SEARCH_MULTI_QUERY = gql`
         id
         body
         messageNumber
-        isRead
         insertedAt
         contact {
           id

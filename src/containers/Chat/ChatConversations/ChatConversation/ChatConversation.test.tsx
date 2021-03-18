@@ -29,6 +29,7 @@ const insertedAt = '2020-06-19T18:44:02Z';
 const defaultProps = {
   contactId: 1,
   contactName: 'Jane Doe',
+  contactIsOrgRead: true,
   selected: true,
   index: 0,
   onClick: mockCallback,
@@ -37,7 +38,6 @@ const defaultProps = {
     insertedAt,
   },
   lastMessage: {
-    isRead: true,
     body: 'Hello there!',
     insertedAt,
     type: 'TEXT',
