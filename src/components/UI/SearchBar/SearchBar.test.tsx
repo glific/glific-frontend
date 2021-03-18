@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import SearchBar from './SearchBar';
 
 describe('<SearchBar/>', () => {
@@ -7,13 +7,13 @@ describe('<SearchBar/>', () => {
   const mockSubmit = jest.fn();
   const mockReset = jest.fn();
 
-  const component = (searchValue: any) => (
+  const component = (searchValue: any, searchMode: boolean = true) => (
     <SearchBar
       handleChange={mockChange}
       handleSubmit={mockSubmit}
       onReset={mockReset}
       searchVal={searchValue}
-      searchMode={true}
+      searchMode={searchMode}
     />
   );
 
@@ -28,9 +28,11 @@ describe('<SearchBar/>', () => {
     expect(mockSubmit).toHaveBeenCalled();
   });
 
-  it('reset callback works properly', () => {
-    const { getByTestId } = render(component('hello There'));
-    fireEvent.click(getByTestId('resetButton'));
+  it('reset callback works properly', async () => {
+    const { getByTestId } = render(component('hello There', false));
+    await waitFor(() => {
+      fireEvent.click(getByTestId('resetButton'));
+    });
     expect(mockReset).toHaveBeenCalled();
   });
 
@@ -47,6 +49,7 @@ describe('<SearchBar/>', () => {
         handleSubmit={mockSubmit}
         onReset={mockReset}
         className={'mockClassName'}
+        searchMode={true}
       />
     );
     expect(container.querySelector('.mockClassName')).toBeInTheDocument();

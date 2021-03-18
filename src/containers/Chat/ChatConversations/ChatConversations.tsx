@@ -46,11 +46,16 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     setSelectedContactId(contactId?.toString());
   }, [contactId]);
 
+  let timer: any = null;
+
   const handleChange = (event: any) => {
     if (event.target.param) {
       setSearchParam(event.target.param);
     }
-    setSearchVal(event.target.value);
+
+    // wait for a second to avoid API call on each keyup event
+    clearTimeout(timer);
+    timer = setTimeout(() => setSearchVal(event.target.value), 1000);
 
     if (Object.keys(searchParam).length === 0) {
       setEnableSearchMode(true);
@@ -71,7 +76,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   useEffect(() => {
     // reset search if empty searchVal
-    if (!searchVal || searchVal === '') {
+    if (!searchVal) {
       client.writeQuery({
         query: SEARCH_OFFSET,
         data: { offset: 0, search: null },

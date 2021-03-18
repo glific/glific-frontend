@@ -28,6 +28,7 @@ export interface AutocompleteProps {
   asyncSearch?: boolean;
   roleSelection?: any;
   openOptions?: boolean;
+  disableClearable?: boolean;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -37,7 +38,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   field,
   icon,
   chipIcon,
-  form: { dirty, touched, errors, setFieldValue },
+  form: { touched, errors, setFieldValue },
   textFieldProps,
   helperText,
   multiple = true,
@@ -50,10 +51,11 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   helpLink,
   noOptionsText = 'No options available',
   openOptions,
+  disableClearable = false,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
-  const hasError = dirty && touchedVal && errorText !== undefined;
+  const hasError = touchedVal && errorText !== undefined;
   const [searchTerm, setSearchTerm] = useState('');
   const [optionValue, setOptionValue] = useState([]);
   const [open, setOpen] = useState(false);
@@ -97,6 +99,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
+          disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           onChange={(event, value: any) => {
             if (roleSelection) {

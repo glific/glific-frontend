@@ -16,6 +16,7 @@ export interface SearchDialogBoxProps {
   additionalOptionLabel?: string;
   onChange?: any;
   asyncSearch?: boolean;
+  disableClearable?: boolean;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -30,6 +31,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     additionalOptionLabel,
     handleCancel,
     onChange,
+    disableClearable,
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<Array<string>>([]);
@@ -68,6 +70,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
       <div className={styles.DialogBox}>
         <FormControl fullWidth>
           <AutoComplete
+            disableClearable={disableClearable}
             asyncSearch={asyncSearch}
             asyncValues={{ value: asyncSelectedOptions, setValue: setAsyncSelectedOptions }}
             options={options}
