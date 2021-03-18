@@ -346,7 +346,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
-        console.log('conversation---', conversation);
         conversationIndex = index;
         conversationInfo = conversation;
       }
