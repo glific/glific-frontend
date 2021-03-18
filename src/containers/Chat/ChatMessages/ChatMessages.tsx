@@ -29,7 +29,6 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { GET_MESSAGE_NUMBER } from '../../../graphql/queries/Message';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -238,27 +237,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     },
   });
   let messageList: any;
-
-  const [getMessageQuery] = useLazyQuery<any>(GET_MESSAGE_NUMBER, {
-    onCompleted: ({ message }) => {
-      const variables: any = {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: {
-          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
-          offset: message.message.messageNumber + 1,
-        },
-      };
-
-      if (collectionId) {
-        variables.filter = { id: collectionId.toString(), searchGroup: true };
-      }
-
-      getSearchQuery({
-        variables,
-      });
-    },
-  });
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -529,9 +507,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   const loadMoreMessages = () => {
-    const lastMessageId = conversationInfo.messages[conversationInfo.messages.length - 1].id;
+    const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
+    const variables: any = {
+      filter: { id: contactId?.toString() },
+      contactOpts: { limit: 1 },
+      messageOpts: {
+        limit:
+          messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
+            ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
+            : messageNumber - 2,
+        offset:
+          messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT <= 0
+            ? 1
+            : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
+      },
+    };
 
-    getMessageQuery({ variables: { id: lastMessageId } });
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
+    }
+
+    getSearchQuery({
+      variables,
+    });
 
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
