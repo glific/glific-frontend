@@ -20,12 +20,12 @@ export const Calendar: React.SFC<CalendarProps> = ({
   inputVariant = 'outlined',
   format = 'MM/dd/yyyy',
   field,
-  form: { dirty, touched, errors, setFieldValue },
+  form: { touched, errors, setFieldValue },
   placeholder,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
-  const hasError = dirty && touchedVal && errorText !== undefined;
+  const hasError = touchedVal && errorText !== undefined;
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
@@ -40,6 +40,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid className={styles.Calendar}>
         <KeyboardDatePicker
+          error={hasError ? errorText : ''}
           autoOk
           variant={variant}
           inputVariant={inputVariant}

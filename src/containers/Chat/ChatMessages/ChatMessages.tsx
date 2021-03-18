@@ -29,6 +29,7 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
+import { GET_MESSAGE_NUMBER } from '../../../graphql/queries/Message';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -57,12 +58,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       ? parseInt(messageParameterOffset, 10) - 10
       : 0;
 
-  // check if there is message number present in url and set the base for the loadmore increment otherwise set the base increment to default
-  const parameterOffset =
-    messageParameterOffset !== 0
-      ? messageParameterOffset + DEFAULT_MESSAGE_LOADMORE_LIMIT
-      : DEFAULT_MESSAGE_LIMIT;
-
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
@@ -70,14 +65,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
-  const [messageOffset, setMessageOffset] = useState(parameterOffset);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
   useEffect(() => {
     setShowLoadMore(true);
-    setMessageOffset(parameterOffset);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
   }, [contactId]);
@@ -116,9 +109,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   });
 
   useEffect(() => {
+    const clickListener = () => setShowDropdown(null);
     if (editTagsMessageId) {
-      window.addEventListener('click', () => setShowDropdown(null), true);
+      // need to check why we are doing this
+      window.addEventListener('click', clickListener, true);
     }
+    return () => {
+      window.removeEventListener('click', clickListener);
+    };
   }, [editTagsMessageId]);
 
   // get the conversations stored from the cache
@@ -240,6 +238,27 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
     },
   });
   let messageList: any;
+
+  const [getMessageQuery] = useLazyQuery<any>(GET_MESSAGE_NUMBER, {
+    onCompleted: ({ message }) => {
+      const variables: any = {
+        filter: { id: contactId?.toString() },
+        contactOpts: { limit: 1 },
+        messageOpts: {
+          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
+          offset: message.message.messageNumber + 1,
+        },
+      };
+
+      if (collectionId) {
+        variables.filter = { id: collectionId.toString(), searchGroup: true };
+      }
+
+      getSearchQuery({
+        variables,
+      });
+    },
+  });
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -510,19 +529,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   }
 
   const loadMoreMessages = () => {
-    const variables: any = {
-      filter: { id: contactId?.toString() },
-      contactOpts: { limit: 1 },
-      messageOpts: { limit: DEFAULT_MESSAGE_LOADMORE_LIMIT, offset: messageOffset },
-    };
+    const lastMessageId = conversationInfo.messages[conversationInfo.messages.length - 1].id;
 
-    if (collectionId) {
-      variables.filter = { id: collectionId.toString(), searchGroup: true };
-    }
-    getSearchQuery({
-      variables,
-    });
-    setMessageOffset(messageOffset + DEFAULT_MESSAGE_LIMIT);
+    getMessageQuery({ variables: { id: lastMessageId } });
+
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
       setLastScrollHeight(messageContainer.scrollHeight);
