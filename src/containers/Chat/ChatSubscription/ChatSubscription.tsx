@@ -114,7 +114,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // determine if we should use subscriptions or refetch the query
         if (switchSubscriptionToRefetch()) {
           // let's refetch and return
-          console.log('skip cache update');
           const waitTime = REFETCH_WAIT_TIME * 1000;
 
           // let's clear the timeout to prevent multiple fetch calls
@@ -125,7 +124,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           refetchTimer = setTimeout(() => {
             console.log('calling refetch in ', waitTime);
             // let's call refetch once all subscriptions are done
-            // refetch();
             setTriggerRefetch(true);
           }, waitTime);
 
@@ -374,7 +372,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   }
 
   if (triggerRefetch) {
-    console.log('fetch new data!');
     fetchData();
     setTriggerRefetch(false);
   }
