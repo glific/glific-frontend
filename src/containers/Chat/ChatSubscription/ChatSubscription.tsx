@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
 
 import {
@@ -39,6 +39,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const client = useApolloClient();
   let subscriptionRequests: any = [];
   let refetchTimer: any = null;
+  const [triggerRefetch, setTriggerRefetch] = useState(false);
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -113,7 +114,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // determine if we should use subscriptions or refetch the query
         if (switchSubscriptionToRefetch()) {
           // let's refetch and return
-          console.log('skip cache update');
           const waitTime = REFETCH_WAIT_TIME * 1000;
 
           // let's clear the timeout to prevent multiple fetch calls
@@ -122,9 +122,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           }
 
           refetchTimer = setTimeout(() => {
-            console.log('calling refetch in ', waitTime);
             // let's call refetch once all subscriptions are done
-            // refetch();
+            setTriggerRefetch(true);
           }, waitTime);
 
           return cachedConversations;
@@ -342,6 +341,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     },
   });
 
+  // let's fetch fresh data and update the cache
+  const [fetchData] = useLazyQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
     if (data && collectionData) {
       setDataLoaded(true);
@@ -363,6 +368,11 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   if (error) {
     setErrorMessage(client, error);
     return null;
+  }
+
+  if (triggerRefetch) {
+    fetchData();
+    setTriggerRefetch(false);
   }
 
   return null;
