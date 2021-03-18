@@ -100,7 +100,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   }
 
   const submitMessage = (message: string) => {
-    if (!message) return;
+    if (!message || message === ' \n') return;
 
     if (attachmentAdded) {
       createMediaMessage({
