@@ -47,6 +47,8 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 
+const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
+
 export interface ContactBarProps {
   displayName: string;
   contactId?: string;
@@ -330,7 +332,8 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Button>
     );
   } else if (
-    (contactBspStatus === 'SESSION' || contactBspStatus === 'SESSION_AND_HSM') &&
+    contactBspStatus &&
+    status.includes(contactBspStatus) &&
     !is24HourWindowOver(lastMessageTime)
   ) {
     flowButton = (

@@ -3,11 +3,11 @@
 }
 
 .Name {
-  width: 300px;
+  width: 350px;
 }
 
 .Collections {
-  width: 300px;
+  width: 250px;
 }
 
 .Icon {
@@ -20,6 +20,7 @@
   display: flex;
   font-weight: 500;
   font-size: 20px;
+  word-break: break-all;
   color: #073f24;
   margin-top: 12px;
   margin-bottom: 12px;
@@ -42,4 +43,12 @@
   width: 200px;
   justify-content: flex-end;
   margin-left: auto;
+}
+
+.TriggerIcon {
+  margin-right: 8px;
+}
+
+.Tooltip {
+  width: 120px;
 }

@@ -30,7 +30,6 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
-import { GET_MESSAGE_NUMBER } from '../../../graphql/queries/Message';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -45,14 +44,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   });
   const urlString = new URL(window.location.href);
 
-  // get the message number from url
-  let messageParameterOffset: any = urlString.searchParams.get('search');
+  let messageParameterOffset: any = 0;
 
-  // check if the message number is greater than 10 otherwise set the initial offset to 0
-  messageParameterOffset =
-    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
-      ? parseInt(messageParameterOffset, 10) - 10
-      : 0;
+  // get the message number from url
+  if (urlString.searchParams.get('search')) {
+    messageParameterOffset = urlString.searchParams.get('search');
+    // check if the message number is greater than 10 otherwise set the initial offset to 0
+    messageParameterOffset =
+      messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 < 0
+        ? 1
+        : parseInt(messageParameterOffset, 10) - 10;
+  }
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
@@ -63,12 +65,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
-  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(true);
+  const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
 
   useEffect(() => {
     setShowLoadMore(true);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
+    setDefaultShowJumpToLatest(true);
   }, [contactId]);
 
   useEffect(() => {
@@ -234,27 +238,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     },
   });
   let messageList: any;
-
-  const [getMessageQuery] = useLazyQuery<any>(GET_MESSAGE_NUMBER, {
-    onCompleted: ({ message }) => {
-      const variables: any = {
-        filter: { id: contactId?.toString() },
-        contactOpts: { limit: 1 },
-        messageOpts: {
-          limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
-          offset: message.message.messageNumber + 1,
-        },
-      };
-
-      if (collectionId) {
-        variables.filter = { id: collectionId.toString(), searchGroup: true };
-      }
-
-      getSearchQuery({
-        variables,
-      });
-    },
-  });
 
   useEffect(() => {
     const messageContainer: any = document.querySelector('.messageContainer');
@@ -525,9 +508,29 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   }
 
   const loadMoreMessages = () => {
-    const lastMessageId = conversationInfo.messages[conversationInfo.messages.length - 1].id;
+    const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
+    const variables: any = {
+      filter: { id: contactId?.toString() },
+      contactOpts: { limit: 1 },
+      messageOpts: {
+        limit:
+          messageNumber > DEFAULT_MESSAGE_LOADMORE_LIMIT
+            ? DEFAULT_MESSAGE_LOADMORE_LIMIT - 1
+            : messageNumber - 2,
+        offset:
+          messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT <= 0
+            ? 1
+            : messageNumber - DEFAULT_MESSAGE_LOADMORE_LIMIT,
+      },
+    };
 
-    getMessageQuery({ variables: { id: lastMessageId } });
+    if (collectionId) {
+      variables.filter = { id: collectionId.toString(), searchGroup: true };
+    }
+
+    getSearchQuery({
+      variables,
+    });
 
     const messageContainer = document.querySelector('.messageContainer');
     if (messageContainer) {
@@ -644,6 +647,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const showLatestMessage = () => {
     setShowJumpToLatest(false);
+    setDefaultShowJumpToLatest(false);
 
     // check if we have offset 0 (messageNumber === offset)
     if (conversationInfo.messages[0].messageNumber !== 0) {
@@ -692,8 +696,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       {dialogBox}
       {topChatBar}
       {messageListContainer}
-      {conversationInfo.messages.length &&
-      (showJumpToLatest || conversationInfo.messages[0]?.messageNumber !== 0)
+      {conversationInfo.messages.length && (showJumpToLatest || defaultJumpToLatest)
         ? jumpToLatest
         : null}
       {chatInputSection}

@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import styles from './TriggerList.module.css';
 import { ReactComponent as TriggerIcon } from '../../../assets/images/icons/Trigger/Union.svg';
 import { ReactComponent as ClockIcon } from '../../../assets/images/icons/Trigger/Clock.svg';
+import { ReactComponent as ClockInactiveIcon } from '../../../assets/images/icons/Trigger/Inactive.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { List } from '../../List/List';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
@@ -20,22 +21,19 @@ const getTooltip = (frequency: any, days: any) => {
   days.forEach((option: number) => {
     dayList.forEach((value: any) => {
       if (value.id === option) {
-        obj.push(value.label);
+        obj.push(value.label.slice(0, 3));
       }
     });
   });
   return `Repeat: ${frequency}${frequency === 'weekly' ? `(${obj.toString()})` : ''}`;
 };
 
-const getName = (name: any, frequency: any, days: any) => (
+const getName = (flow: any, startAt: any, frequency: any, days: any, isActive: any) => (
   <p className={styles.LabelText}>
-    {name}
-    <br />
-    <Tooltip title={getTooltip(frequency, days)} placement="right">
-      <span className={styles.TriggerIcon}>
-        <ClockIcon />
-      </span>
+    <Tooltip title={getTooltip(frequency, days)} tooltipClass={styles.Tooltip} placement="right">
+      <span className={styles.TriggerIcon}>{isActive ? <ClockIcon /> : <ClockInactiveIcon />}</span>
     </Tooltip>
+    {`${flow.name}_${moment(startAt).format('DD/MM/yyyy_hh:mmA')}`}
   </p>
 );
 
@@ -45,8 +43,8 @@ const getEndDate = (date: any) => (
 
 const getCollections = (group: any) => <p className={styles.Collection}>{group.label}</p>;
 
-const getColumns = ({ name, endDate, group, frequency, days }: any) => ({
-  name: getName(name, frequency, days),
+const getColumns = ({ endDate, group, frequency, days, flow, startAt, isActive }: any) => ({
+  name: getName(flow, startAt, frequency, days, isActive),
   startAt: getEndDate(endDate),
   collections: getCollections(group),
 });
