@@ -40,6 +40,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   let subscriptionRequests: any = [];
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
+  let subscriptionToRefetchSwitchHappened = false;
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -112,17 +113,28 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         recordRequests();
 
         // determine if we should use subscriptions or refetch the query
-        if (switchSubscriptionToRefetch()) {
-          // let's refetch and return
+        if (switchSubscriptionToRefetch() && !subscriptionToRefetchSwitchHappened) {
+          // when switch happens
+          // 1. get the random time between 10 - 40 sec
+          // 2. set the fetch action for that duration
+          // 3. if we are still in fetch mode repeat the same.
+
+          // set the switch flag
+          subscriptionToRefetchSwitchHappened = true;
+
+          // let's get the random wait time
           const waitTime = REFETCH_WAIT_TIME * 1000;
 
-          // let's clear the timeout to prevent multiple fetch calls
+          // let's clear the timeout if exists
           if (refetchTimer) {
             clearTimeout(refetchTimer);
           }
 
           refetchTimer = setTimeout(() => {
-            // let's call refetch once all subscriptions are done
+            // reset the switch flag
+            subscriptionToRefetchSwitchHappened = false;
+
+            // let's trigger refetch action
             setTriggerRefetch(true);
           }, waitTime);
 
