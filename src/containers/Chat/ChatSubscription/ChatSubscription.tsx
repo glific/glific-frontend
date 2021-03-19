@@ -196,7 +196,6 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           return null;
         });
       }
-      console.log(action, newMessage);
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       // let's also skip fetching contact when we trigger this via group subscriptions
