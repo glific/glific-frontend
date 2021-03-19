@@ -75,6 +75,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>('');
+  const [minDate, setMinDate] = useState<any>(new Date());
   const location = useLocation();
 
   const states = {
@@ -137,6 +138,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       type: 'date',
       name: 'startDate',
       placeholder: 'Start date',
+      minDate,
     },
     {
       component: Calendar,
@@ -210,6 +212,10 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
     setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
+    // If a user wants to update the trigger
+    if (moment(new Date()).isAfter(startAtValue, 'days')) {
+      setMinDate(moment(startAtValue).format('yyyy-MM-DD'));
+    }
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly');
