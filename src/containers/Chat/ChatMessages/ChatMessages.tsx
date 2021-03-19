@@ -48,14 +48,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   });
   const urlString = new URL(window.location.href);
 
-  // get the message number from url
-  let messageParameterOffset: any = urlString.searchParams.get('search');
+  let messageParameterOffset: any = 0;
 
-  // check if the message number is greater than 10 otherwise set the initial offset to 0
-  messageParameterOffset =
-    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
-      ? parseInt(messageParameterOffset, 10) - 10
-      : 0;
+  // get the message number from url
+  if (urlString.searchParams.get('search')) {
+    messageParameterOffset = urlString.searchParams.get('search');
+    // check if the message number is greater than 10 otherwise set the initial offset to 0
+    messageParameterOffset =
+      messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 < 0
+        ? 1
+        : parseInt(messageParameterOffset, 10) - 10;
+  }
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
@@ -66,12 +69,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
   const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
-  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(true);
+  const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
 
   useEffect(() => {
     setShowLoadMore(true);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
+    setDefaultShowJumpToLatest(true);
   }, [contactId]);
 
   useEffect(() => {
@@ -646,6 +651,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   const showLatestMessage = () => {
     setShowJumpToLatest(false);
+    setDefaultShowJumpToLatest(false);
 
     // check if we have offset 0 (messageNumber === offset)
     if (conversationInfo.messages[0].messageNumber !== 0) {
@@ -694,8 +700,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       {dialogBox}
       {topChatBar}
       {messageListContainer}
-      {conversationInfo.messages.length &&
-      (showJumpToLatest || conversationInfo.messages[0]?.messageNumber !== 0)
+      {conversationInfo.messages.length && (showJumpToLatest || defaultJumpToLatest)
         ? jumpToLatest
         : null}
       {chatInputSection}
