@@ -53,9 +53,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
 
   // check if the message number is greater than 10 otherwise set the initial offset to 0
   messageParameterOffset =
-    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 > 0
-      ? parseInt(messageParameterOffset, 10) - 10
-      : 0;
+    messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 < 0
+      ? 1
+      : parseInt(messageParameterOffset, 10) - 10;
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState(false);
@@ -694,10 +694,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({
       {dialogBox}
       {topChatBar}
       {messageListContainer}
-      {conversationInfo.messages.length &&
-      (showJumpToLatest || conversationInfo.messages[0]?.messageNumber !== 0)
-        ? jumpToLatest
-        : null}
+      {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}
     </Container>
   );
