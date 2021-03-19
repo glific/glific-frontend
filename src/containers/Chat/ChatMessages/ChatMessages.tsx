@@ -19,6 +19,7 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
+  SIMULATOR_NUMBER_START,
 } from '../../../common/constants';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
@@ -606,7 +607,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             ? conversationInfo.contact.name
             : conversationInfo.contact.maskedPhone
         }
-        isSimulator={conversationInfo.contact.phone.startsWith('9876543210')}
+        isSimulator={conversationInfo.contact.phone.startsWith(SIMULATOR_NUMBER_START)}
         contactId={contactId.toString()}
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
