@@ -84,7 +84,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
 
   return (
     <List
-      title="Triggers"
+      title="Triggers (Beta)"
       listItem="triggers"
       listItemName="Trigger"
       pageLink="trigger"
