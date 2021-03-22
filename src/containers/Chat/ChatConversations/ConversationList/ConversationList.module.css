@@ -50,7 +50,7 @@
   z-index: 101;
 }
 
-.ScrollToTopButton {
+.ScrollButton {
   display: flex;
   align-items: center;
   background-color: #073f24;
@@ -61,8 +61,22 @@
   color: #edf6f2;
   cursor: pointer;
   position: absolute;
-  top: 88px;
   left: 50%;
   z-index: 100;
   transform: translateX(-50%);
+}
+
+.ScrollToTopContacts {
+  composes: ScrollButton;
+  top: 88px;
+}
+
+.ScrollToTopCollections {
+  composes: ScrollButton;
+  top: 0px;
+}
+
+.ScrollToTopSearches {
+  composes: ScrollButton;
+  top: 74px;
 }

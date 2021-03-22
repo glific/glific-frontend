@@ -441,9 +441,15 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   };
 
+  let scrollTopStyle = selectedContactId
+    ? styles.ScrollToTopContacts
+    : styles.ScrollToTopCollections;
+
+  scrollTopStyle = entityType === 'savedSearch' ? styles.ScrollToTopSearches : scrollTopStyle;
+
   const scrollToTop = (
     <div
-      className={styles.ScrollToTopButton}
+      className={scrollTopStyle}
       onClick={showLatestContact}
       onKeyDown={showLatestContact}
       aria-hidden="true"
@@ -470,13 +476,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     </div>
   );
 
+  const entityStyle = selectedContactId
+    ? styles.ListingContainer
+    : styles.CollectionListingContainer;
+
   return (
-    <Container
-      className={`${
-        selectedContactId ? styles.ListingContainer : styles.CollectionListingContainer
-      } contactsContainer`}
-      disableGutters
-    >
+    <Container className={`${entityStyle} contactsContainer`} disableGutters>
       {showJumpToLatest && !showLoading ? scrollToTop : null}
       <List className={styles.StyledList}>
         {conversationList}
