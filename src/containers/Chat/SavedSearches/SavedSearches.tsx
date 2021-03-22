@@ -15,7 +15,7 @@ export interface SavedSearchesProps {
 
 // default query variables
 const queryVariables = {
-  filter: {},
+  filter: { isReserved: false },
   opts: {},
 };
 
@@ -42,7 +42,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
 
   let options = [];
   if (data) {
-    options = data.savedSearches.filter((searches: any) => !searches.isReserved);
+    options = data.savedSearches;
   }
 
   const changeValue = (event: any, value: any) => {

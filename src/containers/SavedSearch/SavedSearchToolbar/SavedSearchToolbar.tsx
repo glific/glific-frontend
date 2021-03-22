@@ -53,7 +53,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   // default query variables
   const queryVariables = {
-    filter: {},
+    filter: { isReserved: true },
     opts: {},
   };
 
@@ -65,7 +65,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   const { loading, error, client, refetch } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
     onCompleted: (data) => {
-      setFixedSearches(data.savedSearches.filter((searches: any) => searches.isReserved));
+      setFixedSearches(data.savedSearches);
     },
   });
 
@@ -81,9 +81,9 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
     const replaceSearchIndex = fixedSearches
       .map((savedSearch: any) => savedSearch.id)
       .indexOf(search.id);
-    const fixedSearchesCopy = fixedSearches;
+    const fixedSearchesCopy = JSON.parse(JSON.stringify(fixedSearches));
     if (replaceSearchIndex !== -1) {
-      [fixedSearches[replaceSearchIndex], fixedSearches[2]] = [
+      [fixedSearchesCopy[replaceSearchIndex], fixedSearchesCopy[2]] = [
         fixedSearches[2],
         fixedSearches[replaceSearchIndex],
       ];
@@ -94,16 +94,16 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   useEffect(() => {
     // display created searches
-    if (refetchData.savedSearchCollection) {
+    if (refetchData.savedSearches) {
       refetch();
-      handleAdditionalSavedSearch(refetchData.savedSearchCollection);
+      handleAdditionalSavedSearch(refetchData.savedSearches);
     }
-  }, [refetchData.savedSearchCollection]);
+  }, [refetchData.savedSearches]);
 
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
-    return null;
+    return <div>error</div>;
   }
 
   const savedSearchList = fixedSearches.slice(0, 3).map((savedSearch: any) => {
