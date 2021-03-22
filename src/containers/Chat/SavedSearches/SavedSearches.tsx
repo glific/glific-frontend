@@ -68,6 +68,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
           }}
           multiple={false}
           openOptions={Open}
+          listBoxProps={{ style: { maxHeight: '78vh' } }}
         />
       </div>
       {savedSearch.id !== 0 ? (

@@ -29,6 +29,7 @@ export interface AutocompleteProps {
   roleSelection?: any;
   openOptions?: boolean;
   disableClearable?: boolean;
+  listBoxProps?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -52,6 +53,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   noOptionsText = 'No options available',
   openOptions,
   disableClearable = false,
+  listBoxProps,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -187,6 +189,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             setOpen(false);
           }}
           noOptionsText={noOptionsText}
+          ListboxProps={listBoxProps}
         />
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
