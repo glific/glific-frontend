@@ -286,8 +286,35 @@ export const savedSearchStatusQuery = {
             '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: true,
+          label: 'All',
+          shortcode: 'all',
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
           label: 'All unread conversations',
           shortcode: 'Unread',
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
+          label: 'Not replied',
+          shortcode: 'Not replied',
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
+          label: 'Optin',
+          shortcode: 'Optin',
           count: 10,
         },
       ],

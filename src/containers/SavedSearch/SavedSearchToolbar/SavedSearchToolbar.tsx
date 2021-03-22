@@ -94,16 +94,16 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
 
   useEffect(() => {
     // display created searches
-    if (refetchData.savedSearchCollection) {
+    if (refetchData.savedSearches) {
       refetch();
-      handleAdditionalSavedSearch(refetchData.savedSearchCollection);
+      handleAdditionalSavedSearch(refetchData.savedSearches);
     }
-  }, [refetchData.savedSearchCollection]);
+  }, [refetchData.savedSearches]);
 
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
-    return null;
+    return 'error';
   }
 
   const savedSearchList = fixedSearches.slice(0, 3).map((savedSearch: any) => {
