@@ -43,6 +43,7 @@
 
 .Title {
   font-family: 'Heebo', sans-serif;
+  display: inline-block;
 }
 
 /* Overriding Typography styling */
@@ -51,6 +52,8 @@
   margin: 10px 10px 5px 10px !important;
   color: #93a29b;
   cursor: pointer;
+  line-height: 16px !important;
+  height: 16px;
 }
 
 .SelectedTab {
