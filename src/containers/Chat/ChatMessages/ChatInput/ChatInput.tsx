@@ -100,7 +100,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   }
 
   const submitMessage = (message: string) => {
-    if (!message || message === ' \n') return;
+    // check for an empty message or message with just spaces
+    if (!message || /^\s*$/.test(message)) return;
 
     if (attachmentAdded) {
       createMediaMessage({
