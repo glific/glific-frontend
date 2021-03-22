@@ -1,4 +1,4 @@
-import { savedSearchQuery } from '../../../mocks/Chat';
+import { savedSearchStatusQuery } from '../../../mocks/Chat';
 import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SEARCH_OFFSET } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 
@@ -212,7 +212,7 @@ export const SearchConversationsMocks = [
 export const ChatConversationMocks = [
   ...chatConversationsMocks,
   ...chatConversationsMocks,
-  savedSearchQuery,
+  savedSearchStatusQuery,
   ...SearchConversationsMocks,
   ...SearchConversationsMocks,
   searchOffset,
