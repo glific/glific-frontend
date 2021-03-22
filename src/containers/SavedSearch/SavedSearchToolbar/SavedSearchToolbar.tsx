@@ -103,7 +103,7 @@ export const SavedSearchToolbar: React.SFC<SavedSearchToolbarProps> = (props) =>
   if (loading) return <Loading />;
   if (error) {
     setErrorMessage(client, error);
-    return 'error';
+    return <div>error</div>;
   }
 
   const savedSearchList = fixedSearches.slice(0, 3).map((savedSearch: any) => {
