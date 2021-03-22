@@ -273,10 +273,10 @@ export const messageStatusSubscription = {
   },
 };
 
-export const savedSearchQuery = {
+export const savedSearchStatusQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: {} },
+    variables: { filter: { isReserved: true }, opts: {} },
   },
   result: {
     data: {
@@ -290,6 +290,19 @@ export const savedSearchQuery = {
           shortcode: 'Unread',
           count: 10,
         },
+      ],
+    },
+  },
+};
+
+export const savedSearchQuery = {
+  request: {
+    query: SAVED_SEARCH_QUERY,
+    variables: { filter: { isReserved: false }, opts: {} },
+  },
+  result: {
+    data: {
+      savedSearches: [
         {
           args:
             '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
@@ -307,7 +320,7 @@ export const savedSearchQuery = {
 export const savedSearchQueryError = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: {} },
+    variables: { filter: { isReserved: false }, opts: {} },
   },
   result: {
     errors: [new Error('An error occurred')],
