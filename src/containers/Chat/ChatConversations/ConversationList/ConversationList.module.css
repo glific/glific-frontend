@@ -57,11 +57,11 @@
   font-weight: 500;
   padding: 1px 8px;
   margin: 0 auto;
-  border-radius: 12px 12px 0 0;
+  border-radius: 0 0 12px 12px;
   color: #edf6f2;
   cursor: pointer;
   position: absolute;
-  bottom: 0;
+  top: 88px;
   left: 50%;
   z-index: 100;
   transform: translateX(-50%);
