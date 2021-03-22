@@ -13,6 +13,7 @@ export interface CalendarProps {
   field: any;
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
+  minDate?: any;
 }
 
 export const Calendar: React.SFC<CalendarProps> = ({
@@ -22,6 +23,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
   field,
   form: { touched, errors, setFieldValue },
   placeholder,
+  minDate,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -50,6 +52,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
           value={dateValue}
           onChange={handleDateChange}
           helperText={hasError ? errorText : ''}
+          minDate={minDate}
         />
       </Grid>
     </MuiPickersUtilsProvider>

@@ -7,6 +7,7 @@ export const TIME_FORMAT = 'HH:mm';
 export const DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm:ss';
 export const SIMULATOR_CONTACT = '9876543210';
 export const FLOW_STATUS_PUBLISHED = 'published';
+export const SIMULATOR_NUMBER_START = '9876543210';
 // to find variables in message
 export const pattern = /[^{}]+(?=})/g;
 
@@ -120,3 +121,12 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
 
   return backendTerms[columnName];
 };
+
+// subscription duration to determine switch to fetch mode ( in seconds )
+export const SUBSCRIPTION_ALLOWED_DURATION = 5;
+
+// number of subscriptions allowed within above duration until we switch to fetch mode
+export const SUBSCRIPTION_ALLOWED_NUMBER = 10;
+
+// time to wait for firing refetch ( in seconds )
+export const REFETCH_WAIT_TIME = 5;
