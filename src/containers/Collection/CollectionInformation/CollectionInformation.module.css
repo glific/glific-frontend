@@ -1,0 +1,40 @@
+.CollectionInformation {
+  position: absolute;
+  left: 590px;
+  top: 21px;
+  font-family: Heebo;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 10px;
+  color: #cacaca;
+  display: -webkit-inline-box;
+}
+
+.SessionInfo {
+  padding: 5px;
+}
+
+.SessionCount {
+  color: #93a29b;
+}
+
+.CollectionHeading {
+  font-weight: 500;
+  line-height: 1;
+  color: #cacaca;
+  font-size: 12px;
+}
+
+.CollectionsName {
+  composes: CollectionHeading;
+  margin-left: 6px;
+  color: #93a29b;
+}
+
+.CollectionAssigned {
+  position: absolute;
+  left: 594px;
+  top: 42px;
+  line-height: 10px;
+}

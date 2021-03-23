@@ -46,6 +46,7 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
+import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -453,6 +454,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  // CONTACT: display session timer & Assigned to
   let sesssionAndCollectionAssignedTo;
   if (contactId) {
     sesssionAndCollectionAssignedTo = (
@@ -486,6 +488,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  // COLLECTION: display contact info & Assigned to
+  let collectionStatus: any;
+  if (collectionId) {
+    collectionStatus = <CollectionInformation collectionId={collectionId} />;
+  }
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div className={styles.MobileHeader}>
@@ -505,6 +513,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             </ClickAwayListener>
           </div>
           {contactCollections}
+          {collectionStatus}
         </div>
         {sesssionAndCollectionAssignedTo}
       </div>
