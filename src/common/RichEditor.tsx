@@ -92,6 +92,21 @@ export const WhatsAppToJsx = (text: any) => {
   const replacements = TextReplacements;
   let modifiedText = text;
   const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
+  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
+
+  if (typeof text === 'string') {
+    const allLinks = [...modifiedText.matchAll(regexForLink)];
+
+    if (allLinks && allLinks.length > 0) {
+      allLinks.forEach((link) => {
+        modifiedText = reactStringReplace(modifiedText, link[0], (match: any) => (
+          <a href={match} data-testid="messageLink" target="_blank" rel="noopener noreferrer">
+            {match}
+          </a>
+        ));
+      });
+    }
+  }
 
   complexFormatting.forEach((expression) => {
     modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => (
