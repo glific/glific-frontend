@@ -36,7 +36,7 @@ const insertedAt = '2020-06-19T18:44:02Z';
 const Props = (link: any) => {
   return {
     id: 1,
-    body: '*Hello there!* visit google.com',
+    body: '*Hello there!* visit https://www.google.com',
     contactId: 2,
     receiver: {
       id: 1,
@@ -73,7 +73,9 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message content correctly', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('content').textContent).toEqual('Hello there! visit google.com');
+    expect(getByTestId('content').textContent).toContain(
+      'Hello there! visit https://www.google.com'
+    );
   });
 
   test('it should apply the correct styling', () => {
@@ -117,7 +119,7 @@ describe('<ChatMessage />', () => {
 
   test('it should detect a link in message', async () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('messageLink').getAttribute('href')).toBe('http://google.com');
+    expect(getByTestId('messageLink').getAttribute('href')).toBe('https://www.google.com');
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
