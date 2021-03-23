@@ -98,12 +98,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
-    onError: () => {
-      setNotification(
-        client,
-        'Sorry! 24 hrs window closed. Your message cannot be sent at this time. ',
-        'warning'
-      );
+    onError: (error: any) => {
+      if (error.message) {
+        setNotification(client, error.message, 'warning');
+      }
       return null;
     },
   });
