@@ -57,7 +57,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({ c
     <>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
         {Object.keys(display).map((data: any) => (
-          <div className={styles.SessionInfo}>
+          <div key={data} className={styles.SessionInfo}>
             {data}: <span className={styles.SessionCount}> {display[data]}</span>
           </div>
         ))}
