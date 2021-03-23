@@ -36,3 +36,13 @@
   margin-bottom: 12px;
   margin-top: 0px;
 }
+
+.CollectionInfo {
+  position: absolute;
+  left: 520px !important;
+  top: 0px !important;
+}
+
+.CollectionInformation > .InfoWrapper {
+  display: contents !important;
+}

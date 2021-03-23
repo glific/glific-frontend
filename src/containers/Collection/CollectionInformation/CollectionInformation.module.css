@@ -1,18 +1,15 @@
 .CollectionInformation {
-  position: absolute;
-  left: 590px;
-  top: 21px;
-  font-family: Heebo;
-  font-style: normal;
   font-weight: 500;
   font-size: 12px;
   line-height: 10px;
   color: #cacaca;
-  display: -webkit-inline-box;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 .SessionInfo {
-  padding: 5px;
+  padding: 0px 5px;
 }
 
 .SessionCount {
@@ -33,8 +30,10 @@
 }
 
 .CollectionAssigned {
-  position: absolute;
-  left: 594px;
-  top: 42px;
-  line-height: 10px;
+  text-align: right;
+}
+
+.InfoWrapper {
+  align-items: flex-end;
+  flex-direction: column;
 }

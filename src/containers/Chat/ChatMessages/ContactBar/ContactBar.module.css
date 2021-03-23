@@ -191,14 +191,21 @@
   display: flex;
   align-items: center;
 }
+
 .SessionTimerContainer {
   margin-left: auto;
+  width: 50%;
 }
+
 .SessionTimer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 5px;
+}
+
+.SessionTimer + div {
+  text-align: right;
 }
 
 .SessionTimer span {
@@ -217,4 +224,17 @@
   font-size: 14px;
   color: #073f24;
   text-align: justify;
+}
+
+.ContactInfoWrapper {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.ContactBarWapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }

@@ -5,11 +5,15 @@ import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/quer
 
 export interface CollectionInformationProps {
   collectionId: any;
+  staff?: boolean;
 }
 
 let display: any = { 'In-session': 0, 'Session expired': 0, 'Opted-out': 0 };
 
-export const CollectionInformation: React.SFC<CollectionInformationProps> = ({ collectionId }) => {
+export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
+  collectionId,
+  staff = true,
+}) => {
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
 
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -54,7 +58,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({ c
   }
 
   return (
-    <>
+    <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
         {Object.keys(display).map((data: any) => (
           <div key={data} className={styles.SessionInfo}>
@@ -63,13 +67,13 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({ c
         ))}
       </div>
       <div className={styles.CollectionAssigned}>
-        {assignedToCollection ? (
+        {assignedToCollection && staff ? (
           <>
             <span className={styles.CollectionHeading}>Assigned to</span>
             <span className={styles.CollectionsName}>{assignedToCollection}</span>
           </>
         ) : null}
       </div>
-    </>
+    </div>
   );
 };

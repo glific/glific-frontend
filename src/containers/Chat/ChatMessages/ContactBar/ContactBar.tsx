@@ -496,26 +496,35 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <div className={styles.MobileHeader}>
-        <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-        <MenuIcon className={styles.MenuIcon} />
-      </div>
-      <div className={styles.ContactInfoContainer}>
-        <div>
-          <div className={styles.ContactDetails}>
-            <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-              {displayName}
-            </Typography>
-            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-              <div className={styles.Configure} data-testid="dropdownIcon">
-                <DropdownIcon onClick={handleConfigureIconClick} />
-              </div>
-            </ClickAwayListener>
-          </div>
-          {contactCollections}
-          {collectionStatus}
+      <div className={styles.ContactBarWapper}>
+        <div className={styles.MobileHeader}>
+          <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+          <MenuIcon className={styles.MenuIcon} />
         </div>
-        {sesssionAndCollectionAssignedTo}
+        <div className={styles.ContactInfoContainer}>
+          <div className={styles.ContactInfoWrapper}>
+            <div className={styles.InfoWrapperRight}>
+              <div className={styles.ContactDetails}>
+                <Typography
+                  className={styles.Title}
+                  variant="h6"
+                  noWrap
+                  data-testid="beneficiaryName"
+                >
+                  {displayName}
+                </Typography>
+                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                  <div className={styles.Configure} data-testid="dropdownIcon">
+                    <DropdownIcon onClick={handleConfigureIconClick} />
+                  </div>
+                </ClickAwayListener>
+              </div>
+              {contactCollections}
+            </div>
+            {collectionStatus}
+            {sesssionAndCollectionAssignedTo}
+          </div>
+        </div>
       </div>
       {popper}
       {dialogBox}
