@@ -273,10 +273,10 @@ export const messageStatusSubscription = {
   },
 };
 
-export const savedSearchQuery = {
+export const savedSearchStatusQuery = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: {} },
+    variables: { filter: { isReserved: true }, opts: {} },
   },
   result: {
     data: {
@@ -286,10 +286,50 @@ export const savedSearchQuery = {
             '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: true,
+          label: 'All',
+          shortcode: 'all',
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
           label: 'All unread conversations',
           shortcode: 'Unread',
           count: 10,
         },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
+          label: 'Not replied',
+          shortcode: 'Not replied',
+          count: 10,
+        },
+        {
+          args:
+            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          id: '1',
+          isReserved: true,
+          label: 'Optin',
+          shortcode: 'Optin',
+          count: 10,
+        },
+      ],
+    },
+  },
+};
+
+export const savedSearchQuery = {
+  request: {
+    query: SAVED_SEARCH_QUERY,
+    variables: { filter: { isReserved: false }, opts: {} },
+  },
+  result: {
+    data: {
+      savedSearches: [
         {
           args:
             '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
@@ -307,7 +347,7 @@ export const savedSearchQuery = {
 export const savedSearchQueryError = {
   request: {
     query: SAVED_SEARCH_QUERY,
-    variables: { filter: {}, opts: {} },
+    variables: { filter: { isReserved: false }, opts: {} },
   },
   result: {
     errors: [new Error('An error occurred')],

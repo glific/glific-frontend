@@ -8,7 +8,7 @@ import { Img } from 'react-image';
 import styles from './ChatMessageType.module.css';
 import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import loadingImage from '../../../../../assets/images/loading.gif';
-import FallbackImage from '../../../../../assets/images/imageNotLoaded.jpeg';
+import FallbackImage from '../../../../../assets/images/imageError.png';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
 import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';

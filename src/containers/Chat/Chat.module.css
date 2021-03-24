@@ -43,6 +43,7 @@
 
 .Title {
   font-family: 'Heebo', sans-serif;
+  display: inline-block;
 }
 
 /* Overriding Typography styling */
