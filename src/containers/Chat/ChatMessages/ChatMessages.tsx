@@ -62,7 +62,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
-  const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(true);
@@ -243,14 +242,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   });
 
   let messageList: any;
-
-  useEffect(() => {
-    const messageContainer: any = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      messageContainer.scrollTop += messageContainer.scrollHeight - lastScrollHeight;
-    }
-  }, [allConversations, lastScrollHeight]);
-
   let unselectedTags: Array<any> = [];
 
   // tagging message mutation
@@ -541,9 +532,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       variables,
     });
 
-    const messageContainer = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      setLastScrollHeight(messageContainer.scrollHeight);
+    // keep scroll at last message
+    const element = document.querySelector(`#search${messageNumber}`);
+    if (element) {
+      element.scrollIntoView();
     }
   };
 
