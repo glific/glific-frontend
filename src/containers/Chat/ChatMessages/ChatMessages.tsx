@@ -182,6 +182,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         updateConversationsCache(conversationsCopy, client, queryVariables);
 
         getScrollToMessage();
+
+        // need to display Load more messages button
+        setShowLoadMore(true);
       }
     },
   });
@@ -238,6 +241,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       }
     },
   });
+
   let messageList: any;
 
   useEffect(() => {
@@ -542,6 +546,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       setLastScrollHeight(messageContainer.scrollHeight);
     }
   };
+
   let messageListContainer;
   // Check if there are conversation messages else display no messages
   if (messageList) {
