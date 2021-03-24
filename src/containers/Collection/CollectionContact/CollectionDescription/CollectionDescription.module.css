@@ -8,14 +8,14 @@
   margin-top: 0px;
   color: #93a29b;
   line-height: 1.25;
-  margin-bottom: 30px;
+  margin-bottom: 13px;
 }
 
 .StaffDivider {
   width: 100%;
   border-bottom: 1px solid #eaedec;
   line-height: 0.1em;
-  margin: 10px 0 20px 0px;
+  margin: 30px 0 30px 0px;
 }
 
 .UserList li {
@@ -35,4 +35,14 @@
   font-weight: 500;
   margin-bottom: 12px;
   margin-top: 0px;
+}
+
+.CollectionInfo {
+  position: absolute;
+  left: 520px !important;
+  top: 0px !important;
+}
+
+.CollectionInformation > .InfoWrapper {
+  display: contents !important;
 }

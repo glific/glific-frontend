@@ -1,0 +1,39 @@
+.CollectionInformation {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 10px;
+  color: #cacaca;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.SessionInfo {
+  padding: 0px 5px;
+}
+
+.SessionCount {
+  color: #93a29b;
+}
+
+.CollectionHeading {
+  font-weight: 500;
+  line-height: 1;
+  color: #cacaca;
+  font-size: 12px;
+}
+
+.CollectionsName {
+  composes: CollectionHeading;
+  margin-left: 6px;
+  color: #93a29b;
+}
+
+.CollectionAssigned {
+  text-align: right;
+}
+
+.InfoWrapper {
+  align-items: flex-end;
+  flex-direction: column;
+}
