@@ -67,6 +67,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(true);
   const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
+  const [conversationInfo, setConversationInfo] = useState<any>({});
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -342,82 +343,86 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   }
 
   // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = {};
 
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
-        conversationInfo = conversation;
+        setConversationInfo(conversation);
       }
       return null;
     });
   };
 
-  if (contactId) {
-    // loop through the cached conversations and find if contact exists
-    if (allConversations && allConversations.search) {
-      updateConversationInfo('contact', contactId);
-    }
+  useEffect(() => {
+    if (contactId) {
+      // loop through the cached conversations and find if contact exists
+      if (allConversations && allConversations.search) {
+        updateConversationInfo('contact', contactId);
+      }
 
-    // if conversation is not present then fetch for contact
-    if (conversationIndex < 0) {
-      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
-        getSearchQuery({
-          variables: {
-            filter: { id: contactId },
-            contactOpts: { limit: 1 },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-              offset: messageParameterOffset,
+      // if conversation is not present then fetch for contact
+      if (conversationIndex < 0) {
+        if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
+          getSearchQuery({
+            variables: {
+              filter: { id: contactId },
+              contactOpts: { limit: 1 },
+              messageOpts: {
+                limit: DEFAULT_MESSAGE_LIMIT,
+                offset: messageParameterOffset,
+              },
             },
-          },
-        });
-      }
-      // lets not get from cache if parameter is present
-    } else if (conversationIndex > -1 && messageParameterOffset) {
-      if (
-        (!parameterLoading && !parameterCalled) ||
-        (parameterdata && parameterdata.search[0].contact.id !== contactId)
-      ) {
-        getSearchParameterQuery({
-          variables: {
-            filter: { id: contactId },
-            contactOpts: { limit: 1 },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-              offset: messageParameterOffset,
+          });
+        }
+        // lets not get from cache if parameter is present
+      } else if (conversationIndex > -1 && messageParameterOffset) {
+        if (
+          (!parameterLoading && !parameterCalled) ||
+          (parameterdata && parameterdata.search[0].contact.id !== contactId)
+        ) {
+          getSearchParameterQuery({
+            variables: {
+              filter: { id: contactId },
+              contactOpts: { limit: 1 },
+              messageOpts: {
+                limit: DEFAULT_MESSAGE_LIMIT,
+                offset: messageParameterOffset,
+              },
             },
-          },
-        });
+          });
+        }
       }
     }
-  }
+  }, [contactId, allConversations]);
 
-  if (collectionId) {
-    // loop through the cached conversations and find if collection exists
-    if (allConversations && allConversations.search) {
-      if (collectionId === -1) {
-        conversationIndex = 0;
-        [conversationInfo] = allConversations.search;
-      } else {
-        updateConversationInfo('group', collectionId);
+  useEffect(() => {
+    if (collectionId) {
+      // loop through the cached conversations and find if collection exists
+      if (allConversations && allConversations.search) {
+        if (collectionId === -1) {
+          conversationIndex = 0;
+          setConversationInfo(allConversations.search);
+          // [conversationInfo] = allConversations.search;
+        } else {
+          updateConversationInfo('group', collectionId);
+        }
       }
-    }
 
-    // if conversation is not present then fetch the group
-    if (conversationIndex < 0) {
-      if (!loading && !data) {
-        getSearchQuery({
-          variables: {
-            filter: { id: collectionId, searchGroup: true },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          },
-        });
+      // if conversation is not present then fetch the group
+      if (conversationIndex < 0) {
+        if (!loading && !data) {
+          getSearchQuery({
+            variables: {
+              filter: { id: collectionId, searchGroup: true },
+              contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+              messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+            },
+          });
+        }
       }
     }
-  }
+  }, [collectionId, allConversations]);
 
   const closeDialogBox = () => {
     setDialogbox(false);
@@ -537,7 +542,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       setLastScrollHeight(messageContainer.scrollHeight);
     }
   };
-
   let messageListContainer;
   // Check if there are conversation messages else display no messages
   if (messageList) {
