@@ -22,9 +22,8 @@ const getTime = (time: string) => (
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
 const columnNames = ['TIME', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
-const dialogMessage = '';
 const columnStyles = [styles.Time, styles.Category, styles.Severity, styles.Entity, styles.Message];
-const tagIcon = <NotificationIcon className={styles.NotificationIcon} />;
+const notificationIcon = <NotificationIcon className={styles.NotificationIcon} />;
 
 const queries = {
   countQuery: GET_NOTIFICATIONS_COUNT,
@@ -132,10 +131,10 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         listItem="notifications"
         listItemName="notification"
         pageLink="notifications"
-        listIcon={tagIcon}
+        listIcon={notificationIcon}
         searchParameter="message"
         button={{ show: false, label: '' }}
-        dialogMessage={dialogMessage}
+        dialogMessage=""
         {...queries}
         restrictedAction={restrictedAction}
         {...columnAttributes}
