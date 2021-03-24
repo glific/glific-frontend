@@ -46,6 +46,7 @@ import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
+import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -453,6 +454,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  // CONTACT: display session timer & Assigned to
   let sesssionAndCollectionAssignedTo;
   if (contactId) {
     sesssionAndCollectionAssignedTo = (
@@ -486,27 +488,43 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  // COLLECTION: display contact info & Assigned to
+  let collectionStatus: any;
+  if (collectionId) {
+    collectionStatus = <CollectionInformation collectionId={collectionId} />;
+  }
+
   return (
     <Toolbar className={styles.ContactBar} color="primary">
-      <div className={styles.MobileHeader}>
-        <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-        <MenuIcon className={styles.MenuIcon} />
-      </div>
-      <div className={styles.ContactInfoContainer}>
-        <div>
-          <div className={styles.ContactDetails}>
-            <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-              <div className={styles.Configure} data-testid="dropdownIcon">
-                <DropdownIcon onClick={handleConfigureIconClick} />
-              </div>
-            </ClickAwayListener>
-            <Typography className={styles.Title} variant="h6" noWrap data-testid="beneficiaryName">
-              {displayName}
-            </Typography>
-          </div>
-          {contactCollections}
+      <div className={styles.ContactBarWapper}>
+        <div className={styles.MobileHeader}>
+          <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
+          <MenuIcon className={styles.MenuIcon} />
         </div>
-        {sesssionAndCollectionAssignedTo}
+        <div className={styles.ContactInfoContainer}>
+          <div className={styles.ContactInfoWrapper}>
+            <div className={styles.InfoWrapperRight}>
+              <div className={styles.ContactDetails}>
+                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                  <div className={styles.Configure} data-testid="dropdownIcon">
+                    <DropdownIcon onClick={handleConfigureIconClick} />
+                  </div>
+                </ClickAwayListener>
+                <Typography
+                  className={styles.Title}
+                  variant="h6"
+                  noWrap
+                  data-testid="beneficiaryName"
+                >
+                  {displayName}
+                </Typography>
+              </div>
+              {contactCollections}
+            </div>
+            {collectionStatus}
+            {sesssionAndCollectionAssignedTo}
+          </div>
+        </div>
       </div>
       {popper}
       {dialogBox}

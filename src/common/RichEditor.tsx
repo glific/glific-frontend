@@ -91,7 +91,26 @@ export const WhatsAppToDraftEditor = (text: string) => {
 export const WhatsAppToJsx = (text: any) => {
   const replacements = TextReplacements;
   let modifiedText = text;
+  // regex for checking whatsapp formatting for both bold and italic
   const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
+  // regex for checking links in the message
+  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
+
+  if (typeof text === 'string') {
+    // search for all the links in the message
+    const allLinks = [...modifiedText.matchAll(regexForLink)];
+
+    if (allLinks.length > 0) {
+      allLinks.forEach((link) => {
+        // add anchor tag for each link
+        modifiedText = reactStringReplace(modifiedText, link[0], (match: any) => (
+          <a href={match} data-testid="messageLink" target="_blank" rel="noopener noreferrer">
+            {match}
+          </a>
+        ));
+      });
+    }
+  }
 
   complexFormatting.forEach((expression) => {
     modifiedText = reactStringReplace(modifiedText, expression, (match: any, i: number) => (
