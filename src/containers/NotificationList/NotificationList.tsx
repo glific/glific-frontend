@@ -44,9 +44,13 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   };
 
   const copyToClipboard = (copiedText: any) => {
-    navigator.clipboard.writeText(copiedText).then(() => {
-      setNotification(client, 'Copied to clipboard');
-    });
+    try {
+      navigator.clipboard.writeText(copiedText).then(() => {
+        setNotification(client, 'Copied to clipboard');
+      });
+    } catch (err) {
+      setNotification(client, 'Sorry cannot copy content over insecure connection', 'warning');
+    }
   };
 
   const getCroppedText = (croppedtext: string) => {
