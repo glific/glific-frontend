@@ -49,7 +49,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         setNotification(client, 'Copied to clipboard');
       });
     } catch (err) {
-      setNotification(client, 'Sorry cannot copy content over insecure connection', 'warning');
+      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
     }
   };
 
