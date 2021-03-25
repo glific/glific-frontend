@@ -513,6 +513,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       .reverse();
   }
 
+  /* istanbul ignore next */
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, within } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
-import { fireEvent, waitFor } from '@testing-library/dom';
+import { fireEvent, wait, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
@@ -72,12 +72,12 @@ export const searchQuery = {
 
 cache.writeQuery(searchQuery);
 
-// add collection to apollo cache
-cache.writeQuery({
+const collection = {
   query: SEARCH_QUERY,
   variables: {
-    filter: { searchGroup: true },
     contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    filter: { searchGroup: true },
+
     messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
   },
   data: {
@@ -110,7 +110,9 @@ cache.writeQuery({
       },
     ],
   },
-});
+};
+// add collection to apollo cache
+cache.writeQuery(collection);
 
 const client = new ApolloClient({
   cache: cache,
@@ -269,6 +271,26 @@ test('Collection: if not cache', async () => {
   );
   const { getByTestId } = render(chatMessagesWithCollection);
 
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
+});
+
+test('Collection: if cache', async () => {
+  cache.writeQuery(collection);
+
+  const client = new ApolloClient({
+    cache: cache,
+    assumeImmutableResults: true,
+  });
+  const chatMessagesWithCollection = (
+    <ApolloProvider client={client}>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <ChatMessages collectionId="5" />
+      </MockedProvider>
+    </ApolloProvider>
+  );
+  const { getByTestId } = render(chatMessagesWithCollection);
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
   });
