@@ -232,7 +232,7 @@ test('Contact: if not cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
-  // need to check this
+  // need to check this test
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
