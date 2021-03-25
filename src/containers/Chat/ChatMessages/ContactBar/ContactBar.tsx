@@ -505,6 +505,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
+                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                  <div className={styles.Configure} data-testid="dropdownIcon">
+                    <DropdownIcon onClick={handleConfigureIconClick} />
+                  </div>
+                </ClickAwayListener>
                 <Typography
                   className={styles.Title}
                   variant="h6"
@@ -513,11 +518,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
                 >
                   {displayName}
                 </Typography>
-                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div className={styles.Configure} data-testid="dropdownIcon">
-                    <DropdownIcon onClick={handleConfigureIconClick} />
-                  </div>
-                </ClickAwayListener>
               </div>
               {contactCollections}
             </div>
