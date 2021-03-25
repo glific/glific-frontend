@@ -13,7 +13,7 @@ import Menu from '../../../components/UI/Menu/Menu';
 import { setNotification } from '../../../common/notification';
 import { Button } from '../../../components/UI/Form/Button/Button';
 
-export interface TagListProps {}
+export interface WebhookLogsListProps {}
 
 const getTime = (time: string) => (
   <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
@@ -55,7 +55,7 @@ const columnNames = [
   'REQUEST JSON',
   'RESPONSE JSON',
 ];
-const dialogMessage = "You won't be able to use this for tagging messages.";
+
 const columnStyles = [
   styles.Time,
   styles.Url,
@@ -67,7 +67,7 @@ const columnStyles = [
   styles.Json,
   styles.Json,
 ];
-const tagIcon = <WebhookLogIcon className={styles.WebhookLogIcon} />;
+const webhookLogsIcon = <WebhookLogIcon className={styles.WebhookLogIcon} />;
 
 const queries = {
   countQuery: GET_WEBHOOK_LOGS_COUNT,
@@ -77,7 +77,7 @@ const queries = {
 
 const restrictedAction = () => ({ delete: false, edit: false });
 
-export const WebhookLogsList: React.SFC<TagListProps> = () => {
+export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
   const client = useApolloClient();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -194,11 +194,11 @@ export const WebhookLogsList: React.SFC<TagListProps> = () => {
         listItem="webhookLogs"
         listItemName="webhookLog"
         pageLink="webhookLog"
-        listIcon={tagIcon}
+        listIcon={webhookLogsIcon}
         searchParameter="url"
         button={{ show: false, label: '' }}
-        dialogMessage={dialogMessage}
         {...queries}
+        dialogMessage=""
         restrictedAction={restrictedAction}
         {...columnAttributes}
         removeSortBy={['STATUS']}

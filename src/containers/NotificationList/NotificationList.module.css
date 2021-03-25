@@ -1,0 +1,83 @@
+.NotificationIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: #073f24;
+  line-height: 1;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 8px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.CroppedText {
+  composes: TableText;
+  cursor: pointer;
+}
+
+.PopoverText {
+  max-width: 400px;
+  overflow-x: auto;
+  max-height: 500px;
+  font-size: 16px;
+  color: #073f24;
+  padding: 10px;
+}
+
+.PopoverActions {
+  font-size: 16px;
+  color: #073f24;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.StatusContainer {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
+}
+
+.PopoverActions span {
+  display: flex;
+  cursor: pointer;
+}
+
+.PopoverActions img {
+  height: 18px;
+  margin-right: 12px;
+}
+
+.PopoverActions button {
+  margin-left: auto;
+  margin-right: 0px !important;
+}
+
+.Time,
+.Severity,
+.Category {
+  width: 15%;
+}
+
+.Entity {
+  width: 25%;
+}
+
+.Message {
+  width: 30%;
+}
