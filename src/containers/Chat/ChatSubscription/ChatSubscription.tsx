@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useApolloClient, useLazyQuery } from '@apollo/client';
-
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_CONTACT_LIMIT,
