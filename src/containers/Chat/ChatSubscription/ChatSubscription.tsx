@@ -368,7 +368,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   if (triggerRefetch) {
     // lets refetch here
-    if (refetch !== undefined) {
+    if (refetch) {
       refetch();
     }
     setTriggerRefetch(false);
