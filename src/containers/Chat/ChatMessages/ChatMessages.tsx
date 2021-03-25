@@ -62,11 +62,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
-  const [lastScrollHeight, setLastScrollHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
   const [showJumpToLatest, setShowJumpToLatest] = useState(true);
   const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
+  const [conversationInfo, setConversationInfo] = useState<any>({});
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -181,10 +181,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         updateConversationsCache(conversationsCopy, client, queryVariables);
 
         getScrollToMessage();
+
+        // need to display Load more messages button
+        setShowLoadMore(true);
       }
     },
   });
-  /* istanbul ignore next */
+
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
@@ -195,13 +198,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         conversationCopy.search[0].messages
           .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
           .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+        let conversationsCopy: any = { search: [] };
+        // check for the cache
+        if (JSON.parse(JSON.stringify(conversations))) {
+          conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        }
         let isContactCached = false;
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the collection(group) is present in the cache
           if (collectionId) {
-            /* istanbul ignore next */
             if (conversationObj.group?.id === collectionId.toString()) {
               isContactCached = true;
               conversationObj.messages = [
@@ -218,7 +225,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
               ...conversationCopy.search[0].messages,
             ];
           }
-
           return conversationObj;
         });
 
@@ -237,15 +243,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       }
     },
   });
+
   let messageList: any;
-
-  useEffect(() => {
-    const messageContainer: any = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      messageContainer.scrollTop += messageContainer.scrollHeight - lastScrollHeight;
-    }
-  }, [allConversations, lastScrollHeight]);
-
   let unselectedTags: Array<any> = [];
 
   // tagging message mutation
@@ -341,22 +340,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     return null;
   }
 
-  // use contact id to filter if it is passed via url, else use the first conversation
-  let conversationInfo: any = {};
-
+  // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
         conversationIndex = index;
-        conversationInfo = conversation;
+        setConversationInfo(conversation);
       }
       return null;
     });
   };
 
-  if (contactId) {
-    // loop through the cached conversations and find if contact exists
+  const findContactInAllConversations = () => {
     if (allConversations && allConversations.search) {
+      // loop through the cached conversations and find if contact exists
       updateConversationInfo('contact', contactId);
     }
 
@@ -392,20 +389,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         });
       }
     }
-  }
+  };
 
-  if (collectionId) {
+  const findCollectionInAllConversations = () => {
     // loop through the cached conversations and find if collection exists
     if (allConversations && allConversations.search) {
       if (collectionId === -1) {
         conversationIndex = 0;
-        [conversationInfo] = allConversations.search;
+        setConversationInfo(allConversations.search);
       } else {
         updateConversationInfo('group', collectionId);
       }
     }
 
-    // if conversation is not present then fetch the group
+    // if conversation is not present then fetch the collection
     if (conversationIndex < 0) {
       if (!loading && !data) {
         getSearchQuery({
@@ -417,7 +414,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         });
       }
     }
-  }
+  };
+
+  // find if contact/Collection present in the cached
+  useEffect(() => {
+    if (contactId) {
+      findContactInAllConversations();
+    } else if (collectionId) {
+      findCollectionInAllConversations();
+    }
+  }, [contactId, collectionId, allConversations]);
 
   const closeDialogBox = () => {
     setDialogbox(false);
@@ -507,6 +513,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       .reverse();
   }
 
+  /* istanbul ignore next */
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {
@@ -532,9 +539,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       variables,
     });
 
-    const messageContainer = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      setLastScrollHeight(messageContainer.scrollHeight);
+    // keep scroll at last message
+    const element = document.querySelector(`#search${messageNumber}`);
+    if (element) {
+      element.scrollIntoView();
     }
   };
 
