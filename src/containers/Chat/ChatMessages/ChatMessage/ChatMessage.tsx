@@ -85,7 +85,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     if (focus) {
       messageRef.current?.scrollIntoView();
     }
-  }, [focus, id]);
+  }, []);
 
   // tagging delete mutation
   const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
