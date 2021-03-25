@@ -58,7 +58,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const {
     popup,
     focus,
-    id,
     sender,
     contactId,
     tags,
