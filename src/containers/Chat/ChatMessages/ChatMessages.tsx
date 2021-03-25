@@ -337,8 +337,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     return null;
   }
 
-  // use contact id to filter if it is passed via url, else use the first conversation
-
+  // loop through the cached conversations and find if contact/Collection exists
   const updateConversationInfo = (type: string, Id: any) => {
     allConversations.search.map((conversation: any, index: any) => {
       if (conversation[type].id === Id.toString()) {
@@ -349,75 +348,79 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     });
   };
 
+  const findContactInAllConversations = () => {
+    if (allConversations && allConversations.search) {
+      // loop through the cached conversations and find if contact exists
+      updateConversationInfo('contact', contactId);
+    }
+
+    // if conversation is not present then fetch for contact
+    if (conversationIndex < 0) {
+      if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
+        getSearchQuery({
+          variables: {
+            filter: { id: contactId },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+          },
+        });
+      }
+      // lets not get from cache if parameter is present
+    } else if (conversationIndex > -1 && messageParameterOffset) {
+      if (
+        (!parameterLoading && !parameterCalled) ||
+        (parameterdata && parameterdata.search[0].contact.id !== contactId)
+      ) {
+        getSearchParameterQuery({
+          variables: {
+            filter: { id: contactId },
+            contactOpts: { limit: 1 },
+            messageOpts: {
+              limit: DEFAULT_MESSAGE_LIMIT,
+              offset: messageParameterOffset,
+            },
+          },
+        });
+      }
+    }
+  };
+
+  const findCollectionInAllConversations = () => {
+    // loop through the cached conversations and find if collection exists
+    if (allConversations && allConversations.search) {
+      if (collectionId === -1) {
+        conversationIndex = 0;
+        setConversationInfo(allConversations.search);
+      } else {
+        updateConversationInfo('group', collectionId);
+      }
+    }
+
+    // if conversation is not present then fetch the collection
+    if (conversationIndex < 0) {
+      if (!loading && !data) {
+        getSearchQuery({
+          variables: {
+            filter: { id: collectionId, searchGroup: true },
+            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+          },
+        });
+      }
+    }
+  };
+
+  // find if contact/Collection present in the cached
   useEffect(() => {
     if (contactId) {
-      // loop through the cached conversations and find if contact exists
-      if (allConversations && allConversations.search) {
-        updateConversationInfo('contact', contactId);
-      }
-
-      // if conversation is not present then fetch for contact
-      if (conversationIndex < 0) {
-        if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
-          getSearchQuery({
-            variables: {
-              filter: { id: contactId },
-              contactOpts: { limit: 1 },
-              messageOpts: {
-                limit: DEFAULT_MESSAGE_LIMIT,
-                offset: messageParameterOffset,
-              },
-            },
-          });
-        }
-        // lets not get from cache if parameter is present
-      } else if (conversationIndex > -1 && messageParameterOffset) {
-        if (
-          (!parameterLoading && !parameterCalled) ||
-          (parameterdata && parameterdata.search[0].contact.id !== contactId)
-        ) {
-          getSearchParameterQuery({
-            variables: {
-              filter: { id: contactId },
-              contactOpts: { limit: 1 },
-              messageOpts: {
-                limit: DEFAULT_MESSAGE_LIMIT,
-                offset: messageParameterOffset,
-              },
-            },
-          });
-        }
-      }
+      findContactInAllConversations();
+    } else if (collectionId) {
+      findCollectionInAllConversations();
     }
-  }, [contactId, allConversations]);
-
-  useEffect(() => {
-    if (collectionId) {
-      // loop through the cached conversations and find if collection exists
-      if (allConversations && allConversations.search) {
-        if (collectionId === -1) {
-          conversationIndex = 0;
-          setConversationInfo(allConversations.search);
-          // [conversationInfo] = allConversations.search;
-        } else {
-          updateConversationInfo('group', collectionId);
-        }
-      }
-
-      // if conversation is not present then fetch the group
-      if (conversationIndex < 0) {
-        if (!loading && !data) {
-          getSearchQuery({
-            variables: {
-              filter: { id: collectionId, searchGroup: true },
-              contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-              messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-            },
-          });
-        }
-      }
-    }
-  }, [collectionId, allConversations]);
+  }, [contactId, collectionId, allConversations]);
 
   const closeDialogBox = () => {
     setDialogbox(false);
