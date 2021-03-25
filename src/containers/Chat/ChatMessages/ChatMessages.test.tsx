@@ -216,21 +216,23 @@ test('click on Jump to latest', async () => {
 });
 
 test('click on Jump to latest', async () => {
-  const chatMessages = (
-    <MemoryRouter>
-      <ApolloProvider client={client}>
-        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-          <ChatMessages contactId="2" />
-        </MockedProvider>
-      </ApolloProvider>
-    </MemoryRouter>
-  );
-  const { getByRole } = render(chatMessages);
+  const { getByTestId } = render(chatMessages);
 
   await waitFor(() => {
-    fireEvent.click(getByRole('progressbar'));
+    fireEvent.click(getByTestId('jumpToLatest'));
   });
-  // need to fix this
+});
+
+test('Contact: if not cache', async () => {
+  const chatMessagesWithCollection = (
+    <ApolloProvider client={client}>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <ChatMessages contactId="5" />
+      </MockedProvider>
+    </ApolloProvider>
+  );
+  const { getByTestId } = render(chatMessagesWithCollection);
+  // need to check this
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
@@ -252,18 +254,22 @@ it('should have title as group name', async () => {
 });
 
 test('Collection: click on Jump to latest', async () => {
-  const chatMessagesWithCollection = (
-    <MemoryRouter>
-      <ApolloProvider client={client}>
-        <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-          <ChatMessages collectionId="2" />
-        </MockedProvider>
-      </ApolloProvider>
-    </MemoryRouter>
-  );
-  render(chatMessagesWithCollection);
+  const { getByTestId } = render(chatMessagesWithCollection);
 
-  // await waitFor(() => {
-  //   fireEvent.click(getByTestId('jumpToLatest'));
-  // });
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
+});
+
+test('Collection: if not cache', async () => {
+  const chatMessagesWithCollection = (
+    <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+      <ChatMessages collectionId="5" />
+    </MockedProvider>
+  );
+  const { getByTestId } = render(chatMessagesWithCollection);
+
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
 });

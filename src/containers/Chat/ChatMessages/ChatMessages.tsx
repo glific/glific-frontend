@@ -187,7 +187,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       }
     },
   });
-  /* istanbul ignore next */
+
   const [getSearchQuery, { called, data, loading, error }] = useLazyQuery<any>(SEARCH_QUERY, {
     onCompleted: (searchData) => {
       if (searchData && searchData.search.length > 0) {
@@ -198,13 +198,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         conversationCopy.search[0].messages
           .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
           .reverse();
-        const conversationsCopy = JSON.parse(JSON.stringify(conversations));
+
+        let conversationsCopy: any = { search: [] };
+        // check for the cache
+        if (JSON.parse(JSON.stringify(conversations))) {
+          conversationsCopy = JSON.parse(JSON.stringify(conversations));
+        }
         let isContactCached = false;
         conversationsCopy.search = conversationsCopy.search.map((conversation: any) => {
           const conversationObj = conversation;
           // If the collection(group) is present in the cache
           if (collectionId) {
-            /* istanbul ignore next */
             if (conversationObj.group?.id === collectionId.toString()) {
               isContactCached = true;
               conversationObj.messages = [
@@ -221,7 +225,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
               ...conversationCopy.search[0].messages,
             ];
           }
-
           return conversationObj;
         });
 
