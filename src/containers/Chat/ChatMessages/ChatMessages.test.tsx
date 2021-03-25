@@ -2,7 +2,7 @@ import React from 'react';
 import { render, within } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
-import { fireEvent, wait, waitFor } from '@testing-library/dom';
+import { fireEvent, waitFor } from '@testing-library/dom';
 import { MemoryRouter } from 'react-router';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
