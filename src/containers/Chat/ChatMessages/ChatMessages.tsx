@@ -256,9 +256,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     },
   });
 
-  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
-    refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
-  });
+  const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION);
 
   const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
     const payloadCopy = payload;
