@@ -10,8 +10,8 @@ import CopyIcon from '../../../assets/images/icons/Copy.png';
 import { List } from '../../List/List';
 import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from '../../../graphql/queries/WebhookLogs';
 import Menu from '../../../components/UI/Menu/Menu';
-import { setNotification } from '../../../common/notification';
 import { Button } from '../../../components/UI/Form/Button/Button';
+import { copyToClipboard } from '../../../common/utils';
 
 export interface WebhookLogsListProps {}
 
@@ -87,12 +87,6 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const copyToClipboard = (copiedText: any) => {
-    navigator.clipboard.writeText(copiedText).then(() => {
-      setNotification(client, 'Copied to clipboard');
-    });
-  };
-
   const getCroppedText = (croppedtext: string, isUrl: boolean = false) => {
     if (!croppedtext) {
       return <div className={styles.TableText}>NULL</div>;
@@ -108,7 +102,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         title: 'Copy text',
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(croppedtext);
+          copyToClipboard(client, croppedtext);
         },
       },
       {
@@ -174,7 +168,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
       </div>
       <div className={styles.PopoverActions}>
         <span
-          onClick={() => copyToClipboard(text)}
+          onClick={() => copyToClipboard(client, text)}
           aria-hidden="true"
           data-testid="copyToClipboard"
         >

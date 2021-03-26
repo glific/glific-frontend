@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
+import { IconButton, InputAdornment } from '@material-ui/core';
 import * as Yup from 'yup';
 
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
@@ -18,7 +19,9 @@ import {
 } from '../../../graphql/mutations/Organization';
 import { GET_LANGUAGES } from '../../../graphql/queries/List';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
+import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
+import { copyToClipboard } from '../../../common/utils';
 
 const validation = {
   name: Yup.string().required('Organisation name is required.'),
@@ -51,6 +54,7 @@ export const Organisation: React.SFC = () => {
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [signaturePhrase, setSignaturePhrase] = useState();
+  const [phone, setPhone] = useState<string>('');
 
   const States = {
     name,
@@ -62,6 +66,7 @@ export const Organisation: React.SFC = () => {
     activeLanguages,
     defaultLanguage,
     signaturePhrase,
+    phone,
   };
 
   // get the published flow list
@@ -94,6 +99,7 @@ export const Organisation: React.SFC = () => {
     activeLanguages: activeLanguagesValue,
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
+    contact: contactValue,
   }: any) => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
@@ -103,6 +109,7 @@ export const Organisation: React.SFC = () => {
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
+    setPhone(contactValue.phone);
   };
 
   useEffect(() => {
@@ -179,6 +186,25 @@ export const Organisation: React.SFC = () => {
       name: 'signaturePhrase',
       type: 'text',
       placeholder: 'Webhook signature',
+    },
+    {
+      component: Input,
+      name: 'phone',
+      type: 'text',
+      placeholder: 'Organisation phone number',
+      disabled: true,
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton
+            aria-label="resend otp"
+            data-testid="resendOtp"
+            onClick={() => copyToClipboard(client, phone)}
+            edge="end"
+          >
+            <CopyIcon />
+          </IconButton>
+        </InputAdornment>
+      ),
     },
     {
       component: Checkbox,

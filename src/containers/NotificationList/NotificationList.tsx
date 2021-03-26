@@ -10,8 +10,8 @@ import CopyIcon from '../../assets/images/icons/Copy.png';
 import { List } from '../List/List';
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../../graphql/queries/Notifications';
 import Menu from '../../components/UI/Menu/Menu';
-import { setNotification } from '../../common/notification';
 import { Button } from '../../components/UI/Form/Button/Button';
+import { copyToClipboard } from '../../common/utils';
 
 export interface NotificationListProps {}
 
@@ -43,16 +43,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const copyToClipboard = (copiedText: any) => {
-    try {
-      navigator.clipboard.writeText(copiedText).then(() => {
-        setNotification(client, 'Copied to clipboard');
-      });
-    } catch (err) {
-      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
-    }
-  };
-
   const getCroppedText = (croppedtext: string) => {
     if (!croppedtext) {
       return <div className={styles.TableText}>NULL</div>;
@@ -63,7 +53,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         title: 'Copy text',
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
-          copyToClipboard(croppedtext);
+          copyToClipboard(client, croppedtext);
         },
       },
       {
@@ -115,7 +105,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </div>
       <div className={styles.PopoverActions}>
         <span
-          onClick={() => copyToClipboard(text)}
+          onClick={() => copyToClipboard(client, text)}
           aria-hidden="true"
           data-testid="copyToClipboard"
         >
