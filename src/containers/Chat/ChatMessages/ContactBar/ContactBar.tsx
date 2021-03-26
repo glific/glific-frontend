@@ -47,6 +47,7 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
+import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -80,6 +81,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
+  const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
@@ -418,10 +420,9 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       <Button
         data-testid="collectionButton"
         className={styles.ListButtonPrimary}
-        // onClick={() => {
-        //   getCollections();
-        //   setShowCollectionDialog(true);
-        // }}
+        onClick={() => {
+          setAddContactsDialogShow(true);
+        }}
       >
         <AddContactIcon className={styles.Icon} />
         Add contact
@@ -436,6 +437,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Button>
     </>
   );
+
+  if (addContactsDialogShow) {
+    dialogBox = (
+      <AddContactsToCollection collectionId={collectionId} setDialog={setAddContactsDialogShow} />
+    );
+  }
 
   const popper = (
     <Popper
