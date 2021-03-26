@@ -41,6 +41,9 @@ export const getOrganizationQuery = [
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
+            contact: {
+              phone: 911111111111,
+            },
           },
         },
       },
@@ -80,6 +83,9 @@ export const getOrganizationQuery = [
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
+            contact: {
+              phone: 911111111111,
+            },
           },
         },
       },
@@ -119,6 +125,9 @@ export const getOrganizationQuery = [
             },
             name: 'Glific',
             signaturePhrase: 'Sample text',
+            contact: {
+              phone: 911111111111,
+            },
           },
         },
       },
