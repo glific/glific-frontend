@@ -5,7 +5,8 @@ import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
-  REFETCH_WAIT_TIME,
+  REFETCH_RANDOM_TIME_MAX,
+  REFETCH_RANDOM_TIME_MIN,
   SEARCH_QUERY_VARIABLES,
   SUBSCRIPTION_ALLOWED_DURATION,
   SUBSCRIPTION_ALLOWED_NUMBER,
@@ -25,6 +26,7 @@ import {
 } from '../../../graphql/subscriptions/Tag';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
+import { randomIntFromInterval } from '../../../common/utils';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
@@ -123,7 +125,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           subscriptionToRefetchSwitchHappened = true;
 
           // let's get the random wait time
-          const waitTime = REFETCH_WAIT_TIME * 1000;
+          const waitTime =
+            randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
 
           // let's clear the timeout if exists
           if (refetchTimer) {
