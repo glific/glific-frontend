@@ -196,8 +196,8 @@ export const Organisation: React.SFC = () => {
       endAdornment: (
         <InputAdornment position="end">
           <IconButton
-            aria-label="resend otp"
-            data-testid="resendOtp"
+            aria-label="phone number"
+            data-testid="phoneNumber"
             onClick={() => copyToClipboard(client, phone)}
             edge="end"
           >
