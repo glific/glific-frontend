@@ -8,7 +8,7 @@ export interface CollectionInformationProps {
   staff?: boolean;
 }
 
-const displayObj: any = { 'Non template message': 0, Template: 0, 'No messages': 0 };
+const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
 
 export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   collectionId,
@@ -26,7 +26,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
       getCollectionInfo({ variables: { id: collectionId } });
       selectedUsers({ variables: { id: collectionId } });
       // reset to zero on collection change
-      setDisplay({ 'Non template message': 0, Template: 0, 'No messages': 0 });
+      setDisplay({ 'Session messages': 0, 'Only templates': 0, 'No messages': 0 });
     }
   }, [collectionId]);
 
@@ -36,9 +36,9 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
       const displayCopy = { ...displayObj };
       Object.keys(info).forEach((key) => {
         if (key === 'session' || key === 'session_and_hsm') {
-          displayCopy['Non template message'] += info[key];
+          displayCopy['Session messages'] += info[key];
         } else if (key === 'session_and_hsm' || key === 'hsm') {
-          displayCopy.Template += info[key];
+          displayCopy['Only templates'] += info[key];
         } else if (key === 'none') {
           displayCopy['No messages'] = info[key];
         }
