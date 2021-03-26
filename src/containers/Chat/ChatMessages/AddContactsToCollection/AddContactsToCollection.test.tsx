@@ -64,6 +64,17 @@ test('remove an element from collection', async () => {
   await waitFor(() => {});
 });
 
+test('save without changing anything', async () => {
+  setUserSession(JSON.stringify({ roles: ['Admin'] }));
+  const { getByText, getByTestId } = render(addContacts);
+
+  await waitFor(() => {
+    expect(getByText('Glific User')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Save'));
+});
+
 test('change value in dialog box', () => {
   const spy = jest.spyOn(AutoComplete, 'AutoComplete');
   spy.mockImplementation((props: any) => {
@@ -80,8 +91,10 @@ test('change value in dialog box', () => {
       </div>
     );
   });
-  const { getByTestId } = render(addContacts);
+  const { getByTestId, getByText } = render(addContacts);
   fireEvent.change(getByTestId('searchDialogBox').querySelector('input'), {
     target: { value: 'change' },
   });
+
+  fireEvent.click(getByText('Save'));
 });
