@@ -149,6 +149,7 @@ export const getCollectionContactsQuery = {
             {
               id: '1',
               name: 'Glific User',
+              phone: '987654321',
             },
           ],
         },

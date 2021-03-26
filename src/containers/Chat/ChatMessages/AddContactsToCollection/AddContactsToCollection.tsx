@@ -52,7 +52,7 @@ export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = 
       }
       setDialog(false);
     },
-    // refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
+    refetchQueries: [{ query: GET_COLLECTION_CONTACTS, variables: { id: collectionId } }],
   });
   let contactOptions = [];
   let collectionContacts: Array<any> = [];

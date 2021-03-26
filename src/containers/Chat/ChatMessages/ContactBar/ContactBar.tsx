@@ -427,14 +427,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <AddContactIcon className={styles.Icon} />
         Add contact
       </Button>
-      <Button
-        className={styles.ListButtonPrimary}
-        data-testid="clearChatButton"
-        onClick={() => setClearChatDialog(true)}
-      >
-        <ClearConversation className={styles.Icon} />
-        Clear conversation
-      </Button>
     </>
   );
 
