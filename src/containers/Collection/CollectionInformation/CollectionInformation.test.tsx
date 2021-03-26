@@ -55,7 +55,7 @@ describe('render SessionInfo', () => {
   test('it should have session data', () => {
     const { getByText } = render(wrapper);
 
-    const SessionInfo = getByText('In-session:');
+    const SessionInfo = getByText('Non template message:');
 
     expect(SessionInfo).toBeInTheDocument();
   });
