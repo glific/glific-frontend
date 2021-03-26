@@ -117,8 +117,8 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         // determine if we should use subscriptions or refetch the query
         if (switchSubscriptionToRefetch() && !subscriptionToRefetchSwitchHappened) {
           // when switch happens
-          // 1. get the random time between 10 - 40 sec
-          // 2. set the fetch action for that duration
+          // 1. get the random time as defined in constant
+          // 2. set the refetch action for that duration
           // 3. if we are still in fetch mode repeat the same.
 
           // set the switch flag
