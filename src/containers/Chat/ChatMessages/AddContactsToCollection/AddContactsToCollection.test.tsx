@@ -1,6 +1,6 @@
 import React from 'react';
 import { AddContactsToCollection } from './AddContactsToCollection';
-import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, cleanup, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { setUserSession } from '../../../../services/AuthService';
 import { getCollectionContactsQuery } from '../../../../mocks/Collection';
