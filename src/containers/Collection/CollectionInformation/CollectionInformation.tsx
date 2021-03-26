@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CollectionInformation.module.css';
 import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/queries/Collection';
 
@@ -8,12 +8,13 @@ export interface CollectionInformationProps {
   staff?: boolean;
 }
 
-let display: any = { 'In-session': 0, 'Session expired': 0, 'Opted-out': 0 };
+const displayObj: any = { 'Non template message': 0, Template: 0, 'No messages': 0 };
 
 export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   collectionId,
   staff = true,
 }) => {
+  const [display, setDisplay] = useState(displayObj);
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
 
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -24,24 +25,27 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
     if (collectionId) {
       getCollectionInfo({ variables: { id: collectionId } });
       selectedUsers({ variables: { id: collectionId } });
+      // reset to zero on collection change
+      setDisplay({ 'Non template message': 0, Template: 0, 'No messages': 0 });
     }
-    // reset to zero on collection change
-    display = { 'In-session': 0, 'Session expired': 0, 'Opted-out': 0 };
   }, [collectionId]);
 
-  if (collectionInfo) {
-    const info = JSON.parse(collectionInfo.groupInfo);
-
-    Object.keys(info).forEach((key) => {
-      if (key === 'session_and_hsm') {
-        display['In-session'] = info[key];
-      } else if (key === 'session') {
-        display['Session expired'] = info[key];
-      } else if (key === 'none') {
-        display['Opted-out'] = info[key];
-      }
-    });
-  }
+  useEffect(() => {
+    if (collectionInfo) {
+      const info = JSON.parse(collectionInfo.groupInfo);
+      const displayCopy = { ...displayObj };
+      Object.keys(info).forEach((key) => {
+        if (key === 'session' || key === 'session_and_hsm') {
+          displayCopy['Non template message'] += info[key];
+        } else if (key === 'session_and_hsm' || key === 'hsm') {
+          displayCopy.Template += info[key];
+        } else if (key === 'none') {
+          displayCopy['No messages'] = info[key];
+        }
+      });
+      setDisplay(displayCopy);
+    }
+  }, [collectionInfo]);
 
   let assignedToCollection: any = [];
   if (collectionUsers) {
@@ -60,6 +64,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
+        <div>Contacts qualified for-</div>
         {Object.keys(display).map((data: any) => (
           <div key={data} className={styles.SessionInfo}>
             {data}: <span className={styles.SessionCount}> {display[data]}</span>
