@@ -362,6 +362,81 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const viewDetails = contactId ? (
+    <Button
+      className={styles.ListButtonPrimary}
+      disabled={isSimulator}
+      data-testid="viewProfile"
+      onClick={() => {
+        history.push(`/contact-profile/${contactId}`);
+      }}
+    >
+      {isSimulator ? (
+        <ProfileDisabledIcon className={styles.Icon} />
+      ) : (
+        <ProfileIcon className={styles.Icon} />
+      )}
+      View contact profile
+    </Button>
+  ) : (
+    <Button
+      className={styles.ListButtonPrimary}
+      data-testid="viewContacts"
+      onClick={() => {
+        history.push(`/collection/${collectionId}/contacts`);
+      }}
+    >
+      <ProfileIcon className={styles.Icon} />
+      View contacts
+    </Button>
+  );
+
+  const addMember = contactId ? (
+    <>
+      <Button
+        data-testid="collectionButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getCollections();
+          setShowCollectionDialog(true);
+        }}
+      >
+        <AddContactIcon className={styles.Icon} />
+        Add to collection
+      </Button>
+      <Button
+        className={styles.ListButtonPrimary}
+        data-testid="clearChatButton"
+        onClick={() => setClearChatDialog(true)}
+      >
+        <ClearConversation className={styles.Icon} />
+        Clear conversation
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button
+        data-testid="collectionButton"
+        className={styles.ListButtonPrimary}
+        // onClick={() => {
+        //   getCollections();
+        //   setShowCollectionDialog(true);
+        // }}
+      >
+        <AddContactIcon className={styles.Icon} />
+        Add contact
+      </Button>
+      <Button
+        className={styles.ListButtonPrimary}
+        data-testid="clearChatButton"
+        onClick={() => setClearChatDialog(true)}
+      >
+        <ClearConversation className={styles.Icon} />
+        Clear conversation
+      </Button>
+    </>
+  );
+
   const popper = (
     <Popper
       open={open}
@@ -373,47 +448,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            {contactId ? (
-              <Button
-                className={styles.ListButtonPrimary}
-                disabled={isSimulator}
-                data-testid="viewProfile"
-                onClick={() => {
-                  history.push(`/contact-profile/${contactId}`);
-                }}
-              >
-                {isSimulator ? (
-                  <ProfileDisabledIcon className={styles.Icon} />
-                ) : (
-                  <ProfileIcon className={styles.Icon} />
-                )}
-                View contact profile
-              </Button>
-            ) : (
-              ''
-            )}
+            {viewDetails}
             {flowButton}
+            {addMember}
             {contactId ? (
               <>
-                <Button
-                  data-testid="collectionButton"
-                  className={styles.ListButtonPrimary}
-                  onClick={() => {
-                    getCollections();
-                    setShowCollectionDialog(true);
-                  }}
-                >
-                  <AddContactIcon className={styles.Icon} />
-                  Add to collection
-                </Button>
-                <Button
-                  className={styles.ListButtonPrimary}
-                  data-testid="clearChatButton"
-                  onClick={() => setClearChatDialog(true)}
-                >
-                  <ClearConversation className={styles.Icon} />
-                  Clear conversation
-                </Button>
                 <Button
                   data-testid="blockButton"
                   className={styles.ListButtonDanger}
