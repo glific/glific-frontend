@@ -35,7 +35,7 @@ const formFields = [
 
 const FormSchema = Yup.object().shape({
   userName: Yup.string().required('Input required'),
-  phone: Yup.string().required('Input required').min(11, 'Please enter a valid phone number.'),
+  phone: Yup.string().required('Input required'),
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters long.')
     .required('Input required'),
