@@ -164,7 +164,7 @@ export const getCollectionInfo = {
   },
   result: {
     data: {
-      groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1}',
+      groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1, "hsm":0}',
     },
   },
 };

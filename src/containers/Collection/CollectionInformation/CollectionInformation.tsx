@@ -42,9 +42,12 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
       const info = JSON.parse(collectionInfo.groupInfo);
       const displayCopy = { ...displayObj };
       Object.keys(info).forEach((key) => {
-        if (key === 'session' || key === 'session_and_hsm') {
+        if (key === 'session_and_hsm') {
           displayCopy['Session messages'] += info[key];
-        } else if (key === 'session_and_hsm' || key === 'hsm') {
+          displayCopy['Only templates'] += info[key];
+        } else if (key === 'session') {
+          displayCopy['Session messages'] += info[key];
+        } else if (key === 'hsm') {
           displayCopy['Only templates'] += info[key];
         } else if (key === 'none') {
           displayCopy['No messages'] = info[key];
@@ -90,7 +93,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
             <div>
               Contacts qualified for-
               {Object.keys(display).map((data: any) => (
-                <span className={styles.Count}>
+                <span key={data} className={styles.Count}>
                   {data}: <span> {display[data]}</span>
                 </span>
               ))}
