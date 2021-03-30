@@ -87,6 +87,8 @@ export const filterFlowQuery = {
           id: '1',
           ignoreKeywords: true,
           keywords: ['help', 'मदद'],
+          lastChangedAt: '2021-03-05T04:32:23Z',
+          lastPublishedAt: null,
           name: 'Help Workflow',
           updatedAt: '2021-03-05T04:32:23Z',
           uuid: '3fa22108-f464-41e5-81d9-d8a298854429',

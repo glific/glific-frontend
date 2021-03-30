@@ -27,18 +27,28 @@ const getName = (text: string, keywordsList: any) => {
   );
 };
 
-const getUpdatedAt = (date: string) => (
-  <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+const getUpdatedAt = (date: string, fallback: string = '') => (
+  <div className={styles.LastModified}>
+    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
+  </div>
 );
 
-const getColumns = ({ name, updatedAt, keywords }: any) => ({
+const getColumns = ({ name, updatedAt, keywords, lastChangedAt, lastPublishedAt }: any) => ({
   name: getName(name, keywords),
   updatedAt: getUpdatedAt(updatedAt),
+  lastPublishedAt: getUpdatedAt(lastPublishedAt, 'Not published'),
+  lastChangedAt: getUpdatedAt(lastChangedAt, 'Latest changes are published'),
 });
 
-const columnNames = ['NAME', 'LAST MODIFIED', 'ACTIONS'];
+const columnNames = ['NAME', 'LAST MODIFIED', 'PUBLISHED DATE', 'DRAFT DATE', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this flow.";
-const columnStyles = [styles.Name, styles.LastModified, styles.Actions];
+const columnStyles = [
+  styles.Name,
+  styles.LastModified,
+  styles.LastPublished,
+  styles.LastDraft,
+  styles.Actions,
+];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {

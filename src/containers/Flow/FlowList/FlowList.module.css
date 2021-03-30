@@ -38,7 +38,9 @@
   height: 29px;
 }
 
-.LastModified {
+.LastModified,
+.LastPublished,
+.LastDraft {
   width: 185px;
   padding-top: 12px;
   color: #93a29b;
