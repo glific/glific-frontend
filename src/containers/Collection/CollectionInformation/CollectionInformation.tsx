@@ -2,10 +2,14 @@ import { useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import styles from './CollectionInformation.module.css';
 import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/queries/Collection';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface CollectionInformationProps {
   collectionId: any;
   staff?: boolean;
+  displayPopup?: boolean;
+  setDisplayPopup?: any;
+  handleSendMessage?: any;
 }
 
 const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
@@ -13,6 +17,9 @@ const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messag
 export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   collectionId,
   staff = true,
+  displayPopup,
+  setDisplayPopup,
+  handleSendMessage,
 }) => {
   const [display, setDisplay] = useState(displayObj);
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
@@ -59,6 +66,40 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
     } else {
       assignedToCollection = assignedToCollection.join(', ');
     }
+  }
+
+  // display collection contact status before sending message to a collection
+  if (displayPopup) {
+    const dialogBox = (
+      <DialogBox
+        title="Contact status"
+        handleOk={() => handleSendMessage()}
+        handleCancel={() => setDisplayPopup()}
+        buttonOk="Ok, Send"
+        alignButtons="center"
+      >
+        <div className={styles.DialogBox} data-testid="description">
+          <div className={styles.Message}>
+            Custom messages will not be sent to the opted out/session expired contacts.
+          </div>
+          <div className={styles.Message}>
+            Only HSM template can be sent to the session expired contacts.{' '}
+          </div>
+          <div className={styles.Message}>
+            Total Contacts: {collectionInfo ? JSON.parse(collectionInfo.groupInfo).total : 0}
+            <div>
+              Contacts qualified for-
+              {Object.keys(display).map((data: any) => (
+                <span className={styles.Count}>
+                  {data}: <span> {display[data]}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </DialogBox>
+    );
+    return dialogBox;
   }
 
   return (
