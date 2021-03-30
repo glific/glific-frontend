@@ -287,16 +287,15 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       flow: 'OUTBOUND',
     };
 
-    addLogs(`send Message To Collection-${collectionId}`, {
+    const variables = {
       groupId: collectionId,
       input: updatePayload(payload, selectedTemplate, variableParam),
-    });
+    };
+
+    addLogs(`send Message To Collection-${collectionId}`, variables);
 
     sendMessageToCollection({
-      variables: {
-        groupId: collectionId,
-        input: updatePayload(payload, selectedTemplate, variableParam),
-      },
+      variables,
     });
   };
 
