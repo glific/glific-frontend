@@ -389,7 +389,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       }}
     >
       <ProfileIcon className={styles.Icon} />
-      View contacts
+      View details
     </Button>
   );
 
