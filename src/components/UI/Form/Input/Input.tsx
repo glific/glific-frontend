@@ -28,6 +28,7 @@ export interface InputProps {
   togglePassword?: boolean;
   endAdornmentCallback?: any;
   validate?: any;
+  endAdornment?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -42,6 +43,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     placeholder,
     editor,
     rows,
+    endAdornment,
   } = props;
 
   let fieldType = type;
@@ -106,7 +108,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           label={placeholder}
           fullWidth
           {...field}
-          endAdornment={fieldEndAdorment}
+          endAdornment={endAdornment || fieldEndAdorment}
         />
         {form && form.errors[field.name] && form.touched[field.name] ? (
           <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>

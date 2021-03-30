@@ -287,64 +287,61 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     },
   });
 
-  const [loadData, { loading, error, subscribeToMore, data }] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: queryVariables,
-    nextFetchPolicy: 'cache-only',
-    onCompleted: () => {
-      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+  const [loadData, { loading, error, subscribeToMore, data, refetch }] = useLazyQuery<any>(
+    SEARCH_QUERY,
+    {
+      variables: queryVariables,
+      nextFetchPolicy: 'cache-only',
+      onCompleted: () => {
+        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
-      if (subscribeToMore) {
-        // message received subscription
-        subscribeToMore({
-          document: MESSAGE_RECEIVED_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'RECEIVED'),
-        });
+        if (subscribeToMore) {
+          // message received subscription
+          subscribeToMore({
+            document: MESSAGE_RECEIVED_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'RECEIVED'),
+          });
 
-        // message sent subscription
-        subscribeToMore({
-          document: MESSAGE_SENT_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'SENT'),
-        });
+          // message sent subscription
+          subscribeToMore({
+            document: MESSAGE_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'SENT'),
+          });
 
-        // message status subscription
-        subscribeToMore({
-          document: MESSAGE_STATUS_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'STATUS'),
-          onError: (e) => {
-            console.log('e', e);
-          },
-        });
+          // message status subscription
+          subscribeToMore({
+            document: MESSAGE_STATUS_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'STATUS'),
+            onError: (e) => {
+              console.log('e', e);
+            },
+          });
 
-        // tag added subscription
-        subscribeToMore({
-          document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'TAG_ADDED'),
-        });
+          // tag added subscription
+          subscribeToMore({
+            document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'TAG_ADDED'),
+          });
 
-        // tag delete subscription
-        subscribeToMore({
-          document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'TAG_DELETED'),
-        });
-      }
-    },
-  });
-
-  // let's fetch fresh data and update the cache
-  const [fetchData] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: queryVariables,
-    fetchPolicy: 'network-only',
-  });
+          // tag delete subscription
+          subscribeToMore({
+            document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'TAG_DELETED'),
+          });
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     if (data && collectionData) {
@@ -370,7 +367,10 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   }
 
   if (triggerRefetch) {
-    fetchData();
+    // lets refetch here
+    if (refetch) {
+      refetch();
+    }
     setTriggerRefetch(false);
   }
 

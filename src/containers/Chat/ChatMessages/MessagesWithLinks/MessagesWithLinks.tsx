@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactTinyLink } from 'react-tiny-link';
-import Linkify from 'react-linkify';
+// import Linkify from 'react-linkify';
 
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import styles from './MessagesWithLinks.module.css';
@@ -15,7 +15,7 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
 ) => {
   const { message } = props;
   let linkPreview = null;
-  let messagebody: any = WhatsAppToJsx(message);
+  const messagebody: any = WhatsAppToJsx(message);
   const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
 
   // first element is the url, if the url is sent
@@ -35,24 +35,6 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
       </div>
     );
   }
-
-  messagebody = (
-    <Linkify
-      componentDecorator={(decoratedHref, decoratedText, key) => (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={decoratedHref}
-          key={key}
-          data-testid="messageLink"
-        >
-          {decoratedText}
-        </a>
-      )}
-    >
-      {messagebody}
-    </Linkify>
-  );
 
   return (
     <>

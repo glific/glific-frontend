@@ -66,3 +66,43 @@ describe('Checked Hours of operations', () => {
     });
   });
 });
+
+describe('Test organization setting', () => {
+  test('Checked phone number', async () => {
+    const { getByText, getByTestId } = render(wrapper);
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      const phoneNumber = getByTestId('phoneNumber');
+      fireEvent.click(phoneNumber);
+      expect(phoneNumber).toBeInTheDocument();
+    });
+  });
+
+  test('UnChecked Hours of operations', async () => {
+    const { getByText } = render(wrapper);
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      const checkbox = screen.getByRole('checkbox');
+      fireEvent.click(checkbox);
+      expect(checkbox.value).toBe('true');
+    });
+  });
+
+  test('Submit form', async () => {
+    const { container, getByText, getByTestId } = render(wrapper);
+    // loading is show initially
+    expect(getByText('Loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      const input: any = container.querySelector('input[type="text"]');
+      console.log(input);
+      fireEvent.change(input, { target: { value: '' } });
+      const submit = getByTestId('submitActionButton');
+      fireEvent.click(submit);
+    });
+  });
+});

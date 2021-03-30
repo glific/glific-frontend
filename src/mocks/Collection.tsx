@@ -4,6 +4,7 @@ import {
   GET_COLLECTION,
   GET_COLLECTIONS,
   GET_COLLECTIONS_COUNT,
+  GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
 } from '../graphql/queries/Collection';
 
@@ -74,7 +75,7 @@ export const getCollectionsQuery = [
 export const getCollectionUsersQuery = {
   request: {
     query: GET_COLLECTION_USERS,
-    variables: { id: 1 },
+    variables: { id: '1' },
   },
   result: {
     data: {
@@ -152,6 +153,18 @@ export const getCollectionContactsQuery = {
           ],
         },
       },
+    },
+  },
+};
+
+export const getCollectionInfo = {
+  request: {
+    query: GET_COLLECTION_INFO,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1}',
     },
   },
 };

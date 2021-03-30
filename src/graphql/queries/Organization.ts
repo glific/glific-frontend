@@ -6,6 +6,9 @@ export const GET_ORGANIZATION = gql`
       organization {
         id
         name
+        contact {
+          phone
+        }
         outOfOffice {
           enabled
           enabledDays {

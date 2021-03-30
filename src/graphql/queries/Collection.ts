@@ -55,3 +55,9 @@ export const GET_COLLECTION_USERS = gql`
     }
   }
 `;
+
+export const GET_COLLECTION_INFO = gql`
+  query groupInfo($id: ID!) {
+    groupInfo(id: $id)
+  }
+`;

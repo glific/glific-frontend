@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FLOW_EDITOR_API } from '../config';
 import setLogs from '../config/logs';
+import { setNotification } from './notification';
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
@@ -41,3 +42,17 @@ const validateMediaMethod = (URL: string, attachmentType: string) =>
   });
 
 export { validateMediaMethod as validateMedia };
+
+export const copyToClipboardMethod = (client: any, text: string) => {
+  if (text) {
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        setNotification(client, 'Copied to clipboard');
+      });
+    } catch (err) {
+      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
+    }
+  }
+};
+
+export { copyToClipboardMethod as copyToClipboard };

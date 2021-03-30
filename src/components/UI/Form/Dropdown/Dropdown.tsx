@@ -60,6 +60,11 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
               fieldChange(event);
             }
           }}
+          MenuProps={{
+            classes: {
+              paper: styles.Paper,
+            },
+          }}
           value={fieldValue !== undefined ? fieldValue : value}
           {...rest}
           label={placeholder}

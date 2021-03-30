@@ -100,6 +100,7 @@ const conversationMessageQuery = (
 const conversationCollectionQuery = (
   collectionId: any,
   collectionName: string,
+  filter: object = { searchGroup: true },
   contactLimit: number = DEFAULT_CONTACT_LIMIT,
   messageLimit: object = { limit: DEFAULT_MESSAGE_LIMIT }
 ) => ({
@@ -109,7 +110,7 @@ const conversationCollectionQuery = (
       contactOpts: {
         limit: contactLimit,
       },
-      filter: { searchGroup: true },
+      filter: filter,
       messageOpts: messageLimit,
     },
   },
@@ -123,6 +124,19 @@ const conversationCollectionQuery = (
             label: collectionName,
           },
           messages: [
+            {
+              body: 'x ↵',
+              errors: '{}',
+              id: '32899',
+              insertedAt: '2021-03-25T10:30:26.244125Z',
+              location: null,
+              media: null,
+              messageNumber: 50,
+              receiver: { id: '1' },
+              sender: { id: '1' },
+              tags: [],
+              type: 'TEXT',
+            },
             {
               id: '1',
               body: 'Hello',
@@ -558,7 +572,15 @@ export const CONVERSATION_MOCKS = [
     limit: DEFAULT_MESSAGE_LIMIT,
     offset: 0,
   }),
+  conversationMessageQuery(5, 'Jane Doe', '919090909009', 1, {
+    limit: DEFAULT_MESSAGE_LIMIT,
+    offset: 0,
+  }),
   conversationCollectionQuery('2', 'Default collection'),
+  conversationCollectionQuery(5, 'Test collection', { id: '5', searchGroup: true }, 25, {
+    limit: 20,
+    offset: 0,
+  }),
 ];
 
 const updateMessageTagsQuery = {

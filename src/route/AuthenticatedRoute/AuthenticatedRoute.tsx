@@ -34,6 +34,7 @@ import { WebhookLogsList } from '../../containers/WebhookLogs/WebhookLogsList/We
 import Loading from '../../components/UI/Layout/Loading/Loading';
 import { TriggerList } from '../../containers/Trigger/TriggerList/TriggerList';
 import { Trigger } from '../../containers/Trigger/Trigger';
+import { NotificationList } from '../../containers/NotificationList/NotificationList';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -107,6 +108,7 @@ const routeAdmin = (
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
+    <Route path="/notifications" exact component={NotificationList} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route exact path="/chat/saved-searches" component={() => <Chat savedSearches />} />
     <Route
