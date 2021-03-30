@@ -23,6 +23,7 @@ import {
 } from '../../../../common/constants';
 import { updateConversations } from '../../../../services/ChatService';
 import { showMessages } from '../../../../common/responsive';
+import { addLogs } from '../../../../common/utils';
 
 interface ConversationListProps {
   searchVal: string;
@@ -214,12 +215,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   useEffect(() => {
     // Use multi search when has search value and when there is no collection id
     if (searchVal && Object.keys(searchParam).length === 0 && !selectedCollectionId) {
+      addLogs(`Use multi search when has search value`, filterSearch());
       getFilterSearch({
         variables: filterSearch(),
       });
     } else {
       // This is used for filtering the searches, when you click on it, so only call it
       // when user clicks and savedSearchCriteriaId is set.
+      addLogs(`filtering the searches`, filterVariables());
       getFilterConvos({
         variables: filterVariables(),
       });

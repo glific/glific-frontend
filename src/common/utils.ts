@@ -56,3 +56,10 @@ export const copyToClipboardMethod = (client: any, text: string) => {
 };
 
 export { copyToClipboardMethod as copyToClipboard };
+
+export const addLogsMethod = (event: string, logData: any) => {
+  setLogs(event, 'info');
+  setLogs(`variables-${logData}`, 'info');
+};
+
+export { addLogsMethod as addLogs };

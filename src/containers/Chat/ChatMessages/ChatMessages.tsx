@@ -30,6 +30,7 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
+import { addLogs } from '../../../common/utils';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -286,6 +287,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       flow: 'OUTBOUND',
     };
 
+    addLogs(`send Message To Collection-${collectionId}`, {
+      groupId: collectionId,
+      input: updatePayload(payload, selectedTemplate, variableParam),
+    });
+
     sendMessageToCollection({
       variables: {
         groupId: collectionId,
@@ -360,15 +366,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     // if conversation is not present then fetch for contact
     if (conversationIndex < 0) {
       if ((!loading && !called) || (data && data.search[0].contact.id !== contactId)) {
-        getSearchQuery({
-          variables: {
-            filter: { id: contactId },
-            contactOpts: { limit: 1 },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-              offset: messageParameterOffset,
-            },
+        const variables = {
+          filter: { id: contactId },
+          contactOpts: { limit: 1 },
+          messageOpts: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+            offset: messageParameterOffset,
           },
+        };
+
+        addLogs(`if conversation is not present then search for contact-${contactId}`, variables);
+
+        getSearchQuery({
+          variables,
         });
       }
       // lets not get from cache if parameter is present
@@ -377,15 +387,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         (!parameterLoading && !parameterCalled) ||
         (parameterdata && parameterdata.search[0].contact.id !== contactId)
       ) {
-        getSearchParameterQuery({
-          variables: {
-            filter: { id: contactId },
-            contactOpts: { limit: 1 },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-              offset: messageParameterOffset,
-            },
+        const variables = {
+          filter: { id: contactId },
+          contactOpts: { limit: 1 },
+          messageOpts: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+            offset: messageParameterOffset,
           },
+        };
+
+        addLogs(`if search message is not present then search for contact-${contactId}`, variables);
+
+        getSearchParameterQuery({
+          variables,
         });
       }
     }
@@ -405,12 +419,19 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     // if conversation is not present then fetch the collection
     if (conversationIndex < 0) {
       if (!loading && !data) {
+        const variables = {
+          filter: { id: collectionId, searchGroup: true },
+          contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+          messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
+        };
+
+        addLogs(
+          `if conversation is not present then search for collection-${collectionId}`,
+          variables
+        );
+
         getSearchQuery({
-          variables: {
-            filter: { id: collectionId, searchGroup: true },
-            contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-            messageOpts: { limit: DEFAULT_MESSAGE_LIMIT, offset: 0 },
-          },
+          variables,
         });
       }
     }
@@ -534,6 +555,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     if (collectionId) {
       variables.filter = { id: collectionId.toString(), searchGroup: true };
     }
+
+    addLogs(`load More Messages-${collectionId}`, variables);
 
     getSearchQuery({
       variables,
@@ -674,6 +697,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       if (collectionId) {
         variables.filter = { id: collectionId.toString(), searchGroup: true };
       }
+
+      addLogs(`show Latest Message for contact-${contactId}`, variables);
 
       getSearchParameterQuery({
         variables,

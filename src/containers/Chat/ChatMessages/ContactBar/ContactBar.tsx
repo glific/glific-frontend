@@ -47,6 +47,7 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
+import { addLogs } from '../../../../common/utils';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -291,6 +292,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const handleBlock = () => {
+    addLogs(`refetch after block Contact`, SEARCH_QUERY_VARIABLES);
     blockContact({
       variables: {
         id: contactId,
