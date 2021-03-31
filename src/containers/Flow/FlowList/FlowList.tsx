@@ -27,28 +27,21 @@ const getName = (text: string, keywordsList: any) => {
   );
 };
 
-const getUpdatedAt = (date: string, fallback: string = '') => (
-  <div className={styles.LastModified}>
+const getDate = (date: string, fallback: string = '') => (
+  <div className={styles.LastPublished}>
     {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
   </div>
 );
 
-const getColumns = ({ name, updatedAt, keywords, lastChangedAt, lastPublishedAt }: any) => ({
+const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
   name: getName(name, keywords),
-  updatedAt: getUpdatedAt(updatedAt),
-  lastPublishedAt: getUpdatedAt(lastPublishedAt, 'Not published'),
-  lastChangedAt: getUpdatedAt(lastChangedAt, 'Latest changes are published'),
+  lastPublishedAt: getDate(lastPublishedAt, 'Not published yet'),
+  lastChangedAt: getDate(lastChangedAt, 'Nothing in draft'),
 });
 
-const columnNames = ['NAME', 'LAST MODIFIED', 'PUBLISHED DATE', 'DRAFT DATE', 'ACTIONS'];
+const columnNames = ['NAME', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
 const dialogMessage = "You won't be able to use this flow.";
-const columnStyles = [
-  styles.Name,
-  styles.LastModified,
-  styles.LastPublished,
-  styles.LastDraft,
-  styles.Actions,
-];
+const columnStyles = [styles.Name, styles.LastPublished, styles.LastDraft, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -100,6 +93,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         {...queries}
         {...columnAttributes}
         searchParameter="name"
+        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
         button={{ show: true, label: '+ CREATE FLOW' }}
       />
