@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { CollectionInformation } from './CollectionInformation';
 import { MockedProvider } from '@apollo/client/testing';
@@ -55,7 +55,7 @@ describe('render SessionInfo', () => {
   test('it should have session data', () => {
     const { getByText } = render(wrapper);
 
-    const SessionInfo = getByText('In-session:');
+    const SessionInfo = getByText('Session messages:');
 
     expect(SessionInfo).toBeInTheDocument();
   });
@@ -81,6 +81,48 @@ describe('render SessionInfo', () => {
       const SessionInfo = getAllByText('1');
 
       expect(SessionInfo);
+    });
+  });
+});
+
+describe('render collection info popup', () => {
+  const wrapper = (
+    <MockedProvider mocks={[getCollectionInfo, collectionUsersQuery]} addTypename={false}>
+      <CollectionInformation
+        collectionId={'1'}
+        displayPopup
+        setDisplayPopup={() => Function}
+        handleSendMessage={() => Function}
+      />
+    </MockedProvider>
+  );
+  test('it should display popup', async () => {
+    const { getAllByText } = render(wrapper);
+
+    await waitFor(() => {
+      const SessionInfo = getAllByText('1');
+
+      expect(SessionInfo);
+    });
+  });
+
+  test('click on ok', async () => {
+    const { findByTestId } = render(wrapper);
+
+    await waitFor(async () => {
+      const Ok = findByTestId('ok-button');
+
+      fireEvent.click(await Ok);
+    });
+  });
+
+  test('click on cancel', async () => {
+    const { findByTestId } = render(wrapper);
+
+    await waitFor(async () => {
+      const cancel = findByTestId('cancel-button');
+
+      fireEvent.click(await cancel);
     });
   });
 });

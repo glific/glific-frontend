@@ -544,8 +544,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div className={styles.Configure} data-testid="dropdownIcon">
-                    <DropdownIcon onClick={handleConfigureIconClick} />
+                  <div
+                    className={styles.Configure}
+                    data-testid="dropdownIcon"
+                    onClick={handleConfigureIconClick}
+                    onKeyPress={handleConfigureIconClick}
+                    aria-hidden
+                  >
+                    <DropdownIcon />
                   </div>
                 </ClickAwayListener>
                 <Typography

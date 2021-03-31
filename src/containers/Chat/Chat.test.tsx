@@ -109,7 +109,9 @@ describe('<Chat />', () => {
   });
 
   test('check condition when no subscription data provided', async () => {
-    const { findByTestId } = render(wrapper);
+    const { getByText, findByTestId } = render(wrapper);
+
+    expect(getByText('Loading...')).toBeInTheDocument();
 
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
