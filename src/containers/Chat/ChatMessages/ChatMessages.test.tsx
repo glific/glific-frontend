@@ -297,28 +297,6 @@ test('Collection: if cache', async () => {
   });
 });
 
-test('send message to contact', async () => {
-  const spy = jest.spyOn(ChatInput, 'ChatInput');
-
-  spy.mockImplementation((props: any) => {
-    const { onSendMessage } = props;
-    return (
-      <div
-        data-testid="sendMessage"
-        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
-      ></div>
-    );
-  });
-
-  const { getByTestId } = render(chatMessages);
-
-  await waitFor(() => {
-    fireEvent.click(getByTestId('sendMessage'));
-  });
-
-  await waitFor(() => {});
-});
-
 test('click on Clear conversation', async () => {
   const chatMessages = (
     <ApolloProvider client={client}>
@@ -382,4 +360,26 @@ test('Load more messages', async () => {
     fireEvent.scroll(container, { target: { scrollY: 0 } });
     fireEvent.click(getByTestId('loadMoreMessages'));
   });
+});
+
+test('send message to contact', async () => {
+  const spy = jest.spyOn(ChatInput, 'ChatInput');
+
+  spy.mockImplementation((props: any) => {
+    const { onSendMessage } = props;
+    return (
+      <div
+        data-testid="sendMessage"
+        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
+      ></div>
+    );
+  });
+
+  const { getByTestId } = render(chatMessages);
+
+  await waitFor(() => {
+    fireEvent.click(getByTestId('sendMessage'));
+  });
+
+  await waitFor(() => {});
 });
