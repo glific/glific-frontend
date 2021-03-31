@@ -367,7 +367,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       // loop through the cached conversations and find if contact exists
       // need to check - updateConversationInfo('contact', contactId);
       allConversations.search.map((conversation: any, index: any) => {
-        if (conversation.contact.id === contactId) {
+        if (conversation.contact.id === contactId?.toString()) {
           conversationIndex = index;
           setConversationInfo(conversation);
         }

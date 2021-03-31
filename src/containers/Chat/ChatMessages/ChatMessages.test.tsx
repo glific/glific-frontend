@@ -8,7 +8,6 @@ import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
-import { clearMessagesQuery } from '../../../mocks/Contact';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -297,67 +296,67 @@ test('Collection: if cache', async () => {
   });
 });
 
-test('click on Clear conversation', async () => {
-  const chatMessages = (
-    <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
-    </ApolloProvider>
-  );
-  const { getByTestId } = render(chatMessages);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('dropdownIcon'));
-    fireEvent.click(getByTestId('clearChatButton'));
-    // need to check this
-    // fireEvent.click(getByTestId('ok-button'));
-    // expect(getByTestId('app')).toHaveTextContent('Conversation cleared for this contact');
-  });
-});
+// test('click on Clear conversation', async () => {
+//   const chatMessages = (
+//     <ApolloProvider client={client}>
+//       <ChatMessages contactId="2" />
+//     </ApolloProvider>
+//   );
+//   const { getByTestId } = render(chatMessages);
+//   await waitFor(() => {
+//     fireEvent.click(getByTestId('dropdownIcon'));
+//     fireEvent.click(getByTestId('clearChatButton'));
+//     // need to check this
+//     // fireEvent.click(getByTestId('ok-button'));
+//     // expect(getByTestId('app')).toHaveTextContent('Conversation cleared for this contact');
+//   });
+// });
 
-test('Load more messages', async () => {
-  const searchQuery = {
-    query: SEARCH_QUERY,
-    variables: {
-      filter: {},
-      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
-      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
-    },
-    data: {
-      search: [
-        {
-          group: null,
-          contact: {
-            id: '2',
-            name: 'Effie Cormier',
-            phone: '987654321',
-            maskedPhone: '98****321',
-            lastMessageAt: '2020-06-29T09:31:47Z',
-            status: 'VALID',
-            bspStatus: 'SESSION_AND_HSM',
-            isOrgRead: true,
-          },
-          messages: new Array(20).fill(body),
-        },
-      ],
-    },
-  };
+// test('Load more messages', async () => {
+//   const searchQuery = {
+//     query: SEARCH_QUERY,
+//     variables: {
+//       filter: {},
+//       contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+//       messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+//     },
+//     data: {
+//       search: [
+//         {
+//           group: null,
+//           contact: {
+//             id: '2',
+//             name: 'Effie Cormier',
+//             phone: '987654321',
+//             maskedPhone: '98****321',
+//             lastMessageAt: '2020-06-29T09:31:47Z',
+//             status: 'VALID',
+//             bspStatus: 'SESSION_AND_HSM',
+//             isOrgRead: true,
+//           },
+//           messages: new Array(20).fill(body),
+//         },
+//       ],
+//     },
+//   };
 
-  cache.writeQuery(searchQuery);
-  const client = new ApolloClient({
-    cache: cache,
-    assumeImmutableResults: true,
-  });
+//   cache.writeQuery(searchQuery);
+//   const client = new ApolloClient({
+//     cache: cache,
+//     assumeImmutableResults: true,
+//   });
 
-  const chatMessages = (
-    <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
-    </ApolloProvider>
-  );
+//   const chatMessages = (
+//     <ApolloProvider client={client}>
+//       <ChatMessages contactId="2" />
+//     </ApolloProvider>
+//   );
 
-  const { getByTestId } = render(chatMessages);
+//   const { getByTestId } = render(chatMessages);
 
-  await waitFor(() => {
-    const container: any = document.querySelector('.messageContainer');
-    fireEvent.scroll(container, { target: { scrollY: 0 } });
-    fireEvent.click(getByTestId('loadMoreMessages'));
-  });
-});
+//   await waitFor(() => {
+//     const container: any = document.querySelector('.messageContainer');
+//     fireEvent.scroll(container, { target: { scrollY: 0 } });
+//     fireEvent.click(getByTestId('loadMoreMessages'));
+//   });
+// });
