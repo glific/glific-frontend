@@ -26,8 +26,7 @@ import {
 } from '../../../graphql/subscriptions/Tag';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
-import { randomIntFromInterval } from '../../../common/utils';
-import { addLogs } from '../../../common/utils';
+import { randomIntFromInterval, addLogs } from '../../../common/utils';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
