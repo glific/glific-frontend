@@ -8,6 +8,7 @@ import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
+import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -59,7 +60,7 @@ export const searchQuery = {
           name: 'Effie Cormier',
           phone: '987654321',
           maskedPhone: '98****321',
-          lastMessageAt: '2020-06-29T09:31:47Z',
+          lastMessageAt: new Date(),
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
           isOrgRead: true,
@@ -294,4 +295,46 @@ test('Collection: if cache', async () => {
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
   });
+});
+
+test('send message handler with error', async () => {
+  cache.writeQuery(collection);
+
+  const client = new ApolloClient({
+    cache: cache,
+    assumeImmutableResults: true,
+  });
+  const chatMessagesWithCollection = (
+    <ApolloProvider client={client}>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <ChatMessages collectionId="5" />
+      </MockedProvider>
+    </ApolloProvider>
+  );
+  const { getByTestId } = render(chatMessagesWithCollection);
+  await waitFor(() => {
+    fireEvent.click(getByTestId('jumpToLatest'));
+  });
+});
+
+test('send message to contact', async () => {
+  const spy = jest.spyOn(ChatInput, 'ChatInput');
+
+  spy.mockImplementation((props: any) => {
+    const { onSendMessage } = props;
+    return (
+      <div
+        data-testid="sendMessage"
+        onClick={() => onSendMessage('hey', null, 'TEXT', null, null)}
+      ></div>
+    );
+  });
+
+  const { getByTestId } = render(chatMessages);
+
+  await waitFor(() => {
+    fireEvent.click(getByTestId('sendMessage'));
+  });
+
+  await waitFor(() => {});
 });
