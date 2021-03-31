@@ -102,12 +102,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
-    onError: () => {
-      setNotification(
-        client,
-        'Sorry! 24 hrs window closed. Your message cannot be sent at this time. ',
-        'warning'
-      );
+    onError: (error: any) => {
+      if (error.message) {
+        setNotification(client, error.message, 'warning');
+      }
       return null;
     },
   });
@@ -261,6 +259,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+    onError: (collecctionError: any) => {
+      if (collecctionError.message) {
+        setNotification(client, collecctionError.message, 'warning');
+      }
+      return null;
+    },
   });
 
   const updatePayload = (payload: any, selectedTemplate: any, variableParam: any) => {
