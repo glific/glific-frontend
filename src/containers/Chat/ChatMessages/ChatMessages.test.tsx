@@ -297,26 +297,6 @@ test('Collection: if cache', async () => {
   });
 });
 
-test('send message handler with error', async () => {
-  cache.writeQuery(collection);
-
-  const client = new ApolloClient({
-    cache: cache,
-    assumeImmutableResults: true,
-  });
-  const chatMessagesWithCollection = (
-    <ApolloProvider client={client}>
-      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
-        <ChatMessages collectionId="5" />
-      </MockedProvider>
-    </ApolloProvider>
-  );
-  const { getByTestId } = render(chatMessagesWithCollection);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
-});
-
 test('send message to contact', async () => {
   const spy = jest.spyOn(ChatInput, 'ChatInput');
 
