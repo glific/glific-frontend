@@ -258,9 +258,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
-    onError: (error: any) => {
-      if (error.message) {
-        setNotification(client, error.message, 'warning');
+    onError: (collecctionError: any) => {
+      if (collecctionError.message) {
+        setNotification(client, collecctionError.message, 'warning');
       }
       return null;
     },
