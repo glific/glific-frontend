@@ -43,6 +43,10 @@ const validateMediaMethod = (URL: string, attachmentType: string) =>
 
 export { validateMediaMethod as validateMedia };
 
+// function to get the random number with min and max
+export const randomIntFromInterval = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
 export const copyToClipboardMethod = (client: any, text: string) => {
   if (text) {
     try {

@@ -5,7 +5,8 @@ import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
-  REFETCH_WAIT_TIME,
+  REFETCH_RANDOM_TIME_MAX,
+  REFETCH_RANDOM_TIME_MIN,
   SEARCH_QUERY_VARIABLES,
   SUBSCRIPTION_ALLOWED_DURATION,
   SUBSCRIPTION_ALLOWED_NUMBER,
@@ -25,7 +26,7 @@ import {
 } from '../../../graphql/subscriptions/Tag';
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
-import { addLogs } from '../../../common/utils';
+import { randomIntFromInterval, addLogs } from '../../../common/utils';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
@@ -41,6 +42,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   let subscriptionRequests: any = [];
   let refetchTimer: any = null;
   const [triggerRefetch, setTriggerRefetch] = useState(false);
+  let subscriptionToRefetchSwitchHappened = false;
 
   const [getContactQuery] = useLazyQuery(SEARCH_QUERY, {
     onCompleted: (conversation) => {
@@ -113,17 +115,29 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         recordRequests();
 
         // determine if we should use subscriptions or refetch the query
-        if (switchSubscriptionToRefetch()) {
-          // let's refetch and return
-          const waitTime = REFETCH_WAIT_TIME * 1000;
+        if (switchSubscriptionToRefetch() && !subscriptionToRefetchSwitchHappened) {
+          // when switch happens
+          // 1. get the random time as defined in constant
+          // 2. set the refetch action for that duration
+          // 3. if we are still in fetch mode repeat the same.
 
-          // let's clear the timeout to prevent multiple fetch calls
+          // set the switch flag
+          subscriptionToRefetchSwitchHappened = true;
+
+          // let's get the random wait time
+          const waitTime =
+            randomIntFromInterval(REFETCH_RANDOM_TIME_MIN, REFETCH_RANDOM_TIME_MAX) * 1000;
+
+          // let's clear the timeout if exists
           if (refetchTimer) {
             clearTimeout(refetchTimer);
           }
 
           refetchTimer = setTimeout(() => {
-            // let's call refetch once all subscriptions are done
+            // reset the switch flag
+            subscriptionToRefetchSwitchHappened = false;
+
+            // let's trigger refetch action
             setTriggerRefetch(true);
           }, waitTime);
 

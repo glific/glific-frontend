@@ -128,5 +128,8 @@ export const SUBSCRIPTION_ALLOWED_DURATION = 5;
 // number of subscriptions allowed within above duration until we switch to fetch mode
 export const SUBSCRIPTION_ALLOWED_NUMBER = 10;
 
-// time to wait for firing refetch ( in seconds )
-export const REFETCH_WAIT_TIME = 5;
+// min offset for the wait ( in seconds )
+export const REFETCH_RANDOM_TIME_MIN = 10;
+
+// max offset for the wait ( in seconds )
+export const REFETCH_RANDOM_TIME_MAX = 40;
