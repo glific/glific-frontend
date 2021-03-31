@@ -365,7 +365,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const findContactInAllConversations = () => {
     if (allConversations && allConversations.search) {
       // loop through the cached conversations and find if contact exists
-      updateConversationInfo('contact', contactId);
+      // need to check - updateConversationInfo('contact', contactId);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation.contact.id === contactId) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
     }
 
     // if conversation is not present then fetch for contact
@@ -522,7 +529,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       .reverse();
   }
 
-  /* istanbul ignore next */
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {
@@ -602,8 +608,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     conversationInfoCopy.messages = [];
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
-    allConversationsCopy.search[conversationIndex] = conversationInfoCopy;
-
+    const index = conversationIndex === -1 ? 0 : conversationIndex;
+    allConversationsCopy.search[index] = conversationInfoCopy;
     // update allConversations in the cache
     updateConversationsCache(allConversationsCopy, client, queryVariables);
   };
@@ -632,7 +638,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
-        handleAction={handleChatClearedAction}
+        handleAction={() => handleChatClearedAction()}
       />
     );
 
