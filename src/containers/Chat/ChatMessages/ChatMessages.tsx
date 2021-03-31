@@ -30,6 +30,7 @@ import {
 import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
 import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
+import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 
 export interface ChatMessagesProps {
   contactId?: number | string | null;
@@ -57,7 +58,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   }
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
-  const [dialog, setDialogbox] = useState(false);
+  const [dialog, setDialogbox] = useState<string>();
   const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
   const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
@@ -67,6 +68,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [showJumpToLatest, setShowJumpToLatest] = useState(true);
   const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
   const [conversationInfo, setConversationInfo] = useState<any>({});
+  const [collectionVariables, setCollectionVariables] = useState<any>({});
+  let dialogBox;
 
   useEffect(() => {
     setShowLoadMore(true);
@@ -249,7 +252,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: () => {
       setNotification(client, 'Tags added successfully');
-      setDialogbox(false);
+      setDialogbox('');
     },
   });
 
@@ -274,6 +277,13 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     return payloadCopy;
   };
 
+  const handleSendMessage = () => {
+    setDialogbox('');
+    sendMessageToCollection({
+      variables: collectionVariables,
+    });
+  };
+
   // this function is called when the message is sent collection
   const sendCollectionMessageHandler = (
     body: string,
@@ -282,6 +292,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     selectedTemplate: any,
     variableParam: any
   ) => {
+    // display collection info popup
+    setDialogbox('collection');
+
     const payload: any = {
       body,
       senderId: 1,
@@ -290,11 +303,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       flow: 'OUTBOUND',
     };
 
-    sendMessageToCollection({
-      variables: {
-        groupId: collectionId,
-        input: updatePayload(payload, selectedTemplate, variableParam),
-      },
+    setCollectionVariables({
+      groupId: collectionId,
+      input: updatePayload(payload, selectedTemplate, variableParam),
     });
   };
 
@@ -358,7 +369,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const findContactInAllConversations = () => {
     if (allConversations && allConversations.search) {
       // loop through the cached conversations and find if contact exists
-      updateConversationInfo('contact', contactId);
+      // need to check - updateConversationInfo('contact', contactId);
+      allConversations.search.map((conversation: any, index: any) => {
+        if (conversation.contact.id === contactId?.toString()) {
+          conversationIndex = index;
+          setConversationInfo(conversation);
+        }
+        return null;
+      });
     }
 
     // if conversation is not present then fetch for contact
@@ -430,7 +448,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   }, [contactId, collectionId, allConversations]);
 
   const closeDialogBox = () => {
-    setDialogbox(false);
+    setDialogbox('');
     setShowDropdown(null);
   };
   /* istanbul ignore next */
@@ -439,7 +457,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     unselectedTags = previousMessageTags.filter((tag: any) => !tags.includes(tag));
 
     if (selectedTags.length === 0 && unselectedTags.length === 0) {
-      setDialogbox(false);
+      setDialogbox('');
       setShowDropdown(null);
     } else {
       createMessageTag({
@@ -454,11 +472,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     }
   };
 
-  let dialogBox;
-
   const tags = allTags.data ? allTags.data.tags : [];
 
-  if (dialog) {
+  if (dialog === 'tag') {
     dialogBox = (
       <SearchDialogBox
         selectedOptions={selectedMessageTags}
@@ -499,7 +515,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             const messageTagId = messageTags.map((tag: any) => tag.id);
             setSelectedMessageTags(messageTagId);
             setPreviousMessageTags(messageTagId);
-            setDialogbox(!dialog);
+            setDialogbox('tag');
           }}
           focus={index === 0}
           showMessage={
@@ -517,7 +533,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       .reverse();
   }
 
-  /* istanbul ignore next */
   const loadMoreMessages = () => {
     const { messageNumber } = conversationInfo.messages[conversationInfo.messages.length - 1];
     const variables: any = {
@@ -597,8 +612,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     conversationInfoCopy.messages = [];
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
-    allConversationsCopy.search[conversationIndex] = conversationInfoCopy;
-
+    const index = conversationIndex === -1 ? 0 : conversationIndex;
+    allConversationsCopy.search[index] = conversationInfoCopy;
     // update allConversations in the cache
     updateConversationsCache(allConversationsCopy, client, queryVariables);
   };
@@ -627,7 +642,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         lastMessageTime={conversationInfo.contact.lastMessageAt}
         contactStatus={conversationInfo.contact.status}
         contactBspStatus={conversationInfo.contact.bspStatus}
-        handleAction={handleChatClearedAction}
+        handleAction={() => handleChatClearedAction()}
       />
     );
 
@@ -706,6 +721,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   return (
     <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
       {dialogBox}
+      {dialog === 'collection' ? (
+        <CollectionInformation
+          collectionId={collectionId}
+          displayPopup
+          setDisplayPopup={() => setDialogbox('')}
+          handleSendMessage={() => handleSendMessage()}
+        />
+      ) : null}
       {topChatBar}
       {messageListContainer}
       {conversationInfo.messages.length && (showJumpToLatest || defaultJumpToLatest)

@@ -47,6 +47,7 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
+import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
@@ -80,6 +81,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showFlowDialog, setShowFlowDialog] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
+  const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
@@ -362,6 +364,78 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const viewDetails = contactId ? (
+    <Button
+      className={styles.ListButtonPrimary}
+      disabled={isSimulator}
+      data-testid="viewProfile"
+      onClick={() => {
+        history.push(`/contact-profile/${contactId}`);
+      }}
+    >
+      {isSimulator ? (
+        <ProfileDisabledIcon className={styles.Icon} />
+      ) : (
+        <ProfileIcon className={styles.Icon} />
+      )}
+      View contact profile
+    </Button>
+  ) : (
+    <Button
+      className={styles.ListButtonPrimary}
+      data-testid="viewContacts"
+      onClick={() => {
+        history.push(`/collection/${collectionId}/contacts`);
+      }}
+    >
+      <ProfileIcon className={styles.Icon} />
+      View details
+    </Button>
+  );
+
+  const addMember = contactId ? (
+    <>
+      <Button
+        data-testid="collectionButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          getCollections();
+          setShowCollectionDialog(true);
+        }}
+      >
+        <AddContactIcon className={styles.Icon} />
+        Add to collection
+      </Button>
+      <Button
+        className={styles.ListButtonPrimary}
+        data-testid="clearChatButton"
+        onClick={() => setClearChatDialog(true)}
+      >
+        <ClearConversation className={styles.Icon} />
+        Clear conversation
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button
+        data-testid="collectionButton"
+        className={styles.ListButtonPrimary}
+        onClick={() => {
+          setAddContactsDialogShow(true);
+        }}
+      >
+        <AddContactIcon className={styles.Icon} />
+        Add contact
+      </Button>
+    </>
+  );
+
+  if (addContactsDialogShow) {
+    dialogBox = (
+      <AddContactsToCollection collectionId={collectionId} setDialog={setAddContactsDialogShow} />
+    );
+  }
+
   const popper = (
     <Popper
       open={open}
@@ -373,47 +447,11 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Paper elevation={3} className={styles.Container}>
-            {contactId ? (
-              <Button
-                className={styles.ListButtonPrimary}
-                disabled={isSimulator}
-                data-testid="viewProfile"
-                onClick={() => {
-                  history.push(`/contact-profile/${contactId}`);
-                }}
-              >
-                {isSimulator ? (
-                  <ProfileDisabledIcon className={styles.Icon} />
-                ) : (
-                  <ProfileIcon className={styles.Icon} />
-                )}
-                View contact profile
-              </Button>
-            ) : (
-              ''
-            )}
+            {viewDetails}
             {flowButton}
+            {addMember}
             {contactId ? (
               <>
-                <Button
-                  data-testid="collectionButton"
-                  className={styles.ListButtonPrimary}
-                  onClick={() => {
-                    getCollections();
-                    setShowCollectionDialog(true);
-                  }}
-                >
-                  <AddContactIcon className={styles.Icon} />
-                  Add to collection
-                </Button>
-                <Button
-                  className={styles.ListButtonPrimary}
-                  data-testid="clearChatButton"
-                  onClick={() => setClearChatDialog(true)}
-                >
-                  <ClearConversation className={styles.Icon} />
-                  Clear conversation
-                </Button>
                 <Button
                   data-testid="blockButton"
                   className={styles.ListButtonDanger}
@@ -506,8 +544,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             <div className={styles.InfoWrapperRight}>
               <div className={styles.ContactDetails}>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                  <div className={styles.Configure} data-testid="dropdownIcon">
-                    <DropdownIcon onClick={handleConfigureIconClick} />
+                  <div
+                    className={styles.Configure}
+                    data-testid="dropdownIcon"
+                    onClick={handleConfigureIconClick}
+                    onKeyPress={handleConfigureIconClick}
+                    aria-hidden
+                  >
+                    <DropdownIcon />
                   </div>
                 </ClickAwayListener>
                 <Typography
