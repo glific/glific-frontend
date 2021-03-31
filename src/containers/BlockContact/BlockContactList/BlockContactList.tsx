@@ -11,6 +11,7 @@ import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
 import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+import { addLogs } from '../../../common/utils';
 
 export interface BlockContactListProps {}
 
@@ -76,13 +77,17 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   };
 
   const handleUnblock = () => {
-    unblockContact({
-      variables: {
-        id: contactId,
-        input: {
-          status: 'VALID',
-        },
+    const variables = {
+      id: contactId,
+      input: {
+        status: 'VALID',
       },
+    };
+
+    addLogs(`Unblock contact-${contactId}`, variables);
+
+    unblockContact({
+      variables,
     });
   };
 

@@ -27,6 +27,7 @@ import {
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { setErrorMessage } from '../../../common/notification';
 import { randomIntFromInterval } from '../../../common/utils';
+import { addLogs } from '../../../common/utils';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
@@ -215,16 +216,23 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // it to the cached conversations
       // let's also skip fetching contact when we trigger this via group subscriptions
       if (!conversationFound && newMessage && !newMessage.groupId) {
-        getContactQuery({
-          variables: {
-            contactOpts: {
-              limit: DEFAULT_CONTACT_LIMIT,
-            },
-            filter: { id: contactId },
-            messageOpts: {
-              limit: DEFAULT_MESSAGE_LIMIT,
-            },
+        const variables = {
+          contactOpts: {
+            limit: DEFAULT_CONTACT_LIMIT,
           },
+          filter: { id: contactId },
+          messageOpts: {
+            limit: DEFAULT_MESSAGE_LIMIT,
+          },
+        };
+
+        addLogs(
+          `contact is not cached, so we need to fetch the conversations and add to cache`,
+          variables
+        );
+
+        getContactQuery({
+          variables,
         });
 
         return cachedConversations;
@@ -384,6 +392,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   if (triggerRefetch) {
     // lets refetch here
     if (refetch) {
+      addLogs('refetch for subscription', queryVariables);
       refetch();
     }
     setTriggerRefetch(false);
