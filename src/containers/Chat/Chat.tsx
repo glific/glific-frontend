@@ -127,48 +127,57 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
         <div className={`${styles.ChatConversations} ChatConversations`}>
           <Toolbar className={styles.ToolBar}>
             <div className={styles.TabContainer}>
-              <div className={styles.Title}>
-                <div className={styles.IconBackground}>
-                  <img
-                    src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
-                    height="24"
-                    className={styles.Icon}
-                    alt="Conversation"
-                  />
+              <Link to="/chat">
+                <div className={styles.Title}>
+                  <div className={styles.IconBackground}>
+                    <img
+                      src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
+                      height="24"
+                      className={styles.Icon}
+                      alt="Conversation"
+                    />
+                  </div>
+                  <Typography
+                    className={`${styles.TitleText} ${contactSelectedClass}`}
+                    variant="h6"
+                  >
+                    Contacts
+                  </Typography>
                 </div>
-                <Typography className={`${styles.TitleText} ${contactSelectedClass}`} variant="h6">
-                  <Link to="/chat">Contacts</Link>
-                </Typography>
-              </div>
-              <div className={styles.Title}>
-                <div className={styles.IconBackground}>
-                  <img
-                    src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
-                    height="24"
-                    className={styles.Icon}
-                    alt="Conversation"
-                  />
+              </Link>
+              <Link to="/chat/collection">
+                <div className={styles.Title}>
+                  <div className={styles.IconBackground}>
+                    <img
+                      src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
+                      height="24"
+                      className={styles.Icon}
+                      alt="Conversation"
+                    />
+                  </div>
+                  <Typography
+                    className={`${styles.TitleText} ${collectionSelectedClass}`}
+                    variant="h6"
+                  >
+                    Collections
+                  </Typography>
                 </div>
-                <Typography
-                  className={`${styles.TitleText} ${collectionSelectedClass}`}
-                  variant="h6"
-                >
-                  <Link to="/chat/collection">Collections</Link>
-                </Typography>
-              </div>
-              <div className={styles.Title}>
-                <div className={styles.IconBackground}>
-                  <img
-                    src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
-                    height="24"
-                    className={styles.Icon}
-                    alt="Conversation"
-                  />
+              </Link>
+              <Link to="/chat/saved-searches">
+                <div className={styles.Title}>
+                  <div className={styles.IconBackground}>
+                    <img
+                      src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
+                      height="24"
+                      className={styles.Icon}
+                      alt="Conversation"
+                    />
+                  </div>
+                  <Typography className={`${styles.TitleText} ${savedSearchClass}`} variant="h6">
+                    Saved searches
+                  </Typography>
                 </div>
-                <Typography className={`${styles.TitleText} ${savedSearchClass}`} variant="h6">
-                  <Link to="/chat/saved-searches">Saved searches</Link>
-                </Typography>
-              </div>
+              </Link>
             </div>
           </Toolbar>
 

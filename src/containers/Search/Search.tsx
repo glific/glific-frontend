@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 import styles from './Search.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as Searchicon } from '../../assets/images/icons/Search/Selected.svg';
+import { ReactComponent as SearchIcon } from '../../assets/images/icons/Search/SelectedEdit.svg';
 import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
 import { GET_SEARCH, SEARCH_LIST_QUERY } from '../../graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
@@ -38,7 +38,7 @@ let FormSchema = Yup.object().shape({});
 
 const dialogMessage = "You won't be able to use this search again.";
 
-const searchIcon = <Searchicon className={styles.Searchicon} />;
+const searchIcon = <SearchIcon className={styles.SearchIcon} />;
 
 const queries = {
   getItemQuery: GET_SEARCH,

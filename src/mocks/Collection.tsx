@@ -4,8 +4,10 @@ import {
   GET_COLLECTION,
   GET_COLLECTIONS,
   GET_COLLECTIONS_COUNT,
+  GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
 } from '../graphql/queries/Collection';
+import { UPDATE_COLLECTION_CONTACTS } from '../graphql/mutations/Collection';
 
 export const getCollectionQuery = {
   request: {
@@ -74,7 +76,7 @@ export const getCollectionsQuery = [
 export const getCollectionUsersQuery = {
   request: {
     query: GET_COLLECTION_USERS,
-    variables: { id: 1 },
+    variables: { id: '1' },
   },
   result: {
     data: {
@@ -148,9 +150,37 @@ export const getCollectionContactsQuery = {
             {
               id: '1',
               name: 'Glific User',
+              phone: '987654321',
             },
           ],
         },
+      },
+    },
+  },
+};
+
+export const getCollectionInfo = {
+  request: {
+    query: GET_COLLECTION_INFO,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      groupInfo: '{"total":3,"session_and_hsm":1,"session":1,"none":1}',
+    },
+  },
+};
+
+export const updateCollectionContactsQuery = {
+  request: {
+    query: UPDATE_COLLECTION_CONTACTS,
+    variables: { input: { addContactIds: [], groupId: '1', deleteContactIds: ['1'] } },
+  },
+  result: {
+    data: {
+      updateGroupContacts: {
+        groupContacts: [],
+        numberDeleted: 1,
       },
     },
   },

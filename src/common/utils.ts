@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FLOW_EDITOR_API } from '../config';
 import setLogs from '../config/logs';
+import { setNotification } from './notification';
 
 export const getObject = (arr: any, data: any) => {
   const result: any = [];
@@ -45,3 +46,17 @@ export { validateMediaMethod as validateMedia };
 // function to get the random number with min and max
 export const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
+
+export const copyToClipboardMethod = (client: any, text: string) => {
+  if (text) {
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        setNotification(client, 'Copied to clipboard');
+      });
+    } catch (err) {
+      setNotification(client, 'Sorry, cannot copy content over insecure connection', 'warning');
+    }
+  }
+};
+
+export { copyToClipboardMethod as copyToClipboard };

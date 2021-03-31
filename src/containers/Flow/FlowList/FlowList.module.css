@@ -55,6 +55,11 @@
   text-decoration: none;
 }
 
+.Notifications {
+  composes: Webhook;
+  left: 450px;
+}
+
 .Webhook svg {
   margin-right: 8px;
 }
