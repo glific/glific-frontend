@@ -1,19 +1,27 @@
 import { useLazyQuery } from '@apollo/client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CollectionInformation.module.css';
 import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/queries/Collection';
+import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface CollectionInformationProps {
   collectionId: any;
   staff?: boolean;
+  displayPopup?: boolean;
+  setDisplayPopup?: any;
+  handleSendMessage?: any;
 }
 
-let display: any = { 'In-session': 0, 'Session expired': 0, 'Opted-out': 0 };
+const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
 
 export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   collectionId,
   staff = true,
+  displayPopup,
+  setDisplayPopup,
+  handleSendMessage,
 }) => {
+  const [display, setDisplay] = useState(displayObj);
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
 
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -24,24 +32,30 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
     if (collectionId) {
       getCollectionInfo({ variables: { id: collectionId } });
       selectedUsers({ variables: { id: collectionId } });
+      // reset to zero on collection change
+      setDisplay({ 'Session messages': 0, 'Only templates': 0, 'No messages': 0 });
     }
-    // reset to zero on collection change
-    display = { 'In-session': 0, 'Session expired': 0, 'Opted-out': 0 };
   }, [collectionId]);
 
-  if (collectionInfo) {
-    const info = JSON.parse(collectionInfo.groupInfo);
-
-    Object.keys(info).forEach((key) => {
-      if (key === 'session_and_hsm') {
-        display['In-session'] = info[key];
-      } else if (key === 'session') {
-        display['Session expired'] = info[key];
-      } else if (key === 'none') {
-        display['Opted-out'] = info[key];
-      }
-    });
-  }
+  useEffect(() => {
+    if (collectionInfo) {
+      const info = JSON.parse(collectionInfo.groupInfo);
+      const displayCopy = { ...displayObj };
+      Object.keys(info).forEach((key) => {
+        if (key === 'session_and_hsm') {
+          displayCopy['Session messages'] += info[key];
+          displayCopy['Only templates'] += info[key];
+        } else if (key === 'session') {
+          displayCopy['Session messages'] += info[key];
+        } else if (key === 'hsm') {
+          displayCopy['Only templates'] += info[key];
+        } else if (key === 'none') {
+          displayCopy['No messages'] = info[key];
+        }
+      });
+      setDisplay(displayCopy);
+    }
+  }, [collectionInfo]);
 
   let assignedToCollection: any = [];
   if (collectionUsers) {
@@ -57,9 +71,44 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
     }
   }
 
+  // display collection contact status before sending message to a collection
+  if (displayPopup) {
+    const dialogBox = (
+      <DialogBox
+        title="Contact status"
+        handleOk={() => handleSendMessage()}
+        handleCancel={() => setDisplayPopup()}
+        buttonOk="Ok, Send"
+        alignButtons="center"
+      >
+        <div className={styles.DialogBox} data-testid="description">
+          <div className={styles.Message}>
+            Custom messages will not be sent to the opted out/session expired contacts.
+          </div>
+          <div className={styles.Message}>
+            Only HSM template can be sent to the session expired contacts.{' '}
+          </div>
+          <div className={styles.Message}>
+            Total Contacts: {collectionInfo ? JSON.parse(collectionInfo.groupInfo).total : 0}
+            <div>
+              Contacts qualified for-
+              {Object.keys(display).map((data: any) => (
+                <span key={data} className={styles.Count}>
+                  {data}: <span> {display[data]}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </DialogBox>
+    );
+    return dialogBox;
+  }
+
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
+        <div>Contacts qualified for-</div>
         {Object.keys(display).map((data: any) => (
           <div key={data} className={styles.SessionInfo}>
             {data}: <span className={styles.SessionCount}> {display[data]}</span>

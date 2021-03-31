@@ -37,6 +37,8 @@ export const FILTER_FLOW = gql`
       name
       uuid
       keywords
+      lastChangedAt
+      lastPublishedAt
       ignoreKeywords
       updatedAt
     }
