@@ -103,3 +103,5 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     />
   );
 };
+
+export default HSM;
