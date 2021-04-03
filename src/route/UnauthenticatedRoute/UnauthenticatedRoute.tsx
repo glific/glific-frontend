@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
+
 export const UnauthenticatedRoute: React.SFC = () => {
   const Login = lazy(() => import('../../containers/Auth/Login/Login'));
   const Registration = lazy(() => import('../../containers/Auth/Registration/Registration'));
@@ -13,7 +15,7 @@ export const UnauthenticatedRoute: React.SFC = () => {
   );
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={Loading}>
       <Switch>
         <Route path="/login" exact component={Login} />
         <Route path="/registration" exact component={Registration} />
