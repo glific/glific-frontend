@@ -1,7 +1,5 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
-
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 export const UnauthenticatedRoute: React.SFC = () => {
   const Login = lazy(() => import('../../containers/Auth/Login/Login'));
@@ -15,16 +13,14 @@ export const UnauthenticatedRoute: React.SFC = () => {
   );
 
   return (
-    <Suspense fallback={Loading}>
-      <Switch>
-        <Route path="/login" exact component={Login} />
-        <Route path="/registration" exact component={Registration} />
-        <Route path="/confirmotp" exact component={ConfirmOTP} />
-        <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
-        <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
-        <Route path="/" render={() => <Redirect to="/logout/user" />} />
-      </Switch>
-    </Suspense>
+    <Switch>
+      <Route path="/login" exact component={Login} />
+      <Route path="/registration" exact component={Registration} />
+      <Route path="/confirmotp" exact component={ConfirmOTP} />
+      <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
+      <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
+      <Route path="/" render={() => <Redirect to="/logout/user" />} />
+    </Switch>
   );
 };
 
