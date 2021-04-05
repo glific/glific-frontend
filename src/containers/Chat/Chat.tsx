@@ -87,6 +87,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
 
   let chatInterface: any;
   let listingContent;
+  let highlight: string = '';
 
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
@@ -99,6 +100,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
       // set class for collections tab
       collectionSelectedClass = `${styles.SelectedTab}`;
+      highlight = 'collections';
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
@@ -108,12 +110,21 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
 
       // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
+      highlight = 'contacts';
     } else if (savedSearches) {
       // set class for saved search
       savedSearchClass = `${styles.SelectedTab}`;
       // for saved search
       listingContent = <SavedSearches />;
+      highlight = 'saved-searches';
     }
+
+    const HighLighter = (isDark: boolean) => {
+      if (isDark) {
+        return <div className={`${styles.DarkHighLighter}`} />;
+      }
+      return <div className={`${styles.LightHighLighter}`} />;
+    };
 
     chatInterface = (
       <>
@@ -127,57 +138,75 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
         <div className={`${styles.ChatConversations} ChatConversations`}>
           <Toolbar className={styles.ToolBar}>
             <div className={styles.TabContainer}>
-              <Link to="/chat">
-                <div className={styles.Title}>
-                  <div className={styles.IconBackground}>
-                    <img
-                      src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
-                      height="24"
-                      className={styles.Icon}
-                      alt="Conversation"
-                    />
+              <div>
+                <Link to="/chat">
+                  <div className={styles.Title}>
+                    <div className={styles.IconBackground}>
+                      <img
+                        src={contactSelectedClass ? selectedChatIcon : unselectedChatIcon}
+                        height="24"
+                        className={styles.Icon}
+                        alt="Conversation"
+                      />
+                    </div>
+                    <div>
+                      <Typography
+                        className={`${styles.TitleText} ${contactSelectedClass}`}
+                        variant="h6"
+                      >
+                        Contacts
+                      </Typography>
+                    </div>
                   </div>
-                  <Typography
-                    className={`${styles.TitleText} ${contactSelectedClass}`}
-                    variant="h6"
-                  >
-                    Contacts
-                  </Typography>
-                </div>
-              </Link>
-              <Link to="/chat/collection">
-                <div className={styles.Title}>
-                  <div className={styles.IconBackground}>
-                    <img
-                      src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
-                      height="24"
-                      className={styles.Icon}
-                      alt="Conversation"
-                    />
+                </Link>
+                {HighLighter(highlight === 'contacts')}
+              </div>
+              <div>
+                <Link to="/chat/collection">
+                  <div className={styles.Title}>
+                    <div className={styles.IconBackground}>
+                      <img
+                        src={collectionSelectedClass ? selectedCollectionIcon : collectionIcon}
+                        height="24"
+                        className={styles.Icon}
+                        alt="Conversation"
+                      />
+                    </div>
+                    <div>
+                      <Typography
+                        className={`${styles.TitleText} ${collectionSelectedClass}`}
+                        variant="h6"
+                      >
+                        Collections
+                      </Typography>
+                    </div>
                   </div>
-                  <Typography
-                    className={`${styles.TitleText} ${collectionSelectedClass}`}
-                    variant="h6"
-                  >
-                    Collections
-                  </Typography>
-                </div>
-              </Link>
-              <Link to="/chat/saved-searches">
-                <div className={styles.Title}>
-                  <div className={styles.IconBackground}>
-                    <img
-                      src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
-                      height="24"
-                      className={styles.Icon}
-                      alt="Conversation"
-                    />
+                </Link>
+                {HighLighter(highlight === 'collections')}
+              </div>
+              <div>
+                <Link to="/chat/saved-searches">
+                  <div className={styles.Title}>
+                    <div className={styles.IconBackground}>
+                      <img
+                        src={savedSearchClass ? selectedSavedSearchIcon : savedSearchIcon}
+                        height="24"
+                        className={styles.Icon}
+                        alt="Conversation"
+                      />
+                    </div>
+                    <div>
+                      <Typography
+                        className={`${styles.TitleText} ${savedSearchClass}`}
+                        variant="h6"
+                      >
+                        Saved searches
+                      </Typography>
+                    </div>
                   </div>
-                  <Typography className={`${styles.TitleText} ${savedSearchClass}`} variant="h6">
-                    Saved searches
-                  </Typography>
-                </div>
-              </Link>
+                </Link>
+                {HighLighter(highlight === 'saved-searches')}
+              </div>
             </div>
           </Toolbar>
 

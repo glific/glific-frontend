@@ -40,3 +40,7 @@
 .Paper > ul > li {
   color: #073f24;
 }
+
+.Elevation1 {
+  box-shadow: unset !important;
+}
