@@ -7,12 +7,11 @@ import { Button } from '../../../components/UI/Form/Button/Button';
 
 import { CREATE_BILLING_SUBSCRIPTION } from '../../../graphql/mutations/Billing';
 import styles from './Billing.module.css';
+import { STRIPE_PUBLISH_KEY } from '../../../config';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(
-  'pk_test_51IbNAbSECUDhuYx7ZcdiMXUgwHt8H6fBZnbhkAn3ss1e7Ta4jCqjjkl4nJb0sTdVc33r7FnhPU2DLF3a0nL39yGf00VXxXueSw'
-);
+const stripePromise = loadStripe(STRIPE_PUBLISH_KEY);
 
 export const Billing = () => (
   <Elements stripe={stripePromise}>
