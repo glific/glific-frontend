@@ -35,6 +35,7 @@ import Loading from '../../components/UI/Layout/Loading/Loading';
 import { TriggerList } from '../../containers/Trigger/TriggerList/TriggerList';
 import { Trigger } from '../../containers/Trigger/Trigger';
 import { NotificationList } from '../../containers/NotificationList/NotificationList';
+import { Billing } from '../../containers/SettingList/Billing/Billing';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -56,6 +57,7 @@ const routeStaff = (
         <Chat collectionId={match.params.collectionId} />
       )}
     />
+
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
     <Route path="/user-profile" exact component={UserProfile} />
@@ -81,7 +83,7 @@ const routeAdmin = (
     <Route path="/collection/add" exact component={Collection} />
     <Route path="/collection/:id/edit" exact component={Collection} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
-
+    <Route path="/billing" exact component={Billing} />
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
     <Route path="/search" exact component={SearchList} />

@@ -23,6 +23,8 @@
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.11.3",
     "@nyaruka/flow-editor": "glific/floweditor#v1.11.9.8",
+    "@stripe/react-stripe-js": "^1.4.0",
+    "@stripe/stripe-js": "^1.13.2",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",

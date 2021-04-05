@@ -1,0 +1,14 @@
+.Card {
+  border: 1px solid rgba(40, 95, 43, 0.514);
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.Button {
+  margin-top: 15px;
+}
+
+.Description {
+  padding: 16px;
+  margin-bottom: 20px;
+}
