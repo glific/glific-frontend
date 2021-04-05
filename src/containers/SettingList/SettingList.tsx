@@ -18,6 +18,11 @@ const List = [
     shortcode: 'organization',
     description: 'Manage organisation name, supported languages, hours of operations.',
   },
+  {
+    name: 'Billing',
+    shortcode: 'billing',
+    description: 'Manage your billings here',
+  },
 ];
 
 const heading = (

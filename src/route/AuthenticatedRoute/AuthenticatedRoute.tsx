@@ -83,7 +83,7 @@ const routeAdmin = (
     <Route path="/collection/add" exact component={Collection} />
     <Route path="/collection/:id/edit" exact component={Collection} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
-    <Route path="/billing" exact component={Billing} />
+
     <Route path="/flow/configure/:uuid" exact component={FlowEditor} />
 
     <Route path="/search" exact component={SearchList} />
@@ -107,6 +107,7 @@ const routeAdmin = (
 
     <Route path="/settings" exact component={SettingList} />
     <Route path="/settings/organization" exact component={Organisation} />
+    <Route path="/settings/billing" exact component={Billing} />
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
