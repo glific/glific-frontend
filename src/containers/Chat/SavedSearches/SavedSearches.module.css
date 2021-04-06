@@ -33,3 +33,17 @@
   margin-top: -3px;
   padding-right: 8px;
 }
+
+.Paper {
+  box-shadow: unset !important;
+  padding-left: 8px;
+}
+
+.Paper > ul > li[data-focus='true'] {
+  background-color: #edf6f2 !important;
+}
+
+.Paper > ul > li {
+  color: #073f24 !important;
+  border-radius: 20px;
+}

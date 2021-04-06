@@ -59,6 +59,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
       <div className={styles.SavedSearchesAutocomplete}>
         <AutoComplete
           options={options}
+          classes={{ paper: styles.Paper, listbox: styles.Listbox }}
           optionLabel="shortcode"
           field={{}}
           form={{ setFieldValue: changeValue }}
@@ -68,7 +69,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
           }}
           multiple={false}
           openOptions={Open}
-          listBoxProps={{ style: { maxHeight: '78vh' } }}
+          listBoxProps={{ style: { maxHeight: 'calc(100vh - 220px)' } }}
         />
       </div>
       {savedSearch.id !== 0 ? (
