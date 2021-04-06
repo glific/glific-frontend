@@ -214,7 +214,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       // let's also skip fetching contact when we trigger this via group subscriptions
-      if (!conversationFound && newMessage && !newMessage.groupId) {
+      if (!conversationFound && newMessage && !newMessage.groupId && !triggerRefetch) {
         const variables = {
           contactOpts: {
             limit: DEFAULT_CONTACT_LIMIT,
@@ -226,7 +226,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         };
 
         addLogs(
-          `contact is not cached, so we need to fetch the conversations and add to cache`,
+          `${action}-contact is not cached, so we need to fetch the conversations and add to cache`,
           variables
         );
 
