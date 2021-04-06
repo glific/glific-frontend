@@ -1,6 +1,8 @@
+import i18n from 'i18next';
+
 export const sideDrawerMenus = [
   {
-    title: 'Chats',
+    title: i18n.t('menu.chats'),
     path: '/chat',
     icon: 'chat',
   },
