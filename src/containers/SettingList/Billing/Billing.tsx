@@ -36,7 +36,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       setNotification(client, 'Subscribed successfully');
     },
     onError: (error) => {
-      console.log(error);
+      setNotification(client, error.message, 'warning');
     },
   });
 
