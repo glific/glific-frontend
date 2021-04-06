@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useMutation } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
-import { Card } from '@material-ui/core';
-import { Button } from '../../../components/UI/Form/Button/Button';
 
+import { Button } from '../../../components/UI/Form/Button/Button';
 import { CREATE_BILLING_SUBSCRIPTION } from '../../../graphql/mutations/Billing';
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
+import { setNotification } from '../../../common/notification';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -24,19 +24,27 @@ export interface BillingProps {}
 export const BillingForm: React.FC<BillingProps> = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const client = useApolloClient();
+  const [loading, setLoading] = useState(false);
+  const [disable, setDisable] = useState(false);
+  const [cardError, setCardError] = useState<any>('');
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
-    onCompleted: (data) => {
-      console.log(data);
+    onCompleted: () => {
+      setDisable(true);
+      setLoading(false);
+      setNotification(client, 'Subscribed successfully');
     },
-    onError: (data) => {
-      console.log(data);
+    onError: (error) => {
+      console.log(error);
     },
   });
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
     event.preventDefault();
+
+    setLoading(true);
 
     if (!stripe || !elements) {
       // Stripe.js has not loaded yet. Make sure to disable
@@ -57,6 +65,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
     if (error) {
       console.log('[error]', error);
+      setLoading(false);
     } else if (paymentMethod) {
       createSubscription({
         variables: {
@@ -72,7 +81,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     <form onSubmit={handleSubmit} style={{ width: '500px', marginLeft: '24px', marginTop: '10px' }}>
       <h1>Billing</h1>
 
-      <Card className={styles.Description}>
+      <div className={styles.Description}>
         You will be charged a monthly amount of R 7,500+GST for an exchange of upto 250K messages
         and 10 staff members. For higher volumes, the monthly price will be a percentage of the
         messaging costs, such as:
@@ -85,9 +94,24 @@ export const BillingForm: React.FC<BillingProps> = () => {
             1,500 ($22) for every 10 users
           </li>
         </ul>
-      </Card>
-      <CardElement className={styles.Card} />
-      <Button variant="contained" color="primary" type="submit" className={styles.Button}>
+      </div>
+      <CardElement
+        className={styles.Card}
+        onChange={(e) => {
+          setCardError(e.error?.message);
+        }}
+      />
+      <div>
+        <small>{cardError}</small>
+      </div>
+      <Button
+        variant="contained"
+        color="primary"
+        type="submit"
+        className={styles.Button}
+        disabled={!stripe || disable}
+        loading={loading}
+      >
         Subscribe
       </Button>
     </form>

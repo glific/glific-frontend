@@ -9,6 +9,9 @@
 }
 
 .Description {
+  border: 2px solid #1bd731;
+  border-radius: 10px;
+  background-color: #ebfeec;
   padding: 16px;
   margin-bottom: 20px;
 }
