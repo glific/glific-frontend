@@ -7,7 +7,7 @@ export const sideDrawerMenus = [
     icon: 'chat',
   },
   {
-    title: 'Tags',
+    title: i18n.t('menu.tags'),
     path: '/tag',
     icon: 'tag',
   },
