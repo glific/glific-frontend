@@ -1,7 +1,6 @@
 .Image {
   margin: 5px 0px;
   max-width: 280px;
-  min-width: 170px;
   min-height: unset;
   max-height: 200px;
   cursor: pointer;
