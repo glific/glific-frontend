@@ -268,3 +268,5 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     </>
   );
 };
+
+export default StaffManagement;

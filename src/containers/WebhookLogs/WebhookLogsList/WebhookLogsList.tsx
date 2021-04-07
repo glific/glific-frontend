@@ -201,3 +201,5 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
     </>
   );
 };
+
+export default WebhookLogsList;

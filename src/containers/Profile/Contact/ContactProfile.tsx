@@ -117,3 +117,5 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     </div>
   );
 };
+
+export default ContactProfile;

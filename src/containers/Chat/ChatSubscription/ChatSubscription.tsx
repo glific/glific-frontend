@@ -412,3 +412,5 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   return null;
 };
+
+export default ChatSubscription;

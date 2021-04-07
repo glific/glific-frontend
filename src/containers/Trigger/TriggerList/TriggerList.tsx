@@ -100,3 +100,5 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
     />
   );
 };
+
+export default TriggerList;

@@ -399,3 +399,5 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     />
   );
 };
+
+export default Search;

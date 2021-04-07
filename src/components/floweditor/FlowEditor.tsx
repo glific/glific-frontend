@@ -400,3 +400,5 @@ export const FlowEditor = (props: FlowEditorProps) => {
     </>
   );
 };
+
+export default FlowEditor;

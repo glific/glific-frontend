@@ -8,3 +8,5 @@ export const HSMPage: React.SFC<HSMPageProps> = () => (
     <HSMList />
   </div>
 );
+
+export default HSMPage;
