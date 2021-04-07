@@ -3,20 +3,6 @@
   height: 29px;
 }
 
-.HSMTemplate > div:nth-child(2n + 1) {
-  display: inline-block !important;
-  width: 48% !important;
-  vertical-align: top !important;
-  margin-left: 2% !important;
-}
-
-.HSMTemplate > div:nth-child(2n) {
-  display: inline-block;
-  width: 48%;
-  vertical-align: top;
-  margin-right: 2%;
-}
-
 .HSMTemplate {
   width: 90% !important;
 }

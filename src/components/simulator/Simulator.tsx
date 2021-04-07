@@ -37,6 +37,7 @@ export interface SimulatorProps {
   simulatorIcon?: boolean;
   message?: any;
   flowSimulator?: any;
+  isPreviewMessage?: boolean;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -45,6 +46,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   simulatorIcon = true,
   message,
   flowSimulator,
+  isPreviewMessage,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const variables = { organizationId: getUserSession('organizationId') };
@@ -138,6 +140,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const sendMessage = () => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+    console.log(sendMessageText);
     axios({
       method: 'POST',
       url: GUPSHUP_CALLBACK_URL,
@@ -166,9 +169,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
     });
     setInputMessage('');
   };
-
+  console.log(messages);
   useEffect(() => {
     if (message !== undefined && data) {
+      console.log('useeffect method');
       sendMessage();
     }
   }, [message, data]);
@@ -182,6 +186,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     },
     [messages]
   );
+  console.log('preview', isPreviewMessage);
 
   const simulator = (
     <Draggable>

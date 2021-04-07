@@ -8,6 +8,7 @@ import { AutoComplete } from '../../../../components/UI/Form/AutoComplete/AutoCo
 import { Input } from '../../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
+import { Simulator } from '../../../../components/simulator/Simulator';
 
 const getFields = (match: { params: { id: any } }, categoryOpns: any, validateShortcode: any) => [
   {
@@ -89,17 +90,19 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
 
     return error;
   };
-
   return (
-    <Template
-      match={match}
-      listItemName="HSM Template"
-      redirectionLink="template"
-      icon={templateIcon}
-      defaultAttribute={defaultAttribute}
-      formField={getFields(match, categoryOpns, validateShortcode)}
-      getSessionTemplatesCallBack={getSessionTemplates}
-      customStyle={styles.HSMTemplate}
-    />
+    <div>
+      <Template
+        match={match}
+        listItemName="HSM Template"
+        redirectionLink="template"
+        icon={templateIcon}
+        defaultAttribute={defaultAttribute}
+        formField={getFields(match, categoryOpns, validateShortcode)}
+        getSessionTemplatesCallBack={getSessionTemplates}
+        customStyle={styles.HSMTemplate}
+      />
+      <Simulator setSimulatorId={0} showSimulator isPreviewMessage message="hello" />
+    </div>
   );
 };
