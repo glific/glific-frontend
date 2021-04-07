@@ -48,8 +48,6 @@ export const BillingForm: React.FC<BillingProps> = () => {
     return <Loading />;
   }
 
-  console.log(data);
-
   if (data && data.getOrganizationBilling.billing.stripeSubscriptionId) {
     return <div>You are already subscribed</div>;
   }
