@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
+import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/UI/Form/Button/Button';
 import { CREATE_BILLING_SUBSCRIPTION } from '../../../graphql/mutations/Billing';
@@ -10,6 +11,7 @@ import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
 import { GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -31,10 +33,12 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [disable, setDisable] = useState(false);
   const [cardError, setCardError] = useState<any>('');
 
-  const { data, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
+  const { loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
-    onCompleted: () => {
+    onCompleted: (data) => {
+      const result = JSON.parse(data.createBillingSubscription.subscription);
+      console.log(result);
       setDisable(true);
       setLoading(false);
       setNotification(client, 'Subscribed successfully');
@@ -48,9 +52,9 @@ export const BillingForm: React.FC<BillingProps> = () => {
     return <Loading />;
   }
 
-  if (data && data.getOrganizationBilling.billing.stripeSubscriptionId) {
-    return <div>You are already subscribed</div>;
-  }
+  // if (data && data.getOrganizationBilling.billing.stripeSubscriptionId) {
+  //   return <div>You are already subscribed</div>;
+  // }
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
@@ -89,11 +93,27 @@ export const BillingForm: React.FC<BillingProps> = () => {
     }
   };
 
+  const backLink = (
+    <div className={styles.BackLink}>
+      <Link to="/settings">
+        <BackIcon />
+        Back to settings
+      </Link>
+    </div>
+  );
+
   return (
     <form onSubmit={handleSubmit} style={{ width: '500px', marginLeft: '24px', marginTop: '10px' }}>
       <h1>Billing</h1>
 
+      {backLink}
+
       <div className={styles.Description}>
+        <div className={styles.Heading}>
+          <div>Prices</div>
+          <div>Messages</div>
+          <div>Users</div>
+        </div>
         You will be charged a monthly amount of R 7,500+GST for an exchange of upto 250K messages
         and 10 staff members. For higher volumes, the monthly price will be a percentage of the
         messaging costs, such as:
