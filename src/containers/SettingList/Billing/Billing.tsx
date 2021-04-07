@@ -115,17 +115,23 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>Users</div>
         </div>
         <div className={styles.Pricing}>
-          <div>INR 7,500+GST</div>
+          <div>
+            <span>INR 7,500</span>+GST
+          </div>
           <div>1 - 250k</div>
           <div>1 - 10</div>
         </div>
         <div className={styles.Pricing}>
-          <div>INR 15,500+GST</div>
+          <div>
+            <span>INR 15,500</span>+GST
+          </div>
           <div>250 - 500K </div>
           <div>10 - 15</div>
         </div>
         <div className={styles.Pricing}>
-          <div>INR 22,500+GST</div>
+          <div>
+            <span>INR 22,500</span>+GST
+          </div>
           <div>500K -1M</div>
           <div>15 - 20</div>
         </div>
@@ -140,8 +146,11 @@ export const BillingForm: React.FC<BillingProps> = () => {
           setCardError(e.error?.message);
         }}
       />
-      <div>
+      <div className={styles.Error}>
         <small>{cardError}</small>
+      </div>
+      <div className={styles.Helper}>
+        <small>Once subscribed you will be charged on basis of your usage automatically</small>
       </div>
       <Button
         variant="contained"

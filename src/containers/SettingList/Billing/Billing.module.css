@@ -1,5 +1,5 @@
 .Card {
-  border: 1px solid rgba(40, 95, 43, 0.514);
+  border: 2px solid #979797;
   padding: 15px;
   border-radius: 15px;
 }
@@ -42,18 +42,33 @@
   display: flex;
 }
 .Pricing div {
-  width: 150px;
+  width: 200px;
   color: #073f24;
 }
 
+.Pricing span {
+  font-size: 20px;
+}
+
 .Heading div {
-  width: 150px;
+  width: 200px;
   color: #979797;
   font-weight: 500;
 }
 
 .Footer {
+  color: #93a29b;
   padding: 16px;
   font-size: 12px;
   border-top: 1px solid #d8d8d8;
+}
+
+.Helper {
+  margin-left: 12px;
+  color: #93a29b;
+}
+
+.Error {
+  margin-left: 12px;
+  color: #eb1c26;
 }
