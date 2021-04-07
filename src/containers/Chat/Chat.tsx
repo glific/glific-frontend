@@ -198,3 +198,5 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
     </Paper>
   );
 };
+
+export default Chat;

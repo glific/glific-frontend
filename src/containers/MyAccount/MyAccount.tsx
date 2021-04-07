@@ -220,3 +220,5 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     </div>
   );
 };
+
+export default MyAccount;

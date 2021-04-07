@@ -69,3 +69,5 @@ export const ResetPasswordPhone: React.SFC<ResetPasswordPhoneProps> = () => {
     />
   );
 };
+
+export default ResetPasswordPhone;

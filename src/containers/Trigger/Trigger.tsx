@@ -280,3 +280,5 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     />
   );
 };
+
+export default Trigger;

@@ -43,3 +43,5 @@ export const CollectionContact: React.FC<CollectionContactProps> = (
     </div>
   );
 };
+
+export default CollectionContact;

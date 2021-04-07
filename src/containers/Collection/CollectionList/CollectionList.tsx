@@ -321,3 +321,5 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     </>
   );
 };
+
+export default CollectionList;

@@ -109,8 +109,12 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         return null;
       }
 
+      let fetchMissingContact = false;
       // let's record message sent and received subscriptions
       if (action === 'SENT' || action === 'RECEIVED') {
+        // set fetch missing contact flag
+        fetchMissingContact = true;
+
         // build the request array
         recordRequests();
 
@@ -211,10 +215,19 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
           return null;
         });
       }
+
+      // we should fetch missing contact only when we receive message subscriptions
       // this means contact is not cached, so we need to fetch the conversations and add
       // it to the cached conversations
       // let's also skip fetching contact when we trigger this via group subscriptions
-      if (!conversationFound && newMessage && !newMessage.groupId) {
+      // let's skip fetch contact when we switch to refetch mode from subscription
+      if (
+        !conversationFound &&
+        newMessage &&
+        !newMessage.groupId &&
+        fetchMissingContact &&
+        !triggerRefetch
+      ) {
         const variables = {
           contactOpts: {
             limit: DEFAULT_CONTACT_LIMIT,
@@ -226,7 +239,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
         };
 
         addLogs(
-          `contact is not cached, so we need to fetch the conversations and add to cache`,
+          `${action}-contact is not cached, so we need to fetch the conversations and add to cache`,
           variables
         );
 
@@ -399,3 +412,5 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
 
   return null;
 };
+
+export default ChatSubscription;

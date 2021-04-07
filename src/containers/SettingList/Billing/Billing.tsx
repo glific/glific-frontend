@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 
 import { Button } from '../../../components/UI/Form/Button/Button';
@@ -8,6 +8,8 @@ import { CREATE_BILLING_SUBSCRIPTION } from '../../../graphql/mutations/Billing'
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
+import { GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -29,6 +31,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [disable, setDisable] = useState(false);
   const [cardError, setCardError] = useState<any>('');
 
+  const { data, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
+
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
     onCompleted: () => {
       setDisable(true);
@@ -39,6 +43,16 @@ export const BillingForm: React.FC<BillingProps> = () => {
       setNotification(client, error.message, 'warning');
     },
   });
+
+  if (billLoading) {
+    return <Loading />;
+  }
+
+  console.log(data);
+
+  if (data && data.getOrganizationBilling.billing.stripeSubscriptionId) {
+    return <div>You are already subscribed</div>;
+  }
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
@@ -117,3 +131,5 @@ export const BillingForm: React.FC<BillingProps> = () => {
     </form>
   );
 };
+
+export default Billing;
