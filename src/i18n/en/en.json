@@ -12,5 +12,7 @@
   "myprofile": "My Profile",
   "myaccount": "My Account",
   "logout": "Logout",
-  "helpdocuments": "Help documents"
+  "helpdocuments": "Help documents",
+  "profile": "Profile",
+  "settings": "Settings"
 }

@@ -180,7 +180,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   const settingMenus = settingMenu ? (
     <div>
-      <Tooltip title="Settings" placement="top">
+      <Tooltip title={t('settings')} placement="top">
         <Link to="/settings">
           <IconButton data-testid="settingsMenu">
             <img
@@ -265,7 +265,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             >
               <Menu menus={staffManagementMenus}>
                 <IconButton data-testid="staffManagementMenu">
-                  <Tooltip title="Staff Management" placement="top">
+                  <Tooltip title={t('staffmanagement')} placement="top">
                     <img
                       src={
                         ['/collection', '/staff-management', '/blocked-contacts'].includes(
@@ -284,7 +284,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             <div>
               <Menu menus={userAccountMenus}>
                 <IconButton data-testid="profileMenu">
-                  <Tooltip title="Profile" placement="top">
+                  <Tooltip title={t('profile')} placement="top">
                     <img
                       src={
                         location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
