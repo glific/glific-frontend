@@ -6,10 +6,11 @@ import { Layout } from '../../components/UI/Layout/Layout';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { getUserRole } from '../../context/role';
 import { useToast } from '../../services/ToastService';
+import { Chat } from '../../containers/Chat/Chat';
+import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
-const Chat = lazy(() => import('../../containers/Chat/Chat'));
 const TagPage = lazy(() => import('../../components/pages/TagPage/TagPage'));
 const Tag = lazy(() => import('../../containers/Tag/Tag'));
 const SpeedSendPage = lazy(
@@ -43,9 +44,6 @@ const BlockContactList = lazy(
   () => import('../../containers/BlockContact/BlockContactList/BlockContactList')
 );
 const Organisation = lazy(() => import('../../containers/SettingList/Organisation/Organisation'));
-const ChatSubscription = lazy(
-  () => import('../../containers/Chat/ChatSubscription/ChatSubscription')
-);
 const WebhookLogsList = lazy(
   () => import('../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
 );
