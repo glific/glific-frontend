@@ -21,7 +21,7 @@ const List = [
   {
     name: 'Billing',
     shortcode: 'billing',
-    description: 'Manage your billings here',
+    description: 'Setup for glific billing account',
   },
 ];
 

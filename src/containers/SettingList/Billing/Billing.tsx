@@ -31,17 +31,36 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const client = useApolloClient();
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState(false);
+  const [paymentMethodId, setPaymentMethodId] = useState('');
   const [cardError, setCardError] = useState<any>('');
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
 
-  const { loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
+  const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
     onCompleted: (data) => {
       const result = JSON.parse(data.createBillingSubscription.subscription);
-      console.log(result);
-      setDisable(true);
-      setLoading(false);
-      setNotification(client, 'Subscribed successfully');
+      if (result.status === 'pending') {
+        if (stripe) {
+          stripe
+            .confirmCardSetup(result.client_secret, {
+              payment_method: paymentMethodId,
+            })
+            .then((securityResult: any) => {
+              if (securityResult.error?.message) {
+                setNotification(client, securityResult.error?.message, 'warning');
+              } else if (securityResult.setupIntent.status === 'succeeded') {
+                setDisable(true);
+                setLoading(false);
+                setNotification(client, 'Your billing account is setup successfully');
+              }
+            });
+        }
+      } else if (result.status === 'active') {
+        setDisable(true);
+        setLoading(false);
+        setNotification(client, 'Your billing account is setup successfully');
+      }
     },
     onError: (error) => {
       setNotification(client, error.message, 'warning');
@@ -52,9 +71,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
     return <Loading />;
   }
 
-  // if (data && data.getOrganizationBilling.billing.stripeSubscriptionId) {
-  //   return <div>You are already subscribed</div>;
-  // }
+  if (
+    billData &&
+    billData.getOrganizationBilling.billing.stripeSubscriptionId &&
+    !alreadySubscribed
+  ) {
+    setAlreadySubscribed(true);
+  }
 
   const handleSubmit = async (event: any) => {
     // Block native form submission.
@@ -83,6 +106,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       console.log('[error]', error);
       setLoading(false);
     } else if (paymentMethod) {
+      setPaymentMethodId(paymentMethod.id);
       createSubscription({
         variables: {
           input: {
@@ -102,44 +126,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
     </div>
   );
 
-  return (
-    <form onSubmit={handleSubmit} style={{ width: '500px', marginLeft: '24px', marginTop: '10px' }}>
-      <h1>Billing</h1>
-
-      {backLink}
-
-      <div className={styles.Description}>
-        <div className={styles.Heading}>
-          <div>Prices</div>
-          <div>Messages</div>
-          <div>Users</div>
-        </div>
-        <div className={styles.Pricing}>
-          <div>
-            <span>INR 7,500</span>+GST
-          </div>
-          <div>1 - 250k</div>
-          <div>1 - 10</div>
-        </div>
-        <div className={styles.Pricing}>
-          <div>
-            <span>INR 15,500</span>+GST
-          </div>
-          <div>250 - 500K </div>
-          <div>10 - 15</div>
-        </div>
-        <div className={styles.Pricing}>
-          <div>
-            <span>INR 22,500</span>+GST
-          </div>
-          <div>500K -1M</div>
-          <div>15 - 20</div>
-        </div>
-        <div className={styles.Footer}>
-          <div>Additional INR 7,500 ($110) for every 1 million bucket</div>
-          <div>Additional INR 1,500 ($22) for every 10 users </div>
-        </div>
-      </div>
+  const cardElements = (
+    <>
       <CardElement
         className={styles.Card}
         onChange={(e) => {
@@ -162,6 +150,34 @@ export const BillingForm: React.FC<BillingProps> = () => {
       >
         Subscribe for monthly billing
       </Button>
+    </>
+  );
+
+  const subscribed = <div className={styles.Subscribed}>You have an active subscription</div>;
+  return (
+    <form onSubmit={handleSubmit} style={{ width: '500px', marginLeft: '24px', marginTop: '10px' }}>
+      <h1>Billing</h1>
+
+      {backLink}
+
+      <div className={styles.Description}>
+        <div className={styles.Heading}>Monthly Recurring</div>
+        <div className={styles.Pricing}>
+          <span>INR 7,500</span>/ $110
+        </div>
+        <ul className={styles.List}>
+          <li>250k messages</li>
+          <li>1-10 users</li>
+        </ul>
+
+        <div className={styles.Additional}>
+          <div className={styles.Heading}>Additional charges</div>
+          <div>Per staff member – INR 150 ($2)</div>
+          <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14) </div>
+          <div> For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
+        </div>
+      </div>
+      {alreadySubscribed || disable ? subscribed : cardElements}
     </form>
   );
 };

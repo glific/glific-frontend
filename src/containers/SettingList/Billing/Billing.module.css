@@ -9,10 +9,28 @@
 }
 
 .Description {
-  border: 2px solid #979797;
+  border: 1px solid #d8d8d8;
   border-radius: 12px;
-
+  padding: 16px;
+  background-color: white;
   margin-bottom: 20px;
+}
+
+.List {
+  padding-left: 16px;
+  margin-top: 4px;
+  color: #073f24;
+}
+
+.Heading {
+  color: #979797;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.Additional {
+  color: #979797;
+  line-height: 2;
 }
 
 .BackLink {
@@ -31,36 +49,9 @@
   margin-right: 6px;
 }
 
-.Heading {
-  padding: 16px;
-  display: flex;
-  border-bottom: 1px solid #d8d8d8;
-}
-
-.Pricing {
-  padding: 16px;
-  display: flex;
-}
-.Pricing div {
-  width: 200px;
-  color: #073f24;
-}
-
 .Pricing span {
   font-size: 20px;
-}
-
-.Heading div {
-  width: 200px;
-  color: #979797;
-  font-weight: 500;
-}
-
-.Footer {
-  color: #93a29b;
-  padding: 16px;
-  font-size: 12px;
-  border-top: 1px solid #d8d8d8;
+  color: #073f24;
 }
 
 .Helper {
@@ -71,4 +62,9 @@
 .Error {
   margin-left: 12px;
   color: #eb1c26;
+}
+
+.Subscribed {
+  font-size: 20px;
+  color: #073f24;
 }
