@@ -1,10 +1,8 @@
 .Image {
   margin: 5px 0px;
   max-width: 280px;
-  min-height: unset;
   max-height: 200px;
   cursor: pointer;
-  max-height: 200px;
   background-size: cover !important;
 }
 
