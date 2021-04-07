@@ -1,18 +1,16 @@
 {
-  "menu": {
-    "chats": "चैट",
-    "tags": "टैग",
-    "speedsends": "स्पीड sends",
-    "flows": "प्रवाह",
-    "triggers": "ट्रिगर (बीटा)",
-    "searches": "खोजें",
-    "templates": "टेम्पलेट्स",
-    "collections": "संग्रह",
-    "staffmanagement": "कर्मचारी प्रबंधन",
-    "blockedcontacts": "ब्लॉक किये हुए कॉन्टेक्ट्स",
-    "myprofile": "मेरी प्रोफाइल",
-    "myaccount": "मेरा खाता",
-    "logout": "लॉग आउट"
-  },
+  "chats": "चैट",
+  "tags": "टैग",
+  "speedsends": "स्पीड sends",
+  "flows": "प्रवाह",
+  "triggers": "ट्रिगर (बीटा)",
+  "searches": "खोजें",
+  "templates": "टेम्पलेट्स",
+  "collections": "संग्रह",
+  "staffmanagement": "कर्मचारी प्रबंधन",
+  "blockedcontacts": "ब्लॉक किये हुए कॉन्टेक्ट्स",
+  "myprofile": "मेरी प्रोफाइल",
+  "myaccount": "मेरा खाता",
+  "logout": "लॉग आउट",
   "helpdocuments": "Help documents"
 }
