@@ -6,10 +6,10 @@ import hiTranslation from './hi/translation.json';
 
 export const resources = {
   en: {
-    enTranslation,
+    translation: enTranslation,
   },
   hi: {
-    hiTranslation,
+    translation: hiTranslation,
   },
 };
 

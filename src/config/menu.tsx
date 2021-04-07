@@ -12,27 +12,27 @@ export const sideDrawerMenus = [
     icon: 'tag',
   },
   {
-    title: 'Speed sends',
+    title: i18n.t('menu.speedsends'),
     path: '/speed-send',
     icon: 'speed-send',
   },
   {
-    title: 'Flows',
+    title: i18n.t('menu.flows'),
     path: '/flow',
     icon: 'flow',
   },
   {
-    title: 'Triggers (Beta)',
+    title: i18n.t('menu.triggers'),
     path: '/trigger',
     icon: 'trigger',
   },
   {
-    title: 'Searches',
+    title: i18n.t('menu.searches'),
     path: '/search',
     icon: 'search',
   },
   {
-    title: 'Templates',
+    title: i18n.t('menu.templates'),
     path: '/template',
     icon: 'template',
   },
@@ -40,30 +40,30 @@ export const sideDrawerMenus = [
 
 export const staffManagementMenus = [
   {
-    title: 'Collections',
+    title: i18n.t('menu.collections'),
     path: '/collection',
   },
   {
-    title: 'Staff Management',
+    title: i18n.t('menu.staffmanagement'),
     path: '/staff-management',
   },
   {
-    title: 'Blocked Contacts',
+    title: i18n.t('menu.blockedcontacts'),
     path: '/blocked-contacts',
   },
 ];
 
 export const userAccountMenus = [
   {
-    title: 'My Profile',
+    title: i18n.t('menu.myprofile'),
     path: '/user-profile',
   },
   {
-    title: 'My Account',
+    title: i18n.t('menu.myaccount'),
     path: '/myaccount',
   },
   {
-    title: 'Logout',
+    title: i18n.t('menu.logout'),
     path: '/logout/user',
     className: 'Danger',
   },

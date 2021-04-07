@@ -1,6 +1,17 @@
 {
   "menu" : {
     "chats": "Chats",
-    "tags": "Tags"
+    "tags": "Tags",
+    "speedsends" : "Speed sends",
+    "flows" : "Flows",
+    "triggers": "Triggers (Beta)",
+    "searches": "Searches",
+    "templates": "Templates",
+    "collections": "Collections",
+    "staffmanagement": "Staff Management",
+    "blockedcontacts": "Blocked Contacts",
+    "myprofile": "My Profile",
+    "myaccount": "My Account",
+    "logout": "Logout"
   }
 }
