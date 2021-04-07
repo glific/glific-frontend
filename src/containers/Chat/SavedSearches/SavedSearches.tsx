@@ -46,10 +46,11 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   }
 
   const changeValue = (event: any, value: any) => {
-    setOpen(false);
     if (value) {
       setSavedSearch(value);
+      setOpen(false);
     } else {
+      setOpen(true);
       setSavedSearch({ id: 0, args: '{}' });
     }
   };
