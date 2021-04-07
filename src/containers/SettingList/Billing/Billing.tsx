@@ -114,18 +114,25 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>Messages</div>
           <div>Users</div>
         </div>
-        You will be charged a monthly amount of R 7,500+GST for an exchange of upto 250K messages
-        and 10 staff members. For higher volumes, the monthly price will be a percentage of the
-        messaging costs, such as:
-        <ul>
-          <li>upto 250K messages/1 – 10 users – INR 7500 ($110)</li>
-          <li> 250K – 500K/1 – 15 users – INR 15000 ($220)</li>
-          <li> 500K – 1 million/1 – 20 users – INR 22500 ($330) </li>
-          <li>
-            and an additional INR 7,500 ($110) for every 1 million bucket and an additional INR
-            1,500 ($22) for every 10 users
-          </li>
-        </ul>
+        <div className={styles.Pricing}>
+          <div>INR 7,500+GST</div>
+          <div>1 - 250k</div>
+          <div>1 - 10</div>
+        </div>
+        <div className={styles.Pricing}>
+          <div>INR 15,500+GST</div>
+          <div>250 - 500K </div>
+          <div>10 - 15</div>
+        </div>
+        <div className={styles.Pricing}>
+          <div>INR 22,500+GST</div>
+          <div>500K -1M</div>
+          <div>15 - 20</div>
+        </div>
+        <div className={styles.Footer}>
+          <div>Additional INR 7,500 ($110) for every 1 million bucket</div>
+          <div>Additional INR 1,500 ($22) for every 10 users </div>
+        </div>
       </div>
       <CardElement
         className={styles.Card}
@@ -144,7 +151,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
         disabled={!stripe || disable}
         loading={loading}
       >
-        Subscribe
+        Subscribe for monthly billing
       </Button>
     </form>
   );

@@ -19,7 +19,7 @@
   font-weight: 800;
   font-size: 16px;
   margin-top: 12px;
-  margin-bottom: 0px;
+  margin-bottom: 12px;
 }
 
 .BackLink a {
@@ -37,6 +37,23 @@
   border-bottom: 1px solid #d8d8d8;
 }
 
+.Pricing {
+  padding: 16px;
+  display: flex;
+}
+.Pricing div {
+  width: 150px;
+  color: #073f24;
+}
+
 .Heading div {
   width: 150px;
+  color: #979797;
+  font-weight: 500;
+}
+
+.Footer {
+  padding: 16px;
+  font-size: 12px;
+  border-top: 1px solid #d8d8d8;
 }
