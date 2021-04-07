@@ -102,7 +102,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getSessionTemplatesCallBack={getSessionTemplates}
         customStyle={styles.HSMTemplate}
       />
-      <Simulator setSimulatorId={0} showSimulator isPreviewMessage message="hello" />
+      <Simulator setSimulatorId={0} showSimulator isPreviewMessage message="hello world!" />
     </div>
   );
 };

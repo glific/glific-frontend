@@ -169,7 +169,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     });
     setInputMessage('');
   };
-  console.log(messages);
   useEffect(() => {
     if (message !== undefined && data) {
       console.log('useeffect method');
