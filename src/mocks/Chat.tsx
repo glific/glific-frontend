@@ -208,6 +208,7 @@ export const collectionSendSubscription = {
         flow: 'OUTBOUND',
         id: '22',
         insertedAt: '2020-07-11T14:03:28Z',
+        messageNumber: 0,
         receiver: {
           id: '1',
           phone: '917834811114',
@@ -392,12 +393,14 @@ export const conversationQuery = getConversationQuery({
         lastMessageAt: '2020-06-25T13:36:43Z',
         status: 'VALID',
         bspStatus: 'SESSION_AND_HSM',
+        isOrgRead: true,
       },
       messages: [
         {
           id: '1',
           body: 'Hello',
           insertedAt: '2020-06-25T13:36:43Z',
+          messageNumber: 0,
           location: null,
           receiver: {
             id: '1',
@@ -421,6 +424,7 @@ export const conversationQuery = getConversationQuery({
           id: '2',
           body: 'How can we help?',
           insertedAt: '2020-06-25T13:36:43Z',
+          messageNumber: 1,
           location: null,
           receiver: {
             id: '2',
@@ -760,6 +764,7 @@ const searchQueryResult = {
           lastMessageAt: '2020-06-29T09:31:47Z',
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
         },
         messages: [
           {
