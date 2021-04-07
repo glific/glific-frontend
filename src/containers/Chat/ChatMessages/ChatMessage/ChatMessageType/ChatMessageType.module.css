@@ -1,18 +1,16 @@
 .Image {
   margin: 5px 0px;
   max-width: 280px;
-  min-width: 170px;
-  min-height: unset;
-  height: 200px;
-  cursor: pointer;
   max-height: 200px;
+  cursor: pointer;
   background-size: cover !important;
 }
 
 .Image img {
   overflow: hidden;
   max-width: 200px;
-  height: 200px;
+  height:auto;
+  object-fit: contain;
 }
 
 .Document {
