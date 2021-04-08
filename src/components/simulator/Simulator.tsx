@@ -51,7 +51,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const [inputMessage, setInputMessage] = useState('');
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
-  let messages = [];
+  const [messages, setMessages] = useState<any[]>([]);
   let simulatorId = '';
 
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
@@ -97,7 +97,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       (item: any) => item.contact.id === data.simulatorGet.id
     );
     if (simulatedContact.length > 0) {
-      messages = simulatedContact[0].messages;
+      setMessages(simulatedContact[0].messages);
       simulatorId = simulatedContact[0].contact.id;
     }
   }
@@ -131,7 +131,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const simulatedMessages = messages
     .map((simulatorMessage: any, index: number) => {
       const { body, insertedAt, type, media, location } = simulatorMessage;
-      if (simulatorMessage.receiver.id === simulatorId) {
+      if (simulatorMessage.receiver && simulatorMessage.receiver.id === simulatorId) {
         return renderMessage(body, 'received', index, insertedAt, type, media, location);
       }
       return renderMessage(body, 'send', index, insertedAt, type, media, location);
@@ -139,38 +139,41 @@ export const Simulator: React.FC<SimulatorProps> = ({
     .reverse();
 
   const sendMessage = () => {
-    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-    console.log(sendMessageText);
-    axios({
-      method: 'POST',
-      url: GUPSHUP_CALLBACK_URL,
-      data: {
-        type: 'message',
-        payload: {
-          id: uuidv4(),
-          type: 'text',
+    if (!isPreviewMessage) {
+      const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+      axios({
+        method: 'POST',
+        url: GUPSHUP_CALLBACK_URL,
+        data: {
+          type: 'message',
           payload: {
-            text: sendMessageText,
-          },
-          sender: {
-            // this number will be the simulated contact number
-            phone: data ? data.simulatorGet.phone : '',
-            name: data ? data.simulatorGet.name : '',
+            id: uuidv4(),
+            type: 'text',
+            payload: {
+              text: sendMessageText,
+            },
+            sender: {
+              // this number will be the simulated contact number
+              phone: data ? data.simulatorGet.phone : '',
+              name: data ? data.simulatorGet.name : '',
+            },
           },
         },
-      },
-    }).catch((error) => {
-      // add log's
-      setLogs(
-        `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-        'info'
-      );
-      setLogs(error, 'error');
-    });
-    setInputMessage('');
+      }).catch((error) => {
+        // add log's
+        setLogs(
+          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+          'info'
+        );
+        setLogs(error, 'error');
+      });
+      setInputMessage('');
+    }
   };
   useEffect(() => {
-    if (message !== undefined && data) {
+    if (isPreviewMessage) {
+      setMessages([message]);
+    } else if (message !== undefined && data) {
       console.log('useeffect method');
       sendMessage();
     }
@@ -185,7 +188,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     },
     [messages]
   );
-  console.log('preview', isPreviewMessage);
 
   const simulator = (
     <Draggable>
