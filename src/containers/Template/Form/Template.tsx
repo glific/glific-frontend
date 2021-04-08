@@ -170,7 +170,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setCategory({ label: categoryValue, id: categoryValue });
     }
   };
-
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });

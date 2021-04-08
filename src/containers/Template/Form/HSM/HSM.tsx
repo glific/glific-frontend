@@ -65,7 +65,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     type: 'TEXT',
     location: null,
     media: null,
-    body: 'Start typing sample message',
+    body: '',
   });
   const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
 
@@ -102,8 +102,11 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     return error;
   };
 
+  const removeFirstLineBreak = (text: any) =>
+    text.length && text.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
+
   const getExampleMessage = (messages: any) => {
-    setSampleMessages((val) => ({ ...val, body: messages }));
+    setSampleMessages((val) => ({ ...val, body: removeFirstLineBreak(messages) }));
   };
   return (
     <div>
@@ -117,7 +120,13 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getSessionTemplatesCallBack={getSessionTemplates}
         customStyle={styles.HSMTemplate}
       />
-      <Simulator setSimulatorId={0} showSimulator isPreviewMessage message={sampleMessages} />
+      <Simulator
+        setSimulatorId={0}
+        showSimulator
+        isPreviewMessage
+        message={sampleMessages}
+        simulatorIcon={false}
+      />
     </div>
   );
 };

@@ -52,7 +52,7 @@ export const convertToWhatsApp = (editorState: any) => {
 
   finalString = markdownString.blocks.map((block: any) => {
     const { text } = block;
-
+    console.log('text:', text);
     let offset = 0;
     let convertedText = text;
     block.inlineStyleRanges.forEach((style: any) => {
@@ -67,8 +67,8 @@ export const convertToWhatsApp = (editorState: any) => {
       }
       offset += 2;
     });
-
-    return `${finalString}${convertedText} \n`;
+    console.log('finalstring:', finalString);
+    return `${finalString}${convertedText}\n`;
   });
 
   // let's return 0 element as map() always returns an array

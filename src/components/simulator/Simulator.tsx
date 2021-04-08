@@ -134,6 +134,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (simulatorMessage.receiver && simulatorMessage.receiver.id === simulatorId) {
         return renderMessage(body, 'received', index, insertedAt, type, media, location);
       }
+      if (isPreviewMessage) {
+        return renderMessage(body, 'received', index, insertedAt, type, media, location);
+      }
+
       return renderMessage(body, 'send', index, insertedAt, type, media, location);
     })
     .reverse();
@@ -172,9 +176,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
   useEffect(() => {
     if (isPreviewMessage) {
-      setMessages([message]);
+      if (message && message.body && message.body.length) {
+        setMessages([message]);
+      }
     } else if (message !== undefined && data) {
-      console.log('useeffect method');
       sendMessage();
     }
   }, [message, data]);
@@ -188,19 +193,21 @@ export const Simulator: React.FC<SimulatorProps> = ({
     },
     [messages]
   );
-
+  console.log('simulated msg:', simulatedMessages);
   const simulator = (
     <Draggable>
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
-            <ClearIcon
-              className={styles.ClearIcon}
-              onClick={() => {
-                releaseUserSimulator();
-              }}
-              data-testid="clearIcon"
-            />
+            {!isPreviewMessage ? (
+              <ClearIcon
+                className={styles.ClearIcon}
+                onClick={() => {
+                  releaseUserSimulator();
+                }}
+                data-testid="clearIcon"
+              />
+            ) : null}
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
