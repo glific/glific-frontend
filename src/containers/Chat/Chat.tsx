@@ -119,13 +119,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       highlight = 'saved-searches';
     }
 
-    const HighLighter = (isDark: boolean) => {
-      if (isDark) {
-        return <div className={`${styles.DarkHighLighter}`} />;
-      }
-      return <div className={`${styles.LightHighLighter}`} />;
-    };
-
     chatInterface = (
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
@@ -159,7 +152,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                     </div>
                   </div>
                 </Link>
-                {HighLighter(highlight === 'contacts')}
+                <div
+                  className={`${
+                    highlight === 'contacts' ? styles.DarkHighLighter : styles.LightHighLighter
+                  }`}
+                />
               </div>
               <div>
                 <Link to="/chat/collection">
@@ -182,7 +179,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                     </div>
                   </div>
                 </Link>
-                {HighLighter(highlight === 'collections')}
+                <div
+                  className={`${
+                    highlight === 'collections' ? styles.DarkHighLighter : styles.LightHighLighter
+                  }`}
+                />
               </div>
               <div>
                 <Link to="/chat/saved-searches">
@@ -205,7 +206,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                     </div>
                   </div>
                 </Link>
-                {HighLighter(highlight === 'saved-searches')}
+                <div
+                  className={`${
+                    highlight === 'saved-searches'
+                      ? styles.DarkHighLighter
+                      : styles.LightHighLighter
+                  }`}
+                />
               </div>
             </div>
           </Toolbar>
