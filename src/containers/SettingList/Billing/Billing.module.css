@@ -17,20 +17,28 @@
 }
 
 .List {
-  padding-left: 16px;
+  padding-left: 0px;
+  list-style-type: none;
   margin-top: 4px;
   color: #073f24;
+}
+
+.List li {
+  font-size: 12px;
+  color: #93a29b;
 }
 
 .Heading {
   color: #979797;
   font-weight: 500;
+  font-size: 16px;
   margin-bottom: 10px;
 }
 
 .Additional {
   color: #979797;
-  line-height: 2;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .BackLink {
@@ -50,8 +58,9 @@
 }
 
 .Pricing span {
-  font-size: 20px;
+  font-size: 22px;
   color: #073f24;
+  font-weight: 500;
 }
 
 .Helper {
@@ -64,7 +73,22 @@
   color: #eb1c26;
 }
 
+.Form {
+  width: 500px;
+  margin-left: 24px;
+  margin-top: 10px;
+}
+
 .Subscribed {
   font-size: 20px;
   color: #073f24;
+  padding-left: 12px;
+}
+
+.Setup {
+  display: flex;
+}
+
+.Setup > div {
+  flex: 1;
 }

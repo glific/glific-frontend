@@ -35,6 +35,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [cardError, setCardError] = useState<any>('');
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
 
+  // get organization billing details
   const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
@@ -71,6 +72,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     return <Loading />;
   }
 
+  // check if the organization is already subscribed
   if (
     billData &&
     billData.getOrganizationBilling.billing.stripeSubscriptionId &&
@@ -96,7 +98,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     // each type of element.
     const cardElement: any = elements.getElement(CardElement);
 
-    // Use your card Element with other Stripe.js APIs
+    // create a payment method
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
@@ -155,26 +157,37 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
   const subscribed = <div className={styles.Subscribed}>You have an active subscription</div>;
   return (
-    <form onSubmit={handleSubmit} style={{ width: '500px', marginLeft: '24px', marginTop: '10px' }}>
+    <form onSubmit={handleSubmit} className={styles.Form}>
       <h1>Billing</h1>
-
       {backLink}
-
       <div className={styles.Description}>
-        <div className={styles.Heading}>Monthly Recurring</div>
-        <div className={styles.Pricing}>
-          <span>INR 7,500</span>/ $110
+        <div className={styles.Setup}>
+          <div>
+            <div className={styles.Heading}>One time setup</div>
+            <div className={styles.Pricing}>
+              <span>INR 15,000</span> ($220)
+            </div>
+            <ul className={styles.List}>
+              <li>5hr consulting</li>
+              <li>1hr onboarding session</li>
+            </ul>
+          </div>
+          <div>
+            <div className={styles.Heading}>Monthly Recurring</div>
+            <div className={styles.Pricing}>
+              <span>INR 7,500</span> ($110)
+            </div>
+            <ul className={styles.List}>
+              <li>upto 250k messages</li>
+              <li>1-10 users</li>
+            </ul>
+          </div>
         </div>
-        <ul className={styles.List}>
-          <li>250k messages</li>
-          <li>1-10 users</li>
-        </ul>
-
         <div className={styles.Additional}>
-          <div className={styles.Heading}>Additional charges</div>
-          <div>Per staff member – INR 150 ($2)</div>
-          <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14) </div>
-          <div> For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
+          <div className={styles.Heading}>Variable charges as usage increases</div>
+          <div>For every staff member over 10 users – INR 150 ($2)</div>
+          <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14)</div>
+          <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
         </div>
       </div>
       {alreadySubscribed || disable ? subscribed : cardElements}
