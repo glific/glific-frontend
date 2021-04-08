@@ -87,6 +87,7 @@ export interface TemplateProps {
   formField?: any;
   getSessionTemplatesCallBack?: any;
   customStyle?: any;
+  getUrlAttachmentAndType?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -99,6 +100,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     formField,
     getSessionTemplatesCallBack,
     customStyle,
+    getUrlAttachmentAndType,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -283,6 +285,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (!response.data.is_valid) {
           return response.data.message;
         }
+        getUrlAttachmentAndType(type.id, { url: value });
         return false;
       });
     }
@@ -339,6 +342,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       name: 'attachmentURL',
       type: 'text',
       placeholder: 'Attachment URL',
+
       validate: validateURL,
     },
   ];

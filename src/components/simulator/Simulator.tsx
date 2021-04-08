@@ -176,8 +176,16 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
   useEffect(() => {
     if (isPreviewMessage) {
-      if (message && message.body && message.body.length) {
-        setMessages([message]);
+      if (message && message.type) {
+        if (['STICKER', 'AUDIO'].includes(message.type)) {
+          setMessages([message]);
+        } else if (
+          message &&
+          ((message.body && message.body.length) ||
+            (message.media && message.media.caption && message.media.caption.length))
+        ) {
+          setMessages([message]);
+        }
       }
     } else if (message !== undefined && data) {
       sendMessage();
@@ -193,7 +201,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     },
     [messages]
   );
-  console.log('simulated msg:', simulatedMessages);
+
   const simulator = (
     <Draggable>
       <div className={styles.SimContainer}>

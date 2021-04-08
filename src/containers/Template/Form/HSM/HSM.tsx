@@ -106,8 +106,19 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     text.length && text.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
   const getExampleMessage = (messages: any) => {
-    setSampleMessages((val) => ({ ...val, body: removeFirstLineBreak(messages) }));
+    const message = removeFirstLineBreak(messages);
+    const media: any = {
+      caption: message,
+    };
+    setSampleMessages((val) => ({ ...val, body: message, media }));
   };
+
+  const getAttachmentUrl = (type: any, media: any) => {
+    const mediaBody = { ...media };
+    mediaBody.caption = sampleMessages.body;
+    setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
+  };
+
   return (
     <div>
       <Template
@@ -119,6 +130,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         formField={getFields(match, categoryOpns, validateShortcode, getExampleMessage)}
         getSessionTemplatesCallBack={getSessionTemplates}
         customStyle={styles.HSMTemplate}
+        getUrlAttachmentAndType={getAttachmentUrl}
       />
       <Simulator
         setSimulatorId={0}

@@ -52,7 +52,6 @@ export const convertToWhatsApp = (editorState: any) => {
 
   finalString = markdownString.blocks.map((block: any) => {
     const { text } = block;
-    console.log('text:', text);
     let offset = 0;
     let convertedText = text;
     block.inlineStyleRanges.forEach((style: any) => {
@@ -67,7 +66,6 @@ export const convertToWhatsApp = (editorState: any) => {
       }
       offset += 2;
     });
-    console.log('finalstring:', finalString);
     return `${finalString}${convertedText}\n`;
   });
 
