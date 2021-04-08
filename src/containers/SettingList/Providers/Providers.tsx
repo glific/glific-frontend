@@ -198,3 +198,5 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     />
   );
 };
+
+export default Providers;

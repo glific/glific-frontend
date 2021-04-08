@@ -191,3 +191,5 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
     />
   );
 };
+
+export default Collection;

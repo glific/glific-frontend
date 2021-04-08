@@ -8,3 +8,5 @@ export const SpeedSendPage: React.SFC<SpeedSendPageProps> = () => (
     <SpeedSendList />
   </div>
 );
+
+export default SpeedSendPage;
