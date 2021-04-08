@@ -462,8 +462,18 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     );
   }
 
-  let formTitle = title || itemId ? `Edit ${listItemName} ` : `Add a new ${listItemName}`;
-  formTitle = type === 'copy' ? `Copy ${listItemName} ` : formTitle;
+  let formTitle = '';
+
+  // set title if there is a title
+  if (title) {
+    formTitle = title;
+  } else if (itemId) {
+    formTitle = `Edit ${listItemName}`; // case when editing a item
+  } else if (type === 'copy') {
+    formTitle = `Copy ${listItemName} `; // case when copying an item
+  } else {
+    formTitle = `Add a new ${listItemName}`; // case when adding a new item
+  }
 
   let heading = (
     <Typography variant="h5" className={styles.Title}>
