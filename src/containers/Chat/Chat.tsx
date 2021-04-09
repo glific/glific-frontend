@@ -163,7 +163,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                   </Typography>
                 </div>
               </Link>
-              <Link to="/chat/saved-searches">
+              <Link to="/chat/saved-searches/">
                 <div className={styles.Title}>
                   <div className={styles.IconBackground}>
                     <img
