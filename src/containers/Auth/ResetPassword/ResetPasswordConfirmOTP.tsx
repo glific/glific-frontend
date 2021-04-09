@@ -107,3 +107,5 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
     />
   );
 };
+
+export default ResetPasswordConfirmOTP;

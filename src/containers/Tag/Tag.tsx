@@ -186,3 +186,5 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     />
   );
 };
+
+export default Tag;

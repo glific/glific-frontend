@@ -182,7 +182,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                 />
               </div>
               <div>
-                <Link to="/chat/saved-searches">
+                <Link to="/chat/saved-searches/">
                   <div className={styles.Title}>
                     <div className={styles.IconBackground}>
                       <img
@@ -228,3 +228,5 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
     </Paper>
   );
 };
+
+export default Chat;

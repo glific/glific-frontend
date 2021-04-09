@@ -138,3 +138,5 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     </>
   );
 };
+
+export default NotificationList;

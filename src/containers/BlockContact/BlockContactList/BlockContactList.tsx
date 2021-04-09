@@ -135,3 +135,5 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
     </>
   );
 };
+
+export default BlockContactList;

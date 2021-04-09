@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 
@@ -10,6 +10,7 @@ import { checkAuthStatusService } from './services/AuthService';
 import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from './containers/Auth/Logout/Logout';
+import { Loading } from './components/UI/Layout/Loading/Loading';
 
 const App = () => {
   const history = useHistory();
@@ -50,7 +51,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
-        {routes}
+        <Suspense fallback={Loading}>{routes}</Suspense>
       </ApolloProvider>
     </SessionContext.Provider>
   );

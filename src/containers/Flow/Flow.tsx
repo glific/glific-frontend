@@ -161,3 +161,5 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     />
   );
 };
+
+export default Flow;
