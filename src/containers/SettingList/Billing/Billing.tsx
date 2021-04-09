@@ -36,7 +36,9 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
 
   // get organization billing details
-  const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING);
+  const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING, {
+    fetchPolicy: 'network-only',
+  });
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
     onCompleted: (data) => {
@@ -50,6 +52,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
             .then((securityResult: any) => {
               if (securityResult.error?.message) {
                 setNotification(client, securityResult.error?.message, 'warning');
+                setLoading(false);
               } else if (securityResult.setupIntent.status === 'succeeded') {
                 setDisable(true);
                 setLoading(false);
