@@ -3,9 +3,13 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import { Billing } from './Billing';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { createBillingSubscriptionQuery, createStatusPendingQuery } from '../../../mocks/Billing';
+import {
+  createBillingSubscriptionQuery,
+  createStatusPendingQuery,
+  getBillingQuery,
+} from '../../../mocks/Billing';
 
-const mocks = [createBillingSubscriptionQuery];
+const mocks = [createBillingSubscriptionQuery, getBillingQuery];
 
 const mountElementMock = jest.fn();
 const mockElement = () => ({
