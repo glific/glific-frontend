@@ -102,7 +102,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     if (container) {
       const scroll = container.scrollHeight - container.clientHeight;
       if (scroll) {
-        container.scrollTo(0, 0);
+        container.scrollTo(0, scroll);
       }
     }
   };
