@@ -4,11 +4,13 @@ export const GET_ORGANIZATION_BILLING = gql`
   query getOrganizationBilling {
     getOrganizationBilling {
       billing {
+        id
         currency
         email
         isActive
         stripeSubscriptionId
         stripeSubscriptionItems
+        stripeSubscriptionStatus
       }
     }
   }

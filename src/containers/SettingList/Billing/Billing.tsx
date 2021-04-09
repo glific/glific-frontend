@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Link } from 'react-router-dom';
 
 import { Button } from '../../../components/UI/Form/Button/Button';
-import { CREATE_BILLING_SUBSCRIPTION } from '../../../graphql/mutations/Billing';
+import { CREATE_BILLING_SUBSCRIPTION, UPDATE_BILLING } from '../../../graphql/mutations/Billing';
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
@@ -34,11 +34,14 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [paymentMethodId, setPaymentMethodId] = useState('');
   const [cardError, setCardError] = useState<any>('');
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [pending, setPending] = useState(false);
 
   // get organization billing details
   const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING, {
     fetchPolicy: 'network-only',
   });
+
+  const [updateBilling] = useMutation(UPDATE_BILLING);
 
   const [createSubscription] = useMutation(CREATE_BILLING_SUBSCRIPTION, {
     onCompleted: (data) => {
@@ -53,6 +56,15 @@ export const BillingForm: React.FC<BillingProps> = () => {
               if (securityResult.error?.message) {
                 setNotification(client, securityResult.error?.message, 'warning');
                 setLoading(false);
+                updateBilling({
+                  variables: {
+                    id: billData.getOrganizationBilling?.billing?.id,
+                    input: {
+                      stripeSubscriptionId: null,
+                      stripeSubscriptionStatus: null,
+                    },
+                  },
+                });
               } else if (securityResult.setupIntent.status === 'succeeded') {
                 setDisable(true);
                 setLoading(false);
@@ -76,13 +88,20 @@ export const BillingForm: React.FC<BillingProps> = () => {
     return <Loading />;
   }
 
-  // check if the organization is already subscribed
-  if (
-    billData &&
-    billData.getOrganizationBilling?.billing?.stripeSubscriptionId &&
-    !alreadySubscribed
-  ) {
-    setAlreadySubscribed(true);
+  // check if the organization is already subscribed or in pending state
+  if (billData && !alreadySubscribed && !pending) {
+    const billingDetails = billData.getOrganizationBilling?.billing;
+    if (
+      billingDetails?.stripeSubscriptionId &&
+      billingDetails?.stripeSubscriptionStatus === 'pending'
+    )
+      setPending(true);
+    else if (
+      billingDetails?.stripeSubscriptionId &&
+      billingDetails?.stripeSubscriptionStatus === 'active'
+    ) {
+      setAlreadySubscribed(true);
+    }
   }
 
   const handleSubmit = async (event: any) => {
@@ -161,6 +180,12 @@ export const BillingForm: React.FC<BillingProps> = () => {
   );
 
   const subscribed = <div className={styles.Subscribed}>You have an active subscription</div>;
+  let paymentBody = alreadySubscribed || disable ? subscribed : cardElements;
+
+  if (pending) {
+    paymentBody = <div className={styles.Subscribed}>Your payment is in pending state</div>;
+  }
+
   return (
     <form onSubmit={handleSubmit} className={styles.Form}>
       <h1>Billing</h1>
@@ -191,7 +216,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
         </div>
       </div>
-      {alreadySubscribed || disable ? subscribed : cardElements}
+      {paymentBody}
     </form>
   );
 };
