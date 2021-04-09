@@ -49,11 +49,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
   isPreviewMessage,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
+  const [simulatedMessages, setSimulatedMessage] = useState<any>();
+
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
-  const [messages, setMessages] = useState<any[]>([]);
+  let messages: any[] = [];
   let simulatorId = '';
-
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
     fetchPolicy: 'cache-only',
@@ -97,7 +98,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       (item: any) => item.contact.id === data.simulatorGet.id
     );
     if (simulatedContact.length > 0) {
-      setMessages(simulatedContact[0].messages);
+      messages = simulatedContact[0].messages;
       simulatorId = simulatedContact[0].contact.id;
     }
   }
@@ -127,20 +128,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       {direction === 'send' ? <DoneAllIcon /> : null}
     </div>
   );
-
-  const simulatedMessages = messages
-    .map((simulatorMessage: any, index: number) => {
-      const { body, insertedAt, type, media, location } = simulatorMessage;
-      if (simulatorMessage.receiver && simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(body, 'received', index, insertedAt, type, media, location);
-      }
-      if (isPreviewMessage) {
-        return renderMessage(body, 'received', index, insertedAt, type, media, location);
-      }
-
-      return renderMessage(body, 'send', index, insertedAt, type, media, location);
-    })
-    .reverse();
 
   const sendMessage = () => {
     if (!isPreviewMessage) {
@@ -174,23 +161,47 @@ export const Simulator: React.FC<SimulatorProps> = ({
       setInputMessage('');
     }
   };
+  const getPreviewMessage = () => {
+    if (message && message.type) {
+      if (['STICKER', 'AUDIO'].includes(message.type)) {
+        const { body, insertedAt, type, media, location } = message;
+        setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
+      } else if (
+        message &&
+        ((message.body && message.body.length) ||
+          (message.media && message.media.caption && message.media.caption.length))
+      ) {
+        const { body, insertedAt, type, media, location } = message;
+        setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
+      }
+    }
+  };
+  const getChatMessage = () => {
+    if (data) {
+      setSimulatedMessage(
+        messages
+          .map((simulatorMessage: any, index: number) => {
+            const { body, insertedAt, type, media, location } = simulatorMessage;
+            if (simulatorMessage.receiver.id === simulatorId) {
+              return renderMessage(body, 'received', index, insertedAt, type, media, location);
+            }
+            return renderMessage(body, 'send', index, insertedAt, type, media, location);
+          })
+          .reverse()
+      );
+      if (message) {
+        sendMessage();
+      }
+    }
+  };
   useEffect(() => {
     if (isPreviewMessage) {
-      if (message && message.type) {
-        if (['STICKER', 'AUDIO'].includes(message.type)) {
-          setMessages([message]);
-        } else if (
-          message &&
-          ((message.body && message.body.length) ||
-            (message.media && message.media.caption && message.media.caption.length))
-        ) {
-          setMessages([message]);
-        }
-      }
-    } else if (message !== undefined && data) {
-      sendMessage();
+      getPreviewMessage();
+    } else {
+      getChatMessage();
     }
-  }, [message, data]);
+  }, [message, data, allConversations, messages]);
+  console.log('simulated message:', simulatedMessages);
 
   const messageRef = useCallback(
     (node: any) => {
