@@ -87,7 +87,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
 
   let chatInterface: any;
   let listingContent;
-  let highlight: string = '';
 
   if (data && data.search.length === 0) {
     chatInterface = noConversations;
@@ -100,7 +99,6 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       listingContent = <CollectionConversations collectionId={selectedCollectionId} />;
       // set class for collections tab
       collectionSelectedClass = `${styles.SelectedTab}`;
-      highlight = 'collections';
     } else if (selectedContactId && !savedSearches) {
       // let's enable simulator only when contact tab is shown
 
@@ -110,13 +108,11 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
 
       // set class for contacts tab
       contactSelectedClass = `${styles.SelectedTab}`;
-      highlight = 'contacts';
     } else if (savedSearches) {
       // set class for saved search
       savedSearchClass = `${styles.SelectedTab}`;
       // for saved search
       listingContent = <SavedSearches />;
-      highlight = 'saved-searches';
     }
 
     chatInterface = (
@@ -154,7 +150,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                 </Link>
                 <div
                   className={`${
-                    highlight === 'contacts' ? styles.DarkHighLighter : styles.LightHighLighter
+                    contactSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
                   }`}
                 />
               </div>
@@ -181,7 +177,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                 </Link>
                 <div
                   className={`${
-                    highlight === 'collections' ? styles.DarkHighLighter : styles.LightHighLighter
+                    collectionSelectedClass ? styles.DarkHighLighter : styles.LightHighLighter
                   }`}
                 />
               </div>
@@ -208,9 +204,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                 </Link>
                 <div
                   className={`${
-                    highlight === 'saved-searches'
-                      ? styles.DarkHighLighter
-                      : styles.LightHighLighter
+                    savedSearchClass ? styles.DarkHighLighter : styles.LightHighLighter
                   }`}
                 />
               </div>
