@@ -129,7 +129,6 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         defaultAttribute={defaultAttribute}
         formField={getFields(match, categoryOpns, validateShortcode, getExampleMessage)}
         getSessionTemplatesCallBack={getSessionTemplates}
-        customStyle={styles.HSMTemplate}
         getUrlAttachmentAndType={getAttachmentUrl}
       />
       <Simulator

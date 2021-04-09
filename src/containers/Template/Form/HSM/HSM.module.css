@@ -2,14 +2,3 @@
   width: 29px;
   height: 29px;
 }
-
-.HSMTemplate {
-  width: 90% !important;
-}
-
-.HSMTemplate > div.FormLayout_Buttons,
-.HSMTemplate > div:first-child {
-  display: block !important;
-  width: 100% !important;
-  margin-left: 0% !important;
-}

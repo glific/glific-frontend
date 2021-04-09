@@ -166,13 +166,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         const { body, insertedAt, type, media, location } = message;
         setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
-      } else if (
-        message &&
-        ((message.body && message.body.length) ||
-          (message.media && message.media.caption && message.media.caption.length))
-      ) {
+      } else if (message?.body || message.media?.caption) {
         const { body, insertedAt, type, media, location } = message;
         setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
+      } else {
+        // To get rid of empty body and media caption for preview HSM
+        setSimulatedMessage('');
       }
     }
   };
@@ -194,18 +193,22 @@ export const Simulator: React.FC<SimulatorProps> = ({
       }
     }
   };
+
   useEffect(() => {
     if (isPreviewMessage) {
       getPreviewMessage();
-    } else {
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (message && data) {
       getChatMessage();
     }
-  }, [message, data, allConversations, messages]);
-  console.log('simulated message:', simulatedMessages);
+  }, [message, data]);
 
   const messageRef = useCallback(
     (node: any) => {
-      if (node !== null) {
+      if (node) {
         const nodeCopy = node;
         nodeCopy.scrollTop = node.scrollHeight;
       }
