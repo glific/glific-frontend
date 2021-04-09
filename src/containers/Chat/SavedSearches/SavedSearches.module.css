@@ -19,7 +19,7 @@
 
 .ChatConversations {
   width: 100%;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 87px);
   padding-left: 10px;
   overflow-y: hidden;
   position: relative;
@@ -32,4 +32,18 @@
 .SearchIcon img {
   margin-top: -3px;
   padding-right: 8px;
+}
+
+.Paper {
+  box-shadow: unset !important;
+  padding-left: 8px;
+}
+
+.Paper > ul > li[data-focus='true'] {
+  background-color: #edf6f2 !important;
+}
+
+.Paper > ul > li {
+  color: #073f24 !important;
+  border-radius: 20px;
 }

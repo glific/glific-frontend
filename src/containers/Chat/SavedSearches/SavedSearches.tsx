@@ -46,10 +46,11 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   }
 
   const changeValue = (event: any, value: any) => {
-    setOpen(false);
     if (value) {
       setSavedSearch(value);
+      setOpen(false);
     } else {
+      setOpen(true);
       setSavedSearch({ id: 0, args: '{}' });
     }
   };
@@ -59,6 +60,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
       <div className={styles.SavedSearchesAutocomplete}>
         <AutoComplete
           options={options}
+          classes={{ paper: styles.Paper, listbox: styles.Listbox }}
           optionLabel="shortcode"
           field={{}}
           form={{ setFieldValue: changeValue }}
@@ -68,7 +70,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
           }}
           multiple={false}
           openOptions={Open}
-          listBoxProps={{ style: { maxHeight: '78vh' } }}
+          listBoxProps={{ style: { maxHeight: 'calc(100vh - 220px)' } }}
         />
       </div>
       {savedSearch.id !== 0 ? (
