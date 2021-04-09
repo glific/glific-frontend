@@ -135,6 +135,9 @@ export const getUserSession = (element?: string) => {
     case 'roles':
       returnValue = JSON.parse(user).roles;
       break;
+    case 'language':
+      returnValue = JSON.parse(user).language.locale;
+      break;
     default:
       returnValue = JSON.parse(user);
   }
