@@ -68,6 +68,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     },
     onError: (error) => {
       setNotification(client, error.message, 'warning');
+      setLoading(false);
     },
   });
 
@@ -78,7 +79,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   // check if the organization is already subscribed
   if (
     billData &&
-    billData.getOrganizationBilling.billing.stripeSubscriptionId &&
+    billData.getOrganizationBilling?.billing?.stripeSubscriptionId &&
     !alreadySubscribed
   ) {
     setAlreadySubscribed(true);
@@ -168,12 +169,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>
             <div className={styles.Heading}>One time setup</div>
             <div className={styles.Pricing}>
-              <span>INR 15,000</span> ($220)
+              <span>INR 0</span> ($0)
             </div>
-            <ul className={styles.List}>
-              <li>5hr consulting</li>
-              <li>1hr onboarding session</li>
-            </ul>
           </div>
           <div>
             <div className={styles.Heading}>Monthly Recurring</div>

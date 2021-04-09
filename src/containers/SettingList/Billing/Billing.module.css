@@ -28,17 +28,19 @@
   color: #93a29b;
 }
 
+.Additional {
+  color: #979797;
+  font-size: 14px;
+}
+.Additional div {
+  margin-bottom: 4px;
+}
+
 .Heading {
   color: #979797;
   font-weight: 500;
   font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.Additional {
-  color: #979797;
-  line-height: 1.5;
-  font-size: 14px;
+  margin-bottom: 10px !important;
 }
 
 .BackLink {
@@ -57,7 +59,13 @@
   margin-right: 6px;
 }
 
+.Pricing {
+  display: flex;
+  align-items: center;
+}
+
 .Pricing span {
+  margin-right: 4px;
   font-size: 22px;
   color: #073f24;
   font-weight: 500;
@@ -87,6 +95,7 @@
 
 .Setup {
   display: flex;
+  margin-bottom: 10px;
 }
 
 .Setup > div {
