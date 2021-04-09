@@ -1,12 +1,69 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
-
+import { act, fireEvent, getByTestId, render, waitFor } from '@testing-library/react';
+import { loadStripe } from '@stripe/stripe-js';
+import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { Billing } from './Billing';
 import { MockedProvider } from '@apollo/client/testing';
-import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { createBillingSubscriptionQuery, createStatusPendingQuery } from '../../../mocks/Billing';
 
-const mocks = LIST_ITEM_MOCKS;
+const mocks = [createBillingSubscriptionQuery];
+
+const mountElementMock = jest.fn();
+const mockElement = () => ({
+  mount: jest.fn(),
+  destroy: jest.fn(),
+  on: mountElementMock,
+  update: jest.fn(),
+});
+
+const mockElements = () => {
+  const elements = {};
+
+  return {
+    create: jest.fn((type) => {
+      elements[type] = mockElement();
+      return elements[type];
+    }),
+    getElement: jest.fn((type) => {
+      return elements[type] || null;
+    }),
+  };
+};
+
+const mockStripe = () => ({
+  elements: jest.fn(() => mockElements()),
+  createToken: jest.fn(),
+  createSource: jest.fn(),
+  createPaymentMethod: jest.fn((props) => {
+    return {
+      error: null,
+      paymentMethod: { id: 'qwerty' },
+    };
+  }),
+  confirmCardPayment: jest.fn(),
+  confirmCardSetup: jest.fn(),
+  paymentRequest: jest.fn(),
+  _registerWrapper: jest.fn(),
+});
+
+jest.mock('@stripe/react-stripe-js', () => {
+  const stripe = jest.requireActual('@stripe/react-stripe-js');
+
+  return {
+    ...stripe,
+
+    Element: () => {
+      return mockElement;
+    },
+    useStripe: () => {
+      return mockStripe();
+    },
+    useElements: () => {
+      return mockElements();
+    },
+  };
+});
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -24,5 +81,38 @@ describe('<Billing />', () => {
     await waitFor(() => {
       expect(getByText('Back to settings')).toBeInTheDocument();
     });
+
+    expect(mountElementMock).toHaveBeenCalled;
   });
+});
+
+test('card status active', async () => {
+  const { getByText, getByTestId } = render(wrapper);
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
+  });
+  fireEvent.click(getByTestId('submitButton'));
+  await waitFor(() => {});
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
+});
+
+test('card status pending', async () => {
+  const { getByText, getByTestId } = render(
+    <MockedProvider mocks={[createStatusPendingQuery]} addTypename={false}>
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
+  });
+  fireEvent.click(getByTestId('submitButton'));
+  await waitFor(() => {});
 });

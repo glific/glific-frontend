@@ -113,7 +113,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       setLoading(false);
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
-      createSubscription({
+      await createSubscription({
         variables: {
           input: {
             stripePaymentMethodId: paymentMethod.id,
@@ -148,6 +148,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       </div>
       <Button
         variant="contained"
+        data-testid="submitButton"
         color="primary"
         type="submit"
         className={styles.Button}
