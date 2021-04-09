@@ -1,7 +1,5 @@
 import React from 'react';
-import { act, fireEvent, getByTestId, render, waitFor } from '@testing-library/react';
-import { loadStripe } from '@stripe/stripe-js';
-import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { Billing } from './Billing';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
