@@ -14,7 +14,7 @@ export const resources = {
 };
 
 export default resources;
-
+console.log('initialized');
 i18n.use(initReactI18next).init({
   lng: 'en',
   resources,
