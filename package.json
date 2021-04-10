@@ -64,6 +64,7 @@
     "formik-material-ui": "^3.0.1",
     "graphql": "^15.5.0",
     "i18next": "^20.1.0",
+    "i18next-browser-languagedetector": "^6.1.0",
     "markdown-draft-js": "^2.2.1",
     "moment": "^2.27.0",
     "phoenix": "^1.5.7",
