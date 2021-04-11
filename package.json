@@ -136,6 +136,7 @@
   },
   "devDependencies": {
     "@types/react-test-renderer": "^17.0.1",
+    "i18next-parser": "^3.7.0",
     "prettier": "^2.2.1",
     "react-test-renderer": "^17.0.1"
   }
