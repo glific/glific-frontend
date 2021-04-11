@@ -180,7 +180,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   const settingMenus = settingMenu ? (
     <div>
-      <Tooltip title={t('settings')} placement="top">
+      <Tooltip title={t('Settings')} placement="top">
         <Link to="/settings">
           <IconButton data-testid="settingsMenu">
             <img
@@ -252,7 +252,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
               window.open(GLIFIC_DOCS_URL, '_blank');
             }}
           >
-            {t('helpdocuments')}
+            {t('Help Documents')}
             <QuestionIcon />
           </div>
           <div className={bottonMenuClasses.join(' ')}>
@@ -265,7 +265,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             >
               <Menu menus={staffManagementMenus}>
                 <IconButton data-testid="staffManagementMenu">
-                  <Tooltip title={t('staffmanagement')} placement="top">
+                  <Tooltip title={t('Staff Management')} placement="top">
                     <img
                       src={
                         ['/collection', '/staff-management', '/blocked-contacts'].includes(
@@ -284,7 +284,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             <div>
               <Menu menus={userAccountMenus}>
                 <IconButton data-testid="profileMenu">
-                  <Tooltip title={t('profile')} placement="top">
+                  <Tooltip title={t('Profile')} placement="top">
                     <img
                       src={
                         location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
