@@ -20,14 +20,6 @@ import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
 export interface MyAccountProps {}
 
-// setup form schema base on Yup
-const FormSchema = Yup.object().shape({
-  otp: Yup.string().required('Input required'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 8 characters long.')
-    .required('Input required'),
-});
-
 export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the validation / errors / success message
   const [toastMessageInfo, setToastMessageInfo] = useState({ message: '', severity: '' });
@@ -135,6 +127,14 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     );
   }
 
+  // setup form schema base on Yup
+  const FormSchema = Yup.object().shape({
+    otp: Yup.string().required(t('Input required')),
+    password: Yup.string()
+      .min(6, t('Password must be at least 8 characters long.'))
+      .required(t('Input required')),
+  });
+
   // for configuration that needs to be rendered
   const formFields = [
     {
@@ -213,10 +213,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     onClick={submitForm}
                     className={styles.Button}
                   >
-                    Save
+                    {t('Save')}
                   </Button>
                   <Button variant="contained" color="default" onClick={cancelHandler}>
-                    Cancel
+                    {t('Cancel')}
                   </Button>
                 </>
               )}
@@ -237,7 +237,9 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
     // change the user interface
     i18n.changeLanguage(event.target.value);
+
     // save in db
+    // TBD
   };
 
   const languageField = {
@@ -249,12 +251,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     <div className={styles.Form}>
       <Dropdown
         options={languageOptions}
-        label="Change language"
-        placeholder="Select language"
+        label={t('Change language')}
+        placeholder={t('Available languages')}
         field={languageField}
-      >
-        Change language
-      </Dropdown>
+      />
     </div>
   );
 
@@ -264,14 +264,14 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         <IconButton disabled className={styles.Icon}>
           <UserIcon />
         </IconButton>
-        My Account
+        {t('My Account')}
       </Typography>
       <Typography variant="h6" className={styles.Title}>
-        Change Interface Language
+        {t('Change Interface Language')}
       </Typography>
       {languageSwitcher}
       <Typography variant="h6" className={styles.Title}>
-        Change Password
+        {t('Change Password')}
       </Typography>
       {form}
     </div>
