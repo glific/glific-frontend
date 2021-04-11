@@ -1,36 +1,36 @@
 export const sideDrawerMenus = [
   {
-    title: 'chats',
+    title: 'Chats',
     path: '/chat',
     icon: 'chat',
   },
   {
-    title: 'tags',
+    title: 'Tags',
     path: '/tag',
     icon: 'tag',
   },
   {
-    title: 'speedsends',
+    title: 'Speed Sends',
     path: '/speed-send',
     icon: 'speed-send',
   },
   {
-    title: 'flows',
+    title: 'Flows',
     path: '/flow',
     icon: 'flow',
   },
   {
-    title: 'triggers',
+    title: 'Triggers (Beta)',
     path: '/trigger',
     icon: 'trigger',
   },
   {
-    title: 'searches',
+    title: 'Searches',
     path: '/search',
     icon: 'search',
   },
   {
-    title: 'templates',
+    title: 'Templates',
     path: '/template',
     icon: 'template',
   },
@@ -38,30 +38,30 @@ export const sideDrawerMenus = [
 
 export const staffManagementMenus = [
   {
-    title: 'collections',
+    title: 'Collections',
     path: '/collection',
   },
   {
-    title: 'staffmanagement',
+    title: 'Staff Management',
     path: '/staff-management',
   },
   {
-    title: 'blockedcontacts',
+    title: 'Blocked Contacts',
     path: '/blocked-contacts',
   },
 ];
 
 export const userAccountMenus = [
   {
-    title: 'myprofile',
+    title: 'My Profile',
     path: '/user-profile',
   },
   {
-    title: 'myaccount',
+    title: 'My Account',
     path: '/myaccount',
   },
   {
-    title: 'logout',
+    title: 'Logout',
     path: '/logout/user',
     className: 'Danger',
   },
