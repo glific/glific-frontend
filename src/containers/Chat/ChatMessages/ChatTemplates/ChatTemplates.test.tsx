@@ -35,9 +35,9 @@ describe('<ChatTemplates />', () => {
 
   test('mock API returns correct payload', async () => {
     // Check isHsm is false
-    const { getByText: getByTextSpeedSend, getByTestId } = render(chatTemplates());
+    const { getByText: getByTextSpeedSend, getAllByTestId } = render(chatTemplates());
     await waitFor(() => {
-      expect(getByTestId('templateItem')).toBeTruthy();
+      expect(getAllByTestId('templateItem')[0]).toBeTruthy();
     });
 
     expect(getByTextSpeedSend('Message:')).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe('<ChatTemplates />', () => {
   test('onClick of text should trigger handleSelectText', async () => {
     const wrapper = render(chatTemplates());
     await waitFor(() => {
-      const shortcutItem = wrapper.getByTestId('templateItem');
+      const shortcutItem = wrapper.getAllByTestId('templateItem')[0];
       fireEvent.click(shortcutItem);
     });
 
