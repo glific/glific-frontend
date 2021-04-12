@@ -47,15 +47,16 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const urlString = new URL(window.location.href);
 
   let messageParameterOffset: any = 0;
+  let searchMessageNumber: any;
 
   // get the message number from url
   if (urlString.searchParams.get('search')) {
-    messageParameterOffset = urlString.searchParams.get('search');
+    searchMessageNumber = urlString.searchParams.get('search');
     // check if the message number is greater than 10 otherwise set the initial offset to 0
     messageParameterOffset =
-      messageParameterOffset && parseInt(messageParameterOffset, 10) - 10 < 0
+      searchMessageNumber && parseInt(searchMessageNumber, 10) - 10 < 0
         ? 1
-        : parseInt(messageParameterOffset, 10) - 10;
+        : parseInt(searchMessageNumber, 10) - 10;
   }
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
@@ -96,12 +97,25 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     }
   }, [setShowJumpToLatest, contactId, reducedHeight]);
 
+  const scrollToLatestMessage = () => {
+    const container: any = document.querySelector('.messageContainer');
+    if (container) {
+      const scroll = container.scrollHeight - container.clientHeight;
+      if (scroll) {
+        container.scrollTo(0, scroll);
+      }
+    }
+  };
+
   // Instantiate these to be used later.
 
   let conversationIndex: number = -1;
 
   // create message mutation
   const [createAndSendMessage] = useMutation(CREATE_AND_SEND_MESSAGE_MUTATION, {
+    onCompleted: () => {
+      scrollToLatestMessage();
+    },
     onError: (error: any) => {
       if (error.message) {
         setNotification(client, error.message, 'warning');
@@ -182,8 +196,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         // update the conversation cache
         updateConversationsCache(conversationsCopy, client, queryVariables);
 
-        getScrollToMessage();
-
         // need to display Load more messages button
         setShowLoadMore(true);
       }
@@ -240,11 +252,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         if (searchData.search[0].messages.length === 0) {
           setShowLoadMore(false);
         }
-
-        getScrollToMessage();
       }
     },
   });
+
+  useEffect(() => {
+    // scroll to the particular message after loading
+    if (data || parameterdata) getScrollToMessage();
+  }, [data, parameterdata]);
 
   let messageList: any;
   let unselectedTags: Array<any> = [];
@@ -259,6 +274,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
+    onCompleted: () => {
+      scrollToLatestMessage();
+    },
     onError: (collecctionError: any) => {
       if (collecctionError.message) {
         setNotification(client, collecctionError.message, 'warning');
@@ -469,6 +487,17 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       findCollectionInAllConversations();
     }
   }, [contactId, collectionId, allConversations]);
+
+  useEffect(() => {
+    if (searchMessageNumber) {
+      const element = document.querySelector(`#search${searchMessageNumber}`);
+      if (element) {
+        element.scrollIntoView();
+      } else {
+        // need to check if message is not present fetch message from selected contact
+      }
+    }
+  }, [searchMessageNumber]);
 
   const closeDialogBox = () => {
     setDialogbox('');
@@ -726,10 +755,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       });
     }
 
-    const container: any = document.querySelector('.messageContainer');
-    if (container) {
-      container.scrollTop = container.scrollHeight - container.clientHeight;
-    }
+    scrollToLatestMessage();
   };
 
   const jumpToLatest = (
