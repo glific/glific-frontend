@@ -1,11 +1,17 @@
-.ListingContainer {
-  height: calc(100% - 100px);
+.ChatListingContainer {
+  height: calc(100% - 124px);
   overflow-y: auto;
   padding: 0px !important;
 }
 
 .CollectionListingContainer {
   height: 100%;
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
+.SaveSearchListingContainer {
+  height: calc(100% - 96px);
   overflow-y: auto;
   padding: 0px !important;
 }
@@ -56,7 +62,7 @@
   background-color: #073f24;
   font-weight: 500;
   padding: 1px 8px;
-  margin: 20px auto 0px auto;
+  margin: 0 auto;
   border-radius: 0 0 12px 12px;
   color: #edf6f2;
   cursor: pointer;
@@ -68,7 +74,7 @@
 
 .ScrollToTopContacts {
   composes: ScrollButton;
-  top: 88px;
+  top: 110px;
 }
 
 .ScrollToTopCollections {
