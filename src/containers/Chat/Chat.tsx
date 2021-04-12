@@ -23,11 +23,6 @@ import selectedSavedSearchIcon from '../../assets/images/icons/Chat/SelectedSave
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 import SavedSearches from './SavedSearches/SavedSearches';
 
-const noConversations = (
-  <Typography variant="h5" className={styles.NoConversations}>
-    There are no chat conversations to display.
-  </Typography>
-);
 export interface ChatProps {
   contactId?: number | string | null;
   collectionId?: number | null;
@@ -86,6 +81,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       selectedContactId = data.search[0].contact.id;
     }
   }
+
+  const noConversations = (
+    <Typography variant="h5" className={styles.NoConversations}>
+      {t('There are no chat conversations to display.')}
+    </Typography>
+  );
 
   let chatInterface: any;
   let listingContent;

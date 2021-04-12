@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, IconButton } from '@material-ui/core';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ChatConversations.module.css';
 import SearchBar from '../../../components/UI/SearchBar/SearchBar';
@@ -33,6 +34,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
   const [enableSearchMode, setEnableSearchMode] = useState(false);
   const offset = useQuery(SEARCH_OFFSET);
   const client = useApolloClient();
+  const { t } = useTranslation();
 
   // restore multi-search after conversation click
   useEffect(() => {
@@ -152,7 +154,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         title=""
         handleCancel={closeDialogBox}
         handleOk={handleSubmit}
-        buttonOk="Search"
+        buttonOk={t('Search')}
         skipOk
         skipCancel
       >
@@ -161,7 +163,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
     );
   }
 
-  const toolTip = 'The search will be updated as per new filters';
+  const toolTip = t('The search will be updated as per new filters');
 
   const buildButton = (toolTipTitle: string, type: string, label: string) => (
     <Tooltip title={toolTipTitle} placement="top">
@@ -180,7 +182,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   const btnUpdate = savedSearchCriteriaId ? buildButton(toolTip, 'update', 'Update') : null;
 
-  const btnCreate = buildButton('Create a new search', 'new', 'Create new');
+  const btnCreate = buildButton(t('Create a new search'), t('new'), t('Create new'));
 
   const btnCancel = (
     <IconButton
