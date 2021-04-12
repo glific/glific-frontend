@@ -26,7 +26,7 @@ const getFields = (
     disabled: match.params.id,
     helperText:
       'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-    handleExampleChange: getExampleMessage,
+    handleChange: getExampleMessage,
   },
   {
     component: AutoComplete,
@@ -103,7 +103,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   };
 
   const removeFirstLineBreak = (text: any) =>
-    text.length && text.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
+    text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
   const getExampleMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);

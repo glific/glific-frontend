@@ -130,67 +130,64 @@ export const Simulator: React.FC<SimulatorProps> = ({
   );
 
   const sendMessage = () => {
-    if (!isPreviewMessage) {
-      const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-      axios({
-        method: 'POST',
-        url: GUPSHUP_CALLBACK_URL,
-        data: {
-          type: 'message',
+    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+    axios({
+      method: 'POST',
+      url: GUPSHUP_CALLBACK_URL,
+      data: {
+        type: 'message',
+        payload: {
+          id: uuidv4(),
+          type: 'text',
           payload: {
-            id: uuidv4(),
-            type: 'text',
-            payload: {
-              text: sendMessageText,
-            },
-            sender: {
-              // this number will be the simulated contact number
-              phone: data ? data.simulatorGet.phone : '',
-              name: data ? data.simulatorGet.name : '',
-            },
+            text: sendMessageText,
+          },
+          sender: {
+            // this number will be the simulated contact number
+            phone: data ? data.simulatorGet.phone : '',
+            name: data ? data.simulatorGet.name : '',
           },
         },
-      }).catch((error) => {
-        // add log's
-        setLogs(
-          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-          'info'
-        );
-        setLogs(error, 'error');
-      });
-      setInputMessage('');
-    }
+      },
+    }).catch((error) => {
+      // add log's
+      setLogs(
+        `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+        'info'
+      );
+      setLogs(error, 'error');
+    });
+    setInputMessage('');
   };
+
   const getPreviewMessage = () => {
     if (message && message.type) {
+      const { body, insertedAt, type, media, location } = message;
+      const previewMessage = renderMessage(body, 'received', 0, insertedAt, type, media, location);
       if (['STICKER', 'AUDIO'].includes(message.type)) {
-        const { body, insertedAt, type, media, location } = message;
-        setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
-      } else if (message?.body || message.media?.caption) {
-        const { body, insertedAt, type, media, location } = message;
-        setSimulatedMessage(renderMessage(body, 'received', 0, insertedAt, type, media, location));
+        setSimulatedMessage(previewMessage);
+      } else if (message.body || message.media?.caption) {
+        setSimulatedMessage(previewMessage);
       } else {
         // To get rid of empty body and media caption for preview HSM
         setSimulatedMessage('');
       }
     }
   };
+
   const getChatMessage = () => {
-    if (data) {
-      setSimulatedMessage(
-        messages
-          .map((simulatorMessage: any, index: number) => {
-            const { body, insertedAt, type, media, location } = simulatorMessage;
-            if (simulatorMessage.receiver.id === simulatorId) {
-              return renderMessage(body, 'received', index, insertedAt, type, media, location);
-            }
-            return renderMessage(body, 'send', index, insertedAt, type, media, location);
-          })
-          .reverse()
-      );
-      if (message) {
-        sendMessage();
-      }
+    const chatMessage = messages
+      .map((simulatorMessage: any, index: number) => {
+        const { body, insertedAt, type, media, location } = simulatorMessage;
+        if (simulatorMessage.receiver.id === simulatorId) {
+          return renderMessage(body, 'received', index, insertedAt, type, media, location);
+        }
+        return renderMessage(body, 'send', index, insertedAt, type, media, location);
+      })
+      .reverse();
+    setSimulatedMessage(chatMessage);
+    if (message) {
+      sendMessage();
     }
   };
 
@@ -201,10 +198,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   }, [message]);
 
   useEffect(() => {
-    if (message && data) {
+    if (allConversations && data) {
       getChatMessage();
     }
-  }, [message, data]);
+  }, [data, allConversations]);
 
   const messageRef = useCallback(
     (node: any) => {
@@ -257,6 +254,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                     }}
                     value={inputMessage}
                     placeholder="Type a message"
+                    disabled={isPreviewMessage}
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
                   <AttachFileIcon className={styles.AttachFileIcon} />
@@ -267,6 +265,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   variant="contained"
                   color="primary"
                   className={styles.SendButton}
+                  disabled={isPreviewMessage}
                   onClick={() => sendMessage()}
                 >
                   <MicIcon />

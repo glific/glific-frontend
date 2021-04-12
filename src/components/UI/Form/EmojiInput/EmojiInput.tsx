@@ -15,7 +15,7 @@ export interface EmojiInputProps {
   label: string;
   placeholder: string;
   rows: number;
-  handleExampleChange?: any;
+  handleChange?: any;
 }
 
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
@@ -31,6 +31,7 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
 
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
+  handleChange,
   ...props
 }: EmojiInputProps) => {
   const inputRef = React.useRef(null);
@@ -62,8 +63,8 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   };
 
   const draftJsChange = (editorState: any) => {
-    if (props.handleExampleChange) {
-      props.handleExampleChange(convertToWhatsApp(props.form.values.example));
+    if (handleChange) {
+      handleChange(convertToWhatsApp(props.form.values.example));
     }
     props.form.setFieldValue(rest.name, editorState);
   };
