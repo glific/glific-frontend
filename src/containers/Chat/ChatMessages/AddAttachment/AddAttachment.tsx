@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import styles from './AddAttachment.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -35,10 +36,11 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
 }: AddAttachmentPropTypes) => {
   const [onSubmit, setOnSubmit] = useState(false);
   const [errors, setErrors] = useState<any>(null);
+  const { t } = useTranslation();
 
   const validateURL = () => {
     if (attachmentURL && attachmentType && onSubmit) {
-      setErrors('Please wait for the attachment URL verification');
+      setErrors(t('Please wait for the attachment URL verification'));
 
       validateMedia(attachmentURL, attachmentType).then((response: any) => {
         if (!response.data.is_valid) {
@@ -70,7 +72,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     component: Input,
     name: 'attachmentURL',
     type: 'text',
-    placeholder: 'Attachment URL',
+    placeholder: t('Attachment URL'),
     validate,
   };
 
@@ -92,8 +94,8 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   formFieldItems = attachmentType !== '' ? [...formFieldItems, input] : formFieldItems;
 
   const validationSchema = Yup.object().shape({
-    attachmentType: Yup.string().required('Type is required.'),
-    attachmentURL: Yup.string().required('URL is required.'),
+    attachmentType: Yup.string().required(t('Type is required.')),
+    attachmentURL: Yup.string().required(t('URL is required.')),
   });
 
   const displayWarning = () => {
@@ -101,8 +103,8 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       return (
         <div className={styles.FormHelperText}>
           <ol>
-            <li>Animated stickers are not supported.</li>
-            <li>Captions along with stickers are not supported.</li>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
           </ol>
         </div>
       );
@@ -110,7 +112,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     return (
       <div className={styles.FormHelperText}>
         <ol>
-          <li>Captions along with audio are not supported.</li>
+          <li>{t('Captions along with audio are not supported.')}</li>
         </ol>
       </div>
     );
@@ -135,7 +137,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
         <Form className={styles.Form} data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title="Add attachments to message"
+            title={t('Add attachments to message')}
             handleOk={() => {
               submitForm();
             }}
@@ -145,7 +147,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
               setAttachmentURL('');
               setAttachmentAdded(false);
             }}
-            buttonOk="Add"
+            buttonOk={t('Add')}
             alignButtons="left"
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">

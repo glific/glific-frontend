@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 import { Input } from '../../../../components/UI/Form/Input/Input';
@@ -26,6 +27,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   const [formFieldItems, setFormFieldItems] = useState<any>([]);
   const [validation, setValidation] = useState<any>({});
   const [initialValues, setInitialValues] = useState<any>({});
+  const { t } = useTranslation();
 
   useEffect(() => {
     const isVariable = bodyText.match(pattern);
@@ -80,7 +82,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
         <Form data-testid="formLayout">
           <DialogBox
             titleAlign="left"
-            title="Select variables for the message"
+            title={t('Select variables for the message')}
             contentText={bodyText}
             handleOk={() => {
               submitForm();
@@ -89,7 +91,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
               setVariable(false);
               handleCancel();
             }}
-            buttonOk="Done"
+            buttonOk={t('Done')}
             alignButtons="left"
           >
             <div data-testid="variablesDialog">
