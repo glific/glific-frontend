@@ -47,3 +47,5 @@ export const SearchList: React.SFC<SearchListProps> = () => (
     searchParameter="label"
   />
 );
+
+export default SearchList;

@@ -1,5 +1,5 @@
-import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
+import { Suspense } from 'react';
+
 import AuthenticatedRoute from './AuthenticatedRoute';
 import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { setUserSession } from '../../services/AuthService';
 import { CONVERSATION_MOCKS } from '../../mocks/Chat';
 import * as Chat from '../../containers/Chat/Chat';
 import * as ChatSubscription from '../../containers/Chat/ChatSubscription/ChatSubscription';
-import axios from 'axios';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 
 jest.mock('axios');
 
@@ -21,7 +21,9 @@ describe('<AuthenticatedRoute />', () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <BrowserRouter>
-          <AuthenticatedRoute />
+          <Suspense fallback={Loading}>
+            <AuthenticatedRoute />
+          </Suspense>
         </BrowserRouter>
       </MockedProvider>
     );

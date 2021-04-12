@@ -109,3 +109,5 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     </>
   );
 };
+
+export default FlowList;
