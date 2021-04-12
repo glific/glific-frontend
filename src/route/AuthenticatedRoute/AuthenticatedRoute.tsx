@@ -120,7 +120,7 @@ const routeAdmin = (
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
     <Route path="/notifications" exact component={NotificationList} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
-    <Route exact path="/chat/saved-searches" component={() => <Chat savedSearches />} />
+    <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
     <Route
       exact
       path="/chat/saved-searches/:contactId"
