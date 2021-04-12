@@ -128,8 +128,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
     });
 
     if (error) {
-      console.log('[error]', error);
       setLoading(false);
+      setNotification(client, error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
       await createSubscription({
