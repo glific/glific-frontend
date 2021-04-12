@@ -5,6 +5,7 @@ import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ChatMessage.module.css';
 import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
@@ -48,9 +49,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
-
   const messageRef = useRef<null | HTMLDivElement>(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const { t } = useTranslation();
+
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
   let displayTag: any;
@@ -89,7 +91,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   // tagging delete mutation
   const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: () => {
-      setNotification(client, 'Tag deleted successfully');
+      setNotification(client, t('Tag deleted successfully.'));
     },
   });
 
@@ -240,7 +242,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const ErrorIcon = messageErrorStatus ? (
     <Tooltip
-      title="Something went wrong! This message could not be sent"
+      title={t('Something went wrong! This message could not be sent.')}
       placement={isSender ? 'right' : 'left'}
       tooltipClass={styles.WarningTooltip}
       tooltipArrowClass={styles.ArrowTooltip}
@@ -304,7 +306,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     onClick={props.setDialog}
                     data-testid="dialogButton"
                   >
-                    Assign tag
+                    {t('Assign tag')}
                   </Button>
                   <br />
                   <Button
@@ -312,7 +314,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     color="primary"
                     onClick={() => setShowSaveMessageDialog(true)}
                   >
-                    Add to speed sends
+                    {t('Add to speed sends')}
                   </Button>
                   {props.type !== 'TEXT' && (
                     <span>
@@ -323,7 +325,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                         onClick={() => downloadMedia()}
                         data-testid="downloadMedia"
                       >
-                        Download media
+                        {t('Download media')}
                       </Button>
                     </span>
                   )}
