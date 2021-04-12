@@ -1,5 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './CollectionContact.module.css';
 import { CollectionContactList } from './CollectionContactList/CollectionContactList';
@@ -13,6 +14,8 @@ export interface CollectionContactProps {
 export const CollectionContact: React.FC<CollectionContactProps> = (
   props: CollectionContactProps
 ) => {
+  const { t } = useTranslation();
+
   const { match } = props;
 
   const collectionId = match.params.id;
@@ -20,7 +23,9 @@ export const CollectionContact: React.FC<CollectionContactProps> = (
     variables: { id: collectionId },
     fetchPolicy: 'cache-and-network',
   });
-  const title = collection.data ? collection.data.group.group.label : 'Collection';
+
+  const title = collection.data ? collection.data.group.group.label : t('Collection');
+
   let users;
   let description;
 
