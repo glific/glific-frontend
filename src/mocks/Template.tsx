@@ -27,7 +27,8 @@ export const TEMPLATE_MOCKS = [
       isHsm: true,
       isActive: true,
       updatedAt: '2020-12-01T18:00:32Z',
-      translations: '{}',
+      translations:
+        '{"2":{"status":"approved","languageId":{"label":"Hindi","id":"2"},"label":"now","isHsm":false,"body":"hey","MessageMedia":null}}',
       type: 'TEXT',
       language: {
         id: '1',
