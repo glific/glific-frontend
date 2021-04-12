@@ -30,6 +30,7 @@ export interface AutocompleteProps {
   openOptions?: boolean;
   disableClearable?: boolean;
   listBoxProps?: any;
+  classes?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -54,6 +55,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   openOptions,
   disableClearable = false,
   listBoxProps,
+  classes = {},
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -98,6 +100,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
         <Autocomplete
+          classes={classes}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}

@@ -141,3 +141,5 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     </div>
   );
 };
+
+export default HSM;

@@ -19,3 +19,5 @@ export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => (
     customStyle={styles.AttachmentFields}
   />
 );
+
+export default SpeedSend;

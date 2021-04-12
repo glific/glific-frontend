@@ -129,8 +129,6 @@ const client = new ApolloClient({
 });
 
 describe('<ChatSubscription />', () => {
-  afterEach(cleanup);
-
   test('it should render <ChatSubscription /> component correctly', async () => {
     render(
       <ApolloProvider client={client}>

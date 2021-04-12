@@ -342,7 +342,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
           color="default"
           className={styles.ContainedButton}
           onClick={() => {
-            setConfirmedNavigation(true);
             history.push('/flow');
           }}
         >
@@ -401,3 +400,5 @@ export const FlowEditor = (props: FlowEditorProps) => {
     </>
   );
 };
+
+export default FlowEditor;

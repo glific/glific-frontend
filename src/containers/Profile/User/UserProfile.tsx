@@ -10,3 +10,5 @@ export const UserProfile: React.SFC<UserProfileProps> = () => (
     <Profile profileType="User" redirectionLink="chat/" />
   </div>
 );
+
+export default UserProfile;
