@@ -3,7 +3,7 @@ import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
-import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
+import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
