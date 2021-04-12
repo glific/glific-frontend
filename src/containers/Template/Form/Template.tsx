@@ -342,7 +342,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       name: 'attachmentURL',
       type: 'text',
       placeholder: 'Attachment URL',
-
       validate: validateURL,
     },
   ];
