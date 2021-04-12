@@ -186,8 +186,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
       })
       .reverse();
     setSimulatedMessage(chatMessage);
-
-    sendMessage();
+    if (message) {
+      sendMessage();
+    }
   };
 
   useEffect(() => {
@@ -197,10 +198,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   }, [message]);
 
   useEffect(() => {
-    if (message && data) {
+    if (allConversations && data) {
       getChatMessage();
     }
-  }, [message, data]);
+  }, [data, allConversations]);
 
   const messageRef = useCallback(
     (node: any) => {
