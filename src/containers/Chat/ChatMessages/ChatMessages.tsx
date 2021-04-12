@@ -4,6 +4,7 @@ import { CircularProgress, Container } from '@material-ui/core';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ChatMessages.module.css';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -70,6 +71,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+  const { t } = useTranslation();
+
   let dialogBox;
 
   useEffect(() => {
@@ -252,7 +255,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   // tagging message mutation
   const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
     onCompleted: () => {
-      setNotification(client, 'Tags added successfully');
+      setNotification(client, t('Tags added successfully'));
       setDialogbox('');
     },
   });
@@ -501,7 +504,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     dialogBox = (
       <SearchDialogBox
         selectedOptions={selectedMessageTags}
-        title="Assign tag to message"
+        title={t('Assign tag to message')}
         handleOk={handleSubmit}
         handleCancel={closeDialogBox}
         options={tags}
@@ -612,7 +615,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
                 aria-hidden="true"
                 data-testid="loadMoreMessages"
               >
-                Load more messages
+                {t('Load more messages')}
               </div>
             )}
           </div>
@@ -623,7 +626,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   } else {
     messageListContainer = (
       <div className={styles.NoMessages} data-testid="messageContainer">
-        No messages.
+        {t('No messages.')}
       </div>
     );
   }
@@ -740,7 +743,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       onKeyDown={() => showLatestMessage()}
       aria-hidden="true"
     >
-      Jump to latest
+      {t('Jump to latest')}
       <ExpandMoreIcon />
     </div>
   );
