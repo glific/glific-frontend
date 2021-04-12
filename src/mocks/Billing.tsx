@@ -39,7 +39,7 @@ export const createStatusPendingQuery = {
   },
 };
 
-export const getBillingQuery = {
+const billingQuery = (status: string) => ({
   request: {
     query: GET_ORGANIZATION_BILLING,
     variables: {},
@@ -52,11 +52,15 @@ export const getBillingQuery = {
           email: 'glific@glific.com',
           id: '1',
           isActive: true,
-          stripeSubscriptionId: '',
+          stripeSubscriptionId: 'wjnwicwowc98nj',
           stripeSubscriptionItems: null,
-          stripeSubscriptionStatus: '',
+          stripeSubscriptionStatus: status,
         },
       },
     },
   },
-};
+});
+
+export const getBillingQuery = billingQuery('');
+
+export const getPendingBillingQuery = billingQuery('pending');
