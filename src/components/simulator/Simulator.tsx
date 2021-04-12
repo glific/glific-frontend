@@ -166,7 +166,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
       const previewMessage = renderMessage(body, 'received', 0, insertedAt, type, media, location);
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         setSimulatedMessage(previewMessage);
-      } else if (message?.body || message.media?.caption) {
+      } else if (message.body || message.media?.caption) {
         setSimulatedMessage(previewMessage);
       } else {
         // To get rid of empty body and media caption for preview HSM
