@@ -154,6 +154,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const cardElements = (
     <>
       <CardElement
+        options={{ hidePostalCode: true }}
         className={styles.Card}
         onChange={(e) => {
           setCardError(e.error?.message);
