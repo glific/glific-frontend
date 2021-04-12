@@ -116,6 +116,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [category, setCategory] = useState<any>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
+  const [isUrlValid, setIsUrlValid] = useState<any>();
 
   const states = {
     language,
@@ -281,15 +282,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const validateURL = (value: string) => {
     if (value && type) {
-      return validateMedia(value, type.id).then((response: any) => {
+      validateMedia(value, type.id).then((response: any) => {
         if (!response.data.is_valid) {
-          return response.data.message;
+          setIsUrlValid(response.data.message);
+        } else {
+          setIsUrlValid('');
         }
         getUrlAttachmentAndType(type.id, { url: value });
-        return false;
       });
     }
-    return false;
   };
 
   const displayWarning = () => {
@@ -342,7 +343,13 @@ const Template: React.SFC<TemplateProps> = (props) => {
       name: 'attachmentURL',
       type: 'text',
       placeholder: 'Attachment URL',
-      validate: validateURL,
+      validate: () => isUrlValid,
+      inputProp: {
+        onBlur: (event: any) => {
+          validateURL(event.target.value);
+          setAttachmentURL(event.target.value);
+        },
+      },
     },
   ];
 
@@ -369,6 +376,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: defaultAttribute.isHsm
         ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
         : null,
+      inputProp: {
+        onBlur: (event: any) => setLabel(event.target.value),
+      },
     },
     {
       component: EmojiInput,
