@@ -24,11 +24,11 @@ const loadfiles = () => {
   const filesToLoad: any = Manifest.files;
   let index = 0;
   Object.keys(filesToLoad).forEach((fileName) => {
-    if (filesToLoad[fileName].startsWith('./static')) {
+    if (filesToLoad[fileName].startsWith('/static')) {
       if (filesToLoad[fileName].endsWith('.js')) {
         index += 1;
         const script = document.createElement('script');
-        script.src = filesToLoad[fileName].slice(1);
+        script.src = filesToLoad[fileName];
         script.id = `flowEditorScript${index}`;
         script.async = false;
         files.push(script);
@@ -36,7 +36,7 @@ const loadfiles = () => {
 
       if (filesToLoad[fileName].endsWith('.css')) {
         const link = document.createElement('link');
-        link.href = filesToLoad[fileName].slice(1);
+        link.href = filesToLoad[fileName];
         link.id = `flowEditorfile${index}`;
         link.rel = 'stylesheet';
         document.body.appendChild(link);
