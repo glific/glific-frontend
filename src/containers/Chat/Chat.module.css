@@ -54,6 +54,7 @@
   margin: 4px 0px 5px 0px !important;
   color: #93a29b;
   cursor: pointer;
+  line-height: 1 !important;
 }
 
 .SelectedTab {
