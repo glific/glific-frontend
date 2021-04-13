@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery, useLazyQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Tag.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -18,67 +19,6 @@ export interface TagProps {
   match: any;
 }
 
-const FormSchema = Yup.object().shape({
-  label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-  description: Yup.string().required('Description is required.'),
-});
-
-const dialogMessage = "You won't be able to use this for tagging messages.";
-
-const tagIcon = <TagIcon className={styles.TagIcon} />;
-
-const queries = {
-  getItemQuery: GET_TAG,
-  createItemQuery: CREATE_TAG,
-  updateItemQuery: UPDATE_TAG,
-  deleteItemQuery: DELETE_TAG,
-};
-
-const formFields = (validateTitle: any, tags: any, colorCode: string) => [
-  {
-    component: Input,
-    name: 'label',
-    type: 'text',
-    placeholder: 'Title',
-    validate: validateTitle,
-  },
-  {
-    component: Input,
-    name: 'description',
-    type: 'text',
-    placeholder: 'Description',
-    rows: 3,
-    textArea: true,
-  },
-  {
-    component: Input,
-    name: 'keywords',
-    type: 'text',
-    placeholder: 'Keywords',
-    rows: 3,
-    helperText: 'Use commas to separate the keywords',
-    textArea: true,
-  },
-  {
-    component: AutoComplete,
-    name: 'parentId',
-    placeholder: 'Parent tag',
-    options: tags,
-    optionLabel: 'label',
-    multiple: false,
-    textFieldProps: {
-      label: 'Parent tag',
-      variant: 'outlined',
-    },
-  },
-  {
-    component: ColorPicker,
-    name: 'colorCode',
-    colorCode,
-    helperText: 'Tag color',
-  },
-];
-
 export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [label, setLabel] = useState('');
   const [description, setDescription] = useState('');
@@ -87,6 +27,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [parentId, setParentId] = useState<any>([]);
   const [filterLabel, setFilterLabel] = useState('');
   const [languageId, setLanguageId] = useState('');
+  const { t } = useTranslation();
 
   const states = { label, description, keywords, colorCode, parentId };
 
@@ -144,7 +85,7 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
         }
       }
       if (found.length > 0) {
-        error = 'Title already exists.';
+        error = t('Title already exists.');
       }
     }
     return error;
@@ -161,6 +102,67 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
     }
     return payloadCopy;
   };
+
+  const FormSchema = Yup.object().shape({
+    label: Yup.string().required(t('Title is required.')).max(50, t('Title is too long.')),
+    description: Yup.string().required(t('Description is required.')),
+  });
+
+  const dialogMessage = t("You won't be able to use this for tagging messages.");
+
+  const tagIcon = <TagIcon className={styles.TagIcon} />;
+
+  const queries = {
+    getItemQuery: GET_TAG,
+    createItemQuery: CREATE_TAG,
+    updateItemQuery: UPDATE_TAG,
+    deleteItemQuery: DELETE_TAG,
+  };
+
+  const formFields = (validateTitleCallback: any, tagsList: any, colorCodeValue: string) => [
+    {
+      component: Input,
+      name: 'label',
+      type: 'text',
+      placeholder: t('Title'),
+      validate: validateTitleCallback,
+    },
+    {
+      component: Input,
+      name: 'description',
+      type: 'text',
+      placeholder: t('Description'),
+      rows: 3,
+      textArea: true,
+    },
+    {
+      component: Input,
+      name: 'keywords',
+      type: 'text',
+      placeholder: t('Keywords'),
+      rows: 3,
+      helperText: t('Use commas to separate the keywords'),
+      textArea: true,
+    },
+    {
+      component: AutoComplete,
+      name: 'parentId',
+      placeholder: t('Parent tag'),
+      options: tagsList,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        label: t('Parent tag'),
+        variant: 'outlined',
+      },
+    },
+    {
+      component: ColorPicker,
+      name: 'colorCode',
+      colorCodeValue,
+      helperText: t('Tag color'),
+    },
+  ];
 
   return (
     <FormLayout
