@@ -68,9 +68,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // return loading till we fetch the data
   if (userDataLoading || organizationDataLoading) return <Loading />;
 
-  // set the phone of logged in user that will be used to send the OTP
-  const loggedInUserPhone = userData.currentUser.user.phone;
-
   // filter languages that support localization
   const languageOptions = organizationData.currentUser.user.organization.activeLanguages
     .filter((lang: any) => lang.localized)
@@ -82,6 +79,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // callback function to send otp to the logged user
   const sendOTPHandler = () => {
+    // set the phone of logged in user that will be used to send the OTP
+    const loggedInUserPhone = userData?.currentUser.user.phone;
     sendOTP(loggedInUserPhone)
       .then(() => {
         setShowOTPButton(false);

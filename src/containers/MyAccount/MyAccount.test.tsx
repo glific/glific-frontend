@@ -73,7 +73,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });
@@ -115,7 +115,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on CANCEL button
-    const cancelButton = screen.getByText('CANCEL');
+    const cancelButton = screen.getByText('Cancel');
     UserEvent.click(cancelButton);
     await wait();
   });
@@ -146,7 +146,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });
@@ -177,7 +177,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });
