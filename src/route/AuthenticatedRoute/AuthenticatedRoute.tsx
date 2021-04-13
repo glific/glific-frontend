@@ -38,7 +38,10 @@ const UserProfile = lazy(() => import('../../containers/Profile/User/UserProfile
 const MyAccount = lazy(() => import('../../containers/MyAccount/MyAccount'));
 const HSMPage = lazy(() => import('../../components/pages/Template/HSMPage/HSMPage'));
 const HSM = lazy(() => import('../../containers/Template/Form/HSM/HSM'));
+
 const SettingList = lazy(() => import('../../containers/SettingList/SettingList'));
+const Billing = lazy(() => import('../../containers/SettingList/Billing/Billing'));
+
 const Providers = lazy(() => import('../../containers/SettingList/Providers/Providers'));
 const BlockContactList = lazy(
   () => import('../../containers/BlockContact/BlockContactList/BlockContactList')
@@ -69,6 +72,7 @@ const routeStaff = (
         <Chat collectionId={match.params.collectionId} />
       )}
     />
+
     <Route path="/collection" exact component={CollectionList} />
     <Route path="/collection/:id/contacts" exact component={CollectionContact} />
     <Route path="/user-profile" exact component={UserProfile} />
@@ -115,6 +119,7 @@ const routeAdmin = (
     <Route path="/template/:id/edit" exact component={HSM} />
     <Route path="/settings" exact component={SettingList} />
     <Route path="/settings/organization" exact component={Organisation} />
+    <Route path="/settings/billing" exact component={Billing} />
     <Route path="/settings/:type" exact component={Providers} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />

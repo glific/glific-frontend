@@ -1,4 +1,4 @@
-const envVariables = process.env;
+const envVariables: any = process.env;
 
 const appName = envVariables.REACT_APP_APPLICATION_NAME;
 
@@ -35,3 +35,4 @@ export const LOGFLARE_API = envVariables.REACT_APP_LOGFLARE_API_KEY;
 export const LOGFLARE_SOURCE = envVariables.REACT_APP_LOGFLARE_SOURCE_TOKEN;
 export const GLIFIC_DOCS_URL = 'http://docs.glific.org';
 export const CORS_PROXY_URL = 'https://cors-anywhere.tides.coloredcow.com';
+export const STRIPE_PUBLISH_KEY = envVariables.REACT_APP_STRIPE_PUBLISH_KEY;
