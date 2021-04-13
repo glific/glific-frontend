@@ -227,14 +227,6 @@ test('click on Jump to latest', async () => {
   });
 });
 
-test('click on Jump to latest', async () => {
-  const { getByTestId } = render(chatMessages);
-
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
-});
-
 test('Contact: if not cache', async () => {
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>

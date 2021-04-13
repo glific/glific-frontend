@@ -1,11 +1,17 @@
-.ListingContainer {
-  height: calc(100% - 100px);
+.ChatListingContainer {
+  height: calc(100% - 124px);
   overflow-y: auto;
   padding: 0px !important;
 }
 
 .CollectionListingContainer {
   height: 100%;
+  overflow-y: auto;
+  padding: 0px !important;
+}
+
+.SaveSearchListingContainer {
+  height: calc(100% - 96px);
   overflow-y: auto;
   padding: 0px !important;
 }
@@ -68,7 +74,7 @@
 
 .ScrollToTopContacts {
   composes: ScrollButton;
-  top: 88px;
+  top: 110px;
 }
 
 .ScrollToTopCollections {
