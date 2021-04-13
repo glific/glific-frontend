@@ -1,6 +1,5 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router';
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Simulator } from './Simulator';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../common/constants';
@@ -13,7 +12,7 @@ import {
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
 
-const mockAxios = jest.genMockFromModule('axios');
+const mockAxios: any = jest.genMockFromModule('axios');
 
 // this is the key to fix the axios.create() undefined error!
 mockAxios.create = jest.fn(() => mockAxios);
