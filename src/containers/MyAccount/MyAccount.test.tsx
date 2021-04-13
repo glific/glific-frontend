@@ -42,7 +42,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -89,7 +89,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -110,7 +110,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -131,7 +131,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -162,7 +162,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
