@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './SearchList.module.css';
+import { useTranslation } from 'react-i18next';
+
 import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Dark.svg';
 import { List } from '../../List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from '../../../graphql/queries/Search';
@@ -15,9 +17,6 @@ const getColumns = ({ shortcode, label }: any) => ({
   label: getLabel(label),
 });
 
-const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
-const dialogMessage =
-  'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.';
 const columnStyles = [styles.Shortcode, styles.Name, styles.Actions];
 const searchIcon = <SearchIcon className={styles.Icon} />;
 
@@ -27,25 +26,34 @@ const queries = {
   deleteItemQuery: DELETE_SEARCH,
 };
 
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
-};
+export const SearchList: React.SFC<SearchListProps> = () => {
+  const { t } = useTranslation();
 
-export const SearchList: React.SFC<SearchListProps> = () => (
-  <List
-    title="Searches"
-    listItem="savedSearches"
-    listItemName="Search"
-    pageLink="search"
-    button={{ show: true, label: '+ CREATE SEARCH' }}
-    listIcon={searchIcon}
-    dialogMessage={dialogMessage}
-    {...queries}
-    {...columnAttributes}
-    searchParameter="label"
-  />
-);
+  const columnNames = [t('Title'), t('Description'), t('Actions')];
+  const dialogMessage = t(
+    'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.'
+  );
+
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
+
+  return (
+    <List
+      title="Searches"
+      listItem="savedSearches"
+      listItemName="Search"
+      pageLink="search"
+      button={{ show: true, label: t('+ CREATE SEARCH') }}
+      listIcon={searchIcon}
+      dialogMessage={dialogMessage}
+      {...queries}
+      {...columnAttributes}
+      searchParameter="label"
+    />
+  );
+};
 
 export default SearchList;

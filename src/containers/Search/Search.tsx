@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import { Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Search.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -30,13 +31,7 @@ export interface SearchProps {
   setState?: any;
 }
 
-const validation = {
-  shortcode: Yup.string().required('Title is required.').max(20, 'Title is too long.'),
-  label: Yup.string().required('Description is required.'),
-};
 let FormSchema = Yup.object().shape({});
-
-const dialogMessage = "You won't be able to use this search again.";
 
 const searchIcon = <SearchIcon className={styles.SearchIcon} />;
 
@@ -59,6 +54,14 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [dateTo, setdateTo] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
   const [button, setButton] = useState<string>('Save');
+  const { t } = useTranslation();
+
+  const validation = {
+    shortcode: Yup.string().required(t('Title is required.')).max(20, t('Title is too long.')),
+    label: Yup.string().required(t('Description is required.')),
+  };
+
+  const dialogMessage = t("You won't be able to use this search again.");
 
   const states = {
     shortcode,
@@ -197,7 +200,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         }
       }
       if (found.length > 0) {
-        error = 'Title already exists.';
+        error = t('Title already exists.');
       }
     }
     return error;
@@ -208,14 +211,14 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       component: Input,
       name: 'shortcode',
       type: 'text',
-      placeholder: 'Search Title',
+      placeholder: t('Search Title'),
       validate: validateTitle,
     },
     {
       component: Input,
       name: 'label',
       type: 'text',
-      placeholder: 'Description',
+      placeholder: t('Description'),
       rows: 3,
       textArea: true,
     },
@@ -226,12 +229,12 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       component: Input,
       name: 'term',
       type: 'text',
-      placeholder: 'Enter name, tag, keyword',
+      placeholder: t('Enter name, tag, keyword'),
     },
     {
       component: AutoComplete,
       name: 'includeTags',
-      label: 'Includes tags',
+      label: t('Includes tags'),
       options: dataT.tags,
       optionLabel: 'label',
       textFieldProps: {
@@ -242,11 +245,11 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     {
       component: AutoComplete,
       name: 'includeGroups',
-      placeholder: 'Includes collections',
-      label: 'Includes collections',
+      placeholder: t('Includes collections'),
+      label: t('Includes collections'),
       options: data.groups,
       optionLabel: 'label',
-      noOptionsText: 'No collections available',
+      noOptionsText: t('No collections available'),
       textFieldProps: {
         variant: 'outlined',
       },
@@ -254,8 +257,8 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     {
       component: AutoComplete,
       name: 'includeUsers',
-      placeholder: 'Includes staff',
-      label: 'Includes staff',
+      placeholder: t('Includes staff'),
+      label: t('Includes staff'),
       options: dataUser.users,
       optionLabel: 'name',
       textFieldProps: {
@@ -266,14 +269,14 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       component: Calendar,
       name: 'dateFrom',
       type: 'date',
-      placeholder: 'Date from',
-      label: 'Date range',
+      placeholder: t('Date from'),
+      label: t('Date range'),
     },
     {
       component: Calendar,
       name: 'dateTo',
       type: 'date',
-      placeholder: 'Date to',
+      placeholder: t('Date to'),
     },
   ];
 
@@ -331,10 +334,10 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       heading = (
         <>
           <Typography variant="h5" className={styles.Title}>
-            Search conversations
+            {t('Search conversations')}
           </Typography>
           <Typography variant="subtitle1" className={styles.Subtext}>
-            Apply more parameters to search for conversations.
+            {t('Apply more parameters to search for conversations.')}
           </Typography>
         </>
       );
@@ -346,7 +349,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       heading = (
         <>
           <Typography variant="h5" className={styles.Title}>
-            Save Search
+            {t('Save Search')}
           </Typography>
         </>
       );
