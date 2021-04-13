@@ -7,6 +7,7 @@ import 'emoji-mart/css/emoji-mart.css';
 
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
+import { convertToWhatsApp } from '../../../../common/RichEditor';
 
 export interface EmojiInputProps {
   field: any;
@@ -14,6 +15,7 @@ export interface EmojiInputProps {
   label: string;
   placeholder: string;
   rows: number;
+  handleChange?: any;
 }
 
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
@@ -29,6 +31,7 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
 
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
+  handleChange,
   ...props
 }: EmojiInputProps) => {
   const inputRef = React.useRef(null);
@@ -60,6 +63,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   };
 
   const draftJsChange = (editorState: any) => {
+    if (handleChange) {
+      handleChange(convertToWhatsApp(props.form.values.example));
+    }
     props.form.setFieldValue(rest.name, editorState);
   };
 

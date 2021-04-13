@@ -87,6 +87,7 @@ export interface TemplateProps {
   formField?: any;
   getSessionTemplatesCallBack?: any;
   customStyle?: any;
+  getUrlAttachmentAndType?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -99,6 +100,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     formField,
     getSessionTemplatesCallBack,
     customStyle,
+    getUrlAttachmentAndType,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -170,7 +172,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setCategory({ label: categoryValue, id: categoryValue });
     }
   };
-
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
@@ -284,6 +285,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (!response.data.is_valid) {
           return response.data.message;
         }
+        getUrlAttachmentAndType(type.id, { url: value });
         return false;
       });
     }
