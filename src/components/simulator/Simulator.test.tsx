@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Simulator } from './Simulator';
+import { SEARCH_QUERY } from '../../graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { conversationQuery } from '../../mocks/Chat';
 import {
   simulatorGetQuery,
@@ -9,7 +12,7 @@ import {
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
 
-const mockAxios = jest.genMockFromModule('axios');
+const mockAxios: any = jest.genMockFromModule('axios');
 
 // this is the key to fix the axios.create() undefined error!
 mockAxios.create = jest.fn(() => mockAxios);
@@ -28,6 +31,7 @@ const defaultProps = {
   showSimulator: true,
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
+  isPreviewMessage: false,
 };
 
 const simulator = (
@@ -68,4 +72,86 @@ test('click on clear icon closes the simulator', async () => {
     fireEvent.click(getByTestId('clearIcon'));
   });
   expect(mockSetShowSimulator).toBeCalled();
+});
+
+const body = {
+  id: '1',
+  body: 'Hey there whats up?',
+  insertedAt: '2020-06-25T13:36:43Z',
+  location: null,
+  messageNumber: 48,
+  receiver: {
+    id: '1',
+  },
+  sender: {
+    id: '2',
+  },
+  tags: [
+    {
+      id: '1',
+      label: 'important',
+      colorCode: '#00d084',
+    },
+  ],
+  type: 'TEXT',
+  media: null,
+  errors: '{}',
+};
+const cache = new InMemoryCache({ addTypename: false });
+export const searchQuery = {
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        group: null,
+        contact: {
+          id: '2',
+          name: 'Effie Cormier',
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: [body],
+      },
+    ],
+  },
+};
+
+cache.writeQuery(searchQuery);
+const client = new ApolloClient({
+  cache: cache,
+  assumeImmutableResults: true,
+});
+
+const HSMProps = {
+  showSimulator: true,
+  setShowSimulator: mockSetShowSimulator,
+  setSimulatorId: mockSetShowSimulator,
+  isPreviewMessage: true,
+  simulatorIcon: false,
+};
+
+const HSMSimulator = (
+  <ApolloProvider client={client}>
+    <Simulator {...HSMProps} />
+  </ApolloProvider>
+);
+
+test('simulator should open by default in preview HSM', async () => {
+  const { getByTestId } = render(HSMSimulator);
+
+  expect(getByTestId('beneficiaryName')).toBeInTheDocument();
+});
+
+test('simulator icon should not be seen in preview HSM', async () => {
+  const { getByTestId } = render(HSMSimulator);
+  expect(() => getByTestId('simulatorIcon')).toThrow();
 });
