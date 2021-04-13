@@ -7,6 +7,8 @@ import { setUserSession } from '../../services/AuthService';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../common/constants';
+import { MockedProvider } from '@apollo/client/testing';
+import { CONVERSATION_MOCKS, mocksWithConversation } from '../../mocks/Chat';
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -116,4 +118,19 @@ describe('<Chat />', () => {
     const ChatConversation = await findByTestId('beneficiaryName');
     expect(ChatConversation).toHaveTextContent('Effie Cormier');
   });
+});
+
+test('it should render <Chat-collection/> component correctly', async () => {
+  const wrapper = (
+    <MemoryRouter>
+      <MockedProvider mocks={[...CONVERSATION_MOCKS, ...mocksWithConversation]}>
+        <Chat collectionId={2} />
+      </MockedProvider>
+    </MemoryRouter>
+  );
+  const { getByText } = render(wrapper);
+
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  // check if chat conversations are displayed
 });

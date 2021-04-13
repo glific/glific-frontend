@@ -491,6 +491,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       <List className={styles.StyledList}>
         {conversationList}
         {showLoadMore &&
+        conversations &&
         (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
           conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore
