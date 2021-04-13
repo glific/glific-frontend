@@ -10,10 +10,16 @@ export interface ButtonProps {
   onClick?: any;
   className?: any;
   loading?: boolean;
+  disabled?: boolean;
   type?: any;
 }
 
-export const Button: React.SFC<ButtonProps> = ({ type = 'button', loading = false, ...props }) => {
+export const Button: React.SFC<ButtonProps> = ({
+  type = 'button',
+  loading = false,
+  disabled = false,
+  ...props
+}) => {
   let buttonColor = null;
   const { variant, color, onClick, className, children, ...rest } = props;
 
@@ -26,7 +32,7 @@ export const Button: React.SFC<ButtonProps> = ({ type = 'button', loading = fals
       onClick={onClick}
       data-testid={rest['data-testid']}
       className={`${styles.Button} ${className} ${buttonColor}`}
-      disabled={loading}
+      disabled={loading || disabled}
       type={type}
     >
       {children}

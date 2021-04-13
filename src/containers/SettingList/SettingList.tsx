@@ -24,6 +24,11 @@ export const SettingList: React.SFC = () => {
       shortcode: 'organization',
       description: t('Manage organisation name, supported languages, hours of operations.'),
     },
+    {
+      name: 'Billing',
+      shortcode: 'billing',
+      description: t('Setup for glific billing account'),
+    },
   ];
 
   const heading = (

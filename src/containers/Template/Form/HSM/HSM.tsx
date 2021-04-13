@@ -8,8 +8,14 @@ import { AutoComplete } from '../../../../components/UI/Form/AutoComplete/AutoCo
 import { Input } from '../../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
+import { Simulator } from '../../../../components/simulator/Simulator';
 
-const getFields = (match: { params: { id: any } }, categoryOpns: any, validateShortcode: any) => [
+const getFields = (
+  match: { params: { id: any } },
+  categoryOpns: any,
+  validateShortcode: any,
+  getExampleMessage: any
+) => [
   {
     component: EmojiInput,
     name: 'example',
@@ -20,6 +26,7 @@ const getFields = (match: { params: { id: any } }, categoryOpns: any, validateSh
     disabled: match.params.id,
     helperText:
       'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
+    handleChange: getExampleMessage,
   },
   {
     component: AutoComplete,
@@ -54,7 +61,12 @@ const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
 export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const [categoryOpns, setCategoryOpn] = useState([]);
-
+  const [sampleMessages, setSampleMessages] = useState({
+    type: 'TEXT',
+    location: null,
+    media: null,
+    body: '',
+  });
   const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
 
   useEffect(() => {
@@ -90,17 +102,43 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     return error;
   };
 
+  const removeFirstLineBreak = (text: any) =>
+    text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
+
+  const getExampleMessage = (messages: any) => {
+    const message = removeFirstLineBreak(messages);
+    const media: any = {
+      caption: message,
+    };
+    setSampleMessages((val) => ({ ...val, body: message, media }));
+  };
+
+  const getAttachmentUrl = (type: any, media: any) => {
+    const mediaBody = { ...media };
+    mediaBody.caption = sampleMessages.body;
+    setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
+  };
+
   return (
-    <Template
-      match={match}
-      listItemName="HSM Template"
-      redirectionLink="template"
-      icon={templateIcon}
-      defaultAttribute={defaultAttribute}
-      formField={getFields(match, categoryOpns, validateShortcode)}
-      getSessionTemplatesCallBack={getSessionTemplates}
-      customStyle={styles.HSMTemplate}
-    />
+    <div>
+      <Template
+        match={match}
+        listItemName="HSM Template"
+        redirectionLink="template"
+        icon={templateIcon}
+        defaultAttribute={defaultAttribute}
+        formField={getFields(match, categoryOpns, validateShortcode, getExampleMessage)}
+        getSessionTemplatesCallBack={getSessionTemplates}
+        getUrlAttachmentAndType={getAttachmentUrl}
+      />
+      <Simulator
+        setSimulatorId={0}
+        showSimulator
+        isPreviewMessage
+        message={sampleMessages}
+        simulatorIcon={false}
+      />
+    </div>
   );
 };
 
