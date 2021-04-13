@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Template.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -116,6 +117,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [category, setCategory] = useState<any>();
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
+  const { t } = useTranslation();
 
   const states = {
     language,
@@ -231,7 +233,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         }
       }
       if (found.length > 0) {
-        error = 'Title already exists.';
+        error = t('Title already exists.');
       }
     }
     return error;
