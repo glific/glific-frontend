@@ -139,19 +139,19 @@ const HSMProps = {
   simulatorIcon: false,
 };
 
-const HSMsimulator = (
+const HSMSimulator = (
   <ApolloProvider client={client}>
     <Simulator {...HSMProps} />
   </ApolloProvider>
 );
 
 test('simulator should open by default in preview HSM', async () => {
-  const { getByTestId } = render(HSMsimulator);
+  const { getByTestId } = render(HSMSimulator);
 
   expect(getByTestId('beneficiaryName')).toBeInTheDocument();
 });
 
 test('simulator icon should not be seen in preview HSM', async () => {
-  const { getByTestId } = render(HSMsimulator);
+  const { getByTestId } = render(HSMSimulator);
   expect(() => getByTestId('simulatorIcon')).toThrow();
 });
