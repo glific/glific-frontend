@@ -37,6 +37,7 @@ export interface SimulatorProps {
   simulatorIcon?: boolean;
   message?: any;
   flowSimulator?: any;
+  isPreviewMessage?: boolean;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -45,13 +46,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
   simulatorIcon = true,
   message,
   flowSimulator,
+  isPreviewMessage,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
+  const [simulatedMessages, setSimulatedMessage] = useState<any>();
+
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
-  let messages = [];
+  let messages: any[] = [];
   let simulatorId = '';
-
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
     fetchPolicy: 'cache-only',
@@ -126,16 +129,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     </div>
   );
 
-  const simulatedMessages = messages
-    .map((simulatorMessage: any, index: number) => {
-      const { body, insertedAt, type, media, location } = simulatorMessage;
-      if (simulatorMessage.receiver.id === simulatorId) {
-        return renderMessage(body, 'received', index, insertedAt, type, media, location);
-      }
-      return renderMessage(body, 'send', index, insertedAt, type, media, location);
-    })
-    .reverse();
-
   const sendMessage = () => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     axios({
@@ -167,15 +160,52 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setInputMessage('');
   };
 
-  useEffect(() => {
-    if (message !== undefined && data) {
+  const getPreviewMessage = () => {
+    if (message && message.type) {
+      const { body, insertedAt, type, media, location } = message;
+      const previewMessage = renderMessage(body, 'received', 0, insertedAt, type, media, location);
+      if (['STICKER', 'AUDIO'].includes(message.type)) {
+        setSimulatedMessage(previewMessage);
+      } else if (message.body || message.media?.caption) {
+        setSimulatedMessage(previewMessage);
+      } else {
+        // To get rid of empty body and media caption for preview HSM
+        setSimulatedMessage('');
+      }
+    }
+  };
+
+  const getChatMessage = () => {
+    const chatMessage = messages
+      .map((simulatorMessage: any, index: number) => {
+        const { body, insertedAt, type, media, location } = simulatorMessage;
+        if (simulatorMessage.receiver.id === simulatorId) {
+          return renderMessage(body, 'received', index, insertedAt, type, media, location);
+        }
+        return renderMessage(body, 'send', index, insertedAt, type, media, location);
+      })
+      .reverse();
+    setSimulatedMessage(chatMessage);
+    if (message) {
       sendMessage();
     }
-  }, [message, data]);
+  };
+
+  useEffect(() => {
+    if (isPreviewMessage) {
+      getPreviewMessage();
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (allConversations && data) {
+      getChatMessage();
+    }
+  }, [data, allConversations]);
 
   const messageRef = useCallback(
     (node: any) => {
-      if (node !== null) {
+      if (node) {
         const nodeCopy = node;
         nodeCopy.scrollTop = node.scrollHeight;
       }
@@ -188,13 +218,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
       <div className={styles.SimContainer}>
         <div>
           <div id="simulator" className={styles.Simulator}>
-            <ClearIcon
-              className={styles.ClearIcon}
-              onClick={() => {
-                releaseUserSimulator();
-              }}
-              data-testid="clearIcon"
-            />
+            {!isPreviewMessage ? (
+              <ClearIcon
+                className={styles.ClearIcon}
+                onClick={() => {
+                  releaseUserSimulator();
+                }}
+                data-testid="clearIcon"
+              />
+            ) : null}
             <div className={styles.Screen}>
               <div className={styles.Header}>
                 <ArrowBackIcon />
@@ -222,6 +254,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                     }}
                     value={inputMessage}
                     placeholder="Type a message"
+                    disabled={isPreviewMessage}
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
                   <AttachFileIcon className={styles.AttachFileIcon} />
@@ -232,6 +265,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   variant="contained"
                   color="primary"
                   className={styles.SendButton}
+                  disabled={isPreviewMessage}
                   onClick={() => sendMessage()}
                 >
                   <MicIcon />

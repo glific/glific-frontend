@@ -87,7 +87,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         }
       });
     }
-  }, []);
+  });
 
   // reset offset value on saved search changes
   useEffect(() => {
@@ -479,9 +479,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     </div>
   );
 
-  const entityStyle = selectedContactId
-    ? styles.ListingContainer
-    : styles.CollectionListingContainer;
+  const entityStyles: any = {
+    contact: styles.ChatListingContainer,
+    collection: styles.CollectionListingContainer,
+    savedSearch: styles.SaveSearchListingContainer,
+  };
+
+  const entityStyle = entityStyles[entityType];
 
   return (
     <Container className={`${entityStyle} contactsContainer`} disableGutters>
@@ -489,6 +493,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       <List className={styles.StyledList}>
         {conversationList}
         {showLoadMore &&
+        conversations &&
         (conversations.length > DEFAULT_CONTACT_LIMIT - 1 ||
           conversations.messages?.length > DEFAULT_MESSAGE_LIMIT - 1)
           ? loadMore

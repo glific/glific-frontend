@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, within } from '@testing-library/react';
+import { render, within, screen } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
@@ -16,6 +16,15 @@ class ResizeObserver {
   unobserve() {}
   disconnect() {}
 }
+
+const defineUrl = (url: string) => {
+  Object.defineProperty(window, 'location', {
+    value: {
+      href: url,
+    },
+    writable: true,
+  });
+};
 
 window.ResizeObserver = ResizeObserver;
 
@@ -218,14 +227,6 @@ test('click on Jump to latest', async () => {
   });
 });
 
-test('click on Jump to latest', async () => {
-  const { getByTestId } = render(chatMessages);
-
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
-});
-
 test('Contact: if not cache', async () => {
   const chatMessagesWithCollection = (
     <ApolloProvider client={client}>
@@ -359,6 +360,51 @@ test('Load more messages', async () => {
     const container: any = document.querySelector('.messageContainer');
     fireEvent.scroll(container, { target: { scrollY: 0 } });
     fireEvent.click(getByTestId('loadMoreMessages'));
+  });
+});
+
+test('Should render for multi-search', async () => {
+  defineUrl('http://localhost:3000/chat/2?search=8');
+
+  const { getByTestId } = render(chatMessages);
+
+  await waitFor(() => {
+    const container: any = document.querySelector('.messageContainer');
+    fireEvent.scroll(container, { target: { scrollY: 0 } });
+    fireEvent.click(getByTestId('loadMoreMessages'));
+  });
+});
+
+test('If search query gives error', async () => {
+  const searchQuery = {
+    query: SEARCH_QUERY,
+    variables: {
+      filter: {},
+      contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+      messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+    },
+    result: {
+      errors: [new Error('An error occurred')],
+    },
+    data: null,
+  };
+
+  cache.writeQuery(searchQuery);
+  const client = new ApolloClient({
+    cache: cache,
+    assumeImmutableResults: true,
+  });
+
+  const chatMessages = (
+    <ApolloProvider client={client}>
+      <ChatMessages contactId="2" />
+    </ApolloProvider>
+  );
+
+  render(chatMessages);
+
+  await waitFor(() => {
+    screen.getAllByText('Effie Cormier');
   });
 });
 

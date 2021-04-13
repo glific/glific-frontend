@@ -1352,6 +1352,16 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@glific/flow-editor@^1.11.9-13":
+  version "1.11.9-13"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.11.9-13.tgz#cab508ec42bff4be4631809d6f9e85ee4297e7b3"
+  integrity sha512-vyY3zNyilyjZM70S7VFrg8ufGWHWqvOrPmgDRUt4B+CikkJAZYgLS1VoCeOjfDaxXySHFfvJh2or0S/uUMS6ZQ==
+  dependencies:
+    react "^16.8.6"
+    react-dom "^16.8.6"
+    react-icons "4.1.0"
+    react-notifications "1.7.2"
+
 "@graphql-typed-document-node/core@^3.0.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
@@ -1732,15 +1742,6 @@
   dependencies:
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
-
-"@nyaruka/flow-editor@glific/floweditor#v1.11.9.9":
-  version "1.11.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/48a3fe562f96c18b54d7977c2335c6079543063a"
-  dependencies:
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    react-icons "4.1.0"
-    react-notifications "1.7.2"
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
