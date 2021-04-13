@@ -16,6 +16,16 @@ import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
+import { getAuthSession } from '../../services/AuthService';
+
+// add authorization header in all calls
+const origOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function () {
+  // @ts-ignore
+  // eslint-disable-next-line
+  origOpen.apply(this, arguments);
+  this.setRequestHeader('Authorization', getAuthSession('access_token'));
+};
 
 declare function showFlowEditor(node: any, config: any): void;
 
