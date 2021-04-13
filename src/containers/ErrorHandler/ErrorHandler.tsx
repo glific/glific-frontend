@@ -1,8 +1,9 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
-import styles from './ErrorHandler.module.css';
+import { useTranslation } from 'react-i18next';
 
+import styles from './ErrorHandler.module.css';
 import { ERROR_MESSAGE } from '../../graphql/queries/Notification';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
 import { setErrorMessage } from '../../common/notification';
@@ -11,6 +12,7 @@ import setLogs from '../../config/logs';
 export interface ErrorHandlerProps {}
 
 export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
+  const { t } = useTranslation();
   const { data, client } = useQuery(ERROR_MESSAGE);
   let { message } = data ? data.errorMessage : '';
 
@@ -28,11 +30,11 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
   }
 
   // Handle type of error message
-  let title = 'An error has occurred!';
+  let title = t('An error has occurred!');
 
   if (data.errorMessage.networkError) {
     // set specific message for network error
-    title = 'A network error has occurred!';
+    title = t('A network error has occurred!');
   }
 
   if (data.errorMessage.title) {
