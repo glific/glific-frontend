@@ -88,6 +88,8 @@ export interface TemplateProps {
   getSessionTemplatesCallBack?: any;
   customStyle?: any;
   getUrlAttachmentAndType?: any;
+  getShortcode?: any;
+  getExample?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -101,6 +103,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getSessionTemplatesCallBack,
     customStyle,
     getUrlAttachmentAndType,
+    getShortcode,
+    getExample,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -216,6 +220,18 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   }, [filterLabel, language, getSessionTemplates]);
 
+  useEffect(() => {
+    if (getShortcode) {
+      setShortcode(getShortcode);
+    }
+  }, [getShortcode]);
+
+  useEffect(() => {
+    if (getExample) {
+      setExample(getExample);
+    }
+  }, [getExample]);
+
   const validateTitle = (value: any) => {
     let error;
     if (value) {
@@ -288,10 +304,16 @@ const Template: React.SFC<TemplateProps> = (props) => {
         } else {
           setIsUrlValid('');
         }
-        getUrlAttachmentAndType(type.id, { url: value });
       });
     }
   };
+
+  useEffect(() => {
+    if ((type === '' || type) && attachmentURL) {
+      validateURL(attachmentURL);
+      getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+    }
+  }, [type, attachmentURL]);
 
   const displayWarning = () => {
     if (type.id === 'STICKER') {
@@ -333,9 +355,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       },
       helperText: warning,
       onChange: (event: any) => {
-        if (event) {
-          setType({ id: event.id, label: event.id });
-        }
+        const val = event ? { id: event.id, label: event.id } : '';
+        setType(val);
       },
     },
     {
@@ -346,7 +367,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       validate: () => isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
-          validateURL(event.target.value);
           setAttachmentURL(event.target.value);
         },
       },
@@ -391,6 +411,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
+      attributeName: 'body',
+      inputProp: {
+        onBlur: (editorState: any) => {
+          setBody(editorState);
+        },
+      },
     },
   ];
 

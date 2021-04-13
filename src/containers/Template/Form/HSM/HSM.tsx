@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { EditorState } from 'draft-js';
 
 import styles from './HSM.module.css';
 import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
@@ -14,7 +15,9 @@ const getFields = (
   match: { params: { id: any } },
   categoryOpns: any,
   validateShortcode: any,
-  getExampleMessage: any
+  getExampleMessage: any,
+  setShortcode: any,
+  setExample: any
 ) => [
   {
     component: EmojiInput,
@@ -27,6 +30,11 @@ const getFields = (
     helperText:
       'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
     handleChange: getExampleMessage,
+    inputProp: {
+      onBlur: (editorState: any) => {
+        setExample(editorState);
+      },
+    },
   },
   {
     component: AutoComplete,
@@ -47,6 +55,9 @@ const getFields = (
     placeholder: 'Element name*',
     validate: validateShortcode,
     disabled: match.params.id,
+    inputProp: {
+      onBlur: (event: any) => setShortcode(event.target.value),
+    },
   },
 ];
 export interface HSMProps {
@@ -64,9 +75,11 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
-    media: null,
+    media: {},
     body: '',
   });
+  const [shortcode, setShortcode] = useState('');
+  const [example, setExample] = useState(EditorState.createEmpty());
   const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
 
   useEffect(() => {
@@ -107,9 +120,8 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
 
   const getExampleMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
-    const media: any = {
-      caption: message,
-    };
+    const media: any = { ...sampleMessages.media };
+    media.caption = message;
     setSampleMessages((val) => ({ ...val, body: message, media }));
   };
 
@@ -127,9 +139,18 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         redirectionLink="template"
         icon={templateIcon}
         defaultAttribute={defaultAttribute}
-        formField={getFields(match, categoryOpns, validateShortcode, getExampleMessage)}
+        formField={getFields(
+          match,
+          categoryOpns,
+          validateShortcode,
+          getExampleMessage,
+          setShortcode,
+          setExample
+        )}
         getSessionTemplatesCallBack={getSessionTemplates}
         getUrlAttachmentAndType={getAttachmentUrl}
+        getShortcode={shortcode}
+        getExample={example}
       />
       <Simulator
         setSimulatorId={0}
