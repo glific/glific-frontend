@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Popover } from '@material-ui/core';
 import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './NotificationList.module.css';
 import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/ErrorlogsDark.svg';
@@ -21,7 +22,6 @@ const getTime = (time: string) => (
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
-const columnNames = ['TIME', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
 const columnStyles = [styles.Time, styles.Category, styles.Severity, styles.Entity, styles.Message];
 const notificationIcon = <NotificationIcon className={styles.NotificationIcon} />;
 
@@ -38,6 +38,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
+  const { t } = useTranslation();
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -50,14 +51,14 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
 
     const Menus = [
       {
-        title: 'Copy text',
+        title: t('Copy text'),
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
           copyToClipboard(client, croppedtext);
         },
       },
       {
-        title: 'View',
+        title: t('View'),
         icon: <ViewIcon />,
         onClick: () => {
           setText(croppedtext);
@@ -92,6 +93,8 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     setAnchorEl(null);
   };
 
+  const columnNames = [t('Time'), t('Category'), t('Severity'), t('Entity'), t('Message')];
+
   const columnAttributes = {
     columnNames,
     columns: getColumns,
@@ -110,10 +113,10 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
           data-testid="copyToClipboard"
         >
           <img src={CopyIcon} alt="copy" />
-          Copy text
+          {t('Copy text')}
         </span>
         <Button variant="contained" color="default" onClick={handleClose}>
-          Done
+          {t('Done')}
         </Button>
       </div>
     </Popover>
@@ -132,7 +135,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         {...queries}
         restrictedAction={restrictedAction}
         {...columnAttributes}
-        removeSortBy={['ENTITY', 'SEVERITY', 'CATEGORY']}
+        removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
       />
       {popover}
     </>

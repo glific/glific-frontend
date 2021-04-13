@@ -3,6 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './FormLayout.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -105,6 +106,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
+  const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
@@ -113,7 +115,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      setNotification(client, `${capitalListItemName} deleted successfully`);
+      setNotification(client, t(`${capitalListItemName} deleted successfully`));
       setDeleted(true);
     },
     awaitRefetchQueries: true,
@@ -176,7 +178,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           afterSave(data);
         }
         // display successful message after update
-        let message = `${capitalListItemName} edited successfully!`;
+        let message = t(`${capitalListItemName} edited successfully!`);
         if (type === 'copy') {
           message = copyNotification;
         }
@@ -219,7 +221,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           afterSave(data.createSavedSearch);
         }
         // display successful message after create
-        setNotification(client, `${capitalListItemName} created successfully!`);
+        setNotification(client, t(`${capitalListItemName} created successfully!`));
       }
       onSaveClick(false);
     },
@@ -353,10 +355,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     ? {
         component: Dropdown,
         name: 'languageId',
-        placeholder: 'Language',
+        placeholder: t('Language'),
         options: languageOptions,
         validate: validateLanguage,
-        helperText: 'For more languages check settings or connect with your admin',
+        helperText: t('For more languages check settings or connect with your admin'),
       }
     : null;
 
@@ -433,7 +435,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 onClick={cancelHandler}
                 data-testid="cancelActionButton"
               >
-                Cancel
+                {t('Cancel')}
               </Button>
               {deleteButton}
             </div>
@@ -451,7 +453,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (showDialog) {
     dialogBox = (
       <DialogBox
-        title={`Are you sure you want to delete the ${listItemName}?`}
+        title={t(`Are you sure you want to delete the ${listItemName}?`)}
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
@@ -468,11 +470,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (title) {
     formTitle = title;
   } else if (type === 'copy') {
-    formTitle = `Copy ${listItemName} `; // case when copying an item
+    formTitle = t(`Copy ${listItemName}`); // case when copying an item
   } else if (itemId) {
-    formTitle = `Edit ${listItemName}`; // case when editing a item
+    formTitle = t(`Edit ${listItemName}`); // case when editing a item
   } else {
-    formTitle = `Add a new ${listItemName}`; // case when adding a new item
+    formTitle = t(`Add a new ${listItemName}`); // case when adding a new item
   }
 
   let heading = (
