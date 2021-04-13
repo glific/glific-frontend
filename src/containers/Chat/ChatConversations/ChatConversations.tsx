@@ -228,6 +228,7 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
         handleClick={handleClick}
         endAdornment
         searchMode={enableSearchMode}
+        className={styles.SavedSearchTopMargin}
       />
       <ConversationList
         searchVal={searchVal}
