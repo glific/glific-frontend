@@ -36,6 +36,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // user language selection
   const [userLanguage, setUserLanguage] = useState('');
 
+  const [message, setMessage] = useState<string>('');
+
   // get the information on current user
   const { data: userData, loading: userDataLoading } = useQuery(GET_CURRENT_USER);
 
@@ -58,7 +60,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         }
       } else {
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message: t('Password updated successfully!') });
+        setToastMessageInfo({ severity: 'success', message: t(message) });
       }
     },
   });
@@ -99,6 +101,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // save the form if data is valid
   const saveHandler = (item: any) => {
+    setMessage('Password updated successfully!');
     updateCurrentUser({
       variables: { input: item },
     });
@@ -228,8 +231,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   );
 
   // set only for the first time
-  if (!userLanguage) {
-    setUserLanguage(userData.currentUser.user.language.locale);
+  if (!userLanguage && userData.currentUser.user.language) {
+    setUserLanguage(userData.currentUser.user.language?.locale);
   }
 
   const changeLanguage = (event: any) => {
@@ -238,8 +241,16 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     // change the user interface
     i18n.changeLanguage(event.target.value);
 
-    // save in db
-    // TBD
+    // get language id
+    const languageID = organizationData.currentUser.user.organization.activeLanguages.filter(
+      (lang: any) => lang.locale === event.target.value
+    );
+
+    setMessage('Language updated successfully!');
+    // update user's language
+    updateCurrentUser({
+      variables: { input: { language_id: languageID[0].id } },
+    });
   };
 
   const languageField = {

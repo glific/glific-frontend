@@ -62,7 +62,7 @@ export const Login: React.SFC<LoginProps> = () => {
         getRoleBasedAccess();
 
         // set the language
-        i18n.changeLanguage(userData.currentUser.user.language.locale);
+        i18n.changeLanguage(userData.currentUser.user?.language.locale);
       }
     }
     if (userError) {
