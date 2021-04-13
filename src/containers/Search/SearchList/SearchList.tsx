@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './SearchList.module.css';
 import { useTranslation } from 'react-i18next';
 
+import styles from './SearchList.module.css';
 import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Dark.svg';
 import { List } from '../../List/List';
 import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from '../../../graphql/queries/Search';
