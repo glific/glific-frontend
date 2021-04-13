@@ -232,7 +232,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // set only for the first time
   if (!userLanguage && userData.currentUser.user.language) {
-    setUserLanguage(userData.currentUser.user.language?.locale);
+    setUserLanguage(userData.currentUser.user.language.locale);
   }
 
   const changeLanguage = (event: any) => {
