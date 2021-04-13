@@ -28,6 +28,10 @@ export const getCurrentUserQuery = {
           organization: {
             id: '1',
           },
+          language: {
+            id: '1',
+            locale: 'en',
+          },
         },
       },
     },
