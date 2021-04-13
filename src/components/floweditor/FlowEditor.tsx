@@ -3,7 +3,7 @@ import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
-import * as Manifest from '@nyaruka/flow-editor/build/asset-manifest.json';
+import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
 
 import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
@@ -16,6 +16,16 @@ import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
+import { getAuthSession } from '../../services/AuthService';
+
+// add authorization header in all calls
+const origOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function () {
+  // @ts-ignore
+  // eslint-disable-next-line
+  origOpen.apply(this, arguments);
+  this.setRequestHeader('Authorization', getAuthSession('access_token'));
+};
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -24,11 +34,11 @@ const loadfiles = () => {
   const filesToLoad: any = Manifest.files;
   let index = 0;
   Object.keys(filesToLoad).forEach((fileName) => {
-    if (filesToLoad[fileName].startsWith('./static')) {
+    if (filesToLoad[fileName].startsWith('/static')) {
       if (filesToLoad[fileName].endsWith('.js')) {
         index += 1;
         const script = document.createElement('script');
-        script.src = filesToLoad[fileName].slice(1);
+        script.src = filesToLoad[fileName];
         script.id = `flowEditorScript${index}`;
         script.async = false;
         files.push(script);
@@ -36,7 +46,7 @@ const loadfiles = () => {
 
       if (filesToLoad[fileName].endsWith('.css')) {
         const link = document.createElement('link');
-        link.href = filesToLoad[fileName].slice(1);
+        link.href = filesToLoad[fileName];
         link.id = `flowEditorfile${index}`;
         link.rel = 'stylesheet';
         document.body.appendChild(link);

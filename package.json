@@ -22,7 +22,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.11.3",
-    "@nyaruka/flow-editor": "glific/floweditor#v1.11.9.9",
+    "@glific/flow-editor": "^1.11.9-13",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
@@ -98,7 +98,7 @@
     "cy:run": "cypress run",
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
-    "floweditor": "cp -r node_modules/@nyaruka/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@nyaruka/flow-editor/build/sitestatic public"
+    "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public"
   },
   "eslintConfig": {
     "extends": "react-app"
