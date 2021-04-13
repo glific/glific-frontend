@@ -70,11 +70,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   const { data: collectionList } = useQuery(GET_COLLECTIONS);
 
-  let options = [];
-  if (data) {
-    options = data.users;
-  }
-
   useEffect(() => {
     if (collectionId) {
       selectedUsers({ variables: { id: collectionId } });
@@ -131,13 +126,13 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
 
   const dialogMessage = t("You won't be able to use this collection again.");
 
-  const formFields = (optionValues: any, validateTitleCallback: Function) => [
+  const formFields = [
     {
       component: Input,
       name: 'label',
       type: 'text',
       placeholder: t('Title'),
-      validate: validateTitleCallback,
+      validate: validateTitle,
     },
     {
       component: Input,
@@ -151,7 +146,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       component: AutoComplete,
       name: 'users',
       additionalState: 'users',
-      optionValues,
+      options: data ? data.users : [],
       optionLabel: 'name',
       textFieldProps: {
         label: t('Assign staff to collection'),
@@ -187,7 +182,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
-      formFields={formFields(options, validateTitle)}
+      formFields={formFields}
       redirectionLink="collection"
       listItem="group"
       icon={collectionIcon}
