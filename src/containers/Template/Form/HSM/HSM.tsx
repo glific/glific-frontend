@@ -53,7 +53,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     {
       component: EmojiInput,
       name: 'example',
-      placeholder: 'Sample message*',
+      placeholder: t('Sample message*'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -71,7 +71,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Category*',
+        label: t('Category*'),
       },
       disabled: matchValue.params.id,
       helperText: t('Select the most relevant category'),
@@ -79,7 +79,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     {
       component: Input,
       name: 'shortcode',
-      placeholder: 'Element name*',
+      placeholder: t('Element name*'),
       validate: validateShortcode,
       disabled: matchValue.params.id,
     },
