@@ -100,7 +100,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // save the form if data is valid
   const saveHandler = (item: any) => {
-    setMessage('Password updated successfully!');
+    setMessage(t('Password updated successfully!'));
     updateCurrentUser({
       variables: { input: item },
     });
@@ -245,7 +245,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       (lang: any) => lang.locale === event.target.value
     );
 
-    setMessage('Language updated successfully!');
+    setMessage(t('Language changed successfully!'));
     // update user's language
     updateCurrentUser({
       variables: { input: { language_id: languageID[0].id } },
