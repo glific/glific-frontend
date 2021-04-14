@@ -74,7 +74,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
-  const columnNames = [t('Name'), t('Last Published'), t('Last Saved in Draft'), t('Actions')];
+  const columnNames = [t('NAME'), t('LAST PUBLISHED'), t('LAST SAVED IN DRAFT'), t('ACTIONS')];
   const dialogMessage = t("You won't be able to use this flow.");
 
   const columnAttributes = {
