@@ -10,6 +10,7 @@ import { Input } from '../../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
 import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
 import { Simulator } from '../../../../components/simulator/Simulator';
+
 export interface HSMProps {
   match: any;
 }
@@ -44,8 +45,8 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   }, [categoryList]);
 
   const getFields = (
-    match: { params: { id: any } },
-    categoryOpns: any,
+    matchValue: { params: { id: any } },
+    categoryOptions: any,
     validateShortcode: any,
     getExampleMessage: any
   ) => [
@@ -56,7 +57,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: match.params.id,
+      disabled: matchValue.params.id,
       helperText: t(
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.'
       ),
@@ -65,14 +66,14 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'category',
-      options: categoryOpns,
+      options: categoryOptions,
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
         label: 'Category*',
       },
-      disabled: match.params.id,
+      disabled: matchValue.params.id,
       helperText: t('Select the most relevant category'),
     },
     {
@@ -80,7 +81,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       name: 'shortcode',
       placeholder: 'Element name*',
       validate: validateShortcode,
-      disabled: match.params.id,
+      disabled: matchValue.params.id,
     },
   ];
 
