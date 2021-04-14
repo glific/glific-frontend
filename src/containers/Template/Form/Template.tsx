@@ -299,8 +299,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setWarning(
         <div className={styles.Warning}>
           <ol>
-            <li>Animated stickers are not supported.</li>
-            <li>Captions along with stickers are not supported.</li>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
           </ol>
         </div>
       );
@@ -308,7 +308,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setWarning(
         <div className={styles.Warning}>
           <ol>
-            <li>Captions along with audio are not supported.</li>
+            <li>{t('Captions along with audio are not supported.')}</li>
           </ol>
         </div>
       );
@@ -330,7 +330,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Attachment Type',
+        label: t('Attachment Type'),
       },
       helperText: warning,
       onChange: (event: any) => {
@@ -343,7 +343,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: 'Attachment URL',
+      placeholder: t('Attachment URL'),
       validate: validateURL,
     },
   ];
@@ -357,7 +357,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Language*',
+        label: t('Language*'),
       },
       disabled: defaultAttribute.isHsm && match.params.id,
       onChange: getLanguageId,
@@ -365,23 +365,25 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: Input,
       name: 'label',
-      placeholder: 'Title*',
+      placeholder: t('Title*'),
       validate: validateTitle,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
+        ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
     },
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: 'Message*',
+      placeholder: t('Message*'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        ? t(
+            'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+          )
         : null,
     },
   ];
@@ -511,7 +513,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
-      button={defaultAttribute.isHsm && !match.params.id ? 'SUBMIT FOR APPROVAL' : 'Save'}
+      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : 'Save'}
       customStyles={customStyle}
     />
   );
