@@ -355,7 +355,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       },
       helperText: warning,
       onChange: (event: any) => {
-        const val = event ? { id: event.id, label: event.id } : '';
+        const val = event || '';
         setType(val);
       },
     },
@@ -411,7 +411,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
-      attributeName: 'body',
       inputProp: {
         onBlur: (editorState: any) => {
           setBody(editorState);

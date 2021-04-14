@@ -15,7 +15,7 @@ const getFields = (
   match: { params: { id: any } },
   categoryOpns: any,
   validateShortcode: any,
-  getExampleMessage: any,
+  getSimulatorMessage: any,
   setShortcode: any,
   setExample: any
 ) => [
@@ -29,7 +29,7 @@ const getFields = (
     disabled: match.params.id,
     helperText:
       'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
-    handleChange: getExampleMessage,
+    handleChange: getSimulatorMessage,
     inputProp: {
       onBlur: (editorState: any) => {
         setExample(editorState);
@@ -118,7 +118,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const removeFirstLineBreak = (text: any) =>
     text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
-  const getExampleMessage = (messages: any) => {
+  const getSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
     const media: any = { ...sampleMessages.media };
     media.caption = message;
@@ -131,6 +131,15 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
 
+  const formFields = getFields(
+    match,
+    categoryOpns,
+    validateShortcode,
+    getSimulatorMessage,
+    setShortcode,
+    setExample
+  );
+
   return (
     <div>
       <Template
@@ -139,14 +148,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         redirectionLink="template"
         icon={templateIcon}
         defaultAttribute={defaultAttribute}
-        formField={getFields(
-          match,
-          categoryOpns,
-          validateShortcode,
-          getExampleMessage,
-          setShortcode,
-          setExample
-        )}
+        formField={formFields}
         getSessionTemplatesCallBack={getSessionTemplates}
         getUrlAttachmentAndType={getAttachmentUrl}
         getShortcode={shortcode}
