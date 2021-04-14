@@ -56,13 +56,7 @@ const queries = {
 export const TagList: React.SFC<TagListProps> = () => {
   const { t } = useTranslation();
 
-  const columnNames = [
-    t('Title'),
-    t('Description'),
-    t('Keywords'),
-    t('Last Modified'),
-    t('Actions'),
-  ];
+  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this for tagging messages.");
 
   const columnAttributes = {

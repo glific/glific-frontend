@@ -93,7 +93,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     setAnchorEl(null);
   };
 
-  const columnNames = [t('Time'), t('Category'), t('Severity'), t('Entity'), t('Message')];
+  const columnNames = ['TIME', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
 
   const columnAttributes = {
     columnNames,

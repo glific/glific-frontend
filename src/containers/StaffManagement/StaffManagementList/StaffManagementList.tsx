@@ -19,7 +19,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   const additionalAction = [
     { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
   ];
-  const columnNames = [t('Name'), t('Phone No'), t('Assigned To'), t('Actions')];
+  const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Collection, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
 

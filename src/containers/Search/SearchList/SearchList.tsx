@@ -29,7 +29,7 @@ const queries = {
 export const SearchList: React.SFC<SearchListProps> = () => {
   const { t } = useTranslation();
 
-  const columnNames = [t('Title'), t('Description'), t('Actions')];
+  const columnNames = ['TITLE', 'DESCRIPTION', 'ACTIONS'];
   const dialogMessage = t(
     'This action will remove all the conversations that were linked to this search and remove it as an option to filter your chat screen.'
   );

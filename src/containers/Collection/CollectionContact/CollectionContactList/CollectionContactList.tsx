@@ -58,7 +58,7 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
     },
   });
 
-  const columnNames = [t('Beneficiary'), t('All Collections'), t('Actions')];
+  const columnNames = ['BENEFICIARY', 'ALL COLLECTIONS', 'ACTIONS'];
   const dialogTitle = t('Are you sure you want to remove contact from this collection?');
   const dialogMessage = t('The contact will no longer receive messages sent to this collection');
 

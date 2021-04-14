@@ -75,7 +75,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       dialog: setDialog,
     },
   ];
-  const columnNames = [t('Name'), t('End date'), t('Collection'), t('Actions')];
+  const columnNames = ['NAME', 'END DATE', 'COLLECTION', 'ACTIONS'];
   const columnAttributes = {
     columnNames,
     columns: getColumns,
