@@ -1352,6 +1352,16 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@glific/flow-editor@^1.11.9-13":
+  version "1.11.9-13"
+  resolved "https://registry.yarnpkg.com/@glific/flow-editor/-/flow-editor-1.11.9-13.tgz#cab508ec42bff4be4631809d6f9e85ee4297e7b3"
+  integrity sha512-vyY3zNyilyjZM70S7VFrg8ufGWHWqvOrPmgDRUt4B+CikkJAZYgLS1VoCeOjfDaxXySHFfvJh2or0S/uUMS6ZQ==
+  dependencies:
+    react "^16.8.6"
+    react-dom "^16.8.6"
+    react-icons "4.1.0"
+    react-notifications "1.7.2"
+
 "@graphql-typed-document-node/core@^3.0.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
@@ -1733,15 +1743,6 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@nyaruka/flow-editor@glific/floweditor#v1.11.9.9":
-  version "1.11.8"
-  resolved "https://codeload.github.com/glific/floweditor/tar.gz/48a3fe562f96c18b54d7977c2335c6079543063a"
-  dependencies:
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    react-icons "4.1.0"
-    react-notifications "1.7.2"
-
 "@pmmmwh/react-refresh-webpack-plugin@0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.4.3.tgz#1eec460596d200c0236bf195b078a5d1df89b766"
@@ -1795,6 +1796,18 @@
   integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@stripe/react-stripe-js@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.4.0.tgz#a67e72202297fc409dc2c8c4f3fb98e0b61fa06d"
+  integrity sha512-Pz5QmG8PgJ3pi8gOWxlngk+ns63p2L1Ds192fn55ykZNRKfGz3G6sfssUVThHn/NAt2Hp1eCEsy/hvlKnXJI6g==
+  dependencies:
+    prop-types "^15.7.2"
+
+"@stripe/stripe-js@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.13.2.tgz#bb2f561085b5dd091355df871d432b8e1fd467f6"
+  integrity sha512-fycUk7ECukNc31lD5apcrUgdRC1BfiIacs+CpacoCjOgo3ablolnWCvDQWMmVWtODYa8bBv2dlBla+Edc5OvZg==
 
 "@surma/rollup-plugin-off-main-thread@^1.1.1":
   version "1.4.2"
