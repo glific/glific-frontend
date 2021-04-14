@@ -239,7 +239,6 @@
   "Copy of the trigger has been created!": "Copy of the trigger has been created!",
   "You won't be able to use this trigger.": "You won't be able to use this trigger.",
   "+ CREATE TRIGGER": "+ CREATE TRIGGER",
-  "Wallet balance is okay": "Wallet balance is okay",
   "For any help, please contact the Glific team": "For any help, please contact the Glific team",
   "Verify Gupshup settings": "Verify Gupshup settings",
   "You will be unable to send messages without recharge": "You will be unable to send messages without recharge",
@@ -248,5 +247,11 @@
   "Speed Sends": "Speed Sends",
   "Triggers (Beta)": "Triggers (Beta)",
   "Searches": "Searches",
-  "Templates": "Templates"
+  "Templates": "Templates",
+  "Message is required.": "Message is required.",
+  "Attachment URL is required.": "Attachment URL is required.",
+  "Media content-type is not valid": "Media content-type is not valid",
+  "Logout": "Logout",
+  "Wallet balance is low": "Wallet balance is low",
+  "Wallet balance is okay": "Wallet balance is okay"
 }

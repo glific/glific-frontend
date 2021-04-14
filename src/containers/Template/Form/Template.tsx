@@ -59,26 +59,6 @@ const formIsActive = {
   ),
 };
 
-const validation = {
-  language: Yup.object().nullable().required('Language is required.'),
-  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
-  body: Yup.string()
-    .transform((current, original) => original.getCurrentContent().getPlainText())
-    .required('Message is required.'),
-  type: Yup.object()
-    .nullable()
-    .when('attachmentURL', {
-      is: (val: string) => val && val !== '',
-      then: Yup.object().required('Type is required.'),
-    }),
-  attachmentURL: Yup.string()
-    .nullable()
-    .when('type', {
-      is: (val: any) => val && val.id,
-      then: Yup.string().required('Attachment URL is required.'),
-    }),
-};
-
 export interface TemplateProps {
   match: any;
   listItemName: string;
@@ -491,6 +471,26 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return data;
   };
 
+  const validation = {
+    language: Yup.object().nullable().required('Language is required.'),
+    label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
+    body: Yup.string()
+      .transform((current, original) => original.getCurrentContent().getPlainText())
+      .required(t('Message is required.')),
+    type: Yup.object()
+      .nullable()
+      .when('attachmentURL', {
+        is: (val: string) => val && val !== '',
+        then: Yup.object().nullable().required(t('Type is required.')),
+      }),
+    attachmentURL: Yup.string()
+      .nullable()
+      .when('type', {
+        is: (val: any) => val && val.id,
+        then: Yup.string().required(t('Attachment URL is required.')),
+      }),
+  };
+
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
   const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);
 
@@ -513,7 +513,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
-      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : 'Save'}
+      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
     />
   );

@@ -19,12 +19,14 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
   const { t } = useTranslation();
+  const balanceOkayString = t('Wallet balance is okay');
+  const balanceLowString = t('Wallet balance is low');
 
   const nullBalance = () => (
     <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
       <div className={styles.WalletBalanceText}>
         <SelectWhiteIcon className={styles.Icon} />
-        {t('Wallet balance is okay')}
+        {balanceOkayString}
       </div>
     </div>
   );
@@ -50,7 +52,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     fullOpenFlag ? (
       <div className={styles.WalletBalanceText}>
         <SelectWhiteIcon className={styles.Icon} />
-        {t(`Wallet balance is okay: ${displayBalance}`)}
+        {balanceOkayString}:{displayBalance}
       </div>
     ) : (
       <div className={styles.WalletBalanceText}>${displayBalanceText}</div>
@@ -64,7 +66,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
       {fullOpenStatus ? (
         <div className={styles.WalletBalanceText}>
           <WhiteIcon className={styles.Icon} />
-          {t(`Wallet balance is low: ${displayBalance}`)}
+          {balanceLowString}:{displayBalance}
         </div>
       ) : (
         <div className={styles.WalletBalanceText}>${displayBalanceMessage}</div>
