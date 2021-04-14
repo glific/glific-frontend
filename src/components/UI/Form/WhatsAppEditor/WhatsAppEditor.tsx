@@ -4,6 +4,7 @@ import { RichUtils, getDefaultKeyBinding, Modifier, EditorState, Editor } from '
 import { IconButton, ClickAwayListener } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
+import { useTranslation } from 'react-i18next';
 
 import { convertToWhatsApp } from '../../../../common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
@@ -19,6 +20,8 @@ interface WhatsAppEditorProps {
 export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
   const { setEditorState, sendMessage, editorState, handleHeightChange, readOnly = false } = props;
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { t } = useTranslation();
+
   const handleChange = (editorStateChange: any) => {
     setEditorState(editorStateChange);
   };
@@ -76,7 +79,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
             onChange={handleChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
-            placeholder="Type a message..."
+            placeholder={t('Type a message...')}
             readOnly={readOnly}
           />
         </div>
@@ -99,7 +102,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
           {showEmojiPicker ? (
             <Picker
               data-testid="emoji-popup"
-              title="Pick your emoji…"
+              title={t('Pick your emoji…')}
               emoji="point_up"
               style={{ position: 'absolute', bottom: '60px', right: '-150px', zIndex: 100 }}
               onSelect={handleEmoji}

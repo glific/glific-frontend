@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { useTranslation } from 'react-i18next';
 
 import styles from './SearchBar.module.css';
 import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
@@ -30,7 +31,10 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
     handleChange,
     className,
   } = props;
+
   const [localSearchValue, setLocalSearchValue] = useState(searchVal);
+  const { t } = useTranslation();
+
   // use local state value so that we can set the defaults correctly
   // local value is needed for list component
   let inputValue: any = '';
@@ -82,7 +86,7 @@ export const SearchBar: React.SFC<SearchBarProps> = (props) => {
             data-testid="searchInput"
             className={styles.SearchField}
             name="searchInput" // This is important for extracting the search value in parent component.
-            placeholder="Search"
+            placeholder={t('Search')}
             onChange={(e: any) => {
               setLocalSearchValue(e.target.value);
               if (handleChange) {
