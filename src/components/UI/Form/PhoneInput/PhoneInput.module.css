@@ -18,6 +18,7 @@
 
 .FormHelperText {
   color: red !important;
-  margin-top: 2px !important;
+  margin-top: 3px !important;
   line-height: 1.2 !important;
+  margin-left: 16px !important;
 }
