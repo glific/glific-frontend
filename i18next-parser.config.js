@@ -1,5 +1,5 @@
 module.exports = {
-  createOldCatalogs: true, // save previous translation catalogs to the \_old folder
+  createOldCatalogs: false, // save previous translation catalogs to the \_old folder
 
   lexers: {
     ts: ['JavascriptLexer'],
@@ -10,9 +10,12 @@ module.exports = {
   locales: ['en', 'hi'],
   // An array of the locales in your applications
 
-  namespaceSeparator: '.',
+  namespaceSeparator: false,
   // Namespace separator used in your translation keys
   // If you want to use plain english keys, separators such as `.` and `:` will conflict. You might want to set `keySeparator: false` and `namespaceSeparator: false`. That way, `t('Status: Loading...')` will not think that there are a namespace and three separator dots for instance.
+  keySeparator: false,
+
+  useKeysAsDefaultValue: true,
 
   output: 'src/i18n/$LOCALE/$NAMESPACE.json',
   // Supports $LOCALE and $NAMESPACE injection
