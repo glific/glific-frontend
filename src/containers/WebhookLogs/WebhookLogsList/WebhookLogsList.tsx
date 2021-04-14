@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Popover } from '@material-ui/core';
 import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './WebhookLogsList.module.css';
 import { ReactComponent as WebhookLogIcon } from '../../../assets/images/icons/Webhook/WebhookDark.svg';
@@ -82,6 +83,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
+  const { t } = useTranslation();
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -99,14 +101,14 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
 
     const Menus = [
       {
-        title: 'Copy text',
+        title: t('Copy text'),
         icon: <img src={CopyIcon} alt="copy" />,
         onClick: () => {
           copyToClipboard(client, croppedtext);
         },
       },
       {
-        title: 'View',
+        title: t('View'),
         icon: <ViewIcon />,
         onClick: () => {
           setText(newtext);
@@ -173,10 +175,10 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
           data-testid="copyToClipboard"
         >
           <img src={CopyIcon} alt="copy" />
-          Copy text
+          {t('Copy text')}
         </span>
         <Button variant="contained" color="default" onClick={handleClose}>
-          Done
+          {t('Done')}
         </Button>
       </div>
     </Popover>
@@ -184,7 +186,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
   return (
     <>
       <List
-        title="Webhook Logs"
+        title={t('Webhook Logs')}
         listItem="webhookLogs"
         listItemName="webhookLog"
         pageLink="webhookLog"
