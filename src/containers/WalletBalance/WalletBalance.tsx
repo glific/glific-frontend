@@ -52,7 +52,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
     fullOpenFlag ? (
       <div className={styles.WalletBalanceText}>
         <SelectWhiteIcon className={styles.Icon} />
-        {balanceOkayString}:{displayBalance}
+        {balanceOkayString}: ${displayBalance}
       </div>
     ) : (
       <div className={styles.WalletBalanceText}>${displayBalanceText}</div>
@@ -66,7 +66,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
       {fullOpenStatus ? (
         <div className={styles.WalletBalanceText}>
           <WhiteIcon className={styles.Icon} />
-          {balanceLowString}:{displayBalance}
+          {balanceLowString}: ${displayBalance}
         </div>
       ) : (
         <div className={styles.WalletBalanceText}>${displayBalanceMessage}</div>
