@@ -123,7 +123,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     },
   });
   let flowOptions = [];
-  let contactOptions = [];
+  let contactOptions: any = [];
   let collectionContacts: Array<any> = [];
   if (flowData) {
     flowOptions = flowData.flows;
@@ -225,6 +225,9 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   };
 
   if (addContactsDialogShow) {
+    const selectedOptionsIds = collectionContacts.map(({ id }) => id);
+    const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
+
     dialog = (
       <SearchDialogBox
         title="Add contacts to the collection"
@@ -236,6 +239,9 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         asyncSearch
         disableClearable
         selectedOptions={collectionContacts}
+        getOptionDisabled={getOptionDisabled}
+        renderTags={false}
+        searchLabel="Search contacts"
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);

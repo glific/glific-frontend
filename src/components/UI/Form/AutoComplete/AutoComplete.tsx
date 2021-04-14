@@ -31,6 +31,8 @@ export interface AutocompleteProps {
   disableClearable?: boolean;
   listBoxProps?: any;
   classes?: any;
+  getOptionDisabled?: any;
+  renderTags?: boolean;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -56,6 +58,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   disableClearable = false,
   listBoxProps,
   classes = {},
+  getOptionDisabled,
+  renderTags = true,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -106,6 +110,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
+          getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
             if (roleSelection) {
               roleSelection(value);
@@ -134,17 +139,24 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           disabled={disabled}
           disableCloseOnSelect={multiple}
           renderTags={(value: any, getTagProps) =>
-            value.map((option: any, index: number) => (
-              <Chip
-                data-testid="searchChip"
-                style={{ backgroundColor: '#e2f1ea' }}
-                className={styles.Chip}
-                icon={chipIcon}
-                label={getLabel(option)}
-                {...getTagProps({ index })}
-                deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
-              />
-            ))
+            value
+              .map((option: any, index: number) => {
+                const component = renderTags ? (
+                  <Chip
+                    data-testid="searchChip"
+                    style={{ backgroundColor: '#e2f1ea' }}
+                    className={styles.Chip}
+                    icon={chipIcon}
+                    label={getLabel(option)}
+                    {...getTagProps({ index })}
+                    deleteIcon={
+                      <DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />
+                    }
+                  />
+                ) : null;
+                return component;
+              })
+              .filter((a: any) => a)
           }
           renderOption={(option: any, { selected }) => (
             <>
