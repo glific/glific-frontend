@@ -16,7 +16,7 @@ const formFields = [
     component: Input,
     name: 'userName',
     type: 'text',
-    placeholder: 'Your username',
+    placeholder: 'Your name',
   },
   {
     component: PhoneInput,
