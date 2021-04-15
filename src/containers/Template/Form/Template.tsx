@@ -205,9 +205,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [filterLabel, language, getSessionTemplates]);
 
   useEffect(() => {
-    if (getShortcode) {
-      setShortcode(getShortcode);
-    }
+    setShortcode(getShortcode);
   }, [getShortcode]);
 
   useEffect(() => {
