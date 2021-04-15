@@ -293,7 +293,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
   useEffect(() => {
     if ((type === '' || type) && attachmentURL) {
       validateURL(attachmentURL);
-      getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+      if (getUrlAttachmentAndType) {
+        getUrlAttachmentAndType(type.id || 'TEXT', { url: attachmentURL });
+      }
     }
   }, [type, attachmentURL]);
 
