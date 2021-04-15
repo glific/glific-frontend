@@ -129,6 +129,19 @@ export const Simulator: React.FC<SimulatorProps> = ({
     </div>
   );
 
+  const getChatMessage = () => {
+    const chatMessage = messages
+      .map((simulatorMessage: any, index: number) => {
+        const { body, insertedAt, type, media, location } = simulatorMessage;
+        if (simulatorMessage.receiver.id === simulatorId) {
+          return renderMessage(body, 'received', index, insertedAt, type, media, location);
+        }
+        return renderMessage(body, 'send', index, insertedAt, type, media, location);
+      })
+      .reverse();
+    setSimulatedMessage(chatMessage);
+  };
+
   const sendMessage = () => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     axios({
@@ -158,6 +171,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
       setLogs(error, 'error');
     });
     setInputMessage('');
+    // after post update render messages
+    getChatMessage();
   };
 
   const getPreviewMessage = () => {
@@ -175,33 +190,26 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   };
 
-  const getChatMessage = () => {
-    const chatMessage = messages
-      .map((simulatorMessage: any, index: number) => {
-        const { body, insertedAt, type, media, location } = simulatorMessage;
-        if (simulatorMessage.receiver.id === simulatorId) {
-          return renderMessage(body, 'received', index, insertedAt, type, media, location);
-        }
-        return renderMessage(body, 'send', index, insertedAt, type, media, location);
-      })
-      .reverse();
-    setSimulatedMessage(chatMessage);
-    if (message) {
-      sendMessage();
-    }
-  };
-
+  // to display only preview for template
   useEffect(() => {
     if (isPreviewMessage) {
       getPreviewMessage();
     }
   }, [message]);
 
+  // for loading conversation
   useEffect(() => {
     if (allConversations && data) {
       getChatMessage();
     }
   }, [data, allConversations]);
+
+  // for sending message to Gupshup
+  useEffect(() => {
+    if (!isPreviewMessage && message && data) {
+      sendMessage();
+    }
+  }, [message, data]);
 
   const messageRef = useCallback(
     (node: any) => {
