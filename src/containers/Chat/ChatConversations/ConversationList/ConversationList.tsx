@@ -3,6 +3,7 @@ import { List, Container, CircularProgress, Typography } from '@material-ui/core
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ConversationList.module.css';
 import ChatConversation from '../ChatConversation/ChatConversation';
@@ -55,6 +56,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const [showLoading, setShowLoading] = useState(false);
   const [searchMultiData, setSearchMultiData] = useState<any>();
   const scrollHeight = useQuery(SCROLL_HEIGHT);
+  const { t } = useTranslation();
 
   let queryVariables = SEARCH_QUERY_VARIABLES;
   if (selectedCollectionId) {
@@ -392,7 +394,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   if (!conversationList) {
-    conversationList = <p data-testid="empty-result">You do not have any conversations.</p>;
+    conversationList = <p data-testid="empty-result">{t('You do not have any conversations.')}</p>;
   }
 
   const loadMoreMessages = () => {
@@ -457,7 +459,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       onKeyDown={showLatestContact}
       aria-hidden="true"
     >
-      Go to top
+      {t('Go to top')}
       <KeyboardArrowUpIcon />
     </div>
   );
@@ -473,7 +475,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           className={styles.LoadMoreButton}
           aria-hidden="true"
         >
-          Load more chats
+          {t('Load more chats')}
         </div>
       )}
     </div>

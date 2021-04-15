@@ -3,6 +3,7 @@ import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import { IconButton, InputAdornment } from '@material-ui/core';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { TimePicker } from '../../../components/UI/Form/TimePicker/TimePicker';
@@ -22,15 +23,6 @@ import { ReactComponent as Settingicon } from '../../../assets/images/icons/Sett
 import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import { copyToClipboard } from '../../../common/utils';
-
-const validation = {
-  name: Yup.string().required('Organisation name is required.'),
-  activeLanguages: Yup.array().required('Supported Languages is required.'),
-  defaultLanguage: Yup.object().nullable().required('Default Language is required.'),
-  signaturePhrase: Yup.string().nullable().required('Webhook signature is required.'),
-};
-
-const FormSchema = Yup.object().shape(validation);
 
 const SettingIcon = <Settingicon />;
 
@@ -55,6 +47,7 @@ export const Organisation: React.SFC = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [signaturePhrase, setSignaturePhrase] = useState();
   const [phone, setPhone] = useState<string>('');
+  const { t } = useTranslation();
 
   const States = {
     name,
@@ -134,7 +127,7 @@ export const Organisation: React.SFC = () => {
   const validateActiveLanguages = (value: any) => {
     activeLanguage = value;
     if (!value || value.length === 0) {
-      return 'Supported language is required.';
+      return t('Supported language is required.');
     }
     return null;
   };
@@ -142,21 +135,30 @@ export const Organisation: React.SFC = () => {
   const validateDefaultLanguage = (value: any) => {
     let error;
     if (!value) {
-      error = 'Default language is required.';
+      error = t('Default language is required.');
     }
     if (value) {
       const IsPresent = activeLanguage.filter((language: any) => language.id === value.id);
-      if (IsPresent.length === 0) error = 'Default language needs to be an active language.';
+      if (IsPresent.length === 0) error = t('Default language needs to be an active language.');
     }
     return error;
   };
+
+  const validation = {
+    name: Yup.string().required(t('Organisation name is required.')),
+    activeLanguages: Yup.array().required(t('Supported Languages is required.')),
+    defaultLanguage: Yup.object().nullable().required(t('Default Language is required.')),
+    signaturePhrase: Yup.string().nullable().required(t('Webhook signature is required.')),
+  };
+
+  const FormSchema = Yup.object().shape(validation);
 
   const formFields: any = [
     {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Organisation name',
+      placeholder: t('Organisation name'),
     },
     {
       component: AutoComplete,
@@ -165,7 +167,7 @@ export const Organisation: React.SFC = () => {
       optionLabel: 'label',
       textFieldProps: {
         variant: 'outlined',
-        label: 'Supported languages',
+        label: t('Supported languages'),
       },
       validate: validateActiveLanguages,
     },
@@ -177,7 +179,7 @@ export const Organisation: React.SFC = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Default language',
+        label: t('Default language'),
       },
       validate: validateDefaultLanguage,
     },
@@ -185,13 +187,13 @@ export const Organisation: React.SFC = () => {
       component: Input,
       name: 'signaturePhrase',
       type: 'text',
-      placeholder: 'Webhook signature',
+      placeholder: t('Webhook signature'),
     },
     {
       component: Input,
       name: 'phone',
       type: 'text',
-      placeholder: 'Organisation phone number',
+      placeholder: t('Organisation phone number'),
       disabled: true,
       endAdornment: (
         <InputAdornment position="end">
@@ -211,7 +213,7 @@ export const Organisation: React.SFC = () => {
       name: 'hours',
       title: (
         <Typography variant="h6" style={{ color: '#073f24' }}>
-          Hours of operations
+          {t('Hours of operations')}
         </Typography>
       ),
       handleChange,
@@ -219,13 +221,13 @@ export const Organisation: React.SFC = () => {
     {
       component: TimePicker,
       name: 'startTime',
-      placeholder: 'Opens',
+      placeholder: t('Opens'),
       disabled: IsDisabled,
     },
     {
       component: TimePicker,
       name: 'endTime',
-      placeholder: 'Closes',
+      placeholder: t('Closes'),
       disabled: IsDisabled,
     },
     {
@@ -235,7 +237,7 @@ export const Organisation: React.SFC = () => {
       optionLabel: 'label',
       textFieldProps: {
         variant: 'outlined',
-        label: 'Select days',
+        label: t('Select days'),
       },
       disabled: IsDisabled,
     },
@@ -247,11 +249,12 @@ export const Organisation: React.SFC = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Select default flow',
+        label: t('Select default flow'),
       },
       disabled: IsDisabled,
-      helperText:
-        'the selected flow will be triggered for messages received outside hours of operations',
+      helperText: t(
+        'the selected flow will be triggered for messages received outside hours of operations'
+      ),
     },
   ];
 
@@ -308,7 +311,7 @@ export const Organisation: React.SFC = () => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: 'Back to settings', link: '/settings' }}
+      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title="organization"
       match={{ params: { id: organizationId } }}

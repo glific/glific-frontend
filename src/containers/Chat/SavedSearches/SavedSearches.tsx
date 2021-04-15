@@ -1,6 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { Container } from '@material-ui/core';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { setErrorMessage } from '../../../common/notification';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
@@ -19,15 +21,10 @@ const queryVariables = {
   opts: {},
 };
 
-const label = (
-  <div className={styles.SearchIcon}>
-    <img src={searchIcon} alt="Search" /> Search
-  </div>
-);
-
 const SavedSearches: React.SFC<SavedSearchesProps> = () => {
   const [savedSearch, setSavedSearch] = useState({ id: 0, args: '{}' });
   const [Open, setOpen] = useState(true);
+  const { t } = useTranslation();
 
   const { loading, error, data, client } = useQuery<any>(SAVED_SEARCH_QUERY, {
     variables: queryVariables,
@@ -37,7 +34,7 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
 
   if (error) {
     setErrorMessage(client, error);
-    return <div>error</div>;
+    return <div>{t('Error :(')}</div>;
   }
 
   let options = [];
@@ -54,6 +51,12 @@ const SavedSearches: React.SFC<SavedSearchesProps> = () => {
       setSavedSearch({ id: 0, args: '{}' });
     }
   };
+
+  const label = (
+    <div className={styles.SearchIcon}>
+      <img src={searchIcon} alt="Search" /> {t('Search')}
+    </div>
+  );
 
   return (
     <Container className={styles.ChatConversations} disableGutters data-testid="SavedSearches">

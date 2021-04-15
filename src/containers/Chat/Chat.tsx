@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Toolbar, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Chat.module.css';
 import { Simulator } from '../../components/simulator/Simulator';
@@ -22,11 +23,6 @@ import selectedSavedSearchIcon from '../../assets/images/icons/Chat/SelectedSave
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 import SavedSearches from './SavedSearches/SavedSearches';
 
-const noConversations = (
-  <Typography variant="h5" className={styles.NoConversations}>
-    There are no chat conversations to display.
-  </Typography>
-);
 export interface ChatProps {
   contactId?: number | string | null;
   collectionId?: number | null;
@@ -36,6 +32,7 @@ export interface ChatProps {
 export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearches }) => {
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
+  const { t } = useTranslation();
 
   let selectedContactId = contactId;
   let selectedCollectionId = collectionId;
@@ -84,6 +81,12 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       selectedContactId = data.search[0].contact.id;
     }
   }
+
+  const noConversations = (
+    <Typography variant="h5" className={styles.NoConversations}>
+      {t('There are no chat conversations to display.')}
+    </Typography>
+  );
 
   let chatInterface: any;
   let listingContent;
@@ -143,7 +146,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                         className={`${styles.TitleText} ${contactSelectedClass}`}
                         variant="h6"
                       >
-                        Contacts
+                        {t('Contacts')}
                       </Typography>
                     </div>
                   </div>
@@ -170,7 +173,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                         className={`${styles.TitleText} ${collectionSelectedClass}`}
                         variant="h6"
                       >
-                        Collections
+                        {t('Collections')}
                       </Typography>
                     </div>
                   </div>
@@ -197,7 +200,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
                         className={`${styles.TitleText} ${savedSearchClass}`}
                         variant="h6"
                       >
-                        Saved searches
+                        {t('Saved searches')}
                       </Typography>
                     </div>
                   </div>

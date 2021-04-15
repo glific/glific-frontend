@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './StaffManagementList.module.css';
 import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
@@ -10,13 +11,14 @@ import { isManagerRole } from '../../../context/role';
 
 export interface StaffManagementProps {}
 
-const dialogMessage = ' Once deleted this action cannot be undone.';
-const chatIcon = <ChatIcon />;
-const additionalAction = [
-  { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: 'Send Message' },
-];
-
 export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
+  const { t } = useTranslation();
+
+  const dialogMessage = t('Once deleted this action cannot be undone.');
+  const chatIcon = <ChatIcon />;
+  const additionalAction = [
+    { icon: chatIcon, parameter: 'contact.id', link: '/chat', label: t('Send Message') },
+  ];
   const columnNames = ['NAME', 'PHONE NO', 'ASSIGNED TO', 'ACTIONS'];
   const columnStyles = [styles.Name, styles.Phone, styles.Collection, styles.Actions];
   const staffIcon = <StaffIcon className={styles.StaffIcon} />;
@@ -70,7 +72,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
   return (
     <div>
       <List
-        title="Staff Management"
+        title={t('Staff Management')}
         listItem="users"
         listItemName="user"
         pageLink="staff-management"
@@ -78,7 +80,7 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
         dialogMessage={dialogMessage}
         {...queries}
         {...columnAttributes}
-        button={{ show: true, label: 'Collections', link: '/collection' }}
+        button={{ show: true, label: t('Collections'), link: '/collection' }}
         searchParameter="name"
         additionalAction={additionalAction}
         restrictedAction={getRestrictedAction}

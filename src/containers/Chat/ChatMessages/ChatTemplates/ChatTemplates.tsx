@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { List, ListItem, Divider, Paper, Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ChatTemplates.module.css';
 import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/images/icons/Attachment/Attachment.svg';
@@ -15,14 +16,15 @@ interface ChatTemplatesProps {
 }
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
-  const filterVariables = () => setVariables({ term: props.searchVal });
+  const { t } = useTranslation();
 
+  const filterVariables = () => setVariables({ term: props.searchVal });
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
   });
 
   if (loading) return <div />;
-  if (error || data.sessionTemplates === undefined) return <p>Error :(</p>;
+  if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
   const getListItem = (obj: any, index: number) => {
     const key = index;
@@ -87,7 +89,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       </List>
     ) : (
       <Typography data-testid="no-results" align="center" variant="h6">
-        No {text} for that search.
+        {t(`No ${text} for that search.`)}
       </Typography>
     );
   };

@@ -7,8 +7,9 @@ import { MemoryRouter } from 'react-router';
 
 import { MyAccount } from './MyAccount';
 import { getCurrentUserQuery, updateUserQuery } from '../../mocks/User';
+import { getOrganizationLanguagesQuery } from '../../mocks/Organization';
 
-const mocks = [getCurrentUserQuery, ...updateUserQuery];
+const mocks = [getCurrentUserQuery, ...updateUserQuery, getOrganizationLanguagesQuery];
 
 jest.mock('axios');
 const wrapper = (
@@ -41,7 +42,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -72,7 +73,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });
@@ -88,7 +89,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -109,12 +110,12 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
     // click on CANCEL button
-    const cancelButton = screen.getByText('CANCEL');
+    const cancelButton = screen.getByText('Cancel');
     UserEvent.click(cancelButton);
     await wait();
   });
@@ -130,7 +131,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -145,7 +146,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });
@@ -161,7 +162,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on generate OTP
-    const generateOTPButton = screen.getByText('GENERATE OTP');
+    const generateOTPButton = screen.getByText('Generate OTP');
     UserEvent.click(generateOTPButton);
     await wait();
 
@@ -176,7 +177,7 @@ describe('<MyAccount />', () => {
     await wait();
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
     await wait();
   });

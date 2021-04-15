@@ -109,6 +109,8 @@ export const setUserSession = (user: string) => {
 export const clearUserSession = () => {
   localStorage.removeItem('glific_user');
   localStorage.removeItem('role');
+  // clear locale settings
+  localStorage.removeItem('i18nextLng');
 };
 
 // get the current user session
@@ -134,6 +136,9 @@ export const getUserSession = (element?: string) => {
       break;
     case 'roles':
       returnValue = JSON.parse(user).roles;
+      break;
+    case 'language':
+      returnValue = JSON.parse(user).language.locale;
       break;
     default:
       returnValue = JSON.parse(user);

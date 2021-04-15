@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, CardActions } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ListCard.module.css';
 
@@ -11,12 +12,13 @@ interface ListCardProps {
 
 export const ListCard: React.SFC<ListCardProps> = ({ ...props }) => {
   const { data } = props;
+  const { t } = useTranslation();
 
   const link = (id: any) => `/${props.link.start}/${id}/${props.link.end}`;
 
   const viewDetails = (id: any) => (
     <Link to={link(id)} className={styles.Link}>
-      <p>View Details</p>
+      <p>{t('View Details')}</p>
     </Link>
   );
   return (

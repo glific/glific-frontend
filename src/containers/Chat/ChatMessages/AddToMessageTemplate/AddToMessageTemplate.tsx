@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApolloClient, useMutation } from '@apollo/client';
 import { FormControl, InputLabel, FormHelperText, OutlinedInput } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './AddToMessageTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -25,10 +26,11 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
 
   const [messageTemplate, setMessageTemplate] = useState<string | null>('');
   const [required, setRequired] = useState(false);
+  const { t } = useTranslation();
 
   const [saveTemplate] = useMutation(SAVE_MESSAGE_TEMPLATE_MUTATION, {
     onCompleted: () => {
-      setNotification(client, 'Message has been successfully added to speed sends.');
+      setNotification(client, t('Message has been successfully added to speed sends.'));
     },
     refetchQueries: [
       {
@@ -55,12 +57,12 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
             notchedOutline: styles.InputBorder,
           }}
           className={styles.Label}
-          label="Enter title"
+          label={t('Enter title')}
           fullWidth
           data-testid="templateInput"
           onChange={onChange}
         />
-        {required ? <FormHelperText>Required</FormHelperText> : null}
+        {required ? <FormHelperText>{t('Required')}</FormHelperText> : null}
       </FormControl>
       <div className={styles.Message}>{WhatsAppToJsx(message)}</div>
     </div>
@@ -95,8 +97,8 @@ export const AddToMessageTemplate: React.SFC<AddToMessageTemplateProps> = ({
       <DialogBox
         handleCancel={handleCloseButton}
         handleOk={handleOKButton}
-        title="Add message to speed sends"
-        buttonOk="Save"
+        title={t('Add message to speed sends')}
+        buttonOk={t('Save')}
       >
         {textField}
       </DialogBox>

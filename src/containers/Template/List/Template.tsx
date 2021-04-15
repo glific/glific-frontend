@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Template.module.css';
 import { List } from '../../List/List';
@@ -15,42 +16,6 @@ import { ReactComponent as PendingIcon } from '../../../assets/images/icons/Temp
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 
 const getBody = (text: string) => <p className={styles.TableText}>{WhatsAppToJsx(text)}</p>;
-
-const getStatus = (status: string) => {
-  let statusValue;
-  switch (status) {
-    case 'APPROVED':
-      statusValue = (
-        <>
-          <ApprovedIcon />
-          Approved
-        </>
-      );
-      break;
-    case 'PENDING':
-      statusValue = (
-        <>
-          <PendingIcon />
-          Pending
-        </>
-      );
-      break;
-
-    case 'REJECTED':
-      statusValue = (
-        <>
-          <RejectedIcon />
-          Rejected
-        </>
-      );
-      break;
-
-    default:
-      statusValue = status;
-  }
-
-  return <span className={styles.Status}>{statusValue}</span>;
-};
 
 const getUpdatedAt = (date: string) => (
   <div className={styles.LastModified}>{moment(date).format(DATE_TIME_FORMAT)}</div>
@@ -70,8 +35,6 @@ const queries = {
   deleteItemQuery: DELETE_TEMPLATE,
 };
 
-const dialogMessage = 'It will stop showing when you draft a customized message';
-
 export interface TemplateProps {
   title: string;
   listItem: string;
@@ -87,6 +50,43 @@ export const Template: React.SFC<TemplateProps> = (props) => {
   const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel, isHSM } = props;
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
+  const { t } = useTranslation();
+
+  const getStatus = (status: string) => {
+    let statusValue;
+    switch (status) {
+      case 'APPROVED':
+        statusValue = (
+          <>
+            <ApprovedIcon />
+            {t('Approved')}
+          </>
+        );
+        break;
+      case 'PENDING':
+        statusValue = (
+          <>
+            <PendingIcon />
+            {t('Pending')}
+          </>
+        );
+        break;
+
+      case 'REJECTED':
+        statusValue = (
+          <>
+            <RejectedIcon />
+            {t('Rejected')}
+          </>
+        );
+        break;
+
+      default:
+        statusValue = status;
+    }
+
+    return <span className={styles.Status}>{statusValue}</span>;
+  };
 
   let columnNames = ['LABEL', 'BODY'];
   columnNames = isHSM
@@ -131,7 +131,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
 
   let additionalAction = [
     {
-      label: 'Show all languages',
+      label: t('Show all languages'),
       icon: <DownArrow />,
       parameter: 'id',
       dialog: setDialog,
@@ -144,6 +144,8 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     additionalAction = [];
     defaultSortBy = 'STATUS';
   }
+
+  const dialogMessage = t('It will stop showing when you draft a customized message');
 
   return (
     <List

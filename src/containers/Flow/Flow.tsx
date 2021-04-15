@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { useLocation } from 'react-router-dom';
 
@@ -21,15 +22,6 @@ export interface FlowProps {
   match: any;
 }
 
-const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
-
-const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required.'),
-  keywords: Yup.string().matches(regex, 'Sorry, special characters are not allowed'),
-});
-
-const dialogMessage = "You won't be able to use this flow again.";
-
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {
@@ -44,6 +36,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
+  const { t } = useTranslation();
 
   const states = { name, keywords, ignoreKeywords };
 
@@ -69,29 +62,39 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     setIgnoreKeywords(ignoreKeywordsValue);
   };
 
-  const additionalAction = { label: 'Configure', link: '/flow/configure' };
+  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+
+  const FormSchema = Yup.object().shape({
+    name: Yup.string().required(t('Name is required.')),
+    keywords: Yup.string().matches(regex, t('Sorry, special characters are not allowed.')),
+  });
+
+  const dialogMessage = t("You won't be able to use this flow again.");
+
+  const additionalAction = { label: t('Configure'), link: '/flow/configure' };
 
   const formFields = [
     {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Name',
+      placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'keywords',
       type: 'text',
-      placeholder: 'Keywords',
-      helperText: 'Enter comma separated keywords that trigger this flow',
+      placeholder: t('Keywords'),
+      helperText: t('Enter comma separated keywords that trigger this flow'),
     },
     {
       component: Checkbox,
       name: 'ignoreKeywords',
-      title: 'Ignore Keywords',
+      title: t('Ignore Keywords'),
       info: {
-        title:
-          'If activated, users will not be able to change this flow by entering keyword for any other flow.',
+        title: t(
+          'If activated, users will not be able to change this flow by entering keyword for any other flow.'
+        ),
       },
     },
   ];
@@ -117,7 +120,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   let type;
   if (location.state === 'copy') {
     queries.updateItemQuery = CREATE_FLOW_COPY;
-    title = 'Copy flow';
+    title = t('Copy flow');
     type = 'copy';
   } else {
     queries.updateItemQuery = UPDATE_FLOW;
@@ -133,7 +136,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       });
       dataCopy = error;
     }
-    setErrorMessage(client, { message: dataCopy }, 'Sorry! An error occurred!');
+    setErrorMessage(client, { message: dataCopy }, t('Sorry! An error occurred!'));
   };
 
   return (
@@ -156,7 +159,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       languageSupport={false}
       title={title}
       type={type}
-      copyNotification="Copy of the flow has been created!"
+      copyNotification={t('Copy of the flow has been created!')}
       customHandler={customHandler}
     />
   );

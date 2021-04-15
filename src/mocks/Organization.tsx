@@ -360,6 +360,8 @@ export const getOrganizationLanguagesQuery = {
               {
                 id: '1',
                 label: 'English',
+                localized: true,
+                locale: 'en',
               },
             ],
             defaultLanguage: {
@@ -387,6 +389,8 @@ export const getOrganizationLanguagesQueryByOrder = {
               {
                 id: '1',
                 label: 'English',
+                localized: true,
+                locale: 'en',
               },
             ],
             defaultLanguage: {
