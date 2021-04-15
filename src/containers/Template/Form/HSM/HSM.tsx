@@ -32,6 +32,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   });
   const [shortcode, setShortcode] = useState('');
   const [example, setExample] = useState(EditorState.createEmpty());
+  const [category, setCategory] = useState<any>();
   const { t } = useTranslation();
 
   const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
@@ -115,6 +116,9 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       },
       disabled: match.params.id,
       helperText: t('Select the most relevant category'),
+      onChange: (event: any) => {
+        setCategory(event);
+      },
     },
     {
       component: Input,
@@ -141,6 +145,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getUrlAttachmentAndType={getAttachmentUrl}
         getShortcode={shortcode}
         getExample={example}
+        getCategory={category}
       />
       <Simulator
         setSimulatorId={0}

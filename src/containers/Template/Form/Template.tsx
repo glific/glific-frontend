@@ -71,6 +71,7 @@ export interface TemplateProps {
   getUrlAttachmentAndType?: any;
   getShortcode?: any;
   getExample?: any;
+  getCategory?: any;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -86,6 +87,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getUrlAttachmentAndType,
     getShortcode,
     getExample,
+    getCategory,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -213,6 +215,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setExample(getExample);
     }
   }, [getExample]);
+
+  useEffect(() => {
+    if (getCategory) {
+      setCategory(getCategory);
+    }
+  }, [getCategory]);
 
   const validateTitle = (value: any) => {
     let error;
