@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as ProfileIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { CONTACT_STATUS, PROVIDER_STATUS } from '../../common/constants';
@@ -11,8 +12,6 @@ import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { GET_CONTACT } from '../../graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT } from '../../graphql/mutations/Contact';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
-
-const dialogMessage = "You won't be able to send the messages to this contact.";
 
 const profileIcon = <ProfileIcon />;
 
@@ -50,6 +49,8 @@ export const Profile: React.SFC<ProfileProps> = ({
   const [phone, setPhone] = useState('');
   const [status, setStatus] = useState('');
   const [bspStatus, setBspStatus] = useState('');
+  const { t } = useTranslation();
+
   let param = match;
 
   const { data, loading } = useQuery(GET_CURRENT_USER);
@@ -92,7 +93,7 @@ export const Profile: React.SFC<ProfileProps> = ({
   };
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required.'),
+    name: Yup.string().required(t('Name is required.')),
   });
 
   const formFields = [
@@ -100,19 +101,19 @@ export const Profile: React.SFC<ProfileProps> = ({
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Name',
+      placeholder: t('Name'),
     },
     {
       component: Input,
       name: 'phone',
-      placeholder: 'Phone Number',
+      placeholder: t('Phone Number'),
       disabled: true,
       skipPayload: true,
     },
     {
       component: Dropdown,
       name: 'status',
-      placeholder: 'Status',
+      placeholder: t('Status'),
       options: CONTACT_STATUS,
       disabled: true,
       skipPayload: true,
@@ -121,7 +122,7 @@ export const Profile: React.SFC<ProfileProps> = ({
     {
       component: Dropdown,
       name: 'bspStatus',
-      placeholder: 'Provider status',
+      placeholder: t('Provider status'),
       options: PROVIDER_STATUS,
       disabled: true,
       skipPayload: true,
@@ -139,11 +140,13 @@ export const Profile: React.SFC<ProfileProps> = ({
   }
 
   let type: any;
-  let pageTitle = 'Contact Profile';
+  let pageTitle = t('Contact Profile');
   if (profileType === 'User' || loggedInUserContactId === currentContactId) {
     type = 'UserProfile';
-    pageTitle = 'My Profile';
+    pageTitle = t('My Profile');
   }
+
+  const dialogMessage = t("You won't be able to send the messages to this contact.");
 
   return (
     <FormLayout

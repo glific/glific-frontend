@@ -13,7 +13,6 @@ export const getCurrentUserQuery = {
           id: '1',
           name: 'John Doe',
           phone: '+919820198765',
-          maskedPhone: '+919820198765',
           roles: ['admin'],
           contact: {
             id: '1',
@@ -27,6 +26,10 @@ export const getCurrentUserQuery = {
           ],
           organization: {
             id: '1',
+          },
+          language: {
+            id: '1',
+            locale: 'en',
           },
         },
       },

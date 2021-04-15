@@ -76,6 +76,10 @@ export const GET_CURRENT_USER = gql`
         organization {
           id
         }
+        language {
+          id
+          locale
+        }
       }
     }
   }

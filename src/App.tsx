@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import './i18n/config';
 
 import './assets/fonts/fonts.css';
 import gqlClient from './config/apolloclient';

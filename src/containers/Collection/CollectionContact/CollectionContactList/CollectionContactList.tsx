@@ -1,16 +1,16 @@
 import React from 'react';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
+import { useTranslation } from 'react-i18next';
+
 import styles from './CollectionContactList.module.css';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../../graphql/queries/Contact';
+import { UPDATE_COLLECTION_CONTACTS } from '../../../../graphql/mutations/Collection';
 import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Collection/Dark.svg';
 import { List } from '../../../List/List';
-import { UPDATE_COLLECTION_CONTACTS } from '../../../../graphql/mutations/Collection';
 
 export interface CollectionContactListProps {
   match: any;
   title: string;
 }
-
-const columnNames = ['BENEFICIARY', 'ALL COLLECTIONS', 'ACTIONS'];
 
 const getName = (label: string, phone: string) => (
   <>
@@ -30,8 +30,6 @@ const getColumns = ({ name, maskedPhone, groups }: any) => ({
   groups: getCollections(groups),
 });
 
-const dialogTitle = 'Are you sure you want to remove contact from this collection?';
-const dialogMessage = 'The contact will no longer receive messages sent to this collection';
 const columnStyles = [styles.Name, styles.Phone, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
@@ -47,6 +45,8 @@ const columnAttributes = {
 };
 
 export const CollectionContactList: React.SFC<CollectionContactListProps> = (props) => {
+  const { t } = useTranslation();
+
   const { match, title } = props;
   const collectionId = match.params.id;
 
@@ -58,9 +58,13 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
     },
   });
 
+  const columnNames = ['BENEFICIARY', 'ALL COLLECTIONS', 'ACTIONS'];
+  const dialogTitle = t('Are you sure you want to remove contact from this collection?');
+  const dialogMessage = t('The contact will no longer receive messages sent to this collection');
+
   return (
     <List
-      backLinkButton={{ text: 'Back to all collections', link: '/collection' }}
+      backLinkButton={{ text: t('Back to all collections'), link: '/collection' }}
       dialogTitle={dialogTitle}
       columnNames={columnNames}
       title={title}
@@ -74,7 +78,7 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
       deleteModifier={{
         icon: 'cross',
         variables: getDeleteQueryVariables,
-        label: 'Remove from this collection',
+        label: t('Remove from this collection'),
       }}
       editSupport={false}
       dialogMessage={dialogMessage}

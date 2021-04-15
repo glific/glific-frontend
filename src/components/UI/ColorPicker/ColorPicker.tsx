@@ -3,6 +3,7 @@ import { TwitterPicker } from 'react-color';
 import FormHelperText from '@material-ui/core/FormHelperText/FormHelperText';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { Input } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ColorPicker.module.css';
 
@@ -17,6 +18,8 @@ export interface Props {
 export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
   const [displayPicker, setDisplayPicker] = useState(false);
   const [colorHex, setColorHex] = useState('');
+  const { t } = useTranslation();
+
   const { colorCode, name, helperText } = props;
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export const ColorPicker: React.SFC<Props> = ({ ...props }) => {
     <div className={styles.Container}>
       <div className={styles.ColorPicker} data-testid="ColorPicker">
         <div className={styles.ColorInput}>
-          <Input type="text" placeholder="Select color" name={name} value={colorHex} />
+          <Input type="text" placeholder={t('Select color')} name={name} value={colorHex} />
         </div>
         <ClickAwayListener onClickAway={onClickAway}>
           <div className={styles.ContainListener}>
