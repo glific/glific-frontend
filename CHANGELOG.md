@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file. Dates are d
 - UI enhancements [`#1282`](https://github.com/glific/glific-frontend/pull/1282)
 - scrolling issue fix [`#1278`](https://github.com/glific/glific-frontend/pull/1278)
 - Fixed contact query issue [`#1271`](https://github.com/glific/glific-frontend/pull/1271)
-- Updated authorization in floweditor calls [`#1272`](https://github.com/glific/glific-frontend/pull/1272)
+- Added authorization header in floweditor calls [`#1272`](https://github.com/glific/glific-frontend/pull/1272)
 - Fixed image aspect ratio issue in chat [`#1264`](https://github.com/glific/glific-frontend/pull/1264)
 - Added Lazyloading support [`#1255`](https://github.com/glific/glific-frontend/pull/1255)
 - Remove unwanted packages [`#1254`](https://github.com/glific/glific-frontend/pull/1254)
