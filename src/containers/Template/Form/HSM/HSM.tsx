@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
 
 import styles from './HSM.module.css';
@@ -26,9 +27,12 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const [sampleMessages, setSampleMessages] = useState({
     type: 'TEXT',
     location: null,
-    media: null,
+    media: {},
     body: '',
   });
+  const [shortcode, setShortcode] = useState('');
+  const [example, setExample] = useState(EditorState.createEmpty());
+  const [category, setCategory] = useState<any>();
   const { t } = useTranslation();
 
   const { data: categoryList } = useQuery(GET_HSM_CATEGORIES);
@@ -43,47 +47,6 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       setCategoryOpn(categoryOpn);
     }
   }, [categoryList]);
-
-  const getFields = (
-    matchValue: { params: { id: any } },
-    categoryOptions: any,
-    validateShortcode: any,
-    getExampleMessage: any
-  ) => [
-    {
-      component: EmojiInput,
-      name: 'example',
-      placeholder: t('Sample message*'),
-      rows: 5,
-      convertToWhatsApp: true,
-      textArea: true,
-      disabled: matchValue.params.id,
-      helperText: t(
-        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.'
-      ),
-      handleChange: getExampleMessage,
-    },
-    {
-      component: AutoComplete,
-      name: 'category',
-      options: categoryOptions,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Category*'),
-      },
-      disabled: matchValue.params.id,
-      helperText: t('Select the most relevant category'),
-    },
-    {
-      component: Input,
-      name: 'shortcode',
-      placeholder: t('Element name*'),
-      validate: validateShortcode,
-      disabled: matchValue.params.id,
-    },
-  ];
 
   let sessionTemplates: any;
   const getSessionTemplates = (data: any) => {
@@ -110,11 +73,10 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const removeFirstLineBreak = (text: any) =>
     text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
-  const getExampleMessage = (messages: any) => {
+  const getSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
-    const media: any = {
-      caption: message,
-    };
+    const media: any = { ...sampleMessages.media };
+    media.caption = message;
     setSampleMessages((val) => ({ ...val, body: message, media }));
   };
 
@@ -124,6 +86,52 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
   };
 
+  const formFields = [
+    {
+      component: EmojiInput,
+      name: 'example',
+      placeholder: t('Sample message*'),
+      rows: 5,
+      convertToWhatsApp: true,
+      textArea: true,
+      disabled: match.params.id,
+      helperText:
+        'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
+      handleChange: getSimulatorMessage,
+      inputProp: {
+        onBlur: (editorState: any) => {
+          setExample(editorState);
+        },
+      },
+    },
+    {
+      component: AutoComplete,
+      name: 'category',
+      options: categoryOpns,
+      optionLabel: 'label',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Category*'),
+      },
+      disabled: match.params.id,
+      helperText: t('Select the most relevant category'),
+      onChange: (event: any) => {
+        setCategory(event);
+      },
+    },
+    {
+      component: Input,
+      name: 'shortcode',
+      placeholder: t('Element name*'),
+      validate: validateShortcode,
+      disabled: match.params.id,
+      inputProp: {
+        onBlur: (event: any) => setShortcode(event.target.value),
+      },
+    },
+  ];
+
   return (
     <div>
       <Template
@@ -132,9 +140,12 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         redirectionLink="template"
         icon={templateIcon}
         defaultAttribute={defaultAttribute}
-        formField={getFields(match, categoryOpns, validateShortcode, getExampleMessage)}
+        formField={formFields}
         getSessionTemplatesCallBack={getSessionTemplates}
         getUrlAttachmentAndType={getAttachmentUrl}
+        getShortcode={shortcode}
+        getExample={example}
+        getCategory={category}
       />
       <Simulator
         setSimulatorId={0}
