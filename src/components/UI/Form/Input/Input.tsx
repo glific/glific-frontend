@@ -29,6 +29,7 @@ export interface InputProps {
   endAdornmentCallback?: any;
   validate?: any;
   endAdornment?: any;
+  inputProp?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -44,6 +45,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     editor,
     rows,
     endAdornment,
+    inputProp,
   } = props;
 
   let fieldType = type;
@@ -97,7 +99,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
         <OutlinedInput
           data-testid="outlinedInput"
           inputComponent={editor ? editor.inputComponent : undefined}
-          inputProps={editor ? editor.inputProps : undefined}
+          inputProps={editor ? editor.inputProps : inputProp}
           type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
