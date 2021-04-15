@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { Loading } from '../../../components/UI/Layout/Loading/Loading';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -34,6 +35,8 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
   const type = match.params.type ? match.params.type : null;
   const [credentialId, setCredentialId] = useState(null);
   const client = useApolloClient();
+  const { t } = useTranslation();
+
   const param = { params: { id: credentialId, shortcode: type } };
   const states: any = {};
   let keys: any = {};
@@ -108,7 +111,9 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       .nullable()
       .when('isActive', {
         is: true,
-        then: Yup.string().nullable().required(`${fields[key].label} is required.`),
+        then: Yup.string()
+          .nullable()
+          .required(t(`${fields[key].label} is required.`)),
       });
     FormSchema = Yup.object().shape(validation);
   };
@@ -123,7 +128,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
         name: 'isActive',
         title: (
           <Typography variant="h6" style={{ color: '#073f24' }}>
-            Is active?
+            {t('Is active?')}
           </Typography>
         ),
         handleChange,
@@ -175,7 +180,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
 
   return (
     <FormLayout
-      backLinkButton={{ text: 'Back to settings', link: '/settings' }}
+      backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
       title={title}
       match={param}

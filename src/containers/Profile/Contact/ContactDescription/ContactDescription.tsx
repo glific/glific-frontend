@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ContactDescription.module.css';
 import { Timer } from '../../../../components/UI/Timer/Timer';
@@ -20,6 +21,7 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   let { fields, settings } = props;
 
   const [showPlainPhone, setShowPlainPhone] = useState(false);
+  const { t } = useTranslation();
 
   // list of collections that the contact is assigned
   let assignedToCollection: any = Array.from(
@@ -42,10 +44,10 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   const collectionList = collections.map((collection: any) => collection.label).join(', ');
 
   const collectionDetails = [
-    { label: 'Collections', value: collectionList || 'None' },
+    { label: t('Collections'), value: collectionList || t('None') },
     {
-      label: 'Assigned to',
-      value: assignedToCollection || 'None',
+      label: t('Assigned to'),
+      value: assignedToCollection || t('None'),
     },
   ];
 
@@ -70,14 +72,14 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   if (phone) {
     let phoneDisplayValue = maskedPhone;
     let visibilityElement = (
-      <Tooltip title="Hide number" placement="right">
+      <Tooltip title={t('Hide number')} placement="right">
         <Visibility classes={{ root: styles.Visibility }} />
       </Tooltip>
     );
     if (showPlainPhone) {
       phoneDisplayValue = phone;
       visibilityElement = (
-        <Tooltip title="Show number" placement="right">
+        <Tooltip title={t('Show number')} placement="right">
           <VisibilityOff classes={{ root: styles.Visibility }} />
         </Tooltip>
       );
@@ -102,11 +104,11 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
 
   return (
     <div className={styles.DescriptionContainer} data-testid="contactDescription">
-      <h2 className={styles.Title}>Details</h2>
+      <h2 className={styles.Title}>{t('Details')}</h2>
       <div className={styles.Description}>
         {phoneDisplay}
         <div className={styles.SessionTimer}>
-          <span>Session Timer</span>
+          <span>{t('Session Timer')}</span>
           <Timer time={lastMessage} />
         </div>
       </div>

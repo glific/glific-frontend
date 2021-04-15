@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import { setNotification } from '../../../../common/notification';
-
 import { setVariables } from '../../../../common/constants';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../../graphql/queries/Contact';
 import { UPDATE_COLLECTION_CONTACTS } from '../../../../graphql/mutations/Collection';
@@ -19,6 +19,7 @@ export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = 
 }) => {
   const client = useApolloClient();
   const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   const { data: contactsData } = useQuery(CONTACT_SEARCH_QUERY, {
     variables: setVariables({ name: contactSearchTerm }, 50),
@@ -90,7 +91,7 @@ export const AddContactsToCollection: React.SFC<AddContactsToCollectionProps> = 
 
   return (
     <SearchDialogBox
-      title="Add contacts to the collection"
+      title={t('Add contacts to the collection')}
       handleOk={handleCollectionAdd}
       handleCancel={() => setDialog(false)}
       options={contactOptions}

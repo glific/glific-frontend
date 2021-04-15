@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './TagList.module.css';
 import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
@@ -37,8 +38,6 @@ const getColumns = ({ label, description, keywords, colorCode, updatedAt }: any)
   updatedAt: getUpdatedAt(updatedAt),
 });
 
-const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
-const dialogMessage = "You won't be able to use this for tagging messages.";
 const columnStyles = [
   styles.Label,
   styles.Description,
@@ -54,26 +53,32 @@ const queries = {
   deleteItemQuery: DELETE_TAG,
 };
 
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
-};
+export const TagList: React.SFC<TagListProps> = () => {
+  const { t } = useTranslation();
 
-export const TagList: React.SFC<TagListProps> = () => (
-  <List
-    title="Tags"
-    listItem="tags"
-    listItemName="tag"
-    pageLink="tag"
-    listIcon={tagIcon}
-    button={{ show: true, label: '+ CREATE TAG' }}
-    dialogMessage={dialogMessage}
-    refetchQueries={{
-      query: FILTER_TAGS_NAME,
-      variables: setVariables(),
-    }}
-    {...queries}
-    {...columnAttributes}
-  />
-);
+  const columnNames = ['TITLE', 'DESCRIPTION', 'KEYWORDS', 'LAST MODIFIED', 'ACTIONS'];
+  const dialogMessage = t("You won't be able to use this for tagging messages.");
+
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
+  return (
+    <List
+      title={t('Tags')}
+      listItem="tags"
+      listItemName="tag"
+      pageLink="tag"
+      listIcon={tagIcon}
+      button={{ show: true, label: t('+ CREATE TAG') }}
+      dialogMessage={dialogMessage}
+      refetchQueries={{
+        query: FILTER_TAGS_NAME,
+        variables: setVariables(),
+      }}
+      {...queries}
+      {...columnAttributes}
+    />
+  );
+};

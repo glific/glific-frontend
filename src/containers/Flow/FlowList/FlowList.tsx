@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
@@ -33,14 +34,6 @@ const getDate = (date: string, fallback: string = '') => (
   </div>
 );
 
-const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
-  name: getName(name, keywords),
-  lastPublishedAt: getDate(lastPublishedAt, 'Not published yet'),
-  lastChangedAt: getDate(lastChangedAt, 'Nothing in draft'),
-});
-
-const columnNames = ['NAME', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
-const dialogMessage = "You won't be able to use this flow.";
 const columnStyles = [styles.Name, styles.LastPublished, styles.LastDraft, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -50,16 +43,11 @@ const queries = {
   deleteItemQuery: DELETE_FLOW,
 };
 
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
-};
-
 const configureIcon = <ConfigureIcon />;
 
 export const FlowList: React.SFC<FlowListProps> = () => {
   const history = useHistory();
+  const { t } = useTranslation();
 
   const setDialog = (id: any) => {
     history.push({ pathname: `/flow/${id}/edit`, state: 'copy' });
@@ -67,23 +55,38 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const additionalAction = [
     {
-      label: 'Configure',
+      label: t('Configure'),
       icon: configureIcon,
       parameter: 'uuid',
       link: '/flow/configure',
     },
     {
-      label: 'Make a copy',
+      label: t('Make a copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
     },
   ];
 
+  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
+    name: getName(name, keywords),
+    lastPublishedAt: getDate(lastPublishedAt, t('Not published yet')),
+    lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
+  });
+
+  const columnNames = ['NAME', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
+  const dialogMessage = t("You won't be able to use this flow.");
+
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
+
   return (
     <>
       <List
-        title="Flows"
+        title={t('Flows')}
         listItem="flows"
         listItemName="flow"
         pageLink="flow"
@@ -93,18 +96,18 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         {...queries}
         {...columnAttributes}
         searchParameter="name"
-        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
+        removeSortBy={[t('Last Published'), t('Last Saved in Draft')]}
         additionalAction={additionalAction}
-        button={{ show: true, label: '+ CREATE FLOW' }}
+        button={{ show: true, label: t('+ CREATE FLOW') }}
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>
         <WebhookLogsIcon />
-        View webhook logs
+        {t('View webhook logs')}
       </Link>
       <Link to="/notifications" className={styles.Notifications}>
         <NotificationIcon />
-        View Notifications
+        {t('View Notifications')}
       </Link>
     </>
   );

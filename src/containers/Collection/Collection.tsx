@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -27,54 +28,6 @@ export interface CollectionProps {
   match: any;
 }
 
-const FormSchema = Yup.object().shape({
-  label: Yup.string().required('Title is required.').max(50, 'Title is too long.'),
-});
-
-const dialogMessage = "You won't be able to use this collection again.";
-
-const formFields = (options: any, validateTitle: Function) => [
-  {
-    component: Input,
-    name: 'label',
-    type: 'text',
-    placeholder: 'Title',
-    validate: validateTitle,
-  },
-  {
-    component: Input,
-    name: 'description',
-    type: 'text',
-    placeholder: 'Description',
-    rows: 3,
-    textArea: true,
-  },
-  {
-    component: AutoComplete,
-    name: 'users',
-    additionalState: 'users',
-    options,
-    optionLabel: 'name',
-    textFieldProps: {
-      label: 'Assign staff to collection',
-      variant: 'outlined',
-    },
-    skipPayload: true,
-    icon: <ContactIcon className={styles.ContactIcon} />,
-    helperText:
-      'Assigned staff members will be responsible to chat with contacts in this collection',
-  },
-];
-
-const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
-
-const queries = {
-  getItemQuery: GET_COLLECTION,
-  createItemQuery: CREATE_COLLECTION,
-  updateItemQuery: UPDATE_COLLECTION,
-  deleteItemQuery: DELETE_COLLECTION,
-};
-
 export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
     fetchPolicy: 'cache-and-network',
@@ -84,6 +37,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
+  const { t } = useTranslation();
 
   const [updateCollectionUsers] = useMutation(UPDATE_COLLECTION_USERS);
 
@@ -115,11 +69,6 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
   });
 
   const { data: collectionList } = useQuery(GET_COLLECTIONS);
-
-  let options = [];
-  if (data) {
-    options = data.users;
-  }
 
   useEffect(() => {
     if (collectionId) {
@@ -165,10 +114,59 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
         }
       }
       if (found.length > 0) {
-        error = 'Title already exists.';
+        error = t('Title already exists.');
       }
     }
     return error;
+  };
+
+  const FormSchema = Yup.object().shape({
+    label: Yup.string().required(t('Title is required.')).max(50, t('Title is too long.')),
+  });
+
+  const dialogMessage = t("You won't be able to use this collection again.");
+
+  const formFields = [
+    {
+      component: Input,
+      name: 'label',
+      type: 'text',
+      placeholder: t('Title'),
+      validate: validateTitle,
+    },
+    {
+      component: Input,
+      name: 'description',
+      type: 'text',
+      placeholder: t('Description'),
+      rows: 3,
+      textArea: true,
+    },
+    {
+      component: AutoComplete,
+      name: 'users',
+      additionalState: 'users',
+      options: data ? data.users : [],
+      optionLabel: 'name',
+      textFieldProps: {
+        label: t('Assign staff to collection'),
+        variant: 'outlined',
+      },
+      skipPayload: true,
+      icon: <ContactIcon className={styles.ContactIcon} />,
+      helperText: t(
+        'Assigned staff members will be responsible to chat with contacts in this collection'
+      ),
+    },
+  ];
+
+  const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
+
+  const queries = {
+    getItemQuery: GET_COLLECTION,
+    createItemQuery: CREATE_COLLECTION,
+    updateItemQuery: UPDATE_COLLECTION,
+    deleteItemQuery: DELETE_COLLECTION,
   };
 
   return (
@@ -184,7 +182,7 @@ export const Collection: React.SFC<CollectionProps> = ({ match }) => {
       validationSchema={FormSchema}
       listItemName="collection"
       dialogMessage={dialogMessage}
-      formFields={formFields(options, validateTitle)}
+      formFields={formFields}
       redirectionLink="collection"
       listItem="group"
       icon={collectionIcon}

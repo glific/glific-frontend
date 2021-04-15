@@ -4,26 +4,21 @@ import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
 import { useQuery, useMutation } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './MyAccount.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ReactComponent as UserIcon } from '../../assets/images/icons/Contact/Profile.svg';
 import { UPDATE_CURRENT_USER } from '../../graphql/mutations/User';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
+import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 import { Button } from '../../components/UI/Form/Button/Button';
-import Loading from '../../components/UI/Layout/Loading/Loading';
+import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { sendOTP } from '../../services/AuthService';
 import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
 export interface MyAccountProps {}
-
-// setup form schema base on Yup
-const FormSchema = Yup.object().shape({
-  otp: Yup.string().required('Input required'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 8 characters long.')
-    .required('Input required'),
-});
 
 export const MyAccount: React.SFC<MyAccountProps> = () => {
   // set the validation / errors / success message
@@ -38,36 +33,54 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
 
+  // user language selection
+  const [userLanguage, setUserLanguage] = useState('');
+
+  const [message, setMessage] = useState<string>('');
+
   // get the information on current user
   const { data: userData, loading: userDataLoading } = useQuery(GET_CURRENT_USER);
+
+  // get available languages for the logged in users organization
+  const { data: organizationData, loading: organizationDataLoading } = useQuery(USER_LANGUAGES);
+
+  const { t, i18n } = useTranslation();
 
   // set the mutation to update the logged in user password
   const [updateCurrentUser] = useMutation(UPDATE_CURRENT_USER, {
     onCompleted: (data) => {
       if (data.updateCurrentUser.errors) {
         if (data.updateCurrentUser.errors[0].message === 'incorrect_code') {
-          setToastMessageInfo({ severity: 'error', message: 'Please enter a valid OTP' });
+          setToastMessageInfo({ severity: 'error', message: t('Please enter a valid OTP') });
         } else {
           setToastMessageInfo({
             severity: 'error',
-            message: 'Too many attempts, please retry after sometime.',
+            message: t('Too many attempts, please retry after sometime.'),
           });
         }
       } else {
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message: 'Password updated successfully!' });
+        setToastMessageInfo({ severity: 'success', message: t(message) });
       }
     },
   });
 
   // return loading till we fetch the data
-  if (userDataLoading) return <Loading />;
+  if (userDataLoading || organizationDataLoading) return <Loading />;
 
-  // set the phone of logged in user that will be used to send the OTP
-  const loggedInUserPhone = userData.currentUser.user.phone;
+  // filter languages that support localization
+  const languageOptions = organizationData.currentUser.user.organization.activeLanguages
+    .filter((lang: any) => lang.localized)
+    .map((lang: any) => {
+      // restructure language array
+      const lanObj = { id: lang.locale, label: lang.label };
+      return lanObj;
+    });
 
   // callback function to send otp to the logged user
   const sendOTPHandler = () => {
+    // set the phone of logged in user that will be used to send the OTP
+    const loggedInUserPhone = userData?.currentUser.user.phone;
     sendOTP(loggedInUserPhone)
       .then(() => {
         setShowOTPButton(false);
@@ -75,7 +88,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       .catch(() => {
         setToastMessageInfo({
           severity: 'error',
-          message: `Unable to send an OTP to ${loggedInUserPhone}.`,
+          message: t(`Unable to send an OTP to ${loggedInUserPhone}.`),
         });
       });
   };
@@ -87,6 +100,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // save the form if data is valid
   const saveHandler = (item: any) => {
+    setMessage(t('Password updated successfully!'));
     updateCurrentUser({
       variables: { input: item },
     });
@@ -115,6 +129,14 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     );
   }
 
+  // setup form schema base on Yup
+  const FormSchema = Yup.object().shape({
+    otp: Yup.string().required(t('Input required')),
+    password: Yup.string()
+      .min(6, t('Password must be at least 8 characters long.'))
+      .required(t('Input required')),
+  });
+
   // for configuration that needs to be rendered
   const formFields = [
     {
@@ -122,14 +144,14 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       type: 'otp',
       name: 'otp',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your WhatsApp number.',
+      helperText: t('Please confirm the OTP received at your WhatsApp number.'),
       endAdornmentCallback: sendOTPHandler,
     },
     {
       component: Input,
       name: 'password',
       type: 'password',
-      placeholder: 'Change Password',
+      placeholder: t('Change Password'),
       endAdornmentCallback: handlePasswordVisibility,
       togglePassword: showPassword,
     },
@@ -179,9 +201,11 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     className={styles.Button}
                     data-testid="generateOTP"
                   >
-                    GENERATE OTP
+                    {t('Generate OTP')}
                   </Button>
-                  <div className={styles.HelperText}>To change first please generate OTP</div>
+                  <div className={styles.HelperText}>
+                    {t('To change first please generate OTP')}
+                  </div>
                 </>
               ) : (
                 <>
@@ -191,10 +215,10 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
                     onClick={submitForm}
                     className={styles.Button}
                   >
-                    SAVE
+                    {t('Save')}
                   </Button>
                   <Button variant="contained" color="default" onClick={cancelHandler}>
-                    CANCEL
+                    {t('Cancel')}
                   </Button>
                 </>
               )}
@@ -205,16 +229,59 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     </>
   );
 
+  // set only for the first time
+  if (!userLanguage && userData.currentUser.user.language) {
+    setUserLanguage(userData.currentUser.user.language.locale);
+  }
+
+  const changeLanguage = (event: any) => {
+    setUserLanguage(event.target.value);
+
+    // change the user interface
+    i18n.changeLanguage(event.target.value);
+
+    // get language id
+    const languageID = organizationData.currentUser.user.organization.activeLanguages.filter(
+      (lang: any) => lang.locale === event.target.value
+    );
+
+    setMessage(t('Language changed successfully!'));
+    // update user's language
+    updateCurrentUser({
+      variables: { input: { language_id: languageID[0].id } },
+    });
+  };
+
+  const languageField = {
+    onChange: changeLanguage,
+    value: userLanguage,
+  };
+
+  const languageSwitcher = (
+    <div className={styles.Form}>
+      <Dropdown
+        options={languageOptions}
+        label={t('Change language')}
+        placeholder={t('Available languages')}
+        field={languageField}
+      />
+    </div>
+  );
+
   return (
     <div className={styles.MyAccount} data-testid="MyAccount">
       <Typography variant="h5" className={styles.Title}>
         <IconButton disabled className={styles.Icon}>
           <UserIcon />
         </IconButton>
-        My Account
+        {t('My Account')}
       </Typography>
       <Typography variant="h6" className={styles.Title}>
-        Change Password
+        {t('Change Interface Language')}
+      </Typography>
+      {languageSwitcher}
+      <Typography variant="h6" className={styles.Title}>
+        {t('Change Password')}
       </Typography>
       {form}
     </div>

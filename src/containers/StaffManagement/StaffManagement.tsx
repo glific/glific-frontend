@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
@@ -22,8 +23,6 @@ export interface StaffManagementProps {
   match: any;
 }
 
-const dialogMessage = ' Once deleted this action cannot be undone.';
-
 const staffManagementIcon = <StaffManagementIcon />;
 
 const queries = {
@@ -43,6 +42,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [helpDialog, setHelpDialog] = useState(false);
   const [isAdmin] = useState(getUserRole().includes('Admin'));
   const history = useHistory();
+  const { t } = useTranslation();
 
   let dialog;
 
@@ -51,27 +51,27 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {
         key: 1,
         title: 'Admin',
-        description: 'Complete access to all the parts of the platform.',
+        description: t('Complete access to all the parts of the platform.'),
       },
       {
         key: 2,
         title: 'Manager',
-        description: 'Complete access to the platform except settings and staff management.',
+        description: t('Complete access to the platform except settings and staff management.'),
       },
       {
         key: 3,
         title: 'Staff',
-        description: `Access only to the chat section and their collections. Access can be limited to chatting
-       with all contacts or only to the ones in their assigned collection.`,
+        description: t(`Access only to the chat section and their collections. Access can be limited to chatting
+       with all contacts or only to the ones in their assigned collection.`),
       },
-      { key: 4, title: 'None', description: 'No access to the platform. They can’t login.' },
+      { key: 4, title: 'None', description: t('No access to the platform. They can’t login.') },
     ];
     dialog = (
       <DialogBox
         titleAlign="left"
-        title="User roles"
+        title={t('User roles')}
         skipOk
-        buttonCancel="Close"
+        buttonCancel={t('Close')}
         handleCancel={() => setHelpDialog(false)}
       >
         {rolesHelp.map((role: any) => (
@@ -161,12 +161,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Username',
+      placeholder: t('Username'),
     },
     {
       component: Input,
       name: 'phone',
-      placeholder: 'Phone Number',
+      placeholder: t('Phone Number'),
       disabled: true,
       skipPayload: true,
     },
@@ -174,7 +174,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       component: AutoComplete,
       name: 'roles',
       disabled: isManagerRole,
-      placeholder: 'Roles',
+      placeholder: t('Roles'),
       options: rolesList,
       roleSelection: handleRolesChange,
       getOptions,
@@ -182,18 +182,18 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
-        label: 'Roles',
+        label: t('Roles'),
         variant: 'outlined',
       },
     },
     {
       component: AutoComplete,
       name: 'groups',
-      placeholder: 'Assigned to collection(s)',
+      placeholder: t('Assigned to collection(s)'),
       options: data.groups,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Assigned to collection(s)',
+        label: t('Assigned to collection(s)'),
         variant: 'outlined',
       },
     },
@@ -205,15 +205,15 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {
         component: Checkbox,
         name: 'isRestricted',
-        title: 'Can chat with contacts from assigned collection only',
+        title: t('Can chat with contacts from assigned collection only'),
       },
     ];
   }
 
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required.'),
-    phone: Yup.string().required('Phone is required'),
-    roles: Yup.object().nullable().required('Roles is required'),
+    name: Yup.string().required(t('Name is required.')),
+    phone: Yup.string().required(t('Phone is required')),
+    roles: Yup.object().nullable().required(t('Roles is required')),
   });
 
   const setPayload = (payload: any) => {
@@ -245,6 +245,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       history.push('/logout/user');
     }
   };
+
+  const dialogMessage = t('Once deleted this action cannot be undone.');
 
   return (
     <>

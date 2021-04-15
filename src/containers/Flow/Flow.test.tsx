@@ -62,7 +62,7 @@ it('should not allow special characters in keywords', async () => {
 
   await waitFor(() => {
     // error if a special character is introduced in the keyword
-    expect(getByText('Sorry, special characters are not allowed'));
+    expect(getByText('Sorry, special characters are not allowed.'));
   });
 });
 

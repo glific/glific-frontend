@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
@@ -129,6 +130,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
+  const { t } = useTranslation();
 
   // get menu for role
   const getMenus = () => {
@@ -178,7 +180,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   const settingMenus = settingMenu ? (
     <div>
-      <Tooltip title="Settings" placement="top">
+      <Tooltip title={t('Settings')} placement="top">
         <Link to="/settings">
           <IconButton data-testid="settingsMenu">
             <img
@@ -250,7 +252,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
               window.open(GLIFIC_DOCS_URL, '_blank');
             }}
           >
-            Help documents
+            {t('Help Documents')}
             <QuestionIcon />
           </div>
           <div className={bottonMenuClasses.join(' ')}>
@@ -263,7 +265,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             >
               <Menu menus={staffManagementMenus}>
                 <IconButton data-testid="staffManagementMenu">
-                  <Tooltip title="Staff Management" placement="top">
+                  <Tooltip title={t('Staff Management')} placement="top">
                     <img
                       src={
                         ['/collection', '/staff-management', '/blocked-contacts'].includes(
@@ -282,7 +284,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             <div>
               <Menu menus={userAccountMenus}>
                 <IconButton data-testid="profileMenu">
-                  <Tooltip title="Profile" placement="top">
+                  <Tooltip title={t('Profile')} placement="top">
                     <img
                       src={
                         location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
