@@ -4,9 +4,9 @@ import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Trigger.module.css';
-
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as TriggerIcon } from '../../assets/images/icons/Trigger/Union.svg';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
@@ -24,46 +24,6 @@ export interface TriggerProps {
   match: any;
 }
 
-const triggerFrequency = [
-  { label: 'Does not repeat', value: 'none' },
-  { label: 'Daily', value: 'daily' },
-  { label: 'Weekly', value: 'weekly' },
-];
-
-const FormSchema = Yup.object().shape({
-  flowId: Yup.object().nullable().required('Flow is required'),
-  startTime: Yup.string().required('Time is required.'),
-  startDate: Yup.string().nullable().required('Start date is required'),
-  endDate: Yup.string()
-    .nullable()
-    .required('End date is required')
-    .when('startDate', (startDate: any, schema: any) =>
-      schema.test({
-        test: (endDate: any) => startDate && moment(endDate).isAfter(startDate, 'days'),
-        message: 'End date should be greater than the start date',
-      })
-    ),
-  days: Yup.array()
-    .nullable()
-    .when('frequency', {
-      is: (frequency: any) => frequency && frequency.value === 'weekly',
-      then: Yup.array().min(1, 'Please select a day'),
-    }),
-  frequency: Yup.object().nullable().required('Repeat is required'),
-  groupId: Yup.object().nullable().required('Collection is required'),
-});
-
-const dialogMessage = "You won't be able to use this for tagging messages.";
-
-const triggerIcon = <TriggerIcon className={styles.TriggerIcon} />;
-
-const queries = {
-  getItemQuery: GET_TRIGGER,
-  createItemQuery: CREATE_TRIGGER,
-  updateItemQuery: UPDATE_TRIGGER,
-  deleteItemQuery: DELETE_TRIGGER,
-};
-
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState('');
   const [isActive, setIsActive] = useState(true);
@@ -77,6 +37,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [groupId, setGroupId] = useState<any>('');
   const [minDate, setMinDate] = useState<any>(new Date());
   const location = useLocation();
+  const { t } = useTranslation();
 
   const states = {
     flowId,
@@ -88,6 +49,47 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     days,
     groupId,
     isActive,
+  };
+
+  const triggerFrequency = [
+    { label: t('Does not repeat'), value: 'none' },
+    { label: t('Daily'), value: 'daily' },
+    { label: t('Weekly'), value: 'weekly' },
+  ];
+
+  const FormSchema = Yup.object().shape({
+    flowId: Yup.object().nullable().required(t('Flow is required')),
+    startTime: Yup.string().required(t('Time is required.')),
+    startDate: Yup.string().nullable().required(t('Start date is required')),
+    endDate: Yup.string()
+      .nullable()
+      .required(t('End date is required'))
+      .when('startDate', (startDateValue: any, schema: any) =>
+        schema.test({
+          test: (endDateValue: any) =>
+            startDateValue && moment(endDateValue).isAfter(startDateValue, 'days'),
+          message: t('End date should be greater than the start date'),
+        })
+      ),
+    days: Yup.array()
+      .nullable()
+      .when('frequency', {
+        is: (frequencyValue: any) => frequencyValue && frequencyValue.value === 'weekly',
+        then: Yup.array().min(1, t('Please select a day')),
+      }),
+    frequency: Yup.object().nullable().required(t('Repeat is required')),
+    groupId: Yup.object().nullable().required(t('Collection is required')),
+  });
+
+  const dialogMessage = t("You won't be able to use this for tagging messages.");
+
+  const triggerIcon = <TriggerIcon className={styles.TriggerIcon} />;
+
+  const queries = {
+    getItemQuery: GET_TRIGGER,
+    createItemQuery: CREATE_TRIGGER,
+    updateItemQuery: UPDATE_TRIGGER,
+    deleteItemQuery: DELETE_TRIGGER,
   };
 
   let type;
@@ -130,36 +132,36 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Select flow',
+        label: t('Select flow'),
       },
     },
     {
       component: Calendar,
       type: 'date',
       name: 'startDate',
-      placeholder: 'Start date',
+      placeholder: t('Start date'),
       minDate,
     },
     {
       component: Calendar,
       type: 'date',
       name: 'endDate',
-      placeholder: 'End date',
+      placeholder: t('End date'),
     },
     {
       component: TimePicker,
       name: 'startTime',
-      placeholder: 'Time',
+      placeholder: t('Time'),
     },
     {
       component: AutoComplete,
       name: 'frequency',
-      placeholder: 'Repeat',
+      placeholder: t('Repeat'),
       options: triggerFrequency,
       optionLabel: 'label',
       multiple: false,
       textFieldProps: {
-        label: 'Repeat',
+        label: t('Repeat'),
         variant: 'outlined',
       },
       onChange: (value: any) => {
@@ -174,24 +176,24 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'days',
-      placeholder: 'Select days',
+      placeholder: t('Select days'),
       options: dayList,
       disabled: daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Select days',
+        label: t('Select days'),
         variant: 'outlined',
       },
     },
     {
       component: AutoComplete,
       name: 'groupId',
-      placeholder: 'Select collection',
+      placeholder: t('Select collection'),
       options: collections.groups,
       multiple: false,
       optionLabel: 'label',
       textFieldProps: {
-        label: 'Select collection',
+        label: t('Select collection'),
         variant: 'outlined',
       },
     },
@@ -274,7 +276,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       redirectionLink="trigger"
       listItem="trigger"
       type={type}
-      copyNotification="Copy of the trigger has been created!"
+      copyNotification={t('Copy of the trigger has been created!')}
       icon={triggerIcon}
       customStyles={styles.Triggers}
     />

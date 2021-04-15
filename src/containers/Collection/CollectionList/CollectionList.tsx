@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconButton } from '@material-ui/core';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './CollectionList.module.css';
 import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collection/Dark.svg';
@@ -43,7 +44,6 @@ const getColumns = ({ id, label, description }: any) => ({
   description: getDescription(description),
 });
 
-const dialogMessage = "You won't be able to use this collection again.";
 const columnStyles = [styles.Label, styles.Description, styles.Actions];
 const collectionIcon = <CollectionIcon className={styles.CollectionIcon} />;
 
@@ -67,6 +67,8 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [collectionId, setCollectionId] = useState();
 
+  const { t } = useTranslation();
+
   // get the published flow list
   const [getFlows, { data: flowData }] = useLazyQuery(GET_FLOWS, {
     variables: setVariables({
@@ -81,7 +83,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
 
   const [sendMessageToCollections] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     onCompleted: () => {
-      setNotification(client, `Message successfully send to the collection`);
+      setNotification(client, t(`Message successfully send to the collection`));
       setSendMessageDialogShow(false);
     },
   });
@@ -119,9 +121,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
       setAddFlowDialogShow(false);
-      setNotification(client, 'Flow started successfully');
+      setNotification(client, t('Flow started successfully.'));
     },
   });
+
+  const dialogMessage = t("You won't be able to use this collection again.");
+
   let flowOptions = [];
   let contactOptions = [];
   let collectionContacts: Array<any> = [];
@@ -180,7 +185,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   if (sendMessageDialogShow) {
     dialog = (
       <MessageDialog
-        title="Send message to collection"
+        title={t('Send message to collection')}
         onSendMessage={sendMessageToCollection}
         handleClose={() => setSendMessageDialogShow(false)}
       />
@@ -190,12 +195,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   if (addFlowDialogShow) {
     dialog = (
       <DropdownDialog
-        title="Select a flow"
+        title={t('Select a flow')}
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
         options={flowOptions}
-        placeholder="Select a flow"
-        description="The contact will be responded as per the messages planned in the flow."
+        placeholder={t('Select a flow')}
+        description={t('The contact will be responded as per the messages planned in the flow.')}
       />
     );
   }
@@ -227,7 +232,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   if (addContactsDialogShow) {
     dialog = (
       <SearchDialogBox
-        title="Add contacts to the collection"
+        title={t('Add contacts to the collection')}
         handleOk={handleCollectionAdd}
         handleCancel={() => setAddContactsDialogShow(false)}
         options={contactOptions}
@@ -251,12 +256,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       menus={[
         {
           icon: <ChatDarkIcon />,
-          title: 'Send a message',
+          title: t('Send a message'),
           onClick: () => setSendMessageDialogShow(true),
         },
         {
           icon: <FlowDarkIcon />,
-          title: 'Start a flow',
+          title: t('Start a flow'),
           onClick: setFlowDialog,
         },
       ]}
@@ -269,7 +274,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
 
   const additionalAction = [
     {
-      label: 'Add contacts to collection',
+      label: t('Add contacts to collection'),
       icon: addContactIcon,
       parameter: 'id',
       dialog: setContactsDialog,
@@ -303,12 +308,12 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
       <List
         restrictedAction={getRestrictedAction}
         refetchQueries={refetchQueries}
-        title="Collections"
+        title={t('Collections')}
         listItem="groups"
         columnNames={['LABEL']}
         listItemName="collection"
         displayListType="card"
-        button={{ show: displayUserCollections, label: '+ CREATE COLLECTION' }}
+        button={{ show: displayUserCollections, label: t('+ CREATE COLLECTION') }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}

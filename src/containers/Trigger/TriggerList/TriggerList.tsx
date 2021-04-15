@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './TriggerList.module.css';
 import { ReactComponent as TriggerIcon } from '../../../assets/images/icons/Trigger/Union.svg';
@@ -49,8 +50,6 @@ const getColumns = ({ endDate, group, frequency, days, flow, startAt, isActive }
   collections: getCollections(group),
 });
 
-const columnNames = ['NAME', 'END DATE', 'COLLECTION', 'ACTIONS'];
-const dialogMessage = "You won't be able to use this trigger.";
 const columnStyles = [styles.Name, styles.EndDate, styles.Collections, styles.Actions];
 const triggerIcon = <TriggerIcon className={styles.Icon} />;
 
@@ -60,14 +59,9 @@ const queries = {
   deleteItemQuery: DELETE_TRIGGER,
 };
 
-const columnAttributes = {
-  columnNames,
-  columns: getColumns,
-  columnStyles,
-};
-
 export const TriggerList: React.SFC<TriggerListProps> = () => {
   const history = useHistory();
+  const { t } = useTranslation();
 
   const setDialog = (id: any) => {
     history.push({ pathname: `/trigger/${id}/edit`, state: 'copy' });
@@ -75,12 +69,20 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
 
   const additionalAction = [
     {
-      label: 'Make a copy',
+      label: t('Make a copy'),
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
     },
   ];
+  const columnNames = ['NAME', 'END DATE', 'COLLECTION', 'ACTIONS'];
+  const columnAttributes = {
+    columnNames,
+    columns: getColumns,
+    columnStyles,
+  };
+
+  const dialogMessage = t("You won't be able to use this trigger.");
 
   return (
     <List
@@ -88,7 +90,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       listItem="triggers"
       listItemName="Trigger"
       pageLink="trigger"
-      button={{ show: true, label: '+ CREATE TRIGGER' }}
+      button={{ show: true, label: t('+ CREATE TRIGGER') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       refetchQueries={{ query: TRIGGER_LIST_QUERY, variables: setVariables() }}

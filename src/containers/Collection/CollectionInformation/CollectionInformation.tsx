@@ -1,5 +1,7 @@
-import { useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
+
 import styles from './CollectionInformation.module.css';
 import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/queries/Collection';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
@@ -12,8 +14,6 @@ export interface CollectionInformationProps {
   handleSendMessage?: any;
 }
 
-const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
-
 export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   collectionId,
   staff = true,
@@ -21,7 +21,10 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   setDisplayPopup,
   handleSendMessage,
 }) => {
+  const { t } = useTranslation();
+  const displayObj: any = { 'Session messages': 0, 'Only templates': 0, 'No messages': 0 };
   const [display, setDisplay] = useState(displayObj);
+
   const [getCollectionInfo, { data: collectionInfo }] = useLazyQuery(GET_COLLECTION_INFO);
 
   const [selectedUsers, { data: collectionUsers }] = useLazyQuery(GET_COLLECTION_USERS, {
@@ -75,23 +78,23 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   if (displayPopup) {
     const dialogBox = (
       <DialogBox
-        title="Contact status"
+        title={t('Contact status')}
         handleOk={() => handleSendMessage()}
         handleCancel={() => setDisplayPopup()}
-        buttonOk="Ok, Send"
+        buttonOk={t('Ok, Send')}
         alignButtons="center"
       >
         <div className={styles.DialogBox} data-testid="description">
           <div className={styles.Message}>
-            Custom messages will not be sent to the opted out/session expired contacts.
+            {t('Custom messages will not be sent to the opted out/session expired contacts.')}
           </div>
           <div className={styles.Message}>
-            Only HSM template can be sent to the session expired contacts.{' '}
+            {t('Only HSM template can be sent to the session expired contacts.')}{' '}
           </div>
           <div className={styles.Message}>
-            Total Contacts: {collectionInfo ? JSON.parse(collectionInfo.groupInfo).total : 0}
+            {t('Total Contacts:')} {collectionInfo ? JSON.parse(collectionInfo.groupInfo).total : 0}
             <div>
-              Contacts qualified for-
+              {t('Contacts qualified for')}-
               {Object.keys(display).map((data: any) => (
                 <span key={data} className={styles.Count}>
                   {data}: <span> {display[data]}</span>
@@ -108,7 +111,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
   return (
     <div className={styles.InfoWrapper}>
       <div className={styles.CollectionInformation} data-testid="CollectionInformation">
-        <div>Contacts qualified for-</div>
+        <div>{t('Contacts qualified for')}-</div>
         {Object.keys(display).map((data: any) => (
           <div key={data} className={styles.SessionInfo}>
             {data}: <span className={styles.SessionCount}> {display[data]}</span>
@@ -118,7 +121,7 @@ export const CollectionInformation: React.SFC<CollectionInformationProps> = ({
       <div className={styles.CollectionAssigned}>
         {assignedToCollection && staff ? (
           <>
-            <span className={styles.CollectionHeading}>Assigned to</span>
+            <span className={styles.CollectionHeading}>{t('Assigned to')}</span>
             <span className={styles.CollectionsName}>{assignedToCollection}</span>
           </>
         ) : null}

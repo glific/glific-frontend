@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography/Typography';
 import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './SettingList.module.css';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
@@ -10,34 +11,34 @@ import { GET_PROVIDERS } from '../../graphql/queries/Organization';
 import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
-const SettingIcon = <Settingicon />;
-
-const List = [
-  {
-    name: 'Organisation',
-    shortcode: 'organization',
-    description: 'Manage organisation name, supported languages, hours of operations.',
-  },
-  {
-    name: 'Billing',
-    shortcode: 'billing',
-    description: 'Setup for glific billing account',
-  },
-];
-
-const heading = (
-  <Typography variant="h5" className={styles.Title}>
-    <IconButton disabled className={styles.Icon}>
-      {SettingIcon}
-    </IconButton>
-    Settings
-  </Typography>
-);
-
 export const SettingList: React.SFC = () => {
+  const { t } = useTranslation();
   const { data: providerData, loading } = useQuery(GET_PROVIDERS);
 
   if (loading) return <Loading />;
+  const SettingIcon = <Settingicon />;
+
+  const List = [
+    {
+      name: 'Organisation',
+      shortcode: 'organization',
+      description: t('Manage organisation name, supported languages, hours of operations.'),
+    },
+    {
+      name: 'Billing',
+      shortcode: 'billing',
+      description: t('Setup for glific billing account'),
+    },
+  ];
+
+  const heading = (
+    <Typography variant="h5" className={styles.Title}>
+      <IconButton disabled className={styles.Icon}>
+        {SettingIcon}
+      </IconButton>
+      {t('Settings')}
+    </Typography>
+  );
 
   let CardList: any = [];
   if (providerData) {

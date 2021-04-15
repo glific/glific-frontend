@@ -23,7 +23,7 @@ test('contact profile should render', async () => {
 });
 
 test('contact should have a name or number', async () => {
-  const { getAllByTestId, getByTestId } = render(
+  const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <ContactProfile {...defaultProps} />
     </MockedProvider>

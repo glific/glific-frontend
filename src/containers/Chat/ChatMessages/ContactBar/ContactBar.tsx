@@ -12,6 +12,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
@@ -83,6 +84,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showClearChatDialog, setClearChatDialog] = useState(false);
   const [addContactsDialogShow, setAddContactsDialogShow] = useState(false);
+  const { t } = useTranslation();
 
   // get collection list
   const [getCollections, { data: collectionsData }] = useLazyQuery(GET_COLLECTIONS, {
@@ -129,14 +131,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [blockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
-      setNotification(client, 'Contact blocked successfully');
+      setNotification(client, t('Contact blocked successfully.'));
     },
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
   });
 
   const [addFlow] = useMutation(ADD_FLOW_TO_CONTACT, {
     onCompleted: () => {
-      setNotification(client, 'Flow started successfully');
+      setNotification(client, t('Flow started successfully.'));
     },
     onError: (error) => {
       setErrorMessage(client, error);
@@ -145,7 +147,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
 
   const [addFlowToCollection] = useMutation(ADD_FLOW_TO_COLLECTION, {
     onCompleted: () => {
-      setNotification(client, 'Flow started successfully');
+      setNotification(client, t('Flow started successfully.'));
     },
   });
 
@@ -154,7 +156,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     variables: { contactId },
     onCompleted: () => {
       setClearChatDialog(false);
-      setNotification(client, 'Conversation cleared for this contact', 'warning');
+      setNotification(client, t('Conversation cleared for this contact.'), 'warning');
     },
   });
 
@@ -222,7 +224,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     dialogBox = (
       <SearchDialogBox
         selectedOptions={initialSelectedCollectionIds}
-        title="Add contact to collection"
+        title={t('Add contact to collection')}
         handleOk={handleCollectionDialogOk}
         handleCancel={handleCollectionDialogCancel}
         options={collectionOptions}
@@ -259,12 +261,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   if (showFlowDialog) {
     dialogBox = (
       <DropdownDialog
-        title="Select flow"
+        title={t('Select flow')}
         handleOk={handleFlowSubmit}
         handleCancel={closeFlowDialogBox}
         options={flowOptions}
-        placeholder="Select flow"
-        description="The contact will be responded as per the messages planned in the flow."
+        placeholder={t('Select flow')}
+        description={t('The contact will be responded as per the messages planned in the flow.')}
       />
     );
   }

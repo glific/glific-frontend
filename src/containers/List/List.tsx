@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -118,9 +119,10 @@ export const List: React.SFC<ListProps> = ({
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
-
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const { t } = useTranslation();
+
   const capitalListItemName = listItemName
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
     : '';
@@ -283,7 +285,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
+    setNotification(client, t(`${capitalListItemName} deleted successfully`));
   };
 
   const handleDeleteItem = () => {
@@ -298,7 +300,8 @@ export const List: React.SFC<ListProps> = ({
     dialogBox = (
       <DialogBox
         title={
-          dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
+          dialogTitle ||
+          t(`Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`)
         }
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}

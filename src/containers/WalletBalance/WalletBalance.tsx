@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { CircularProgress } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import styles from './WalletBalance.module.css';
 import { ReactComponent as WhiteIcon } from '../../assets/images/icons/White.svg';
@@ -10,55 +11,6 @@ import { BSPBALANCE } from '../../graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 
-const nullBalance = () => (
-  <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
-    <div className={styles.WalletBalanceText}>
-      <SelectWhiteIcon className={styles.Icon} />
-      Wallet balance is okay
-    </div>
-  </div>
-);
-
-const gupshupSettings = (fullOpen: boolean) => (
-  <Tooltip title="For any help, please contact the Glific team" placement="top-start">
-    <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
-      {fullOpen ? (
-        <div className={styles.WalletBalanceText}>
-          <WhiteIcon className={styles.Icon} />
-          Verify Gupshup settings
-        </div>
-      ) : (
-        <div className={styles.WalletBalanceText}>
-          <WhiteIcon className={styles.Icon} />
-        </div>
-      )}
-    </div>
-  </Tooltip>
-);
-
-const balanceOkay = (fullOpen: boolean, displayBalance: any) =>
-  fullOpen ? (
-    <div className={styles.WalletBalanceText}>
-      <SelectWhiteIcon className={styles.Icon} />
-      Wallet balance is okay: ${displayBalance}
-    </div>
-  ) : (
-    <div className={styles.WalletBalanceText}>${displayBalance}</div>
-  );
-
-const balanceLow = (fullOpen: boolean, displayBalance: any) => (
-  <Tooltip title="You will be unable to send messages without recharge" placement="top-start">
-    {fullOpen ? (
-      <div className={styles.WalletBalanceText}>
-        <WhiteIcon className={styles.Icon} />
-        Wallet balance is low: ${displayBalance}
-      </div>
-    ) : (
-      <div className={styles.WalletBalanceText}>${displayBalance}</div>
-    )}
-  </Tooltip>
-);
-
 export interface WalletBalanceProps {
   fullOpen: boolean;
 }
@@ -66,6 +18,61 @@ export interface WalletBalanceProps {
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
   const [displayBalance, setDisplayBalance] = useState<any>(null);
+  const { t } = useTranslation();
+  const balanceOkayString = t('Wallet balance is okay');
+  const balanceLowString = t('Wallet balance is low');
+
+  const nullBalance = () => (
+    <div className={`${styles.WalletBalance} ${styles.WalletBalanceHigh}`}>
+      <div className={styles.WalletBalanceText}>
+        <SelectWhiteIcon className={styles.Icon} />
+        {balanceOkayString}
+      </div>
+    </div>
+  );
+
+  const gupshupSettings = (isFullOpen: boolean) => (
+    <Tooltip title={t('For any help, please contact the Glific team')} placement="top-start">
+      <div className={`${styles.WalletBalance} ${styles.WalletBalanceLow}`}>
+        {isFullOpen ? (
+          <div className={styles.WalletBalanceText}>
+            <WhiteIcon className={styles.Icon} />
+            {t('Verify Gupshup settings')}
+          </div>
+        ) : (
+          <div className={styles.WalletBalanceText}>
+            <WhiteIcon className={styles.Icon} />
+          </div>
+        )}
+      </div>
+    </Tooltip>
+  );
+
+  const balanceOkay = (fullOpenFlag: boolean, displayBalanceText: any) =>
+    fullOpenFlag ? (
+      <div className={styles.WalletBalanceText}>
+        <SelectWhiteIcon className={styles.Icon} />
+        {balanceOkayString}: ${displayBalance}
+      </div>
+    ) : (
+      <div className={styles.WalletBalanceText}>${displayBalanceText}</div>
+    );
+
+  const balanceLow = (fullOpenStatus: boolean, displayBalanceMessage: any) => (
+    <Tooltip
+      title={t('You will be unable to send messages without recharge')}
+      placement="top-start"
+    >
+      {fullOpenStatus ? (
+        <div className={styles.WalletBalanceText}>
+          <WhiteIcon className={styles.Icon} />
+          {balanceLowString}: ${displayBalance}
+        </div>
+      ) : (
+        <div className={styles.WalletBalanceText}>${displayBalanceMessage}</div>
+      )}
+    </Tooltip>
+  );
 
   // get gupshup balance
   const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {

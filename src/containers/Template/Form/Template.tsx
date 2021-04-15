@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Template.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -58,26 +59,6 @@ const formIsActive = {
   ),
 };
 
-const validation = {
-  language: Yup.object().nullable().required('Language is required.'),
-  label: Yup.string().required('Title is required.').max(50, 'Title length is too long.'),
-  body: Yup.string()
-    .transform((current, original) => original.getCurrentContent().getPlainText())
-    .required('Message is required.'),
-  type: Yup.object()
-    .nullable()
-    .when('attachmentURL', {
-      is: (val: string) => val && val !== '',
-      then: Yup.object().required('Type is required.'),
-    }),
-  attachmentURL: Yup.string()
-    .nullable()
-    .when('type', {
-      is: (val: any) => val && val.id,
-      then: Yup.string().required('Attachment URL is required.'),
-    }),
-};
-
 export interface TemplateProps {
   match: any;
   listItemName: string;
@@ -121,6 +102,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
+  const { t } = useTranslation();
 
   const states = {
     language,
@@ -248,7 +230,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
         }
       }
       if (found.length > 0) {
-        error = 'Title already exists.';
+        error = t('Title already exists.');
       }
     }
     return error;
@@ -320,8 +302,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setWarning(
         <div className={styles.Warning}>
           <ol>
-            <li>Animated stickers are not supported.</li>
-            <li>Captions along with stickers are not supported.</li>
+            <li>{t('Animated stickers are not supported.')}</li>
+            <li>{t('Captions along with stickers are not supported.')}</li>
           </ol>
         </div>
       );
@@ -329,7 +311,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setWarning(
         <div className={styles.Warning}>
           <ol>
-            <li>Captions along with audio are not supported.</li>
+            <li>{t('Captions along with audio are not supported.')}</li>
           </ol>
         </div>
       );
@@ -351,7 +333,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Attachment Type',
+        label: t('Attachment Type'),
       },
       helperText: warning,
       onChange: (event: any) => {
@@ -363,7 +345,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       component: Input,
       name: 'attachmentURL',
       type: 'text',
-      placeholder: 'Attachment URL',
+      placeholder: t('Attachment URL'),
       validate: () => isUrlValid,
       inputProp: {
         onBlur: (event: any) => {
@@ -382,7 +364,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: 'Language*',
+        label: t('Language*'),
       },
       disabled: defaultAttribute.isHsm && match.params.id,
       onChange: getLanguageId,
@@ -390,11 +372,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: Input,
       name: 'label',
-      placeholder: 'Title*',
+      placeholder: t('Title*'),
       validate: validateTitle,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? 'Define what use case does this template serve eg. OTP, optin, activity preference'
+        ? t('Define what use case does this template serve eg. OTP, optin, activity preference')
         : null,
       inputProp: {
         onBlur: (event: any) => setLabel(event.target.value),
@@ -403,13 +385,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: 'Message*',
+      placeholder: t('Message*'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+        ? t(
+            'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
+          )
         : null,
       inputProp: {
         onBlur: (editorState: any) => {
@@ -522,6 +506,26 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return data;
   };
 
+  const validation = {
+    language: Yup.object().nullable().required('Language is required.'),
+    label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
+    body: Yup.string()
+      .transform((current, original) => original.getCurrentContent().getPlainText())
+      .required(t('Message is required.')),
+    type: Yup.object()
+      .nullable()
+      .when('attachmentURL', {
+        is: (val: string) => val && val !== '',
+        then: Yup.object().nullable().required(t('Type is required.')),
+      }),
+    attachmentURL: Yup.string()
+      .nullable()
+      .when('type', {
+        is: (val: any) => val && val.id,
+        then: Yup.string().required(t('Attachment URL is required.')),
+      }),
+  };
+
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
   const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);
 
@@ -544,7 +548,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
-      button={defaultAttribute.isHsm && !match.params.id ? 'SUBMIT FOR APPROVAL' : 'Save'}
+      button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
     />
   );
