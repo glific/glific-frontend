@@ -20,6 +20,7 @@ export interface SearchDialogBoxProps {
   searchLabel?: string;
   getOptionDisabled?: any;
   renderTags?: boolean;
+  textFieldPlaceholder?: any;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -38,6 +39,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     searchLabel = 'Search',
     getOptionDisabled,
     renderTags = true,
+    textFieldPlaceholder = '',
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<Array<string>>([]);
@@ -93,6 +95,7 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             textFieldProps={{
               label: `${searchLabel}`,
               variant: 'outlined',
+              placeholder: `${textFieldPlaceholder}`,
             }}
             chipIcon={icon}
             renderTags={renderTags}

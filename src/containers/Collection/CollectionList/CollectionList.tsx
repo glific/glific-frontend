@@ -242,6 +242,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         getOptionDisabled={getOptionDisabled}
         renderTags={false}
         searchLabel="Search contacts"
+        textFieldPlaceholder="Type here"
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);
