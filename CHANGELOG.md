@@ -23,7 +23,7 @@ All notable changes to this project will be documented in this file. Dates are d
 
 > 6 April 2021
 
-- Multiple search query fixes [`#1262`](https://github.com/glific/glific-frontend/pull/1262)
+- Search query issue fixes [`#1262`](https://github.com/glific/glific-frontend/pull/1262)
 
 #### [v1.3.1](https://github.com/glific/glific-frontend/compare/v1.3.0...v1.3.1)
 
