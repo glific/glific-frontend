@@ -346,6 +346,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: warning,
       onChange: (event: any) => {
         const val = event || '';
+        if (!event) {
+          setIsUrlValid('');
+        }
         setType(val);
       },
     },
