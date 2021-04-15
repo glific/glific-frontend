@@ -362,6 +362,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
         },
+        onChange: (event: any) => {
+          setAttachmentURL(event.target.value);
+        },
       },
     },
   ];
