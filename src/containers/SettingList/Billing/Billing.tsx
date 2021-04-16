@@ -105,14 +105,16 @@ export const BillingForm: React.FC<BillingProps> = () => {
               if (securityResult.error?.message) {
                 setNotification(client, securityResult.error?.message, 'warning');
                 setLoading(false);
-                updateBilling({
-                  variables: {
-                    id: billData.getOrganizationBilling?.billing?.id,
-                    input: {
-                      stripeSubscriptionId: null,
-                      stripeSubscriptionStatus: null,
+                refetch().then(({ data: refetchedData }) => {
+                  updateBilling({
+                    variables: {
+                      id: refetchedData.getOrganizationBilling?.billing?.id,
+                      input: {
+                        stripeSubscriptionId: null,
+                        stripeSubscriptionStatus: null,
+                      },
                     },
-                  },
+                  });
                 });
               } else if (securityResult.setupIntent.status === 'succeeded') {
                 setDisable(true);
