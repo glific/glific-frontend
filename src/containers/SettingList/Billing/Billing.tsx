@@ -83,8 +83,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
   useEffect(() => {
     // Set name and email if a customer is already created
     if (billData && billData.getOrganizationBilling?.billing) {
-      setName(billData.getOrganizationBilling?.billing.name);
-      setEmail(billData.getOrganizationBilling?.billing.email);
+      const billing = billData.getOrganizationBilling?.billing;
+      setName(billing.name);
+      setEmail(billing.email);
+
+      if (billing?.stripeSubscriptionStatus === null) {
+        setPending(false);
+      }
     }
   }, [billData]);
 
@@ -114,6 +119,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
                         stripeSubscriptionStatus: null,
                       },
                     },
+                  }).then(() => {
+                    refetch();
                   });
                 });
               } else if (securityResult.setupIntent.status === 'succeeded') {
