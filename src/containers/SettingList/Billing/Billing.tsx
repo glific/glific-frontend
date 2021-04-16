@@ -6,8 +6,10 @@ import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { IconButton, Typography } from '@material-ui/core';
 
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
+import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
 import { ReactComponent as PendingIcon } from '../../../assets/images/icons/Template/Pending.svg';
 import { Button } from '../../../components/UI/Form/Button/Button';
 import {
@@ -273,8 +275,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
   if (pending) {
     paymentBody = (
-      <div className={styles.Subscribed}>
-        <PendingIcon />
+      <div className={styles.Pending}>
+        <PendingIcon className={styles.PendingIcon} />
         Your payment is in pending state
       </div>
     );
@@ -282,7 +284,12 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
   return (
     <div className={styles.Form}>
-      <h1>Billing</h1>
+      <Typography variant="h5" className={styles.Title}>
+        <IconButton disabled className={styles.Icon}>
+          <Settingicon />
+        </IconButton>
+        Billing
+      </Typography>
       {backLink}
       <div className={styles.Description}>
         <div className={styles.Setup}>
@@ -330,7 +337,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
                 return <Field key={key} {...field} />;
               })}
               {paymentBody}
-              {!alreadySubscribed && !pending ? (
+              {!alreadySubscribed && !pending && !disable ? (
                 <Button
                   variant="contained"
                   data-testid="submitButton"
