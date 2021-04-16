@@ -84,8 +84,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
     // Set name and email if a customer is already created
     if (billData && billData.getOrganizationBilling?.billing) {
       const billing = billData.getOrganizationBilling?.billing;
-      setName(billing.name);
-      setEmail(billing.email);
+      setName(billing?.name);
+      setEmail(billing?.email);
 
       if (billing?.stripeSubscriptionStatus === null) {
         setPending(false);
