@@ -57,7 +57,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   });
 
   // get organization billing details
-  const { data: billData, loading: billLoading } = useQuery(GET_ORGANIZATION_BILLING, {
+  const { data: billData, loading: billLoading, refetch } = useQuery(GET_ORGANIZATION_BILLING, {
     fetchPolicy: 'network-only',
   });
 
@@ -127,6 +127,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       }
     },
     onError: (error) => {
+      refetch();
       setNotification(client, error.message, 'warning');
       setLoading(false);
     },
@@ -169,6 +170,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
     if (error) {
       setLoading(false);
+      refetch();
       setNotification(client, error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
