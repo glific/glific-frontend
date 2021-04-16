@@ -79,7 +79,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   ];
 
   useEffect(() => {
-    // Set name if a customer is already created
+    // Set name and email if a customer is already created
     if (billData && billData.getOrganizationBilling?.billing) {
       setName(billData.getOrganizationBilling?.billing.name);
       setEmail(billData.getOrganizationBilling?.billing.email);
@@ -228,8 +228,6 @@ export const BillingForm: React.FC<BillingProps> = () => {
             setNotification(client, error.message, 'warning');
           });
       }
-    } else {
-      stripePayment();
     }
   };
 
