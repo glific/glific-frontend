@@ -155,18 +155,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
             },
           },
         },
-<<<<<<< Updated upstream
-      },
-    }).catch((error) => {
-      // add log's
-      setLogs(
-        `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-        'info'
-      );
-      setLogs(error, 'error');
-    });
-    setInputMessage('');
-=======
       }).catch((error) => {
         // add log's
         setLogs(
@@ -183,7 +171,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       // after post update render messages
       getChatMessage();
     }
->>>>>>> Stashed changes
   };
 
   const getPreviewMessage = () => {
