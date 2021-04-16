@@ -165,6 +165,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
+  const [flowKeyword, setFlowKeyword] = useState('');
+
   let modal = null;
   let dialog = null;
 
@@ -222,17 +224,10 @@ export const FlowEditor = (props: FlowEditorProps) => {
   });
 
   let flowTitle: any;
-  let flowKeyword: any;
 
   // flowname can return an empty array if the uuid present is not correct
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
-
-    if (flowName.flows[0].keywords.length > 0) {
-      flowKeyword = `draft:${flowName.flows[0].keywords[0]}`;
-    } else {
-      flowKeyword = 'No keyword found';
-    }
   }
 
   useEffect(() => {
@@ -333,6 +328,19 @@ export const FlowEditor = (props: FlowEditorProps) => {
     return <Redirect to="/flow" />;
   }
 
+  const resetMessage = () => {
+    setFlowKeyword('');
+  };
+
+  const getFlowKeyword = () => {
+    if (flowName && flowName.flows.length > 0) {
+      if (flowName.flows[0].keywords.length > 0) {
+        setFlowKeyword(`draft:${flowName.flows[0].keywords[0]}`);
+      } else {
+        setFlowKeyword('No keyword found');
+      }
+    }
+  };
   return (
     <>
       {dialog}
@@ -388,6 +396,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
         setSimulatorId={setSimulatorId}
         flowSimulator
         message={flowKeyword}
+        resetMessage={resetMessage}
+        getFlowKeyword={getFlowKeyword}
       />
 
       {modal}
