@@ -194,7 +194,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       const billingDetails = billData.getOrganizationBilling?.billing;
       if (billingDetails) {
         // Check if customer needs to be updated
-        if (billingDetails.name !== name || billingDetails.email !== email) {
+        if (billingDetails.name !== billingName || billingDetails.email !== billingEmail) {
           updateBilling({
             variables: {
               id: billingDetails.id,

@@ -1,4 +1,4 @@
-import CREATE_BILLING_SUBSCRIPTION from '../graphql/mutations/Billing';
+import CREATE_BILLING_SUBSCRIPTION, { UPDATE_BILLING } from '../graphql/mutations/Billing';
 import GET_ORGANIZATION_BILLING from '../graphql/queries/Billing';
 
 export const createBillingSubscriptionQuery = {
@@ -15,6 +15,29 @@ export const createBillingSubscriptionQuery = {
       createBillingSubscription: {
         errors: null,
         subscription: '{"status":"active"}',
+      },
+    },
+  },
+};
+
+export const updateBillingQuery = {
+  request: {
+    query: UPDATE_BILLING,
+    variables: {
+      id: '1',
+      input: {
+        name: 'Glific Admin 1',
+        currency: 'inr',
+        email: 'glific@glific.com',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateBilling: {
+        billing: {
+          id: '1',
+        },
       },
     },
   },

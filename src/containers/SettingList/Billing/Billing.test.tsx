@@ -9,6 +9,7 @@ import {
   getBillingQuery,
   getBillingQueryWithoutsubscription,
   getPendingBillingQuery,
+  updateBillingQuery,
 } from '../../../mocks/Billing';
 
 const mocks = [createBillingSubscriptionQuery, getBillingQuery];
@@ -144,6 +145,39 @@ test('complete a subscription', async () => {
   });
   fireEvent.click(getByTestId('submitButton'));
   await waitFor(() => {});
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
+});
+
+test('update billing details', async () => {
+  const { getByText, getByTestId, container } = render(
+    <MockedProvider
+      mocks={[
+        getBillingQueryWithoutsubscription,
+        createBillingSubscriptionQuery,
+        updateBillingQuery,
+      ]}
+      addTypename={false}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    const name = container.querySelector('input[name="name"]');
+    fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
+  });
+
+  fireEvent.click(getByTestId('submitButton'));
+
   await waitFor(() => {
     expect(getByText('You have an active subscription')).toBeInTheDocument();
   });
