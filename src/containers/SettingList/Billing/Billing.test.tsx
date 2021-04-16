@@ -7,6 +7,7 @@ import {
   createBillingSubscriptionQuery,
   createStatusPendingQuery,
   getBillingQuery,
+  getBillingQueryWithoutsubscription,
   getPendingBillingQuery,
 } from '../../../mocks/Billing';
 
@@ -89,20 +90,6 @@ describe('<Billing />', () => {
   });
 });
 
-test('complete a subscription without any authentication', async () => {
-  const { getByText, getByTestId } = render(wrapper);
-  // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
-  await waitFor(() => {
-    expect(getByText('Back to settings')).toBeInTheDocument();
-  });
-  fireEvent.click(getByTestId('submitButton'));
-  // await waitFor(() => {});
-  // await waitFor(() => {
-  //   expect(getByText('You have an active subscription')).toBeInTheDocument();
-  // });
-});
-
 test('subscription in pending state', async () => {
   const { getByText, getByTestId } = render(
     <MockedProvider mocks={[createStatusPendingQuery]} addTypename={false}>
@@ -136,5 +123,28 @@ test('card status already pending', async () => {
 
   await waitFor(() => {
     expect(getByText('Your payment is in pending state'));
+  });
+});
+
+test('complete a subscription', async () => {
+  const { getByText, getByTestId } = render(
+    <MockedProvider
+      mocks={[getBillingQueryWithoutsubscription, createBillingSubscriptionQuery]}
+      addTypename={false}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
+  });
+  fireEvent.click(getByTestId('submitButton'));
+  await waitFor(() => {});
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
   });
 });
