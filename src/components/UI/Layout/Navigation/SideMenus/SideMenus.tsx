@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import clsx from 'clsx';
-import { useTranslation } from 'react-i18next';
 
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
@@ -14,7 +13,6 @@ export interface SideMenusProps {
 
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
-  const { t } = useTranslation();
 
   const menuObj: any[] = getRoleBasedAccess();
 
@@ -48,7 +46,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
               [styles.SelectedText]: isSelected,
               [styles.UnselectedText]: !isSelected,
             })}
-            primary={t(menu.title)}
+            primary={menu.title}
           />
         ) : null}
       </ListItem>
