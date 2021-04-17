@@ -1,4 +1,4 @@
-import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
+import { getMenus, staffManagementMenus } from '../config/menu';
 import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
@@ -46,7 +46,7 @@ const getRoleBasedAccess = () => {
   }
 
   if (role.includes('Manager') || role.includes('Admin')) {
-    sideDrawerMenu = sideDrawerMenus;
+    sideDrawerMenu = getMenus();
     staffManagementMenu = staffManagementMenus;
     advanceSearch = true;
     displayUserCollections = true;
