@@ -27,7 +27,7 @@ import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
-import { userAccountMenus } from '../../../../../config/menu';
+import { getMenus } from '../../../../../config/menu';
 import {
   getStaffManagementMenus,
   settingMenu,
@@ -133,7 +133,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const { t } = useTranslation();
 
   // get menu for role
-  const getMenus = () => {
+  // TODOS: Needs to clean up this code
+  const getStaffMenus = () => {
     setStaffManagementMenus(getStaffManagementMenus());
   };
 
@@ -202,6 +203,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
+  const userAccountMenus = getMenus('userAccount');
+
   return (
     <nav
       className={clsx({
@@ -259,8 +262,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             {settingMenus}
             <div
               data-testid="bottom-menu"
-              onClick={getMenus}
-              onKeyDown={getMenus}
+              onClick={getStaffMenus}
+              onKeyDown={getStaffMenus}
               aria-hidden="true"
             >
               <Menu menus={staffManagementMenus}>

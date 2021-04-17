@@ -1,19 +1,4 @@
-export const userAccountMenus = [
-  {
-    title: 'My Profile',
-    path: '/user-profile',
-  },
-  {
-    title: 'My Account',
-    path: '/myaccount',
-  },
-  {
-    title: 'Logout',
-    path: '/logout/user',
-    className: 'Danger',
-  },
-];
-
+// define all the menus in the system
 const menus = [
   {
     title: 'Chats',
@@ -92,3 +77,5 @@ const menus = [
 
 export const getMenus = (menuType = 'sideDrawer') =>
   menus.filter((menu: any) => menu.type === menuType).map((menu: any) => menu);
+
+export default getMenus;
