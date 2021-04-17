@@ -27,11 +27,11 @@ import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
-import { getMenus } from '../../../../../config/menu';
 import {
   getStaffManagementMenus,
   settingMenu,
   getRoleBasedAccess,
+  getUserAccountMenus,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
@@ -203,8 +203,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
-  const userAccountMenus = getMenus('userAccount');
-
   return (
     <nav
       className={clsx({
@@ -285,7 +283,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
               </Menu>
             </div>
             <div>
-              <Menu menus={userAccountMenus}>
+              <Menu menus={getUserAccountMenus}>
                 <IconButton data-testid="profileMenu">
                   <Tooltip title={t('Profile')} placement="top">
                     <img

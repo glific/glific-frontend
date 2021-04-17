@@ -68,6 +68,8 @@ const resetRole = () => {
 
 export const getStaffManagementMenus = () => staffManagementMenu;
 
+export const getUserAccountMenus = getMenus('userAccount');
+
 export {
   getUserRole,
   getRoleBasedAccess,
