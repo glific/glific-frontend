@@ -4,7 +4,6 @@ import { getUserSession } from '../services/AuthService';
 let role: any[] = [];
 let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
-const staffManagementMenus: any = getMenus('staffManagement');
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
@@ -31,24 +30,16 @@ const getRoleBasedAccess = () => {
   }
 
   if (role && role.includes('Staff')) {
-    sideDrawerMenu = [
-      {
-        title: 'Chats',
-        path: '/chat',
-        icon: 'chat',
-      },
-    ];
-
-    staffManagementMenu = staffManagementMenus.filter(
-      (obj: { path: string }) => obj.path !== '/staff-management'
-    );
+    sideDrawerMenu = getMenus('sideDrawer');
+    staffManagementMenu = getMenus('staffManagement');
 
     settingMenu = false;
   }
 
   if (role.includes('Manager') || role.includes('Admin')) {
-    sideDrawerMenu = getMenus();
-    staffManagementMenu = staffManagementMenus;
+    // gettting menus for Manager as menus are same as in Admin
+    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
+    staffManagementMenu = getMenus('staffManagement', 'Manager');
     advanceSearch = true;
     displayUserCollections = true;
     settingMenu = true;

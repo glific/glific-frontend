@@ -71,24 +71,26 @@ const menus = [
     title: 'My Profile',
     path: '/user-profile',
     type: 'userAccount',
-    roles: ['Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin'],
   },
   {
     title: 'My Account',
     path: '/myaccount',
     type: 'userAccount',
-    roles: ['Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin'],
   },
   {
     title: 'Logout',
     path: '/logout/user',
     className: 'Danger',
     type: 'userAccount',
-    roles: ['Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin'],
   },
 ];
 
-export const getMenus = (menuType = 'sideDrawer') =>
-  menus.filter((menu: any) => menu.type === menuType).map((menu: any) => menu);
+export const getMenus = (menuType = 'sideDrawer', role = 'Staff') =>
+  menus
+    .filter((menu: any) => menu.type === menuType && menu.roles.includes(role))
+    .map((menu: any) => menu);
 
 export default getMenus;
