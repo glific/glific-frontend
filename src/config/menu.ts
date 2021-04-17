@@ -1,18 +1,3 @@
-export const staffManagementMenus = [
-  {
-    title: 'Collections',
-    path: '/collection',
-  },
-  {
-    title: 'Staff Management',
-    path: '/staff-management',
-  },
-  {
-    title: 'Blocked Contacts',
-    path: '/blocked-contacts',
-  },
-];
-
 export const userAccountMenus = [
   {
     title: 'My Profile',

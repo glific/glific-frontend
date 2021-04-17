@@ -1,9 +1,10 @@
-import { getMenus, staffManagementMenus } from '../config/menu';
+import { getMenus } from '../config/menu';
 import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
 let sideDrawerMenu: any = [];
 let staffManagementMenu: any = [];
+const staffManagementMenus: any = getMenus('staffManagement');
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
