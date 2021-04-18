@@ -10,7 +10,6 @@ let staffManagementMenu: any = [];
 let accessSettings: boolean = false;
 let manageSavedSearches: boolean = false;
 let manageCollections: boolean = false;
-let isManagerRole: boolean = false;
 /* eslint-enable */
 
 // function to get the logged in user role
@@ -41,9 +40,7 @@ export const setUserRolePermissions = () => {
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
 
-    if (role.includes('Manager')) {
-      isManagerRole = true;
-    } else {
+    if (role.includes('Admin')) {
       accessSettings = true;
       manageSavedSearches = true;
       manageCollections = true;
@@ -56,7 +53,6 @@ export const resetRolePermissions = () => {
   accessSettings = false;
   manageSavedSearches = false;
   manageCollections = false;
-  isManagerRole = false;
 };
 
 // menus for sideDrawer
@@ -79,4 +75,3 @@ export const getRolePermissions = () => {
 
   return userRolePermissions;
 };
-export { isManagerRole };

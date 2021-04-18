@@ -12,7 +12,7 @@ import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
 import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
 import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { getUserRole, isManagerRole } from '../../context/role';
+import { getUserRole } from '../../context/role';
 import { setVariables } from '../../common/constants';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
@@ -41,6 +41,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
   const [isAdmin] = useState(getUserRole().includes('Admin'));
+  const [isManager] = useState(getUserRole().includes('Manager'));
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -131,7 +132,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const getOptions = () => {
     let options: any = [];
     if (rolesList.length > 0) {
-      if (isManagerRole) {
+      if (isManager) {
         // should not display Admin role to manager.
         options = rolesList.filter((item: any) => item.label !== 'Admin');
       }
@@ -173,7 +174,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'roles',
-      disabled: isManagerRole,
+      disabled: isManager,
       placeholder: t('Roles'),
       options: rolesList,
       roleSelection: handleRolesChange,
