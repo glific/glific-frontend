@@ -38,7 +38,7 @@ describe('side drawer testing', () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getAllByTestId } = render(component);
     let menuItems = getAllByTestId('list-item');
-    const sideDrawerMenus = getMenus();
+    const sideDrawerMenus = getMenus('sideDrawer', 'Admin');
     for (let i = 0; i < menuItems.length / 2; i++) {
       expect(getAllByTestId('list-item')[i]).toHaveTextContent(sideDrawerMenus[i].title);
     }
