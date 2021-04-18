@@ -32,11 +32,10 @@ const getRoleBasedAccess = () => {
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
     staffManagementMenu = getMenus('staffManagement');
-
     settingMenu = false;
   }
 
-  if (role.includes('Manager') || role.includes('Admin')) {
+  if ((role && role.includes('Manager')) || role.includes('Admin')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
@@ -66,9 +65,14 @@ const resetRole = () => {
   getRoleBasedAccess();
 };
 
+// menus for sideDrawer
+export const getSideDrawerMenus = () => sideDrawerMenu;
+
+// staff management menus
 export const getStaffManagementMenus = () => staffManagementMenu;
 
-export const getUserAccountMenus = getMenus('userAccount');
+// users menus
+export const getUserAccountMenus = () => getMenus('userAccount');
 
 export {
   getUserRole,

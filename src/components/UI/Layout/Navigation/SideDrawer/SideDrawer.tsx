@@ -30,7 +30,7 @@ import { ReactComponent as QuestionIcon } from '../../../../../assets/images/ico
 import {
   getStaffManagementMenus,
   settingMenu,
-  getRoleBasedAccess,
+  getSideDrawerMenus,
   getUserAccountMenus,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
@@ -176,7 +176,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   // check access for settings on page reload
   if (!settingMenu) {
-    getRoleBasedAccess();
+    getSideDrawerMenus();
   }
 
   const settingMenus = settingMenu ? (
@@ -283,7 +283,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
               </Menu>
             </div>
             <div>
-              <Menu menus={getUserAccountMenus}>
+              <Menu menus={getUserAccountMenus()}>
                 <IconButton data-testid="profileMenu">
                   <Tooltip title={t('Profile')} placement="top">
                     <img
