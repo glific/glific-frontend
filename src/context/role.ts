@@ -7,7 +7,7 @@ let staffManagementMenu: any = [];
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
-let settingMenu: boolean = false;
+let accessSettings: boolean = false;
 let manageSavedSearches: boolean = false;
 let displayUserCollections: boolean = false;
 let isManagerRole: boolean = false;
@@ -45,8 +45,8 @@ export const setUserRolePermissions = () => {
       isManagerRole = true;
     } else {
       manageSavedSearches = true;
+      accessSettings = true;
       displayUserCollections = true;
-      settingMenu = true;
     }
   }
 };
@@ -54,7 +54,7 @@ export const setUserRolePermissions = () => {
 export const resetRolePermissions = () => {
   role = [];
   manageSavedSearches = false;
-  settingMenu = false;
+  accessSettings = false;
   displayUserCollections = false;
   isManagerRole = false;
 };
@@ -72,8 +72,10 @@ export const getUserAccountMenus = () => getMenus('userAccount');
 export const getRolePermissions = () => {
   const userRolePermissions: any = [];
 
+  // set permission values
   userRolePermissions.manageSavedSearches = manageSavedSearches;
+  userRolePermissions.accessSettings = accessSettings;
 
   return userRolePermissions;
 };
-export { settingMenu, displayUserCollections, isManagerRole };
+export { displayUserCollections, isManagerRole };

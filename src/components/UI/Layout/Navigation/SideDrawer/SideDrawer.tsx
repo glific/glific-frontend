@@ -29,8 +29,7 @@ import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
 import {
   getStaffManagementMenus,
-  settingMenu,
-  getSideDrawerMenus,
+  getRolePermissions,
   getUserAccountMenus,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
@@ -174,26 +173,25 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
-  // check access for settings on page reload
-  if (!settingMenu) {
-    getSideDrawerMenus();
+  let settingMenu;
+  const userPermissions = getRolePermissions();
+  if (userPermissions.accessSettings) {
+    settingMenu = (
+      <div>
+        <Tooltip title={t('Settings')} placement="top">
+          <Link to="/settings">
+            <IconButton data-testid="settingsMenu">
+              <img
+                src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
+                className={styles.UserIcon}
+                alt="settings"
+              />
+            </IconButton>
+          </Link>
+        </Tooltip>
+      </div>
+    );
   }
-
-  const settingMenus = settingMenu ? (
-    <div>
-      <Tooltip title={t('Settings')} placement="top">
-        <Link to="/settings">
-          <IconButton data-testid="settingsMenu">
-            <img
-              src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
-              className={styles.UserIcon}
-              alt="settings"
-            />
-          </IconButton>
-        </Link>
-      </Tooltip>
-    </div>
-  ) : null;
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
@@ -257,7 +255,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             <QuestionIcon />
           </div>
           <div className={bottonMenuClasses.join(' ')}>
-            {settingMenus}
+            {settingMenu}
             <div
               data-testid="bottom-menu"
               onClick={getStaffMenus}
