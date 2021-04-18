@@ -23,7 +23,8 @@ const getUserRole = (): Array<any> => {
   return role;
 };
 
-const getRoleBasedAccess = () => {
+// function to set the user permissions based on the role
+export const setUserRolePermissions = () => {
   // if role not present get role
   if (!role || role.length === 0) {
     role = getUserRole();
@@ -56,13 +57,11 @@ const getRoleBasedAccess = () => {
     displayUserCollections = false;
     isManagerRole = false;
   }
-
-  return sideDrawerMenu;
 };
 
 const resetRole = () => {
   role = [];
-  getRoleBasedAccess();
+  setUserRolePermissions();
 };
 
 // menus for sideDrawer
@@ -76,7 +75,6 @@ export const getUserAccountMenus = () => getMenus('userAccount');
 
 export {
   getUserRole,
-  getRoleBasedAccess,
   settingMenu,
   advanceSearch,
   displayUserCollections,
