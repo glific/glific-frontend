@@ -48,6 +48,7 @@ export const setUserRolePermissions = () => {
   }
 };
 
+// function to reset user permissions
 export const resetRolePermissions = () => {
   role = [];
   accessSettings = false;
@@ -56,10 +57,18 @@ export const resetRolePermissions = () => {
 };
 
 // menus for sideDrawer
-export const getSideDrawerMenus = () => sideDrawerMenu;
+export const getSideDrawerMenus = () => {
+  // get the permissioned menus
+  setUserRolePermissions();
+  return sideDrawerMenu;
+};
 
 // staff management menus
-export const getStaffManagementMenus = () => staffManagementMenu;
+export const getStaffManagementMenus = () => {
+  // get the permissioned menus
+  setUserRolePermissions();
+  return staffManagementMenu;
+};
 
 // users menus
 export const getUserAccountMenus = () => getMenus('userAccount');

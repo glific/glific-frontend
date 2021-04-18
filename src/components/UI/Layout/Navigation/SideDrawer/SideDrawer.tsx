@@ -28,9 +28,9 @@ import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.s
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
 import {
-  getStaffManagementMenus,
   getRolePermissions,
   getUserAccountMenus,
+  getStaffManagementMenus,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
@@ -128,14 +128,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const location = useLocation();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
   const { t } = useTranslation();
-
-  // get menu for role
-  // TODOS: Needs to clean up this code
-  const getStaffMenus = () => {
-    setStaffManagementMenus(getStaffManagementMenus());
-  };
 
   const drawer = (
     <div>
@@ -256,13 +249,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           </div>
           <div className={bottonMenuClasses.join(' ')}>
             {settingMenu}
-            <div
-              data-testid="bottom-menu"
-              onClick={getStaffMenus}
-              onKeyDown={getStaffMenus}
-              aria-hidden="true"
-            >
-              <Menu menus={staffManagementMenus}>
+            <div data-testid="bottom-menu" aria-hidden="true">
+              <Menu menus={getStaffManagementMenus()}>
                 <IconButton data-testid="staffManagementMenu">
                   <Tooltip title={t('Staff Management')} placement="top">
                     <img
