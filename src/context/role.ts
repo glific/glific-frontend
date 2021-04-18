@@ -74,7 +74,7 @@ export const getStaffManagementMenus = () => {
 export const getUserAccountMenus = () => getMenus('userAccount');
 
 // function to return more granular permissions based on the roles
-export const getRolePermissions = () => {
+export const getUserRolePermissions = () => {
   const userRolePermissions: any = [];
 
   // set permission values

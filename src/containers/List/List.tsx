@@ -18,7 +18,7 @@ import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
-import { getUserRole, getRolePermissions } from '../../context/role';
+import { getUserRole, getUserRolePermissions } from '../../context/role';
 import { setColumnToBackendTerms } from '../../common/constants';
 
 import {
@@ -124,7 +124,7 @@ export const List: React.SFC<ListProps> = ({
   const { t } = useTranslation();
 
   // check if the user has access to manage collections
-  const userPermissions = getRolePermissions();
+  const userRolePermissions = getUserRolePermissions();
 
   const capitalListItemName = listItemName
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
@@ -250,7 +250,7 @@ export const List: React.SFC<ListProps> = ({
     if (userRole.length === 0) {
       checkUserRole();
     } else {
-      if (!userPermissions.manageCollections && listItem === 'collections') {
+      if (!userRolePermissions.manageCollections && listItem === 'collections') {
         // if user role staff then display collections related to login user
         fetchUserCollections();
       }
@@ -419,7 +419,7 @@ export const List: React.SFC<ListProps> = ({
           })}
 
           {/* do not display edit & delete for staff role in collection */}
-          {userPermissions.manageCollections || listItems !== 'collections' ? (
+          {userRolePermissions.manageCollections || listItems !== 'collections' ? (
             <>
               {editButton}
               {deleteButton(id, label)}

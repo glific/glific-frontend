@@ -28,7 +28,7 @@ import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.s
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
 import {
-  getRolePermissions,
+  getUserRolePermissions,
   getUserAccountMenus,
   getStaffManagementMenus,
 } from '../../../../../context/role';
@@ -167,8 +167,8 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const container = window !== undefined ? () => window.document.body : undefined;
 
   let settingMenu;
-  const userPermissions = getRolePermissions();
-  if (userPermissions.accessSettings) {
+  const userRolePermissions = getUserRolePermissions();
+  if (userRolePermissions.accessSettings) {
     settingMenu = (
       <div>
         <Tooltip title={t('Settings')} placement="top">
