@@ -8,11 +8,12 @@ let staffManagementMenu: any = [];
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
 let settingMenu: boolean = false;
-let advanceSearch: boolean = false;
+let manageSavedSearches: boolean = false;
 let displayUserCollections: boolean = false;
 let isManagerRole: boolean = false;
 /* eslint-enable */
 
+// function to get the logged in user role
 export const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     const userRole: any = getUserSession('roles');
@@ -33,28 +34,27 @@ export const setUserRolePermissions = () => {
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
     staffManagementMenu = getMenus('staffManagement');
-    settingMenu = false;
   }
 
   if ((role && role.includes('Manager')) || role.includes('Admin')) {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
-    advanceSearch = true;
-    displayUserCollections = true;
-    settingMenu = true;
 
     if (role.includes('Manager')) {
-      settingMenu = false;
       isManagerRole = true;
+    } else {
+      manageSavedSearches = true;
+      displayUserCollections = true;
+      settingMenu = true;
     }
   }
 };
 
 export const resetRolePermissions = () => {
   role = [];
+  manageSavedSearches = false;
   settingMenu = false;
-  advanceSearch = false;
   displayUserCollections = false;
   isManagerRole = false;
 };
@@ -68,4 +68,12 @@ export const getStaffManagementMenus = () => staffManagementMenu;
 // users menus
 export const getUserAccountMenus = () => getMenus('userAccount');
 
-export { settingMenu, advanceSearch, displayUserCollections, isManagerRole };
+// function to return more granular permissions based on the roles
+export const getRolePermissions = () => {
+  const userRolePermissions: any = [];
+
+  userRolePermissions.manageSavedSearches = manageSavedSearches;
+
+  return userRolePermissions;
+};
+export { settingMenu, displayUserCollections, isManagerRole };
