@@ -13,7 +13,7 @@ let displayUserCollections: boolean = false;
 let isManagerRole: boolean = false;
 /* eslint-enable */
 
-const getUserRole = (): Array<any> => {
+export const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     const userRole: any = getUserSession('roles');
     if (userRole) {
@@ -49,19 +49,14 @@ export const setUserRolePermissions = () => {
       isManagerRole = true;
     }
   }
-
-  // reset on logout
-  if (role.length === 0) {
-    settingMenu = false;
-    advanceSearch = false;
-    displayUserCollections = false;
-    isManagerRole = false;
-  }
 };
 
-const resetRole = () => {
+export const resetRolePermissions = () => {
   role = [];
-  setUserRolePermissions();
+  settingMenu = false;
+  advanceSearch = false;
+  displayUserCollections = false;
+  isManagerRole = false;
 };
 
 // menus for sideDrawer
@@ -73,11 +68,4 @@ export const getStaffManagementMenus = () => staffManagementMenu;
 // users menus
 export const getUserAccountMenus = () => getMenus('userAccount');
 
-export {
-  getUserRole,
-  settingMenu,
-  advanceSearch,
-  displayUserCollections,
-  isManagerRole,
-  resetRole,
-};
+export { settingMenu, advanceSearch, displayUserCollections, isManagerRole };
