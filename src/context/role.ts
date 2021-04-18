@@ -9,7 +9,7 @@ let staffManagementMenu: any = [];
 /* eslint-disable */
 let accessSettings: boolean = false;
 let manageSavedSearches: boolean = false;
-let displayUserCollections: boolean = false;
+let manageCollections: boolean = false;
 let isManagerRole: boolean = false;
 /* eslint-enable */
 
@@ -44,18 +44,18 @@ export const setUserRolePermissions = () => {
     if (role.includes('Manager')) {
       isManagerRole = true;
     } else {
-      manageSavedSearches = true;
       accessSettings = true;
-      displayUserCollections = true;
+      manageSavedSearches = true;
+      manageCollections = true;
     }
   }
 };
 
 export const resetRolePermissions = () => {
   role = [];
-  manageSavedSearches = false;
   accessSettings = false;
-  displayUserCollections = false;
+  manageSavedSearches = false;
+  manageCollections = false;
   isManagerRole = false;
 };
 
@@ -75,7 +75,8 @@ export const getRolePermissions = () => {
   // set permission values
   userRolePermissions.manageSavedSearches = manageSavedSearches;
   userRolePermissions.accessSettings = accessSettings;
+  userRolePermissions.manageCollections = manageCollections;
 
   return userRolePermissions;
 };
-export { displayUserCollections, isManagerRole };
+export { isManagerRole };

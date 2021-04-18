@@ -25,7 +25,7 @@ import { CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION } from '../../../graphql
 import { List } from '../../List/List';
 import { DropdownDialog } from '../../../components/UI/DropdownDialog/DropdownDialog';
 import { setNotification } from '../../../common/notification';
-import { displayUserCollections, getUserRole } from '../../../context/role';
+import { getRolePermissions, getUserRole } from '../../../context/role';
 import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../graphql/queries/Contact';
 import { FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
@@ -303,6 +303,9 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
 
   const cardLink = { start: 'collection', end: 'contacts' };
 
+  // check if the user has access to manage collections
+  const userPermissions = getRolePermissions();
+
   return (
     <>
       <List
@@ -313,7 +316,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         columnNames={['LABEL']}
         listItemName="collection"
         displayListType="card"
-        button={{ show: displayUserCollections, label: t('+ CREATE COLLECTION') }}
+        button={{ show: userPermissions.manageCollections, label: t('+ CREATE COLLECTION') }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
