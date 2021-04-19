@@ -12,12 +12,15 @@ import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/Unauthenticat
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from './containers/Auth/Logout/Logout';
 import { Loading } from './components/UI/Layout/Loading/Loading';
+import handleCache from './HandleCache';
 
 const App = () => {
   const history = useHistory();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
+  const { isLatestVersion } = handleCache();
+  console.log(isLatestVersion);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
