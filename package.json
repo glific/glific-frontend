@@ -97,7 +97,7 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "react-scripts start",
+    "start": "yarn prebuild && react-scripts start",
     "build": "yarn setup && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
@@ -105,7 +105,9 @@
     "eject": "react-scripts eject",
     "format": "prettier \"**/*.{ts,tsx,css,graphql}\" --write",
     "floweditor": "cp -r node_modules/@glific/flow-editor/build/static public && rm -rf public/sitestatic && cp -r node_modules/@glific/flow-editor/build/sitestatic public",
-    "extract-translations": "i18next --fail-on-warnings"
+    "extract-translations": "i18next --fail-on-warnings",
+    "generate-build-version": "node generate-build-version",
+    "prebuild": "npm run generate-build-version"
   },
   "eslintConfig": {
     "extends": "react-app"
