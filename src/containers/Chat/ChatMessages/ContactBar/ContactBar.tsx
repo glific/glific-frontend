@@ -357,11 +357,30 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Button>
     );
   } else {
-    const toolTip = 'Option disabled because the 24hr window expired';
+    let toolTip = 'Option disabled because the 24hr window expired';
+    let disabled = true;
+    // if 24hr window expired & contact type HSM. we can send template msg.
+    if (contactBspStatus === 'HSM') {
+      toolTip =
+        'Since the 24-hour window has passed, the contact will only receive a template message.';
+      disabled = false;
+    }
     flowButton = (
       <Tooltip title={toolTip} placement="right">
-        <Button data-testid="disabledFlowButton" className={styles.ListButtonPrimary} disabled>
-          <FlowUnselectedIcon className={styles.Icon} />
+        <Button
+          data-testid="disabledFlowButton"
+          className={styles.ListButtonPrimary}
+          disabled={disabled}
+          onClick={() => {
+            getFlows();
+            setShowFlowDialog(true);
+          }}
+        >
+          {disabled ? (
+            <FlowUnselectedIcon className={styles.Icon} />
+          ) : (
+            <FlowIcon className={styles.Icon} />
+          )}
           Start a flow
         </Button>
       </Tooltip>
