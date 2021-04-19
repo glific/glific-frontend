@@ -4,6 +4,7 @@ import Editor from '@draft-js-plugins/editor';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { useTranslation } from 'react-i18next';
 
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
@@ -16,6 +17,7 @@ export interface EmojiInputProps {
   placeholder: string;
   rows: number;
   handleChange?: any;
+  inputProp?: any;
 }
 
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
@@ -36,6 +38,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 }: EmojiInputProps) => {
   const inputRef = React.useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const { t } = useTranslation();
 
   const handleKeyCommand = (command: any, editorState: any) => {
     if (command === 'underline') {
@@ -69,12 +72,22 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     props.form.setFieldValue(rest.name, editorState);
   };
 
+  const handleBlur = (event: any) => {
+    props.form.handleBlur(event);
+    /**
+     * To get callback on parent since we don't have callback on form
+     */
+    if (props.inputProp?.onBlur) {
+      props.inputProp.onBlur(props.form.values[rest.name]);
+    }
+  };
+
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
     handleKeyCommand,
     editorRef: inputRef,
-    onBlur: props.form.handleBlur,
+    onBlur: handleBlur,
     onChange: draftJsChange,
   };
 
@@ -83,7 +96,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const emojiPicker = showEmojiPicker ? (
     <Picker
       data-testid="emoji-container"
-      title="Pick your emoji…"
+      title={t('Pick your emoji…')}
       emoji="point_up"
       style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
       onSelect={updateValue}

@@ -4,6 +4,7 @@ import { Container, Button, ClickAwayListener, Fade, IconButton } from '@materia
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
 import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
@@ -57,6 +58,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
   const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
+  const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
 
@@ -245,8 +247,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if ((contactStatus && contactStatus === 'INVALID') || contactBspStatus === 'NONE') {
     return (
       <div className={styles.ContactOptOutMessage}>
-        Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to
-        your number.
+        {t(
+          'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.'
+        )}
       </div>
     );
   }
@@ -299,7 +302,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         />
 
         {selectedTemplate ? (
-          <Tooltip title="Remove message" placement="top">
+          <Tooltip title={t('Remove message')} placement="top">
             <IconButton
               className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
               onClick={() => {

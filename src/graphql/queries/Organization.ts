@@ -72,6 +72,8 @@ export const USER_LANGUAGES = gql`
           activeLanguages {
             id
             label
+            localized
+            locale
           }
           defaultLanguage {
             id

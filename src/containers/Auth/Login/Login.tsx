@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import { USER_SESSION } from '../../../config/index';
 import { SessionContext } from '../../../context/session';
@@ -28,6 +29,7 @@ export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
+  const { i18n } = useTranslation();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -44,7 +46,7 @@ export const Login: React.SFC<LoginProps> = () => {
       // set the current user object
       setUserSession(JSON.stringify(userData.currentUser.user));
 
-      // get teh roles
+      // get the roles
       const { roles } = userData.currentUser.user;
 
       // check for user role none or empty
@@ -58,6 +60,11 @@ export const Login: React.SFC<LoginProps> = () => {
 
         // role & access permissions
         getRoleBasedAccess();
+
+        // set the language
+        if (i18n.changeLanguage) {
+          i18n.changeLanguage(userData.currentUser.user?.language.locale);
+        }
       }
     }
     if (userError) {

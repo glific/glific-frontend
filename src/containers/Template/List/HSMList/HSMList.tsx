@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './HSMList.module.css';
 import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
@@ -7,6 +8,7 @@ import { Template } from '../Template';
 export interface HSMListProps {}
 
 export const HSMList: React.SFC<HSMListProps> = () => {
+  const { t } = useTranslation();
   const templateIcon = <TemplateIcon className={styles.TemplateIcon} />;
 
   return (
@@ -18,7 +20,7 @@ export const HSMList: React.SFC<HSMListProps> = () => {
       listIcon={templateIcon}
       filters={{ isHsm: true }}
       isHSM
-      buttonLabel="+ CREATE HSM TEMPLATE"
+      buttonLabel={t('+ CREATE HSM TEMPLATE')}
     />
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useApolloClient } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './BlockContactList.module.css';
 import { ReactComponent as BlockIcon } from '../../../assets/images/icons/Block.svg';
@@ -25,7 +26,7 @@ const getColumns = ({ name, maskedPhone }: any) => ({
 });
 
 const columnNames = ['NAME', 'PHONE NO', 'ACTIONS'];
-const dialogMessage = 'This contact will be permanently deleted';
+
 const columnStyles = [styles.Label, styles.Phone, styles.Actions];
 const blockIcon = <BlockIcon className={styles.BlockIcon} />;
 
@@ -45,6 +46,8 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   const client = useApolloClient();
   const [contactId, setContactId] = useState();
   const [unblockDialog, setUnblockDialog] = useState(false);
+  const { t } = useTranslation();
+
   const unblockIcon = <UnblockIcon />;
 
   // currently updating using refetch until we find a better way
@@ -60,7 +63,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   const [unblockContact] = useMutation(UPDATE_CONTACT, {
     onCompleted: () => {
       setUnblockDialog(false);
-      setNotification(client, 'Contact unblocked successfully');
+      setNotification(client, t('Contact unblocked successfully'));
     },
     refetchQueries: [
       { query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES },
@@ -94,13 +97,13 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
   if (unblockDialog) {
     dialog = (
       <DialogBox
-        title="Do you want to unblock this contact"
+        title={t('Do you want to unblock this contact')}
         handleOk={handleUnblock}
         handleCancel={() => setUnblockDialog(false)}
         alignButtons="center"
       >
         <p className={styles.DialogText}>
-          You will be able to view their chats and interact with them again
+          {t('You will be able to view their chats and interact with them again.')}
         </p>
       </DialogBox>
     );
@@ -111,13 +114,16 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
       icon: unblockIcon,
       parameter: 'id',
       dialog: setDialog,
-      label: 'Unblock',
+      label: t('Unblock'),
     },
   ];
+
+  const dialogMessage = t('This contact will be permanently deleted');
+
   return (
     <>
       <List
-        title="Blocked contacts"
+        title={t('Blocked contacts')}
         listItem="contacts"
         listItemName="contact"
         pageLink="contacts"

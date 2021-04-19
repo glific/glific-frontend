@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
@@ -24,6 +25,8 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const [updateContactTags] = useMutation(UPDATE_CONTACT_TAGS);
   const [tags, setTags] = useState([]);
   const [selected, setSelected] = useState([]);
+  const { t } = useTranslation();
+
   let tagsOptions: Array<any> = [];
 
   if (tagsData) {
@@ -61,7 +64,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
     skipPayload: true,
     optionLabel: 'label',
     textFieldProps: {
-      label: 'Assign tags',
+      label: t('Assign tags'),
       variant: 'outlined',
     },
   };

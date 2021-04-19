@@ -1,7 +1,7 @@
 .Image {
   margin: 5px 0px;
   max-width: 280px;
-  max-height: 200px;
+  max-height: auto;
   cursor: pointer;
   background-size: cover !important;
 }
@@ -9,7 +9,7 @@
 .Image img {
   overflow: hidden;
   max-width: 200px;
-  height:auto;
+  height: auto;
   object-fit: contain;
 }
 

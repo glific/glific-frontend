@@ -4,6 +4,9 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { getTagsQuery } from '../../mocks/Tag';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
 import { setVariables } from '../../common/constants';
+import * as Yup from 'yup';
+
+const FormSchema = Yup.object();
 
 export const listItemProps = {
   deleteItemQuery: DELETE_TAG,
@@ -28,6 +31,7 @@ export const listItemProps = {
   getItemQuery: GET_TAG,
   createItemQuery: CREATE_TAG,
   updateItemQuery: UPDATE_TAG,
+  validationSchema: FormSchema,
   icon: null,
   getLanguageId: Function,
 };

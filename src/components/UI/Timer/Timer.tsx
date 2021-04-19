@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as ContactOptOutIcon } from '../../../assets/images/icons/ContactOptOut.svg';
 import styles from './Timer.module.css';
@@ -11,24 +12,26 @@ export interface TimerProps {
   contactBspStatus?: string;
 }
 
-const link = (
-  <a
-    className={styles.TooltipArrow}
-    target="_blank"
-    rel="noreferrer"
-    href="https://glific.org/session-window/"
-  >
-    Learn more about the WhatsApp session window here.
-  </a>
-);
-const createTooltip = (title: string) => (
-  <React.Fragment key="sessionTooltip">
-    {title} {link}
-  </React.Fragment>
-);
-
 export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
   const [currentTime, setCurrentTime] = useState(moment(new Date()));
+  const { t } = useTranslation();
+
+  const link = (
+    <a
+      className={styles.TooltipArrow}
+      target="_blank"
+      rel="noreferrer"
+      href="https://glific.org/session-window/"
+    >
+      {t('Learn more about the WhatsApp session window here.')}
+    </a>
+  );
+  const createTooltip = (title: string) => (
+    <React.Fragment key="sessionTooltip">
+      {title} {link}
+    </React.Fragment>
+  );
+
   const { contactStatus, contactBspStatus, time } = props;
 
   let intervalID: any;
@@ -45,7 +48,9 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
       <Tooltip
         tooltipClass={`${styles.Tooltip} ${styles.TimerEndTooltip}`}
         tooltipArrowClass={styles.TooltipArrow}
-        title="User has not opted in to your number. You can only send message them when they initiate the conversation."
+        title={t(
+          'User has not opted in to your number. You can only send message them when they initiate the conversation.'
+        )}
         placement="bottom"
       >
         <ContactOptOutIcon />
@@ -53,7 +58,7 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     );
   }
 
-  let tooltip = createTooltip('Session window is open to message this contact.');
+  let tooltip = createTooltip(t('Session window is open to message this contact.'));
   let timerStyle = styles.TimerNormal;
   let tooltipStyle = styles.TimerNormalTooltip;
   const lastMessageTime = moment(time);
@@ -70,12 +75,12 @@ export const Timer: React.FC<TimerProps> = (props: TimerProps) => {
     timerStyle = styles.TimerEnd;
     tooltipStyle = styles.TimerApproachTooltip;
     tooltip = createTooltip(
-      'Session message window has expired! You can only send a template message now.'
+      t('Session message window has expired! You can only send a template message now.')
     );
   } else if (hours < 5) {
     timerStyle = styles.TimerApproachEnd;
     tooltipStyle = styles.TimerApproachTooltip;
-    tooltip = createTooltip('Your message window is about to expire!');
+    tooltip = createTooltip(t('Your message window is about to expire!'));
   }
 
   if (hours < 10 && hours > 0) {
