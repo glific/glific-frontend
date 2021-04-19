@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Typography, IconButton } from '@material-ui/core';
 import { Formik, Form, Field } from 'formik';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -37,6 +37,8 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
   const [userLanguage, setUserLanguage] = useState('');
 
   const [message, setMessage] = useState<string>('');
+
+  const client = useApolloClient();
 
   // get the information on current user
   const { data: userData, loading: userDataLoading } = useQuery(GET_CURRENT_USER);
@@ -248,7 +250,17 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     setMessage(t('Language changed successfully!'));
     // update user's language
     updateCurrentUser({
-      variables: { input: { language_id: languageID[0].id } },
+      variables: { input: { languageId: languageID[0].id } },
+    });
+
+    // writing cache to restore value
+    const userDataCopy = JSON.parse(JSON.stringify(userData));
+    const language = languageID[0];
+    userDataCopy.currentUser.user.language = language;
+
+    client.writeQuery({
+      query: GET_CURRENT_USER,
+      data: userDataCopy,
     });
   };
 

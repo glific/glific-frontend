@@ -17,6 +17,7 @@ export interface EmojiInputProps {
   placeholder: string;
   rows: number;
   handleChange?: any;
+  inputProp?: any;
 }
 
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
@@ -71,12 +72,22 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     props.form.setFieldValue(rest.name, editorState);
   };
 
+  const handleBlur = (event: any) => {
+    props.form.handleBlur(event);
+    /**
+     * To get callback on parent since we don't have callback on form
+     */
+    if (props.inputProp?.onBlur) {
+      props.inputProp.onBlur(props.form.values[rest.name]);
+    }
+  };
+
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
     handleKeyCommand,
     editorRef: inputRef,
-    onBlur: props.form.handleBlur,
+    onBlur: handleBlur,
     onChange: draftJsChange,
   };
 
