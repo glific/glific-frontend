@@ -114,7 +114,6 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       setStaffRole(true);
     }
   }, [roles]);
-
   if (loading || loadingRoles) return <Loading />;
 
   if (!data.groups || !roleData.roles) {
@@ -122,7 +121,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   }
 
   const rolesList: any = [];
-  if (roleData.roles) {
+  if (roleData) {
     roleData.roles.forEach((role: any) => {
       rolesList.push({ id: role, label: role });
     });

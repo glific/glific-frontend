@@ -11,8 +11,6 @@ import {
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
 
-import * as Simulator from '../simulator/Simulator';
-
 const mocks = [
   getFlowDetailsQuery,
   conversationQuery,
