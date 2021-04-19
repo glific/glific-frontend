@@ -40,3 +40,7 @@
 .Paper > ul > li {
   color: #073f24;
 }
+
+.HideDeleteIcon {
+  display: none;
+}

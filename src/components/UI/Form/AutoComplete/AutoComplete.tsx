@@ -31,8 +31,8 @@ export interface AutocompleteProps {
   disableClearable?: boolean;
   listBoxProps?: any;
   classes?: any;
-  getOptionDisabled?: any;
   renderTags?: boolean;
+  selectedOptionsIds?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -58,8 +58,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   disableClearable = false,
   listBoxProps,
   classes = {},
-  getOptionDisabled,
   renderTags = true,
+  selectedOptionsIds = [],
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -100,6 +100,35 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     return '';
   };
 
+  /**
+   *
+   * @param value Callback value
+   * @param getTagProps Render tag props
+   *
+   */
+  const getRenderTags = (value: Array<any>, getTagProps: any) =>
+    value
+      .filter((option: any) => !renderTags && !selectedOptionsIds.includes(option.id))
+      .map((option: any, index: number) => (
+        <Chip
+          data-testid="searchChip"
+          style={{ backgroundColor: '#e2f1ea' }}
+          className={styles.Chip}
+          icon={chipIcon}
+          label={getLabel(option)}
+          {...getTagProps({ index })}
+          deleteIcon={
+            <DeleteIcon
+              className={`${renderTags ? styles.DeleteIcon : styles.HideDeleteIcon}`}
+              data-testid="deleteIcon"
+            />
+          }
+        />
+      ));
+
+  const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
+  const isClearableDisabled = disableClearable || !renderTags;
+
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
@@ -108,7 +137,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
-          disableClearable={disableClearable}
+          disableClearable={isClearableDisabled}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
@@ -138,26 +167,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           value={getValue}
           disabled={disabled}
           disableCloseOnSelect={multiple}
-          renderTags={(value: any, getTagProps) =>
-            value
-              .map((option: any, index: number) => {
-                const component = renderTags ? (
-                  <Chip
-                    data-testid="searchChip"
-                    style={{ backgroundColor: '#e2f1ea' }}
-                    className={styles.Chip}
-                    icon={chipIcon}
-                    label={getLabel(option)}
-                    {...getTagProps({ index })}
-                    deleteIcon={
-                      <DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />
-                    }
-                  />
-                ) : null;
-                return component;
-              })
-              .filter((a: any) => a)
-          }
+          renderTags={getRenderTags}
           renderOption={(option: any, { selected }) => (
             <>
               {multiple ? (
