@@ -1,4 +1,4 @@
-import { sideDrawerMenus, staffManagementMenus } from '../config/menu';
+import { getMenus } from '../config/menu';
 import { getUserSession } from '../services/AuthService';
 
 let role: any[] = [];
@@ -7,13 +7,13 @@ let staffManagementMenu: any = [];
 
 // we are correctly using mutable export bindings hence making an exception for below
 /* eslint-disable */
-let settingMenu: boolean = false;
-let advanceSearch: boolean = false;
-let displayUserCollections: boolean = false;
-let isManagerRole: boolean = false;
+let accessSettings: boolean = false;
+let manageSavedSearches: boolean = false;
+let manageCollections: boolean = false;
 /* eslint-enable */
 
-const getUserRole = (): Array<any> => {
+// function to get the logged in user role
+export const getUserRole = (): Array<any> => {
   if (!role || role.length === 0) {
     const userRole: any = getUserSession('roles');
     if (userRole) {
@@ -23,65 +23,64 @@ const getUserRole = (): Array<any> => {
   return role;
 };
 
-const getRoleBasedAccess = () => {
+// function to set the user permissions based on the role
+export const setUserRolePermissions = () => {
   // if role not present get role
   if (!role || role.length === 0) {
     role = getUserRole();
   }
 
   if (role && role.includes('Staff')) {
-    sideDrawerMenu = [
-      {
-        title: 'Chats',
-        path: '/chat',
-        icon: 'chat',
-      },
-    ];
-
-    staffManagementMenu = staffManagementMenus.filter(
-      (obj: { path: string }) => obj.path !== '/staff-management'
-    );
-
-    settingMenu = false;
+    sideDrawerMenu = getMenus('sideDrawer');
+    staffManagementMenu = getMenus('staffManagement');
   }
 
-  if (role.includes('Manager') || role.includes('Admin')) {
-    sideDrawerMenu = sideDrawerMenus;
-    staffManagementMenu = staffManagementMenus;
-    advanceSearch = true;
-    displayUserCollections = true;
-    settingMenu = true;
+  if ((role && role.includes('Manager')) || role.includes('Admin')) {
+    // gettting menus for Manager as menus are same as in Admin
+    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
+    staffManagementMenu = getMenus('staffManagement', 'Manager');
 
-    if (role.includes('Manager')) {
-      settingMenu = false;
-      isManagerRole = true;
+    if (role.includes('Admin')) {
+      accessSettings = true;
+      manageSavedSearches = true;
+      manageCollections = true;
     }
   }
+};
 
-  // reset on logout
-  if (role.length === 0) {
-    settingMenu = false;
-    advanceSearch = false;
-    displayUserCollections = false;
-    isManagerRole = false;
-  }
+// function to reset user permissions
+export const resetRolePermissions = () => {
+  role = [];
+  accessSettings = false;
+  manageSavedSearches = false;
+  manageCollections = false;
+};
 
+// menus for sideDrawer
+export const getSideDrawerMenus = () => {
+  // get the permissioned menus
+  setUserRolePermissions();
   return sideDrawerMenu;
 };
 
-const resetRole = () => {
-  role = [];
-  getRoleBasedAccess();
+// staff management menus
+export const getStaffManagementMenus = () => {
+  // get the permissioned menus
+  setUserRolePermissions();
+  return staffManagementMenu;
 };
 
-export const getStaffManagementMenus = () => staffManagementMenu;
+// users menus
+export const getUserAccountMenus = () => getMenus('userAccount');
 
-export {
-  getUserRole,
-  getRoleBasedAccess,
-  settingMenu,
-  advanceSearch,
-  displayUserCollections,
-  isManagerRole,
-  resetRole,
+// function to return more granular permissions based on the roles
+export const getUserRolePermissions = () => {
+  const userRolePermissions: any = [];
+
+  // set permission values
+  userRolePermissions.manageSavedSearches = manageSavedSearches;
+  userRolePermissions.accessSettings = accessSettings;
+  userRolePermissions.manageCollections = manageCollections;
+
+  return userRolePermissions;
 };
