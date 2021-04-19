@@ -5,6 +5,7 @@ export const GET_ORGANIZATION_BILLING = gql`
     getOrganizationBilling {
       billing {
         id
+        name
         currency
         email
         isActive

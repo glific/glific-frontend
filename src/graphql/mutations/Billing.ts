@@ -23,4 +23,18 @@ export const UPDATE_BILLING = gql`
   }
 `;
 
+export const CREATE_BILLING = gql`
+  mutation createBilling($input: BillingInput!) {
+    createBilling(input: $input) {
+      billing {
+        id
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
 export default CREATE_BILLING_SUBSCRIPTION;
