@@ -332,6 +332,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     displayWarning();
   }, [type]);
 
+  let timer: any = null;
   const attachmentField = [
     {
       component: AutoComplete,
@@ -347,7 +348,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       onChange: (event: any) => {
         const val = event || '';
         if (!event) {
-          setIsUrlValid('');
+          setIsUrlValid(val);
         }
         setType(val);
       },
@@ -363,7 +364,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
           setAttachmentURL(event.target.value);
         },
         onChange: (event: any) => {
-          setAttachmentURL(event.target.value);
+          clearTimeout(timer);
+          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
         },
       },
     },
