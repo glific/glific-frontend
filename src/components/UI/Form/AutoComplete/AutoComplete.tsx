@@ -109,29 +109,43 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   const getRenderTags = (value: Array<any>, getTagProps: any) => {
     let tagsToRender = value;
 
+    /**
+     * when renderTags is true,
+     * default selected options along with newly selected options will be visible
+     * else,
+     * only post selected options will be visible
+     
+     */
     if (!renderTags) {
       tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
     }
-    return tagsToRender.map((option: any, index: number) => (
-      <Chip
-        data-testid="searchChip"
-        style={{ backgroundColor: '#e2f1ea' }}
-        className={styles.Chip}
-        icon={chipIcon}
-        label={getLabel(option)}
-        {...getTagProps({ index })}
-        deleteIcon={
-          <DeleteIcon
-            className={`${renderTags ? styles.DeleteIcon : styles.HideDeleteIcon}`}
-            data-testid="deleteIcon"
-          />
-        }
-      />
-    ));
+
+    return tagsToRender.map((option: any, index: number) => {
+      const props = getTagProps({ index });
+
+      /**
+       * If disableClearable is true, removing onDelete event
+       * deleteIcon component will be disabled, when onDelete is absent
+       */
+      if (disableClearable) {
+        delete props.onDelete;
+      }
+
+      return (
+        <Chip
+          data-testid="searchChip"
+          style={{ backgroundColor: '#e2f1ea' }}
+          className={styles.Chip}
+          icon={chipIcon}
+          label={getLabel(option)}
+          {...props}
+          deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
+        />
+      );
+    });
   };
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
-  const isClearableDisabled = disableClearable || !renderTags;
 
   return (
     <div className={styles.Input}>
@@ -141,7 +155,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
-          disableClearable={isClearableDisabled}
+          disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
