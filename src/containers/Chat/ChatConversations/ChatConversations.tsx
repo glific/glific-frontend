@@ -12,7 +12,7 @@ import { Button } from '../../../components/UI/Form/Button/Button';
 import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 import { Search } from '../../Search/Search';
 import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
-import { advanceSearch } from '../../../context/role';
+import { getUserRolePermissions } from '../../../context/role';
 import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
 
 export interface ChatConversationsProps {
@@ -199,8 +199,11 @@ export const ChatConversations: React.SFC<ChatConversationsProps> = (props) => {
 
   let saveSearchButton;
 
+  // check if the user has access to manage collections
+  const userRolePermissions = getUserRolePermissions();
+
   if (Object.keys(searchParam).length !== 0)
-    saveSearchButton = advanceSearch ? (
+    saveSearchButton = userRolePermissions.manageSavedSearches ? (
       <div className={styles.SaveSearch}>
         <div className={styles.Container}>
           {btnUpdate}

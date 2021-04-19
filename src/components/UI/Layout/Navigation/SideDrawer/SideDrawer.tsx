@@ -27,11 +27,10 @@ import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
 import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
-import { userAccountMenus } from '../../../../../config/menu';
 import {
+  getUserRolePermissions,
+  getUserAccountMenus,
   getStaffManagementMenus,
-  settingMenu,
-  getRoleBasedAccess,
 } from '../../../../../context/role';
 import { Tooltip } from '../../../Tooltip/Tooltip';
 import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
@@ -129,13 +128,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
   const location = useLocation();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [staffManagementMenus, setStaffManagementMenus] = useState<any>([]);
   const { t } = useTranslation();
-
-  // get menu for role
-  const getMenus = () => {
-    setStaffManagementMenus(getStaffManagementMenus());
-  };
 
   const drawer = (
     <div>
@@ -173,26 +166,25 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   const container = window !== undefined ? () => window.document.body : undefined;
 
-  // check access for settings on page reload
-  if (!settingMenu) {
-    getRoleBasedAccess();
+  let settingMenu;
+  const userRolePermissions = getUserRolePermissions();
+  if (userRolePermissions.accessSettings) {
+    settingMenu = (
+      <div>
+        <Tooltip title={t('Settings')} placement="top">
+          <Link to="/settings">
+            <IconButton data-testid="settingsMenu">
+              <img
+                src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
+                className={styles.UserIcon}
+                alt="settings"
+              />
+            </IconButton>
+          </Link>
+        </Tooltip>
+      </div>
+    );
   }
-
-  const settingMenus = settingMenu ? (
-    <div>
-      <Tooltip title={t('Settings')} placement="top">
-        <Link to="/settings">
-          <IconButton data-testid="settingsMenu">
-            <img
-              src={location.pathname === '/settings' ? ActiveIcon : InactiveIcon}
-              className={styles.UserIcon}
-              alt="settings"
-            />
-          </IconButton>
-        </Link>
-      </Tooltip>
-    </div>
-  ) : null;
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
@@ -256,14 +248,9 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
             <QuestionIcon />
           </div>
           <div className={bottonMenuClasses.join(' ')}>
-            {settingMenus}
-            <div
-              data-testid="bottom-menu"
-              onClick={getMenus}
-              onKeyDown={getMenus}
-              aria-hidden="true"
-            >
-              <Menu menus={staffManagementMenus}>
+            {settingMenu}
+            <div data-testid="bottom-menu" aria-hidden="true">
+              <Menu menus={getStaffManagementMenus()}>
                 <IconButton data-testid="staffManagementMenu">
                   <Tooltip title={t('Staff Management')} placement="top">
                     <img
@@ -282,7 +269,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
               </Menu>
             </div>
             <div>
-              <Menu menus={userAccountMenus}>
+              <Menu menus={getUserAccountMenus()}>
                 <IconButton data-testid="profileMenu">
                   <Tooltip title={t('Profile')} placement="top">
                     <img
