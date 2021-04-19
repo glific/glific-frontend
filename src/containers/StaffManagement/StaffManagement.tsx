@@ -115,17 +115,14 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     }
   }, [roles]);
   if (loading || loadingRoles) return <Loading />;
-
   if (!data.groups || !roleData.roles) {
     return null;
   }
 
   const rolesList: any = [];
-  if (roleData) {
-    roleData.roles.forEach((role: any) => {
-      rolesList.push({ id: role, label: role });
-    });
-  }
+  roleData.roles.forEach((role: any) => {
+    rolesList.push({ id: role, label: role });
+  });
 
   const getOptions = () => {
     let options: any = [];
