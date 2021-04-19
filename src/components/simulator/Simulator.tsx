@@ -257,7 +257,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   <MoreVertIcon />
                 </div>
               </div>
-              <div className={styles.Messages} ref={messageRef}>
+              <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
               <div className={styles.Controls}>

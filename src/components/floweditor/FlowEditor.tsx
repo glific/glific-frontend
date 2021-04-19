@@ -222,7 +222,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
       opts: {},
     },
   });
-
   let flowTitle: any;
 
   // flowname can return an empty array if the uuid present is not correct
