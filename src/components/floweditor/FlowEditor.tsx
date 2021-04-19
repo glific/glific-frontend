@@ -16,15 +16,59 @@ import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
-import { getAuthSession } from '../../services/AuthService';
+import {
+  checkAuthStatusService,
+  getAuthSession,
+  renewAuthToken,
+  setAuthSession,
+} from '../../services/AuthService';
 
 // add authorization header in all calls
 const origOpen = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function () {
-  // @ts-ignore
-  // eslint-disable-next-line
-  origOpen.apply(this, arguments);
-  this.setRequestHeader('Authorization', getAuthSession('access_token'));
+
+let wait = false;
+
+XMLHttpRequest.prototype.open = async function () {
+  // case when we get 401 error
+  this.addEventListener('loadend', async (error) => {
+    if (this.status === 401) {
+      // should redirect to logout
+    }
+  });
+
+  // check if token is not yet expired
+  if (checkAuthStatusService()) {
+    // @ts-ignore
+    // eslint-disable-next-line
+    origOpen.apply(this, arguments);
+    // @ts-ignore
+    // eslint-disable-next-line
+    if (!arguments[1].includes('/renew')) {
+      this.setRequestHeader('Authorization', getAuthSession('access_token'));
+    }
+  } else if (!wait) {
+    // added wait so it does call itself in a loop
+    wait = true;
+    const authToken = await renewAuthToken();
+    if (authToken.data) {
+      // update localstore
+      setAuthSession(JSON.stringify(authToken.data.data));
+      // @ts-ignore
+      // eslint-disable-next-line
+      wait = false;
+    }
+    // @ts-ignore
+    // eslint-disable-next-line
+    origOpen.apply(this, arguments);
+    // @ts-ignore
+    // eslint-disable-next-line
+    this.setRequestHeader('Authorization', getAuthSession('access_token'));
+    this.send();
+  } else {
+    // @ts-ignore
+    // eslint-disable-next-line
+    origOpen.apply(this, arguments);
+  }
 };
 
 declare function showFlowEditor(node: any, config: any): void;
