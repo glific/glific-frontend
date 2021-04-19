@@ -359,7 +359,7 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   } else {
     let toolTip = 'Option disabled because the 24hr window expired';
     let disabled = true;
-    // if 24hr window expired & contact type HSM. we can send template msg.
+    // if 24hr window expired & contact type HSM. we can start flow with template msg .
     if (contactBspStatus === 'HSM') {
       toolTip =
         'Since the 24-hour window has passed, the contact will only receive a template message.';
