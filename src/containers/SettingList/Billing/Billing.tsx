@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ import {
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
-import { GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
+import { GET_CUSTOMER_PORTAL, GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -61,6 +61,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
   // get organization billing details
   const { data: billData, loading: billLoading, refetch } = useQuery(GET_ORGANIZATION_BILLING, {
     fetchPolicy: 'network-only',
+  });
+
+  const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
+    onCompleted: (customerPortal: any) => {
+      console.log(customerPortal);
+      window.open(customerPortal.customerPortal.url, '_blank');
+    },
   });
 
   const formFieldItems = [
@@ -253,6 +260,10 @@ export const BillingForm: React.FC<BillingProps> = () => {
     </div>
   );
 
+  const openCustomerPortal = () => {
+    getCustomerPortal();
+  };
+
   const cardElements = (
     <>
       <CardElement
@@ -272,13 +283,27 @@ export const BillingForm: React.FC<BillingProps> = () => {
   );
 
   const subscribed = (
-    <div className={styles.Subscribed}>
-      <ApprovedIcon />
-      You have an active subscription
-      <div>
-        Please <span>contact us</span> to deactivate
+    <>
+      <div className={styles.Subscribed}>
+        <ApprovedIcon />
+        You have an active subscription
+        <div>
+          Please <span>contact us</span> to deactivate
+        </div>
       </div>
-    </div>
+      <div className={styles.Portal}>
+        <Button
+          variant="contained"
+          color="primary"
+          loading={portalLoading}
+          onClick={() => {
+            openCustomerPortal();
+          }}
+        >
+          View more details
+        </Button>
+      </div>
+    </>
   );
   let paymentBody = alreadySubscribed || disable ? subscribed : cardElements;
 
