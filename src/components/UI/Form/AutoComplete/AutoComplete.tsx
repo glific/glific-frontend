@@ -106,25 +106,29 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
    * @param getTagProps Render tag props
    *
    */
-  const getRenderTags = (value: Array<any>, getTagProps: any) =>
-    value
-      .filter((option: any) => !renderTags && !selectedOptionsIds.includes(option.id))
-      .map((option: any, index: number) => (
-        <Chip
-          data-testid="searchChip"
-          style={{ backgroundColor: '#e2f1ea' }}
-          className={styles.Chip}
-          icon={chipIcon}
-          label={getLabel(option)}
-          {...getTagProps({ index })}
-          deleteIcon={
-            <DeleteIcon
-              className={`${renderTags ? styles.DeleteIcon : styles.HideDeleteIcon}`}
-              data-testid="deleteIcon"
-            />
-          }
-        />
-      ));
+  const getRenderTags = (value: Array<any>, getTagProps: any) => {
+    let tagsToRender = value;
+
+    if (!renderTags) {
+      tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
+    }
+    return tagsToRender.map((option: any, index: number) => (
+      <Chip
+        data-testid="searchChip"
+        style={{ backgroundColor: '#e2f1ea' }}
+        className={styles.Chip}
+        icon={chipIcon}
+        label={getLabel(option)}
+        {...getTagProps({ index })}
+        deleteIcon={
+          <DeleteIcon
+            className={`${renderTags ? styles.DeleteIcon : styles.HideDeleteIcon}`}
+            data-testid="deleteIcon"
+          />
+        }
+      />
+    ));
+  };
 
   const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
   const isClearableDisabled = disableClearable || !renderTags;
