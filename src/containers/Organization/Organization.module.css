@@ -1,0 +1,185 @@
+.Container {
+  width: 100%;
+  height: 100vh;
+  font-family: 'Heebo' !important;
+}
+
+.Organization {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  vertical-align: middle;
+}
+
+.GlificLogo {
+  margin-top: 5vh;
+  width: 99px;
+}
+
+.Box {
+  border-radius: 12px;
+  margin-top: 5vh;
+  align-content: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.RegistrationBox {
+  width: 400px;
+  min-height: 440px;
+  height: auto;
+  background-color: #073f24;
+}
+
+.BoxTitle {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  margin-top: 32px;
+  margin-left: 32px;
+  font-weight: bold;
+  width: 320px;
+}
+
+.RegistrationBoxTitle {
+  color: white;
+}
+
+.TitleText {
+  font-weight: bold !important;
+}
+
+.CenterBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.Organization a {
+  color: #119656;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.Organization a:visited {
+  color: #119656;
+}
+
+.Organization hr {
+  margin-top: 32px;
+  margin-left: 18px;
+  margin-right: 18px;
+  height: 1px;
+  width: 142px;
+  border-color: #eaedec;
+  background-color: #eaedec;
+  color: #eaedec;
+  border-style: solid;
+}
+
+.FirstResetBox {
+  min-height: 300px;
+  height: auto;
+  width: 395px;
+  border-color: #eaedec;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.SecondResetBox {
+  min-height: 476px;
+  height: auto;
+  width: 395px;
+  border-color: #eaedec;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.SubText {
+  color: #93a29b;
+  display: flex;
+  align-content: flex-start;
+  font-weight: 500;
+  margin-left: 32px;
+  margin-top: 4px;
+}
+
+.Form {
+  width: 350px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  padding: 0px 8px;
+}
+
+.CenterButton {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px;
+}
+
+.CenterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.AuthButton {
+  width: 334px;
+  margin-right: 0px !important;
+}
+
+.ErrorMessage {
+  margin-top: 5px;
+  color: red;
+  width: 333px;
+  padding-bottom: 10px;
+}
+
+.SuccessMessage {
+  font-size: 16px;
+  margin-top: 100px;
+  color: #93a29b;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: bolder;
+  padding: 15px 44px;
+}
+
+.ForgotPassword {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+}
+
+.Organization .Link {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+  margin-left: 10px;
+  padding-bottom: 10px;
+}
+
+.Organization .Link a {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+}
+
+.RegistrationBox input,
+.RegistrationBox input:hover,
+.OTPBox input,
+.OTPBox input:hover {
+  color: #93a29b !important;
+}
+
+.RegistrationBox fieldset,
+.OTPBox fieldset {
+  border-color: #93a29b !important;
+}
+
+.SubmitAction {
+  display: none;
+}
