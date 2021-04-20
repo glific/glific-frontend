@@ -19,8 +19,8 @@ const App = () => {
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
-  const { isLatestVersion } = handleCache();
-  console.log(isLatestVersion);
+  const { isVersionAvailable } = handleCache();
+  console.log(isVersionAvailable);
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());

@@ -18,7 +18,7 @@ const checkVersionMismatch = (latest: any, current: any) => {
 };
 
 const HandleCache = () => {
-  const [isLatestVersion, setIsLatestVersion] = useState(false);
+  const [isVersionAvailable, setIsVersionAvailable] = useState(false);
 
   const getLatestAppVersion = () => {
     fetch('/meta.json')
@@ -28,10 +28,10 @@ const HandleCache = () => {
         const shouldForceRefresh = checkVersionMismatch(appMetaVersion, currentAppVersion);
         if (shouldForceRefresh) {
           console.log(`New verion - ${appMetaVersion}. available need to force refresh`);
-          setIsLatestVersion(true);
+          setIsVersionAvailable(true);
         } else {
           console.log(`Already latest version - ${appMetaVersion}. No refresh required.`);
-          setIsLatestVersion(false);
+          setIsVersionAvailable(false);
         }
       });
   };
@@ -49,7 +49,7 @@ const HandleCache = () => {
   };
 
   return {
-    isLatestVersion,
+    isVersionAvailable,
     clearCacheAndReload,
   };
 };
