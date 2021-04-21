@@ -394,7 +394,12 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   }
 
   if (!conversationList) {
-    conversationList = <p data-testid="empty-result">{t('You do not have any conversations.')}</p>;
+    conversationList = (
+      <p data-testid="empty-result" className={styles.EmptySearch}>
+        {t(`Sorry, no results found!
+    Please try a different search.`)}
+      </p>
+    );
   }
 
   const loadMoreMessages = () => {
