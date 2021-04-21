@@ -24,3 +24,5 @@ export const HSMList: React.SFC<HSMListProps> = () => {
     />
   );
 };
+
+export default HSMList;

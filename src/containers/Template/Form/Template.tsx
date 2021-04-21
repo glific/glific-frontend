@@ -205,9 +205,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [filterLabel, language, getSessionTemplates]);
 
   useEffect(() => {
-    if (getShortcode) {
-      setShortcode(getShortcode);
-    }
+    setShortcode(getShortcode);
   }, [getShortcode]);
 
   useEffect(() => {
@@ -334,6 +332,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     displayWarning();
   }, [type]);
 
+  let timer: any = null;
   const attachmentField = [
     {
       component: AutoComplete,
@@ -348,6 +347,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: warning,
       onChange: (event: any) => {
         const val = event || '';
+        if (!event) {
+          setIsUrlValid(val);
+        }
         setType(val);
       },
     },
@@ -360,6 +362,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
       inputProp: {
         onBlur: (event: any) => {
           setAttachmentURL(event.target.value);
+        },
+        onChange: (event: any) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
         },
       },
     },
