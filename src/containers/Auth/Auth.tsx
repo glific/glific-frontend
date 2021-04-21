@@ -184,7 +184,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
               <hr />
             </div>
             <Link to={`/${alternateLink}`}>
-              <div>{alternateText}</div>
+              <div className={styles.AlternateText}>{alternateText}</div>
             </Link>
           </>
         ) : null}
