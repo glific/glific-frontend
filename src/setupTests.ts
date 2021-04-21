@@ -4,3 +4,6 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 process.env.REACT_APP_WEB_SOCKET = 'ws://localhost/socket';
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}));
