@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Registration.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -11,42 +12,11 @@ import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.sv
 
 export interface RegistrationProps {}
 
-const formFields = [
-  {
-    component: Input,
-    name: 'userName',
-    type: 'text',
-    placeholder: 'Your name',
-  },
-  {
-    component: PhoneInput,
-    name: 'phone',
-    type: 'phone',
-    placeholder: 'Your phone number',
-    helperText: 'Please enter a phone number.',
-  },
-  {
-    component: Input,
-    name: 'password',
-    type: 'password',
-    placeholder: 'Password',
-  },
-];
-
-const FormSchema = Yup.object().shape({
-  userName: Yup.string().required('Input required'),
-  phone: Yup.string().required('Input required'),
-  password: Yup.string()
-    .min(8, 'Password must be at least 8 characters long.')
-    .required('Input required'),
-});
-
-const initialFormValues = { userName: '', phone: '', password: '' };
-
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [redirect, setRedirect] = useState(false);
   const [user, setUser] = useState({ userName: '', phone: '', password: '' });
   const [authError, setAuthError] = useState('');
+  const { t } = useTranslation();
 
   if (redirect) {
     return (
@@ -70,7 +40,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
         setRedirect(true);
       })
       .catch(() => {
-        setAuthError('We are unable to register, kindly contact your technical team.');
+        setAuthError(t('We are unable to register, kindly contact your technical team.'));
       });
   };
 
@@ -78,19 +48,52 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     <div className={styles.Instructions}>
       <InfoIcon />
       <div>
-        Please make sure to optin to your gupshup number(by clicking signupforservices url) before
-        creating your account.
+        {t(
+          'Please make sure to optin to your gupshup number by clicking signupforservices url before creating your account.'
+        )}
       </div>
     </div>
   );
 
+  const formFields = [
+    {
+      component: Input,
+      name: 'userName',
+      type: 'text',
+      placeholder: t('Your name'),
+    },
+    {
+      component: PhoneInput,
+      name: 'phone',
+      type: 'phone',
+      placeholder: t('Your phone number'),
+      helperText: t('Please enter a phone number.'),
+    },
+    {
+      component: Input,
+      name: 'password',
+      type: 'password',
+      placeholder: t('Password'),
+    },
+  ];
+
+  const FormSchema = Yup.object().shape({
+    userName: Yup.string().required(t('Input required')),
+    phone: Yup.string().required(t('Input required')),
+    password: Yup.string()
+      .min(8, t('Password must be at least 8 characters long.'))
+      .required(t('Input required')),
+  });
+
+  const initialFormValues = { userName: '', phone: '', password: '' };
+
   return (
     <Auth
-      pageTitle="Create your new account"
-      buttonText="CONTINUE"
+      pageTitle={t('Create your new account')}
+      buttonText={t('Continue')}
       staffInstructions={staffInstructions}
       alternateLink="login"
-      alternateText="LOGIN TO GLIFIC"
+      alternateText={t('Login to Glific')}
       mode="registration"
       formFields={formFields}
       validationSchema={FormSchema}
