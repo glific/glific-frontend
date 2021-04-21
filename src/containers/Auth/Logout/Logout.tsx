@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 
-import { resetRole } from '../../../context/role';
+import { resetRolePermissions } from '../../../context/role';
 import { SessionContext } from '../../../context/session';
 import { clearAuthSession, clearUserSession, getAuthSession } from '../../../services/AuthService';
 import { USER_SESSION } from '../../../config';
@@ -47,7 +47,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
     clearUserSession();
 
     // clear role & access permissions
-    resetRole();
+    resetRolePermissions();
 
     // clear local storage list sort session
     clearListSession();

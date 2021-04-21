@@ -18,7 +18,7 @@ import {
   clearUserSession,
 } from '../../../services/AuthService';
 import { GET_CURRENT_USER } from '../../../graphql/queries/User';
-import { getRoleBasedAccess } from '../../../context/role';
+import { setUserRolePermissions } from '../../../context/role';
 import setLogs from '../../../config/logs';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
@@ -59,7 +59,7 @@ export const Login: React.SFC<LoginProps> = () => {
         setSessionToken(token);
 
         // role & access permissions
-        getRoleBasedAccess();
+        setUserRolePermissions();
 
         // set the language
         if (i18n.changeLanguage) {
