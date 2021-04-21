@@ -82,3 +82,5 @@ export const TagList: React.SFC<TagListProps> = () => {
     />
   );
 };
+
+export default TagList;
