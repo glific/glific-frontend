@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { InputURL } from '../../../components/UI/Form/InputURL/InputURL';
+import { ONBOARD_URL } from '../../../config/index';
 
 export interface RegistrationProps {}
 
@@ -24,7 +27,7 @@ const formFields = [
   },
   {
     component: Input,
-    name: 'api_name',
+    name: 'app_name',
     type: 'text',
     placeholder: 'App name',
   },
@@ -35,12 +38,6 @@ const formFields = [
     placeholder: 'GupShup API keys',
     helperLink:
       'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation',
-  },
-  {
-    component: Input,
-    name: 'userName',
-    type: 'text',
-    placeholder: 'Your name',
   },
   {
     component: Input,
@@ -59,11 +56,10 @@ const formFields = [
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('Organisation name is required'),
   phone: Yup.string().required('NGO whatsapp number is required'),
-  api_name: Yup.string().required('App name is required'),
+  app_name: Yup.string().required('App name is required'),
   api_key: Yup.string()
     .test('len', 'Invalid API Key', (val) => val?.length === 32)
     .required('GupShup name is required'),
-  userName: Yup.string().required('Input is required'),
   email: Yup.string().email().required('Email is required'),
   shortcode: Yup.string().required('NGO url is required'),
 });
@@ -71,20 +67,34 @@ const FormSchema = Yup.object().shape({
 const initialFormValues = {
   name: '',
   phone: '',
-  api_name: '',
+  app_name: '',
   api_key: '',
-  userName: '',
   email: '',
   shortcode: '',
 };
 
 export const Registration: React.SFC<RegistrationProps> = () => {
   const [registrationError, setRegistrationError] = useState('');
+  const [redirect, setRedirect] = useState(false);
+
+  if (redirect) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/registration',
+        }}
+      />
+    );
+  }
 
   const handleSubmit = (values: any) => {
-    console.log(values);
-    console.log(setRegistrationError);
-    //  TODO: error callback set setRegistrationError(error)
+    axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
+      if (data.is_valid) {
+        setRedirect(true);
+      } else {
+        setRegistrationError(data.messages);
+      }
+    });
   };
 
   return (

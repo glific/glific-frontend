@@ -21,7 +21,7 @@ export interface OrganizationProps {
   titleSubText?: string;
   linkText?: string;
   linkURL?: string;
-  errorMessage?: string;
+  errorMessage?: string | Array<any>;
   successMessage?: string;
 }
 
@@ -47,7 +47,19 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
 
   let displayErrorMessage: any = null;
   if (errorMessage) {
-    displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
+    if (Array.isArray(errorMessage)) {
+      displayErrorMessage = (
+        <div className={styles.ErrorMessage}>
+          <ul>
+            {errorMessage.map((message: any) => (
+              <li>{message}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
+    }
   }
 
   // Stop loading if any error
@@ -119,7 +131,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   }
 
   return (
-    <div className={styles.Container} data-testid="AuthContainer">
+    <div className={styles.Container} data-testid="RegistrationContainer">
       <div className={styles.Organization}>
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
