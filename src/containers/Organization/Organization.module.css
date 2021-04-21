@@ -77,24 +77,6 @@
   border-style: solid;
 }
 
-.FirstResetBox {
-  min-height: 300px;
-  height: auto;
-  width: 395px;
-  border-color: #eaedec;
-  border-style: solid;
-  border-width: 2px;
-}
-
-.SecondResetBox {
-  min-height: 476px;
-  height: auto;
-  width: 395px;
-  border-color: #eaedec;
-  border-style: solid;
-  border-width: 2px;
-}
-
 .SubText {
   color: #93a29b;
   display: flex;
@@ -111,7 +93,7 @@
   display: flex;
   align-content: center;
   flex-direction: column;
-  padding: 0px 8px;
+  padding: 0px 8px 24px 8px;
 }
 
 .CenterButton {
@@ -125,9 +107,10 @@
   flex-direction: column;
 }
 
-.AuthButton {
+.OrgButton {
   width: 334px;
   margin-right: 0px !important;
+  border-color: #11966c !important;
 }
 
 .ErrorMessage {
@@ -146,12 +129,6 @@
   flex-direction: column;
   font-weight: bolder;
   padding: 15px 44px;
-}
-
-.ForgotPassword {
-  font-size: 16px;
-  color: #93a29b;
-  font-weight: 500;
 }
 
 .Organization .Link {

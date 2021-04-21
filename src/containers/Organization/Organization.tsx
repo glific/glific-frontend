@@ -23,7 +23,6 @@ export interface OrganizationProps {
   linkURL?: string;
   errorMessage?: string;
   successMessage?: string;
-  staffInstructions?: any;
 }
 
 export const Organization: React.SFC<OrganizationProps> = (props) => {
@@ -39,13 +38,12 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     linkURL,
     errorMessage,
     successMessage,
-    staffInstructions,
   } = props;
 
   const [loading, setLoading] = useState(false);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
-  let buttonContainedVariant = true;
+  const buttonContainedVariant = true;
 
   let displayErrorMessage: any = null;
   if (errorMessage) {
@@ -98,7 +96,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
                     color="primary"
                     onClick={submitForm}
-                    className={styles.AuthButton}
+                    className={styles.OrgButton}
                     data-testid="SubmitButton"
                     loading={loading}
                   >
@@ -111,7 +109,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                 <input className={styles.SubmitAction} type="submit" />
               </Form>
               {displayErrorMessage}
-              {staffInstructions}
             </div>
           )}
         </Formik>
