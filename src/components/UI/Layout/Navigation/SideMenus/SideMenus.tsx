@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
-import { getRoleBasedAccess } from '../../../../../context/role';
+import { getSideDrawerMenus } from '../../../../../context/role';
 
 export interface SideMenusProps {
   opened: boolean;
@@ -14,7 +14,7 @@ export interface SideMenusProps {
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
 
-  const menuObj: any[] = getRoleBasedAccess();
+  const menuObj: any[] = getSideDrawerMenus();
 
   const menuList = menuObj.map((menu) => {
     const isSelected = location.pathname.startsWith(menu.path);

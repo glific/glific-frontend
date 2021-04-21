@@ -7,7 +7,7 @@ import { DELETE_USER } from '../../../graphql/mutations/User';
 import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
 import { List } from '../../List/List';
-import { isManagerRole } from '../../../context/role';
+import { getUserRole } from '../../../context/role';
 
 export interface StaffManagementProps {}
 
@@ -62,7 +62,8 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
 
   const getRestrictedAction = (param: any) => {
     const action: any = { chat: true, edit: true, delete: true };
-    if (isManagerRole && param.roles.includes('Admin')) {
+    // we should disable edit actions for managers only in case of users with Admin role
+    if (getUserRole().includes('Manager') && param.roles.includes('Admin')) {
       action.edit = false;
       action.delete = false;
     }
