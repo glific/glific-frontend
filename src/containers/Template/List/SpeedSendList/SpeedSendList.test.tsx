@@ -3,7 +3,6 @@ import { render, waitFor, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { SpeedSendList } from './SpeedSendList';
-import { within } from '@testing-library/dom';
 import { TEMPLATE_MOCKS } from '../../Template.test.helper';
 import { setUserSession } from '../../../../services/AuthService';
 
