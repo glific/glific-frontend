@@ -558,6 +558,16 @@ export const List: React.SFC<ListProps> = ({
     buttonDisplay = <div className={styles.AddButton}>{buttonContent}</div>;
   }
 
+  const noItemsText = (
+    <div className={styles.NoResults}>
+      {searchVal ? (
+        <div>Sorry, no results found! Please try a different search.</div>
+      ) : (
+        <div>There are no {listItemName}s right now. Please create one.</div>
+      )}
+    </div>
+  );
+
   return (
     <>
       <div className={styles.Header} data-testid="listHeader">
@@ -591,7 +601,7 @@ export const List: React.SFC<ListProps> = ({
       {backLink}
       {/* Rendering list of items */}
 
-      {itemList ? displayList : <div>There are no {listItemName}s.</div>}
+      {itemList.length > 0 ? displayList : noItemsText}
     </>
   );
 };
