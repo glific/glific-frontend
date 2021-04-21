@@ -6,6 +6,7 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
+  Link,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -30,6 +31,7 @@ export interface InputProps {
   validate?: any;
   endAdornment?: any;
   inputProp?: any;
+  helperLink?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -46,6 +48,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     rows,
     endAdornment,
     inputProp,
+    helperLink,
   } = props;
 
   let fieldType = type;
@@ -117,6 +120,11 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
         ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
+        ) : null}
+        {helperLink ? (
+          <Link className={styles.HelperLink} href={helperLink} rel="noreferrer" target="_blank">
+            Help?
+          </Link>
         ) : null}
       </FormControl>
     </div>

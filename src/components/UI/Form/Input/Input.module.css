@@ -52,3 +52,13 @@
 .DangerText {
   margin-left: 16px !important;
 }
+
+.HelperLink {
+  margin-top: 4px !important;
+  text-align: right;
+  color: #93a29b !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  font-weight: normal !important;
+  padding-right: 16px;
+}
