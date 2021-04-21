@@ -147,5 +147,11 @@
 }
 
 .Portal {
+  margin-left: 10px;
   margin-top: 10px;
+}
+
+.Active {
+  display: flex;
+  align-items: center;
 }

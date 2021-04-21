@@ -64,8 +64,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
   });
 
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
+    fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {
-      console.log(customerPortal);
       window.open(customerPortal.customerPortal.url, '_blank');
     },
   });
@@ -260,10 +260,6 @@ export const BillingForm: React.FC<BillingProps> = () => {
     </div>
   );
 
-  const openCustomerPortal = () => {
-    getCustomerPortal();
-  };
-
   const cardElements = (
     <>
       <CardElement
@@ -283,7 +279,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   );
 
   const subscribed = (
-    <>
+    <div className={styles.Active}>
       <div className={styles.Subscribed}>
         <ApprovedIcon />
         You have an active subscription
@@ -297,13 +293,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
           color="primary"
           loading={portalLoading}
           onClick={() => {
-            openCustomerPortal();
+            getCustomerPortal();
           }}
         >
           View more details
         </Button>
       </div>
-    </>
+    </div>
   );
   let paymentBody = alreadySubscribed || disable ? subscribed : cardElements;
 
