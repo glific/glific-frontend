@@ -291,6 +291,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
         <Button
           variant="contained"
           color="primary"
+          data-testid="customerPortalButton"
           loading={portalLoading}
           onClick={() => {
             getCustomerPortal();
