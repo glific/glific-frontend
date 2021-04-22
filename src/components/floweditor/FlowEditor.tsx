@@ -24,30 +24,30 @@ import {
 } from '../../services/AuthService';
 
 // // add authorization header in all calls
-let wait = false;
-let renew = false;
+let renewTokenCalled = false;
+let tokenRenewed = false;
 
 (function (send) {
   XMLHttpRequest.prototype.send = async function (body) {
     this.addEventListener('loadend', () => {
       if (this.status === 401) {
-        window.location.href = '/logout';
+        window.location.href = '/logout/user';
       }
     });
     if (checkAuthStatusService()) {
       this.setRequestHeader('Authorization', getAuthSession('access_token'));
       send.call(this, body);
-    } else if (wait && !renew) {
+    } else if (renewTokenCalled && !tokenRenewed) {
       send.call(this, body);
-      renew = true;
-    } else if (!wait) {
-      wait = true;
+      tokenRenewed = true;
+    } else if (!renewTokenCalled) {
+      renewTokenCalled = true;
       const authToken = await renewAuthToken();
       if (authToken.data) {
         // update localstore
         setAuthSession(JSON.stringify(authToken.data.data));
-        wait = false;
-        renew = false;
+        renewTokenCalled = false;
+        tokenRenewed = false;
       }
       this.setRequestHeader('Authorization', getAuthSession('access_token'));
       send.call(this, body);
