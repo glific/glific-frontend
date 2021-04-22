@@ -126,7 +126,7 @@
 }
 
 .CenterButton > button:disabled {
-  background-color: #718b7f;
+  background-color: #cacaca;
 }
 
 /* Loading spinner color */

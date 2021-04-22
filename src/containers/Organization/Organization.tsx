@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
-import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
+// import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
 import styles from './Organization.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import GlificLogo from '../../assets/images/logo/Logo.svg';
@@ -36,7 +36,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   } = props;
 
   const [loading, setLoading] = useState(false);
-  const [captcha, setCaptcha] = useState(null);
+  // const [captcha, setCaptcha] = useState(null);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
   const buttonContainedVariant = true;
@@ -71,13 +71,13 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
    *
    * This callback is called on onExpired so don't need to handle callback for onExpired
    */
-  const handleCaptchaChange = (value: any) => {
-    setCaptcha(value);
-  };
+  // const handleCaptchaChange = (value: any) => {
+  //   setCaptcha(value);
+  // };
 
-  const handleCaptchaError = () => {
-    setCaptcha(null);
-  };
+  // const handleCaptchaError = () => {
+  //   setCaptcha(null);
+  // };
 
   let formElements;
   // we should not render form elements when displaying success message
@@ -97,7 +97,8 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
           onSubmit={(item) => {
             setLoading(true);
 
-            saveHandler(item, captcha);
+            // saveHandler(item, captcha);
+            saveHandler(item, true);
           }}
         >
           {({ submitForm }) => (
@@ -111,7 +112,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
-                <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
+                {/* <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} /> */}
                 <div className={styles.CenterButton}>
                   <Button
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
@@ -120,7 +121,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                     className={styles.OrgButton}
                     data-testid="SubmitButton"
                     loading={loading}
-                    disabled={!captcha}
+                    // disabled={!captcha}
                   >
                     {loading ? null : buttonText}
                   </Button>
