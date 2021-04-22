@@ -40,10 +40,8 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     successMessage,
   } = props;
 
-  // const RECAPTCHA_SERVER_KEY = '';
-
   const [loading, setLoading] = useState(false);
-  const [expired, setExpiary] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState('');
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
   const buttonContainedVariant = true;
@@ -74,21 +72,19 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
 
   const handleChange = (value: any) => {
     console.log('Captcha value:', value);
-    //   // send post call to google captcha api . pass body with site key and secret key .
-    //   const isHuman = fetch(`https://www.google.com/recaptcha/api/siteverify`, {
-    //     method: 'post',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-    //     },
-    //     body: `secret=${RECAPTCHA_SERVER_KEY}&response=${TEST_SITE_KEY}`,
-    //   });
-    //   console.log('is Human:', isHuman);
-
-    console.log(expired);
-    if (value == null) {
-      setExpiary(true);
+    console.log(captchaValue);
+    if (value != null) {
+      setCaptchaValue(value);
     }
+  };
+
+  const handleError = () => {
+    // this comes when there is problem with connection
+    console.log('Something went wrong, check your conenction');
+  };
+  const handleExpire = () => {
+    // some time after checkbox clicked
+    console.log('Verification has expired, re-verify.');
   };
 
   let formElements;
@@ -108,7 +104,8 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
           validationSchema={validationSchema}
           onSubmit={(item) => {
             setLoading(true);
-            saveHandler(item);
+
+            saveHandler(item, captchaValue);
           }}
         >
           {({ submitForm }) => (
@@ -122,11 +119,12 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
+                <div>
+                  <Captcha onChange={handleChange} onExpire={handleExpire} onError={handleError} />
+                </div>
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
-
-                <Captcha onChange={handleChange} />
 
                 <div className={styles.CenterButton}>
                   <Button

@@ -87,11 +87,14 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     );
   }
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: any, captcha: any) => {
+    console.log('values:', values, 'captcha:', captcha);
+
     axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
-      if (data.is_valid) {
+      if (data.is_valid && captcha !== '') {
         setRedirect(true);
       } else {
+        // add error message for not checking captcha
         setRegistrationError(data.messages);
       }
     });
