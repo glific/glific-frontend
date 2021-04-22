@@ -94,9 +94,9 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             }}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
-              label: `${searchLabel}`,
+              label: searchLabel,
               variant: 'outlined',
-              placeholder: `${textFieldPlaceholder}`,
+              placeholder: textFieldPlaceholder,
             }}
             chipIcon={icon}
             renderTags={renderTags}
