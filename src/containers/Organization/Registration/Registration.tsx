@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { InputAdornment, Link } from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/InfoSharp';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
@@ -11,6 +10,7 @@ import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { ONBOARD_URL } from '../../../config/index';
 import Tooltip from '../../../components/UI/Tooltip/Tooltip';
 import styles from './Registration.module.css';
+import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
 
 export interface RegistrationProps {}
 
@@ -21,7 +21,7 @@ const InfoAdornment = (
       placement="right"
       tooltipClass={styles.Tooltip}
     >
-      <InfoIcon aria-label="info" fontSize="small" className={styles.InfoIconColor} />
+      <InfoIcon width="12" height="12" />
     </Tooltip>
   </InputAdornment>
 );

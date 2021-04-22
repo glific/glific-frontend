@@ -126,8 +126,12 @@
 }
 
 .CenterButton > button:disabled {
-  opacity: 0.5;
-  background-color: #119656;
+  background-color: #718b7f;
+}
+
+/* Loading spinner color */
+.CenterButton > button > span > div {
+  color: #073f24;
 }
 
 .CenterForm {
