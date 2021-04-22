@@ -23,3 +23,5 @@ export const SpeedSendList: React.SFC<SpeedSendListProps> = () => {
     />
   );
 };
+
+export default SpeedSendList;
