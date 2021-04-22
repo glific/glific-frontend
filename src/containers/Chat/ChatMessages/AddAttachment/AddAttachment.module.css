@@ -24,15 +24,18 @@
 }
 
 .FormHelperText {
-  position: absolute;
-  margin-top: 65px;
   color: #ff0000;
+  padding-top: 4px;
+  font-weight: 500;
   width: 85%;
-  left: 0px;
   line-height: 1.3;
+}
+.FormHelperText ol {
+  padding-left: 16px;
 }
 
 .FormError {
+  margin-left: 4px;
   position: absolute;
   margin-top: 65px;
   color: #f44336;
@@ -42,5 +45,5 @@
   font-family: heebo, sans-serif;
   font-weight: 400;
   line-height: 1.66;
-  width: 57%;
+  width: 45%;
 }
