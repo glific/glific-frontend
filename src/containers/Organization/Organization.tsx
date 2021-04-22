@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
 import styles from './Organization.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -19,8 +18,6 @@ export interface OrganizationProps {
   APIFields?: any;
   validationSchema?: any;
   titleSubText?: string;
-  linkText?: string;
-  linkURL?: string;
   errorMessage?: string | Array<any>;
   successMessage?: string;
 }
@@ -34,8 +31,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     formFields,
     validationSchema,
     titleSubText,
-    linkText,
-    linkURL,
     errorMessage,
     successMessage,
   } = props;
@@ -120,9 +115,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
-                <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
-                </div>
 
                 <Captcha onChange={handleChange} />
 
