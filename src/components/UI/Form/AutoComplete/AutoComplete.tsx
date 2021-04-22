@@ -31,6 +31,8 @@ export interface AutocompleteProps {
   disableClearable?: boolean;
   listBoxProps?: any;
   classes?: any;
+  renderTags?: boolean;
+  selectedOptionsIds?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -56,6 +58,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   disableClearable = false,
   listBoxProps,
   classes = {},
+  renderTags = true,
+  selectedOptionsIds = [],
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -96,6 +100,53 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     return '';
   };
 
+  /**
+   *
+   * @param value Callback value
+   * @param getTagProps Render tag props
+   *
+   */
+  const getRenderTags = (value: Array<any>, getTagProps: any) => {
+    let tagsToRender = value;
+
+    /**
+     * when renderTags is true,
+     * default selected options along with newly selected options will be visible
+     * else,
+     * only post selected options will be visible
+     
+     */
+    if (!renderTags) {
+      tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
+    }
+
+    return tagsToRender.map((option: any, index: number) => {
+      const props = getTagProps({ index });
+
+      /**
+       * If disableClearable is true, removing onDelete event
+       * deleteIcon component will be disabled, when onDelete is absent
+       */
+      if (disableClearable) {
+        delete props.onDelete;
+      }
+
+      return (
+        <Chip
+          data-testid="searchChip"
+          style={{ backgroundColor: '#e2f1ea' }}
+          className={styles.Chip}
+          icon={chipIcon}
+          label={getLabel(option)}
+          {...props}
+          deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
+        />
+      );
+    });
+  };
+
+  const getOptionDisabled = (option: any) => selectedOptionsIds.includes(option.id);
+
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
@@ -106,6 +157,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           options={optionValue}
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
+          getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
             if (roleSelection) {
               roleSelection(value);
@@ -133,19 +185,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           value={getValue}
           disabled={disabled}
           disableCloseOnSelect={multiple}
-          renderTags={(value: any, getTagProps) =>
-            value.map((option: any, index: number) => (
-              <Chip
-                data-testid="searchChip"
-                style={{ backgroundColor: '#e2f1ea' }}
-                className={styles.Chip}
-                icon={chipIcon}
-                label={getLabel(option)}
-                {...getTagProps({ index })}
-                deleteIcon={<DeleteIcon className={styles.DeleteIcon} data-testid="deleteIcon" />}
-              />
-            ))
-          }
+          renderTags={getRenderTags}
           renderOption={(option: any, { selected }) => (
             <>
               {multiple ? (
