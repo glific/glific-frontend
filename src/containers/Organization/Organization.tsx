@@ -49,13 +49,11 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   if (errorMessage) {
     if (Array.isArray(errorMessage)) {
       displayErrorMessage = (
-        <div className={styles.ErrorMessage}>
-          <ul>
-            {errorMessage.map((message: any) => (
-              <li>{message}</li>
-            ))}
-          </ul>
-        </div>
+        <ul className={styles.ErrorMessage}>
+          {errorMessage.map((message: any) => (
+            <li key={message}>{message}</li>
+          ))}
+        </ul>
       );
     } else {
       displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
