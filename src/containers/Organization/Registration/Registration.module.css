@@ -1,11 +1,23 @@
 .Tooltip {
   width: 143px;
   height: 48px;
-  background-color: black !important;
+  background-color: #042c19 !important;
   font-size: 10px;
   line-height: 1.2;
+  border-radius: 8px;
+  font-weight: 400;
 }
 
 .InfoIconColor {
   color: #119656;
+}
+
+.HelperLink {
+  margin-top: 4px !important;
+  text-align: right;
+  color: #93a29b !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  font-weight: normal !important;
+  padding-right: 16px;
 }

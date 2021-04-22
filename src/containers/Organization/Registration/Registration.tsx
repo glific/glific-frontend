@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment, Link } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/InfoSharp';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -24,6 +24,17 @@ const InfoAdornment = (
       <InfoIcon aria-label="info" fontSize="small" className={styles.InfoIconColor} />
     </Tooltip>
   </InputAdornment>
+);
+
+const HelperLink = (
+  <Link
+    className={styles.HelperLink}
+    href="https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation"
+    rel="noreferrer"
+    target="_blank"
+  >
+    Help?
+  </Link>
 );
 
 const formFields = [
@@ -52,8 +63,7 @@ const formFields = [
     type: 'text',
     placeholder: 'GupShup API keys',
     endAdornment: InfoAdornment,
-    helperLink:
-      'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation',
+    helperText: HelperLink,
   },
   {
     component: Input,
@@ -105,16 +115,16 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   }
 
   const handleSubmit = (values: any, captcha: any) => {
-    console.log('values:', values, 'captcha:', captcha);
-
-    axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
-      if (data.is_valid && captcha !== '') {
-        setRedirect(true);
-      } else {
-        // add error message for not checking captcha
-        setRegistrationError(data.messages);
-      }
-    });
+    if (captcha) {
+      axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
+        if (data.is_valid && captcha !== '') {
+          setRedirect(true);
+        } else {
+          // add error message for not checking captcha
+          setRegistrationError(data.messages);
+        }
+      });
+    }
   };
 
   return (
