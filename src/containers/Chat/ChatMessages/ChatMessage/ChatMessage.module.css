@@ -205,12 +205,28 @@
 }
 
 .ReplyMessage {
-  background-color: #cee4d9;
-  border-radius: 12px;
-  padding: 3px;
+  max-width: 372px;
+  margin-left: 10px;
+}
+
+.ReplyMessageBody {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-  margin-left: 10px;
+}
+
+.ReplyMainWrap {
+  padding: 10px;
+  border-radius: 12px;
+  background-color: #cee4d9;
+}
+
+.ReplyMessageWrap {
+  border-left: solid 2px;
+  padding-left: 2px;
+}
+
+.ReplyContact {
+  font-weight: bold;
 }

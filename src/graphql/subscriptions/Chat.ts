@@ -32,6 +32,30 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         caption
       }
       errors
+      contextMessage {
+        body
+        contextId
+        messageNumber
+        errors
+        media {
+          caption
+          sourceUrl
+          id
+          url
+        }
+        location {
+          id
+          latitude
+          longitude
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -68,6 +92,30 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
         caption
       }
       errors
+      contextMessage {
+        body
+        contextId
+        messageNumber
+        errors
+        media {
+          caption
+          sourceUrl
+          id
+          url
+        }
+        location {
+          id
+          latitude
+          longitude
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+          name
+        }
+      }
     }
   }
 `;
@@ -116,6 +164,30 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
         caption
       }
       errors
+      contextMessage {
+        body
+        contextId
+        messageNumber
+        errors
+        media {
+          caption
+          sourceUrl
+          id
+          url
+        }
+        location {
+          id
+          latitude
+          longitude
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+          name
+        }
+      }
     }
   }
 `;

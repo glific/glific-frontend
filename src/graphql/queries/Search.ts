@@ -59,6 +59,13 @@ export const SEARCH_QUERY = gql`
             latitude
             longitude
           }
+          receiver {
+            id
+          }
+          sender {
+            id
+            name
+          }
         }
       }
     }
@@ -124,6 +131,30 @@ export const SEARCH_MULTI_QUERY = gql`
         media {
           url
           caption
+        }
+        contextMessage {
+          body
+          contextId
+          messageNumber
+          errors
+          media {
+            caption
+            sourceUrl
+            id
+            url
+          }
+          location {
+            id
+            latitude
+            longitude
+          }
+          receiver {
+            id
+          }
+          sender {
+            id
+            name
+          }
         }
       }
       tags {

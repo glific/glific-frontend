@@ -254,7 +254,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <WarningIcon className={styles.ErrorMsgIcon} />
     </Tooltip>
   ) : null;
-  console.log('contextMessage---', contextMessage);
+
   return (
     <div
       className={additionalClass}
@@ -268,7 +268,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           onClick={() => jumpToMessage(contextMessage.messageNumber)}
           aria-hidden="true"
         >
-          {contextMessage.body}
+          <div className={styles.ReplyMainWrap}>
+            <div className={styles.ReplyMessageWrap}>
+              <div className={styles.ReplyContact}>
+                {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+              </div>
+              <div className={styles.ReplyMessageBody}>{contextMessage.body}</div>
+            </div>
+          </div>
         </div>
       ) : null}
 
