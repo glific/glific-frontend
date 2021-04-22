@@ -547,6 +547,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     setShowDropdown(id);
   };
 
+  const jumpToMessage = (messageNumber: number) => {
+    console.log('jumpToMessage', messageNumber);
+    const element = document.querySelector(`#search${messageNumber}`);
+    if (element) {
+      element.scrollIntoView();
+    }
+  };
+
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -579,6 +587,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
                 moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
               : true
           }
+          jumpToMessage={jumpToMessage}
         />
       );
     });

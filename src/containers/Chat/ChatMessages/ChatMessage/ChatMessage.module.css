@@ -203,3 +203,14 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.ReplyMessage {
+  background-color: #cee4d9;
+  border-radius: 12px;
+  padding: 3px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  margin-left: 10px;
+}

@@ -43,6 +43,8 @@ export interface ChatMessageProps {
   showMessage: boolean;
   location: any;
   errors: any;
+  contextMessage: any;
+  jumpToMessage: any;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -72,6 +74,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     messageNumber,
     location,
     errors,
+    contextMessage,
+    jumpToMessage,
   } = props;
 
   useEffect(() => {
@@ -250,7 +254,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <WarningIcon className={styles.ErrorMsgIcon} />
     </Tooltip>
   ) : null;
-
+  console.log('contextMessage---', contextMessage);
   return (
     <div
       className={additionalClass}
@@ -258,6 +262,16 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       data-testid="message"
       id={`search${messageNumber}`}
     >
+      {contextMessage ? (
+        <div
+          className={styles.ReplyMessage}
+          onClick={() => jumpToMessage(contextMessage.messageNumber)}
+          aria-hidden="true"
+        >
+          {contextMessage.body}
+        </div>
+      ) : null}
+
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         {ErrorIcon}

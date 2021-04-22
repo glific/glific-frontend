@@ -43,6 +43,23 @@ export const SEARCH_QUERY = gql`
           caption
         }
         errors
+        contextMessage {
+          body
+          contextId
+          messageNumber
+          errors
+          media {
+            caption
+            sourceUrl
+            id
+            url
+          }
+          location {
+            id
+            latitude
+            longitude
+          }
+        }
       }
     }
   }
