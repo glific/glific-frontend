@@ -46,6 +46,7 @@
 
 .TitleText {
   font-weight: bold !important;
+  font-size: 36px !important;
 }
 
 .CenterBox {
@@ -93,13 +94,30 @@
   display: flex;
   align-content: center;
   flex-direction: column;
-  padding: 0px 8px 24px 8px;
+  padding: 0px 8px;
+}
+
+.Form > div {
+  padding: 0;
+  margin: 4px 0px;
+}
+
+/* 5th div need more top bottom margin */
+.Form > div:nth-of-type(5) {
+  padding: 0;
+  margin: 20px 0px !important;
+}
+
+/* 5th div helperText need more font-size and top margin */
+.Form > div:nth-of-type(5) > div > p {
+  font-size: 16px !important;
+  margin-top: 8px !important;
 }
 
 .CenterButton {
   display: flex;
   justify-content: center;
-  padding: 10px 0px;
+  padding: 24px 0px 20px 0px !important;
 }
 
 .CenterForm {

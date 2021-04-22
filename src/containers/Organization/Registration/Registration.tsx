@@ -6,7 +6,6 @@ import { Redirect } from 'react-router-dom';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { InputURL } from '../../../components/UI/Form/InputURL/InputURL';
 import { ONBOARD_URL } from '../../../config/index';
 
 export interface RegistrationProps {}
@@ -16,13 +15,13 @@ const formFields = [
     component: Input,
     name: 'name',
     type: 'text',
-    placeholder: 'Organisation name',
+    placeholder: 'NGO name',
   },
   {
     component: PhoneInput,
     name: 'phone',
     type: 'phone',
-    placeholder: 'NGO whatsapp number',
+    placeholder: 'NGO WhatsApp number',
     helperText: 'Please enter a phone number.',
   },
   {
@@ -41,27 +40,28 @@ const formFields = [
   },
   {
     component: Input,
-    name: 'email',
-    type: 'text',
-    placeholder: 'Your email',
-  },
-  {
-    component: InputURL,
     name: 'shortcode',
     type: 'text',
-    placeholder: 'NGO name',
+    placeholder: 'URL Shortcode',
+    helperText: 'www.shortcode.tides.coloredcow.com',
+  },
+  {
+    component: Input,
+    name: 'email',
+    type: 'text',
+    placeholder: 'Your email id',
   },
 ];
 
 const FormSchema = Yup.object().shape({
-  name: Yup.string().required('Organisation name is required'),
+  name: Yup.string().required('NGO name is required'),
   phone: Yup.string().required('NGO whatsapp number is required'),
   app_name: Yup.string().required('App name is required'),
   api_key: Yup.string()
     .test('len', 'Invalid API Key', (val) => val?.length === 32)
-    .required('GupShup name is required'),
+    .required('API key is required'),
   email: Yup.string().email().required('Email is required'),
-  shortcode: Yup.string().required('NGO url is required'),
+  shortcode: Yup.string().required('NGO shortcode url is required'),
 });
 
 const initialFormValues = {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
 import styles from './Organization.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -19,8 +18,6 @@ export interface OrganizationProps {
   APIFields?: any;
   validationSchema?: any;
   titleSubText?: string;
-  linkText?: string;
-  linkURL?: string;
   errorMessage?: string | Array<any>;
   successMessage?: string;
 }
@@ -34,8 +31,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     formFields,
     validationSchema,
     titleSubText,
-    linkText,
-    linkURL,
     errorMessage,
     successMessage,
   } = props;
@@ -50,13 +45,11 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   if (errorMessage) {
     if (Array.isArray(errorMessage)) {
       displayErrorMessage = (
-        <div className={styles.ErrorMessage}>
-          <ul>
-            {errorMessage.map((message: any) => (
-              <li>{message}</li>
-            ))}
-          </ul>
-        </div>
+        <ul className={styles.ErrorMessage}>
+          {errorMessage.map((message: any) => (
+            <li key={message}>{message}</li>
+          ))}
+        </ul>
       );
     } else {
       displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
