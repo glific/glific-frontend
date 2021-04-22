@@ -2,13 +2,29 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { InputAdornment } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/InfoSharp';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { ONBOARD_URL } from '../../../config/index';
+import Tooltip from '../../../components/UI/Tooltip/Tooltip';
+import styles from './Registration.module.css';
 
 export interface RegistrationProps {}
+
+const InfoAdornment = (
+  <InputAdornment position="end">
+    <Tooltip
+      title="You can customize your Glific account URL as shown in preview"
+      placement="right"
+      tooltipClass={styles.Tooltip}
+    >
+      <InfoIcon aria-label="info" fontSize="small" className={styles.InfoIconColor} />
+    </Tooltip>
+  </InputAdornment>
+);
 
 const formFields = [
   {
@@ -35,6 +51,7 @@ const formFields = [
     name: 'api_key',
     type: 'text',
     placeholder: 'GupShup API keys',
+    endAdornment: InfoAdornment,
     helperLink:
       'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation',
   },

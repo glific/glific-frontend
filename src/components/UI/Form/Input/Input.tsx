@@ -115,9 +115,6 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           {...field}
           endAdornment={endAdornment || fieldEndAdorment}
         />
-        {form && form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
-        ) : null}
         {helperText ? (
           <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
         ) : null}
@@ -125,6 +122,9 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           <Link className={styles.HelperLink} href={helperLink} rel="noreferrer" target="_blank">
             Help?
           </Link>
+        ) : null}
+        {form && form.errors[field.name] && form.touched[field.name] ? (
+          <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
         ) : null}
       </FormControl>
     </div>

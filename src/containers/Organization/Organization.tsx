@@ -36,7 +36,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   } = props;
 
   const [loading, setLoading] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState('');
+  const [captcha, setCaptcha] = useState(null);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
   const buttonContainedVariant = true;
@@ -63,21 +63,20 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     initialFormValues.phone = value;
   };
 
-  const handleChange = (value: any) => {
-    console.log('Captcha value:', value);
-    console.log(captchaValue);
-    if (value != null) {
-      setCaptchaValue(value);
-    }
+  /**
+   *
+   * @param value
+   * If captcha is successful then value will have callback string
+   * else value will be null
+   *
+   * This callback is called on onExpired so don't need to handle callback for onExpired
+   */
+  const handleCaptchaChange = (value: any) => {
+    setCaptcha(value);
   };
 
-  const handleError = () => {
-    // this comes when there is problem with connection
-    console.log('Something went wrong, check your conenction');
-  };
-  const handleExpire = () => {
-    // some time after checkbox clicked
-    console.log('Verification has expired, re-verify.');
+  const handleCaptchaError = () => {
+    setCaptcha(null);
   };
 
   let formElements;
@@ -98,7 +97,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
           onSubmit={(item) => {
             setLoading(true);
 
-            saveHandler(item, captchaValue);
+            saveHandler(item, captcha);
           }}
         >
           {({ submitForm }) => (
@@ -112,13 +111,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
-                <div>
-                  <Captcha onChange={handleChange} onExpire={handleExpire} onError={handleError} />
-                </div>
-                <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
-                </div>
-
+                <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
                 <div className={styles.CenterButton}>
                   <Button
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
@@ -127,6 +120,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                     className={styles.OrgButton}
                     data-testid="SubmitButton"
                     loading={loading}
+                    disabled={!captcha}
                   >
                     {loading ? null : buttonText}
                   </Button>
