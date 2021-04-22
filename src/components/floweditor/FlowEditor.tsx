@@ -27,7 +27,7 @@ import {
 let renewTokenCalled = false;
 let tokenRenewed = false;
 
-(function (send) {
+((send) => {
   XMLHttpRequest.prototype.send = async function (body) {
     this.addEventListener('loadend', () => {
       if (this.status === 401) {
