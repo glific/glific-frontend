@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-
+import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
 import styles from './Organization.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import GlificLogo from '../../assets/images/logo/Logo.svg';
@@ -40,7 +40,10 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
     successMessage,
   } = props;
 
+  // const RECAPTCHA_SERVER_KEY = '';
+
   const [loading, setLoading] = useState(false);
+  const [expired, setExpiary] = useState(false);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
   const buttonContainedVariant = true;
@@ -65,6 +68,25 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
 
   const handlePhone = () => (value: string): void => {
     initialFormValues.phone = value;
+  };
+
+  const handleChange = (value: any) => {
+    console.log('Captcha value:', value);
+    //   // send post call to google captcha api . pass body with site key and secret key .
+    //   const isHuman = fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+    //     method: 'post',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    //     },
+    //     body: `secret=${RECAPTCHA_SERVER_KEY}&response=${TEST_SITE_KEY}`,
+    //   });
+    //   console.log('is Human:', isHuman);
+
+    console.log(expired);
+    if (value == null) {
+      setExpiary(true);
+    }
   };
 
   let formElements;
@@ -101,6 +123,9 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                 <div className={styles.Link}>
                   <Link to={`/${linkURL}`}>{linkText}</Link>
                 </div>
+
+                <Captcha onChange={handleChange} />
+
                 <div className={styles.CenterButton}>
                   <Button
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
