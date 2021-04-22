@@ -88,7 +88,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
     <List
       title="Triggers (Beta)"
       listItem="triggers"
-      listItemName="Trigger"
+      listItemName="trigger"
       pageLink="trigger"
       button={{ show: true, label: t('+ CREATE TRIGGER') }}
       listIcon={triggerIcon}

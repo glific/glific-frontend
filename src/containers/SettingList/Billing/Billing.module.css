@@ -145,3 +145,13 @@
   background-color: #eaedec !important;
   margin-right: 10px !important;
 }
+
+.Portal {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.Active {
+  display: flex;
+  align-items: center;
+}

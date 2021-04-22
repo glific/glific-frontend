@@ -1,5 +1,5 @@
 import CREATE_BILLING_SUBSCRIPTION, { UPDATE_BILLING } from '../graphql/mutations/Billing';
-import GET_ORGANIZATION_BILLING from '../graphql/queries/Billing';
+import GET_ORGANIZATION_BILLING, { GET_CUSTOMER_PORTAL } from '../graphql/queries/Billing';
 
 export const createBillingSubscriptionQuery = {
   request: {
@@ -90,3 +90,16 @@ export const getBillingQuery = billingQuery('');
 export const getPendingBillingQuery = billingQuery('pending');
 
 export const getBillingQueryWithoutsubscription = billingQuery(null, null);
+
+export const getCustomerPortalQuery = {
+  request: {
+    query: GET_CUSTOMER_PORTAL,
+  },
+  result: {
+    data: {
+      customerPortal: {
+        url: 'billing.glific.com/session/_sdjsjscbjwew',
+      },
+    },
+  },
+};
