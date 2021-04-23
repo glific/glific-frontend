@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
-// import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
+import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
 import styles from './Organization.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
 import GlificLogo from '../../assets/images/logo/Logo.svg';
@@ -18,7 +18,7 @@ export interface OrganizationProps {
   APIFields?: any;
   validationSchema?: any;
   titleSubText?: string;
-  errorMessage?: string | Array<any>;
+  errorMessage?: any;
   successMessage?: string;
 }
 
@@ -36,24 +36,19 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   } = props;
 
   const [loading, setLoading] = useState(false);
-  // const [captcha, setCaptcha] = useState(null);
+  const [captcha, setCaptcha] = useState(null);
   const boxClass = [styles.Box, styles.RegistrationBox];
   const boxTitleClass = [styles.BoxTitle, styles.RegistrationBoxTitle];
   const buttonContainedVariant = true;
 
   let displayErrorMessage: any = null;
+
+  /**
+   * Errors other than attribute errors will be
+   * displayed under form
+   */
   if (errorMessage) {
-    if (Array.isArray(errorMessage)) {
-      displayErrorMessage = (
-        <ul className={styles.ErrorMessage}>
-          {errorMessage.map((message: any) => (
-            <li key={message}>{message}</li>
-          ))}
-        </ul>
-      );
-    } else {
-      displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage}</div>;
-    }
+    displayErrorMessage = errorMessage?.global;
   }
 
   // Stop loading if any error
@@ -71,13 +66,13 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
    *
    * This callback is called on onExpired so don't need to handle callback for onExpired
    */
-  // const handleCaptchaChange = (value: any) => {
-  //   setCaptcha(value);
-  // };
+  const handleCaptchaChange = (value: any) => {
+    setCaptcha(value);
+  };
 
-  // const handleCaptchaError = () => {
-  //   setCaptcha(null);
-  // };
+  const handleCaptchaError = () => {
+    setCaptcha(null);
+  };
 
   let formElements;
   // we should not render form elements when displaying success message
@@ -94,11 +89,13 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
         <Formik
           initialValues={initialFormValues}
           validationSchema={validationSchema}
-          onSubmit={(item) => {
+          onSubmit={(item, { setErrors }) => {
             setLoading(true);
-
-            // saveHandler(item, captcha);
-            saveHandler(item, true);
+            /**
+             * SetError and SetLoading is used to set server side messages
+             * and toggle loading on and off
+             */
+            saveHandler(item, captcha, setErrors, setLoading);
           }}
         >
           {({ submitForm }) => (
@@ -112,7 +109,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   const key = index;
                   return <Field className={styles.Form} key={key} {...fieldInfo} />;
                 })}
-                {/* <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} /> */}
+                <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
                 <div className={styles.CenterButton}>
                   <Button
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
@@ -121,7 +118,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                     className={styles.OrgButton}
                     data-testid="SubmitButton"
                     loading={loading}
-                    // disabled={!captcha}
+                    disabled={!captcha}
                   >
                     {loading ? null : buttonText}
                   </Button>
