@@ -18,6 +18,9 @@ export interface SearchDialogBoxProps {
   onChange?: any;
   asyncSearch?: boolean;
   disableClearable?: boolean;
+  searchLabel?: string;
+  renderTags?: boolean;
+  textFieldPlaceholder?: any;
 }
 
 export const SearchDialogBox = (props: SearchDialogBoxProps) => {
@@ -33,6 +36,9 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
     handleCancel,
     onChange,
     disableClearable,
+    searchLabel = 'Search',
+    renderTags = true,
+    textFieldPlaceholder = '',
   } = props;
 
   const [selectedOption, setSelectedOptions] = useState<Array<string>>([]);
@@ -54,6 +60,8 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
   const changeValue = (event: any, value: any) => {
     setSelectedOptions(value);
   };
+
+  const selectedOptionsIds = selectedOptions.map(({ id }: { id: any }) => id);
 
   return (
     <DialogBox
@@ -86,10 +94,13 @@ export const SearchDialogBox = (props: SearchDialogBoxProps) => {
             }}
             form={{ setFieldValue: changeValue }}
             textFieldProps={{
-              label: t('Search'),
+              label: searchLabel,
               variant: 'outlined',
+              placeholder: textFieldPlaceholder,
             }}
             chipIcon={icon}
+            renderTags={renderTags}
+            selectedOptionsIds={selectedOptionsIds}
           />
         </FormControl>
       </div>

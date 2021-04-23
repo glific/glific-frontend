@@ -50,20 +50,6 @@ test('click on cancel button ', async () => {
   expect(setDialogMock).toHaveBeenCalled();
 });
 
-test('remove an element from collection', async () => {
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
-  const { getByText, getByTestId } = render(addContacts);
-
-  await waitFor(() => {
-    expect(getByText('Glific User')).toBeInTheDocument();
-  });
-
-  fireEvent.click(getByTestId('deleteIcon'));
-  fireEvent.click(getByText('Save'));
-
-  await waitFor(() => {});
-});
-
 test('save without changing anything', async () => {
   setUserSession(JSON.stringify({ roles: ['Admin'] }));
   const { getByText, getByTestId } = render(addContacts);
