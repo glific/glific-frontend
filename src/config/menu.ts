@@ -1,86 +1,91 @@
+import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+i18next.use(LanguageDetector);
+
 // define all the menus in the system
 const menus = [
   {
-    title: 'Chats',
+    title: i18next.t('Chats'),
     path: '/chat',
     icon: 'chat',
     type: 'sideDrawer',
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Tags',
+    title: i18next.t('Tags'),
     path: '/tag',
     icon: 'tag',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Speed Sends',
+    title: i18next.t('Speed Sends'),
     path: '/speed-send',
     icon: 'speed-send',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Flows',
+    title: i18next.t('Flows'),
     path: '/flow',
     icon: 'flow',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Triggers (Beta)',
+    title: i18next.t('Triggers (Beta)'),
     path: '/trigger',
     icon: 'trigger',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Searches',
+    title: i18next.t('Searches'),
     path: '/search',
     icon: 'search',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Templates',
+    title: i18next.t('Templates'),
     path: '/template',
     icon: 'template',
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Collections',
+    title: i18next.t('Collections'),
     path: '/collection',
     type: 'staffManagement',
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Staff Management',
+    title: i18next.t('Staff Management'),
     path: '/staff-management',
     type: 'staffManagement',
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Blocked Contacts',
+    title: i18next.t('Blocked Contacts'),
     path: '/blocked-contacts',
     type: 'staffManagement',
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'My Profile',
+    title: i18next.t('My Profile'),
     path: '/user-profile',
     type: 'userAccount',
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'My Account',
+    title: i18next.t('My Account'),
     path: '/myaccount',
     type: 'userAccount',
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Logout',
+    title: i18next.t('Logout'),
     path: '/logout/user',
     className: 'Danger',
     type: 'userAccount',
