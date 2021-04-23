@@ -115,9 +115,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                 <div>
                   <Captcha onChange={handleChange} onExpire={handleExpire} onError={handleError} />
                 </div>
-                <div className={styles.Link}>
-                  <Link to={`/${linkURL}`}>{linkText}</Link>
-                </div>
 
                 <div className={styles.CenterButton}>
                   <Button

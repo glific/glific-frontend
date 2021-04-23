@@ -81,7 +81,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
     return (
       <Redirect
         to={{
-          pathname: '/registration',
+          pathname: '/onboard-success',
         }}
       />
     );
