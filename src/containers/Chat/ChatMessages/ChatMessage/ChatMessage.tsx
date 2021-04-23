@@ -267,6 +267,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           className={styles.ReplyMessage}
           onClick={() => jumpToMessage(contextMessage.messageNumber)}
           aria-hidden="true"
+          data-testid="reply-message"
         >
           <div className={styles.ReplyMainWrap}>
             <div className={styles.ReplyMessageWrap}>
