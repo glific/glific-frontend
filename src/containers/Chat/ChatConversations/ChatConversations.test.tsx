@@ -54,6 +54,21 @@ cache.writeQuery({
             type: 'TEXT',
             media: null,
             errors: null,
+            contextMessage: {
+              body: 'All good',
+              contextId: 1,
+              messageNumber: 10,
+              errors: '{}',
+              media: null,
+              location: null,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+                name: 'User',
+              },
+            },
           },
         ],
       },

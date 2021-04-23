@@ -89,6 +89,22 @@ const conversationMessageQuery = (
               type: 'TEXT',
               media: null,
               location: null,
+              error: null,
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
             },
           ],
         },
@@ -136,6 +152,21 @@ const conversationCollectionQuery = (
               sender: { id: '1' },
               tags: [],
               type: 'TEXT',
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
             },
             {
               id: '1',
@@ -153,6 +184,21 @@ const conversationCollectionQuery = (
               tags: [],
               location: null,
               errors: '{}',
+              contextMessage: {
+                body: 'All good',
+                contextId: 1,
+                messageNumber: 10,
+                errors: '{}',
+                media: null,
+                location: null,
+                receiver: {
+                  id: '1',
+                },
+                sender: {
+                  id: '2',
+                  name: 'User',
+                },
+              },
             },
           ],
         },
@@ -788,6 +834,21 @@ const searchQueryResult = {
             ],
             type: 'TEXT',
             media: null,
+            contextMessage: {
+              body: 'All good',
+              contextId: 1,
+              messageNumber: 10,
+              errors: '{}',
+              media: null,
+              location: null,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+                name: 'User',
+              },
+            },
           },
         ],
       },
