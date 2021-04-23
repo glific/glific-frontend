@@ -2,13 +2,40 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { InputAdornment, Link } from '@material-ui/core';
 
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { ONBOARD_URL } from '../../../config/index';
+import Tooltip from '../../../components/UI/Tooltip/Tooltip';
+import styles from './Registration.module.css';
+import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
 
 export interface RegistrationProps {}
+
+const InfoAdornment = (
+  <InputAdornment position="end">
+    <Tooltip
+      title="You can customize your Glific account URL as shown in preview"
+      placement="right"
+      tooltipClass={styles.Tooltip}
+    >
+      <InfoIcon width="12" height="12" />
+    </Tooltip>
+  </InputAdornment>
+);
+
+const HelperLink = (
+  <Link
+    className={styles.HelperLink}
+    href="https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation"
+    rel="noreferrer"
+    target="_blank"
+  >
+    Help?
+  </Link>
+);
 
 const formFields = [
   {
@@ -35,8 +62,8 @@ const formFields = [
     name: 'api_key',
     type: 'text',
     placeholder: 'GupShup API keys',
-    helperLink:
-      'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation',
+    endAdornment: InfoAdornment,
+    helperText: HelperLink,
   },
   {
     component: Input,
@@ -88,16 +115,16 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   }
 
   const handleSubmit = (values: any, captcha: any) => {
-    console.log('values:', values, 'captcha:', captcha);
-
-    axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
-      if (data.is_valid && captcha !== '') {
-        setRedirect(true);
-      } else {
-        // add error message for not checking captcha
-        setRegistrationError(data.messages);
-      }
-    });
+    if (captcha) {
+      axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
+        if (data.is_valid && captcha !== '') {
+          setRedirect(true);
+        } else {
+          // add error message for not checking captcha
+          setRegistrationError(data.messages);
+        }
+      });
+    }
   };
 
   return (

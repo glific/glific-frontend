@@ -6,7 +6,6 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
-  Link,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -23,7 +22,7 @@ export interface InputProps {
   form?: { touched: any; errors: any };
   placeholder: any;
   rows?: number;
-  helperText?: string;
+  helperText?: any;
   emojiPicker?: any;
   textArea?: boolean;
   togglePassword?: boolean;
@@ -31,7 +30,6 @@ export interface InputProps {
   validate?: any;
   endAdornment?: any;
   inputProp?: any;
-  helperLink?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -48,7 +46,6 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     rows,
     endAdornment,
     inputProp,
-    helperLink,
   } = props;
 
   let fieldType = type;
@@ -119,12 +116,9 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
-          <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
-        ) : null}
-        {helperLink ? (
-          <Link className={styles.HelperLink} href={helperLink} rel="noreferrer" target="_blank">
-            Help?
-          </Link>
+          <FormHelperText id="helper-text" className={styles.HelperText}>
+            {helperText}
+          </FormHelperText>
         ) : null}
       </FormControl>
     </div>
