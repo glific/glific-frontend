@@ -273,7 +273,15 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
               <div className={styles.ReplyContact}>
                 {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
               </div>
-              <div className={styles.ReplyMessageBody}>{contextMessage.body}</div>
+              <div className={styles.ReplyMessageBody}>
+                <ChatMessageType
+                  type={type}
+                  media={media}
+                  body={contextMessage.body}
+                  insertedAt={insertedAt}
+                  location={location}
+                />
+              </div>
             </div>
           </div>
         </div>
