@@ -401,9 +401,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       textArea: true,
       disabled: defaultAttribute.isHsm && match.params.id,
       helperText: defaultAttribute.isHsm
-        ? t(
-            'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
-          )
+        ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
       inputProp: {
         onBlur: (editorState: any) => {
