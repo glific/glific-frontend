@@ -63,7 +63,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
         key: 3,
         title: 'Staff',
         description: t(`Access only to the chat section and their collections. Access can be limited to chatting
-       with all contacts or only to the ones in their assigned collection.`),
+        with all contacts or only to the ones in their assigned collection.`),
       },
       { key: 4, title: 'None', description: t('No access to the platform. They can’t login.') },
     ];
@@ -123,11 +123,9 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   }
 
   const rolesList: any = [];
-  if (roleData.roles) {
-    roleData.roles.forEach((role: any) => {
-      rolesList.push({ id: role, label: role });
-    });
-  }
+  roleData.roles.forEach((role: any) => {
+    rolesList.push({ id: role, label: role });
+  });
 
   const getOptions = () => {
     let options: any = [];
