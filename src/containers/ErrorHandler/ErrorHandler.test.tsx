@@ -1,4 +1,3 @@
-import React from 'react';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent } from '@testing-library/dom';

@@ -1,4 +1,3 @@
-import React from 'react';
 import AddToMessageTemplate from './AddToMessageTemplate';
 import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
