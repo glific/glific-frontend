@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -40,7 +39,7 @@ describe('<Login />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on login
-    const loginButton = screen.getByText('LOGIN');
+    const loginButton = screen.getByText('Login');
     UserEvent.click(loginButton);
 
     // let's mock successful registration submission
@@ -66,7 +65,7 @@ describe('<Login />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on login
-    const loginButton = screen.getByText('LOGIN');
+    const loginButton = screen.getByText('Login');
     UserEvent.click(loginButton);
     // set the mock error case while login
     const errorMessage = 'Cannot login';
