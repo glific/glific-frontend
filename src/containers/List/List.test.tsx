@@ -155,3 +155,12 @@ describe('Card list type', () => {
     });
   });
 });
+
+test('list sorting', async () => {
+  const { container } = render(list);
+  await waitFor(() => {
+    const tableHead = container.querySelector('thead');
+    const { getByText } = within(tableHead);
+    fireEvent.click(getByText('KEYWORDS'));
+  });
+});
