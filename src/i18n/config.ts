@@ -5,7 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './en/en.json';
 import hi from './hi/hi.json';
 
-export const resources = {
+const resources = {
   en: {
     translation: en,
   },
@@ -14,8 +14,9 @@ export const resources = {
   },
 };
 
-export default resources;
 i18n.use(LanguageDetector).use(initReactI18next).init({
   resources,
   fallbackLng: 'en',
 });
+
+export default i18n;
