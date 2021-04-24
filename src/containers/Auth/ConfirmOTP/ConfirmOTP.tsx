@@ -96,7 +96,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   return (
     <Auth
       pageTitle={t('Create your new account')}
-      buttonText={t('CONTINUE')}
+      buttonText={t('Continue')}
       mode="confirmotp"
       formFields={formFields}
       setStates={setStates}

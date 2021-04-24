@@ -40,7 +40,7 @@ describe('<ConfirmOTP />', () => {
     UserEvent.type(input, '12345');
 
     // click on continue
-    const continueButton = screen.getByText('CONTINUE');
+    const continueButton = screen.getByText('Continue');
     UserEvent.click(continueButton);
 
     // let's mock successful otp submission
@@ -57,7 +57,7 @@ describe('<ConfirmOTP />', () => {
     UserEvent.type(input, '12345');
 
     // click on continue
-    const continueButton = screen.getByText('CONTINUE');
+    const continueButton = screen.getByText('Continue');
     UserEvent.click(continueButton);
 
     // let's mock error response on otp submission
