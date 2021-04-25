@@ -182,7 +182,7 @@
   "Setup for glific billing account": "ग्लिफिक बिलिंग खाते के लिए सेटअप",
   "Complete access to all the parts of the platform.": "Complete access to all the parts of the platform.",
   "Complete access to the platform except settings and staff management.": "Complete access to the platform except settings and staff management.",
-  "Access only to the chat section and their collections. Access can be limited to chatting\n       with all contacts or only to the ones in their assigned collection.": "Access only to the chat section and their collections. Access can be limited to chatting\n       with all contacts or only to the ones in their assigned collection.",
+  "Access only to the chat section and their collections. Access can be limited to chatting\n       with all contacts or only to the ones in their assigned collection.": "Access only to the chat section and their collections. Access can be limited to chatting\\n       with all contacts or only to the ones in their assigned collection.",
   "No access to the platform. They can’t login.": "No access to the platform. They can’t login.",
   "User roles": "उपयोगकर्ता भूमिकाएं",
   "Close": "बंद करे",
@@ -290,5 +290,8 @@
   "Please confirm your phone number to proceed": "आगे बढ़ने के लिए कृपया अपने फ़ोन नंबर की पुष्टि करें",
   "Password updated successfully!": "Password updated successfully!",
   "Language changed successfully!": "भाषा सफलतापूर्वक बदल गई!",
-  "Title length is too long.": "शीर्षक बहुत लंबा है।"
+  "Title length is too long.": "शीर्षक बहुत लंबा है।",
+  "Sorry, no results found!\n    Please try a different search.": "क्षमा करें, कोई परिणाम नहीं मिला!\\n    कृपया एक अलग खोज की कोशिश करो।",
+  "Email is required.": "ईमेल जरुरी है।",
+  "Access only to the chat section and their collections. Access can be limited to chatting\n        with all contacts or only to the ones in their assigned collection.": "Access only to the chat section and their collections. Access can be limited to chatting\\n        with all contacts or only to the ones in their assigned collection."
 }
