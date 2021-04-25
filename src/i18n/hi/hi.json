@@ -290,5 +290,7 @@
   "Please confirm your phone number to proceed": "आगे बढ़ने के लिए कृपया अपने फ़ोन नंबर की पुष्टि करें",
   "Password updated successfully!": "Password updated successfully!",
   "Language changed successfully!": "भाषा सफलतापूर्वक बदल गई!",
-  "Title length is too long.": "शीर्षक बहुत लंबा है।"
+  "Title length is too long.": "शीर्षक बहुत लंबा है।",
+  "Sorry, no results found!\n    Please try a different search.": "क्षमा करें, कोई परिणाम नहीं मिला! कृपया एक अलग खोज की कोशिश करो।",
+  "Email is required.": "ईमेल जरुरी है।"
 }
