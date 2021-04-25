@@ -62,7 +62,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         }
       } else {
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message: message });
+        setToastMessageInfo({ severity: 'success', message: 'Password updated successfully!' });
       }
     },
   });
