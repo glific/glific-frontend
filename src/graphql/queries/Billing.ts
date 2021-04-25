@@ -5,6 +5,7 @@ export const GET_ORGANIZATION_BILLING = gql`
     getOrganizationBilling {
       billing {
         id
+        name
         currency
         email
         isActive
@@ -12,6 +13,14 @@ export const GET_ORGANIZATION_BILLING = gql`
         stripeSubscriptionItems
         stripeSubscriptionStatus
       }
+    }
+  }
+`;
+
+export const GET_CUSTOMER_PORTAL = gql`
+  query getCustomerPortal {
+    customerPortal {
+      url
     }
   }
 `;

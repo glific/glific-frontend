@@ -116,3 +116,12 @@
 .FooterRow > div {
   min-height: 55px;
 }
+
+.NoResults {
+  color: #93a29b;
+  font-size: 16px;
+  margin: 0 auto;
+  margin-top: 100px;
+  text-align: center;
+  width: 204px;
+}

@@ -1,7 +1,8 @@
 .Card {
-  border: 2px solid #979797;
-  padding: 15px;
-  border-radius: 15px;
+  border: 2px solid #c0c0c0;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 6px;
 }
 
 .Button {
@@ -47,7 +48,7 @@
   font-weight: 800;
   font-size: 16px;
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .BackLink a {
@@ -88,9 +89,39 @@
 }
 
 .Subscribed {
-  font-size: 20px;
+  margin-top: 20px;
+  font-size: 16px;
   color: #073f24;
   padding-left: 12px;
+}
+
+.Pending {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #073f24;
+  padding-left: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.Pending svg {
+  margin-right: 8px;
+}
+
+.Subscribed svg {
+  margin-top: 2px;
+  margin-right: 8px;
+}
+
+.Subscribed > div {
+  font-size: 12px;
+  margin-top: 6px;
+  margin-left: 26px;
+  color: #93a29b;
+}
+
+.Subscribed span {
+  text-decoration: underline;
 }
 
 .Setup {
@@ -100,4 +131,27 @@
 
 .Setup > div {
   flex: 1;
+}
+
+.Title {
+  margin-top: 16px !important;
+  vertical-align: middle;
+  font-weight: 500 !important;
+  color: #073f24;
+  text-transform: capitalize;
+}
+
+.Icon {
+  background-color: #eaedec !important;
+  margin-right: 10px !important;
+}
+
+.Portal {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.Active {
+  display: flex;
+  align-items: center;
 }

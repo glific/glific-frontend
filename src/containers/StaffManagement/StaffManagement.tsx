@@ -115,9 +115,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       setStaffRole(true);
     }
   }, [roles]);
-
   if (loading || loadingRoles) return <Loading />;
-
   if (!data.groups || !roleData.roles) {
     return null;
   }

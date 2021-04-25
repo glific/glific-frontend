@@ -38,6 +38,8 @@ export interface SimulatorProps {
   message?: any;
   flowSimulator?: any;
   isPreviewMessage?: boolean;
+  resetMessage?: any;
+  getFlowKeyword?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -47,6 +49,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   message,
   flowSimulator,
   isPreviewMessage,
+  resetMessage,
+  getFlowKeyword,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -144,35 +148,42 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const sendMessage = () => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-    axios({
-      method: 'POST',
-      url: GUPSHUP_CALLBACK_URL,
-      data: {
-        type: 'message',
-        payload: {
-          id: uuidv4(),
-          type: 'text',
+    // check if send message text is not empty
+    if (sendMessageText) {
+      axios({
+        method: 'POST',
+        url: GUPSHUP_CALLBACK_URL,
+        data: {
+          type: 'message',
           payload: {
-            text: sendMessageText,
-          },
-          sender: {
-            // this number will be the simulated contact number
-            phone: data ? data.simulatorGet.phone : '',
-            name: data ? data.simulatorGet.name : '',
+            id: uuidv4(),
+            type: 'text',
+            payload: {
+              text: sendMessageText,
+            },
+            sender: {
+              // this number will be the simulated contact number
+              phone: data ? data.simulatorGet.phone : '',
+              name: data ? data.simulatorGet.name : '',
+            },
           },
         },
-      },
-    }).catch((error) => {
-      // add log's
-      setLogs(
-        `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-        'info'
-      );
-      setLogs(error, 'error');
-    });
-    setInputMessage('');
-    // after post update render messages
-    getChatMessage();
+      }).catch((error) => {
+        // add log's
+        setLogs(
+          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+          'info'
+        );
+        setLogs(error, 'error');
+      });
+      setInputMessage('');
+      // reset the message from floweditor for the next time
+      if (resetMessage) {
+        resetMessage();
+      }
+      // after post update render messages
+      getChatMessage();
+    }
   };
 
   const getPreviewMessage = () => {
@@ -246,7 +257,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   <MoreVertIcon />
                 </div>
               </div>
-              <div className={styles.Messages} ref={messageRef}>
+              <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
               <div className={styles.Controls}>
@@ -287,6 +298,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   );
 
   const handleSimulator = () => {
+    // check for the flowkeyword from floweditor
+    if (getFlowKeyword) {
+      getFlowKeyword();
+    }
     getSimulator();
   };
 
