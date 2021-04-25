@@ -89,7 +89,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       </List>
     ) : (
       <Typography data-testid="no-results" align="center" variant="h6">
-        {t(`No ${text} for that search.`)}
+        {`No ${text} for that search.`}
       </Typography>
     );
   };

@@ -288,7 +288,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(client, t(`${capitalListItemName} deleted successfully`));
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
@@ -303,8 +303,7 @@ export const List: React.SFC<ListProps> = ({
     dialogBox = (
       <DialogBox
         title={
-          dialogTitle ||
-          t(`Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`)
+          dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
