@@ -18,6 +18,7 @@ import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
+import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
 import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
@@ -254,6 +255,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
+  const audioOption = <VoiceRecorder />;
+
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -324,6 +327,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             <VariableIcon />
           </IconButton>
         ) : null}
+        {audioOption}
         <IconButton
           className={styles.AttachmentIcon}
           onClick={() => {
@@ -332,7 +336,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         >
           {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
         </IconButton>
-
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
