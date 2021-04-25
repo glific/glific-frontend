@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../config/index';
 import { Auth } from '../Auth';
@@ -25,12 +26,13 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
   const [OTP, setOTP] = useState('');
   const [authSuccess, setAuthSuccess] = useState<any | string>('');
   const [authError, setAuthError] = useState('');
+  const { t } = useTranslation();
 
   const handleResend = () => {
     sendOTP(location.state.phoneNumber, 'true')
       .then((response) => response)
       .catch(() => {
-        setAuthError('We are unable to generate an OTP, kindly contact your technical team.');
+        setAuthError(t('We are unable to generate an OTP, kindly contact your technical team.'));
       });
   };
 
@@ -50,13 +52,13 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
       type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your WhatsApp number.',
+      helperText: t('Please confirm the OTP received at your WhatsApp number.'),
       endAdornmentCallback: handleResend,
     },
   ];
 
   const FormSchema = Yup.object().shape({
-    OTP: Yup.string().required('Input required'),
+    OTP: Yup.string().required(t('Input required')),
   });
 
   const initialFormValues = { OTP: '' };
@@ -75,7 +77,7 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
         setAuthSuccess(successMessage);
       })
       .catch((error) => {
-        setAuthError('We are unable to register, kindly contact your technical team.');
+        setAuthError(t('We are unable to register, kindly contact your technical team.'));
         // add log's
         setLogs(
           `onSubmitOTP:${{
@@ -93,8 +95,8 @@ export const ConfirmOTP: React.SFC<ConfirmOTPProps> = (props) => {
 
   return (
     <Auth
-      pageTitle="Create your new account"
-      buttonText="CONTINUE"
+      pageTitle={t('Create your new account')}
+      buttonText={t('Continue')}
       mode="confirmotp"
       formFields={formFields}
       setStates={setStates}

@@ -109,8 +109,6 @@ export const setUserSession = (user: string) => {
 export const clearUserSession = () => {
   localStorage.removeItem('glific_user');
   localStorage.removeItem('role');
-  // clear locale settings
-  localStorage.removeItem('i18nextLng');
 };
 
 // get the current user session

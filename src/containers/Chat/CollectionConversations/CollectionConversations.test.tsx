@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, cleanup, waitFor } from '@testing-library/react';
 import CollectionConversations from './CollectionConversations';

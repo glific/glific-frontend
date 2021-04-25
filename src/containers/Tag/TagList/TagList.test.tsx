@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -19,8 +18,7 @@ const tagList = (
 
 test('edit button for a tag should redirect to edit tag page', async () => {
   const { container } = render(tagList);
-  await waitFor(()=>{
+  await waitFor(() => {
     expect(container.querySelector('tbody tr a')?.getAttribute('href')).toBe('/tag/87/edit');
-  })
-  
+  });
 });

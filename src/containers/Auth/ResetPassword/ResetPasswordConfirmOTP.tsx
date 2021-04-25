@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { RESET_PASSWORD } from '../../../config/index';
 import { Auth } from '../Auth';
@@ -18,6 +19,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
   const { location } = props;
   const [redirect, setRedirect] = useState(false);
   const [authError, setAuthError] = useState('');
+  const { t } = useTranslation();
 
   // Let's not allow direct navigation to this page
   if (location && location.state === undefined) {
@@ -37,30 +39,30 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
       component: PhoneInput,
       name: 'phoneNumber',
       type: 'phone',
-      placeholder: 'Phone number',
-      helperText: 'Please enter a phone number.',
+      placeholder: t('Phone number'),
+      helperText: t('Please enter a phone number.'),
     },
     {
       component: Input,
       type: 'otp',
       name: 'OTP',
       placeholder: 'OTP',
-      helperText: 'Please confirm the OTP received at your WhatsApp number.',
+      helperText: t('Please confirm the OTP received at your WhatsApp number.'),
       endAdornmentCallback: handleResend,
     },
     {
       component: Input,
       name: 'password',
       type: 'password',
-      placeholder: 'New Password',
+      placeholder: t('New Password'),
     },
   ];
 
   const FormSchema = Yup.object().shape({
-    OTP: Yup.string().required('Input required'),
+    OTP: Yup.string().required(t('Input required')),
     password: Yup.string()
-      .min(8, 'Password must be at least 8 characters long.')
-      .required('Input required'),
+      .min(8, t('Password must be at least 8 characters long.'))
+      .required(t('Input required')),
   });
 
   const initialFormValues = {
@@ -82,7 +84,7 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
         setRedirect(true);
       })
       .catch((error) => {
-        setAuthError('We are unable to update your password, please enter the correct OTP.');
+        setAuthError(t('We are unable to update your password, please enter the correct OTP.'));
         // add log's
         setLogs(
           `phoneNumber:${values.phoneNumber} otp: ${values.OTP} URL:${RESET_PASSWORD}`,
@@ -94,10 +96,10 @@ export const ResetPasswordConfirmOTP: React.SFC<ResetPasswordConfirmOTPProps> = 
 
   return (
     <Auth
-      pageTitle="Reset your password"
-      buttonText="SAVE"
+      pageTitle={t('Reset your password')}
+      buttonText={t('Save')}
       alternateLink="login"
-      alternateText="GO TO LOGIN"
+      alternateText={t('Go to login')}
       mode="secondreset"
       formFields={formFields}
       validationSchema={FormSchema}
