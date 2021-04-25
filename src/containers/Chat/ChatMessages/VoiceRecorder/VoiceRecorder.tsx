@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import MicRecorder from 'mic-recorder-to-mp3';
 import { IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
@@ -11,41 +11,25 @@ export interface VoiceRecorderProps {}
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
   const [recording, setRecording] = useState(false);
   const [blobURL, setBlobURL] = useState('');
-  const [blocked, setBlocked] = useState(false);
 
   const recorder = new MicRecorder({ bitRate: 128 });
 
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(() => {
-        console.log('Permission Granted');
-        setBlocked(false);
-      })
-      .catch(() => {
-        console.log('Permission Denied');
-        setBlocked(true);
-      });
-  }, []);
-
   const startRecording = () => {
-    if (blocked) {
-      console.log('Permission Denied');
-    } else {
-      recorder
-        .start()
-        .then(() => {
-          setRecording(true);
-        })
-        .catch((e: any) => console.error(e));
-    }
+    recorder
+      .start()
+      .then(() => {
+        setRecording(true);
+      })
+      .catch((e: any) => console.error(e));
   };
 
   const stopRecording = () => {
+    setRecording(false);
     recorder
       .stop()
       .getMp3()
       .then(([buffer, blob]: any) => {
+        setRecording(false);
         console.log(buffer, blob);
         const file = new File(buffer, 'music.mp3', {
           type: blob.type,
@@ -53,9 +37,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
         });
 
         const audioFileURL = URL.createObjectURL(file);
-
         console.log(audioFileURL);
-        setRecording(false);
         setBlobURL(audioFileURL);
       })
       .catch((e: any) => {
