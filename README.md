@@ -57,6 +57,20 @@ docker build \
 --no-cache -t .
 ```
 
+## Localization
+
+Update translation base file (i.e. English)
+
+```
+yarn extract-translations
+```
+
+Once changed are pushed and merged into master it will be available in `lokalise.com` for translation.
+
+After new strings are transalated. Use `Download >> Build only`. It will automatically create PR in this repo.
+
+Note: Good to `Preview` before using `Build only`
+
 ## Deploying release on ECS with CD
 
 1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.

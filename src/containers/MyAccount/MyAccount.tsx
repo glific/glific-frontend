@@ -62,7 +62,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
         }
       } else {
         setShowOTPButton(true);
-        setToastMessageInfo({ severity: 'success', message: t(message) });
+        setToastMessageInfo({ severity: 'success', message: message });
       }
     },
   });
@@ -90,7 +90,7 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
       .catch(() => {
         setToastMessageInfo({
           severity: 'error',
-          message: t(`Unable to send an OTP to ${loggedInUserPhone}.`),
+          message: `Unable to send an OTP to ${loggedInUserPhone}.`,
         });
       });
   };
