@@ -15,7 +15,7 @@ import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.sv
 export interface RegistrationProps {}
 
 const InfoAdornment = (
-  <InputAdornment position="end">
+  <InputAdornment position="end" className={styles.InputAdornment}>
     <Tooltip
       title="You can customize your Glific account URL as shown in preview"
       placement="right"
@@ -62,7 +62,6 @@ const formFields = [
     name: 'api_key',
     type: 'text',
     placeholder: 'GupShup API keys',
-    endAdornment: InfoAdornment,
     helperText: HelperLink,
   },
   {
@@ -70,6 +69,7 @@ const formFields = [
     name: 'shortcode',
     type: 'text',
     placeholder: 'URL Shortcode',
+    endAdornment: InfoAdornment,
     helperText: 'www.shortcode.tides.coloredcow.com',
   },
   {

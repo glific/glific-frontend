@@ -18,7 +18,7 @@
 
 .Box {
   border-radius: 12px;
-  margin-top: 5vh;
+  margin: 5vh 0px;
   align-content: center;
   justify-content: center;
   flex-grow: 1;

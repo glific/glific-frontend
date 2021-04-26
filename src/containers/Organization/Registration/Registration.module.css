@@ -17,3 +17,7 @@
   font-weight: normal !important;
   padding-right: 16px;
 }
+
+.InputAdornment {
+  cursor: pointer !important;
+}
