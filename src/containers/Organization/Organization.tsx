@@ -48,7 +48,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
    * displayed under form
    */
   if (errorMessage) {
-    displayErrorMessage = errorMessage.global;
+    displayErrorMessage = <div className={styles.ErrorMessage}>{errorMessage.global}</div>;
   }
 
   // Stop loading if any error
