@@ -117,7 +117,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const handleSubmit = (values: any, captcha: any, setErrors: any, setLoading: any) => {
     if (captcha) {
       axios.post(ONBOARD_URL, values).then(({ data }: { data: any }) => {
-        if (data.is_valid && captcha !== '') {
+        if (data.is_valid) {
           setRedirect(true);
         } else {
           setRegistrationError(data.messages?.global);

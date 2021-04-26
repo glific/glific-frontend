@@ -1,10 +1,11 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Registration } from './Registration';
+import OnboardSuccess from '../OnboardSuccess/OnboardSuccess';
 
 jest.mock('axios');
 
@@ -27,7 +28,7 @@ describe('<Registration />', () => {
   });
 
   test('onboard org correctly', async () => {
-    const { container } = render(wrapper);
+    render(wrapper);
     const inputElements = screen.getAllByRole('textbox');
 
     UserEvent.type(inputElements[0], 'JaneDoe');
@@ -44,9 +45,19 @@ describe('<Registration />', () => {
       UserEvent.click(button);
     });
 
-    // // let's mock successful registration submission
-    const responseData = { data: { data: { data: {} } } };
+    const responseData = { data: { is_valid: true, messages: [] } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    // render success onboard component after success
+    const { container, findByTestId } = render(
+      <BrowserRouter>
+        <OnboardSuccess />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => findByTestId('setupInitiation'));
+    // let's mock successful registration submission
+    expect(container).toHaveTextContent(/Thank you/);
   });
 
   test('it should submit the form correctly and give error', async () => {
@@ -68,8 +79,8 @@ describe('<Registration />', () => {
     });
 
     // set the mock error case while registration
-    const errorMessage = ['Shortcode has already been taken.'];
+    const errorMessage = { shortcode: 'Shortcode has already been taken.' };
     const responseData = { data: { is_valid: false, messages: errorMessage } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    axios.post.mockImplementationOnce(() => Promise.reject(responseData));
   });
 });
