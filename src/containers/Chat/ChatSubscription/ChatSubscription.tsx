@@ -99,7 +99,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
   const updateConversations = useCallback(
     (cachedConversations: any, subscriptionData: any, action: string) => {
       // if there is no message data then return previous conversations
-      if (!subscriptionData.data) {
+      if (!subscriptionData.data || subscriptionToRefetchSwitchHappened) {
         return cachedConversations;
       }
 
