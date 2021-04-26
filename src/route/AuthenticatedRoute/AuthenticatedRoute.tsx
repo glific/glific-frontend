@@ -53,6 +53,7 @@ const WebhookLogsList = lazy(
 const TriggerList = lazy(() => import('../../containers/Trigger/TriggerList/TriggerList'));
 const Trigger = lazy(() => import('../../containers/Trigger/Trigger'));
 const NotificationList = lazy(() => import('../../containers/NotificationList/NotificationList'));
+const OrganizationList = lazy(() => import('../../containers/OrganizationList/OrganizationList'));
 
 const routeStaff = (
   <Switch>
@@ -156,6 +157,8 @@ const routeAdmin = (
       )}
     />
     <Route path="/trigger" exact component={TriggerList} />
+    <Route path="/organization" exact component={OrganizationList} />
+    <Route path="/organization/:id" exact component={Organisation} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );
