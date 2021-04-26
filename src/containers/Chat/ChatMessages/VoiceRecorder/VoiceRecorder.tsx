@@ -1,56 +1,61 @@
-import React, { useState } from 'react';
-import MicRecorder from 'mic-recorder-to-mp3';
+import React from 'react';
+import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
-import MicOffIcon from '@material-ui/icons/MicOff';
+import StopIcon from '@material-ui/icons/Stop';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import styles from './VoiceRecorder.module.css';
 
 export interface VoiceRecorderProps {}
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
-  const [recording, setRecording] = useState(false);
-  const [blobURL, setBlobURL] = useState('');
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    mediaBlobUrl,
+    clearBlobUrl,
+  } = useReactMediaRecorder({
+    audio: true,
+  });
 
-  const recorder = new MicRecorder({ bitRate: 128 });
+  // function to start recording
+  const start = () => {
+    // let's clear previous recording
+    clearBlobUrl();
 
-  const startRecording = () => {
-    recorder
-      .start()
-      .then(() => {
-        setRecording(true);
-      })
-      .catch((e: any) => console.error(e));
+    // start recording
+    startRecording();
   };
 
-  const stopRecording = () => {
-    setRecording(false);
-    recorder
-      .stop()
-      .getMp3()
-      .then(([buffer, blob]: any) => {
-        setRecording(false);
-        console.log(buffer, blob);
-        const file = new File(buffer, 'music.mp3', {
-          type: blob.type,
-          lastModified: Date.now(),
-        });
+  let audioPreview;
 
-        const audioFileURL = URL.createObjectURL(file);
-        console.log(audioFileURL);
-        setBlobURL(audioFileURL);
-      })
-      .catch((e: any) => {
-        console.error(e);
-      });
-  };
+  if (mediaBlobUrl) {
+    audioPreview = (
+      <div className={styles.AudioPlayerSection}>
+        <div className={styles.AudioPlayer}>
+          <audio src={mediaBlobUrl} controls className={styles.AudioPlayer} />
+        </div>
+        <div className={styles.AudioPlayerClose}>
+          <IconButton>
+            <CancelIcon onClick={clearBlobUrl} />
+          </IconButton>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className={styles.VoiceRecorder}>
       <IconButton className={styles.RecorderIcon}>
-        {!recording ? <MicIcon onClick={startRecording} /> : <MicOffIcon onClick={stopRecording} />}
+        {status !== 'recording' ? (
+          <MicIcon onClick={start} />
+        ) : (
+          <StopIcon onClick={stopRecording} />
+        )}
       </IconButton>
-      {blobURL ? <audio src={blobURL} controls /> : ''}
+      {audioPreview}
     </div>
   );
 };
