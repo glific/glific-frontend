@@ -1,4 +1,3 @@
-import React from 'react';
 import { AddContactsToCollection } from './AddContactsToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
@@ -48,20 +47,6 @@ test('click on cancel button ', async () => {
   fireEvent.click(getByText('Cancel'));
 
   expect(setDialogMock).toHaveBeenCalled();
-});
-
-test('remove an element from collection', async () => {
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
-  const { getByText, getByTestId } = render(addContacts);
-
-  await waitFor(() => {
-    expect(getByText('Glific User')).toBeInTheDocument();
-  });
-
-  fireEvent.click(getByTestId('deleteIcon'));
-  fireEvent.click(getByText('Save'));
-
-  await waitFor(() => {});
 });
 
 test('save without changing anything', async () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, within, screen } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';

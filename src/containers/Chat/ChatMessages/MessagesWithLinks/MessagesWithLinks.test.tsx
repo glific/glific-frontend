@@ -1,4 +1,3 @@
-import React from 'react';
 import { MessagesWithLinks } from './MessagesWithLinks';
 import { render } from '@testing-library/react';
 

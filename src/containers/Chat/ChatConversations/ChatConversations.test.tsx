@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import ChatConversations from './ChatConversations';

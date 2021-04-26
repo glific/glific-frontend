@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, cleanup, act } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -154,5 +153,14 @@ describe('Card list type', () => {
     await waitFor(() => {
       expect(getAllByTestId('description')[0]).toBeInTheDocument();
     });
+  });
+});
+
+test('list sorting', async () => {
+  const { container } = render(list);
+  await waitFor(() => {
+    const tableHead = container.querySelector('thead');
+    const { getByText } = within(tableHead);
+    fireEvent.click(getByText('KEYWORDS'));
   });
 });

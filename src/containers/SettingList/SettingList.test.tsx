@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { SettingList } from './SettingList';
 import { MockedProvider } from '@apollo/client/testing';

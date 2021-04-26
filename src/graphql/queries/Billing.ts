@@ -17,4 +17,12 @@ export const GET_ORGANIZATION_BILLING = gql`
   }
 `;
 
+export const GET_CUSTOMER_PORTAL = gql`
+  query getCustomerPortal {
+    customerPortal {
+      url
+    }
+  }
+`;
+
 export default GET_ORGANIZATION_BILLING;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { ListCard } from './ListCard';
 import { MemoryRouter } from 'react-router';
