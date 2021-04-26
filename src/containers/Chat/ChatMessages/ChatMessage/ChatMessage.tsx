@@ -263,29 +263,31 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       id={`search${messageNumber}`}
     >
       {contextMessage ? (
-        <div
-          className={styles.ReplyMessage}
-          onClick={() => jumpToMessage(contextMessage.messageNumber)}
-          aria-hidden="true"
-          data-testid="reply-message"
-        >
-          <div className={styles.ReplyMainWrap}>
-            <div className={styles.ReplyMessageWrap}>
-              <div className={styles.ReplyContact}>
-                {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
-              </div>
-              <div className={styles.ReplyMessageBody}>
-                <ChatMessageType
-                  type={type}
-                  media={media}
-                  body={contextMessage.body}
-                  insertedAt={insertedAt}
-                  location={location}
-                />
+        <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
+          <div
+            className={styles.ReplyMessage}
+            onClick={() => jumpToMessage(contextMessage.messageNumber)}
+            aria-hidden="true"
+            data-testid="reply-message"
+          >
+            <div className={styles.ReplyMainWrap}>
+              <div>
+                <div className={styles.ReplyContact}>
+                  {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                </div>
+                <div className={styles.ReplyMessageBody}>
+                  <ChatMessageType
+                    type={contextMessage.type}
+                    media={contextMessage.media}
+                    body={contextMessage.body}
+                    insertedAt={contextMessage.insertedAt}
+                    location={contextMessage.location}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Tooltip>
       ) : null}
 
       <div className={styles.Inline}>

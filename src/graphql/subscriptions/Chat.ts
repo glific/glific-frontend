@@ -43,6 +43,8 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
           id
           url
         }
+        type
+        insertedAt
         location {
           id
           latitude
@@ -103,6 +105,8 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
           id
           url
         }
+        type
+        insertedAt
         location {
           id
           latitude
@@ -175,6 +179,8 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
           id
           url
         }
+        type
+        insertedAt
         location {
           id
           latitude

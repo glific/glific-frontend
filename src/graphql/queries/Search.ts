@@ -54,6 +54,8 @@ export const SEARCH_QUERY = gql`
             id
             url
           }
+          type
+          insertedAt
           location {
             id
             latitude
@@ -143,6 +145,8 @@ export const SEARCH_MULTI_QUERY = gql`
             id
             url
           }
+          type
+          insertedAt
           location {
             id
             latitude
