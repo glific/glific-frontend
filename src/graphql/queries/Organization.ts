@@ -90,3 +90,31 @@ export const BSPBALANCE = gql`
     bspbalance
   }
 `;
+
+export const GET_ORGANIZATION_COUNT = gql`
+  query countOrganizations($filter: OrganizationFilter!) {
+    countOrganizations(filter: $filter)
+  }
+`;
+
+export const FILTER_ORGANIZATIONS = gql`
+  query organizations($filter: OrganizationFilter!, $opts: Opts!) {
+    organizations(filter: $filter, opts: $opts) {
+      id
+      name
+      isActive
+      isApproved
+    }
+  }
+`;
+
+export const FILTER_ORGANIZATIONS_NAME = gql`
+  query organizations($filter: OrganizationFilter!, $opts: Opts!) {
+    organizations(filter: $filter, opts: $opts) {
+      id
+      name
+      isActive
+      isApproved
+    }
+  }
+`;

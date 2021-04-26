@@ -100,3 +100,21 @@ export const UPDATE_CREDENTIAL = gql`
     }
   }
 `;
+
+export const UPDATE_ORGANIZATION_STATUS = gql`
+  mutation updateOrganizationStatus($id: ID!, $input: OrganizationStatusInput!) {
+    updateOrganizationStatus(id: $id, input: $input) {
+      organization {
+        email
+        isActive
+        isApproved
+        name
+        shortcode
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
