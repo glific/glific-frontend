@@ -71,6 +71,23 @@ After new strings are transalated. Use `Download >> Build only`. It will automat
 
 Note: Good to `Preview` before using `Build only`
 
+## Use SSL for frontend and backend
+
+SSL will mandatory for both frontend and backend in development post 1.5.
+Here are the steps:
+
+1. Generate certificate
+   Please refer: https://github.com/glific/glific#use-ssl-for-frontend-and-backend
+2. Run frontend in secured mode
+
+```
+HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start
+```
+
+Note: This is temp workaround and document will be updated after the release.
+
+Make sure port is updated to 4001 in .env
+
 ## Deploying release on ECS with CD
 
 1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
