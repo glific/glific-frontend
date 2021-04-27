@@ -59,6 +59,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
   const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
+  const [recordedAudio, setRecordedAudio] = useState('');
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -103,6 +104,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   }
 
   const submitMessage = (message: string) => {
+    // let's check if we are sending voice recording
+    if (recordedAudio) {
+      // save media that  will return an URL
+      console.log('recordedAudio', recordedAudio);
+    }
+
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
 
@@ -203,6 +210,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     dialog = <AddVariables {...dialogProps} />;
   }
 
+  const handleAudioRecording = (file: any) => {
+    setRecordedAudio(file);
+  };
+
   const handleSearch = (e: any) => {
     setSearchVal(e.target.value);
   };
@@ -255,7 +266,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
-  const audioOption = <VoiceRecorder />;
+  const audioOption = <VoiceRecorder handleAudioRecording={handleAudioRecording} />;
 
   return (
     <Container
@@ -354,7 +365,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                 submitMessage(convertToWhatsApp(editorState));
               }
             }}
-            disabled={!editorState.getCurrentContent().hasText() && !attachmentAdded}
+            disabled={
+              !editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio
+            }
           >
             <SendMessageIcon className={styles.SendIcon} />
           </Button>

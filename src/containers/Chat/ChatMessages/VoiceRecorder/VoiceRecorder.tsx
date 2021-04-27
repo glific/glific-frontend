@@ -7,13 +7,15 @@ import CancelIcon from '@material-ui/icons/Cancel';
 
 import styles from './VoiceRecorder.module.css';
 
-export interface VoiceRecorderProps {}
+export interface VoiceRecorderProps {
+  handleAudioRecording: any;
+}
 
-export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
+export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
     const audiofile = new File([blob], 'audiofile.webm', { type: 'audio/webm' });
-    console.log(audiofile);
+    props.handleAudioRecording(audiofile);
   }, []);
 
   const {
