@@ -6,8 +6,9 @@ import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, InputAdornment, Typography } from '@material-ui/core';
 import CallMadeIcon from '@material-ui/icons/CallMade';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
@@ -52,6 +53,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [cardError, setCardError] = useState<any>('');
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [pending, setPending] = useState(false);
+  const [couponApplied, setCouponApplied] = useState(false);
+
   const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
@@ -85,6 +88,30 @@ export const BillingForm: React.FC<BillingProps> = () => {
       type: 'text',
       placeholder: 'Email ID',
       disabled: alreadySubscribed || pending,
+    },
+  ];
+
+  const addiitonalField = [
+    {
+      component: Input,
+      name: 'coupon',
+      type: 'text',
+      placeholder: 'Coupon Code',
+      disabled: couponApplied,
+      endAdornment: (
+        <InputAdornment position="end">
+          <div
+            aria-hidden
+            className={styles.Apply}
+            onClick={() => {
+              console.log('here');
+              setCouponApplied(!couponApplied);
+            }}
+          >
+            {couponApplied ? <CancelOutlinedIcon className={styles.CrossIcon} /> : ' APPLY'}
+          </div>
+        </InputAdornment>
+      ),
     },
   ];
 
@@ -356,6 +383,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
         </div>
       </div>
 
+      {couponApplied && (
+        <div className={styles.CouponDescription}>
+          <div className={styles.CouponHeading}>Coupon Applied</div>
+          <div>One time setup fee INR 15,000 ($220) removed</div>
+        </div>
+      )}
+
       <div>
         <Formik
           enableReinitialize
@@ -370,11 +404,17 @@ export const BillingForm: React.FC<BillingProps> = () => {
         >
           {() => (
             <Form>
+              {addiitonalField.map((field, index) => {
+                const key = index;
+                return <Field key={key} {...field} />;
+              })}
               {formFieldItems.map((field, index) => {
                 const key = index;
                 return <Field key={key} {...field} />;
               })}
+
               {paymentBody}
+
               {!alreadySubscribed && !pending && !disable ? (
                 <Button
                   variant="contained"

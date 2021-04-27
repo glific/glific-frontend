@@ -168,3 +168,25 @@
   display: flex;
   align-items: center;
 }
+
+.Apply {
+  cursor: pointer;
+  font-size: 16px;
+  color: #119656 !important;
+  font-weight: 500;
+  text-align: right;
+}
+
+.CouponDescription {
+  composes: Description;
+  border-left: 12px solid #eaedec;
+}
+
+.CouponHeading {
+  color: #119656;
+  font-weight: bold;
+}
+
+.CrossIcon {
+  color: #93a29b;
+}
