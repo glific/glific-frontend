@@ -17,6 +17,9 @@ export const UnauthenticatedRoute: React.SFC = () => {
   const OrganizationRegistrationSuccess = lazy(
     () => import('../../containers/Organization/OnboardSuccess/OnboardSuccess')
   );
+  const SetupInformation = lazy(
+    () => import('../../containers/Organization/SetupInformation/SetupInformation')
+  );
 
   return (
     <Switch>
@@ -26,6 +29,7 @@ export const UnauthenticatedRoute: React.SFC = () => {
       <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
       <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
       <Route path="/onboard-setup" exact component={OrganizationRegistration} />
+      <Route path="/setup-information" exact component={SetupInformation} />
       <Route path="/onboard-success" exact component={OrganizationRegistrationSuccess} />
       <Route path="/" render={() => <Redirect to="/logout/user" />} />
     </Switch>
