@@ -208,6 +208,7 @@
   max-width: 372px;
   margin-left: 32px;
   margin-bottom: -20px;
+  cursor: pointer;
 }
 
 .ReplyMessageBody {
