@@ -76,9 +76,8 @@ Note: Good to `Preview` before using `Build only`
 SSL will mandatory for both frontend and backend in development post 1.5.
 Here are the steps:
 
-1. Generate certificate
-   Please refer: https://github.com/glific/glific#use-ssl-for-frontend-and-backend
-2. Run frontend in secured mode
+1. Generate certificate. Please refer [this](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
+2. Running frontend in secured mode
 
 ```
 HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start
