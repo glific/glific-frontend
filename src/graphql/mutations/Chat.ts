@@ -83,3 +83,9 @@ export const CREATE_MEDIA_MESSAGE = gql`
     }
   }
 `;
+
+export const UPLOAD_MEDIA = gql`
+  mutation uploadMedia($media: Upload!, $type: String!) {
+    uploadMedia(media: $media, type: $type)
+  }
+`;

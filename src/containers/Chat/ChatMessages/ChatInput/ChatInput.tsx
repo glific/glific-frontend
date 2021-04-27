@@ -19,7 +19,7 @@ import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
-import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
@@ -91,6 +91,17 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
+  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+    onCompleted: (data: any) => {
+      if (data) {
+        console.log('data---', data);
+      }
+    },
+    onError: (error: any) => {
+      console.log('Error', error);
+    },
+  });
+
   if (attachment) {
     const dialogProps = {
       attachmentType,
@@ -106,8 +117,17 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const submitMessage = (message: string) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
+      console.log('recordedAudio', {
+        media: recordedAudio,
+        type: 'Audio',
+      });
       // save media that  will return an URL
-      console.log('recordedAudio', recordedAudio);
+      uploadMedia({
+        variables: {
+          media: recordedAudio,
+          type: 'Audio',
+        },
+      });
     }
 
     // check for an empty message or message with just spaces
@@ -211,6 +231,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   }
 
   const handleAudioRecording = (file: any) => {
+    console.log('setRecordedAudio', file);
     setRecordedAudio(file);
   };
 
