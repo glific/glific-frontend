@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
@@ -10,6 +10,12 @@ import styles from './VoiceRecorder.module.css';
 export interface VoiceRecorderProps {}
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
+  // function to save the recording to a file
+  const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
+    const audiofile = new File([blob], 'audiofile.webm', { type: 'audio/webm' });
+    console.log(audiofile);
+  }, []);
+
   const {
     status,
     startRecording,
@@ -18,10 +24,11 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
     clearBlobUrl,
   } = useReactMediaRecorder({
     audio: true,
+    onStop: saveRecording,
   });
 
   // function to start recording
-  const start = () => {
+  const startCallback = () => {
     // let's clear previous recording
     clearBlobUrl();
 
@@ -50,7 +57,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = () => {
     <div className={styles.VoiceRecorder}>
       <IconButton className={styles.RecorderIcon}>
         {status !== 'recording' ? (
-          <MicIcon onClick={start} />
+          <MicIcon onClick={startCallback} />
         ) : (
           <StopIcon onClick={stopRecording} />
         )}
