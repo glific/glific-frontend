@@ -43,6 +43,8 @@ export interface ChatMessageProps {
   showMessage: boolean;
   location: any;
   errors: any;
+  contextMessage: any;
+  jumpToMessage: any;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -72,6 +74,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     messageNumber,
     location,
     errors,
+    contextMessage,
+    jumpToMessage,
   } = props;
 
   useEffect(() => {
@@ -258,6 +262,34 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       data-testid="message"
       id={`search${messageNumber}`}
     >
+      {contextMessage ? (
+        <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
+          <div
+            className={styles.ReplyMessage}
+            onClick={() => jumpToMessage(contextMessage.messageNumber)}
+            aria-hidden="true"
+            data-testid="reply-message"
+          >
+            <div className={styles.ReplyMainWrap}>
+              <div>
+                <div className={styles.ReplyContact}>
+                  {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                </div>
+                <div className={styles.ReplyMessageBody}>
+                  <ChatMessageType
+                    type={contextMessage.type}
+                    media={contextMessage.media}
+                    body={contextMessage.body}
+                    insertedAt={contextMessage.insertedAt}
+                    location={contextMessage.location}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Tooltip>
+      ) : null}
+
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         {ErrorIcon}

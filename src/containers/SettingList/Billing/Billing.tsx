@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Typography } from '@material-ui/core';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
@@ -151,7 +152,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     },
   });
 
-  if (billLoading) {
+  if (billLoading || portalLoading) {
     return <Loading />;
   }
 
@@ -279,26 +280,26 @@ export const BillingForm: React.FC<BillingProps> = () => {
   );
 
   const subscribed = (
-    <div className={styles.Active}>
+    <div>
       <div className={styles.Subscribed}>
         <ApprovedIcon />
         You have an active subscription
         <div>
           Please <span>contact us</span> to deactivate
+          <br />
+          *Note that we do not store your credit card details, as Stripe securely does.
         </div>
       </div>
-      <div className={styles.Portal}>
-        <Button
-          variant="contained"
-          color="primary"
-          data-testid="customerPortalButton"
-          loading={portalLoading}
-          onClick={() => {
-            getCustomerPortal();
-          }}
-        >
-          View more details
-        </Button>
+
+      <div
+        aria-hidden
+        className={styles.Portal}
+        data-testid="customerPortalButton"
+        onClick={() => {
+          getCustomerPortal();
+        }}
+      >
+        Visit Stripe portal <CallMadeIcon />
       </div>
     </div>
   );
@@ -327,14 +328,20 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>
             <div className={styles.Heading}>One time setup</div>
             <div className={styles.Pricing}>
-              <span>INR 0</span> ($0)
+              <span>INR 15000</span> ($220)
             </div>
+            <div className={styles.Pricing}>+ taxes</div>
+            <ul className={styles.List}>
+              <li>5hr consulting</li>
+              <li>1 hr onboarding session</li>
+            </ul>
           </div>
           <div>
             <div className={styles.Heading}>Monthly Recurring</div>
             <div className={styles.Pricing}>
               <span>INR 7,500</span> ($110)
             </div>
+            <div className={styles.Pricing}>+ taxes</div>
             <ul className={styles.List}>
               <li>upto 250k messages</li>
               <li>1-10 users</li>
