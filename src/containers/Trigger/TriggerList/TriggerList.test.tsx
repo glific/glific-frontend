@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { TriggerList } from './TriggerList';
 import { MockedProvider } from '@apollo/client/testing';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { AddContactsToCollection } from './AddContactsToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';

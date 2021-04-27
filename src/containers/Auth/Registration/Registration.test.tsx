@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -36,7 +35,7 @@ describe('<Registration />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on continue
-    const continueButton = screen.getByText('CONTINUE');
+    const continueButton = screen.getByText('Continue');
 
     act(() => {
       UserEvent.click(continueButton);
@@ -58,7 +57,7 @@ describe('<Registration />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on continue
-    const continueButton = screen.getByText('CONTINUE');
+    const continueButton = screen.getByText('Continue');
     UserEvent.click(continueButton);
 
     // set the mock error case while registration

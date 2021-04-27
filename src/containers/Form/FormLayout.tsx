@@ -115,7 +115,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
-      setNotification(client, t(`${capitalListItemName} deleted successfully`));
+      setNotification(client, `${capitalListItemName} deleted successfully`);
       setDeleted(true);
     },
     awaitRefetchQueries: true,
@@ -178,7 +178,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           afterSave(data);
         }
         // display successful message after update
-        let message = t(`${capitalListItemName} edited successfully!`);
+        let message = `${capitalListItemName} edited successfully!`;
         if (type === 'copy') {
           message = copyNotification;
         }
@@ -221,7 +221,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           afterSave(data.createSavedSearch);
         }
         // display successful message after create
-        setNotification(client, t(`${capitalListItemName} created successfully!`));
+        setNotification(client, `${capitalListItemName} created successfully!`);
       }
       onSaveClick(false);
     },
@@ -453,7 +453,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (showDialog) {
     dialogBox = (
       <DialogBox
-        title={t(`Are you sure you want to delete the ${listItemName}?`)}
+        title={`Are you sure you want to delete the ${listItemName}?`}
         handleOk={handleDeleteItem}
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
@@ -470,11 +470,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (title) {
     formTitle = title;
   } else if (type === 'copy') {
-    formTitle = t(`Copy ${listItemName}`); // case when copying an item
+    formTitle = `Copy ${listItemName}`; // case when copying an item
   } else if (itemId) {
-    formTitle = t(`Edit ${listItemName}`); // case when editing a item
+    formTitle = `Edit ${listItemName}`; // case when editing a item
   } else {
-    formTitle = t(`Add a new ${listItemName}`); // case when adding a new item
+    formTitle = `Add a new ${listItemName}`; // case when adding a new item
   }
 
   let heading = (

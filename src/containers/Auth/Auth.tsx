@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Auth.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -50,6 +51,8 @@ export const Auth: React.SFC<AuthProps> = (props) => {
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
   let buttonContainedVariant = true;
@@ -180,11 +183,11 @@ export const Auth: React.SFC<AuthProps> = (props) => {
           <>
             <div className={styles.Or}>
               <hr />
-              <div className={styles.OrText}>OR</div>
+              <div className={styles.OrText}>{t('or')}</div>
               <hr />
             </div>
             <Link to={`/${alternateLink}`}>
-              <div>{alternateText}</div>
+              <div className={styles.AlternateText}>{alternateText}</div>
             </Link>
           </>
         ) : null}

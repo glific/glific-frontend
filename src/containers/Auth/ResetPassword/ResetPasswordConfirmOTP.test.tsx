@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
@@ -33,7 +32,7 @@ describe('<ResetPasswordConfirmOTP />', () => {
     UserEvent.type(password, 'pass123456');
 
     // click on save button
-    const saveButton = screen.getByText('SAVE');
+    const saveButton = screen.getByText('Save');
     UserEvent.click(saveButton);
 
     // let's mock successful reset password

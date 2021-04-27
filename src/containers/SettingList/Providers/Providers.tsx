@@ -111,9 +111,7 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
       .nullable()
       .when('isActive', {
         is: true,
-        then: Yup.string()
-          .nullable()
-          .required(t(`${fields[key].label} is required.`)),
+        then: Yup.string().nullable().required(`${fields[key].label} is required.`),
       });
     FormSchema = Yup.object().shape(validation);
   };
