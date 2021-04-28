@@ -353,7 +353,7 @@ export const List: React.SFC<ListProps> = ({
       component = (
         <Component>
           <p className={styles.DialogSubText}>
-            This action cannot be undone. Please enter the name of organisation to proceed
+            This action cannot be undone. Please enter the name of organization to proceed
           </p>
           <OutlinedInput
             fullWidth
@@ -462,7 +462,7 @@ export const List: React.SFC<ListProps> = ({
         props.onClick = () => null;
       }
       const icon = isApproved ? <ApprovedIcon /> : action.icon;
-      const iconLabel = isApproved ? 'Approved' : 'Approve';
+      const iconLabel = isApproved ? 'Approved' : 'Approve organization';
 
       return (
         <IconButton
@@ -486,7 +486,7 @@ export const List: React.SFC<ListProps> = ({
       /**
        * Default icon and labels for activate button
        */
-      const iconLabel = isActive ? 'De-activate' : 'Activate';
+      const iconLabel = isActive ? 'Deactivate organization' : 'Activate organization';
       const icon = isActive ? <RemoveIcon /> : action.icon;
 
       return (

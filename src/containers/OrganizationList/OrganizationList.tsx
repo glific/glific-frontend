@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styles from './OrganizationList.module.css';
+import moment from 'moment';
 
+import styles from './OrganizationList.module.css';
 import {
   GET_ORGANIZATION_COUNT,
   FILTER_ORGANIZATIONS,
@@ -32,12 +33,12 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
 
   const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
 
-  const getName = (label: string) => (
+  const getName = (label: string, insertedAt: any) => (
     <div className={styles.LabelContainer}>
       <p className={styles.LabelText}>
         {label}
         <br />
-        <span className={styles.SubLabelText}>Onboarding date</span>
+        <span className={styles.SubLabelText}>{moment(insertedAt).format('DD MMM YYYY')}</span>
       </p>
     </div>
   );
@@ -58,8 +59,8 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
 
   const columnStyles: any = [styles.Label, styles.Status, styles.Actions];
 
-  const getColumns = ({ name, isActive, isApproved }: any) => ({
-    name: getName(name),
+  const getColumns = ({ name, isActive, isApproved, insertedAt }: any) => ({
+    name: getName(name, insertedAt),
     status: getStatus(isActive, isApproved),
   });
 

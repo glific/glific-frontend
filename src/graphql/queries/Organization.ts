@@ -104,6 +104,7 @@ export const FILTER_ORGANIZATIONS = gql`
       name
       isActive
       isApproved
+      insertedAt
     }
   }
 `;
@@ -115,6 +116,7 @@ export const FILTER_ORGANIZATIONS_NAME = gql`
       name
       isActive
       isApproved
+      insertedAt
     }
   }
 `;
