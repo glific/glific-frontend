@@ -102,8 +102,16 @@ export const UPDATE_CREDENTIAL = gql`
 `;
 
 export const UPDATE_ORGANIZATION_STATUS = gql`
-  mutation updateOrganizationStatus($input: OrganizationStatusInput!) {
-    updateOrganizationStatus(input: $input) {
+  mutation updateOrganizationStatus(
+    $updateOrganizationId: ID!
+    $isActive: Boolean
+    $isApproved: Boolean
+  ) {
+    updateOrganizationStatus(
+      updateOrganizationId: $updateOrganizationId
+      isActive: $isActive
+      isApproved: $isApproved
+    ) {
       organization {
         email
         isActive
@@ -120,8 +128,11 @@ export const UPDATE_ORGANIZATION_STATUS = gql`
 `;
 
 export const DELETE_INACTIVE_ORGANIZATIONS = gql`
-  mutation deleteInactiveOrganization($input: DeleteOrganizationInput!) {
-    deleteInactiveOrganization(input: $input) {
+  mutation deleteInactiveOrganization($deleteOrganizationID: ID!, $isConfirmed: Boolean) {
+    deleteInactiveOrganization(
+      deleteOrganizationID: $deleteOrganizationID
+      isConfirmed: $isConfirmed
+    ) {
       organization {
         email
         isActive
