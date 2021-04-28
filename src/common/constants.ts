@@ -126,7 +126,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
 export const SUBSCRIPTION_ALLOWED_DURATION = 5;
 
 // number of subscriptions allowed within above duration until we switch to fetch mode
-export const SUBSCRIPTION_ALLOWED_NUMBER = 10;
+export const SUBSCRIPTION_ALLOWED_NUMBER = 15;
 
 // min offset for the wait ( in seconds )
 export const REFETCH_RANDOM_TIME_MIN = 10;
