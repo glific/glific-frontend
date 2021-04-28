@@ -125,7 +125,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       uploadMedia({
         variables: {
           media: recordedAudio,
-          type: 'Audio',
+          type: 'audio/webm',
         },
       });
     }
