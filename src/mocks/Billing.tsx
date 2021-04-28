@@ -1,5 +1,8 @@
 import CREATE_BILLING_SUBSCRIPTION, { UPDATE_BILLING } from '../graphql/mutations/Billing';
-import GET_ORGANIZATION_BILLING, { GET_CUSTOMER_PORTAL } from '../graphql/queries/Billing';
+import GET_ORGANIZATION_BILLING, {
+  GET_COUPON_CODE,
+  GET_CUSTOMER_PORTAL,
+} from '../graphql/queries/Billing';
 
 export const createBillingSubscriptionQuery = {
   request: {
@@ -87,6 +90,24 @@ export const getPendingBillingQuery = billingQuery('pending');
 
 export const getBillingQueryWithoutsubscription = billingQuery(null, null);
 
+export const createBillingSubscriptionPromoQuery = {
+  request: {
+    query: CREATE_BILLING_SUBSCRIPTION,
+    variables: {
+      couponCode: 'jsjscbjwew',
+      stripePaymentMethodId: 'qwerty',
+    },
+  },
+  result: {
+    data: {
+      createBillingSubscription: {
+        errors: null,
+        subscription: '{"status":"active"}',
+      },
+    },
+  },
+};
+
 export const getCustomerPortalQuery = {
   request: {
     query: GET_CUSTOMER_PORTAL,
@@ -95,6 +116,24 @@ export const getCustomerPortalQuery = {
     data: {
       customerPortal: {
         url: 'billing.glific.com/session/_sdjsjscbjwew',
+      },
+    },
+  },
+};
+
+export const getCouponCode = {
+  request: {
+    query: GET_COUPON_CODE,
+    variables: {
+      code: 'PBXGFH',
+    },
+  },
+  result: {
+    data: {
+      getCouponCode: {
+        id: 'jsjscbjwew',
+        code: 'PBXGFH',
+        metadata: '{}',
       },
     },
   },

@@ -7,6 +7,8 @@ import {
   createStatusPendingQuery,
   getBillingQuery,
   getBillingQueryWithoutsubscription,
+  createBillingSubscriptionPromoQuery,
+  getCouponCode,
   getCustomerPortalQuery,
   getPendingBillingQuery,
   updateBillingQuery,
@@ -202,6 +204,45 @@ test('update billing details', async () => {
   await waitFor(() => {
     const name = container.querySelector('input[name="name"]');
     fireEvent.change(name, { target: { value: 'Glific Admin 1' } });
+  });
+
+  fireEvent.click(getByTestId('submitButton'));
+
+  await waitFor(() => {
+    expect(getByText('You have an active subscription')).toBeInTheDocument();
+  });
+});
+
+test('update billing details', async () => {
+  const { getByText, getByTestId, container } = render(
+    <MockedProvider
+      mocks={[
+        getBillingQueryWithoutsubscription,
+        createBillingSubscriptionPromoQuery,
+        getCouponCode,
+      ]}
+      addTypename={false}
+    >
+      <Router>
+        <Billing />
+      </Router>
+    </MockedProvider>
+  );
+  // loading is show initially
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByText('Back to settings')).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    const coupon = container.querySelector('input[name="coupon"]');
+    fireEvent.change(coupon, { target: { value: 'PBXGFH' } });
+  });
+
+  fireEvent.click(getByText('APPLY'));
+
+  await waitFor(() => {
+    expect(getByText('Coupon Applied!')).toBeInTheDocument();
   });
 
   fireEvent.click(getByTestId('submitButton'));
