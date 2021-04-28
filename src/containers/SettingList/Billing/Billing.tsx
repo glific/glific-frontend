@@ -6,7 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { IconButton, InputAdornment, Typography } from '@material-ui/core';
+import { CircularProgress, IconButton, InputAdornment, Typography } from '@material-ui/core';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
@@ -22,7 +22,11 @@ import {
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
-import { GET_CUSTOMER_PORTAL, GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
+import {
+  GET_CUSTOMER_PORTAL,
+  GET_ORGANIZATION_BILLING,
+  GET_COUPON_CODE,
+} from '../../../graphql/queries/Billing';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -54,6 +58,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [pending, setPending] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
+  const [coupon, setCoupon] = useState('');
 
   const { t } = useTranslation();
 
@@ -67,6 +72,16 @@ export const BillingForm: React.FC<BillingProps> = () => {
     fetchPolicy: 'network-only',
   });
 
+  const [getCouponCode, { data: couponCode, loading: couponLoading }] = useLazyQuery(
+    GET_COUPON_CODE,
+    {
+      onCompleted: ({ getCouponCode: couponCodeResult }) => {
+        if (couponCodeResult.code) {
+          setCouponApplied(true);
+        }
+      },
+    }
+  );
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {
@@ -91,25 +106,44 @@ export const BillingForm: React.FC<BillingProps> = () => {
     },
   ];
 
+  // console.log(couponCode, couponError);
+
   const addiitonalField = [
     {
       component: Input,
-      name: 'coupon',
+      // validate: couponCode && couponCode.getCouponCode.errors[0],
+      field: {
+        name: 'coupon',
+        value: coupon,
+        onChange: (event: any) => {
+          setCoupon(event.target.value);
+        },
+      },
       type: 'text',
       placeholder: 'Coupon Code',
       disabled: couponApplied,
       endAdornment: (
         <InputAdornment position="end">
-          <div
-            aria-hidden
-            className={styles.Apply}
-            onClick={() => {
-              console.log('here');
-              setCouponApplied(!couponApplied);
-            }}
-          >
-            {couponApplied ? <CancelOutlinedIcon className={styles.CrossIcon} /> : ' APPLY'}
-          </div>
+          {couponLoading ? (
+            <CircularProgress />
+          ) : (
+            <div
+              aria-hidden
+              className={styles.Apply}
+              onClick={() => {
+                getCouponCode({ variables: { code: coupon } });
+              }}
+            >
+              {couponApplied ? (
+                <CancelOutlinedIcon
+                  className={styles.CrossIcon}
+                  onClick={() => setCouponApplied(false)}
+                />
+              ) : (
+                ' APPLY'
+              )}
+            </div>
+          )}
         </InputAdornment>
       ),
     },
@@ -220,12 +254,17 @@ export const BillingForm: React.FC<BillingProps> = () => {
       setNotification(client, error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
+
+      const variables: any = {
+        stripePaymentMethodId: paymentMethod.id,
+      };
+
+      if (couponApplied) {
+        variables.couponCode = couponCode.getCouponCode.id;
+      }
+
       await createSubscription({
-        variables: {
-          input: {
-            stripePaymentMethodId: paymentMethod.id,
-          },
-        },
+        variables,
       });
     }
   };
@@ -341,6 +380,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
     );
   }
 
+  const couponDescription = couponCode && JSON.parse(couponCode.getCouponCode.metadata);
+
   return (
     <div className={styles.Form}>
       <Typography variant="h5" className={styles.Title}>
@@ -385,8 +426,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
       {couponApplied && (
         <div className={styles.CouponDescription}>
-          <div className={styles.CouponHeading}>Coupon Applied</div>
-          <div>One time setup fee INR 15,000 ($220) removed</div>
+          <div className={styles.CouponHeading}>Coupon Applied!</div>
+          <div>{couponDescription.description}</div>
         </div>
       )}
 
@@ -396,6 +437,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
           initialValues={{
             name,
             email,
+            coupon,
           }}
           validationSchema={validationSchema}
           onSubmit={(itemData) => {
@@ -404,10 +446,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
         >
           {() => (
             <Form>
-              {addiitonalField.map((field, index) => {
-                const key = index;
-                return <Field key={key} {...field} />;
-              })}
+              {!alreadySubscribed &&
+                !pending &&
+                !disable &&
+                addiitonalField.map((field, index) => {
+                  const key = index;
+                  return <Field key={key} {...field} />;
+                })}
               {formFieldItems.map((field, index) => {
                 const key = index;
                 return <Field key={key} {...field} />;

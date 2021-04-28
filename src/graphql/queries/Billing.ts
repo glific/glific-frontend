@@ -25,4 +25,18 @@ export const GET_CUSTOMER_PORTAL = gql`
   }
 `;
 
+export const GET_COUPON_CODE = gql`
+  query getCouponCode($code: String!) {
+    getCouponCode(code: $code) {
+      code
+      id
+      errors {
+        key
+        message
+      }
+      metadata
+    }
+  }
+`;
+
 export default GET_ORGANIZATION_BILLING;
