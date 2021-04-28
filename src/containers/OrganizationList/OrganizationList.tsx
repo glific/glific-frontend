@@ -115,6 +115,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       restrictedAction={restrictedAction}
       searchParameter="name"
       editSupport={false}
+      removeSortBy={['STATUS']}
       {...queries}
       {...columnAttributes}
     />
