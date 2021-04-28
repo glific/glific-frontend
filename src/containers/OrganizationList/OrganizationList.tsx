@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import ApartmentOutlinedIcon from '@material-ui/icons/ApartmentOutlined';
+import CheckIcon from '@material-ui/icons/Check';
+import Brightness1Icon from '@material-ui/icons/Brightness1';
 
 import styles from './OrganizationList.module.css';
 import {
@@ -9,7 +10,10 @@ import {
   FILTER_ORGANIZATIONS,
   FILTER_ORGANIZATIONS_NAME,
 } from '../../graphql/queries/Organization';
-import { DELETE_ORGANIZATION } from '../../graphql/mutations/Organization';
+import {
+  DELETE_INACTIVE_ORGANIZATIONS,
+  UPDATE_ORGANIZATION_STATUS,
+} from '../../graphql/mutations/Organization';
 import { ReactComponent as PendingIcon } from '../../assets/images/icons/Template/Pending.svg';
 import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
 import { List } from '../List/List';
@@ -20,7 +24,8 @@ export interface OrganizationListProps {}
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
-  deleteItemQuery: DELETE_ORGANIZATION,
+  deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
+  updateStatusQuery: UPDATE_ORGANIZATION_STATUS,
 };
 
 export const OrganizationList: React.SFC<OrganizationListProps> = () => {
@@ -69,7 +74,9 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   /**
    * Add custom component for delete with input text
    */
-  const dialogMessage = t("You won't be able to use this for tagging messages.");
+  const deleteDialogue = ({ children }: { children: any }) => <div>{children}</div>;
+
+  const dialogMessage = deleteDialogue;
 
   const columnAttributes = {
     columnNames,
@@ -77,17 +84,27 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     columnStyles,
   };
 
+  const listIcon = <ApartmentOutlinedIcon className={styles.TagIcon} />;
+  const approveIcon = <CheckIcon className={styles.ApproveIcon} />;
+  const activeIcon = <Brightness1Icon />;
+
   const additionalActions = [
     {
-      view: true,
-      label: 'view',
-      link: 'organization',
+      icon: approveIcon,
       parameter: 'id',
-      icon: <VisibilityOutlinedIcon />,
+      label: t('Approve'),
+      other: 'approve',
+    },
+    {
+      icon: activeIcon,
+      parameter: 'id',
+      label: t('Activate'),
+      other: 'active',
     },
   ];
 
-  const listIcon = <ApartmentOutlinedIcon className={styles.TagIcon} />;
+  const addNewButton = { show: false, label: 'Add New' };
+  const restrictedAction = () => ({ delete: false, edit: false });
 
   return (
     <List
@@ -102,6 +119,10 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
         variables: setVariables(),
       }}
       additionalAction={additionalActions}
+      button={addNewButton}
+      restrictedAction={restrictedAction}
+      searchParameter="name"
+      editSupport={false}
       {...queries}
       {...columnAttributes}
     />

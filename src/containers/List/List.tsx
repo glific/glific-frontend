@@ -33,7 +33,7 @@ export interface ListProps {
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
   listItemName: string;
-  dialogMessage: string;
+  dialogMessage: string | any;
   pageLink: string;
   columns: any;
   listIcon: any;
@@ -56,6 +56,7 @@ export interface ListProps {
     link?: string;
     dialog?: any;
     label?: string;
+    other?: string;
   }>;
   deleteModifier?: {
     icon: string;
@@ -70,6 +71,7 @@ export interface ListProps {
   collapseRow?: any;
   defaultSortBy?: string | null;
   removeSortBy?: any;
+  updateStatusQuery?: DocumentNode;
 }
 
 interface TableVals {
@@ -112,6 +114,7 @@ export const List: React.SFC<ListProps> = ({
   collapseOpen,
   collapseRow,
   defaultSortBy,
+  updateStatusQuery,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -120,6 +123,7 @@ export const List: React.SFC<ListProps> = ({
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState('');
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -274,6 +278,18 @@ export const List: React.SFC<ListProps> = ({
     });
   }
 
+  let updateOrganizationStatus: any;
+  if (updateStatusQuery) {
+    [updateOrganizationStatus] = useMutation(updateStatusQuery, {
+      refetchQueries: () => {
+        if (refetchQueries) {
+          return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
+        }
+        return [{ query: filterItemsQuery, variables: filterPayload() }];
+      },
+    });
+  }
+
   const showDialogHandler = (id: any, label: string) => {
     setDeleteItemName(label);
     setDeleteItemID(id);
@@ -281,6 +297,7 @@ export const List: React.SFC<ListProps> = ({
 
   const closeDialogBox = () => {
     setDeleteItemID(null);
+    setConfirmDelete('');
   };
 
   const deleteHandler = (id: number) => {
@@ -296,19 +313,72 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(null);
   };
 
+  const handleDeleteInActiveOrganizations = (isConfirmed: boolean) => {
+    const variables = {
+      input: {
+        isConfirmed,
+        deleteOrganizationId: deleteItemID,
+      },
+    };
+
+    deleteItem({ variables });
+    setNotification(client, `${capitalListItemName} deleted successfully`);
+    setDeleteItemID(null);
+  };
+
+  const handleOrganizationStatus = (id: any, payload: any) => {
+    const variables = {
+      input: {
+        ...payload,
+        updateOrganizationId: id,
+      },
+    };
+
+    updateOrganizationStatus({ variables });
+    setNotification(client, `${capitalListItemName} updated successfully`);
+  };
+
+  const useDelete = (Component: string | any) => {
+    let component = {};
+    const isConfirmed = deleteItemName === confirmDelete;
+    const props = { disableOk: false, handleOk: handleDeleteItem };
+
+    if (typeof Component === 'string') {
+      component = Component;
+    } else {
+      component = (
+        <Component>
+          <input
+            type="text"
+            placeholder="Type organization name"
+            onChange={(event: any) => setConfirmDelete(event.target.value)}
+          />
+        </Component>
+      );
+      props.disableOk = !isConfirmed;
+      props.handleOk = () => handleDeleteInActiveOrganizations(isConfirmed);
+    }
+
+    return {
+      component,
+      props,
+    };
+  };
+
   let dialogBox;
   if (deleteItemID) {
+    const { component, props } = useDelete(dialogMessage);
     dialogBox = (
       <DialogBox
         title={
           dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
-        handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
         colorOk="secondary"
         alignButtons="center"
+        {...props}
       >
-        <p className={styles.DialogText}>{dialogMessage}</p>
+        <p className={styles.DialogText}>{component}</p>
       </DialogBox>
     );
   }
@@ -354,7 +424,7 @@ export const List: React.SFC<ListProps> = ({
     }
 
     const deleteButton = (Id: any, text: string) =>
-      allowedAction.delete ? (
+      allowedAction.delete || listItems.isActive === false ? (
         <IconButton
           aria-label="Delete"
           color="default"
@@ -366,6 +436,49 @@ export const List: React.SFC<ListProps> = ({
           </Tooltip>
         </IconButton>
       ) : null;
+
+    const approveButton = (action: any, key: number) => {
+      const { isApproved, isActive } = listItems;
+      return !isApproved ? (
+        <IconButton
+          color="default"
+          data-testid="additionalButton"
+          className={styles.additonalButton}
+          id="additionalButton-icon"
+          onClick={() => handleOrganizationStatus(id, { isApproved: true, isActive })}
+          key={key}
+        >
+          <Tooltip title={`${action.label}`} placement="top" key={key}>
+            {action.icon}
+          </Tooltip>
+        </IconButton>
+      ) : null;
+    };
+
+    const activateButton = (action: any, key: number) => {
+      const { isApproved, isActive } = listItems;
+      const buttonStyle = { color: 'green' };
+      const iconLabel = isActive ? 'De-activate' : 'Activate';
+      if (!isActive) {
+        buttonStyle.color = 'grey';
+      }
+
+      return isApproved ? (
+        <IconButton
+          color="default"
+          data-testid="additionalButton"
+          className={styles.additonalButton}
+          id="additionalButton-icon"
+          onClick={() => handleOrganizationStatus(id, { isActive: !isActive, isApproved })}
+          key={key}
+          style={buttonStyle}
+        >
+          <Tooltip title={`${iconLabel}`} placement="top" key={key}>
+            {action.icon}
+          </Tooltip>
+        </IconButton>
+      ) : null;
+    };
 
     if (id) {
       return (
@@ -381,6 +494,11 @@ export const List: React.SFC<ListProps> = ({
             }
             const key = index;
 
+            if (action.other) {
+              return action.other === 'active'
+                ? activateButton(action, key)
+                : approveButton(action, key);
+            }
             if (action.link) {
               return (
                 <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
