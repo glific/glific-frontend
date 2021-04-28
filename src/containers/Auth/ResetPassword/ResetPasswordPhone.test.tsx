@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
@@ -24,7 +23,7 @@ describe('<ResetPasswordPhone />', () => {
 
     const resetPassword = await findByTestId('AuthContainer');
     expect(resetPassword).toHaveTextContent('Reset your password');
-    expect(resetPassword).toHaveTextContent('GENERATE OTP TO CONFIRM');
+    expect(resetPassword).toHaveTextContent('Generate OTP to confirm');
   });
 
   it('test the form submission with phone', async () => {
@@ -35,7 +34,7 @@ describe('<ResetPasswordPhone />', () => {
     UserEvent.type(input, '+919978776554');
 
     // click on continue
-    const continueButton = screen.getByText('GENERATE OTP TO CONFIRM');
+    const continueButton = screen.getByText('Generate OTP to confirm');
     UserEvent.click(continueButton);
 
     // let's mock successful login submission
@@ -51,7 +50,7 @@ describe('<ResetPasswordPhone />', () => {
     UserEvent.type(input, '+919978776554');
 
     // click on GENERATE button
-    const continueButton = screen.getByText('GENERATE OTP TO CONFIRM');
+    const continueButton = screen.getByText('Generate OTP to confirm');
     UserEvent.click(continueButton);
 
     // set the mock

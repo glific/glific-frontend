@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Typography } from '@material-ui/core';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
@@ -20,7 +21,7 @@ import {
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
-import { GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
+import { GET_CUSTOMER_PORTAL, GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -61,6 +62,13 @@ export const BillingForm: React.FC<BillingProps> = () => {
   // get organization billing details
   const { data: billData, loading: billLoading, refetch } = useQuery(GET_ORGANIZATION_BILLING, {
     fetchPolicy: 'network-only',
+  });
+
+  const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
+    fetchPolicy: 'network-only',
+    onCompleted: (customerPortal: any) => {
+      window.open(customerPortal.customerPortal.url, '_blank');
+    },
   });
 
   const formFieldItems = [
@@ -144,7 +152,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
     },
   });
 
-  if (billLoading) {
+  if (billLoading || portalLoading) {
     return <Loading />;
   }
 
@@ -272,11 +280,26 @@ export const BillingForm: React.FC<BillingProps> = () => {
   );
 
   const subscribed = (
-    <div className={styles.Subscribed}>
-      <ApprovedIcon />
-      You have an active subscription
-      <div>
-        Please <span>contact us</span> to deactivate
+    <div>
+      <div className={styles.Subscribed}>
+        <ApprovedIcon />
+        You have an active subscription
+        <div>
+          Please <span>contact us</span> to deactivate
+          <br />
+          *Note that we do not store your credit card details, as Stripe securely does.
+        </div>
+      </div>
+
+      <div
+        aria-hidden
+        className={styles.Portal}
+        data-testid="customerPortalButton"
+        onClick={() => {
+          getCustomerPortal();
+        }}
+      >
+        Visit Stripe portal <CallMadeIcon />
       </div>
     </div>
   );
@@ -305,14 +328,20 @@ export const BillingForm: React.FC<BillingProps> = () => {
           <div>
             <div className={styles.Heading}>One time setup</div>
             <div className={styles.Pricing}>
-              <span>INR 0</span> ($0)
+              <span>INR 15000</span> ($220)
             </div>
+            <div className={styles.Pricing}>+ taxes</div>
+            <ul className={styles.List}>
+              <li>5hr consulting</li>
+              <li>1 hr onboarding session</li>
+            </ul>
           </div>
           <div>
             <div className={styles.Heading}>Monthly Recurring</div>
             <div className={styles.Pricing}>
               <span>INR 7,500</span> ($110)
             </div>
+            <div className={styles.Pricing}>+ taxes</div>
             <ul className={styles.List}>
               <li>upto 250k messages</li>
               <li>1-10 users</li>

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 import { resetRolePermissions } from '../../../context/role';
 import { SessionContext } from '../../../context/session';
@@ -27,6 +28,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
   const { setAuthenticated } = useContext(SessionContext);
   const [redirect, setRedirect] = useState(false);
   const client = useApolloClient();
+  const { t } = useTranslation();
 
   // let's notify the backend when user logs out
   const userLogout = () => {
@@ -68,14 +70,14 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
 
   const dialog = (
     <DialogBox
-      title="Your session has expired!"
-      buttonOk="Login"
+      title={t('Your session has expired!')}
+      buttonOk={t('Login')}
       handleOk={() => handleLogout()}
       handleCancel={() => handleLogout()}
       skipCancel
       alignButtons="center"
     >
-      <div style={divStyle}>Please login again to continue.</div>
+      <div style={divStyle}>{t('Please login again to continue.')}</div>
     </DialogBox>
   );
 

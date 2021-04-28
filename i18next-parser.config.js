@@ -7,7 +7,7 @@ module.exports = {
     default: ['JavascriptLexer'],
   },
 
-  locales: ['en', 'hi'],
+  locales: ['en'],
   // An array of the locales in your applications
 
   namespaceSeparator: false,
@@ -17,7 +17,7 @@ module.exports = {
 
   useKeysAsDefaultValue: true,
 
-  output: 'src/i18n/$LOCALE/$NAMESPACE.json',
+  output: 'src/i18n/$LOCALE/$LOCALE.json',
   // Supports $LOCALE and $NAMESPACE injection
   // Supports JSON (.json) and YAML (.yml) file formats
   // Where to write the locale files relative to process.cwd()

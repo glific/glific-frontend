@@ -29,7 +29,7 @@ export const Login: React.SFC<LoginProps> = () => {
   const { setAuthenticated } = useContext(SessionContext);
   const [sessionToken, setSessionToken] = useState('');
   const [authError, setAuthError] = useState('');
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   // function to unauthorize access
   const accessDenied = () => {
@@ -90,20 +90,20 @@ export const Login: React.SFC<LoginProps> = () => {
       component: PhoneInput,
       name: 'phoneNumber',
       type: 'phone',
-      placeholder: 'Your phone number',
-      helperText: 'Please enter a phone number.',
+      placeholder: t('Your phone number'),
+      helperText: t('Please enter a phone number.'),
     },
     {
       component: Input,
       name: 'password',
       type: 'password',
-      placeholder: 'Password',
+      placeholder: t('Password'),
     },
   ];
 
   const FormSchema = Yup.object().shape({
-    phoneNumber: Yup.string().required('Input required'),
-    password: Yup.string().required('Input required'),
+    phoneNumber: Yup.string().required(t('Input required')),
+    password: Yup.string().required(t('Input required')),
   });
 
   const initialFormValues = { phoneNumber: '', password: '' };
@@ -123,7 +123,7 @@ export const Login: React.SFC<LoginProps> = () => {
         setAuthSession(responseString);
       })
       .catch((error) => {
-        setAuthError('Invalid phone or password.');
+        setAuthError(t('Invalid phone or password.'));
         // add log's
         setLogs(`phoneNumber:${values.phoneNumber} URL:${USER_SESSION}`, 'info');
         setLogs(error, 'error');
@@ -132,13 +132,13 @@ export const Login: React.SFC<LoginProps> = () => {
 
   return (
     <Auth
-      pageTitle="Login to your account"
-      buttonText="LOGIN"
+      pageTitle={t('Login to your account')}
+      buttonText={t('Login')}
       alternateLink="registration"
-      alternateText="CREATE A NEW ACCOUNT"
+      alternateText={t('Create a new account')}
       mode="login"
       formFields={formFields}
-      linkText="Forgot Password?"
+      linkText={t('Forgot Password?')}
       linkURL="resetpassword-phone"
       validationSchema={FormSchema}
       saveHandler={onSubmitLogin}

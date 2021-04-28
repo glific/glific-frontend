@@ -128,7 +128,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   const dialogMessage = t("You won't be able to use this collection again.");
 
   let flowOptions = [];
-  let contactOptions = [];
+  let contactOptions: any = [];
   let collectionContacts: Array<any> = [];
   if (flowData) {
     flowOptions = flowData.flows;
@@ -241,6 +241,9 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         asyncSearch
         disableClearable
         selectedOptions={collectionContacts}
+        renderTags={false}
+        searchLabel="Search contacts"
+        textFieldPlaceholder="Type here"
         onChange={(value: any) => {
           if (typeof value === 'string') {
             setContactSearchTerm(value);

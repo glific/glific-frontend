@@ -154,16 +154,20 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     fetchPolicy: 'cache-only',
   });
 
+  const scrollToMessage = (messageNumberToScroll: any) => {
+    setTimeout(() => {
+      const scrollElement = document.querySelector(`#search${messageNumberToScroll}`);
+      if (scrollElement) {
+        scrollElement.scrollIntoView();
+      }
+    }, 1000);
+  };
+
   // scroll to the particular message after loading
   const getScrollToMessage = () => {
     if (!scrolledToMessage) {
-      setTimeout(() => {
-        const element = document.querySelector(`#search${urlString.searchParams.get('search')}`);
-        if (element) {
-          element.scrollIntoView();
-        }
-        setScrolledToMessage(true);
-      }, 1000);
+      scrollToMessage(urlString.searchParams.get('search'));
+      setScrolledToMessage(true);
     }
   };
   /* istanbul ignore next */
@@ -547,6 +551,32 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     setShowDropdown(id);
   };
 
+  // on reply message scroll to replied message or fetch if not present
+  const jumpToMessage = (messageNumber: number) => {
+    const element = document.querySelector(`#search${messageNumber}`);
+    if (element) {
+      element.scrollIntoView();
+    } else {
+      const offset = messageNumber - 10 <= 0 ? 1 : messageNumber - 10;
+      const variables: any = {
+        filter: { id: contactId?.toString() },
+        contactOpts: { limit: 1 },
+        messageOpts: {
+          limit: conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber,
+          offset,
+        },
+      };
+
+      addLogs(`fetch reply message`, variables);
+
+      getSearchQuery({
+        variables,
+      });
+
+      scrollToMessage(messageNumber);
+    }
+  };
+
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => {
@@ -579,6 +609,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
                 moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
               : true
           }
+          jumpToMessage={jumpToMessage}
         />
       );
     });
