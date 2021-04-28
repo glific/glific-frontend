@@ -59,7 +59,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
-        <ClearCacheProvider duration={1000}>
+        <ClearCacheProvider duration={60000}>
           <Suspense fallback={Loading}>{routes}</Suspense>
         </ClearCacheProvider>
       </ApolloProvider>
