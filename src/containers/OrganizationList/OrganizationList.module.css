@@ -4,7 +4,7 @@
 }
 
 .Label {
-  width: 250px;
+  width: 40%;
 }
 
 .LabelText {
@@ -13,7 +13,6 @@
   font-size: 20px;
   color: #073f24;
   line-height: 1;
-  width: 250px;
 }
 
 .SubLabelText {
@@ -33,10 +32,6 @@
   line-height: 1.25;
 }
 
-.StatusText span {
-  margin-left: 24px;
-}
-
 .LabelContainer {
   height: fit-content;
   align-items: baseline;
@@ -46,6 +41,7 @@
 .Status {
   display: flex;
   align-content: center;
+  width: 20%;
 }
 
 .Actions {

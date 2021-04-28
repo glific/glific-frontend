@@ -31,7 +31,7 @@ const queries = {
 export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const { t } = useTranslation();
 
-  const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
+  const columnNames = ['NAME', 'IS APPROVED', 'IS ACTIVE', 'ACTIONS'];
 
   const getName = (label: string, insertedAt: any) => (
     <div className={styles.LabelContainer}>
@@ -43,25 +43,33 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     </div>
   );
 
-  const getStatus = (isActive: boolean, isApproved: boolean) => {
-    const isActiveText = isActive ? 'Active' : 'Inactive';
-    const isApprovedText = isApproved ? 'Approved' : 'Pending';
+  const getStatus = (status: boolean, option: string) => {
+    let text: any;
+
+    switch (option) {
+      case 'active':
+        text = status ? 'Active' : 'Inactive';
+        break;
+      case 'approve':
+        text = status ? 'Approved' : 'Pending';
+        break;
+      default:
+        break;
+    }
 
     return (
       <div>
-        <p className={styles.StatusText}>
-          {isApprovedText}
-          <span>{isActiveText}</span>
-        </p>
+        <p className={styles.StatusText}>{text}</p>
       </div>
     );
   };
 
-  const columnStyles: any = [styles.Label, styles.Status, styles.Actions];
+  const columnStyles: any = [styles.Label, styles.Status, styles.Status, styles.Actions];
 
   const getColumns = ({ name, isActive, isApproved, insertedAt }: any) => ({
     name: getName(name, insertedAt),
-    status: getStatus(isActive, isApproved),
+    isApproved: getStatus(isApproved, 'approve'),
+    isActive: getStatus(isActive, 'active'),
   });
 
   /**
@@ -116,7 +124,6 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       restrictedAction={restrictedAction}
       searchParameter="name"
       editSupport={false}
-      removeSortBy={['STATUS']}
       {...queries}
       {...columnAttributes}
     />

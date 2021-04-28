@@ -450,19 +450,8 @@ export const List: React.SFC<ListProps> = ({
     const approveButton = (action: any, key: number) => {
       const { isApproved, isActive } = listItems;
 
-      /**
-       * Default events, icon and labels for approve button
-       * Restricting API call if organization is already approved
-       */
-      const props = {
-        onClick: () => handleOrganizationStatus(id, { isApproved: true, isActive }),
-      };
-
-      if (isApproved) {
-        props.onClick = () => null;
-      }
       const icon = isApproved ? <ApprovedIcon /> : action.icon;
-      const iconLabel = isApproved ? 'Approved' : 'Approve organization';
+      const iconLabel = isApproved ? 'Unapprove organization' : 'Approve organization';
 
       return (
         <IconButton
@@ -471,7 +460,7 @@ export const List: React.SFC<ListProps> = ({
           className={styles.additonalButton}
           id="additionalButton-icon"
           key={key}
-          {...props}
+          onClick={() => handleOrganizationStatus(id, { isApproved: !isApproved, isActive })}
         >
           <Tooltip title={iconLabel} placement="top" key={key}>
             {icon}
