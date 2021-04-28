@@ -72,16 +72,16 @@ export const BillingForm: React.FC<BillingProps> = () => {
     fetchPolicy: 'network-only',
   });
 
-  const [getCouponCode, { data: couponCode, loading: couponLoading }] = useLazyQuery(
-    GET_COUPON_CODE,
-    {
-      onCompleted: ({ getCouponCode: couponCodeResult }) => {
-        if (couponCodeResult.code) {
-          setCouponApplied(true);
-        }
-      },
-    }
-  );
+  const [
+    getCouponCode,
+    { data: couponCode, loading: couponLoading, error: couponError },
+  ] = useLazyQuery(GET_COUPON_CODE, {
+    onCompleted: ({ getCouponCode: couponCodeResult }) => {
+      if (couponCodeResult.code) {
+        setCouponApplied(true);
+      }
+    },
+  });
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {
@@ -106,12 +106,9 @@ export const BillingForm: React.FC<BillingProps> = () => {
     },
   ];
 
-  // console.log(couponCode, couponError);
-
-  const addiitonalField = [
+  const couponField = [
     {
       component: Input,
-      // validate: couponCode && couponCode.getCouponCode.errors[0],
       field: {
         name: 'coupon',
         value: coupon,
@@ -381,7 +378,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   }
 
   const couponDescription = couponCode && JSON.parse(couponCode.getCouponCode.metadata);
-
+  const processIncomplete = !alreadySubscribed && !pending && !disable;
   return (
     <div className={styles.Form}>
       <Typography variant="h5" className={styles.Title}>
@@ -431,6 +428,12 @@ export const BillingForm: React.FC<BillingProps> = () => {
         </div>
       )}
 
+      {processIncomplete && couponError && (
+        <div className={styles.CouponError}>
+          <div>Invalid Coupon!</div>
+        </div>
+      )}
+
       <div>
         <Formik
           enableReinitialize
@@ -446,10 +449,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
         >
           {() => (
             <Form>
-              {!alreadySubscribed &&
-                !pending &&
-                !disable &&
-                addiitonalField.map((field, index) => {
+              {processIncomplete &&
+                couponField.map((field, index) => {
                   const key = index;
                   return <Field key={key} {...field} />;
                 })}

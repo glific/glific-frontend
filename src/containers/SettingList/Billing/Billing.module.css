@@ -190,3 +190,9 @@
 .CrossIcon {
   color: #93a29b;
 }
+
+.CouponError {
+  composes: Description;
+  border: 1px solid #dd1f1f;
+  border-left: 12px solid #dd1f1f;
+}
