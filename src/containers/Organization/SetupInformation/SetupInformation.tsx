@@ -25,13 +25,21 @@ export const SetupInformation: React.SFC = () => {
         <div className={styles.links}>
           <ol>
             <li>
-              <a href="https://glific.slab.com/public/posts/facebook-verification-process-for-wa-business-api-065jvy5a">
+              <a
+                href="https://glific.slab.com/public/posts/facebook-verification-process-for-wa-business-api-065jvy5a"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Facebook business manager verification
                 <CallMadeSharpIcon style={{ color: '#119656', height: '16px' }} />
               </a>
             </li>
             <li>
-              <a href=" https://glific.slab.com/public/posts/setup-the-organization-on-gupshup-and-go-live-qwbjphx0">
+              <a
+                href=" https://glific.slab.com/public/posts/setup-the-organization-on-gupshup-and-go-live-qwbjphx0"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Gupshup account creation
                 <CallMadeSharpIcon style={{ color: '#119656', height: '16px' }} />
               </a>
