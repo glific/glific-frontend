@@ -13,6 +13,7 @@ import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/Unauthenticat
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from './containers/Auth/Logout/Logout';
 import { Loading } from './components/UI/Layout/Loading/Loading';
+import { CLEAR_CACHE_DURATION } from './common/constants';
 
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
@@ -59,7 +60,7 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
-        <ClearCacheProvider duration={60000}>
+        <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
           <Suspense fallback={Loading}>{routes}</Suspense>
         </ClearCacheProvider>
       </ApolloProvider>
