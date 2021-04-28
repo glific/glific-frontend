@@ -30,10 +30,6 @@ export const GET_COUPON_CODE = gql`
     getCouponCode(code: $code) {
       code
       id
-      errors {
-        key
-        message
-      }
       metadata
     }
   }
