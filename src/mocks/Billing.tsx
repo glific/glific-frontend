@@ -5,9 +5,7 @@ export const createBillingSubscriptionQuery = {
   request: {
     query: CREATE_BILLING_SUBSCRIPTION,
     variables: {
-      input: {
-        stripePaymentMethodId: 'qwerty',
-      },
+      stripePaymentMethodId: 'qwerty',
     },
   },
   result: {
@@ -47,9 +45,7 @@ export const createStatusPendingQuery = {
   request: {
     query: CREATE_BILLING_SUBSCRIPTION,
     variables: {
-      input: {
-        stripePaymentMethodId: 'qwerty',
-      },
+      stripePaymentMethodId: 'qwerty',
     },
   },
   result: {
