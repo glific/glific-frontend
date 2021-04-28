@@ -1,38 +1,50 @@
-.TagIcon {
+.OrgIcon {
   width: 29px;
   height: 29px;
 }
 
-.FilledTagIcon {
-  margin-right: 7px;
-  align-self: center;
+.Label {
+  width: 250px;
 }
 
 .LabelText {
   font-family: 'heebo', sans-serif;
-  display: flex;
   font-weight: 500;
   font-size: 20px;
-  margin-top: 12px;
-  margin-bottom: 12px;
   color: #073f24;
+  line-height: 1;
+  width: 250px;
+}
+
+.SubLabelText {
+  font-family: 'heebo', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #cacaca;
   line-height: 1;
 }
 
-.TableText {
-  margin-right: 23px;
-  text-align: left;
-  padding: 12px 0px;
+.StatusText {
+  font-family: 'heebo', sans-serif;
+  font-weight: 400;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
-  margin: 0;
+}
+
+.StatusText span {
+  margin-left: 24px;
 }
 
 .LabelContainer {
-  display: flex;
   height: fit-content;
   align-items: baseline;
+  align-content: center;
+}
+
+.Status {
+  display: flex;
   align-content: center;
 }
 
@@ -40,17 +52,4 @@
   width: 20%;
   justify-content: flex-end;
   margin-left: auto;
-}
-
-.Status {
-  composes: TableText;
-  display: flex;
-  align-content: center;
-}
-.Status svg {
-  margin-right: 8px;
-}
-
-.ApproveIcon {
-  color: green;
 }

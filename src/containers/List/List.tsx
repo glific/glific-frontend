@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
-import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
+import {
+  IconButton,
+  TableFooter,
+  TablePagination,
+  TableRow,
+  Typography,
+  OutlinedInput,
+} from '@material-ui/core';
 
 import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -15,6 +22,8 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/R
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
+import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
+import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, getUserRolePermissions } from '../../context/role';
@@ -315,10 +324,8 @@ export const List: React.SFC<ListProps> = ({
 
   const handleDeleteInActiveOrganizations = (isConfirmed: boolean) => {
     const variables = {
-      input: {
-        isConfirmed,
-        deleteOrganizationId: deleteItemID,
-      },
+      isConfirmed,
+      deleteOrganizationID: deleteItemID,
     };
 
     deleteItem({ variables });
@@ -328,12 +335,9 @@ export const List: React.SFC<ListProps> = ({
 
   const handleOrganizationStatus = (id: any, payload: any) => {
     const variables = {
-      input: {
-        ...payload,
-        updateOrganizationId: id,
-      },
+      updateOrganizationId: id,
+      ...payload,
     };
-
     updateOrganizationStatus({ variables });
     setNotification(client, `${capitalListItemName} updated successfully`);
   };
@@ -348,10 +352,14 @@ export const List: React.SFC<ListProps> = ({
     } else {
       component = (
         <Component>
-          <input
-            type="text"
-            placeholder="Type organization name"
+          <p className={styles.DialogSubText}>
+            This action cannot be undone. Please enter the name of organisation to proceed
+          </p>
+          <OutlinedInput
+            fullWidth
+            placeholder="Organization name"
             onChange={(event: any) => setConfirmDelete(event.target.value)}
+            className={styles.DialogSubInput}
           />
         </Component>
       );
@@ -378,7 +386,9 @@ export const List: React.SFC<ListProps> = ({
         alignButtons="center"
         {...props}
       >
-        <p className={styles.DialogText}>{component}</p>
+        <div className={styles.DialogText}>
+          <div>{component}</div>
+        </div>
       </DialogBox>
     );
   }
@@ -439,31 +449,47 @@ export const List: React.SFC<ListProps> = ({
 
     const approveButton = (action: any, key: number) => {
       const { isApproved, isActive } = listItems;
-      return !isApproved ? (
+
+      /**
+       * Default events, icon and labels for approve button
+       * Restricting API call if organization is already approved
+       */
+      const props = {
+        onClick: () => handleOrganizationStatus(id, { isApproved: true, isActive }),
+      };
+
+      if (isApproved) {
+        props.onClick = () => null;
+      }
+      const icon = isApproved ? <ApprovedIcon /> : action.icon;
+      const iconLabel = isApproved ? 'Approved' : 'Approve';
+
+      return (
         <IconButton
           color="default"
           data-testid="additionalButton"
           className={styles.additonalButton}
           id="additionalButton-icon"
-          onClick={() => handleOrganizationStatus(id, { isApproved: true, isActive })}
           key={key}
+          {...props}
         >
-          <Tooltip title={`${action.label}`} placement="top" key={key}>
-            {action.icon}
+          <Tooltip title={iconLabel} placement="top" key={key}>
+            {icon}
           </Tooltip>
         </IconButton>
-      ) : null;
+      );
     };
 
     const activateButton = (action: any, key: number) => {
       const { isApproved, isActive } = listItems;
-      const buttonStyle = { color: 'green' };
-      const iconLabel = isActive ? 'De-activate' : 'Activate';
-      if (!isActive) {
-        buttonStyle.color = 'grey';
-      }
 
-      return isApproved ? (
+      /**
+       * Default icon and labels for activate button
+       */
+      const iconLabel = isActive ? 'De-activate' : 'Activate';
+      const icon = isActive ? <RemoveIcon /> : action.icon;
+
+      return (
         <IconButton
           color="default"
           data-testid="additionalButton"
@@ -471,13 +497,12 @@ export const List: React.SFC<ListProps> = ({
           id="additionalButton-icon"
           onClick={() => handleOrganizationStatus(id, { isActive: !isActive, isApproved })}
           key={key}
-          style={buttonStyle}
         >
-          <Tooltip title={`${iconLabel}`} placement="top" key={key}>
-            {action.icon}
+          <Tooltip title={iconLabel} placement="top" key={key}>
+            {icon}
           </Tooltip>
         </IconButton>
-      ) : null;
+      );
     };
 
     if (id) {
