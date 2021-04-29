@@ -30,6 +30,8 @@ export const setUserRolePermissions = () => {
     role = getUserRole();
   }
 
+  const user = getUserSession('default');
+
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
     staffManagementMenu = getMenus('staffManagement');
@@ -39,6 +41,15 @@ export const setUserRolePermissions = () => {
     // gettting menus for Manager as menus are same as in Admin
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
+
+    /**
+     * Removing organization list menu for non admin users
+     */
+    if (user.name !== 'NGO Main Account') {
+      staffManagementMenu = staffManagementMenu.filter(
+        ({ title }: { title: string }) => title !== 'Organization'
+      );
+    }
 
     if (role.includes('Admin')) {
       accessSettings = true;

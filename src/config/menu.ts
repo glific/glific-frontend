@@ -56,6 +56,12 @@ const menus = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
+    title: 'Organization',
+    path: '/organization',
+    type: 'staffManagement',
+    roles: ['Manager', 'Admin'],
+  },
+  {
     title: 'Staff Management',
     path: '/staff-management',
     type: 'staffManagement',
