@@ -133,3 +133,7 @@ export const REFETCH_RANDOM_TIME_MIN = 10;
 
 // max offset for the wait ( in seconds )
 export const REFETCH_RANDOM_TIME_MAX = 40;
+
+// Gupshup documentation help link
+export const GUPSHUP_DOCUMENTATION_HELP_LINK =
+  'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation';

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import * as Yup from 'yup';
-import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import axios from 'axios';
 import { InputAdornment, Link } from '@material-ui/core';
+import * as Yup from 'yup';
 
+import styles from './Registration.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { Organization } from '../Organization';
 import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { ONBOARD_URL } from '../../../config/index';
 import Tooltip from '../../../components/UI/Tooltip/Tooltip';
-import styles from './Registration.module.css';
 import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
+import { GUPSHUP_DOCUMENTATION_HELP_LINK } from '../../../common/constants';
 
 export interface RegistrationProps {}
 
@@ -21,7 +22,7 @@ const InfoAdornment = (
       placement="right"
       tooltipClass={styles.Tooltip}
     >
-      <InfoIcon width="12" height="12" />
+      <InfoIcon />
     </Tooltip>
   </InputAdornment>
 );
@@ -29,7 +30,7 @@ const InfoAdornment = (
 const HelperLink = (
   <Link
     className={styles.HelperLink}
-    href="https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation"
+    href={GUPSHUP_DOCUMENTATION_HELP_LINK}
     rel="noreferrer"
     target="_blank"
   >
@@ -124,7 +125,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
           if (setErrors && setLoading) {
             const errors = data.messages;
             delete errors.global;
-            setErrors(data.messages);
+            setErrors(errors);
             setLoading(false);
           }
         }
@@ -139,8 +140,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
       formFields={formFields}
       validationSchema={FormSchema}
       saveHandler={handleSubmit}
-      initialFormValues={initialFormValues}
       errorMessage={registrationError}
+      initialFormValues={initialFormValues}
     />
   );
 };

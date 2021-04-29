@@ -52,10 +52,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
   // Stop loading if any error
   if (loading && displayErrorMessage) setLoading(false);
 
-  const handlePhone = () => (value: string): void => {
-    initialFormValues.phone = value;
-  };
-
   /**
    *
    * @param value
@@ -97,12 +93,8 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
           <div className={styles.CenterBox}>
             <Form className={styles.Form}>
               {formFields.map((field, index) => {
-                let fieldInfo = { ...field };
-                if (field.type === 'phone') {
-                  fieldInfo = { ...field, handlePhone };
-                }
                 const key = index;
-                return <Field className={styles.Form} key={key} {...fieldInfo} />;
+                return <Field className={styles.Form} key={key} {...field} />;
               })}
               <Captcha onChange={handleCaptchaChange} onError={handleCaptchaError} />
               <div className={styles.CenterButton}>
@@ -118,9 +110,6 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
                   {loading ? null : buttonText}
                 </Button>
               </div>
-              {/* We neeed to add this submit button to enable form sumbitting when user hits enter
-               key. This is an workaround solution till the bug in formik or react is fixed. For
-               more info: https://github.com/formium/formik/issues/1418 */}
               <input className={styles.SubmitAction} type="submit" />
             </Form>
             {displayErrorMessage}
