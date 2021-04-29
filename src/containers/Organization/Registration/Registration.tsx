@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { InputAdornment, Link } from '@material-ui/core';
 import * as Yup from 'yup';
@@ -13,7 +12,11 @@ import Tooltip from '../../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
 import { GUPSHUP_DOCUMENTATION_HELP_LINK } from '../../../common/constants';
 
-export interface RegistrationProps {}
+export interface RegistrationProps {
+  title: string;
+  buttonText: string;
+  handleStep?: any;
+}
 
 const InfoAdornment = (
   <InputAdornment position="end" className={styles.InputAdornment}>
@@ -101,18 +104,13 @@ const initialFormValues = {
   shortcode: '',
 };
 
-export const Registration: React.SFC<RegistrationProps> = () => {
+export const Registration: React.SFC<RegistrationProps> = (props) => {
+  const { title, buttonText, handleStep } = props;
   const [registrationError, setRegistrationError] = useState('');
   const [redirect, setRedirect] = useState(false);
 
   if (redirect) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/onboard-success',
-        }}
-      />
-    );
+    handleStep();
   }
 
   const handleSubmit = (values: any, captcha: any, setErrors: any, setLoading: any) => {
@@ -135,8 +133,8 @@ export const Registration: React.SFC<RegistrationProps> = () => {
 
   return (
     <Organization
-      pageTitle="Setup your NGO on Glific"
-      buttonText="GET STARTED"
+      pageTitle={title}
+      buttonText={buttonText}
       formFields={formFields}
       validationSchema={FormSchema}
       saveHandler={handleSubmit}

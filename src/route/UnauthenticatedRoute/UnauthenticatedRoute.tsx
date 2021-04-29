@@ -11,14 +11,9 @@ export const UnauthenticatedRoute: React.SFC = () => {
   const ResetPasswordConfirmOTP = lazy(
     () => import('../../containers/Auth/ResetPassword/ResetPasswordConfirmOTP')
   );
+
   const OrganizationRegistration = lazy(
-    () => import('../../containers/Organization/Registration/Registration')
-  );
-  const OrganizationRegistrationSuccess = lazy(
-    () => import('../../containers/Organization/OnboardSuccess/OnboardSuccess')
-  );
-  const SetupInformation = lazy(
-    () => import('../../containers/Organization/SetupInformation/SetupInformation')
+    () => import('../../containers/Organization/RouteSetupSteps')
   );
 
   return (
@@ -28,9 +23,7 @@ export const UnauthenticatedRoute: React.SFC = () => {
       <Route path="/confirmotp" exact component={ConfirmOTP} />
       <Route path="/resetpassword-phone" exact component={ResetPasswordPhone} />
       <Route path="/resetpassword-confirmotp" exact component={ResetPasswordConfirmOTP} />
-      <Route path="/onboard-setup" exact component={OrganizationRegistration} />
-      <Route path="/setup-information" exact component={SetupInformation} />
-      <Route path="/onboard-success" exact component={OrganizationRegistrationSuccess} />
+      <Route path="/organization-registration" exact component={OrganizationRegistration} />
       <Route path="/" render={() => <Redirect to="/logout/user" />} />
     </Switch>
   );

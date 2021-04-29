@@ -2,6 +2,7 @@
   width: 100%;
   height: 100vh;
   font-family: 'Heebo' !important;
+  background-color: #f9f7f4;
 }
 
 .Organization {
@@ -23,7 +24,7 @@
   line-height: 1.056;
   color: #073f24;
   width: 331px;
-  height: 76px;
+  height: auto;
   text-align: center;
 }
 
@@ -45,7 +46,7 @@
   line-height: 1.125;
 }
 
-.links a {
+.links li a {
   text-decoration: underline;
   color: #119656;
   width: 308px;
@@ -56,4 +57,8 @@
   height: 40px;
   background-color: #119656;
   color: white;
+}
+.redirectLinkIcon {
+  color: #119656;
+  height: 16px;
 }
