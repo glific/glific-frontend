@@ -8,7 +8,6 @@ import {
   GET_ORGANIZATION_COUNT,
 } from '../graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
-import { setVariables } from '../common/constants';
 
 export const getOrganizationQuery = [
   {
