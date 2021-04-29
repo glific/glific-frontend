@@ -158,7 +158,6 @@ const routeAdmin = (
     />
     <Route path="/trigger" exact component={TriggerList} />
     <Route path="/organization" exact component={OrganizationList} />
-    <Route path="/organization/:id" exact component={Organisation} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );
