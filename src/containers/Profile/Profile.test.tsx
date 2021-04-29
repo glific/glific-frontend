@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Profile } from './Profile';
 import { LOGGED_IN_USER_MOCK } from '../../mocks/Contact';
@@ -13,6 +12,6 @@ const wrapper = (
 );
 
 it('should render Profile page', () => {
-  const {container}= render(wrapper)
+  const { container } = render(wrapper);
   expect(container).toBeInTheDocument();
 });

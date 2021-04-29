@@ -1,4 +1,3 @@
-import React from 'react';
 import ChatInput from './ChatInput';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';

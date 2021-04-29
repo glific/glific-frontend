@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, within, screen } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
@@ -50,6 +49,23 @@ const body = {
   type: 'TEXT',
   media: null,
   errors: '{}',
+  contextMessage: {
+    body: 'All good',
+    contextId: 1,
+    messageNumber: 10,
+    errors: '{}',
+    media: null,
+    type: 'TEXT',
+    insertedAt: '2021-04-26T06:13:03.832721Z',
+    location: null,
+    receiver: {
+      id: '1',
+    },
+    sender: {
+      id: '2',
+      name: 'User',
+    },
+  },
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -115,6 +131,23 @@ const collection = {
             type: 'TEXT',
             media: null,
             errors: '{}',
+            contextMessage: {
+              body: 'All good',
+              contextId: 1,
+              messageNumber: 10,
+              errors: '{}',
+              media: null,
+              type: 'TEXT',
+              insertedAt: '2021-04-26T06:13:03.832721Z',
+              location: null,
+              receiver: {
+                id: '1',
+              },
+              sender: {
+                id: '2',
+                name: 'User',
+              },
+            },
           },
         ],
       },

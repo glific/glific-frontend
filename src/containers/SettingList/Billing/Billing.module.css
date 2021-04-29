@@ -147,8 +147,21 @@
 }
 
 .Portal {
-  margin-left: 10px;
+  color: #119656;
+  margin-left: 40px;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-underline-offset: px;
   margin-top: 10px;
+}
+
+.Portal svg {
+  width: 16px;
+  height: 16px;
 }
 
 .Active {

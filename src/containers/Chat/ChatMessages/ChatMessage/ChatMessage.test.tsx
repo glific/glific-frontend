@@ -57,6 +57,24 @@ const Props = (link: any) => {
     type: link,
     media: { url: 'http://glific.com' },
     errors: '{}',
+    contextMessage: {
+      body: 'All good',
+      contextId: 1,
+      messageNumber: 10,
+      errors: '{}',
+      media: null,
+      type: 'TEXT',
+      insertedAt: '2021-04-26T06:13:03.832721Z',
+      location: null,
+      receiver: {
+        id: '1',
+      },
+      sender: {
+        id: '2',
+        name: 'User',
+      },
+    },
+    jumpToMessage: Function,
   };
 };
 
@@ -152,5 +170,12 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageDoc);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+  });
+
+  test('it should click on replied message', async () => {
+    const { getByTestId } = render(chatMessageDoc);
+    await waitFor(() => {
+      fireEvent.click(getByTestId('reply-message'));
+    });
   });
 });

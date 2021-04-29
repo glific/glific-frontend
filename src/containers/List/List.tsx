@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 
 import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -121,7 +120,6 @@ export const List: React.SFC<ListProps> = ({
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const { t } = useTranslation();
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -288,7 +286,7 @@ export const List: React.SFC<ListProps> = ({
   const deleteHandler = (id: number) => {
     const variables = deleteModifier.variables ? deleteModifier.variables(id) : { id };
     deleteItem({ variables });
-    setNotification(client, t(`${capitalListItemName} deleted successfully`));
+    setNotification(client, `${capitalListItemName} deleted successfully`);
   };
 
   const handleDeleteItem = () => {
@@ -303,8 +301,7 @@ export const List: React.SFC<ListProps> = ({
     dialogBox = (
       <DialogBox
         title={
-          dialogTitle ||
-          t(`Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`)
+          dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
         handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
