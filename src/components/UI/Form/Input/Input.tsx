@@ -48,6 +48,8 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     inputProp,
   } = props;
 
+  console.log(form);
+
   let fieldType = type;
   let fieldEndAdorment = null;
   if (type === 'password') {

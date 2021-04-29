@@ -58,7 +58,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [pending, setPending] = useState(false);
   const [couponApplied, setCouponApplied] = useState(false);
-  const [coupon, setCoupon] = useState('');
+  const [coupon] = useState('');
 
   const { t } = useTranslation();
 
@@ -95,54 +95,14 @@ export const BillingForm: React.FC<BillingProps> = () => {
       name: 'name',
       type: 'text',
       placeholder: 'Your name',
-      disabled: alreadySubscribed || pending,
+      disabled: alreadySubscribed || pending || disable,
     },
     {
       component: Input,
       name: 'email',
       type: 'text',
       placeholder: 'Email ID',
-      disabled: alreadySubscribed || pending,
-    },
-  ];
-
-  const couponField = [
-    {
-      component: Input,
-      field: {
-        name: 'coupon',
-        value: coupon,
-        onChange: (event: any) => {
-          setCoupon(event.target.value);
-        },
-      },
-      type: 'text',
-      placeholder: 'Coupon Code',
-      disabled: couponApplied,
-      endAdornment: (
-        <InputAdornment position="end">
-          {couponLoading ? (
-            <CircularProgress />
-          ) : (
-            <div
-              aria-hidden
-              className={styles.Apply}
-              onClick={() => {
-                getCouponCode({ variables: { code: coupon } });
-              }}
-            >
-              {couponApplied ? (
-                <CancelOutlinedIcon
-                  className={styles.CrossIcon}
-                  onClick={() => setCouponApplied(false)}
-                />
-              ) : (
-                ' APPLY'
-              )}
-            </div>
-          )}
-        </InputAdornment>
-      ),
+      disabled: alreadySubscribed || pending || disable,
     },
   ];
 
@@ -198,6 +158,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
         }
       } // successful subscription
       else if (result.status === 'active') {
+        refetch();
         setDisable(true);
         setLoading(false);
         setNotification(client, 'Your billing account is setup successfully');
@@ -437,6 +398,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       <div>
         <Formik
           enableReinitialize
+          validateOnBlur={false}
           initialValues={{
             name,
             email,
@@ -447,13 +409,46 @@ export const BillingForm: React.FC<BillingProps> = () => {
             handleSubmit(itemData);
           }}
         >
-          {() => (
+          {({ values, setFieldError, setFieldTouched }) => (
             <Form>
-              {processIncomplete &&
-                couponField.map((field, index) => {
-                  const key = index;
-                  return <Field key={key} {...field} />;
-                })}
+              {processIncomplete && (
+                <Field
+                  component={Input}
+                  name="coupon"
+                  type="text"
+                  placeholder="Coupon Code"
+                  disabled={couponApplied}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      {couponLoading ? (
+                        <CircularProgress />
+                      ) : (
+                        <div
+                          aria-hidden
+                          className={styles.Apply}
+                          onClick={() => {
+                            if (values.coupon === '') {
+                              setFieldError('coupon', 'Please input coupon code');
+                              setFieldTouched('coupon');
+                            } else {
+                              getCouponCode({ variables: { code: values.coupon } });
+                            }
+                          }}
+                        >
+                          {couponApplied ? (
+                            <CancelOutlinedIcon
+                              className={styles.CrossIcon}
+                              onClick={() => setCouponApplied(false)}
+                            />
+                          ) : (
+                            ' APPLY'
+                          )}
+                        </div>
+                      )}
+                    </InputAdornment>
+                  }
+                />
+              )}
               {formFieldItems.map((field, index) => {
                 const key = index;
                 return <Field key={key} {...field} />;
@@ -461,7 +456,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
               {paymentBody}
 
-              {!alreadySubscribed && !pending && !disable ? (
+              {processIncomplete && (
                 <Button
                   variant="contained"
                   data-testid="submitButton"
@@ -473,7 +468,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
                 >
                   Subscribe for monthly billing
                 </Button>
-              ) : null}
+              )}
             </Form>
           )}
         </Formik>
