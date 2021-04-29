@@ -292,5 +292,6 @@
   "Language changed successfully!": "भाषा सफलतापूर्वक बदल गई!",
   "Title length is too long.": "शीर्षक बहुत लंबा है।",
   "Sorry, no results found!\n    Please try a different search.": "क्षमा करें, कोई परिणाम नहीं मिला! कृपया एक अलग खोज की कोशिश करो।",
-  "Email is required.": "ईमेल जरुरी है।"
+  "Email is required.": "ईमेल जरुरी है।",
+  "Access only to the chat section and their collections. Access can be limited to chatting\n        with all contacts or only to the ones in their assigned collection.": "Access only to the chat section and their collections. Access can be limited to chatting\n        with all contacts or only to the ones in their assigned collection."
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import './i18n/config';
+import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
 
 import './assets/fonts/fonts.css';
 import gqlClient from './config/apolloclient';
@@ -12,12 +13,19 @@ import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/Unauthenticat
 import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from './containers/Auth/Logout/Logout';
 import { Loading } from './components/UI/Layout/Loading/Loading';
+import { CLEAR_CACHE_DURATION } from './common/constants';
 
 const App = () => {
+  const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
   const history = useHistory();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
+
+  // if not the latest version empty cache
+  if (!isLatestVersion && emptyCacheStorage) {
+    emptyCacheStorage();
+  }
 
   useEffect(() => {
     setAuthenticated(checkAuthStatusService());
@@ -52,7 +60,9 @@ const App = () => {
     <SessionContext.Provider value={values}>
       <ApolloProvider client={gqlClient(history)}>
         <ErrorHandler />
-        <Suspense fallback={Loading}>{routes}</Suspense>
+        <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
+          <Suspense fallback={Loading}>{routes}</Suspense>
+        </ClearCacheProvider>
       </ApolloProvider>
     </SessionContext.Provider>
   );

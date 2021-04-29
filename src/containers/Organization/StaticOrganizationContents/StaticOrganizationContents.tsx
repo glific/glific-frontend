@@ -17,9 +17,9 @@ export const StaticOrganizationContents: React.SFC<StaticOrganizationContetsProp
   let preRequisites;
   if (links) {
     preRequisites = links.map((index: any) => {
-      console.log(index);
+      const key = index;
       return (
-        <li>
+        <li key={key}>
           <a href={index.link} target="_blank" rel="noreferrer">
             {index.title}
             <CallMadeSharpIcon className={styles.redirectLinkIcon} />
