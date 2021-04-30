@@ -6,8 +6,9 @@ import { Formik, Form, Field } from 'formik';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { IconButton, Typography } from '@material-ui/core';
+import { CircularProgress, IconButton, InputAdornment, Typography } from '@material-ui/core';
 import CallMadeIcon from '@material-ui/icons/CallMade';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
@@ -21,7 +22,11 @@ import {
 import styles from './Billing.module.css';
 import { STRIPE_PUBLISH_KEY } from '../../../config';
 import { setNotification } from '../../../common/notification';
-import { GET_CUSTOMER_PORTAL, GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
+import {
+  GET_CUSTOMER_PORTAL,
+  GET_ORGANIZATION_BILLING,
+  GET_COUPON_CODE,
+} from '../../../graphql/queries/Billing';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
 import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -52,6 +57,9 @@ export const BillingForm: React.FC<BillingProps> = () => {
   const [cardError, setCardError] = useState<any>('');
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [pending, setPending] = useState(false);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [coupon] = useState('');
+
   const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
@@ -64,6 +72,16 @@ export const BillingForm: React.FC<BillingProps> = () => {
     fetchPolicy: 'network-only',
   });
 
+  const [
+    getCouponCode,
+    { data: couponCode, loading: couponLoading, error: couponError },
+  ] = useLazyQuery(GET_COUPON_CODE, {
+    onCompleted: ({ getCouponCode: couponCodeResult }) => {
+      if (couponCodeResult.code) {
+        setCouponApplied(true);
+      }
+    },
+  });
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {
@@ -77,14 +95,14 @@ export const BillingForm: React.FC<BillingProps> = () => {
       name: 'name',
       type: 'text',
       placeholder: 'Your name',
-      disabled: alreadySubscribed || pending,
+      disabled: alreadySubscribed || pending || disable,
     },
     {
       component: Input,
       name: 'email',
       type: 'text',
       placeholder: 'Email ID',
-      disabled: alreadySubscribed || pending,
+      disabled: alreadySubscribed || pending || disable,
     },
   ];
 
@@ -140,6 +158,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
         }
       } // successful subscription
       else if (result.status === 'active') {
+        refetch();
         setDisable(true);
         setLoading(false);
         setNotification(client, 'Your billing account is setup successfully');
@@ -193,12 +212,17 @@ export const BillingForm: React.FC<BillingProps> = () => {
       setNotification(client, error.message ? error.message : 'An error occurred', 'warning');
     } else if (paymentMethod) {
       setPaymentMethodId(paymentMethod.id);
+
+      const variables: any = {
+        stripePaymentMethodId: paymentMethod.id,
+      };
+
+      if (couponApplied) {
+        variables.couponCode = couponCode.getCouponCode.id;
+      }
+
       await createSubscription({
-        variables: {
-          input: {
-            stripePaymentMethodId: paymentMethod.id,
-          },
-        },
+        variables,
       });
     }
   };
@@ -314,6 +338,8 @@ export const BillingForm: React.FC<BillingProps> = () => {
     );
   }
 
+  const couponDescription = couponCode && JSON.parse(couponCode.getCouponCode.metadata);
+  const processIncomplete = !alreadySubscribed && !pending && !disable;
   return (
     <div className={styles.Form}>
       <Typography variant="h5" className={styles.Title}>
@@ -356,26 +382,81 @@ export const BillingForm: React.FC<BillingProps> = () => {
         </div>
       </div>
 
+      {couponApplied && (
+        <div className={styles.CouponDescription}>
+          <div className={styles.CouponHeading}>Coupon Applied!</div>
+          <div>{couponDescription.description}</div>
+        </div>
+      )}
+
+      {processIncomplete && couponError && (
+        <div className={styles.CouponError}>
+          <div>Invalid Coupon!</div>
+        </div>
+      )}
+
       <div>
         <Formik
           enableReinitialize
+          validateOnBlur={false}
           initialValues={{
             name,
             email,
+            coupon,
           }}
           validationSchema={validationSchema}
           onSubmit={(itemData) => {
             handleSubmit(itemData);
           }}
         >
-          {() => (
+          {({ values, setFieldError, setFieldTouched }) => (
             <Form>
+              {processIncomplete && (
+                <Field
+                  component={Input}
+                  name="coupon"
+                  type="text"
+                  placeholder="Coupon Code"
+                  disabled={couponApplied}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      {couponLoading ? (
+                        <CircularProgress />
+                      ) : (
+                        <div
+                          aria-hidden
+                          className={styles.Apply}
+                          onClick={() => {
+                            if (values.coupon === '') {
+                              setFieldError('coupon', 'Please input coupon code');
+                              setFieldTouched('coupon');
+                            } else {
+                              getCouponCode({ variables: { code: values.coupon } });
+                            }
+                          }}
+                        >
+                          {couponApplied ? (
+                            <CancelOutlinedIcon
+                              className={styles.CrossIcon}
+                              onClick={() => setCouponApplied(false)}
+                            />
+                          ) : (
+                            ' APPLY'
+                          )}
+                        </div>
+                      )}
+                    </InputAdornment>
+                  }
+                />
+              )}
               {formFieldItems.map((field, index) => {
                 const key = index;
                 return <Field key={key} {...field} />;
               })}
+
               {paymentBody}
-              {!alreadySubscribed && !pending && !disable ? (
+
+              {processIncomplete && (
                 <Button
                   variant="contained"
                   data-testid="submitButton"
@@ -387,7 +468,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
                 >
                   Subscribe for monthly billing
                 </Button>
-              ) : null}
+              )}
             </Form>
           )}
         </Formik>
