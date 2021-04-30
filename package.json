@@ -78,6 +78,7 @@
     "react-data-table-component": "^7.0.0-alpha-5",
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
+    "react-google-recaptcha": "^2.1.0",
     "react-i18next": "^11.8.12",
     "react-image": "^4.0.3",
     "react-linkify": "^1.0.0-alpha",
@@ -141,6 +142,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-google-recaptcha": "^2.1.0",
     "@types/react-test-renderer": "^17.0.1",
     "i18next-parser": "^3.7.0",
     "prettier": "^2.2.1",
