@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import styles from './OrganizationList.module.css';
-import {
-  GET_ORGANIZATION_COUNT,
-  FILTER_ORGANIZATIONS,
-  FILTER_ORGANIZATIONS_NAME,
-} from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from '../../graphql/queries/Organization';
 import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
@@ -116,7 +112,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       listIcon={listIcon}
       dialogMessage={dialogMessage}
       refetchQueries={{
-        query: FILTER_ORGANIZATIONS_NAME,
+        query: FILTER_ORGANIZATIONS,
         variables: setVariables(),
       }}
       additionalAction={additionalActions}

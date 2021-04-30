@@ -108,15 +108,3 @@ export const FILTER_ORGANIZATIONS = gql`
     }
   }
 `;
-
-export const FILTER_ORGANIZATIONS_NAME = gql`
-  query organizations($filter: OrganizationFilter!, $opts: Opts!) {
-    organizations(filter: $filter, opts: $opts) {
-      id
-      name
-      isActive
-      isApproved
-      insertedAt
-    }
-  }
-`;
