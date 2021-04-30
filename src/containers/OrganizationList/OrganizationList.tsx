@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { IconButton } from '@material-ui/core';
+import { useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './OrganizationList.module.css';
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from '../../graphql/queries/Organization';
@@ -8,12 +10,15 @@ import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
 } from '../../graphql/mutations/Organization';
-
 import { List } from '../List/List';
 import { setVariables } from '../../common/constants';
+import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as OrganisationIcon } from '../../assets/images/icons/Organisation.svg';
 import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activate.svg';
 import { ReactComponent as UnblockIcon } from '../../assets/images/icons/Unblock.svg';
+import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
+import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
+import { setNotification } from '../../common/notification';
 
 export interface OrganizationListProps {}
 
@@ -21,11 +26,11 @@ const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
-  updateStatusQuery: UPDATE_ORGANIZATION_STATUS,
 };
 
 export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const { t } = useTranslation();
+  const client = useApolloClient();
 
   const columnNames = ['NAME', 'IS APPROVED', 'IS ACTIVE', 'ACTIONS'];
 
@@ -85,18 +90,80 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const approveIcon = <UnblockIcon />;
   const activeIcon = <ActivateIcon />;
 
+  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
+    refetchQueries: () => [{ query: FILTER_ORGANIZATIONS, variables: setVariables() }],
+  });
+
+  const handleOrganizationStatus = (id: any, payload: any) => {
+    const variables = {
+      updateOrganizationId: id,
+      ...payload,
+    };
+    updateOrganizationStatus({ variables });
+    setNotification(client, 'Organization updated successfully');
+  };
+
+  const activateButton = (listItems: any, action: any, key: number) => {
+    const { isApproved, isActive } = listItems;
+
+    /**
+     * Default icon and labels for activate button
+     */
+    const iconLabel = isActive ? 'Deactivate organization' : 'Activate organization';
+    const icon = isActive ? <RemoveIcon /> : action.icon;
+
+    return (
+      <IconButton
+        color="default"
+        data-testid="additionalButton"
+        className={styles.additonalButton}
+        id="additionalButton-icon"
+        onClick={() => handleOrganizationStatus(listItems.id, { isActive: !isActive, isApproved })}
+        key={key}
+      >
+        <Tooltip title={iconLabel} placement="top" key={key}>
+          {icon}
+        </Tooltip>
+      </IconButton>
+    );
+  };
+
+  const approveButton = (listItems: any, action: any, key: number) => {
+    const { isApproved, isActive } = listItems;
+
+    const icon = isApproved ? <ApprovedIcon /> : action.icon;
+    const iconLabel = isApproved ? 'Unapprove organization' : 'Approve organization';
+
+    return (
+      <IconButton
+        color="default"
+        data-testid="additionalButton"
+        className={styles.additonalButton}
+        id="additionalButton-icon"
+        key={key}
+        onClick={() =>
+          handleOrganizationStatus(listItems.id, { isApproved: !isApproved, isActive })
+        }
+      >
+        <Tooltip title={iconLabel} placement="top" key={key}>
+          {icon}
+        </Tooltip>
+      </IconButton>
+    );
+  };
+
   const additionalActions = [
     {
       icon: approveIcon,
       parameter: 'id',
       label: t('Approve'),
-      other: 'approve',
+      button: approveButton,
     },
     {
       icon: activeIcon,
       parameter: 'id',
       label: t('Activate'),
-      other: 'active',
+      button: activateButton,
     },
   ];
 

@@ -22,8 +22,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/R
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
-import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
-import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
+
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, getUserRolePermissions } from '../../context/role';
@@ -65,7 +64,7 @@ export interface ListProps {
     link?: string;
     dialog?: any;
     label?: string;
-    other?: string;
+    button?: any;
   }>;
   deleteModifier?: {
     icon: string;
@@ -80,7 +79,6 @@ export interface ListProps {
   collapseRow?: any;
   defaultSortBy?: string | null;
   removeSortBy?: any;
-  updateStatusQuery?: DocumentNode;
 }
 
 interface TableVals {
@@ -123,7 +121,6 @@ export const List: React.SFC<ListProps> = ({
   collapseOpen,
   collapseRow,
   defaultSortBy,
-  updateStatusQuery,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -287,18 +284,6 @@ export const List: React.SFC<ListProps> = ({
     });
   }
 
-  let updateOrganizationStatus: any;
-  if (updateStatusQuery) {
-    [updateOrganizationStatus] = useMutation(updateStatusQuery, {
-      refetchQueries: () => {
-        if (refetchQueries) {
-          return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-        }
-        return [{ query: filterItemsQuery, variables: filterPayload() }];
-      },
-    });
-  }
-
   const showDialogHandler = (id: any, label: string) => {
     setDeleteItemName(label);
     setDeleteItemID(id);
@@ -331,15 +316,6 @@ export const List: React.SFC<ListProps> = ({
     deleteItem({ variables });
     setNotification(client, `${capitalListItemName} deleted successfully`);
     setDeleteItemID(null);
-  };
-
-  const handleOrganizationStatus = (id: any, payload: any) => {
-    const variables = {
-      updateOrganizationId: id,
-      ...payload,
-    };
-    updateOrganizationStatus({ variables });
-    setNotification(client, `${capitalListItemName} updated successfully`);
   };
 
   const useDelete = (Component: string | any) => {
@@ -447,53 +423,6 @@ export const List: React.SFC<ListProps> = ({
         </IconButton>
       ) : null;
 
-    const approveButton = (action: any, key: number) => {
-      const { isApproved, isActive } = listItems;
-
-      const icon = isApproved ? <ApprovedIcon /> : action.icon;
-      const iconLabel = isApproved ? 'Unapprove organization' : 'Approve organization';
-
-      return (
-        <IconButton
-          color="default"
-          data-testid="additionalButton"
-          className={styles.additonalButton}
-          id="additionalButton-icon"
-          key={key}
-          onClick={() => handleOrganizationStatus(id, { isApproved: !isApproved, isActive })}
-        >
-          <Tooltip title={iconLabel} placement="top" key={key}>
-            {icon}
-          </Tooltip>
-        </IconButton>
-      );
-    };
-
-    const activateButton = (action: any, key: number) => {
-      const { isApproved, isActive } = listItems;
-
-      /**
-       * Default icon and labels for activate button
-       */
-      const iconLabel = isActive ? 'Deactivate organization' : 'Activate organization';
-      const icon = isActive ? <RemoveIcon /> : action.icon;
-
-      return (
-        <IconButton
-          color="default"
-          data-testid="additionalButton"
-          className={styles.additonalButton}
-          id="additionalButton-icon"
-          onClick={() => handleOrganizationStatus(id, { isActive: !isActive, isApproved })}
-          key={key}
-        >
-          <Tooltip title={iconLabel} placement="top" key={key}>
-            {icon}
-          </Tooltip>
-        </IconButton>
-      );
-    };
-
     if (id) {
       return (
         <div className={styles.Icons}>
@@ -508,11 +437,6 @@ export const List: React.SFC<ListProps> = ({
             }
             const key = index;
 
-            if (action.other) {
-              return action.other === 'active'
-                ? activateButton(action, key)
-                : approveButton(action, key);
-            }
             if (action.link) {
               return (
                 <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
@@ -543,6 +467,9 @@ export const List: React.SFC<ListProps> = ({
                   </Tooltip>
                 </IconButton>
               );
+            }
+            if (action.button) {
+              return action.button(listItems, action, key);
             }
             return null;
           })}

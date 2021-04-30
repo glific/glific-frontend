@@ -49,3 +49,8 @@
   justify-content: flex-end;
   margin-left: auto;
 }
+
+.additonalButton {
+  width: 42px;
+  height: 42px;
+}
