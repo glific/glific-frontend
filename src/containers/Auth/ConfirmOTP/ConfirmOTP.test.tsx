@@ -1,7 +1,6 @@
 import { render, screen, wait } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import axios from 'axios';
 
 import { ConfirmOTP } from './ConfirmOTP';
 
