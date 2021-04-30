@@ -1,17 +1,22 @@
-import React from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { MemoryRouter, BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { Registration } from './Registration';
-import OnboardSuccess from '../OnboardSuccess/OnboardSuccess';
+import StaticOrganizationContents from '../StaticOrganizationContents/StaticOrganizationContents';
 
 jest.mock('axios');
 
+const props = {
+  title: 'Setup your NGO on Glific',
+  buttonText: 'GET STARTED',
+  handleStep: jest.fn(),
+};
+
 const wrapper = (
   <MemoryRouter>
-    <Registration />
+    <Registration {...props} />
   </MemoryRouter>
 );
 
@@ -42,7 +47,7 @@ describe('<Registration />', () => {
     const button = screen.getByText('GET STARTED');
 
     act(() => {
-      UserEvent.click(button);
+      fireEvent.click(button);
     });
 
     const responseData = { data: { is_valid: true, messages: [] } };
@@ -50,12 +55,12 @@ describe('<Registration />', () => {
 
     // render success onboard component after success
     const { container, findByTestId } = render(
-      <BrowserRouter>
-        <OnboardSuccess />
-      </BrowserRouter>
+      <StaticOrganizationContents
+        title="Thank you! Your setup has been initiated."
+        subtitle="We will get back to you with further steps once the setup is complete."
+      />
     );
 
-    await waitFor(() => findByTestId('setupInitiation'));
     // let's mock successful registration submission
     expect(container).toHaveTextContent(/Thank you/);
   });

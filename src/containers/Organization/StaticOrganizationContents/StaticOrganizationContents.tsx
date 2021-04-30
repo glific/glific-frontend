@@ -16,12 +16,12 @@ export const StaticOrganizationContents: React.SFC<StaticOrganizationContetsProp
   const { title, subtitle, links, buttonText, handleStep } = props;
   let preRequisites;
   if (links) {
-    preRequisites = links.map((index: any) => {
+    preRequisites = links.map((item: any, index: number) => {
       const key = index;
       return (
         <li key={key}>
-          <a href={index.link} target="_blank" rel="noreferrer">
-            {index.title}
+          <a href={item.link} target="_blank" rel="noreferrer">
+            {item.title}
             <CallMadeSharpIcon className={styles.redirectLinkIcon} />
           </a>
         </li>
@@ -41,7 +41,7 @@ export const StaticOrganizationContents: React.SFC<StaticOrganizationContetsProp
         <div className={styles.subtitle}>{subtitle}</div>
         {links ? (
           <div className={styles.links} data-testid="pre-requisite-links">
-            <ol>{preRequisites}</ol>
+            <ol aria-label="links">{preRequisites}</ol>
           </div>
         ) : null}
         {buttonText ? (
