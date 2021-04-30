@@ -76,10 +76,11 @@
   font-weight: 400;
   line-height: 20px;
   color: #073f24;
-  padding: 8px 16px;
+  padding: 10px 16px;
   word-wrap: break-word;
   /* Supports breaklines without need for text conversions. */
   white-space: pre-line;
+  max-width: 284px;
 }
 
 .ErrorContent {

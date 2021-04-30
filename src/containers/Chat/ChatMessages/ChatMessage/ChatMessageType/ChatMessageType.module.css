@@ -1,6 +1,5 @@
 .Image {
-  margin: 5px 5px;
-  max-width: 280px;
+  max-width: 284px;
   max-height: auto;
   cursor: pointer;
   background-size: cover !important;
@@ -9,12 +8,17 @@
 
 .Image img {
   overflow: hidden;
-  max-width: 280px;
+  max-width: 250px;
   height: auto;
   object-fit: contain;
   text-align: center;
 }
-
+.video {
+  max-width: 250px;
+}
+audio {
+  max-width: 250px;
+}
 .Document {
   composes: Image;
   height: 100px;

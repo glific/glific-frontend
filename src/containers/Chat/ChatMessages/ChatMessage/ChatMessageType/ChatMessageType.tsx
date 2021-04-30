@@ -89,7 +89,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         <div>
           <div className={styles.Image} data-testid="videoMessage">
             <ReactPlayer
-              className={styles.Image}
+              className={styles.video}
               url={media.url}
               controls
               light={VideoThumbnail}
