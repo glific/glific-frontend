@@ -14,8 +14,9 @@ export interface VoiceRecorderProps {
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
-    const audiofile = new File([blob], 'audiofile.webm', { type: 'audio/webm' });
-    props.handleAudioRecording(audiofile);
+    // currently we are passing blob to backend hence no need to create a file
+    // const audiofile = new File([blob], 'audiofile.webm', { type: 'audio/webm' });
+    props.handleAudioRecording(blob);
   }, []);
 
   const {

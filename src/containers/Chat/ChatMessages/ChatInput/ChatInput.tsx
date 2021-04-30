@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
@@ -19,10 +19,11 @@ import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
-import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA } from '../../../../graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
+import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Chat';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -59,7 +60,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
   const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
-  const [recordedAudio, setRecordedAudio] = useState('');
+  const [recordedAudio, setRecordedAudio] = useState<any>('');
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -72,6 +73,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSelectedTemplate(undefined);
     setVariableParam([]);
   };
+
+  const { data: attachmentPermission } = useQuery(GET_ATTACHMENT_PERMISSION);
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
@@ -91,10 +94,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
+  const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
     onCompleted: (data: any) => {
       if (data) {
-        console.log('data---', data);
+        console.log('data-', data);
+        // Here we need to call createMediaMessage and pass gcs url
       }
     },
     onError: (error: any) => {
@@ -114,18 +118,21 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     dialog = <AddAttachment {...dialogProps} />;
   }
 
-  const submitMessage = (message: string) => {
+  if (attachmentPermission) {
+    // check if gcs integrated or not
+  }
+
+  const submitMessage = async (message: string) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
-      console.log('recordedAudio', {
-        media: recordedAudio,
-        type: 'Audio',
-      });
-      // save media that  will return an URL
-      uploadMedia({
+      // need to check on this
+      const media = await recordedAudio.text();
+
+      // save media that will return an URL
+      uploadMediaBlob({
         variables: {
-          media: recordedAudio,
-          type: 'audio/webm',
+          media: btoa(unescape(encodeURIComponent(media))),
+          type: 'wav',
         },
       });
     }
@@ -230,9 +237,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     dialog = <AddVariables {...dialogProps} />;
   }
 
-  const handleAudioRecording = (file: any) => {
-    console.log('setRecordedAudio', file);
-    setRecordedAudio(file);
+  const handleAudioRecording = (blob: any) => {
+    setRecordedAudio(blob);
   };
 
   const handleSearch = (e: any) => {
