@@ -7,6 +7,14 @@ import { Registration } from './Registration';
 import StaticOrganizationContents from '../StaticOrganizationContents/StaticOrganizationContents';
 
 jest.mock('axios');
+jest.mock('react-google-recaptcha', () => (props: any) => (
+  <input
+    type="checkbox"
+    data-testid="recaptcha-sign-in"
+    className={props.size}
+    onChange={props.onChange}
+  />
+));
 
 const props = {
   title: 'Setup your NGO on Glific',

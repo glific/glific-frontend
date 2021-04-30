@@ -8,6 +8,16 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { Organization } from './Organization';
 import { act } from 'react-dom/test-utils';
 
+jest.mock('react-google-recaptcha', () => (props: any) => (
+  <input
+    type="checkbox"
+    aria-label="recaptcha"
+    data-testid="recaptcha-sign-in"
+    className={props.size}
+    onChange={props.onChange}
+  />
+));
+
 const schema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
 });
@@ -45,8 +55,13 @@ test('it should render component and show error messages', async () => {
   const registration = await findByTestId('RegistrationContainer');
   expect(registration).toBeInTheDocument();
 
+  const captcha = await findByTestId('recaptcha-sign-in');
+  expect(captcha).toBeInTheDocument();
+
   const submit = await findByTestId('SubmitButton');
+
   act(() => {
+    UserEvent.click(captcha);
     UserEvent.click(submit);
   });
 
