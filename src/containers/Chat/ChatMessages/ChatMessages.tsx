@@ -120,8 +120,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       scrollToLatestMessage();
     },
     onError: (error: any) => {
-      if (error.message) {
-        setNotification(client, error.message, 'warning');
+      const [message] = error;
+      if (message) {
+        setNotification(client, message, 'warning');
       }
       return null;
     },
@@ -284,9 +285,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     onCompleted: () => {
       scrollToLatestMessage();
     },
-    onError: (collecctionError: any) => {
-      if (collecctionError.message) {
-        setNotification(client, collecctionError.message, 'warning');
+    onError: (collectionError: any) => {
+      const [message] = collectionError;
+      if (message) {
+        setNotification(client, message, 'warning');
       }
       return null;
     },
