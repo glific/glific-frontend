@@ -1,0 +1,176 @@
+.Container {
+  width: 100%;
+  height: 100vh;
+  font-family: 'Heebo' !important;
+  background-color: #f9f7f4;
+}
+
+.Organization {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  vertical-align: middle;
+}
+
+.GlificLogo {
+  margin-top: 5vh;
+  width: 99px;
+}
+
+.Box {
+  border-radius: 12px;
+  margin: 5vh 0px;
+  align-content: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.RegistrationBox {
+  width: 400px;
+  min-height: 440px;
+  height: auto;
+  background-color: #073f24;
+}
+
+.BoxTitle {
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  margin-top: 32px;
+  margin-left: 32px;
+  font-weight: bold;
+  width: 320px;
+}
+
+.RegistrationBoxTitle {
+  color: white;
+}
+
+.ErrorMessage {
+  margin-top: 5px;
+  color: red;
+  width: 333px;
+  padding-bottom: 10px;
+}
+
+.TitleText {
+  font-weight: bold !important;
+  font-size: 36px !important;
+}
+
+.SubText {
+  color: #93a29b;
+  display: flex;
+  align-content: flex-start;
+  font-weight: 500;
+  margin-left: 32px;
+  margin-top: 4px;
+}
+
+.CenterBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.Form {
+  width: 350px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  padding: 0px 8px;
+}
+
+.Form > div {
+  padding: 0;
+  margin: 4px 0px;
+}
+
+/* 4th div helper text to right align */
+.Form > div:nth-of-type(4) > div > p[id='helper-text'] {
+  text-align: end;
+}
+
+/* 5th div need more top bottom margin */
+.Form > div:nth-of-type(5) {
+  padding: 0;
+  margin: 20px 0px !important;
+}
+
+/* 5th div helperText need more font-size and top margin */
+.Form > div:nth-of-type(5) > div > p[id='helper-text'] {
+  font-size: 16px !important;
+  margin-top: 8px !important;
+}
+
+.CenterButton {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0px 20px 0px !important;
+}
+
+.CenterButton > button:disabled {
+  background-color: #cacaca;
+}
+
+/* Loading spinner color */
+.CenterButton > button > span > div {
+  color: #073f24;
+}
+
+.OrgButton {
+  width: 334px;
+  margin-right: 0px !important;
+  border-color: #11966c !important;
+}
+
+.Organization a {
+  color: #119656;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.Organization a:visited {
+  color: #119656;
+}
+
+.Organization hr {
+  margin-top: 32px;
+  margin-left: 18px;
+  margin-right: 18px;
+  height: 1px;
+  width: 142px;
+  border-color: #eaedec;
+  background-color: #eaedec;
+  color: #eaedec;
+  border-style: solid;
+}
+
+.Organization .Link {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+  margin-left: 10px;
+  padding-bottom: 10px;
+}
+
+.Organization .Link a {
+  font-size: 16px;
+  color: #93a29b;
+  font-weight: 500;
+}
+
+.RegistrationBox input,
+.RegistrationBox input:hover {
+  color: #93a29b !important;
+}
+
+.RegistrationBox fieldset {
+  border-color: #93a29b !important;
+}
+
+.SubmitAction {
+  display: none;
+}

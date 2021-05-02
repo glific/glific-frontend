@@ -134,3 +134,15 @@ export const REFETCH_RANDOM_TIME_MIN = 10;
 
 // max offset for the wait ( in seconds )
 export const REFETCH_RANDOM_TIME_MAX = 40;
+
+// Gupshup documentation help link
+export const GUPSHUP_DOCUMENTATION_HELP_LINK =
+  'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation';
+
+// pre-requisite link for facebook business manager verification in organization setup
+export const FB_MANAGER_VERIFICATION =
+  'https://glific.slab.com/public/posts/facebook-verification-process-for-wa-business-api-065jvy5a';
+
+// pre-requisite link for gupshup account creation in organization setup
+export const GUPSHUP_ACCOUNT_CREATION =
+  'https://glific.slab.com/public/posts/setup-the-organization-on-gupshup-and-go-live-qwbjphx0';
