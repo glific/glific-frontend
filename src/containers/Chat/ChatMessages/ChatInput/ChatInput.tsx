@@ -23,7 +23,7 @@ import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from '../../../../graphql/mut
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
-import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Chat';
+import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -116,10 +116,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       setAttachmentURL,
     };
     dialog = <AddAttachment {...dialogProps} />;
-  }
-
-  if (attachmentPermission) {
-    // check if gcs integrated or not
   }
 
   const submitMessage = async (message: string) => {
@@ -293,7 +289,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     );
   }
 
-  const audioOption = <VoiceRecorder handleAudioRecording={handleAudioRecording} />;
+  let audioOption: any;
+  // enable audio only if GCS is configured
+  if (attachmentPermission) {
+    audioOption = <VoiceRecorder handleAudioRecording={handleAudioRecording} />;
+  }
 
   return (
     <Container
