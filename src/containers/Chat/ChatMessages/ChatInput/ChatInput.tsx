@@ -128,7 +128,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       uploadMediaBlob({
         variables: {
           media: btoa(unescape(encodeURIComponent(media))),
-          type: 'wav',
+          extension: 'wav',
         },
       });
     }

@@ -85,7 +85,7 @@ export const CREATE_MEDIA_MESSAGE = gql`
 `;
 
 export const UPLOAD_MEDIA_BLOB = gql`
-  mutation uploadBlob($media: String!, $type: String!) {
-    uploadBlob(media: $media, type: $type)
+  mutation uploadBlob($media: String!, $extension: String!) {
+    uploadBlob(media: $media, extension: $extension)
   }
 `;
