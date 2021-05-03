@@ -83,3 +83,15 @@ test('start with a keyword message if the simulator opens in floweditor screen',
     // expect(getByText('draft:help'));
   });
 });
+
+test('test if XMLHTTPRequest works ', async () => {
+  const { getByTestId } = render(wrapper);
+  fireEvent.click(getByTestId('previewButton'));
+
+  const newRequest = new XMLHttpRequest();
+  newRequest.open('GET', 'www.glific.org');
+  newRequest.send();
+  await waitFor(() => {
+    expect(newRequest.readyState).toBe(4);
+  });
+});

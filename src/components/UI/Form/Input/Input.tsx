@@ -22,7 +22,7 @@ export interface InputProps {
   form?: { touched: any; errors: any };
   placeholder: any;
   rows?: number;
-  helperText?: string;
+  helperText?: any;
   emojiPicker?: any;
   textArea?: boolean;
   togglePassword?: boolean;
@@ -116,7 +116,9 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
-          <FormHelperText className={styles.HelperText}>{helperText}</FormHelperText>
+          <FormHelperText id="helper-text" className={styles.HelperText}>
+            {helperText}
+          </FormHelperText>
         ) : null}
       </FormControl>
     </div>
