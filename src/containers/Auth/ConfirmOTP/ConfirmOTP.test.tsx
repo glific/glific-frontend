@@ -1,4 +1,4 @@
-import { act, render, screen, wait } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
