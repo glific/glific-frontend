@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
-import {
-  IconButton,
-  TableFooter,
-  TablePagination,
-  TableRow,
-  Typography,
-  OutlinedInput,
-} from '@material-ui/core';
+import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
 import styles from './List.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -129,7 +122,6 @@ export const List: React.SFC<ListProps> = ({
   const [deleteItemName, setDeleteItemName] = useState<string>('');
   const [newItem, setNewItem] = useState(false);
   const [searchVal, setSearchVal] = useState('');
-  const [confirmDelete, setConfirmDelete] = useState('');
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
@@ -291,7 +283,6 @@ export const List: React.SFC<ListProps> = ({
 
   const closeDialogBox = () => {
     setDeleteItemID(null);
-    setConfirmDelete('');
   };
 
   const deleteHandler = (id: number) => {
@@ -307,40 +298,29 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(null);
   };
 
-  const handleDeleteInActiveOrganizations = (isConfirmed: boolean) => {
-    const variables = {
-      isConfirmed,
-      deleteOrganizationID: deleteItemID,
-    };
-
-    deleteItem({ variables });
-    setNotification(client, `${capitalListItemName} deleted successfully`);
-    setDeleteItemID(null);
-  };
-
-  const useDelete = (Component: string | any) => {
+  const useDelete = (message: string | any) => {
     let component = {};
-    const isConfirmed = deleteItemName === confirmDelete;
     const props = { disableOk: false, handleOk: handleDeleteItem };
 
-    if (typeof Component === 'string') {
-      component = Component;
+    if (typeof message === 'string') {
+      component = message;
     } else {
-      component = (
-        <Component>
-          <p className={styles.DialogSubText}>
-            This action cannot be undone. Please enter the name of organization to proceed
-          </p>
-          <OutlinedInput
-            fullWidth
-            placeholder="Organization name"
-            onChange={(event: any) => setConfirmDelete(event.target.value)}
-            className={styles.DialogSubInput}
-          />
-        </Component>
-      );
-      props.disableOk = !isConfirmed;
-      props.handleOk = () => handleDeleteInActiveOrganizations(isConfirmed);
+      /**
+       * Custom component to render
+       * message should contain 3 params
+       * 1. component: Component to render
+       * 2. isConfirm: Check for confirm delete
+       * 3. handleOkCallback: Callback action to delete item
+       */
+      const { component: componentToRender, isConfirmed, handleOkCallback } = message();
+      const isConfirmDelete = isConfirmed(deleteItemName);
+      const payload = {
+        isConfirmed: isConfirmDelete,
+        deleteOrganizationID: deleteItemID,
+      };
+      component = componentToRender;
+      props.disableOk = !isConfirmDelete;
+      props.handleOk = () => handleOkCallback({ payload, refetch: fetchQuery, setDeleteItemID });
     }
 
     return {

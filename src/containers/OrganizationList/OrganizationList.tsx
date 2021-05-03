@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { IconButton } from '@material-ui/core';
+import { IconButton, OutlinedInput } from '@material-ui/core';
 import { useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './OrganizationList.module.css';
@@ -31,6 +31,7 @@ const queries = {
 export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const { t } = useTranslation();
   const client = useApolloClient();
+  const [orgName, setOrgName] = useState('');
 
   const columnNames = ['NAME', 'IS APPROVED', 'IS ACTIVE', 'ACTIONS'];
 
@@ -73,13 +74,6 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     isActive: getStatus(isActive, 'active'),
   });
 
-  /**
-   * Add custom component for delete with input text
-   */
-  const deleteDialogue = ({ children }: { children: any }) => <div>{children}</div>;
-
-  const dialogMessage = deleteDialogue;
-
   const columnAttributes = {
     columnNames,
     columns: getColumns,
@@ -91,6 +85,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const activeIcon = <ActivateIcon />;
 
   const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
+  const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
 
   const handleOrganizationStatus = (id: any, payload: any, refetch: any) => {
     const variables = {
@@ -99,6 +94,13 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     };
     updateOrganizationStatus({ variables, refetchQueries: refetch });
     setNotification(client, 'Organization updated successfully');
+  };
+
+  const handleDeleteInActiveOrg = ({ payload, refetch, setDeleteItemID }: any) => {
+    deleteInActiveOrg({ variables: payload, refetchQueries: refetch });
+    // Setting delete item id to null to prevent showing dialogue again
+    setDeleteItemID(null);
+    setNotification(client, 'Organization deleted successfully');
   };
 
   const activateButton = (listItems: any, action: any, key: number, refetch: any) => {
@@ -151,6 +153,30 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       </IconButton>
     );
   };
+
+  const deleteDialogue = () => {
+    const component = (
+      <div>
+        <p className={styles.DialogSubText}>
+          This action cannot be undone. Please enter the name of organization to proceed
+        </p>
+        <OutlinedInput
+          fullWidth
+          placeholder="Organization name"
+          onChange={(event: any) => setOrgName(event.target.value)}
+          className={styles.DialogSubInput}
+        />
+      </div>
+    );
+
+    return {
+      component,
+      handleOkCallback: handleDeleteInActiveOrg,
+      isConfirmed: (itemName: any) => itemName === orgName,
+    };
+  };
+
+  const dialogMessage = deleteDialogue;
 
   const additionalActions = [
     {
