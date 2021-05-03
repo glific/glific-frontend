@@ -2,10 +2,9 @@ import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
+import { ConfirmOTP } from './ConfirmOTP';
 
 jest.mock('axios');
-
-import { ConfirmOTP } from './ConfirmOTP';
 
 const defaultProps = { location: { state: { name: '', phoneNumber: '', password: '' } } };
 
