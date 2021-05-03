@@ -47,7 +47,7 @@ export const setUserRolePermissions = () => {
      */
     if (user.name !== 'NGO Main Account') {
       staffManagementMenu = staffManagementMenu.filter(
-        ({ title }: { title: string }) => title !== 'Organization'
+        ({ title }: { title: string }) => title !== 'Organizations'
       );
     }
 
