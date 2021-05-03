@@ -16,6 +16,44 @@ import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
+import {
+  checkAuthStatusService,
+  getAuthSession,
+  renewAuthToken,
+  setAuthSession,
+} from '../../services/AuthService';
+
+// // add authorization header in all calls
+let renewTokenCalled = false;
+let tokenRenewed = false;
+
+((send) => {
+  XMLHttpRequest.prototype.send = async function (body) {
+    this.addEventListener('loadend', () => {
+      if (this.status === 401) {
+        window.location.href = '/logout/user';
+      }
+    });
+    if (checkAuthStatusService()) {
+      this.setRequestHeader('Authorization', getAuthSession('access_token'));
+      send.call(this, body);
+    } else if (renewTokenCalled && !tokenRenewed) {
+      send.call(this, body);
+      tokenRenewed = true;
+    } else if (!renewTokenCalled) {
+      renewTokenCalled = true;
+      const authToken = await renewAuthToken();
+      if (authToken.data) {
+        // update localstore
+        setAuthSession(JSON.stringify(authToken.data.data));
+        renewTokenCalled = false;
+        tokenRenewed = false;
+      }
+      this.setRequestHeader('Authorization', getAuthSession('access_token'));
+      send.call(this, body);
+    }
+  };
+})(XMLHttpRequest.prototype.send);
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -265,17 +303,17 @@ export const FlowEditor = (props: FlowEditorProps) => {
   };
 
   const errorMsg = () => (
-    <p className={styles.DialogError}>
+    <div className={styles.DialogError}>
       Errors were detected in the flow. Would you like to continue modifying?
-      <p>
+      <div>
         {flowValidation.map((message: any) => (
-          <p key={message.message}>
+          <div key={message.message}>
             <WarningIcon className={styles.ErrorMsgIcon} />
             {message.message}
-          </p>
+          </div>
         ))}
-      </p>
-    </p>
+      </div>
+    </div>
   );
 
   if (publishDialog) {
