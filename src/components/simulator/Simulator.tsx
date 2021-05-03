@@ -59,8 +59,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const client = useApolloClient();
   let messages: any[] = [];
   let simulatorId = '';
-  // to check if chat message will be shown on simulator or not
-  let isSimulatedMessage = false;
+  // chat messages will be shown on simulator
+  const isSimulatedMessage = true;
 
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
@@ -147,7 +147,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       .map((simulatorMessage: any, index: number) => {
         const { body, insertedAt, type, media, location } = simulatorMessage;
         if (simulatorMessage.receiver.id === simulatorId) {
-          isSimulatedMessage = true;
           return renderMessage(body, 'received', index, insertedAt, type, media, location);
         }
         return renderMessage(body, 'send', index, insertedAt, type, media, location);
