@@ -1,4 +1,4 @@
-import { render, cleanup, fireEvent } from '@testing-library/react';
+import { render, cleanup, fireEvent, act, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import UserEvent from '@testing-library/user-event';
 import OrganizationList from './OrganizationList';
@@ -31,16 +31,17 @@ jest.mock('react-i18next', () => ({
 }));
 
 test('Organization list renders correctly', async () => {
-  const { getByText, findByText } = render(list);
+  render(list);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 
-  await new Promise((resolve) => setTimeout(resolve, 0));
-
-  const label = await findByText('Organizations');
-  const nameLabel = await findByText('NAME');
-  const isActiveLabel = await findByText('IS ACTIVE');
-  const actionLabel = await findByText('ACTIONS');
+  const label = await screen.findByText('Organizations');
+  const nameLabel = await screen.findByText('NAME');
+  const isActiveLabel = await screen.findByText('IS ACTIVE');
+  const actionLabel = await screen.findByText('ACTIONS');
 
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();
@@ -49,41 +50,40 @@ test('Organization list renders correctly', async () => {
 });
 
 test('Perform button actions on Org List', async () => {
-  const { getByText, getByRole, findByText, getAllByRole } = render(list);
+  render(list);
 
-  expect(getByText('Loading...')).toBeInTheDocument();
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
 
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  const label = await findByText('Organizations');
-  expect(label).toBeInTheDocument();
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 
-  const approveButton = getAllByRole('button', {
+  const label = await screen.findByText('Organizations');
+  const approveButton = screen.getAllByRole('button', {
     name: 'Unblock.svg',
   })[0];
-
-  const activateButton = getAllByRole('button', {
+  const activateButton = screen.getAllByRole('button', {
     name: 'Remove.svg',
   })[0];
 
+  expect(label).toBeInTheDocument();
   expect(approveButton).toBeInTheDocument();
   expect(activateButton).toBeInTheDocument();
 
   fireEvent.click(approveButton);
   fireEvent.click(activateButton);
 
-  const deleteButton = getByRole('button', { name: 'Delete' });
+  const deleteButton = screen.getByRole('button', { name: 'Delete' });
   expect(deleteButton).toBeInTheDocument();
-
   fireEvent.click(deleteButton);
 
-  const confirmationInput = getByRole('textbox');
-  expect(confirmationInput).toBeInTheDocument();
-
+  const confirmationInput = screen.getByRole('textbox');
   UserEvent.type(confirmationInput, 'Test');
 
+  expect(confirmationInput).toBeInTheDocument();
   expect(confirmationInput).toHaveValue('Test');
 
-  const confirmDeleteButton = getByText('Confirm');
+  const confirmDeleteButton = screen.getByText('Confirm');
   expect(confirmDeleteButton).toBeInTheDocument();
 
   fireEvent.click(confirmDeleteButton);
