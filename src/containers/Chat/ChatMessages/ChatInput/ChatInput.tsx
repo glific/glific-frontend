@@ -98,6 +98,16 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     onCompleted: (data: any) => {
       if (data) {
         console.log('data-', data);
+        setAttachmentType('AUDIO');
+        createMediaMessage({
+          variables: {
+            input: {
+              caption: '',
+              sourceUrl: data.uploadBlob,
+              url: data.uploadBlob,
+            },
+          },
+        });
         // Here we need to call createMediaMessage and pass gcs url
       }
     },
@@ -122,15 +132,21 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
       // need to check on this
-      const media = await recordedAudio.text();
-
-      // save media that will return an URL
-      uploadMediaBlob({
-        variables: {
-          media: btoa(unescape(encodeURIComponent(media))),
-          extension: 'wav',
-        },
-      });
+      // converting blob into base64 format as needed by backend
+      const reader = new FileReader();
+      reader.readAsDataURL(recordedAudio);
+      reader.onloadend = function () {
+        const base64String: any = reader.result;
+        // get the part without the tags
+        const media = base64String.split(',')[1];
+        // save media that will return an URL
+        uploadMediaBlob({
+          variables: {
+            media,
+            extension: 'wav',
+          },
+        });
+      };
     }
 
     // check for an empty message or message with just spaces
