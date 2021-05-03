@@ -301,7 +301,6 @@ export const List: React.SFC<ListProps> = ({
   const useDelete = (message: string | any) => {
     let component = {};
     const props = { disableOk: false, handleOk: handleDeleteItem };
-
     if (typeof message === 'string') {
       component = message;
     } else {
@@ -309,18 +308,16 @@ export const List: React.SFC<ListProps> = ({
        * Custom component to render
        * message should contain 3 params
        * 1. component: Component to render
-       * 2. isConfirm: Check for confirm delete
+       * 2. isConfirm: To check true or false value
        * 3. handleOkCallback: Callback action to delete item
        */
-      const { component: componentToRender, isConfirmed, handleOkCallback } = message();
-      const isConfirmDelete = isConfirmed(deleteItemName);
-      const payload = {
-        isConfirmed: isConfirmDelete,
-        deleteOrganizationID: deleteItemID,
-      };
+      const { component: componentToRender, isConfirmed, handleOkCallback } = message(
+        deleteItemID,
+        deleteItemName
+      );
       component = componentToRender;
-      props.disableOk = !isConfirmDelete;
-      props.handleOk = () => handleOkCallback({ payload, refetch: fetchQuery, setDeleteItemID });
+      props.disableOk = !isConfirmed;
+      props.handleOk = () => handleOkCallback({ refetch: fetchQuery, setDeleteItemID });
     }
 
     return {

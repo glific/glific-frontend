@@ -154,7 +154,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     );
   };
 
-  const deleteDialogue = () => {
+  const deleteDialogue = (id: any, name: any) => {
     const component = (
       <div>
         <p className={styles.DialogSubText}>
@@ -169,10 +169,15 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       </div>
     );
 
+    const isConfirmed = orgName === name;
+    const payload = {
+      isConfirmed,
+      deleteOrganizationID: id,
+    };
     return {
       component,
-      handleOkCallback: handleDeleteInActiveOrg,
-      isConfirmed: (itemName: any) => itemName === orgName,
+      handleOkCallback: (val: any) => handleDeleteInActiveOrg({ payload, ...val }),
+      isConfirmed,
     };
   };
 
