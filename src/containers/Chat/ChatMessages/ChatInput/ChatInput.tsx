@@ -74,7 +74,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setVariableParam([]);
   };
 
-  const { data: attachmentPermission } = useQuery(GET_ATTACHMENT_PERMISSION);
+  const { data: permission } = useQuery(GET_ATTACHMENT_PERMISSION);
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
@@ -307,7 +307,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   let audioOption: any;
   // enable audio only if GCS is configured
-  if (attachmentPermission) {
+  if (permission && permission.attachmentsEnabled) {
     audioOption = <VoiceRecorder handleAudioRecording={handleAudioRecording} />;
   }
 
