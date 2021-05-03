@@ -595,6 +595,13 @@ export const getAllOrganizations = [
             isApproved: true,
             name: 'Glific',
           },
+          {
+            id: '3',
+            insertedAt: '2021-04-28T05:06:30Z',
+            isActive: false,
+            isApproved: false,
+            name: 'Test',
+          },
         ],
       },
     },

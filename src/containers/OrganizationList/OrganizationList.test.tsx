@@ -1,5 +1,6 @@
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import UserEvent from '@testing-library/user-event';
 import OrganizationList from './OrganizationList';
 import { getAllOrganizations } from '../../mocks/Organization';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -45,4 +46,45 @@ test('Organization list renders correctly', async () => {
   expect(nameLabel).toBeInTheDocument();
   expect(isActiveLabel).toBeInTheDocument();
   expect(actionLabel).toBeInTheDocument();
+});
+
+test('Perform button actions on Org List', async () => {
+  const { getByText, getByRole, findByText, getAllByRole } = render(list);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const label = await findByText('Organizations');
+  expect(label).toBeInTheDocument();
+
+  const approveButton = getAllByRole('button', {
+    name: 'Unblock.svg',
+  })[0];
+
+  const activateButton = getAllByRole('button', {
+    name: 'Remove.svg',
+  })[0];
+
+  expect(approveButton).toBeInTheDocument();
+  expect(activateButton).toBeInTheDocument();
+
+  fireEvent.click(approveButton);
+  fireEvent.click(activateButton);
+
+  const deleteButton = getByRole('button', { name: 'Delete' });
+  expect(deleteButton).toBeInTheDocument();
+
+  fireEvent.click(deleteButton);
+
+  const confirmationInput = getByRole('textbox');
+  expect(confirmationInput).toBeInTheDocument();
+
+  UserEvent.type(confirmationInput, 'Test');
+
+  expect(confirmationInput).toHaveValue('Test');
+
+  const confirmDeleteButton = getByText('Confirm');
+  expect(confirmDeleteButton).toBeInTheDocument();
+
+  fireEvent.click(confirmDeleteButton);
 });
