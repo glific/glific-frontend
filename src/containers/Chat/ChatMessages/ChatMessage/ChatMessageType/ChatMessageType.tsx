@@ -19,6 +19,7 @@ export interface ChatMessageTypeProps {
   insertedAt?: string;
   body: string;
   location: any;
+  isSimulatedMessage?: boolean;
 }
 
 export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
@@ -26,6 +27,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   media,
   body,
   location,
+  isSimulatedMessage,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
 
@@ -39,7 +41,10 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'IMAGE':
       messageBody = (
         <>
-          <div className={styles.Image} data-testid="imageMessage">
+          <div
+            className={isSimulatedMessage ? styles.SimulatorImage : styles.Image}
+            data-testid="imageMessage"
+          >
             <Img
               src={media.url}
               onClick={() => setShowViewer(true)}
@@ -77,7 +82,12 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
     case 'AUDIO':
       messageBody = (
         <div>
-          <audio controls data-testid="audioMessage" controlsList="nodownload">
+          <audio
+            controls
+            data-testid="audioMessage"
+            controlsList="nodownload"
+            className={isSimulatedMessage ? styles.SimulatorAudio : styles.Audio}
+          >
             <source src={media.url} type="audio/ogg" />
           </audio>
         </div>
@@ -89,7 +99,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         <div>
           <div className={styles.Image} data-testid="videoMessage">
             <ReactPlayer
-              className={styles.video}
+              className={isSimulatedMessage ? styles.SimulatorVideo : styles.Video}
               url={media.url}
               controls
               light={VideoThumbnail}

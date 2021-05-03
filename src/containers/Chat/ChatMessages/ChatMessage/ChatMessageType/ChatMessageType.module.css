@@ -13,12 +13,42 @@
   object-fit: contain;
   text-align: center;
 }
-.video {
+
+.SimulatorImage {
+  max-width: 200px;
+  max-height: auto;
+  cursor: pointer;
+  background-size: cover !important;
+  text-align: center;
+}
+
+.SimulatorImage img {
+  margin-top: 5px;
+  overflow: hidden;
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
+  text-align: center;
+}
+
+.Video {
   max-width: 250px;
 }
-audio {
+
+.SimulatorVideo {
+  margin-top: 5px;
+  max-width: 180px;
+}
+
+.Audio {
   max-width: 250px;
 }
+
+.SimulatorAudio {
+  margin-top: 5px;
+  max-width: 180px;
+}
+
 .Document {
   composes: Image;
   height: 100px;
