@@ -756,6 +756,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendCollectionMessageHandler}
+        isCollection
       />
     );
   }
