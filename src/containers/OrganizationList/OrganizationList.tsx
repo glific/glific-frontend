@@ -90,20 +90,18 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const approveIcon = <UnblockIcon />;
   const activeIcon = <ActivateIcon />;
 
-  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
-    refetchQueries: () => [{ query: FILTER_ORGANIZATIONS, variables: setVariables() }],
-  });
+  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
 
-  const handleOrganizationStatus = (id: any, payload: any) => {
+  const handleOrganizationStatus = (id: any, payload: any, refetch: any) => {
     const variables = {
       updateOrganizationId: id,
       ...payload,
     };
-    updateOrganizationStatus({ variables });
+    updateOrganizationStatus({ variables, refetchQueries: refetch });
     setNotification(client, 'Organization updated successfully');
   };
 
-  const activateButton = (listItems: any, action: any, key: number) => {
+  const activateButton = (listItems: any, action: any, key: number, refetch: any) => {
     const { isApproved, isActive } = listItems;
 
     /**
@@ -118,7 +116,9 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
         data-testid="additionalButton"
         className={styles.additonalButton}
         id="additionalButton-icon"
-        onClick={() => handleOrganizationStatus(listItems.id, { isActive: !isActive, isApproved })}
+        onClick={() =>
+          handleOrganizationStatus(listItems.id, { isActive: !isActive, isApproved }, refetch)
+        }
         key={key}
       >
         <Tooltip title={iconLabel} placement="top" key={key}>
@@ -128,7 +128,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     );
   };
 
-  const approveButton = (listItems: any, action: any, key: number) => {
+  const approveButton = (listItems: any, action: any, key: number, refetch: any) => {
     const { isApproved, isActive } = listItems;
 
     const icon = isApproved ? <ApprovedIcon /> : action.icon;
@@ -142,7 +142,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
         id="additionalButton-icon"
         key={key}
         onClick={() =>
-          handleOrganizationStatus(listItems.id, { isApproved: !isApproved, isActive })
+          handleOrganizationStatus(listItems.id, { isApproved: !isApproved, isActive }, refetch)
         }
       >
         <Tooltip title={iconLabel} placement="top" key={key}>

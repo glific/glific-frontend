@@ -469,7 +469,7 @@ export const List: React.SFC<ListProps> = ({
               );
             }
             if (action.button) {
-              return action.button(listItems, action, key);
+              return action.button(listItems, action, key, fetchQuery);
             }
             return null;
           })}
