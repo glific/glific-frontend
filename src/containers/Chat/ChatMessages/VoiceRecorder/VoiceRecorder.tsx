@@ -58,7 +58,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
         </div>
         <div className={styles.AudioPlayerClose}>
           <IconButton>
-            <CancelIcon onClick={cancelCallback} />
+            <CancelIcon onClick={cancelCallback} data-testid="cancelIcon" />
           </IconButton>
         </div>
       </div>

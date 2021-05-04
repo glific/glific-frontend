@@ -1,22 +1,36 @@
 import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { useReactMediaRecorder } from 'react-media-recorder';
 
+const handleAudioRecordingMock = jest.fn();
 const defaultProps = {
-  handleAudioRecording: jest.fn(),
+  handleAudioRecording: handleAudioRecordingMock,
   clearAudio: false,
 };
 
-const mockMediaRecorder = {
-  start: jest.fn(),
-  ondataavailable: jest.fn(),
-  onerror: jest.fn(),
-  state: '',
-  stop: jest.fn(),
-};
+jest.mock('react-media-recorder', () => {
+  return {
+    useReactMediaRecorder: ({ audio, onStop }) => {
+      let status = 'idle';
 
-beforeEach(() => {
-  window.MediaRecorder = (jest.fn() as any).mockImplementation(() => mockMediaRecorder);
+      const updateStatus = (newStatus: string) => {
+        status = newStatus;
+      };
+
+      return {
+        status: status,
+        startRecording: () => {
+          updateStatus('recording');
+        },
+        stopRecording: () => {
+          updateStatus('stop');
+          onStop();
+        },
+        mediaBlobUrl: 'blog://heythere',
+        clearBlobUrl: jest.fn(),
+      };
+    },
+  };
 });
 
 const voiceRecorder = <VoiceRecorder {...defaultProps} />;
@@ -26,10 +40,17 @@ test('it renders correctly', () => {
   expect(getByTestId('recorder')).toBeInTheDocument();
 });
 
-test('it starts recording', async () => {
+test('checck ', async () => {
   const { getByTestId } = render(voiceRecorder);
 
+  // start recording
   fireEvent.click(getByTestId('micIcon'));
 
+  // still need to check stop recording
   await waitFor(() => {});
+
+  // remove recording
+  fireEvent.click(getByTestId('cancelIcon'));
+
+  expect(handleAudioRecordingMock).toHaveBeenCalled();
 });
