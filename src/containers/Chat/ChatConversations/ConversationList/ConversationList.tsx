@@ -132,6 +132,9 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         };
       }
     }
+    if (selectedCollectionId) {
+      filter.searchGroup = true;
+    }
 
     return {
       contactOpts: {

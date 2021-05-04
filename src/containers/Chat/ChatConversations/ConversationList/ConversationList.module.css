@@ -79,7 +79,7 @@
 
 .ScrollToTopCollections {
   composes: ScrollButton;
-  top: 0px;
+  top: 58px;
 }
 
 .ScrollToTopSearches {
