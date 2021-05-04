@@ -169,6 +169,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
               ) : null}
               <div className={styles.FormError}>{errors}</div>
             </div>
+            <input type="file" />
             {attachmentType === 'STICKER' || attachmentType === 'AUDIO' ? displayWarning() : null}
           </DialogBox>
         </Form>
