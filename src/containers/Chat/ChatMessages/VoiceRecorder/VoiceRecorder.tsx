@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
@@ -14,6 +14,7 @@ export interface VoiceRecorderProps {
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   const { handleAudioRecording, clearAudio } = props;
+  const [showRecordCounter, setShowRecordCounter] = useState(false);
 
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
@@ -39,6 +40,18 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
     // start recording
     startRecording();
+
+    // show indicator
+    setShowRecordCounter(true);
+  };
+
+  // function to stop recording
+  const stopCallback = () => {
+    // stop recording
+    stopRecording();
+
+    // show indicator
+    setShowRecordCounter(false);
   };
 
   const cancelCallback = () => {
@@ -65,16 +78,22 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     );
   }
 
+  let recordIndicator;
+  if (showRecordCounter) {
+    recordIndicator = <div className={styles.AudioPlayerSection}>{status}</div>;
+  }
+
   return (
     <div className={styles.VoiceRecorder}>
       <IconButton className={styles.RecorderIcon} data-testid="recorder">
         {status !== 'recording' ? (
           <MicIcon onClick={startCallback} data-testid="micIcon" />
         ) : (
-          <StopIcon onClick={stopRecording} data-testid="stopIcon" />
+          <StopIcon onClick={stopCallback} data-testid="stopIcon" />
         )}
       </IconButton>
       {audioPreview}
+      {recordIndicator}
     </div>
   );
 };
