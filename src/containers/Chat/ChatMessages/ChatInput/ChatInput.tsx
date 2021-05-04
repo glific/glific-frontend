@@ -252,6 +252,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleAudioRecording = (blob: any) => {
     setRecordedAudio(blob);
+    setClearAudio(false);
   };
 
   const handleSearch = (e: any) => {
