@@ -1,6 +1,6 @@
 import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import { useReactMediaRecorder } from 'react-media-recorder';
+import 'react-media-recorder';
 
 const handleAudioRecordingMock = jest.fn();
 const defaultProps = {
