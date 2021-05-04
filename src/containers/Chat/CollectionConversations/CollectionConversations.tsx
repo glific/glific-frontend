@@ -29,13 +29,15 @@ const CollectionConversations: React.SFC<CollectionConversationsProps> = (props)
 
   return (
     <Container className={styles.CollectionConversations} disableGutters>
-      <SearchBar
-        searchVal={searchVal}
-        handleChange={handleSearchChange}
-        handleSubmit={handleSubmit}
-        onReset={() => setSearchVal('')}
-        searchMode
-      />
+      <div className={styles.SearchBar}>
+        <SearchBar
+          searchVal={searchVal}
+          handleChange={handleSearchChange}
+          handleSubmit={handleSubmit}
+          onReset={() => setSearchVal('')}
+          searchMode
+        />
+      </div>
       <ConversationList
         searchVal={searchVal}
         searchMode={false}

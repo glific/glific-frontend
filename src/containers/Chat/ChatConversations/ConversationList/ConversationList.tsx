@@ -483,7 +483,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           className={styles.LoadMoreButton}
           aria-hidden="true"
         >
-          {t('Load more chats')}
+          {t('Load more')}
         </div>
       )}
     </div>
