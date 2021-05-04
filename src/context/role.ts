@@ -30,8 +30,6 @@ export const setUserRolePermissions = () => {
     role = getUserRole();
   }
 
-  const user = getUserSession('default');
-
   if (role && role.includes('Staff')) {
     sideDrawerMenu = getMenus('sideDrawer');
     staffManagementMenu = getMenus('staffManagement');
@@ -42,20 +40,26 @@ export const setUserRolePermissions = () => {
     sideDrawerMenu = getMenus('sideDrawer', 'Manager');
     staffManagementMenu = getMenus('staffManagement', 'Manager');
 
-    /**
-     * Removing organization list menu for non admin users
-     */
-    if (user.name !== 'NGO Main Account') {
-      staffManagementMenu = staffManagementMenu.filter(
-        ({ title }: { title: string }) => title !== 'Organizations'
-      );
-    }
-
     if (role.includes('Admin')) {
       accessSettings = true;
       manageSavedSearches = true;
       manageCollections = true;
     }
+  }
+
+  if (role && role.includes('Glific_admin')) {
+    /**
+     * Glific admin will have additional menus along with admin menus
+     */
+    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
+    staffManagementMenu = [
+      ...getMenus('staffManagement', 'Manager'),
+      ...getMenus('staffManagement', 'Glific_admin'),
+    ];
+
+    accessSettings = true;
+    manageSavedSearches = true;
+    manageCollections = true;
   }
 };
 

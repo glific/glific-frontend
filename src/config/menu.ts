@@ -65,7 +65,7 @@ const menus = [
     title: 'Organizations',
     path: '/organizations',
     type: 'staffManagement',
-    roles: ['Manager', 'Admin'],
+    roles: ['Glific_admin'],
   },
   {
     title: 'Blocked Contacts',

@@ -177,7 +177,11 @@ export const AuthenticatedRoute: React.SFC = () => {
     route = routeStaff;
   }
 
-  if (userRole.includes('Manager') || userRole.includes('Admin')) {
+  if (
+    userRole.includes('Manager') ||
+    userRole.includes('Admin') ||
+    userRole.includes('Glific_admin')
+  ) {
     route = routeAdmin;
   }
 
