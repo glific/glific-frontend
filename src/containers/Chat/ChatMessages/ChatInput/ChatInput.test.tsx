@@ -3,8 +3,18 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 import '../VoiceRecorder/VoiceRecorder';
+import {
+  createMediaMessageMock,
+  getAttachmentPermissionMock,
+  uploadBlobMock,
+} from '../../../../mocks/Attachment';
 
-const mocks = TEMPLATE_MOCKS;
+const mocks = [
+  ...TEMPLATE_MOCKS,
+  getAttachmentPermissionMock,
+  uploadBlobMock,
+  createMediaMessageMock,
+];
 
 // add mock for the resize observer
 class ResizeObserver {
@@ -181,9 +191,12 @@ describe('<ChatInput />', () => {
   });
 
   test('record audio', async () => {
+    const propsWithMockSend: any = { ...defaultProps };
+    const sendMessageMock = jest.fn();
+    propsWithMockSend.onSendMessage = sendMessageMock;
     const { getByText, getByTestId } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <ChatInput {...defaultProps} />
+        <ChatInput {...propsWithMockSend} />
       </MockedProvider>
     );
 
@@ -194,5 +207,9 @@ describe('<ChatInput />', () => {
 
     // send audio
     fireEvent.click(getByTestId('sendButton'));
+
+    await waitFor(() => {
+      expect(sendMessageMock).toHaveBeenCalled();
+    });
   });
 });
