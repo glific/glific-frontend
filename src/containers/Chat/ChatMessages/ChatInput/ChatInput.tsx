@@ -110,6 +110,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         });
 
         setClearAudio(true);
+        setRecordedAudio('');
       }
     },
     onError: (error: any) => {
