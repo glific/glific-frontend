@@ -130,7 +130,12 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     if (rolesList.length > 0) {
       if (isManager) {
         // should not display Admin role to manager.
-        options = rolesList.filter((item: any) => item.label !== 'Admin');
+        options = rolesList.filter(
+          (item: any) => item.label !== 'Admin' && item.label !== 'Glific admin'
+        );
+      }
+      if (isAdmin) {
+        options = rolesList.filter((item: any) => item.label !== 'Glific admin');
       }
     }
     return options;
