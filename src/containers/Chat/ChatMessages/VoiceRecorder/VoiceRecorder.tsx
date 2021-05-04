@@ -32,8 +32,6 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     onStop: saveRecording,
   });
 
-  console.log(status, mediaBlobUrl);
-
   // function to start recording
   const startCallback = () => {
     // let's clear previous recording
