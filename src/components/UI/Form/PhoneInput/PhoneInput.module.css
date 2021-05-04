@@ -8,6 +8,7 @@
   border-radius: 12px !important;
   border-width: 2px !important;
   background: inherit !important;
+  border-color: #93a29b !important;
 }
 
 .PhoneNumber:focus {
@@ -17,7 +18,7 @@
 }
 
 .FormHelperText {
-  color: red !important;
+  color: #f44336 !important;
   margin-top: 3px !important;
   line-height: 1.2 !important;
   margin-left: 16px !important;

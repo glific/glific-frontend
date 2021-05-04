@@ -36,3 +36,5 @@ export const LOGFLARE_SOURCE = envVariables.REACT_APP_LOGFLARE_SOURCE_TOKEN;
 export const GLIFIC_DOCS_URL = 'http://docs.glific.org';
 export const CORS_PROXY_URL = 'https://cors-anywhere.tides.coloredcow.com';
 export const STRIPE_PUBLISH_KEY = envVariables.REACT_APP_STRIPE_PUBLISH_KEY;
+export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
+export const RECAPTCHA_CLIENT_KEY = envVariables.REACT_APP_RECAPTCHA_CLIENT_KEY;
