@@ -32,6 +32,8 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     onStop: saveRecording,
   });
 
+  console.log(status, mediaBlobUrl);
+
   // function to start recording
   const startCallback = () => {
     // let's clear previous recording
@@ -67,11 +69,11 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
   return (
     <div className={styles.VoiceRecorder}>
-      <IconButton className={styles.RecorderIcon}>
+      <IconButton className={styles.RecorderIcon} data-testid="recorder">
         {status !== 'recording' ? (
-          <MicIcon onClick={startCallback} />
+          <MicIcon onClick={startCallback} data-testid="micIcon" />
         ) : (
-          <StopIcon onClick={stopRecording} />
+          <StopIcon onClick={stopRecording} data-testid="stopIcon" />
         )}
       </IconButton>
       {audioPreview}
