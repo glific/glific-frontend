@@ -41,6 +41,13 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     startRecording();
   };
 
+  const cancelCallback = () => {
+    // let's clear previous recording
+    clearBlobUrl();
+
+    handleAudioRecording('');
+  };
+
   let audioPreview;
 
   if (mediaBlobUrl && !clearAudio) {
@@ -51,7 +58,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
         </div>
         <div className={styles.AudioPlayerClose}>
           <IconButton>
-            <CancelIcon onClick={clearBlobUrl} />
+            <CancelIcon onClick={cancelCallback} />
           </IconButton>
         </div>
       </div>
