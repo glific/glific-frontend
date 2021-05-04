@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -42,24 +42,26 @@ describe('<Registration />', () => {
 
   test('onboard org correctly', async () => {
     render(wrapper);
-    const inputElements = screen.getAllByRole('textbox');
 
-    UserEvent.type(inputElements[0], 'JaneDoe');
-    UserEvent.type(inputElements[1], '+919978776554');
-    UserEvent.type(inputElements[2], 'Test App');
-    UserEvent.type(inputElements[3], 'Vt5Ufo9RXpktxLdcX0awjrrYaWK0GowE');
-    UserEvent.type(inputElements[4], 'glific@glific.com');
-    UserEvent.type(inputElements[5], 'test');
+    waitFor(() => {
+      const inputElements = screen.getAllByRole('textbox');
 
-    // click on continue
-    const button = screen.getByText('GET STARTED');
+      UserEvent.type(inputElements[0], 'JaneDoe');
+      UserEvent.type(inputElements[1], '+919978776554');
+      UserEvent.type(inputElements[2], 'Test App');
+      UserEvent.type(inputElements[3], 'Vt5Ufo9RXpktxLdcX0awjrrYaWK0GowE');
+      UserEvent.type(inputElements[4], 'glific@glific.com');
+      UserEvent.type(inputElements[5], 'test');
 
-    act(() => {
+      // click on continue
+      const button = screen.getByText('GET STARTED');
       fireEvent.click(button);
     });
 
     const responseData = { data: { is_valid: true, messages: [] } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    });
 
     // render success onboard component after success
     const { container, findByTestId } = render(
@@ -74,26 +76,28 @@ describe('<Registration />', () => {
   });
 
   test('it should submit the form correctly and give error', async () => {
-    const { container } = render(wrapper);
+    render(wrapper);
     const inputElements = screen.getAllByRole('textbox');
 
-    UserEvent.type(inputElements[0], 'JaneDoe');
-    UserEvent.type(inputElements[1], '+919978776554');
-    UserEvent.type(inputElements[2], 'Test App');
-    UserEvent.type(inputElements[3], 'Vt5Ufo9RXpktxLdcX0awjrrYaWK0GowE');
-    UserEvent.type(inputElements[4], 'glific@glific.com');
-    UserEvent.type(inputElements[5], 'test');
+    waitFor(() => {
+      UserEvent.type(inputElements[0], 'JaneDoe');
+      UserEvent.type(inputElements[1], '+919978776554');
+      UserEvent.type(inputElements[2], 'Test App');
+      UserEvent.type(inputElements[3], 'Vt5Ufo9RXpktxLdcX0awjrrYaWK0GowE');
+      UserEvent.type(inputElements[4], 'glific@glific.com');
+      UserEvent.type(inputElements[5], 'test');
 
-    // click on continue
-    const button = screen.getByText('GET STARTED');
+      // click on continue
+      const button = screen.getByText('GET STARTED');
 
-    act(() => {
       UserEvent.click(button);
     });
 
     // set the mock error case while registration
     const errorMessage = { shortcode: 'Shortcode has already been taken.' };
     const responseData = { data: { is_valid: false, messages: errorMessage } };
-    axios.post.mockImplementationOnce(() => Promise.reject(responseData));
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.reject(responseData));
+    });
   });
 });
