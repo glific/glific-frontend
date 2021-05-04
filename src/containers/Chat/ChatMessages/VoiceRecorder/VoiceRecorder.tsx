@@ -9,14 +9,16 @@ import styles from './VoiceRecorder.module.css';
 
 export interface VoiceRecorderProps {
   handleAudioRecording: any;
+  clearAudio: any;
 }
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
+  const { handleAudioRecording, clearAudio } = props;
+
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
-    // currently we are passing blob to backend hence no need to create a file
-    // const audiofile = new File([blob], 'audiofile.webm', { type: 'audio/webm' });
-    props.handleAudioRecording(blob);
+    // set the blob for processing
+    handleAudioRecording(blob);
   }, []);
 
   const {
@@ -41,7 +43,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
   let audioPreview;
 
-  if (mediaBlobUrl) {
+  if (mediaBlobUrl && !clearAudio) {
     audioPreview = (
       <div className={styles.AudioPlayerSection}>
         <div className={styles.AudioPlayer}>

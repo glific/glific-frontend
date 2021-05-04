@@ -61,6 +61,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
   const [recordedAudio, setRecordedAudio] = useState<any>('');
+  const [clearAudio, setClearAudio] = useState<any>(false);
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -97,7 +98,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
     onCompleted: (data: any) => {
       if (data) {
-        console.log('data-', data);
         setAttachmentType('AUDIO');
         createMediaMessage({
           variables: {
@@ -108,7 +108,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             },
           },
         });
-        // Here we need to call createMediaMessage and pass gcs url
+
+        setClearAudio(true);
       }
     },
     onError: (error: any) => {
@@ -131,7 +132,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const submitMessage = async (message: string) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
-      // need to check on this
       // converting blob into base64 format as needed by backend
       const reader = new FileReader();
       reader.readAsDataURL(recordedAudio);
@@ -308,7 +308,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   let audioOption: any;
   // enable audio only if GCS is configured
   if (permission && permission.attachmentsEnabled) {
-    audioOption = <VoiceRecorder handleAudioRecording={handleAudioRecording} />;
+    audioOption = (
+      <VoiceRecorder handleAudioRecording={handleAudioRecording} clearAudio={clearAudio} />
+    );
   }
 
   return (
