@@ -1,7 +1,8 @@
 import ChatInput from './ChatInput';
 import { MockedProvider } from '@apollo/client/testing';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, wait } from '@testing-library/react';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
+import '../VoiceRecorder/VoiceRecorder';
 
 const mocks = TEMPLATE_MOCKS;
 
@@ -11,6 +12,33 @@ class ResizeObserver {
   unobserve() {}
   disconnect() {}
 }
+
+const blob = () => new Blob();
+
+jest.mock('../VoiceRecorder/VoiceRecorder', () => {
+  return {
+    VoiceRecorder: ({ handleAudioRecording, clearAudio }: any) => {
+      return (
+        <div>
+          <div
+            onClick={() => {
+              handleAudioRecording(blob());
+            }}
+          >
+            Record Audio
+          </div>
+          <div
+            onClick={() => {
+              clearAudio(true);
+            }}
+          >
+            Clear Audio
+          </div>
+        </div>
+      );
+    },
+  };
+});
 
 window.ResizeObserver = ResizeObserver;
 
@@ -30,6 +58,7 @@ describe('<ChatInput />', () => {
     handleHeightChange: handleHeightChange,
     contactStatus: 'VALID',
     contactBspStatus: 'SESSION_AND_HSM',
+    lastMessageTime: new Date(),
   };
 
   const chatInput = (
@@ -100,7 +129,7 @@ describe('<ChatInput />', () => {
   });
 
   test('when bsp status is none', async () => {
-    const propsWithBspStatusNone = defaultProps;
+    const propsWithBspStatusNone = { ...defaultProps };
     propsWithBspStatusNone.contactBspStatus = 'NONE';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -116,7 +145,7 @@ describe('<ChatInput />', () => {
   });
 
   test('when bsp status is HSM', async () => {
-    const propsWithBspStatusHSM = defaultProps;
+    const propsWithBspStatusHSM = { ...defaultProps };
     propsWithBspStatusHSM.contactBspStatus = 'HSM';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -127,7 +156,7 @@ describe('<ChatInput />', () => {
   });
 
   test('when bsp status is SESSION', async () => {
-    const propsWithBspStatusSession = defaultProps;
+    const propsWithBspStatusSession = { ...defaultProps };
     propsWithBspStatusSession.contactBspStatus = 'SESSION';
     const { getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
@@ -138,7 +167,7 @@ describe('<ChatInput />', () => {
   });
 
   test('24 hour window gets over', async () => {
-    const propsWithChatWindowOver: any = defaultProps;
+    const propsWithChatWindowOver: any = { ...defaultProps };
     const date = new Date();
     date.setDate(date.getDate() - 2);
     propsWithChatWindowOver.lastMessageTime = date;
@@ -149,5 +178,21 @@ describe('<ChatInput />', () => {
       </MockedProvider>
     );
     expect(getByText('Templates')).toBeInTheDocument();
+  });
+
+  test('record audio', async () => {
+    const { getByText, getByTestId } = render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatInput {...defaultProps} />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      // record audio
+      fireEvent.click(getByText('Record Audio'));
+    });
+
+    // send audio
+    fireEvent.click(getByTestId('sendButton'));
   });
 });

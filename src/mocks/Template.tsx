@@ -1,4 +1,5 @@
 import { setVariables } from '../common/constants';
+import GET_ATTACHMENT_PERMISSION from '../graphql/queries/Settings';
 import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from '../graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
@@ -15,7 +16,19 @@ export const filterTemplatesQuery = (term: any, data: any) => {
   };
 };
 
+const getAttachmentPermissionMock = {
+  request: {
+    query: GET_ATTACHMENT_PERMISSION,
+  },
+  result: {
+    data: {
+      attachmentsEnabled: true,
+    },
+  },
+};
+
 export const TEMPLATE_MOCKS = [
+  getAttachmentPermissionMock,
   filterTemplatesQuery('', [
     {
       id: '87',

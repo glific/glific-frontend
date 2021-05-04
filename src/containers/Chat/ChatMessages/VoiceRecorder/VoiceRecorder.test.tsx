@@ -16,7 +16,6 @@ jest.mock('react-media-recorder', () => {
       const updateStatus = (newStatus: string) => {
         status = newStatus;
       };
-
       return {
         status: status,
         startRecording: () => {
