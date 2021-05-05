@@ -98,7 +98,7 @@ export const searchQuery = {
 
 cache.writeQuery(searchQuery);
 
-const collection = {
+export const collection = {
   query: SEARCH_QUERY,
   variables: {
     contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
@@ -150,6 +150,198 @@ const collection = {
             },
           },
         ],
+      },
+      {
+        group: {
+          id: '3',
+          label: 'Optin group',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '4',
+          label: 'Optout group',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '5',
+          label: 'Test group',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '6',
+          label: 'Glific group',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '7',
+          label: 'Test 7',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '8',
+          label: 'Test 8',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '9',
+          label: 'Test 9',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '10',
+          label: 'Test 10',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '11',
+          label: 'Test 11',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '12',
+          label: 'Test 12',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '13',
+          label: 'Test 13',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '14',
+          label: 'Test 14',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '15',
+          label: 'Test 15',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '16',
+          label: 'Test 16',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '17',
+          label: 'Test 17',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '18',
+          label: 'Test 18',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '19',
+          label: 'Test 19',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '20',
+          label: 'Test 20',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '21',
+          label: 'Test 21',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '22',
+          label: 'Test 22',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '23',
+          label: 'Test 23',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '24',
+          label: 'Test 24',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '25',
+          label: 'Test 25',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '26',
+          label: 'Test 26',
+        },
+        contact: null,
+        messages: [],
       },
     ],
   },
