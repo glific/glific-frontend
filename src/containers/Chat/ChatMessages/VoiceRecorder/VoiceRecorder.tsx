@@ -80,7 +80,12 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
   let recordIndicator;
   if (showRecordCounter) {
-    recordIndicator = <div className={styles.AudioPlayerSection}>{status}</div>;
+    recordIndicator = (
+      <div className={styles.AudioPlayerSection}>
+        <div className={styles.Recording} />
+        <div className={styles.RecordingStatus}>{status}</div>
+      </div>
+    );
   }
 
   return (
