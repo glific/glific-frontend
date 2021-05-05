@@ -1,18 +1,18 @@
 .DialogContent {
   display: flex;
   flex: auto;
+  flex-wrap: wrap;
   min-height: 80px;
   margin-bottom: 20px;
   width: 410px;
 }
 
 .DialogContent > div:nth-child(1) {
-  margin-right: 10px;
-  width: 40%;
+  width: 90%;
 }
 
 .DialogContent > div:nth-child(2) {
-  width: 60%;
+  width: 90%;
 }
 
 .CrossIcon {
@@ -35,15 +35,32 @@
 }
 
 .FormError {
-  margin-left: 4px;
-  position: absolute;
-  margin-top: 65px;
+  margin-left: 12px;
+
   color: #f44336;
-  left: 185px;
   font-size: 0.75rem;
   text-align: left;
   font-family: heebo, sans-serif;
   font-weight: 400;
   line-height: 1.66;
   width: 45%;
+}
+
+.Upload input {
+  display: none;
+}
+
+.Upload {
+  margin-bottom: 10px;
+  border: 2px solid #93a29b;
+  border-radius: 27px;
+  padding: 6px 46px;
+  cursor: pointer;
+  color: #93a29b;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.UploadContainer {
+  margin-bottom: 20px;
 }
