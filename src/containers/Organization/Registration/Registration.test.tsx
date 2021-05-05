@@ -43,7 +43,11 @@ describe('<Registration />', () => {
   test('onboard org correctly', async () => {
     render(wrapper);
 
+    const captcha = screen.getByTestId('recaptcha-sign-in');
+    expect(captcha).toBeInTheDocument();
+
     waitFor(() => {
+      fireEvent.click(captcha);
       const inputElements = screen.getAllByRole('textbox');
 
       UserEvent.type(inputElements[0], 'JaneDoe');
