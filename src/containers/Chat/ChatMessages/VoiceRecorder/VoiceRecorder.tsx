@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
 import StopIcon from '@material-ui/icons/Stop';
 import CancelIcon from '@material-ui/icons/Cancel';
 
@@ -24,6 +25,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
   const {
     status,
+    error,
     startRecording,
     stopRecording,
     mediaBlobUrl,
@@ -88,14 +90,20 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     );
   }
 
+  let showRecordingOption;
+
+  if (error === 'permission_denied') {
+    showRecordingOption = <MicOffIcon data-testid="micOffIcon" />;
+  } else if (status !== 'recording') {
+    showRecordingOption = <MicIcon onClick={startCallback} data-testid="micIcon" />;
+  } else {
+    showRecordingOption = <StopIcon onClick={stopCallback} data-testid="stopIcon" />;
+  }
+
   return (
     <div className={styles.VoiceRecorder}>
       <IconButton className={styles.RecorderIcon} data-testid="recorder">
-        {status !== 'recording' ? (
-          <MicIcon onClick={startCallback} data-testid="micIcon" />
-        ) : (
-          <StopIcon onClick={stopCallback} data-testid="stopIcon" />
-        )}
+        {showRecordingOption}
       </IconButton>
       {audioPreview}
       {recordIndicator}
