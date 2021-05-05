@@ -4,6 +4,8 @@ import {
   GET_PROVIDERS,
   GET_CREDENTIAL,
   BSPBALANCE,
+  FILTER_ORGANIZATIONS,
+  GET_ORGANIZATION_COUNT,
 } from '../graphql/queries/Organization';
 import { BSP_BALANCE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
 
@@ -545,6 +547,62 @@ export const walletBalanceNull = [
     result: {
       data: {
         bspBalance: '{"balance":null}',
+      },
+    },
+  },
+];
+
+export const getAllOrganizations = [
+  {
+    request: {
+      query: GET_ORGANIZATION_COUNT,
+      variables: { filter: {} },
+    },
+    result: {
+      data: {
+        countOrganizations: 2,
+      },
+    },
+  },
+  {
+    request: {
+      query: FILTER_ORGANIZATIONS,
+      variables: {
+        filter: {},
+        opts: {
+          limit: 50,
+          offset: 0,
+          order: 'ASC',
+          orderWith: 'name',
+        },
+      },
+    },
+    result: {
+      data: {
+        organizations: [
+          {
+            id: '2',
+            insertedAt: '2021-04-28T05:19:51Z',
+            isActive: true,
+            isApproved: false,
+            name: 'Foogle',
+            __typename: 'Organization',
+          },
+          {
+            id: '1',
+            insertedAt: '2021-04-28T05:06:30Z',
+            isActive: true,
+            isApproved: true,
+            name: 'Glific',
+          },
+          {
+            id: '3',
+            insertedAt: '2021-04-28T05:06:30Z',
+            isActive: false,
+            isApproved: false,
+            name: 'Test',
+          },
+        ],
       },
     },
   },
