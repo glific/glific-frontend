@@ -1,13 +1,5 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import {
-  render,
-  cleanup,
-  waitFor,
-  prettyDOM,
-  screen,
-  fireEvent,
-  act,
-} from '@testing-library/react';
+import { render, cleanup, waitFor, screen } from '@testing-library/react';
 import CollectionConversations from './CollectionConversations';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
