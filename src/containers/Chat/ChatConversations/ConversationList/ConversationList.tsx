@@ -132,8 +132,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         };
       }
     }
+    // If tab is collection then add appropriate filter
     if (selectedCollectionId) {
       filter.searchGroup = true;
+      if (props.searchVal) {
+        delete filter.term;
+        filter.groupLabel = props.searchVal;
+      }
     }
 
     return {
@@ -167,8 +172,13 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
       if (searchData && searchData.search.length === 0) {
         setShowLoadMore(false);
       } else {
+        // Now if there is search string and tab is collection then load more will return appropriate data
+        const variables: any = queryVariables;
+        if (selectedCollectionId && searchVal) {
+          variables.filter.groupLabel = searchVal;
+        }
         // save the conversation and update cache
-        updateConversations(searchData, client, queryVariables);
+        updateConversations(searchData, client, variables);
         setShowLoadMore(true);
 
         setLoadingOffset(loadingOffset + DEFAULT_CONTACT_LOADMORE_LIMIT);
@@ -408,7 +418,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   const loadMoreMessages = () => {
     setShowLoading(true);
     // load more for multi search
-    if (searchVal) {
+    if (searchVal && !selectedCollectionId) {
       const variables = filterSearch();
       variables.messageOpts = {
         limit: DEFAULT_MESSAGE_LOADMORE_LIMIT,
@@ -420,12 +430,25 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
         variables,
       });
     } else {
-      let filter = {};
+      let filter: any = {};
       // for saved search use filter value of selected search
       if (savedSearchCriteria) {
         const variables = JSON.parse(savedSearchCriteria);
         filter = variables.filter;
       }
+
+      if (searchVal) {
+        filter = { term: searchVal };
+      }
+
+      // Adding appropriate data if selected tab is collection
+      if (selectedCollectionId) {
+        filter = { searchGroup: true };
+        if (searchVal) {
+          filter.groupLabel = searchVal;
+        }
+      }
+
       const conversationLoadMoreVariables = {
         contactOpts: {
           limit: DEFAULT_CONTACT_LOADMORE_LIMIT,
@@ -436,10 +459,6 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
           limit: DEFAULT_MESSAGE_LIMIT,
         },
       };
-
-      if (selectedCollectionId) {
-        conversationLoadMoreVariables.filter = { searchGroup: true };
-      }
 
       loadMoreConversations({
         variables: conversationLoadMoreVariables,
