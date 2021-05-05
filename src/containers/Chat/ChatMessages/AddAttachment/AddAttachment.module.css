@@ -27,7 +27,7 @@
   color: #ff0000;
   padding-top: 4px;
   font-weight: 500;
-  width: 85%;
+  width: 90%;
   line-height: 1.3;
 }
 .FormHelperText ol {
@@ -36,7 +36,6 @@
 
 .FormError {
   margin-left: 12px;
-
   color: #f44336;
   font-size: 0.75rem;
   text-align: left;
@@ -46,21 +45,60 @@
   width: 45%;
 }
 
-.Upload input {
+.Upload input,
+.UploadDisabled input {
   display: none;
 }
 
+.Uploaded {
+  border: 2px solid #073f24 !important;
+}
+.Uploaded span {
+  color: #073f24;
+}
+
+.UploadEnabled span {
+  padding-left: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.UploadCrossIcon {
+  margin-left: 12px;
+}
+
+.AlertIcon {
+  margin: 0px 16px;
+}
+
 .Upload {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
+  width: 200px;
   border: 2px solid #93a29b;
   border-radius: 27px;
-  padding: 6px 46px;
+  padding: 6px 0px;
   cursor: pointer;
   color: #93a29b;
   font-weight: 500;
   font-size: 16px;
 }
 
-.UploadContainer {
-  margin-bottom: 20px;
+.UploadEnabled {
+  composes: Upload;
+}
+
+.UploadDisabled {
+  composes: Upload;
+  cursor: not-allowed;
+}
+
+.UploadIcon {
+  margin-right: 10px;
+}
+
+.WaitUpload {
+  font-size: 14px;
+  margin-left: 16px;
 }

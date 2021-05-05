@@ -14,6 +14,7 @@ import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cro
 import { validateMedia } from '../../../../common/utils';
 import { UPLOAD_MEDIA } from '../../../../graphql/mutations/Chat';
 import { ReactComponent as UploadIcon } from '../../../../assets/images/icons/Upload.svg';
+import { ReactComponent as AlertIcon } from '../../../../assets/images/icons/Alert/Red.svg';
 
 const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({
   id: option,
@@ -27,6 +28,7 @@ export interface AddAttachmentPropTypes {
   setAttachmentType: any;
   attachmentURL: any;
   attachmentType: any;
+  uploadPermission: boolean;
 }
 
 export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
@@ -36,18 +38,19 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   setAttachmentType,
   attachmentURL,
   attachmentType,
+  uploadPermission,
 }: AddAttachmentPropTypes) => {
   const [onSubmit, setOnSubmit] = useState(false);
   const [errors, setErrors] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState<null | string>(null);
   const [verifying, setVerifying] = useState(false);
+  const [uploadDisabled] = useState(!uploadPermission);
 
   const { t } = useTranslation();
 
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
     onCompleted: (data: any) => {
-      console.log(data);
       setAttachmentURL(data.uploadMedia);
       setUploading(false);
     },
@@ -153,7 +156,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     if (media) {
       const mediaName = media.name;
       const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
-      const shortenedName = mediaName.length > 20 ? `${mediaName.slice(0, 20)}...` : mediaName;
+      const shortenedName = mediaName.length > 15 ? `${mediaName.slice(0, 15)}...` : mediaName;
       setFileName(shortenedName);
       setUploading(true);
       uploadMedia({
@@ -205,6 +208,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
                       setAttachmentURL('');
                       setAttachmentAdded(false);
                       setErrors(null);
+                      setFileName(null);
                     }}
                   />
                 </div>
@@ -214,22 +218,45 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             {attachmentType !== '' && (
               <>
                 <div className={styles.UploadContainer}>
-                  <label className={styles.Upload} htmlFor="uploadFile">
-                    {fileName !== null ? (
-                      fileName
-                    ) : (
-                      <>
-                        <UploadIcon /> Upload File
-                      </>
-                    )}
+                  <label
+                    className={`${uploadDisabled ? styles.UploadDisabled : styles.UploadEnabled} ${
+                      fileName && attachmentURL ? styles.Uploaded : ''
+                    }`}
+                    htmlFor="uploadFile"
+                  >
+                    {!uploadPermission && <AlertIcon className={styles.AlertIcon} />}
+                    <span>
+                      {fileName !== null ? (
+                        fileName
+                      ) : (
+                        <>
+                          <UploadIcon className={styles.UploadIcon} /> Upload File
+                        </>
+                      )}
 
-                    <input type="file" id="uploadFile" onChange={addAttachment} />
+                      <input
+                        type="file"
+                        id="uploadFile"
+                        onClick={(event) => {
+                          if (uploadDisabled) {
+                            event.preventDefault();
+                          }
+                        }}
+                        onChange={(event) => {
+                          addAttachment(event);
+                        }}
+                      />
+                    </span>
                   </label>
                 </div>
-                {uploading && <div>Please wait for upload</div>}
+                {uploading && <div className={styles.WaitUpload}>Please wait for upload</div>}
               </>
             )}
-
+            {!uploadPermission && attachmentType !== '' && (
+              <div className={styles.FormHelperText}>
+                {t('Please integrate Google Cloud Storage to use the upload')}
+              </div>
+            )}
             {attachmentType === 'STICKER' || attachmentType === 'AUDIO' ? displayWarning() : null}
           </DialogBox>
         </Form>
