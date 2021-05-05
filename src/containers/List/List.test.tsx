@@ -6,8 +6,10 @@ import { List } from './List';
 
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent, waitFor } from '@testing-library/dom';
-import { LIST_MOCKS, defaultProps } from './List.test.helper';
+import { LIST_MOCKS, defaultProps, ORG_LIST_MOCK, orgProps } from './List.test.helper';
 import { setUserSession } from '../../services/AuthService';
+import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activate.svg';
+import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
 
 const mocks = LIST_MOCKS;
 
@@ -162,5 +164,58 @@ test('list sorting', async () => {
     const tableHead = container.querySelector('thead');
     const { getByText } = within(tableHead);
     fireEvent.click(getByText('KEYWORDS'));
+  });
+});
+
+describe('dialogMessage with custom component for delete', async () => {
+  let props = { ...orgProps };
+  const useCustomDialog = () => {
+    const component = (
+      <div>
+        <input type="text" placeholder="Testing custom dialog with input text" />
+      </div>
+    );
+    return {
+      component,
+      handleOkCallback: jest.fn(),
+      isConfirmed: true,
+    };
+  };
+
+  props.dialogMessage = useCustomDialog;
+  props.additionalAction = [
+    {
+      icon: ApprovedIcon,
+      parameter: 'id',
+      label: 'Approve',
+      button: () => <button onClick={() => jest.fn()}>Approve</button>,
+    },
+    {
+      icon: ActivateIcon,
+      parameter: 'id',
+      label: 'Activate',
+      button: () => <button onClick={() => jest.fn()}>Activate</button>,
+    },
+  ];
+
+  const list = (
+    <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
+      <Router>
+        <List {...props} />
+      </Router>
+    </MockedProvider>
+  );
+
+  test('Dialog message prop with custom component and additional Actions', async () => {
+    const { container } = render(list);
+
+    expect(container).toBeInTheDocument();
+
+    await waitFor(() => {
+      const { queryByLabelText } = within(container.querySelector('tbody tr'));
+      const button = queryByLabelText('Delete');
+
+      fireEvent.click(button);
+    });
   });
 });
