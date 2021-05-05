@@ -1,9 +1,18 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, cleanup, waitFor } from '@testing-library/react';
+import {
+  render,
+  cleanup,
+  waitFor,
+  prettyDOM,
+  screen,
+  fireEvent,
+  act,
+} from '@testing-library/react';
 import CollectionConversations from './CollectionConversations';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
+import userEvent from '@testing-library/user-event';
 
 const cache = new InMemoryCache({ addTypename: false });
 cache.writeQuery({
@@ -64,6 +73,38 @@ cache.writeQuery({
           },
         ],
       },
+      {
+        group: {
+          id: '3',
+          label: 'Optin Collection',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '4',
+          label: 'Optout Collection',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '5',
+          label: 'Glific Collection',
+        },
+        contact: null,
+        messages: [],
+      },
+      {
+        group: {
+          id: '1',
+          label: 'Test Collection',
+        },
+        contact: null,
+        messages: [],
+      },
     ],
   },
 });
@@ -73,18 +114,68 @@ const client = new ApolloClient({
   assumeImmutableResults: true,
 });
 
+jest.mock('react-i18next', () => ({
+  // this mock makes sure any components using the translate hook can use it without a warning being shown
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+}));
+
 afterEach(cleanup);
+
+const props = {
+  searchVal: 'opt',
+  searchMode: false,
+  searchParam: {},
+};
+
 const collectionConversation = (
   <ApolloProvider client={client}>
     <Router>
-      <CollectionConversations collectionId={2} />
+      <CollectionConversations collectionId={3} {...props} />
     </Router>
   </ApolloProvider>
 );
 
-test('it should render <CollectionConversations /> component correctly', async () => {
-  const { container } = render(collectionConversation);
-  await waitFor(() => {
-    expect(container).toBeInTheDocument();
+describe('<CollectionConversation />', () => {
+  test('it should render <CollectionConversations /> component correctly', async () => {
+    const { container } = render(collectionConversation);
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
+    });
+  });
+
+  test('It should render search bar and perform its actions', async () => {
+    const { container } = render(collectionConversation);
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('searchForm')).toBeInTheDocument();
+
+    await waitFor(() => {
+      const searchInput = screen.getByRole('textbox');
+      expect(searchInput).toBeInTheDocument();
+      userEvent.type(searchInput, 'opt');
+
+      // type optin then press enter
+      userEvent.type(searchInput, 'optin{enter}');
+
+      const resetButton = screen.getByTestId('resetButton');
+      expect(resetButton).toBeInTheDocument();
+      userEvent.click(resetButton);
+    });
+
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(5);
+
+    await waitFor(() => {
+      userEvent.click(listItems[0]);
+    });
   });
 });
