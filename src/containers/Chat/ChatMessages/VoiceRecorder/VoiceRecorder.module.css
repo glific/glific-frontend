@@ -1,0 +1,17 @@
+.VoiceRecorder {
+}
+
+.RecorderIcon {
+  position: absolute !important;
+  bottom: 4px;
+  right: 164px;
+}
+
+.AudioPlayerSection {
+  display: flex;
+  margin-right: 173px;
+}
+
+.AudioPlayer {
+  padding-right: 2px;
+}

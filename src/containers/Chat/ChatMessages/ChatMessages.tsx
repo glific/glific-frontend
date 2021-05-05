@@ -120,8 +120,9 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       scrollToLatestMessage();
     },
     onError: (error: any) => {
-      if (error.message) {
-        setNotification(client, error.message, 'warning');
+      const { message } = error;
+      if (message) {
+        setNotification(client, message, 'warning');
       }
       return null;
     },
@@ -284,9 +285,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     onCompleted: () => {
       scrollToLatestMessage();
     },
-    onError: (collecctionError: any) => {
-      if (collecctionError.message) {
-        setNotification(client, collecctionError.message, 'warning');
+    onError: (collectionError: any) => {
+      const { message } = collectionError;
+      if (message) {
+        setNotification(client, message, 'warning');
       }
       return null;
     },
@@ -579,40 +581,37 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
-    reverseConversation = reverseConversation.map((message: any, index: number) => {
-      const key = index;
-      return (
-        <ChatMessage
-          {...message}
-          contactId={contactId}
-          key={key}
-          popup={message.id === showDropdown}
-          onClick={() => showEditTagsDialog(message.id)}
-          setDialog={() => {
-            loadAllTags();
+    reverseConversation = reverseConversation.map((message: any, index: number) => (
+      <ChatMessage
+        {...message}
+        contactId={contactId}
+        key={message.id}
+        popup={message.id === showDropdown}
+        onClick={() => showEditTagsDialog(message.id)}
+        setDialog={() => {
+          loadAllTags();
 
-            let messageTags = conversationInfo.messages.filter(
-              (messageObj: any) => messageObj.id === editTagsMessageId
-            );
-            if (messageTags.length > 0) {
-              messageTags = messageTags[0].tags;
-            }
-            const messageTagId = messageTags.map((tag: any) => tag.id);
-            setSelectedMessageTags(messageTagId);
-            setPreviousMessageTags(messageTagId);
-            setDialogbox('tag');
-          }}
-          focus={index === 0}
-          showMessage={
-            index !== 0
-              ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
-                moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
-              : true
+          let messageTags = conversationInfo.messages.filter(
+            (messageObj: any) => messageObj.id === editTagsMessageId
+          );
+          if (messageTags.length > 0) {
+            messageTags = messageTags[0].tags;
           }
-          jumpToMessage={jumpToMessage}
-        />
-      );
-    });
+          const messageTagId = messageTags.map((tag: any) => tag.id);
+          setSelectedMessageTags(messageTagId);
+          setPreviousMessageTags(messageTagId);
+          setDialogbox('tag');
+        }}
+        focus={index === 0}
+        showMessage={
+          index !== 0
+            ? moment(reverseConversation[index].insertedAt).format(TIME_FORMAT) !==
+              moment(reverseConversation[index - 1].insertedAt).format(TIME_FORMAT)
+            : true
+        }
+        jumpToMessage={jumpToMessage}
+      />
+    ));
 
     messageList = reverseConversation
       .sort((currentMessage: any, nextMessage: any) => currentMessage.id - nextMessage.id)
