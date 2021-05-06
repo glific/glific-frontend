@@ -98,6 +98,58 @@ export const searchQuery = {
 
 cache.writeQuery(searchQuery);
 
+export const contact = {
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        group: null,
+        contact: {
+          id: 2,
+          name: 'Effie Cormier',
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: [body],
+      },
+      {
+        group: null,
+        contact: {
+          id: 1,
+          name: '',
+          phone: '1234567890',
+          maskedPhone: '12****890',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: [],
+      },
+    ],
+  },
+};
+
+const conversationData = Array(30)
+  .fill(null)
+  .map((val: any, index: number) => ({
+    group: {
+      id: `${index + 3}`,
+      label: `Test ${index + 3}`,
+    },
+    contact: null,
+    messages: [],
+  }));
+
 export const collection = {
   query: SEARCH_QUERY,
   variables: {
@@ -151,198 +203,7 @@ export const collection = {
           },
         ],
       },
-      {
-        group: {
-          id: '3',
-          label: 'Optin group',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '4',
-          label: 'Optout group',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '5',
-          label: 'Test group',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '6',
-          label: 'Glific group',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '7',
-          label: 'Test 7',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '8',
-          label: 'Test 8',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '9',
-          label: 'Test 9',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '10',
-          label: 'Test 10',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '11',
-          label: 'Test 11',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '12',
-          label: 'Test 12',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '13',
-          label: 'Test 13',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '14',
-          label: 'Test 14',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '15',
-          label: 'Test 15',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '16',
-          label: 'Test 16',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '17',
-          label: 'Test 17',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '18',
-          label: 'Test 18',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '19',
-          label: 'Test 19',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '20',
-          label: 'Test 20',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '21',
-          label: 'Test 21',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '22',
-          label: 'Test 22',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '23',
-          label: 'Test 23',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '24',
-          label: 'Test 24',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '25',
-          label: 'Test 25',
-        },
-        contact: null,
-        messages: [],
-      },
-      {
-        group: {
-          id: '26',
-          label: 'Test 26',
-        },
-        contact: null,
-        messages: [],
-      },
+      ...conversationData,
     ],
   },
 };

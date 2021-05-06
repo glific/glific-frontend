@@ -1,26 +1,14 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, waitFor, screen, fireEvent, prettyDOM } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import ConversationList from './ConversationList';
-import { searchQuery, collection } from '../../ChatMessages/ChatMessages.test';
+import { contact, collection } from '../../ChatMessages/ChatMessages.test';
 import { searchContactCollection } from '../../../../mocks/Search';
 import { MockedProvider } from '@apollo/client/testing';
 
-jest.mock('react-i18next', () => ({
-  // this mock makes sure any components using the translate hook can use it without a warning being shown
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-      i18n: {
-        changeLanguage: () => new Promise(() => {}),
-      },
-    };
-  },
-}));
-
 const contactCache = new InMemoryCache({ addTypename: false });
-contactCache.writeQuery(searchQuery);
+contactCache.writeQuery(contact);
 
 const clientForContact = new ApolloClient({
   cache: contactCache,
@@ -30,12 +18,13 @@ const conversationList = (
   <ApolloProvider client={clientForContact}>
     <Router>
       <ConversationList
-        searchVal="f"
+        searchVal=""
         selectedContactId={2}
         setSelectedContactId={jest.fn()}
         savedSearchCriteria=""
         searchMode={false}
         searchParam={{}}
+        entityType="contact"
       />
     </Router>
   </ApolloProvider>
@@ -48,7 +37,7 @@ test('it should render ConversationsList properly', async () => {
   });
 
   const listItems = screen.getAllByTestId('list');
-  expect(listItems.length).toBe(1);
+  expect(listItems.length).toBe(2);
 });
 
 const props = {
@@ -79,7 +68,7 @@ test('it should render conversation collection list', async () => {
   expect(container).toBeInTheDocument();
   await waitFor(() => {
     const listItems = screen.getAllByTestId('list');
-    expect(listItems.length).toBe(25);
+    expect(listItems.length).toBe(31);
     fireEvent.click(listItems[0]);
   });
 
@@ -103,28 +92,24 @@ test('it should render conversation collection list with searched value', async 
   expect(container).toBeInTheDocument();
   await waitFor(() => {
     const listItems = screen.getAllByTestId('list');
-    expect(listItems.length).toBe(25);
+    expect(listItems.length).toBe(31);
     fireEvent.click(listItems[0]);
   });
-
-  // await waitFor(() => {
-  //   const loadMore = screen.getByText('Load more');
-  //   expect(loadMore).toBeInTheDocument();
-  //   fireEvent.click(loadMore);
-  // });
 });
 
+const contactProps = {
+  searchVal: 'III',
+  selectedContactId: 216,
+  setSelectedContactId: jest.fn(),
+  savedSearchCriteria: '',
+  searchMode: false,
+  searchParam: {},
+};
+
 const contactCollectionList = (
-  <MockedProvider mocks={[searchContactCollection]} addTypename={false}>
+  <MockedProvider mocks={searchContactCollection} addTypename={false}>
     <Router>
-      <ConversationList
-        searchVal="III"
-        selectedContactId={216}
-        setSelectedContactId={jest.fn()}
-        savedSearchCriteria=""
-        searchMode={false}
-        searchParam={{}}
-      />
+      <ConversationList {...contactProps} />
     </Router>
   </MockedProvider>
 );
@@ -134,5 +119,11 @@ test('It render contact collection with multi-search', async () => {
 
   await waitFor(() => {
     expect(container).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(34);
+    fireEvent.click(listItems[0]);
   });
 });
