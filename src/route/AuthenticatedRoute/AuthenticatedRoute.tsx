@@ -53,6 +53,7 @@ const WebhookLogsList = lazy(
 const TriggerList = lazy(() => import('../../containers/Trigger/TriggerList/TriggerList'));
 const Trigger = lazy(() => import('../../containers/Trigger/Trigger'));
 const NotificationList = lazy(() => import('../../containers/NotificationList/NotificationList'));
+const OrganizationList = lazy(() => import('../../containers/OrganizationList/OrganizationList'));
 
 const routeStaff = (
   <Switch>
@@ -156,6 +157,7 @@ const routeAdmin = (
       )}
     />
     <Route path="/trigger" exact component={TriggerList} />
+    <Route path="/organizations" exact component={OrganizationList} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );
@@ -175,7 +177,11 @@ export const AuthenticatedRoute: React.SFC = () => {
     route = routeStaff;
   }
 
-  if (userRole.includes('Manager') || userRole.includes('Admin')) {
+  if (
+    userRole.includes('Manager') ||
+    userRole.includes('Admin') ||
+    userRole.includes('Glific_admin')
+  ) {
     route = routeAdmin;
   }
 

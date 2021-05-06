@@ -15,6 +15,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/R
 import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
+
 import { GET_CURRENT_USER } from '../../graphql/queries/User';
 import { setNotification, setErrorMessage } from '../../common/notification';
 import { getUserRole, getUserRolePermissions } from '../../context/role';
@@ -33,7 +34,7 @@ export interface ListProps {
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
   listItemName: string;
-  dialogMessage: string;
+  dialogMessage: string | any;
   pageLink: string;
   columns: any;
   listIcon: any;
@@ -56,6 +57,7 @@ export interface ListProps {
     link?: string;
     dialog?: any;
     label?: string;
+    button?: any;
   }>;
   deleteModifier?: {
     icon: string;
@@ -296,19 +298,50 @@ export const List: React.SFC<ListProps> = ({
     setDeleteItemID(null);
   };
 
+  const useDelete = (message: string | any) => {
+    let component = {};
+    const props = { disableOk: false, handleOk: handleDeleteItem };
+    if (typeof message === 'string') {
+      component = message;
+    } else {
+      /**
+       * Custom component to render
+       * message should contain 3 params
+       * 1. component: Component to render
+       * 2. isConfirm: To check true or false value
+       * 3. handleOkCallback: Callback action to delete item
+       */
+      const { component: componentToRender, isConfirmed, handleOkCallback } = message(
+        deleteItemID,
+        deleteItemName
+      );
+      component = componentToRender;
+      props.disableOk = !isConfirmed;
+      props.handleOk = () => handleOkCallback({ refetch: fetchQuery, setDeleteItemID });
+    }
+
+    return {
+      component,
+      props,
+    };
+  };
+
   let dialogBox;
   if (deleteItemID) {
+    const { component, props } = useDelete(dialogMessage);
     dialogBox = (
       <DialogBox
         title={
           dialogTitle || `Are you sure you want to delete the ${listItemName} "${deleteItemName}"?`
         }
-        handleOk={handleDeleteItem}
         handleCancel={closeDialogBox}
         colorOk="secondary"
         alignButtons="center"
+        {...props}
       >
-        <p className={styles.DialogText}>{dialogMessage}</p>
+        <div className={styles.DialogText}>
+          <div>{component}</div>
+        </div>
       </DialogBox>
     );
   }
@@ -354,7 +387,7 @@ export const List: React.SFC<ListProps> = ({
     }
 
     const deleteButton = (Id: any, text: string) =>
-      allowedAction.delete ? (
+      allowedAction.delete || listItems.isActive === false ? (
         <IconButton
           aria-label="Delete"
           color="default"
@@ -411,6 +444,9 @@ export const List: React.SFC<ListProps> = ({
                   </Tooltip>
                 </IconButton>
               );
+            }
+            if (action.button) {
+              return action.button(listItems, action, key, fetchQuery);
             }
             return null;
           })}

@@ -100,3 +100,50 @@ export const UPDATE_CREDENTIAL = gql`
     }
   }
 `;
+
+export const UPDATE_ORGANIZATION_STATUS = gql`
+  mutation updateOrganizationStatus(
+    $updateOrganizationId: ID!
+    $isActive: Boolean
+    $isApproved: Boolean
+  ) {
+    updateOrganizationStatus(
+      updateOrganizationId: $updateOrganizationId
+      isActive: $isActive
+      isApproved: $isApproved
+    ) {
+      organization {
+        email
+        isActive
+        isApproved
+        name
+        shortcode
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
+
+export const DELETE_INACTIVE_ORGANIZATIONS = gql`
+  mutation deleteInactiveOrganization($deleteOrganizationID: ID!, $isConfirmed: Boolean) {
+    deleteInactiveOrganization(
+      deleteOrganizationID: $deleteOrganizationID
+      isConfirmed: $isConfirmed
+    ) {
+      organization {
+        email
+        isActive
+        isApproved
+        name
+        shortcode
+      }
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;

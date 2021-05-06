@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
@@ -18,10 +18,12 @@ import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
 import ChatTemplates from '../ChatTemplates/ChatTemplates';
 import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
-import { CREATE_MEDIA_MESSAGE } from '../../../../graphql/mutations/Chat';
+import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from '../../../../graphql/mutations/Chat';
 import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
+import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -35,6 +37,7 @@ export interface ChatInputProps {
   contactStatus?: string;
   contactBspStatus?: string;
   additionalStyle?: any;
+  isCollection?: any;
   lastMessageTime?: any;
 }
 
@@ -44,6 +47,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     contactStatus,
     additionalStyle,
     handleHeightChange,
+    isCollection,
     lastMessageTime,
   } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -58,6 +62,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [updatedEditorState, setUpdatedEditorState] = useState<any>();
   const [selectedTemplate, setSelectedTemplate] = useState<any>();
   const [variableParam, setVariableParam] = useState<any>([]);
+  const [recordedAudio, setRecordedAudio] = useState<any>('');
+  const [clearAudio, setClearAudio] = useState<any>(false);
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -70,6 +76,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSelectedTemplate(undefined);
     setVariableParam([]);
   };
+
+  const { data: permission } = useQuery(GET_ATTACHMENT_PERMISSION);
 
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE, {
     onCompleted: (data: any) => {
@@ -89,6 +97,29 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
+  const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
+    onCompleted: (data: any) => {
+      if (data) {
+        setAttachmentType('AUDIO');
+        createMediaMessage({
+          variables: {
+            input: {
+              caption: '',
+              sourceUrl: data.uploadBlob,
+              url: data.uploadBlob,
+            },
+          },
+        });
+
+        setClearAudio(true);
+        setRecordedAudio('');
+      }
+    },
+    onError: (error: any) => {
+      console.log('Error', error);
+    },
+  });
+
   if (attachment) {
     const dialogProps = {
       attachmentType,
@@ -101,7 +132,26 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     dialog = <AddAttachment {...dialogProps} />;
   }
 
-  const submitMessage = (message: string) => {
+  const submitMessage = async (message: string) => {
+    // let's check if we are sending voice recording
+    if (recordedAudio) {
+      // converting blob into base64 format as needed by backend
+      const reader = new FileReader();
+      reader.readAsDataURL(recordedAudio);
+      reader.onloadend = function () {
+        const base64String: any = reader.result;
+        // get the part without the tags
+        const media = base64String.split(',')[1];
+        // save media that will return an URL
+        uploadMediaBlob({
+          variables: {
+            media,
+            extension: 'wav',
+          },
+        });
+      };
+    }
+
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
 
@@ -202,6 +252,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     dialog = <AddVariables {...dialogProps} />;
   }
 
+  const handleAudioRecording = (blob: any) => {
+    setRecordedAudio(blob);
+    setClearAudio(false);
+  };
+
   const handleSearch = (e: any) => {
     setSearchVal(e.target.value);
   };
@@ -251,6 +306,18 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           'Sorry, chat is unavailable with this contact at this moment because they aren’t opted in to your number.'
         )}
       </div>
+    );
+  }
+
+  if (isCollection) {
+    quickSendTypes = [speedSends, templates];
+  }
+
+  let audioOption: any;
+  // enable audio only if GCS is configured
+  if (permission && permission.attachmentsEnabled) {
+    audioOption = (
+      <VoiceRecorder handleAudioRecording={handleAudioRecording} clearAudio={clearAudio} />
     );
   }
 
@@ -324,6 +391,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             <VariableIcon />
           </IconButton>
         ) : null}
+        {audioOption}
         <IconButton
           className={styles.AttachmentIcon}
           onClick={() => {
@@ -332,7 +400,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         >
           {attachment || attachmentAdded ? <AttachmentIconSelected /> : <AttachmentIcon />}
         </IconButton>
-
         <div className={styles.SendButtonContainer}>
           <Button
             className={styles.SendButton}
@@ -351,7 +418,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
                 submitMessage(convertToWhatsApp(editorState));
               }
             }}
-            disabled={!editorState.getCurrentContent().hasText() && !attachmentAdded}
+            disabled={
+              !editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio
+            }
           >
             <SendMessageIcon className={styles.SendIcon} />
           </Button>
