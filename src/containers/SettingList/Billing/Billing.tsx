@@ -94,7 +94,7 @@ export const BillingForm: React.FC<BillingProps> = () => {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: 'Your name',
+      placeholder: 'Your Organization Name',
       disabled: alreadySubscribed || pending || disable,
     },
     {
