@@ -37,6 +37,7 @@ export interface ChatInputProps {
   contactStatus?: string;
   contactBspStatus?: string;
   additionalStyle?: any;
+  isCollection?: any;
   lastMessageTime?: any;
 }
 
@@ -46,6 +47,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     contactStatus,
     additionalStyle,
     handleHeightChange,
+    isCollection,
     lastMessageTime,
   } = props;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -305,6 +307,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         )}
       </div>
     );
+  }
+
+  if (isCollection) {
+    quickSendTypes = [speedSends, templates];
   }
 
   let audioOption: any;

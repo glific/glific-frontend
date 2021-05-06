@@ -1,9 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { AutoComplete } from './AutoComplete';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TextField } from '@material-ui/core';
-import { act } from '@testing-library/react';
 
 describe('<AutoComplete />', () => {
   const option: any[] = [

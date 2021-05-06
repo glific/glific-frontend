@@ -371,13 +371,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   // HOOKS ESTABLISHED ABOVE
 
-  // check if the search API results nothing for a particular contact ID and redirect to chat
-  if (contactId && data) {
-    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
-      return <Redirect to="/chat" />;
-    }
-  }
-
   // Run through these cases to ensure data always exists
 
   if (called && error) {
@@ -512,6 +505,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     setDialogbox('');
     setShowDropdown(null);
   };
+
+  // check if the search API results nothing for a particular contact ID and redirect to chat
+  if (contactId && data) {
+    if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
+      return <Redirect to="/chat" />;
+    }
+  }
+
   /* istanbul ignore next */
   const handleSubmit = (tags: any) => {
     const selectedTags = tags.filter((tag: any) => !previousMessageTags.includes(tag));
@@ -755,6 +756,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       <ChatInput
         handleHeightChange={handleHeightChange}
         onSendMessage={sendCollectionMessageHandler}
+        isCollection
       />
     );
   }
