@@ -1,3 +1,4 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 
 import { AddAttachment } from './AddAttachment';
@@ -11,28 +12,36 @@ beforeEach(() => {
   cleanup();
 });
 
-const defaultProps = (attachmentType = '', attachmentURL = '') => ({
-  setAttachment,
-  setAttachmentURL,
-  setAttachmentAdded,
-  setAttachmentType,
-  attachmentURL,
-  attachmentType,
-});
+const addAttachment = (attachmentType = '', attachmentURL = '') => {
+  const defaultProps = {
+    setAttachment,
+    setAttachmentURL,
+    setAttachmentAdded,
+    setAttachmentType,
+    attachmentURL,
+    attachmentType,
+    uploadPermission: true,
+  };
+  return (
+    <MockedProvider>
+      <AddAttachment {...defaultProps} />
+    </MockedProvider>
+  );
+};
 
 test('it should render', () => {
-  const { getByTestId } = render(<AddAttachment {...defaultProps()} />);
+  const { getByTestId } = render(addAttachment());
   expect(getByTestId('attachmentDialog')).toBeInTheDocument();
 });
 
 test('it should reset type if cross icon is clicked', () => {
-  const { getByTestId } = render(<AddAttachment {...defaultProps('IMAGE')} />);
+  const { getByTestId } = render(addAttachment('IMAGE'));
   fireEvent.click(getByTestId('crossIcon'));
   expect(setAttachmentType).toHaveBeenCalled();
 });
 
 test('should get error if the type is not present', async () => {
-  const { getByText, getByTestId } = render(<AddAttachment {...defaultProps()} />);
+  const { getByText, getByTestId } = render(addAttachment());
   fireEvent.click(getByTestId('ok-button'));
   waitFor(() => {
     expect(getByText('Type is required.')).toBeInTheDocument();
@@ -40,16 +49,14 @@ test('should get error if the type is not present', async () => {
 });
 
 test('cancel button', () => {
-  const { getByTestId } = render(<AddAttachment {...defaultProps()} />);
+  const { getByTestId } = render(addAttachment());
   fireEvent.click(getByTestId('cancel-button'));
 
   expect(setAttachment).toHaveBeenCalled();
 });
 
 test('add an attachment', async () => {
-  const { getByTestId } = render(
-    <AddAttachment {...defaultProps('IMAGE', 'https://glific.com')} />
-  );
+  const { getByTestId } = render(addAttachment('IMAGE', 'https://glific.com'));
   fireEvent.click(getByTestId('ok-button'));
   waitFor(() => {
     expect(setAttachmentAdded).toHaveBeenCalled();
@@ -57,13 +64,12 @@ test('add an attachment', async () => {
 });
 
 test('show warnings if attachment type is audio', async () => {
-  const { getByText } = render(<AddAttachment {...defaultProps('AUDIO', 'https://glific.com')} />);
+  const { getByText } = render(addAttachment('AUDIO', 'https://glific.com'));
+
   expect(getByText('Captions along with audio are not supported.')).toBeInTheDocument();
 });
 
 test('show warnings if attachment type is sticker', async () => {
-  const { getByText } = render(
-    <AddAttachment {...defaultProps('STICKER', 'https://glific.com')} />
-  );
+  const { getByText } = render(addAttachment('STICKER', 'https://glific.com'));
   expect(getByText('Animated stickers are not supported.')).toBeInTheDocument();
 });
