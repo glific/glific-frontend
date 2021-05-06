@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, fireEvent, getByTestId } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SearchDialogBox } from './SearchDialogBox';
 import * as AutoComplete from '../Form/AutoComplete/AutoComplete';

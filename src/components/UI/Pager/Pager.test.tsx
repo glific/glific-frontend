@@ -1,16 +1,6 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Pager } from './Pager';
 import { render } from '@testing-library/react';
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TablePagination,
-  TableRow,
-  TableSortLabel,
-} from '@material-ui/core';
 
 describe('Server Table test', () => {
   // Dummy data
@@ -18,13 +8,13 @@ describe('Server Table test', () => {
 
   const data = [
     {
-      recordId:'1',
+      recordId: '1',
       first: 'Foo',
       last: 'Bar',
       message: 'Typescript is the best!',
     },
     {
-      recordId:'2',
+      recordId: '2',
       first: 'Adam',
       last: 'Smith',
       message: 'I love testing my Typescript code!',

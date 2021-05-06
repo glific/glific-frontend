@@ -39,7 +39,7 @@ test('it renders correctly', () => {
   expect(getByTestId('recorder')).toBeInTheDocument();
 });
 
-test('checck ', async () => {
+test('check recording', async () => {
   const { getByTestId } = render(voiceRecorder);
 
   // start recording
