@@ -1,5 +1,13 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  getByText,
+  render,
+  waitFor,
+  waitForDomChange,
+} from '@testing-library/react';
+import { uploadMediaMock } from '../../../../mocks/Attachment';
 
 import { AddAttachment } from './AddAttachment';
 
@@ -11,6 +19,7 @@ const setAttachmentType = jest.fn();
 beforeEach(() => {
   cleanup();
 });
+const mocks = [uploadMediaMock, uploadMediaMock];
 
 const addAttachment = (attachmentType = '', attachmentURL = '') => {
   const defaultProps = {
@@ -23,7 +32,7 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
     uploadPermission: true,
   };
   return (
-    <MockedProvider>
+    <MockedProvider mocks={mocks}>
       <AddAttachment {...defaultProps} />
     </MockedProvider>
   );
@@ -72,4 +81,19 @@ test('show warnings if attachment type is audio', async () => {
 test('show warnings if attachment type is sticker', async () => {
   const { getByText } = render(addAttachment('STICKER', 'https://glific.com'));
   expect(getByText('Animated stickers are not supported.')).toBeInTheDocument();
+});
+
+test('uploading a file', async () => {
+  const { getByTestId, getByText } = render(addAttachment('IMAGE'));
+  const file = new File(['Hello glific'], 'glific.txt', {
+    type: 'text/plain',
+  });
+
+  fireEvent.change(getByTestId('uploadFile'), { target: { files: [file] } });
+
+  await waitFor(() => {});
+
+  await waitFor(() => {
+    expect(getByText('Image')).toBeInTheDocument();
+  });
 });
