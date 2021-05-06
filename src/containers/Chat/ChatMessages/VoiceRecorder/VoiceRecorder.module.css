@@ -9,6 +9,7 @@
 
 .AudioPlayerSection {
   display: flex;
+  margin-top: 10px;
   margin-right: 173px;
   align-items: center;
 }
