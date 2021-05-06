@@ -1,5 +1,4 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-
 import { createLink } from 'apollo-absinthe-upload-link';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
