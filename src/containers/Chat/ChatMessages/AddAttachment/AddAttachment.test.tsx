@@ -1,12 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import {
-  cleanup,
-  fireEvent,
-  getByText,
-  render,
-  waitFor,
-  waitForDomChange,
-} from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { uploadMediaMock } from '../../../../mocks/Attachment';
 
 import { AddAttachment } from './AddAttachment';
