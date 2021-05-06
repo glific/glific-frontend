@@ -85,15 +85,11 @@ test('show warnings if attachment type is sticker', async () => {
 
 test('uploading a file', async () => {
   const { getByTestId, getByText } = render(addAttachment('IMAGE'));
-  const file = new File(['Hello glific'], 'glific.txt', {
-    type: 'text/plain',
-  });
+  const file = { name: 'photo.png' };
 
   fireEvent.change(getByTestId('uploadFile'), { target: { files: [file] } });
 
-  await waitFor(() => {});
-
   await waitFor(() => {
-    expect(getByText('Image')).toBeInTheDocument();
+    expect(setAttachmentURL).toHaveBeenCalled();
   });
 });

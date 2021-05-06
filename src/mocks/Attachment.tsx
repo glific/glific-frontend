@@ -52,7 +52,7 @@ export const createMediaMessageMock = {
 export const uploadMediaMock = {
   request: {
     query: UPLOAD_MEDIA,
-    variables: { media: {}, extension: 'txt' },
+    variables: { media: { name: 'photo.png' }, extension: 'png' },
   },
   result: {
     data: {

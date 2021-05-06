@@ -51,13 +51,12 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
 
   const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
     onCompleted: (data: any) => {
-      console.log('here');
       setAttachmentURL(data.uploadMedia);
       setUploading(false);
     },
     onError: (error: any) => {
       setUploading(false);
-      console.log('here22');
+
       console.log('Error', error);
     },
   });
@@ -161,7 +160,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       const shortenedName = mediaName.length > 15 ? `${mediaName.slice(0, 15)}...` : mediaName;
       setFileName(shortenedName);
       setUploading(true);
-      console.log(media, extension);
       uploadMedia({
         variables: {
           media,
