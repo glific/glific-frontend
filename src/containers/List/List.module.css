@@ -72,12 +72,17 @@
 }
 
 .DialogText {
-  max-width: 347px;
   margin-top: 0px;
   text-align: center;
   color: #073f24;
   font-weight: 400;
   font-family: 'heebo', sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.DialogText div {
+  max-width: 347px;
 }
 
 .BackLink {

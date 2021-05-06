@@ -46,6 +46,21 @@ export const setUserRolePermissions = () => {
       manageCollections = true;
     }
   }
+
+  if (role && role.includes('Glific_admin')) {
+    /**
+     * Glific admin will have additional menus along with admin menus
+     */
+    sideDrawerMenu = getMenus('sideDrawer', 'Manager');
+    staffManagementMenu = [
+      ...getMenus('staffManagement', 'Manager'),
+      ...getMenus('staffManagement', 'Glific_admin'),
+    ];
+
+    accessSettings = true;
+    manageSavedSearches = true;
+    manageCollections = true;
+  }
 };
 
 // function to reset user permissions

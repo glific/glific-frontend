@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Remove</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon/Remove" stroke="#DD1F1F" stroke-width="2">
+            <g id="Group-3">
+                <circle id="Oval" cx="9" cy="9" r="8"></circle>
+                <line x1="6" y1="9" x2="12.5" y2="9" id="Path-3" stroke-linecap="round"></line>
+            </g>
+        </g>
+    </g>
+</svg>

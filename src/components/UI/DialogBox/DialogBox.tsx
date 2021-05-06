@@ -23,6 +23,7 @@ export interface DialogProps {
   skipCancel?: boolean;
   skipOk?: boolean;
   contentText?: string;
+  disableOk?: boolean;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -40,6 +41,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   skipCancel = false,
   skipOk = false,
   contentText,
+  disableOk = false,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -71,7 +73,13 @@ export const DialogBox: React.SFC<DialogProps> = ({
   let okButtonDisplay = null;
   if (!skipOk) {
     okButtonDisplay = (
-      <Button onClick={handleOKButton} color={colorOk} variant="contained" data-testid="ok-button">
+      <Button
+        onClick={handleOKButton}
+        disabled={disableOk}
+        color={colorOk}
+        variant="contained"
+        data-testid="ok-button"
+      >
         {buttonOk}
       </Button>
     );

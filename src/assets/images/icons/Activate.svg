@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/Activate</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Icon/Activate" stroke="#119656" stroke-width="2">
+            <g id="Icon/Select" transform="translate(8.500000, 1.133242)">
+                <line x1="0.5" y1="3.06001865e-13" x2="0.5" y2="6" id="Triangle" transform="translate(0.500000, 3.000000) scale(1, -1) translate(-0.500000, -3.000000) "></line>
+            </g>
+            <path d="M4.09122863,2.84455978 C2.22755081,4.36689632 1.06757779,6.67320862 1.06757779,9 C1.06757779,13 4.581722,17 9,17 C13.418278,17 17,13.418278 17,9 C17,6.54865663 15.8974607,4.35482512 14.161219,2.88734255" id="Oval"></path>
+        </g>
+    </g>
+</svg>
