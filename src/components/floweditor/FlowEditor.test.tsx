@@ -3,7 +3,7 @@ import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { getFlowDetailsQuery } from '../../mocks/Flow';
+import { getFlowDetailsQuery, publishFlow } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
 import {
   simulatorGetQuery,
@@ -17,6 +17,7 @@ const mocks = [
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
   simulatorGetQuery,
+  publishFlow,
 ];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -26,14 +27,18 @@ const wrapper = (
   </MockedProvider>
 );
 
-test('it should display the flowEditor', () => {
+test('it should display the flowEditor', async () => {
   const { container } = render(wrapper);
-  expect(container.querySelector('#flow')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(container.querySelector('#flow')).toBeInTheDocument();
+  });
 });
 
-test('it should have a done button that redirects to flow page', () => {
+test('it should have a done button that redirects to flow page', async () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('button')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+  });
 });
 
 test('it should display name of the flow', async () => {
@@ -43,19 +48,25 @@ test('it should display name of the flow', async () => {
   });
 });
 
-test('it should have a help button that redirects to help page', () => {
+test('it should have a help button that redirects to help page', async () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('helpButton')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('helpButton')).toBeInTheDocument();
+  });
 });
 
-test('it should have a preview button', () => {
+test('it should have a preview button', async () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('previewButton')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('previewButton')).toBeInTheDocument();
+  });
 });
 
-test('it should have save as draft button', () => {
+test('it should have save as draft button', async () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('saveDraftButton')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('saveDraftButton')).toBeInTheDocument();
+  });
 });
 
 test('click on preview button should open simulator', async () => {
@@ -68,10 +79,14 @@ test('click on preview button should open simulator', async () => {
 
 test('publish flow which has error', async () => {
   const { getByTestId } = render(wrapper);
-  expect(getByTestId('button')).toBeInTheDocument();
-  fireEvent.click(getByTestId('button'));
-  expect(getByTestId('ok-button')).toBeInTheDocument();
-  fireEvent.click(getByTestId('ok-button'));
+
+  await waitFor(() => {
+    expect(getByTestId('button')).toBeInTheDocument();
+    fireEvent.click(getByTestId('button'));
+
+    expect(getByTestId('ok-button')).toBeInTheDocument();
+    fireEvent.click(getByTestId('ok-button'));
+  });
 });
 
 test('start with a keyword message if the simulator opens in floweditor screen', async () => {
