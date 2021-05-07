@@ -6,8 +6,10 @@ import { act } from 'react-dom/test-utils';
 import App from './App';
 import { CONVERSATION_MOCKS } from './mocks/Chat';
 import { setAuthSession, setUserSession } from './services/AuthService';
-
+import axios from 'axios';
 const mocks = CONVERSATION_MOCKS;
+
+jest.mock('axios');
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -19,6 +21,7 @@ const app = (
 
 describe('<App /> ', () => {
   test('it should render <App /> component correctly', async () => {
+    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
     const { container } = render(app);
     await waitFor(() => {
       expect(container).toBeInTheDocument();
@@ -26,7 +29,9 @@ describe('<App /> ', () => {
   });
 
   test('it should render <Login /> component by default', async () => {
+    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
     const { getByTestId } = render(app);
+
     await waitFor(() => {
       expect(getByTestId('AuthContainer')).toBeInTheDocument();
     });

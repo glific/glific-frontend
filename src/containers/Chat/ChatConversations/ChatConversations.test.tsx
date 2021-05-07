@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, waitFor, fireEvent, cleanup } from '@testing-library/react';
+import { render, waitFor, fireEvent, cleanup, screen } from '@testing-library/react';
 import ChatConversations from './ChatConversations';
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
@@ -85,7 +85,7 @@ const client = new ApolloClient({
 afterEach(cleanup);
 const chatConversation = (
   <ApolloProvider client={client}>
-    <MockedProvider mocks={ChatConversationMocks}>
+    <MockedProvider mocks={ChatConversationMocks} addTypename={false}>
       <Router>
         <ChatConversations
           contactId={2}
@@ -107,17 +107,17 @@ test('it should filter contacts based on search', async () => {
   const { getByTestId } = render(chatConversation);
   await waitFor(() => {
     fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+    fireEvent.submit(getByTestId('searchForm'));
   });
-  fireEvent.submit(getByTestId('searchForm'));
 });
 
 test('it should reset input on clicking cross icon', async () => {
   const { getByTestId } = render(chatConversation);
   await waitFor(() => {
     fireEvent.change(getByTestId('searchInput').querySelector('input'), { target: { value: 'a' } });
+    const resetButton = getByTestId('resetButton');
+    fireEvent.click(resetButton);
   });
-  const resetButton = getByTestId('resetButton');
-  fireEvent.click(resetButton);
 });
 
 test('it should load all contacts with unread tag', async () => {
@@ -130,4 +130,19 @@ test('it should load all contacts with unread tag', async () => {
 
   // need to fix
   // expect(getByText('You do not have any conversations.')).toBeInTheDocument();
+});
+
+test('it should render dialog when advance search is click', async () => {
+  const { container } = render(chatConversation);
+
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
+  });
+
+  const dialog = screen.getByText('AdvancedSearch.svg');
+  expect(dialog).toBeInTheDocument();
+
+  await waitFor(() => {
+    fireEvent.click(dialog);
+  });
 });

@@ -98,7 +98,59 @@ export const searchQuery = {
 
 cache.writeQuery(searchQuery);
 
-const collection = {
+export const contact = {
+  query: SEARCH_QUERY,
+  variables: {
+    filter: {},
+    contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [
+      {
+        group: null,
+        contact: {
+          id: 2,
+          name: 'Effie Cormier',
+          phone: '987654321',
+          maskedPhone: '98****321',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: [body],
+      },
+      {
+        group: null,
+        contact: {
+          id: 1,
+          name: '',
+          phone: '1234567890',
+          maskedPhone: '12****890',
+          lastMessageAt: new Date(),
+          status: 'VALID',
+          bspStatus: 'SESSION_AND_HSM',
+          isOrgRead: true,
+        },
+        messages: [],
+      },
+    ],
+  },
+};
+
+const conversationData = Array(30)
+  .fill(null)
+  .map((val: any, index: number) => ({
+    group: {
+      id: `${index + 3}`,
+      label: `Test ${index + 3}`,
+    },
+    contact: null,
+    messages: [],
+  }));
+
+export const collection = {
   query: SEARCH_QUERY,
   variables: {
     contactOpts: { limit: DEFAULT_CONTACT_LIMIT },
@@ -151,9 +203,23 @@ const collection = {
           },
         ],
       },
+      ...conversationData,
     ],
   },
 };
+
+export const collectionWithLoadMore = {
+  query: SEARCH_QUERY,
+  variables: {
+    contactOpts: { limit: 10, offset: 25 },
+    filter: { searchGroup: true },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [...conversationData.slice(1, 5)],
+  },
+};
+
 // add collection to apollo cache
 cache.writeQuery(collection);
 

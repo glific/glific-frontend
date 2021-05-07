@@ -1,19 +1,21 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import ConversationList from './ConversationList';
-
+import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { searchQuery } from '../../ChatMessages/ChatMessages.test';
 
-const cache = new InMemoryCache({ addTypename: false });
-cache.writeQuery(searchQuery);
+import ConversationList from './ConversationList';
+import { contact, collection, collectionWithLoadMore } from '../../ChatMessages/ChatMessages.test';
+import { searchContactCollection } from '../../../../mocks/Search';
+import { MockedProvider } from '@apollo/client/testing';
 
-const client = new ApolloClient({
-  cache,
+const contactCache = new InMemoryCache({ addTypename: false });
+contactCache.writeQuery(contact);
+
+const clientForContact = new ApolloClient({
+  cache: contactCache,
   assumeImmutableResults: true,
 });
 const conversationList = (
-  <ApolloProvider client={client}>
+  <ApolloProvider client={clientForContact}>
     <Router>
       <ConversationList
         searchVal=""
@@ -21,6 +23,8 @@ const conversationList = (
         setSelectedContactId={jest.fn()}
         savedSearchCriteria=""
         searchMode={false}
+        searchParam={{}}
+        entityType="contact"
       />
     </Router>
   </ApolloProvider>
@@ -31,13 +35,119 @@ test('it should render ConversationsList properly', async () => {
   await waitFor(() => {
     expect(container).toBeInTheDocument();
   });
+
+  const listItems = screen.getAllByTestId('list');
+  expect(listItems.length).toBe(2);
 });
 
-// need to check why its not working
-// test('it shows a conversation on clicking a contact', async () => {
-//   const { getAllByTestId, getByText } = render(conversationList);
-//   await waitFor(() => {
-//     fireEvent.click(getAllByTestId('list')[0]);
-//   });
-//   expect(getByText('Hey there whats up?')).toBeInTheDocument();
-// });
+const props: any = {
+  searchVal: '',
+  searchMode: false,
+  searchParam: {},
+  selectedCollectionId: '2',
+  setSelectedCollectionId: jest.fn(),
+  entityType: 'collection',
+};
+const collectionCache = new InMemoryCache({ addTypename: false });
+collectionCache.writeQuery(collection);
+collectionCache.writeQuery(collectionWithLoadMore);
+
+const clientForCollection = new ApolloClient({
+  cache: collectionCache,
+  assumeImmutableResults: true,
+});
+
+test('it should render conversation collection list with readMore', async () => {
+  const { container } = render(
+    <ApolloProvider client={clientForCollection}>
+      <Router>
+        <ConversationList {...props} />
+      </Router>
+    </ApolloProvider>
+  );
+
+  expect(container).toBeInTheDocument();
+  await waitFor(() => {
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(31);
+    fireEvent.click(listItems[0]);
+  });
+
+  await waitFor(() => {
+    const loadMore = screen.getByText('Load more');
+    expect(loadMore).toBeInTheDocument();
+    fireEvent.click(loadMore);
+  });
+});
+
+const collectionCacheWithSearch = new InMemoryCache({ addTypename: false });
+collectionCacheWithSearch.writeQuery(collection);
+
+const clientForCacheWithSearch = new ApolloClient({
+  cache: collectionCacheWithSearch,
+  assumeImmutableResults: true,
+});
+
+test('it should render conversation collection list with searched value', async () => {
+  props.searchVal = 'test';
+  props.savedSearchCriteriaId = '2';
+
+  const { container } = render(
+    <ApolloProvider client={clientForCacheWithSearch}>
+      <Router>
+        <ConversationList {...props} />
+      </Router>
+    </ApolloProvider>
+  );
+
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(31);
+    fireEvent.click(listItems[0]);
+  });
+});
+
+const contactProps: any = {
+  searchVal: 'III',
+  selectedContactId: 216,
+  setSelectedContactId: jest.fn(),
+  searchMode: false,
+  searchParam: {},
+  entityType: 'contact',
+};
+
+test('It render contact collection with multi-search', async () => {
+  const { container } = render(
+    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+      <Router>
+        <ConversationList {...contactProps} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
+  });
+
+  await waitFor(() => {
+    const listItems = screen.getAllByTestId('list');
+    expect(listItems.length).toBe(34);
+    fireEvent.click(listItems[0]);
+  });
+});
+
+test('It render contact collection with no result', async () => {
+  contactProps.searchVal = '';
+  const { container } = render(
+    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+      <Router>
+        <ConversationList {...contactProps} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
+  });
+});
