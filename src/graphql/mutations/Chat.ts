@@ -89,3 +89,9 @@ export const UPLOAD_MEDIA_BLOB = gql`
     uploadBlob(media: $media, extension: $extension)
   }
 `;
+
+export const UPLOAD_MEDIA = gql`
+  mutation uploadMedia($media: Upload!, $extension: String!) {
+    uploadMedia(media: $media, extension: $extension)
+  }
+`;

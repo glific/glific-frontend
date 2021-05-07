@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { createUploadLink } from 'apollo-upload-client';
+import { createLink } from 'apollo-absinthe-upload-link';
 import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
@@ -93,7 +93,7 @@ const gqlClient = (history: any) => {
     }
   });
 
-  const httpLink: any = createUploadLink({ uri: GLIFIC_API_URL });
+  const httpLink: any = createLink({ uri: GLIFIC_API_URL });
 
   const retryIf = (error: any) => {
     const doNotRetryCodes = [500, 400];

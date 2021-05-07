@@ -67,6 +67,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+  let uploadPermission = false;
 
   let dialog;
 
@@ -119,18 +120,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       console.log('Error', error);
     },
   });
-
-  if (attachment) {
-    const dialogProps = {
-      attachmentType,
-      attachmentURL,
-      setAttachment,
-      setAttachmentAdded,
-      setAttachmentType,
-      setAttachmentURL,
-    };
-    dialog = <AddAttachment {...dialogProps} />;
-  }
 
   const submitMessage = async (message: string) => {
     // let's check if we are sending voice recording
@@ -316,9 +305,23 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   let audioOption: any;
   // enable audio only if GCS is configured
   if (permission && permission.attachmentsEnabled) {
+    uploadPermission = true;
     audioOption = (
       <VoiceRecorder handleAudioRecording={handleAudioRecording} clearAudio={clearAudio} />
     );
+  }
+
+  if (attachment) {
+    const dialogProps = {
+      attachmentType,
+      attachmentURL,
+      setAttachment,
+      setAttachmentAdded,
+      setAttachmentType,
+      setAttachmentURL,
+      uploadPermission,
+    };
+    dialog = <AddAttachment {...dialogProps} />;
   }
 
   return (
