@@ -1,9 +1,9 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, waitFor, screen, fireEvent } from '@testing-library/react';
+import { render, waitFor, screen, fireEvent, prettyDOM } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 import ConversationList from './ConversationList';
-import { contact, collection } from '../../ChatMessages/ChatMessages.test';
+import { contact, collection, collectionWithLoadMore } from '../../ChatMessages/ChatMessages.test';
 import { searchContactCollection } from '../../../../mocks/Search';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -40,7 +40,7 @@ test('it should render ConversationsList properly', async () => {
   expect(listItems.length).toBe(2);
 });
 
-const props = {
+const props: any = {
   searchVal: '',
   searchMode: false,
   searchParam: {},
@@ -50,13 +50,14 @@ const props = {
 };
 const collectionCache = new InMemoryCache({ addTypename: false });
 collectionCache.writeQuery(collection);
+collectionCache.writeQuery(collectionWithLoadMore);
 
 const clientForCollection = new ApolloClient({
   cache: collectionCache,
   assumeImmutableResults: true,
 });
 
-test('it should render conversation collection list', async () => {
+test('it should render conversation collection list with readMore', async () => {
   const { container } = render(
     <ApolloProvider client={clientForCollection}>
       <Router>
@@ -79,43 +80,51 @@ test('it should render conversation collection list', async () => {
   });
 });
 
+const collectionCacheWithSearch = new InMemoryCache({ addTypename: false });
+collectionCacheWithSearch.writeQuery(collection);
+
+const clientForCacheWithSearch = new ApolloClient({
+  cache: collectionCacheWithSearch,
+  assumeImmutableResults: true,
+});
+
 test('it should render conversation collection list with searched value', async () => {
   props.searchVal = 'test';
+  props.savedSearchCriteriaId = '2';
+
   const { container } = render(
-    <ApolloProvider client={clientForCollection}>
+    <ApolloProvider client={clientForCacheWithSearch}>
       <Router>
         <ConversationList {...props} />
       </Router>
     </ApolloProvider>
   );
 
-  expect(container).toBeInTheDocument();
   await waitFor(() => {
+    expect(container).toBeInTheDocument();
     const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(31);
     fireEvent.click(listItems[0]);
   });
 });
 
-const contactProps = {
+const contactProps: any = {
   searchVal: 'III',
   selectedContactId: 216,
   setSelectedContactId: jest.fn(),
-  savedSearchCriteria: '',
   searchMode: false,
   searchParam: {},
+  entityType: 'contact',
 };
 
-const contactCollectionList = (
-  <MockedProvider mocks={searchContactCollection} addTypename={false}>
-    <Router>
-      <ConversationList {...contactProps} />
-    </Router>
-  </MockedProvider>
-);
-
 test('It render contact collection with multi-search', async () => {
-  const { container } = render(contactCollectionList);
+  const { container } = render(
+    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+      <Router>
+        <ConversationList {...contactProps} />
+      </Router>
+    </MockedProvider>
+  );
 
   await waitFor(() => {
     expect(container).toBeInTheDocument();
@@ -125,5 +134,20 @@ test('It render contact collection with multi-search', async () => {
     const listItems = screen.getAllByTestId('list');
     expect(listItems.length).toBe(34);
     fireEvent.click(listItems[0]);
+  });
+});
+
+test('It render contact collection with no result', async () => {
+  contactProps.searchVal = '';
+  const { container } = render(
+    <MockedProvider mocks={searchContactCollection} addTypename={false}>
+      <Router>
+        <ConversationList {...contactProps} />
+      </Router>
+    </MockedProvider>
+  );
+
+  await waitFor(() => {
+    expect(container).toBeInTheDocument();
   });
 });

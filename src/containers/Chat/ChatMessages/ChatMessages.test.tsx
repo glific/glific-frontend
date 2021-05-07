@@ -207,6 +207,19 @@ export const collection = {
     ],
   },
 };
+
+export const collectionWithLoadMore = {
+  query: SEARCH_QUERY,
+  variables: {
+    contactOpts: { limit: 10, offset: 25 },
+    filter: { searchGroup: true },
+    messageOpts: { limit: DEFAULT_MESSAGE_LIMIT },
+  },
+  data: {
+    search: [...conversationData.slice(1, 5)],
+  },
+};
+
 // add collection to apollo cache
 cache.writeQuery(collection);
 
