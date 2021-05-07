@@ -1,4 +1,4 @@
-import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from '../graphql/mutations/Chat';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA, UPLOAD_MEDIA_BLOB } from '../graphql/mutations/Chat';
 import GET_ATTACHMENT_PERMISSION from '../graphql/queries/Settings';
 
 export const getAttachmentPermissionMock = {
@@ -45,6 +45,18 @@ export const createMediaMessageMock = {
           id: '1',
         },
       },
+    },
+  },
+};
+
+export const uploadMediaMock = {
+  request: {
+    query: UPLOAD_MEDIA,
+    variables: { media: { name: 'photo.png' }, extension: 'png' },
+  },
+  result: {
+    data: {
+      uploadMedia: 'https://gcs.test.com/ssdssnkss',
     },
   },
 };
