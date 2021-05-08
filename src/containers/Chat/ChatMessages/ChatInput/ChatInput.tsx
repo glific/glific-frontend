@@ -432,10 +432,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               }
             }}
             disabled={
-              !editorState.getCurrentContent().hasText() &&
-              !attachmentAdded &&
-              !recordedAudio &&
-              !uploading
+              (!editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio) ||
+              uploading
             }
           >
             <SendMessageIcon className={styles.SendIcon} />
