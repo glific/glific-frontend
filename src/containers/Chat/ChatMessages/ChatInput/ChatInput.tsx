@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
@@ -24,6 +24,7 @@ import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
 import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
+import { setNotification } from '../../../../common/notification';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -69,6 +70,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   let uploadPermission = false;
+  const client = useApolloClient();
 
   let dialog;
 
@@ -118,8 +120,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         setUploading(false);
       }
     },
-    onError: (error: any) => {
-      console.log('Error', error);
+    onError: () => {
+      setNotification(client, 'Sorry, unable to upload audio.', 'warning');
       setUploading(false);
     },
   });
