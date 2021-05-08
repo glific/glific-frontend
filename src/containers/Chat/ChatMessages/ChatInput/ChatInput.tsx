@@ -64,6 +64,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [variableParam, setVariableParam] = useState<any>([]);
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
+  const [uploading, setUploading] = useState(false);
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -114,10 +115,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
         setClearAudio(true);
         setRecordedAudio('');
+        setUploading(false);
       }
     },
     onError: (error: any) => {
       console.log('Error', error);
+      setUploading(false);
     },
   });
 
@@ -139,6 +142,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         });
       };
+      setUploading(true);
     }
 
     // check for an empty message or message with just spaces
@@ -307,7 +311,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (permission && permission.attachmentsEnabled) {
     uploadPermission = true;
     audioOption = (
-      <VoiceRecorder handleAudioRecording={handleAudioRecording} clearAudio={clearAudio} />
+      <VoiceRecorder
+        handleAudioRecording={handleAudioRecording}
+        clearAudio={clearAudio}
+        uploading={uploading}
+      />
     );
   }
 
@@ -422,7 +430,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               }
             }}
             disabled={
-              !editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio
+              !editorState.getCurrentContent().hasText() &&
+              !attachmentAdded &&
+              !recordedAudio &&
+              !uploading
             }
           >
             <SendMessageIcon className={styles.SendIcon} />

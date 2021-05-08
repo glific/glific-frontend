@@ -11,10 +11,11 @@ import styles from './VoiceRecorder.module.css';
 export interface VoiceRecorderProps {
   handleAudioRecording: any;
   clearAudio: any;
+  uploading?: boolean;
 }
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
-  const { handleAudioRecording, clearAudio } = props;
+  const { handleAudioRecording, clearAudio, uploading } = props;
   const [showRecordCounter, setShowRecordCounter] = useState(false);
 
   // function to save the recording to a file
@@ -65,7 +66,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
 
   let audioPreview;
 
-  if (mediaBlobUrl && !clearAudio) {
+  if (mediaBlobUrl && !clearAudio && !uploading) {
     audioPreview = (
       <div className={styles.AudioPlayerSection}>
         <div className={styles.AudioPlayer}>
@@ -90,6 +91,15 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     );
   }
 
+  let uploadStatus;
+  if (uploading) {
+    uploadStatus = (
+      <div className={styles.AudioPlayerSection}>
+        <div className={styles.RecordingStatus}>Uploading</div>
+      </div>
+    );
+  }
+
   let showRecordingOption;
 
   if (error === 'permission_denied') {
@@ -107,6 +117,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
       </IconButton>
       {audioPreview}
       {recordIndicator}
+      {uploadStatus}
     </div>
   );
 };
