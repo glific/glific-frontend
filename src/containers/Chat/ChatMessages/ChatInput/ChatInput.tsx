@@ -3,7 +3,7 @@ import { EditorState, ContentState } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
-import { useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
@@ -24,6 +24,7 @@ import { is24HourWindowOver, pattern } from '../../../../common/constants';
 import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
 import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
+import { setNotification } from '../../../../common/notification';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -64,10 +65,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [variableParam, setVariableParam] = useState<any>([]);
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
+  const [uploading, setUploading] = useState(false);
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
   let uploadPermission = false;
+  const client = useApolloClient();
 
   let dialog;
 
@@ -114,10 +117,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
         setClearAudio(true);
         setRecordedAudio('');
+        setUploading(false);
       }
     },
-    onError: (error: any) => {
-      console.log('Error', error);
+    onError: () => {
+      setNotification(client, 'Sorry, unable to upload audio.', 'warning');
+      setUploading(false);
     },
   });
 
@@ -127,7 +132,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       // converting blob into base64 format as needed by backend
       const reader = new FileReader();
       reader.readAsDataURL(recordedAudio);
-      reader.onloadend = function () {
+      reader.onloadend = () => {
         const base64String: any = reader.result;
         // get the part without the tags
         const media = base64String.split(',')[1];
@@ -139,6 +144,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         });
       };
+      setUploading(true);
     }
 
     // check for an empty message or message with just spaces
@@ -307,7 +313,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (permission && permission.attachmentsEnabled) {
     uploadPermission = true;
     audioOption = (
-      <VoiceRecorder handleAudioRecording={handleAudioRecording} clearAudio={clearAudio} />
+      <VoiceRecorder
+        handleAudioRecording={handleAudioRecording}
+        clearAudio={clearAudio}
+        uploading={uploading}
+      />
     );
   }
 
@@ -422,7 +432,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               }
             }}
             disabled={
-              !editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio
+              (!editorState.getCurrentContent().hasText() && !attachmentAdded && !recordedAudio) ||
+              uploading
             }
           >
             <SendMessageIcon className={styles.SendIcon} />
