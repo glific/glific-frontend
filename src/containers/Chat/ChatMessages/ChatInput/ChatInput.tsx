@@ -127,7 +127,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       // converting blob into base64 format as needed by backend
       const reader = new FileReader();
       reader.readAsDataURL(recordedAudio);
-      reader.onloadend = function () {
+      reader.onloadend = () => {
         const base64String: any = reader.result;
         // get the part without the tags
         const media = base64String.split(',')[1];

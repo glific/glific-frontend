@@ -20,6 +20,7 @@
 
 .RecordingStatus {
   padding-left: 5px;
+  text-transform: capitalize;
 }
 
 .Recording {
