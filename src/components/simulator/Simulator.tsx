@@ -59,6 +59,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const client = useApolloClient();
   let messages: any[] = [];
   let simulatorId = '';
+  // chat messages will be shown on simulator
+  const isSimulatedMessage = true;
+
   const { data: allConversations }: any = useQuery(SEARCH_QUERY, {
     variables: SEARCH_QUERY_VARIABLES,
     fetchPolicy: 'cache-only',
@@ -125,7 +128,13 @@ export const Simulator: React.FC<SimulatorProps> = ({
     location: any
   ) => (
     <div className={getStyleForDirection(direction)} key={index}>
-      <ChatMessageType type={type} media={media} body={text} location={location} />
+      <ChatMessageType
+        type={type}
+        media={media}
+        body={text}
+        location={location}
+        isSimulatedMessage={isSimulatedMessage}
+      />
       <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
         {moment(insertedAt).format(TIME_FORMAT)}
       </span>

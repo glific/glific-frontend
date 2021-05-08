@@ -295,14 +295,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         {ErrorIcon}
         <div
           className={`${styles.ChatMessage} ${mineColor} ${
-            type === 'STICKER' ? styles.StickerBackground : ''
-          }`}
+            messageErrorStatus ? styles.ErrorContent : ''
+          } ${type === 'STICKER' ? styles.StickerBackground : ''}`}
         >
           <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
-            <div
-              className={`${styles.Content} ${messageErrorStatus ? styles.ErrorContent : ''}`}
-              data-testid="content"
-            >
+            <div className={styles.Content} data-testid="content">
               <div>
                 <ChatMessageType
                   type={type}

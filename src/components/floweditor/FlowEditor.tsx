@@ -303,7 +303,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   };
 
   const errorMsg = () => (
-    <p className={styles.DialogError}>
+    <div className={styles.DialogError}>
       Errors were detected in the flow. Would you like to continue modifying?
       <div>
         {flowValidation.map((message: any) => (
@@ -313,7 +313,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           </div>
         ))}
       </div>
-    </p>
+    </div>
   );
 
   if (publishDialog) {

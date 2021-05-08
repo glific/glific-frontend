@@ -1,5 +1,5 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitFor, screen } from '@testing-library/react';
 import * as Yup from 'yup';
 import UserEvent from '@testing-library/user-event';
 
@@ -38,27 +38,24 @@ const props = {
   initialFormValues: {
     name: '',
   },
-  errorMessage: { global: 'Something went wrong' },
 };
 
-const wrapper = (
-  <MockedProvider addTypename={false}>
-    <MemoryRouter>
-      <Organization {...props} />
-    </MemoryRouter>
-  </MockedProvider>
-);
+test('it should render component and show error messages', () => {
+  const { container } = render(
+    <MockedProvider addTypename={false}>
+      <MemoryRouter>
+        <Organization {...props} errorMessage={{ global: 'Something went wrong' }} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
 
-test('it should render component and show error messages', async () => {
-  const { container, findByTestId } = render(wrapper);
-
-  const registration = await findByTestId('RegistrationContainer');
+  const registration = screen.getByTestId('RegistrationContainer');
   expect(registration).toBeInTheDocument();
 
-  const captcha = await findByTestId('recaptcha-sign-in');
+  const captcha = screen.getByTestId('recaptcha-sign-in');
   expect(captcha).toBeInTheDocument();
 
-  const submit = await findByTestId('SubmitButton');
+  const submit = screen.getByTestId('SubmitButton');
 
   act(() => {
     UserEvent.click(captcha);
@@ -66,4 +63,32 @@ test('it should render component and show error messages', async () => {
   });
 
   expect(container.getElementsByClassName('ErrorMessage')[0]).toBeInTheDocument();
+});
+
+test('Organization with success onboarding', () => {
+  render(
+    <MockedProvider addTypename={false}>
+      <MemoryRouter>
+        <Organization {...props} />
+      </MemoryRouter>
+    </MockedProvider>
+  );
+
+  const registration = screen.getByTestId('RegistrationContainer');
+  expect(registration).toBeInTheDocument();
+
+  const captcha = screen.getByTestId('recaptcha-sign-in');
+  expect(captcha).toBeInTheDocument();
+
+  waitFor(() => {
+    fireEvent.click(captcha);
+    const inputElements = screen.getAllByRole('textbox');
+
+    UserEvent.type(inputElements[0], 'JaneDoe');
+
+    // click on continue
+    const button = screen.getByText('GET STARTED');
+    fireEvent.click(button);
+    expect(props.saveHandler).toHaveBeenCalledWith({ name: 'test' }, true, jest.fn(), jest.fn());
+  });
 });

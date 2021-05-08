@@ -1,11 +1,11 @@
 .ChatMessage {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
   position: relative;
   max-width: 100%;
   border-radius: 12px;
   font-family: 'Heebo', sans-serif, emoji;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-
   clear: both;
   max-width: 404px;
   min-width: 85px;
@@ -76,10 +76,11 @@
   font-weight: 400;
   line-height: 20px;
   color: #073f24;
-  padding: 8px 16px;
+  padding: 10px 16px;
   word-wrap: break-word;
   /* Supports breaklines without need for text conversions. */
   white-space: pre-line;
+  max-width: 284px;
 }
 
 .ErrorContent {

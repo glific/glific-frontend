@@ -5,7 +5,11 @@ import {
   GET_FLOW_DETAILS,
   FILTER_FLOW,
 } from '../graphql/queries/Flow';
-import { ADD_FLOW_TO_CONTACT, ADD_FLOW_TO_COLLECTION } from '../graphql/mutations/Flow';
+import {
+  ADD_FLOW_TO_CONTACT,
+  ADD_FLOW_TO_COLLECTION,
+  PUBLISH_FLOW,
+} from '../graphql/mutations/Flow';
 
 export const getFlowQuery = {
   request: {
@@ -203,6 +207,22 @@ export const getFlowCountNewQuery = {
   result: {
     data: {
       countFlows: 1,
+    },
+  },
+};
+
+export const publishFlow = {
+  request: {
+    query: PUBLISH_FLOW,
+    variables: {
+      uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
+    },
+  },
+  result: {
+    data: {
+      publishFlow: {
+        errors: [{ message: 'Something went wrong' }],
+      },
     },
   },
 };
