@@ -140,7 +140,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         uploadMediaBlob({
           variables: {
             media,
-            extension: 'wav',
+            extension: 'mp3',
           },
         });
       };

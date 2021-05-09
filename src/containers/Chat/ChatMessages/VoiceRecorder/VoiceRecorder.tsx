@@ -35,6 +35,9 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     clearBlobUrl,
   } = useReactMediaRecorder({
     audio: true,
+    blobPropertyBag: {
+      type: 'audio/mpeg',
+    },
     onStop: saveRecording,
   });
 
