@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v1.5.0](https://github.com/glific/glific-frontend/compare/v1.4.2...v1.5.0)
+
+- Aligned chat message Images [`#1347`](https://github.com/glific/glific-frontend/pull/1347)
+- Added support for sending local attachments [`#1362`](https://github.com/glific/glific-frontend/pull/1362)
+- Add search to collections [`#1359`](https://github.com/glific/glific-frontend/pull/1359)
+- Updated billing name to organization name [`#1367`](https://github.com/glific/glific-frontend/pull/1367)
+- Block contact bug fixed [`#1368`](https://github.com/glific/glific-frontend/pull/1368)
+- Add indicator for recording [`#1361`](https://github.com/glific/glific-frontend/pull/1361)
+- Removed unused imports [`#1352`](https://github.com/glific/glific-frontend/pull/1352)
+- Added templates and speed send options in collections [`#1355`](https://github.com/glific/glific-frontend/pull/1355)
+- List all organizations [`#1345`](https://github.com/glific/glific-frontend/pull/1345)
+- Audio support [`#1341`](https://github.com/glific/glific-frontend/pull/1341)
+- Add authorization header for all floweditor routes [`#1325`](https://github.com/glific/glific-frontend/pull/1325)
+- Added Organization setup [`#1318`](https://github.com/glific/glific-frontend/pull/1318)
+- Added coupon code functionality in stripe [`#1346`](https://github.com/glific/glific-frontend/pull/1346)
+- Added clear cache support [`#1320`](https://github.com/glific/glific-frontend/pull/1320)
+- Added SSL instructions to readme [`#1342`](https://github.com/glific/glific-frontend/pull/1342)
+- Display messages which have been replied [`#1324`](https://github.com/glific/glific-frontend/pull/1324)
+- Updated billing screen with the latest designs [`#1326`](https://github.com/glific/glific-frontend/pull/1326)
+- My account fixes [`#1336`](https://github.com/glific/glific-frontend/pull/1336)
+- Localization improvements [`#1322`](https://github.com/glific/glific-frontend/pull/1322)
+- Add contact to collection [`#1305`](https://github.com/glific/glific-frontend/pull/1305)
+- UI enhancements [`#1321`](https://github.com/glific/glific-frontend/pull/1321)
+- Added stripe customer portal [`#1319`](https://github.com/glific/glific-frontend/pull/1319)
+- Bug/shortcode url validation fixes [`#1308`](https://github.com/glific/glific-frontend/pull/1308)
+- Fixed the empty simulated message issue [`#1301`](https://github.com/glific/glific-frontend/pull/1301)
+- Staff member can also access saved searches [`#1312`](https://github.com/glific/glific-frontend/pull/1312)
+- Menu roles cleanup [`#1303`](https://github.com/glific/glific-frontend/pull/1303)
+
+#### [v1.4.2](https://github.com/glific/glific-frontend/compare/v1.4.1...v1.4.2)
+
+> 26 April 2021
+
+- Fixed multiple search query bug [`#1338`](https://github.com/glific/glific-frontend/pull/1338)
+
+#### [v1.4.1](https://github.com/glific/glific-frontend/compare/v1.4.0...v1.4.1)
+
+> 19 April 2021
+
+- Added username and email fields in billing page [`#1300`](https://github.com/glific/glific-frontend/pull/1300)
+- Updated start a flow for the HSM [`#1307`](https://github.com/glific/glific-frontend/pull/1307)
+- Removed current authorization logic [`#1304`](https://github.com/glific/glific-frontend/pull/1304)
+
 #### [v1.4.0](https://github.com/glific/glific-frontend/compare/v1.3.2...v1.4.0)
 
 > 15 April 2021
