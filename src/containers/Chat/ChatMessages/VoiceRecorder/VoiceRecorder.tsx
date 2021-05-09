@@ -5,6 +5,7 @@ import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import StopIcon from '@material-ui/icons/Stop';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { useTranslation } from 'react-i18next';
 
 import styles from './VoiceRecorder.module.css';
 
@@ -17,6 +18,7 @@ export interface VoiceRecorderProps {
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   const { handleAudioRecording, clearAudio, uploading } = props;
   const [showRecordCounter, setShowRecordCounter] = useState(false);
+  const { t } = useTranslation();
 
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
@@ -95,7 +97,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   if (uploading) {
     uploadStatus = (
       <div className={styles.AudioPlayerSection}>
-        <div className={styles.RecordingStatus}>Uploading</div>
+        <div className={styles.RecordingStatus}>{t('Sending')}</div>
       </div>
     );
   }

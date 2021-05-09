@@ -121,7 +121,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       }
     },
     onError: () => {
-      setNotification(client, 'Sorry, unable to upload audio.', 'warning');
+      setNotification(client, t('Sorry, unable to upload audio.'), 'warning');
       setUploading(false);
     },
   });
