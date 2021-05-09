@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. Dates are d
 
 #### [v1.5.0](https://github.com/glific/glific-frontend/compare/v1.4.2...v1.5.0)
 
+> 09 May 2021
+
 - Aligned chat message Images [`#1347`](https://github.com/glific/glific-frontend/pull/1347)
 - Added support for sending local attachments [`#1362`](https://github.com/glific/glific-frontend/pull/1362)
 - Add search to collections [`#1359`](https://github.com/glific/glific-frontend/pull/1359)
