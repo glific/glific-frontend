@@ -23,6 +23,7 @@ export const PhoneInput: React.SFC<InputProps> = ({
   form: { errors, setFieldValue },
   field,
   inputProps = {
+    name: 'phone',
     required: true,
     autoFocus: false,
   },
