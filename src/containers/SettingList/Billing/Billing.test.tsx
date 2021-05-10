@@ -127,6 +127,10 @@ test('subscription status is already in pending state', async () => {
   await waitFor(() => {
     expect(getByText('Your payment is in pending state'));
   });
+
+  // check for customer portal button and click on it
+  fireEvent.click(getByTestId('customerPortalButton'));
+  await waitFor(() => {});
 });
 
 test('complete a subscription', async () => {
