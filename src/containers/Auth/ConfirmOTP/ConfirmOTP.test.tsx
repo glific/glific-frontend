@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -32,13 +32,14 @@ describe('<ConfirmOTP />', () => {
   it('test the OTP form submission with correct OTP', async () => {
     render(wrapper);
 
-    // enter the otp
-    const input = screen.getByRole('textbox');
-    UserEvent.type(input, '12345');
+    await waitFor(() => {
+      // enter the otp
+      const input = screen.getByRole('textbox');
+      UserEvent.type(input, '12345');
 
-    // click on continue
-    const continueButton = screen.getByText('Continue');
-    UserEvent.click(continueButton);
+      const continueButton = screen.getByText('Continue');
+      UserEvent.click(continueButton);
+    });
 
     // let's mock successful otp submission
     const responseData = { data: { data: { data: {} } } };
@@ -50,13 +51,15 @@ describe('<ConfirmOTP />', () => {
   it('test the OTP form submission with incorrect OTP', async () => {
     render(wrapper);
 
-    // enter the otp
-    const input = screen.getByRole('textbox');
-    UserEvent.type(input, '12345');
+    await waitFor(() => {
+      // enter the otp
+      const input = screen.getByRole('textbox');
+      UserEvent.type(input, '12345');
 
-    // click on continue
-    const continueButton = screen.getByText('Continue');
-    UserEvent.click(continueButton);
+      // click on continue
+      const continueButton = screen.getByText('Continue');
+      UserEvent.click(continueButton);
+    });
 
     // let's mock error response on otp submission
     const errorMessage = 'We are unable to register, kindly contact your technical team.';
@@ -92,10 +95,10 @@ describe('<ConfirmOTP />', () => {
     act(() => {
       axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
     });
-    // click on resend button
-    const resendButton = screen.getByTestId('resendOtp');
 
-    act(() => {
+    await waitFor(() => {
+      // click on resend button
+      const resendButton = screen.getByTestId('resendOtp');
       UserEvent.click(resendButton);
     });
   });
