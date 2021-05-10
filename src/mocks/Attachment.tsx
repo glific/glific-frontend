@@ -17,7 +17,7 @@ export const uploadBlobMock = {
     query: UPLOAD_MEDIA_BLOB,
     variables: {
       media: '',
-      extension: 'wav',
+      extension: 'mp3',
     },
   },
   result: {
