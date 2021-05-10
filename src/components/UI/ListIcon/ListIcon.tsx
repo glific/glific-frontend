@@ -21,6 +21,8 @@ import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Select
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
 import triggerSelectedIcon from '../../../assets/images/icons/Trigger/Selected.svg';
 import triggerIcon from '../../../assets/images/icons/Trigger/Unselected.svg';
+import notificationIcon from '../../../assets/images/icons/Notification/Unselected.svg';
+import notificationSelectedIcon from '../../../assets/images/icons/Notification/Selected.svg';
 
 export interface ListIconProps {
   icon: string;
@@ -41,6 +43,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     'speed-send': speedSendIcon,
     template: templateIcon,
     trigger: triggerIcon,
+    notification: notificationIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
@@ -54,6 +57,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     'speed-send': speedSendSelectedIcon,
     template: templateSelectedIcon,
     trigger: triggerSelectedIcon,
+    notification: notificationSelectedIcon,
   };
 
   return (

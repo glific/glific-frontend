@@ -52,7 +52,7 @@ const menus = [
   {
     title: 'Notifications',
     path: '/notifications',
-    icon: '',
+    icon: 'notification',
     type: 'sideDrawer',
     roles: ['Staff', 'Manager', 'Admin'],
   },
