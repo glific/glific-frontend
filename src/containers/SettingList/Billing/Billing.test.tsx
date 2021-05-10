@@ -4,8 +4,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {
   createBillingSubscriptionQuery,
-  createStatusPendingQuery,
   getBillingQuery,
+  createStatusPendingQuery,
   getBillingQueryWithoutsubscription,
   createBillingSubscriptionPromoQuery,
   getCouponCode,
