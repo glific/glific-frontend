@@ -49,6 +49,8 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       return <div className={styles.TableText}>NULL</div>;
     }
 
+    const entityObj = JSON.parse(croppedtext);
+
     const Menus = [
       {
         title: t('Copy text'),
@@ -74,7 +76,16 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
           onKeyDown={handleClick}
           aria-hidden="true"
         >
-          {croppedtext.length > 25 ? `${croppedtext.slice(0, 25)}...` : croppedtext}
+          {/* {croppedtext.length > 25 ? `${croppedtext.slice(0, 25)}...` : croppedtext} */}
+          {entityObj.name ? (
+            <span>
+              Contact: {entityObj.name}
+              <br />
+              {croppedtext.slice(0, 25)}...
+            </span>
+          ) : (
+            `${croppedtext.slice(0, 25)}...`
+          )}
         </div>
       </Menu>
     );
