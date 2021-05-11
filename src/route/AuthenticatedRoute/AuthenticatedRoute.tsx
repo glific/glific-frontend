@@ -54,6 +54,10 @@ const TriggerList = lazy(() => import('../../containers/Trigger/TriggerList/Trig
 const Trigger = lazy(() => import('../../containers/Trigger/Trigger'));
 const NotificationList = lazy(() => import('../../containers/NotificationList/NotificationList'));
 const OrganizationList = lazy(() => import('../../containers/OrganizationList/OrganizationList'));
+const ConsultingHour = lazy(() => import('../../containers/Consulting/Consulting'));
+const ConsultingHourList = lazy(
+  () => import('../../containers/Consulting/ConsultingList/ConsultingList')
+);
 
 const routeStaff = (
   <Switch>
@@ -158,6 +162,9 @@ const routeAdmin = (
     />
     <Route path="/trigger" exact component={TriggerList} />
     <Route path="/organizations" exact component={OrganizationList} />
+    <Route path="/consulting-hours/" exact component={ConsultingHourList} />
+    <Route path="/consulting-hours/add" exact component={ConsultingHour} />
+    <Route path="/consulting-hours/:id/edit" exact component={ConsultingHour} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );
