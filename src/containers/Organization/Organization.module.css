@@ -113,6 +113,7 @@
 
 .CenterButton > button:disabled {
   background-color: #cacaca;
+  border: 0px !important;
 }
 
 /* Loading spinner color */
