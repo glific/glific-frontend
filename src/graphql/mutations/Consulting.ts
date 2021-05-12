@@ -26,14 +26,15 @@ export const UPDATE_CONSULTING_HOURS = gql`
   mutation updateConsultingHour($id: ID!, $input: ConsultingHourInput!) {
     updateConsultingHour(id: $id, input: $input) {
       consultingHour {
-        participants
-        organization_id
-        organization_name
-        staff
-        content
-        when
         duration
-        is_billable
+        content
+        isBillable
+        insertedAt
+        organizationName
+        participants
+        staff
+        updatedAt
+        when
       }
       errors {
         message
@@ -47,14 +48,15 @@ export const DELETE_CONSULTING_HOURS = gql`
   mutation deleteConsultingHour($id: ID!) {
     deleteConsultingHour(id: $id) {
       consultingHour {
-        participants
-        organization_id
-        organization_name
-        staff
-        content
-        when
         duration
-        is_billable
+        content
+        isBillable
+        insertedAt
+        organizationName
+        participants
+        staff
+        updatedAt
+        when
       }
       errors {
         message

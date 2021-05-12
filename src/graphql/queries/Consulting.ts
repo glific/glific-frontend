@@ -3,17 +3,22 @@ import { gql } from '@apollo/client';
 export const GET_CONSULTING_HOURS_BY_ID = gql`
   query consultingHour($id: ID!) {
     consultingHour(id: $id) {
-      participants
-      organization_id
-      organization_name
-      staff
-      content
-      when
-      duration
-      is_billable
-      organization {
-        name
-        shortcode
+      consultingHour {
+        id
+        content
+        isBillable
+        duration
+        insertedAt
+        participants
+        staff
+        organizationName
+        updatedAt
+        when
+        organization {
+          id
+          name
+          shortcode
+        }
       }
     }
   }
@@ -22,6 +27,7 @@ export const GET_CONSULTING_HOURS_BY_ID = gql`
 export const GET_CONSULTING_HOURS = gql`
   query consultingHours($filter: ConsultingHourFilter, $opts: Opts) {
     consultingHours(filter: $filter, opts: $opts) {
+      id
       content
       isBillable
       duration
