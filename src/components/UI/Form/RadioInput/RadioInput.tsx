@@ -1,51 +1,83 @@
 import React from 'react';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import {
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  FormHelperText,
+} from '@material-ui/core';
+
+import styles from './RadioInput.module.css';
 
 export interface RadioInputProps {
-  radioButtons: Array<string>;
+  labelYes: string;
+  labelNo: string;
   row: boolean;
-  handleChange: any;
-  groupLabel?: string;
+  field: any;
+  form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
+  radioTitle?: string;
+  handleChange?: any;
 }
 
 export const RadioInput: React.SFC<RadioInputProps> = ({
-  radioButtons,
+  labelYes = 'Yes',
+  labelNo = 'No',
   row = true,
+  field,
+  form: { touched, errors, setFieldValue, values },
+  radioTitle,
   handleChange,
-  groupLabel,
 }) => {
-  let radioGroupLabel: any;
-  if (groupLabel) {
-    radioGroupLabel = <FormLabel component="legend">{{ groupLabel }}</FormLabel>;
-  }
+  const selectedValue = values[field.name];
 
-  let buttons: any;
-  if (radioButtons.length) {
-    buttons = (
-      <RadioGroup row={row} name="radio-buttons" onChange={handleChange}>
-        {radioButtons.map((radio: string, index: number) => {
-          const key = index;
-          return (
-            <FormControlLabel
-              key={key}
-              value={radio}
-              control={<Radio color="primary" />}
-              label={radio}
-            />
-          );
-        })}
-      </RadioGroup>
-    );
+  const isChecked = (value: any) => selectedValue === value;
+
+  const handleRadioChange = (value: boolean) => {
+    console.log(value);
+    setFieldValue(field.name, value);
+    if (handleChange) {
+      handleChange(value);
+    }
+  };
+
+  let radioGroupLabel: any;
+  if (radioTitle) {
+    radioGroupLabel = <FormLabel component="legend">{radioTitle}</FormLabel>;
   }
 
   return (
     <FormControl component="fieldset">
       {radioGroupLabel}
-      {buttons}
+      <RadioGroup row={row} name="radio-buttons">
+        <FormControlLabel
+          value={1}
+          control={
+            <Radio
+              color="primary"
+              onChange={() => handleRadioChange(true)}
+              checked={isChecked(true)}
+            />
+          }
+          label={labelYes}
+          className={styles.Label}
+        />
+        <FormControlLabel
+          value={0}
+          control={
+            <Radio
+              color="primary"
+              onChange={() => handleRadioChange(false)}
+              checked={isChecked(false)}
+            />
+          }
+          label={labelNo}
+          className={styles.Label}
+        />
+      </RadioGroup>
+      {errors[field.name] && touched[field.name] ? (
+        <FormHelperText className={styles.DangerText}>{errors[field.name]}</FormHelperText>
+      ) : null}
     </FormControl>
   );
 };
