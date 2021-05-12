@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import moment from 'moment';
 
 import styles from './Consulting.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
+import { DateTimePicker } from '../../components/UI/Form/DateTimePicker/DateTimePicker';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { RadioInput } from '../../components/UI/Form/RadioInput/RadioInput';
 import { Loading } from '../../components/UI/Layout/Loading/Loading';
 import { FormLayout } from '../Form/FormLayout';
+import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
 import { GET_CONSULTING_HOURS_BY_ID, GET_CONSULTING_HOURS } from '../../graphql/queries/Consulting';
 import {
   CREATE_CONSULTING_HOUR,
@@ -29,9 +30,9 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
   const [when, setWhen] = useState<any>(null);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState<number>();
   const [content, setContent] = useState('');
-  const [isBillable, setIsBillable] = useState(false);
+  const [isBillable, setIsBillable] = useState<any>(null);
   const [organization, setOrganization] = useState<any>(null);
 
   const states = {
@@ -76,9 +77,10 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     content: Yup.string().required(t('Description is required')),
     when: Yup.date().nullable().required(t('Date is required.')),
     duration: Yup.number()
+      .nullable()
       .moreThan(0, 'Duration should be greater than 0')
       .required(t('Duration is required')),
-    isBillable: Yup.boolean(),
+    isBillable: Yup.boolean().nullable().required('Required'),
     organization: Yup.object().nullable().required('Organization is required'),
   });
 
@@ -91,61 +93,38 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
 
   const formFields = (organizationOptions: Array<any>) => [
     {
-      component: Input,
-      name: 'participants',
-      type: 'text',
-      placeholder: t('Support members'),
-      inputProp: {
-        onChange: (event: any) => setParticipants(event.target.value),
-      },
-    },
-    {
-      component: Input,
-      name: 'staff',
-      type: 'text',
-      placeholder: t('NGO staff members'),
-      inputProp: {
-        onChange: (event: any) => setStaff(event.target.value),
-      },
-    },
-    {
       component: AutoComplete,
       name: 'organization',
-      placeholder: t('Organization'),
+      placeholder: t('Select Organization'),
       options: organizationOptions,
       optionLabel: 'name',
       multiple: false,
       textFieldProps: {
-        label: t('Organization'),
+        label: t('Select Organization'),
         variant: 'outlined',
       },
       onChange: (val: any) => setOrganization(val),
     },
     {
       component: Input,
-      name: 'content',
+      name: 'participants',
       type: 'text',
-      rows: 3,
-      textArea: true,
-      placeholder: t('Description'),
+      placeholder: t('Participants'),
       inputProp: {
-        onChange: (event: any) => setContent(event.target.value),
+        onChange: (event: any) => setParticipants(event.target.value),
       },
     },
     {
-      component: Input,
+      component: DateTimePicker,
       name: 'when',
-      type: 'date',
-      placeholder: t('Date'),
-      inputProp: {
-        onChange: (event: any) => setWhen(event.target.value),
-      },
+      placeholder: t('Select date'),
+      onChange: (val: any) => setWhen(val),
     },
     {
       component: Input,
       name: 'duration',
       type: 'text',
-      placeholder: t('Duration'),
+      placeholder: t('Enter time (in mins)'),
       validate: (val: any) => {
         let error: any;
         if (val % 15 !== 0) {
@@ -159,18 +138,35 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     },
     {
       component: RadioInput,
-      radioButtons: ['Billable', 'Non-Billable'],
-      handleChange: (event: any) => {
-        const radioValue: string = event.target.value;
-        let value: boolean = false;
-        if (radioValue === 'Billable') value = true;
-        setIsBillable(value);
+      name: 'isBillable',
+      labelYes: 'Billable',
+      labelNo: 'Non-Billable',
+      handleChange: (value: boolean) => setIsBillable(value),
+    },
+    {
+      component: Input,
+      name: 'staff',
+      type: 'text',
+      placeholder: t('NGO staff members'),
+      inputProp: {
+        onChange: (event: any) => setStaff(event.target.value),
+      },
+    },
+    {
+      component: Input,
+      name: 'content',
+      type: 'text',
+      rows: 3,
+      textArea: true,
+      placeholder: t('Description'),
+      inputProp: {
+        onChange: (event: any) => setContent(event.target.value),
       },
     },
   ];
 
   const dialogMessage = t("You won't be able to use this for tagging messages.");
-  const consultHourIcon = <HourglassEmptyIcon className={styles.ConsultingIcon} />;
+  const consultHourIcon = <ConsultingIcon className={styles.ConsultingIcon} />;
 
   const setPayload = (payload: any) => {
     const data = { ...payload };
@@ -185,15 +181,17 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
       data.organizationId = Number(organization.id);
       data.organizationName = organization.name;
     }
+
     return data;
   };
 
   const orgOptions = organizationList.organizations;
+
   return (
     <FormLayout
       {...queries}
       title={t('Consulting Hours')}
-      listItem="consultingHours"
+      listItem="consultingHour"
       listItemName="consultingHour"
       pageLink="consultingHour"
       match={match}
@@ -212,6 +210,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
       redirectionLink="consulting-hours"
       icon={consultHourIcon}
       languageSupport={false}
+      customStyles={[styles.Form]}
     />
   );
 };

@@ -2,3 +2,11 @@
   width: 29px;
   height: 29px;
 }
+
+.Form > div:nth-of-type(3) {
+  width: 100% !important;
+}
+
+.Form > div:nth-of-type(3) > div {
+  width: 100% !important;
+}

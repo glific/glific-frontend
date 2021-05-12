@@ -10,7 +10,7 @@ import {
   GET_CONSULTING_HOURS_COUNT,
 } from '../../../graphql/queries/Consulting';
 import { DELETE_CONSULTING_HOURS } from '../../../graphql/mutations/Consulting';
-import { ReactComponent as OrganisationIcon } from '../../../assets/images/icons/Organisation.svg';
+import { ReactComponent as ConsultingIcon } from '../../../assets/images/icons/icon-consulting.svg';
 
 const ConsultingList = () => {
   const { t } = useTranslation();
@@ -60,8 +60,9 @@ const ConsultingList = () => {
     columnStyles: [styles.Label, styles.Status, styles.Status, styles.Status, styles.Actions],
   };
 
-  const listIcon = <OrganisationIcon className={styles.ConsultingHoursIcon} />;
-  const dialogueMessage = 'This cannot be undone. Do you want to continue?';
+  const listIcon = <ConsultingIcon className={styles.ConsultingHoursIcon} />;
+  const dialogMessage = 'This action cannot be undone.';
+  const dialogTitle = 'Are you sure you want to delete this consulting record?';
 
   const addNewButton = {
     show: true,
@@ -80,7 +81,8 @@ const ConsultingList = () => {
         variables: setVariables(),
       }}
       searchParameter="organizationName"
-      dialogMessage={dialogueMessage}
+      dialogMessage={dialogMessage}
+      dialogTitle={dialogTitle}
       button={addNewButton}
       {...queries}
       {...columnAttributes}
