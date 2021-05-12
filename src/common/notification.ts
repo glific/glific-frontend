@@ -22,10 +22,6 @@ export const setErrorMessage = (client: any, error: any, title?: string) => {
       networkError: error.networkError,
       graphqlError: error.graphQLErrors,
     };
-
-    if ('key' in error) {
-      errorMessage.message = `${error.key}: ${error.message}`;
-    }
   } else {
     errorMessage = '';
   }
