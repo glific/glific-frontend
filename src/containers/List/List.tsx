@@ -135,7 +135,6 @@ export const List: React.SFC<ListProps> = ({
   if (defaultSortBy) {
     defaultColumnSort = defaultSortBy;
   }
-
   // get the last sort column value from local storage if exist else set the default column
   const getSortColumn = (listItemNameValue: string, columnName: string) => {
     // set the column name
@@ -362,7 +361,8 @@ export const List: React.SFC<ListProps> = ({
 
   // Reformat all items to be entered in table
   function getIcons(
-    id: number | undefined,
+    // id: number | undefined,
+    item: any,
     label: string,
     isReserved: boolean | null,
     listItems: any,
@@ -370,6 +370,7 @@ export const List: React.SFC<ListProps> = ({
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
+    const { id } = item;
     if (isReserved) {
       return null;
     }
@@ -399,7 +400,6 @@ export const List: React.SFC<ListProps> = ({
           </Tooltip>
         </IconButton>
       ) : null;
-
     if (id) {
       return (
         <div className={styles.Icons}>
@@ -436,7 +436,7 @@ export const List: React.SFC<ListProps> = ({
                   data-testid="additionalButton"
                   className={styles.additonalButton}
                   id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter)}
+                  onClick={() => action.dialog(additionalActionParameter, item)}
                   key={key}
                 >
                   <Tooltip title={`${action.label}`} placement="top" key={key}>
@@ -474,7 +474,7 @@ export const List: React.SFC<ListProps> = ({
         : { chat: true, edit: true, delete: true };
       return {
         ...columns(listItemObj),
-        operations: getIcons(listItemObj.id, label, isReserved, listItemObj, allowedAction),
+        operations: getIcons(listItemObj, label, isReserved, listItemObj, allowedAction),
         recordId: listItemObj.id,
       };
     });

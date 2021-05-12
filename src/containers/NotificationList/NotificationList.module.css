@@ -81,3 +81,8 @@
 .Message {
   width: 30%;
 }
+
+.RedirectArrow {
+  width: 16px;
+  color: #119656;
+}

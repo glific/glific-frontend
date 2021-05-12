@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Popover } from '@material-ui/core';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +32,6 @@ const queries = {
   filterItemsQuery: FILTER_NOTIFICATIONS,
   deleteItemQuery: null,
 };
-
 const restrictedAction = () => ({ delete: false, edit: false });
 
 export const NotificationList: React.SFC<NotificationListProps> = () => {
@@ -39,11 +40,29 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
-
+  const history = useHistory();
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const setDialog = (id: any, item: any) => {
+    if (item.category === 'Message') {
+      const chatID = JSON.parse(item.entity).id;
+      history.push({ pathname: `/chat/${chatID}` });
+    } else {
+      // const flowID = JSON.parse(item.entity).flow_id;
+      // console.log(flowID);
+      const uuidFlow = JSON.parse(item.entity).flow_uuid;
+      history.push({ pathname: `/flow/configure/${uuidFlow}` });
+    }
+  };
+  const additionalAction = [
+    {
+      icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
   const getCroppedText = (croppedtext: string) => {
     if (!croppedtext) {
       return <div className={styles.TableText}>NULL</div>;
@@ -90,7 +109,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </Menu>
     );
   };
-
   const getColumns = ({ category, entity, message, severity, updatedAt }: any) => ({
     updatedAt: getTime(updatedAt),
     category: getText(category),
@@ -145,6 +163,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         dialogMessage=""
         {...queries}
         restrictedAction={restrictedAction}
+        additionalAction={additionalAction}
         {...columnAttributes}
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
       />
