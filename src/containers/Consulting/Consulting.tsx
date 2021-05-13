@@ -176,7 +176,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     },
   ];
 
-  const dialogMessage = t("You won't be able to use this for tagging messages.");
+  const dialogMessage = 'This action cannot be undone.';
   const consultHourIcon = <ConsultingIcon className={styles.ConsultingIcon} />;
 
   const setPayload = (payload: any) => {
