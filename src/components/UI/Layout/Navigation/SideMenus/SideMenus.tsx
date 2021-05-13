@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
+import { useMutation, useQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
+import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
+import { MARK_NOTIFICATIONS_AS_READ } from '../../../../../graphql/mutations/Notifications';
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
 import { getSideDrawerMenus } from '../../../../../context/role';
@@ -15,6 +18,43 @@ export interface SideMenusProps {
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
   const { t } = useTranslation();
+  const [notificationCount, setNotificationCount] = useState<any>();
+
+  const { data: countData } = useQuery(GET_NOTIFICATIONS_COUNT, {
+    variables: {
+      filter: {
+        is_read: false,
+      },
+    },
+  });
+
+  // load page and fetch count from api
+  useEffect(() => {
+    if (countData && countData.countNotifications > 0) {
+      setNotificationCount(countData.countNotifications);
+    }
+  }, [countData]);
+
+  // when count is updated
+  useEffect(() => {
+    if (notificationCount > 0) {
+      setNotificationCount(notificationCount);
+    }
+  }, [notificationCount]);
+
+  const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
+    onCompleted: (data) => {
+      if (data.markNotificationAsRead) {
+        setNotificationCount(0);
+      }
+    },
+  });
+
+  const markAsRead = () => {
+    if (notificationCount) {
+      markNotificationAsRead();
+    }
+  };
 
   const menuObj: any[] = getSideDrawerMenus();
 
@@ -36,9 +76,14 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         key={menu.icon}
         component={NavLink}
         to={menu.path}
+        onClick={markAsRead}
       >
         <ListItemIcon className={styles.ListItemIcon}>
-          <ListIcon icon={menu.icon} />
+          {notificationCount ? (
+            <ListIcon icon={menu.icon} count={notificationCount} />
+          ) : (
+            <ListIcon icon={menu.icon} />
+          )}
         </ListItemIcon>
         {props.opened ? (
           <ListItemText

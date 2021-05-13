@@ -12,6 +12,7 @@ export const getNotificationsQuery = {
     data: {
       notifications: [
         {
+          id: 1,
           category: 'Message',
           entity:
             '{"status":"valid","phone":"9876543210_1","name":"Glific Simulator One","last_message_at":"2021-03-22T07:25:12Z","is_hsm":null,"id":2,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',

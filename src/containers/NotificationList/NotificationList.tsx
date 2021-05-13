@@ -112,7 +112,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const getColumns = ({ category, entity, message, severity, updatedAt }: any) => ({
     updatedAt: getTime(updatedAt),
     category: getText(category),
-    severity: getText(severity),
+    severity: getText(severity.replace(/"/g, '')),
     entity: getCroppedText(entity),
     message: getText(message),
   });

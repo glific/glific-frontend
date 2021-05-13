@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import Badge from '@material-ui/core/Badge';
 
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
@@ -26,10 +27,11 @@ import notificationSelectedIcon from '../../../assets/images/icons/Notification/
 
 export interface ListIconProps {
   icon: string;
+  count?: number;
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
-  const { icon } = props;
+  const { icon, count } = props;
 
   const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
@@ -61,15 +63,31 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
   };
 
   return (
-    <img
-      src={
-        location.pathname.startsWith(`/${icon}`)
-          ? stringsToSelectedIcons[icon]
-          : stringsToIcons[icon]
-      }
-      alt={'Selected '.concat(icon)}
-      data-testid="listIcon"
-    />
+    <div>
+      {count && icon === 'notification' ? (
+        <Badge badgeContent={count} color="secondary">
+          <img
+            src={
+              location.pathname.startsWith(`/${icon}`)
+                ? stringsToSelectedIcons[icon]
+                : stringsToIcons[icon]
+            }
+            alt={'Selected '.concat(icon)}
+            data-testid="listIcon"
+          />
+        </Badge>
+      ) : (
+        <img
+          src={
+            location.pathname.startsWith(`/${icon}`)
+              ? stringsToSelectedIcons[icon]
+              : stringsToIcons[icon]
+          }
+          alt={'Selected '.concat(icon)}
+          data-testid="listIcon"
+        />
+      )}
+    </div>
   );
 };
 
