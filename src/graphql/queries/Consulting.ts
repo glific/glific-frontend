@@ -14,11 +14,6 @@ export const GET_CONSULTING_HOURS_BY_ID = gql`
         organizationName
         updatedAt
         when
-        organization {
-          id
-          name
-          shortcode
-        }
       }
     }
   }

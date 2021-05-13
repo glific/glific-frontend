@@ -34,7 +34,6 @@ export const RadioInput: React.SFC<RadioInputProps> = ({
   const isChecked = (value: any) => selectedValue === value;
 
   const handleRadioChange = (value: boolean) => {
-    console.log(value);
     setFieldValue(field.name, value);
     if (handleChange) {
       handleChange(value);

@@ -45,6 +45,14 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     organization,
   };
 
+  const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
+    variables: setVariables(),
+  });
+
+  if (!organizationList) {
+    return <Loading />;
+  }
+
   const setStates = ({
     participants: supportMembers,
     staff: staffMembers,
@@ -53,6 +61,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     content: description,
     isBillable: billable,
     organization: org,
+    organizationName,
   }: any) => {
     setParticipants(supportMembers);
     setStaff(staffMembers);
@@ -60,16 +69,18 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     setDuration(durationInMin);
     setContent(description);
     setIsBillable(billable);
-    setOrganization(org);
+    /**
+     * When edit organization is undefined
+     * since we are getting organizationName,
+     * we need to get object from organizationList for selected organizationName
+     */
+    if (!org) {
+      const selectedOrg = organizationList.organizations.find(
+        ({ name }: { name: string }) => name === organizationName
+      );
+      setOrganization(selectedOrg);
+    } else setOrganization(org);
   };
-
-  const { data: organizationList } = useQuery(FILTER_ORGANIZATIONS, {
-    variables: setVariables(),
-  });
-
-  if (!organizationList) {
-    return <Loading />;
-  }
 
   const FormSchema = Yup.object().shape({
     participants: Yup.string().required(t('Participants are required.')),
@@ -186,7 +197,6 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   };
 
   const orgOptions = organizationList.organizations;
-
   return (
     <FormLayout
       {...queries}
