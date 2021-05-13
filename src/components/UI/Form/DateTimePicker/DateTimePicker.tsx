@@ -4,7 +4,9 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from '@material-ui/pickers';
 import 'date-fns';
 import { getIn } from 'formik';
+
 import styles from './DateTimePicker.module.css';
+import { ReactComponent as CalenderIcon } from '../../../../assets/images/icons/Calendar.svg';
 
 export interface DateTimePickerProps {
   variant?: any;
@@ -41,10 +43,12 @@ export const DateTimePicker: React.SFC<DateTimePickerProps> = ({
     }
   };
 
+  const icon = <CalenderIcon />;
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid className={styles.DateTimePicker}>
         <KeyboardDateTimePicker
+          className={styles.Text}
           error={hasError ? errorText : ''}
           autoOk
           variant={variant}
@@ -56,6 +60,7 @@ export const DateTimePicker: React.SFC<DateTimePickerProps> = ({
           onChange={handleDateChange}
           helperText={hasError ? errorText : ''}
           minDate={minDate}
+          keyboardIcon={icon}
         />
       </Grid>
     </MuiPickersUtilsProvider>

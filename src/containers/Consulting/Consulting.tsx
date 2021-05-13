@@ -29,7 +29,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
   const [staff, setStaff] = useState('');
-  const [when, setWhen] = useState<any>(null);
+  const [when, setWhen] = useState<any>(new Date());
   const [duration, setDuration] = useState<number>();
   const [content, setContent] = useState('');
   const [isBillable, setIsBillable] = useState<any>(null);
@@ -199,7 +199,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   const orgOptions = organizationList.organizations;
 
   return (
-    <div className={styles.Layout}>
+    <div className={`${styles.Layout} ${match.params.id ? styles.Edit : ''}`}>
       <FormLayout
         {...queries}
         title={t('Add consulting record')}
