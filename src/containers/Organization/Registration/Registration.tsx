@@ -10,7 +10,7 @@ import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
 import { ONBOARD_URL } from '../../../config/index';
 import Tooltip from '../../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
-import { GUPSHUP_DOCUMENTATION_HELP_LINK } from '../../../common/constants';
+import { GUPSHUP_ACCOUNT_CREATION } from '../../../common/constants';
 
 export interface RegistrationProps {
   title: string;
@@ -33,56 +33,13 @@ const InfoAdornment = (
 const HelperLink = (
   <Link
     className={styles.HelperLink}
-    href={GUPSHUP_DOCUMENTATION_HELP_LINK}
+    href={GUPSHUP_ACCOUNT_CREATION}
     rel="noreferrer"
     target="_blank"
   >
     Help?
   </Link>
 );
-
-const formFields = [
-  {
-    component: Input,
-    name: 'name',
-    type: 'text',
-    placeholder: 'NGO name',
-  },
-  {
-    component: PhoneInput,
-    name: 'phone',
-    type: 'phone',
-    placeholder: 'NGO WhatsApp number',
-    helperText: 'Please enter a phone number.',
-  },
-  {
-    component: Input,
-    name: 'app_name',
-    type: 'text',
-    placeholder: 'App name',
-  },
-  {
-    component: Input,
-    name: 'api_key',
-    type: 'text',
-    placeholder: 'GupShup API keys',
-    helperText: HelperLink,
-  },
-  {
-    component: Input,
-    name: 'shortcode',
-    type: 'text',
-    placeholder: 'URL Shortcode',
-    endAdornment: InfoAdornment,
-    helperText: 'www.shortcode.tides.coloredcow.com',
-  },
-  {
-    component: Input,
-    name: 'email',
-    type: 'text',
-    placeholder: 'Your email id',
-  },
-];
 
 const FormSchema = Yup.object().shape({
   name: Yup.string().required('NGO name is required'),
@@ -92,7 +49,9 @@ const FormSchema = Yup.object().shape({
     .test('len', 'Invalid API Key', (val) => val?.length === 32)
     .required('API key is required'),
   email: Yup.string().email().required('Email is required'),
-  shortcode: Yup.string().required('NGO shortcode url is required'),
+  shortcode: Yup.string()
+    .matches(/^[a-z0-9]+$/i, 'Only alphanumeric characters are allowed')
+    .required('NGO shortcode url is required'),
 });
 
 const initialFormValues = {
@@ -107,11 +66,63 @@ const initialFormValues = {
 export const Registration: React.SFC<RegistrationProps> = (props) => {
   const { title, buttonText, handleStep } = props;
   const [registrationError, setRegistrationError] = useState('');
+  const [code, setCode] = useState('shortcode');
   const [redirect, setRedirect] = useState(false);
 
   if (redirect) {
     handleStep();
   }
+
+  const formFields = (shortcode: string) => [
+    {
+      component: Input,
+      name: 'name',
+      type: 'text',
+      placeholder: 'NGO name',
+    },
+    {
+      component: PhoneInput,
+      name: 'phone',
+      type: 'phone',
+      placeholder: 'NGO WhatsApp number',
+      helperText: 'Please enter a phone number.',
+    },
+    {
+      component: Input,
+      name: 'app_name',
+      type: 'text',
+      placeholder: 'App name',
+    },
+    {
+      component: Input,
+      name: 'api_key',
+      type: 'text',
+      placeholder: 'GupShup API keys',
+      helperText: HelperLink,
+    },
+    {
+      component: Input,
+      name: 'shortcode',
+      type: 'text',
+      placeholder: 'URL Shortcode',
+      endAdornment: InfoAdornment,
+      helperText: `www.${shortcode}.tides.coloredcow.com`,
+      inputProp: {
+        onChange: (event: any) => {
+          const { value } = event.target;
+          let text = 'shortcode';
+          if (value) text = value;
+          setCode(text);
+        },
+      },
+    },
+    {
+      component: Input,
+      name: 'email',
+      type: 'text',
+      placeholder: 'Your email id',
+    },
+  ];
 
   const handleSubmit = (values: any, captcha: any, setErrors: any, setLoading: any) => {
     if (captcha) {
@@ -135,7 +146,7 @@ export const Registration: React.SFC<RegistrationProps> = (props) => {
     <Organization
       pageTitle={title}
       buttonText={buttonText}
-      formFields={formFields}
+      formFields={formFields(code)}
       validationSchema={FormSchema}
       saveHandler={handleSubmit}
       errorMessage={registrationError}
