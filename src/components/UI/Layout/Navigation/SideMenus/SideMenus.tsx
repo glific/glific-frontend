@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
@@ -20,32 +20,28 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const { t } = useTranslation();
   const [notificationCount, setNotificationCount] = useState<any>();
 
-  const { data: countData } = useQuery(GET_NOTIFICATIONS_COUNT, {
+  const [getCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
     variables: {
       filter: {
         is_read: false,
       },
     },
+    fetchPolicy: 'network-only',
+    onCompleted: (countData) => {
+      if (countData) {
+        setNotificationCount(countData.countNotifications);
+      }
+    },
   });
 
-  // load page and fetch count from api
   useEffect(() => {
-    if (countData && countData.countNotifications > 0) {
-      setNotificationCount(countData.countNotifications);
-    }
-  }, [countData]);
-
-  // when count is updated
-  useEffect(() => {
-    if (notificationCount > 0) {
-      setNotificationCount(notificationCount);
-    }
-  }, [notificationCount]);
+    getCount();
+  }, []);
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
-    onCompleted: (data) => {
-      if (data.markNotificationAsRead) {
-        setNotificationCount(0);
+    onCompleted: (mark) => {
+      if (mark.markNotificationAsRead) {
+        getCount();
       }
     },
   });
