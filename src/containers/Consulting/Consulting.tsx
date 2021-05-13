@@ -158,7 +158,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
       component: Input,
       name: 'staff',
       type: 'text',
-      placeholder: t('NGO staff members'),
+      placeholder: t('Support team'),
       inputProp: {
         onChange: (event: any) => setStaff(event.target.value),
       },
@@ -169,7 +169,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
       type: 'text',
       rows: 3,
       textArea: true,
-      placeholder: t('Description'),
+      placeholder: t('Notes'),
       inputProp: {
         onChange: (event: any) => setContent(event.target.value),
       },
@@ -197,31 +197,35 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   };
 
   const orgOptions = organizationList.organizations;
+
   return (
-    <FormLayout
-      {...queries}
-      title={t('Consulting Hours')}
-      listItem="consultingHour"
-      listItemName="consultingHour"
-      pageLink="consultingHour"
-      match={match}
-      refetchQueries={[
-        {
-          query: GET_CONSULTING_HOURS,
-          variables: setVariables(),
-        },
-      ]}
-      states={states}
-      setStates={setStates}
-      setPayload={setPayload}
-      validationSchema={FormSchema}
-      dialogMessage={dialogMessage}
-      formFields={formFields(orgOptions)}
-      redirectionLink="consulting-hours"
-      icon={consultHourIcon}
-      languageSupport={false}
-      customStyles={[styles.Form]}
-    />
+    <div className={styles.Layout}>
+      <FormLayout
+        {...queries}
+        title={t('Add consulting record')}
+        listItem="consultingHour"
+        listItemName="consultingHour"
+        pageLink="consultingHour"
+        match={match}
+        refetchQueries={[
+          {
+            query: GET_CONSULTING_HOURS,
+            variables: setVariables(),
+          },
+        ]}
+        states={states}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={FormSchema}
+        dialogMessage={dialogMessage}
+        formFields={formFields(orgOptions)}
+        redirectionLink="consulting-hours"
+        icon={consultHourIcon}
+        languageSupport={false}
+        customStyles={[styles.Form]}
+        type="consultingHours"
+      />
+    </div>
   );
 };
 

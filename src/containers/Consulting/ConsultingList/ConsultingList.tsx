@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { Dialog, DialogContent } from '@material-ui/core';
 
 import styles from './ConsultingList.module.css';
+import { Consulting } from '../Consulting';
 import { List } from '../../List/List';
 import { setVariables } from '../../../common/constants';
 import {
@@ -12,7 +14,12 @@ import {
 import { DELETE_CONSULTING_HOURS } from '../../../graphql/mutations/Consulting';
 import { ReactComponent as ConsultingIcon } from '../../../assets/images/icons/icon-consulting.svg';
 
-const ConsultingList = () => {
+interface ConsultingListProps {
+  match: any;
+  openDialog?: boolean;
+}
+
+const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: any) => {
   const { t } = useTranslation();
 
   const queries = {
@@ -70,23 +77,35 @@ const ConsultingList = () => {
   };
 
   return (
-    <List
-      title={t('Consulting')}
-      listItem="consultingHours"
-      listItemName="consultingHour"
-      pageLink="consulting-hours"
-      listIcon={listIcon}
-      refetchQueries={{
-        query: GET_CONSULTING_HOURS,
-        variables: setVariables(),
-      }}
-      searchParameter="organizationName"
-      dialogMessage={dialogMessage}
-      dialogTitle={dialogTitle}
-      button={addNewButton}
-      {...queries}
-      {...columnAttributes}
-    />
+    <>
+      <List
+        title={t('Consulting')}
+        listItem="consultingHours"
+        listItemName="consultingHour"
+        pageLink="consulting-hours"
+        listIcon={listIcon}
+        refetchQueries={{
+          query: GET_CONSULTING_HOURS,
+          variables: setVariables(),
+        }}
+        searchParameter="organizationName"
+        dialogMessage={dialogMessage}
+        dialogTitle={dialogTitle}
+        button={addNewButton}
+        {...queries}
+        {...columnAttributes}
+      />
+      <Dialog
+        open={!!openDialog}
+        classes={{
+          paper: styles.Dialogbox,
+        }}
+      >
+        <DialogContent classes={{ root: styles.DialogContent }}>
+          <Consulting match={match} />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
