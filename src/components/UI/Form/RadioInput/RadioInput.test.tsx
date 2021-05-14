@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, screen, prettyDOM, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { RadioInput } from './RadioInput';
 
 describe('<RadioInput />', () => {
   const props: any = {
-    form: { touched: false, errors: {}, values: {}, setFieldValue: jest.fn(), dirty: {} },
+    form: { touched: {}, errors: {}, values: {}, setFieldValue: jest.fn(), dirty: {} },
     field: { name: 'radioInput' },
   };
 
@@ -45,5 +45,14 @@ describe('<RadioInput />', () => {
     render(<RadioInput {...props} />);
 
     expect(screen.getByText('Radio Title')).toBeInTheDocument();
+  });
+
+  it('Render radio component with error values', () => {
+    props.form.errors = { radioInput: 'Required' };
+    props.form.touched = { radioInput: true };
+
+    render(<RadioInput {...props} />);
+
+    expect(screen.getByText('Required')).toBeInTheDocument();
   });
 });
