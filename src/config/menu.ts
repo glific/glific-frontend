@@ -68,6 +68,12 @@ const menus = [
     roles: ['Glific_admin'],
   },
   {
+    title: 'Consulting',
+    path: '/consulting-hours',
+    type: 'staffManagement',
+    roles: ['Glific_admin'],
+  },
+  {
     title: 'Blocked Contacts',
     path: '/blocked-contacts',
     type: 'staffManagement',
