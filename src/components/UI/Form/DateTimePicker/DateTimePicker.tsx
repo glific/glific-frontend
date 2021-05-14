@@ -35,12 +35,9 @@ export const DateTimePicker: React.SFC<DateTimePickerProps> = ({
   const dateValue = field.value ? field.value : null;
 
   const handleDateChange = (date: Date | null | string) => {
-    if (date) {
-      if (date !== 'Invalid Date') setFieldValue(field.name, date);
-      if (onChange) onChange(date);
-    } else {
-      setFieldValue(field.name, null);
-    }
+    const value = date && date.toString() !== 'Invalid Date' ? date : null;
+    setFieldValue(field.name, value);
+    if (onChange) onChange(value);
   };
 
   const icon = <CalenderIcon />;
@@ -49,7 +46,7 @@ export const DateTimePicker: React.SFC<DateTimePickerProps> = ({
       <Grid className={styles.DateTimePicker}>
         <KeyboardDateTimePicker
           className={styles.Text}
-          error={hasError ? errorText : ''}
+          error={hasError}
           autoOk
           variant={variant}
           inputVariant={inputVariant}

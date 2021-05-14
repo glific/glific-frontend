@@ -86,7 +86,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     participants: Yup.string().required(t('Participants are required.')),
     staff: Yup.string().required(t('NGO staff members are required.')),
     content: Yup.string().required(t('Description is required')),
-    when: Yup.date().nullable().required(t('Date is required.')),
+    when: Yup.date().nullable().required(t('Date is required and should be valid.')),
     duration: Yup.number()
       .nullable()
       .moreThan(0, 'Duration should be greater than 0')
