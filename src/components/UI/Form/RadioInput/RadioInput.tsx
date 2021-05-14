@@ -11,9 +11,9 @@ import {
 import styles from './RadioInput.module.css';
 
 export interface RadioInputProps {
-  labelYes: string;
-  labelNo: string;
-  row: boolean;
+  labelYes?: string;
+  labelNo?: string;
+  row?: boolean;
   field: any;
   form: { dirty: any; touched: any; errors: any; setFieldValue: any; values: any };
   radioTitle?: string;
@@ -54,7 +54,7 @@ export const RadioInput: React.SFC<RadioInputProps> = ({
           control={
             <Radio
               color="primary"
-              onChange={() => handleRadioChange(true)}
+              onClick={() => handleRadioChange(true)}
               checked={isChecked(true)}
             />
           }
@@ -66,7 +66,7 @@ export const RadioInput: React.SFC<RadioInputProps> = ({
           control={
             <Radio
               color="primary"
-              onChange={() => handleRadioChange(false)}
+              onClick={() => handleRadioChange(false)}
               checked={isChecked(false)}
             />
           }
