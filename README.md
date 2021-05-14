@@ -9,9 +9,12 @@
 
 Frontend interface built using React.
 
-## Installation steps
+### Prerequisite
 
-**Note: First you will need to setup the backend application from this repo: https://github.com/glific/glific**
+- Setup the backend application. You can find the instructions [here](https://github.com/glific/glific).
+- SSL is mandatory for both frontend and backend in development. You can find the instructions to generate ssl certificate [here](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
+
+## Installation steps
 
 1. Create a new file `.env` in the project root directory and copy the contents from `.env.example`.
 2. Update the `.env` file with relevant configurations.
@@ -32,6 +35,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
+
+Run `HOST=glific.test yarn start` if you are using host configuration.
 
 ### `yarn test`
 
@@ -71,22 +76,6 @@ After new strings are transalated. Use `Download >> Build only`. It will automat
 
 Note: Good to `Preview` before using `Build only`
 
-## Use SSL for frontend and backend
-
-SSL will mandatory for both frontend and backend in development post 1.5.
-Here are the steps:
-
-1. Generate certificate. Please refer [this](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
-2. Running frontend in secured mode
-
-```
-HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start
-```
-
-Note: This is temp workaround and document will be updated after the release.
-
-Make sure port is updated to 4001 in .env
-
 ## Deploying release on ECS with CD
 
 1. If you are using AWS codebuild for CD, use buildspec.yml.sample file content for creating and pushing docker image.
@@ -96,6 +85,7 @@ Make sure port is updated to 4001 in .env
 
 ### Glific
 
+- [Glific.org](https://glific.org/)
 - [One Pager](https://docs.google.com/document/d/1XYxNvIYzNyX2Ve99-HrmTC8utyBFaf_Y7NP1dFYxI9Q/edit?usp=sharing)
 - [Google Drive](https://drive.google.com/drive/folders/1aMQvS8xWRnIEtsIkRgLodhDAM-0hg0v1?usp=sharing)
 - [Product Features](https://docs.google.com/document/d/1uUWmvFkPXJ1xVMr2xaBYJztoItnqxBnfqABz5ad6Zl8/edit?usp=sharing)
