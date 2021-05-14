@@ -9,7 +9,7 @@
 
 Frontend interface built using React.
 
-### Prerequisite
+## Prerequisite
 
 - Setup the backend application. You can find the instructions [here](https://github.com/glific/glific).
 - SSL is mandatory for both frontend and backend in development. You can find the instructions to generate ssl certificate [here](https://github.com/glific/glific#use-ssl-for-frontend-and-backend)
