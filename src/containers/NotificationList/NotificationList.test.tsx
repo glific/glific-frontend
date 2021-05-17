@@ -1,6 +1,8 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, prettyDOM, getByText } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+import { createBrowserHistory } from 'history';
+
 import { NotificationList } from './NotificationList';
 import { getNotificationCountQuery, getNotificationsQuery } from '../../mocks/Notifications';
 import { setUserSession } from '../../services/AuthService';
@@ -28,49 +30,44 @@ const notifications = (
   </MockedProvider>
 );
 
-test('Notifications are loaded', async () => {
-  const { getByText } = render(notifications);
+test('It should load notifications', async () => {
+  render(notifications);
+  const time = await screen.findByText('TIME');
+  const category = await screen.findByText('CATEGORY');
+  const severity = await screen.findByText('SEVERITY');
+  const entity = await screen.findByText('ENTITY');
+  const message = await screen.findByText('MESSAGE');
 
-  // before data loaded
-  await waitFor(() => {
-    expect(getByText('Notifications')).toBeInTheDocument();
-  });
+  expect(time).toBeInTheDocument();
+  expect(category).toBeInTheDocument();
+  expect(severity).toBeInTheDocument();
+  expect(entity).toBeInTheDocument();
+  expect(message).toBeInTheDocument();
+});
 
-  // check if the URL is loaded
+test('click on forward arrrow', async () => {
+  const { getAllByTestId } = render(notifications);
   await waitFor(() => {
-    expect(
-      getByText('Cannot send session message to contact, invalid bsp status.')
-    ).toBeInTheDocument();
+    const arrow = screen.getAllByTestId('tooltip');
+    fireEvent.click(arrow[0]);
   });
 });
 
-test('Show data on popup', async () => {
-  const { getAllByTestId, getAllByText, getByText, getByTestId } = render(notifications);
-
-  // check if the entity is loaded
+test('it should show copy text and view option on clicking entity ', async () => {
+  const { getAllByTestId } = render(notifications);
   await waitFor(() => {
-    fireEvent.click(getByText('{"status":"valid","phone"...'));
-    fireEvent.click(getAllByTestId('MenuItem')[1]);
+    const entityMenu = screen.getAllByTestId('Menu');
+    fireEvent.click(entityMenu[0]);
+
+    const viewButton = screen.getAllByTestId('MenuItem');
+    // view option
+    expect(viewButton[0]).toBeInTheDocument();
+    fireEvent.click(viewButton[0]);
+
+    // copy text option
+    expect(viewButton[1]).toBeInTheDocument();
+    fireEvent.click(viewButton[1]);
+    // const notificationTitle = screen.getByText('Notifications');
+    // fireEvent.click(notificationTitle);
   });
-
-  await waitFor(() => {
-    expect(getAllByText('Copy text')[0]).toBeInTheDocument();
-  });
-  // click on copy button
-  fireEvent.click(getAllByText('Copy text')[0]);
-  fireEvent.click(getByTestId('copyToClipboard'));
-  // click on done button to close the popup
-  fireEvent.click(getByText('Done'));
-});
-
-test('copy data to clipboard', async () => {
-  const { getAllByTestId, getByText } = render(notifications);
-
-  // check if the entity is loaded
-  await waitFor(() => {
-    fireEvent.click(getByText('{"status":"valid","phone"...'));
-    fireEvent.click(getAllByTestId('MenuItem')[0]);
-  });
-
-  // there is nothing to assert here
 });
