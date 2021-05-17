@@ -120,6 +120,13 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     backendTerms.DESCRIPTION = 'label';
   }
 
+  if (listName === 'consultingHour') {
+    backendTerms.NAME = 'organization_name';
+    backendTerms.MINUTES = 'duration';
+    backendTerms.DATE = 'when';
+    backendTerms.TYPE = 'is_billable';
+  }
+
   return backendTerms[columnName];
 };
 

@@ -332,7 +332,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     if (afterDelete) {
       return <Redirect to={afterDelete.link} />;
     }
-    return <Redirect to={redirectionLink} />;
+    return <Redirect to={`/${redirectionLink}`} />;
   }
 
   if (formCancelled) {
