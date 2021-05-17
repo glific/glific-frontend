@@ -1,7 +1,6 @@
-import { render, waitFor, fireEvent, screen, prettyDOM, getByText } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { createBrowserHistory } from 'history';
 
 import { NotificationList } from './NotificationList';
 import { getNotificationCountQuery, getNotificationsQuery } from '../../mocks/Notifications';
@@ -54,7 +53,7 @@ test('click on forward arrrow', async () => {
 });
 
 test('it should show copy text and view option on clicking entity ', async () => {
-  const { getAllByTestId } = render(notifications);
+  const { getAllByTestId, getByTestId, getByText } = render(notifications);
   await waitFor(() => {
     const entityMenu = screen.getAllByTestId('Menu');
     fireEvent.click(entityMenu[0]);
@@ -67,7 +66,13 @@ test('it should show copy text and view option on clicking entity ', async () =>
     // copy text option
     expect(viewButton[1]).toBeInTheDocument();
     fireEvent.click(viewButton[1]);
-    // const notificationTitle = screen.getByText('Notifications');
-    // fireEvent.click(notificationTitle);
+
+    // after clicking on view it should show copy text option
+    const copyText = getByTestId('copyToClipboard');
+    fireEvent.click(copyText);
+
+    // after view it should show Done button
+    const doneButton = getByText('Done');
+    fireEvent.click(doneButton);
   });
 });
