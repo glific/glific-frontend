@@ -50,8 +50,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       const chatID = JSON.parse(item.entity).id;
       history.push({ pathname: `/chat/${chatID}` });
     } else {
-      // const flowID = JSON.parse(item.entity).flow_id;
-      // console.log(flowID);
       const uuidFlow = JSON.parse(item.entity).flow_uuid;
       history.push({ pathname: `/flow/configure/${uuidFlow}` });
     }
@@ -109,6 +107,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </Menu>
     );
   };
+
   const getColumns = ({ category, entity, message, severity, updatedAt }: any) => ({
     updatedAt: getTime(updatedAt),
     category: getText(category),
