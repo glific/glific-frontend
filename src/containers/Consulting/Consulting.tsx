@@ -25,6 +25,8 @@ export interface ConsultingProps {
   match: any;
 }
 
+const isDurationValid = (value: any) => value % 15 === 0;
+
 export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
   const { t } = useTranslation();
   const [participants, setParticipants] = useState('');
@@ -90,6 +92,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     duration: Yup.number()
       .nullable()
       .moreThan(0, 'Duration should be greater than 0')
+      .test('is duration valid?', 'Duration should be in multiple of 15', isDurationValid)
       .required(t('Duration is required')),
     isBillable: Yup.boolean().nullable().required('Required'),
     organization: Yup.object().nullable().required('Organization is required'),
@@ -136,13 +139,6 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
       name: 'duration',
       type: 'text',
       placeholder: t('Enter time (in mins)'),
-      validate: (val: any) => {
-        let error: any;
-        if (val % 15 !== 0) {
-          error = 'Duration should be in multiple of 15';
-        }
-        return error;
-      },
       inputProp: {
         onChange: (event: any) => setDuration(Number(event.target.value)),
       },
