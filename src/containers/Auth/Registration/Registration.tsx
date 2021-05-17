@@ -47,11 +47,7 @@ export const Registration: React.SFC<RegistrationProps> = () => {
   const staffInstructions = (
     <div className={styles.Instructions}>
       <InfoIcon />
-      <div>
-        {t(
-          'Please make sure to optin to your gupshup number by clicking signupforservices url before creating your account.'
-        )}
-      </div>
+      <div>{t('Please make sure to optin to your org number before creating your account.')}</div>
     </div>
   );
 
