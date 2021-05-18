@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [master, feature/cypress-coverage]
 
-
-name: Cypress Test
-
 jobs:
   glific:
     runs-on: ubuntu-latest
@@ -59,7 +56,7 @@ jobs:
           yarn install
           cd ../
 
-       # frontend setup
+        # frontend setup
       - name: Setup frontend
         run: |
           ls
@@ -76,7 +73,6 @@ jobs:
           yarn setup
           echo done.
           cd ../
-
 
       # backend setup
       - name: Setup backend
@@ -128,4 +124,4 @@ jobs:
       - name: Cypress run
         run: |
           cd cypress-testing
-          yarn cy:run 
+          yarn cy:run
