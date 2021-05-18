@@ -38,7 +38,6 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
     onCompleted: () => {
-      // check for count
       getCount();
     },
   });

@@ -30,7 +30,9 @@ export const getNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
-      filter: {},
+      filter: {
+        is_read: false,
+      },
     },
   },
   result: {
@@ -43,11 +45,7 @@ export const getNotificationCountQuery = {
 export const markAllNotificationAsRead = {
   request: {
     query: MARK_NOTIFICATIONS_AS_READ,
-    variables: {
-      filter: {
-        is_read: false,
-      },
-    },
+    variables: {},
   },
   result: {
     data: {
