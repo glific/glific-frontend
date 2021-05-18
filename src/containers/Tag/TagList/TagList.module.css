@@ -37,25 +37,32 @@
 }
 
 .Label {
-  width: 15%;
+  width: 20%;
+  min-width: 140px;
 }
 
 .Description {
   width: 30%;
+  min-width: 170px;
 }
 
 .Keywords {
-  width: 35%;
+  width: 25%;
 }
 
 .LastModified {
-  width: 185px;
   padding-top: 12px;
   color: #93a29b;
 }
 
 .Actions {
-  width: 20%;
+  width: 10%;
+  min-width: 120px;
   justify-content: flex-end;
   margin-left: auto;
+}
+
+.LastModifiedColumn {
+  width: 15%;
+  min-width: 100px;
 }
