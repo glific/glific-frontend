@@ -28,9 +28,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     },
     fetchPolicy: 'network-only',
     onCompleted: (countData) => {
-      if (countData) {
-        setNotificationCount(countData.countNotifications);
-      }
+      setNotificationCount(countData.countNotifications);
     },
   });
 
@@ -39,10 +37,9 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
   }, []);
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
-    onCompleted: (data) => {
-      if (data.markNotificationAsRead) {
-        getCount();
-      }
+    onCompleted: () => {
+      // check for count
+      getCount();
     },
   });
 
