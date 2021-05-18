@@ -2,7 +2,9 @@ name: Cypress Test
 
 on:
   push:
-    branches: [master, v1.0, feature/cypress-coverage]
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   glific:
@@ -41,46 +43,27 @@ jobs:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
-      # cypress setup
-      - name: Setup cypress
-        run: |
-          ls
-          echo clone cypress repo
-          git clone https://github.com/glific/cypress-testing.git
-          echo done. go to dir.
-          cd cypress-testing
-          echo Copy Cypress.json from example
-          cp cypress.json.example cypress.json
-          yarn install
-          cd ../
-
-        # frontend setup
-      - name: Setup frontend
-        run: |
-          ls
-          echo copy env file.
-          cp .env.example .env
-          sed -i 's/4001/4000/g' .env
-          echo done.
-          cat /proc/sys/fs/inotify/max_user_watches
-          echo set watchers
-          sudo sysctl fs.inotify.max_user_watches=524288
-          sudo sysctl -p
-          cat /proc/sys/fs/inotify/max_user_watches
-          echo start yarn setup.
-          yarn setup
-          echo done.
-          cd ../
-
       # backend setup
       - name: Setup backend
         run: |
-          ls
+          echo '127.0.0.1  glific.test' | sudo tee -a /etc/hosts
+          echo '127.0.0.1  api.glific.test' | sudo tee -a /etc/hosts
+          cd ../
           echo clone glific repo
           git clone https://github.com/glific/glific.git
           echo done. go to dir.
           cd glific
           echo done. start dev.secret.exs config
+          cd priv
+          mkdir cert
+          cd cert 
+          echo ${{ secrets.TEST_CERTIFICATE }} > glific.test+1.pem
+
+          cat glific.test+1.pem
+
+          echo ${{ secrets.TEST_CERTIFICATE_KEY }} > glific.test+1-key.pem
+          cat glific.test+1-key.pem
+          cd ../../
           cd config
           cp dev.secret.exs.txt dev.secret.exs
           cp .env.dev.txt .env.dev
@@ -100,27 +83,59 @@ jobs:
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
           mix setup
+          cd ../glific-frontend/
+
+        # cypress setup
+      - name: Setup cypress
+        run: |
+          echo clone cypress repo
+          git clone https://github.com/glific/cypress-testing.git
+          echo done. go to dir.
+          cp -r cypress-testing/cypress cypress
+          yarn add cypress 
+          yarn add @cypress/code-coverage
+          yarn add @cypress/instrument-cra
+          cp cypress-testing/cypress.json.example cypress.json
+          echo Copy Cypress.json from example
+
+        # frontend setup
+      - name: Setup frontend
+        run: |
+          echo copy env file.
+          cp .env.example .env
+          echo done.
+          cat /proc/sys/fs/inotify/max_user_watches
+          echo set watchers
+          sudo sysctl fs.inotify.max_user_watches=524288
+          sudo sysctl -p
+          cat /proc/sys/fs/inotify/max_user_watches
+          echo start yarn setup.
+          yarn setup
+          echo done.
           cd ../
 
         # Run frontend
-      - name: run glific-frontend
+      - name: Run glific frontend
         run: |
           ls -la
-          yarn start &
+          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn run react-scripts -r @cypress/instrument-cra start &
 
         # Run backend
-      - name: run glific
+      - name: Run glific backend
         run: |
           ls -la
-          cd glific
+          cd ../glific/
           mix phx.server &
+          cd ../glific-frontend/
 
-      - name: Wait for 1 minute for the frontend to start
+      - name: Wait for 3 minutes for the frontend to start
         run: |
-          sleep 1m
+          sleep 3m
 
         # Run cypress
       - name: Cypress run
         run: |
-          cd cypress-testing
-          yarn cy:run
+          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
