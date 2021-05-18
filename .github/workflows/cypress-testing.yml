@@ -78,7 +78,6 @@ jobs:
           ls
           echo clone glific repo
           git clone https://github.com/glific/glific.git
-          git checkout tags/v1.5.0
           echo done. go to dir.
           cd glific
           echo done. start dev.secret.exs config
