@@ -2,7 +2,7 @@ name: Cypress Test
 
 on:
   push:
-    branches: [master, v1.0]
+    branches: [master, v1.0, feature/cypress-coverage]
   pull_request:
     branches: [master, feature/cypress-coverage]
 
