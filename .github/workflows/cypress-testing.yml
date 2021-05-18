@@ -3,8 +3,6 @@ name: Cypress Test
 on:
   push:
     branches: [master, v1.0, feature/cypress-coverage]
-  pull_request:
-    branches: [master]
 
 jobs:
   glific:
