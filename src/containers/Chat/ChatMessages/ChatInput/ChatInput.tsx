@@ -140,7 +140,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         uploadMediaBlob({
           variables: {
             media,
-            extension: 'wav',
+            extension: 'mp3',
           },
         });
       };
@@ -310,7 +310,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   let audioOption: any;
   // enable audio only if GCS is configured
-  if (permission && permission.attachmentsEnabled) {
+  if (permission && permission.attachmentsEnabled && !selectedTemplate) {
     uploadPermission = true;
     audioOption = (
       <VoiceRecorder

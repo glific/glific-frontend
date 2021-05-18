@@ -35,6 +35,9 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     clearBlobUrl,
   } = useReactMediaRecorder({
     audio: true,
+    blobPropertyBag: {
+      type: 'audio/mpeg',
+    },
     onStop: saveRecording,
   });
 
@@ -105,18 +108,29 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   let showRecordingOption;
 
   if (error === 'permission_denied') {
-    showRecordingOption = <MicOffIcon data-testid="micOffIcon" />;
+    showRecordingOption = (
+      <IconButton className={styles.RecorderIcon} data-testid="recorder">
+        <MicOffIcon data-testid="micOffIcon" />
+      </IconButton>
+    );
   } else if (status !== 'recording') {
-    showRecordingOption = <MicIcon onClick={startCallback} data-testid="micIcon" />;
+    showRecordingOption = (
+      <IconButton className={styles.RecorderIcon} onClick={startCallback} data-testid="recorder">
+        <MicIcon data-testid="micIcon" />
+      </IconButton>
+    );
   } else {
-    showRecordingOption = <StopIcon onClick={stopCallback} data-testid="stopIcon" />;
+    showRecordingOption = (
+      <IconButton className={styles.RecorderIcon} onClick={stopCallback} data-testid="recorder">
+        <StopIcon data-testid="stopIcon" />
+      </IconButton>
+    );
   }
 
   return (
     <div className={styles.VoiceRecorder}>
-      <IconButton className={styles.RecorderIcon} data-testid="recorder">
-        {showRecordingOption}
-      </IconButton>
+      {showRecordingOption}
+
       {audioPreview}
       {recordIndicator}
       {uploadStatus}

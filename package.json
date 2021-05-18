@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
@@ -16,7 +16,7 @@
     "@appsignal/react": "^1.0.7",
     "@date-io/date-fns": "1.x",
     "@draft-js-plugins/editor": "^4.1.0",
-    "@glific/flow-editor": "^1.11.9-15",
+    "@glific/flow-editor": "^1.13.9",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -102,7 +102,7 @@
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
-    "start": "react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem react-scripts start",
     "build": "yarn setup && react-scripts build",
     "test": "react-scripts test",
     "test:coverage": "react-scripts test --coverage --watchAll",
