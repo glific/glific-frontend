@@ -97,9 +97,9 @@ jobs:
           mix hex.organization auth oban --key ${{ secrets.OBAN_PRO_KEY }}
           mix deps.get
           echo start mix setup
-          mix setup
           echo done. start installing inotify-tools
           sudo apt-get install inotify-tools
+          mix setup
           cd ../
 
         # Run frontend
