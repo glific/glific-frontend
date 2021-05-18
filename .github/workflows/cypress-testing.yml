@@ -57,11 +57,11 @@ jobs:
           cd priv
           mkdir cert
           cd cert 
-          echo ${{ secrets.TEST_CERTIFICATE }} > glific.test+1.pem
+          echo "${{ secrets.TEST_CERTIFICATE }}" > glific.test+1.pem
 
           cat glific.test+1.pem
 
-          echo ${{ secrets.TEST_CERTIFICATE_KEY }} > glific.test+1-key.pem
+          echo "${{ secrets.TEST_CERTIFICATE_KEY }}" > glific.test+1-key.pem
           cat glific.test+1-key.pem
           cd ../../
           cd config
