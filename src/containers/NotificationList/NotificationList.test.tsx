@@ -19,7 +19,7 @@ beforeEach(() => {
     .mockImplementation(() => Promise.resolve({ data: {} }));
 });
 
-const mocks = [getNotificationCountQuery, getNotificationsQuery, getNotificationsQuery];
+const mocks = [getNotificationCountQuery, getNotificationsQuery];
 
 const notifications = (
   <MockedProvider mocks={mocks} addTypename={false}>

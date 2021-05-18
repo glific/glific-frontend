@@ -1,4 +1,5 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../graphql/queries/Notifications';
+import { MARK_NOTIFICATIONS_AS_READ } from '../graphql/mutations/Notifications';
 
 export const getNotificationsQuery = {
   request: {
@@ -34,7 +35,23 @@ export const getNotificationCountQuery = {
   },
   result: {
     data: {
-      countNotifications: 1,
+      countNotifications: 2,
+    },
+  },
+};
+
+export const markAllNotificationAsRead = {
+  request: {
+    query: MARK_NOTIFICATIONS_AS_READ,
+    variables: {
+      filter: {
+        is_read: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      markNotificationAsRead: true,
     },
   },
 };
