@@ -95,7 +95,7 @@ const glificBase = FLOW_EDITOR_API;
 
 const setConfig = (uuid: any) => ({
   flow: uuid,
-  flowType: 'message',
+  flowType: 'messaging',
   localStorage: true,
   mutable: true,
   filters: ['whatsapp'],
