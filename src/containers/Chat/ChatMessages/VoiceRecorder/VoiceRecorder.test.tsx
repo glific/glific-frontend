@@ -1,6 +1,7 @@
 import { VoiceRecorder } from './VoiceRecorder';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import 'react-media-recorder';
+import * as useReactMediaRecorder from 'react-media-recorder/';
+import { useState } from 'react';
 
 const handleAudioRecordingMock = jest.fn();
 const defaultProps = {
@@ -8,38 +9,38 @@ const defaultProps = {
   clearAudio: false,
 };
 
-jest.mock('react-media-recorder', () => {
-  return {
-    useReactMediaRecorder: ({ audio, onStop }) => {
-      let status = 'idle';
-
-      const updateStatus = (newStatus: string) => {
-        status = newStatus;
-      };
-      return {
-        status: status,
-        startRecording: () => {
-          updateStatus('recording');
-        },
-        stopRecording: () => {
-          updateStatus('stop');
-          onStop();
-        },
-        mediaBlobUrl: 'blog://heythere',
-        clearBlobUrl: jest.fn(),
-      };
-    },
-  };
-});
+afterEach(() => jest.restoreAllMocks());
 
 const voiceRecorder = <VoiceRecorder {...defaultProps} />;
 
 test('it renders correctly', () => {
+  const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+  mediaRecorder.mockImplementation((props: any) => {
+    return {
+      status: 'idle',
+    };
+  });
   const { getByTestId } = render(voiceRecorder);
   expect(getByTestId('recorder')).toBeInTheDocument();
 });
 
 test('check recording', async () => {
+  const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+  mediaRecorder.mockImplementation(({ onStop }: any) => {
+    const [status, setStatus] = useState('idle');
+    return {
+      status: status,
+      startRecording: () => {
+        setStatus('recording');
+      },
+      stopRecording: () => {
+        setStatus('stop');
+        onStop();
+      },
+      mediaBlobUrl: 'blog://heythere',
+      clearBlobUrl: jest.fn(),
+    };
+  });
   const { getByTestId } = render(voiceRecorder);
 
   // start recording
@@ -52,4 +53,17 @@ test('check recording', async () => {
   fireEvent.click(getByTestId('cancelIcon'));
 
   expect(handleAudioRecordingMock).toHaveBeenCalled();
+});
+
+test('permission denied', async () => {
+  const mediaRecorder = jest.spyOn(useReactMediaRecorder, 'useReactMediaRecorder');
+  mediaRecorder.mockImplementation(() => {
+    return {
+      error: 'permission_denied',
+    };
+  });
+  const { getByTestId } = render(<VoiceRecorder {...defaultProps} />);
+  await waitFor(() => {
+    expect(getByTestId('micOffIcon')).toBeInTheDocument();
+  });
 });

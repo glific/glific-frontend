@@ -331,9 +331,21 @@ export const BillingForm: React.FC<BillingProps> = () => {
 
   if (pending) {
     paymentBody = (
-      <div className={styles.Pending}>
-        <PendingIcon className={styles.PendingIcon} />
-        Your payment is in pending state
+      <div>
+        <div className={styles.Pending}>
+          <PendingIcon className={styles.PendingIcon} />
+          Your payment is in pending state
+        </div>
+        <div
+          aria-hidden
+          className={styles.Portal}
+          data-testid="customerPortalButton"
+          onClick={() => {
+            getCustomerPortal();
+          }}
+        >
+          Visit Stripe portal <CallMadeIcon />
+        </div>
       </div>
     );
   }

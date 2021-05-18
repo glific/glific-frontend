@@ -120,6 +120,13 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     backendTerms.DESCRIPTION = 'label';
   }
 
+  if (listName === 'consultingHour') {
+    backendTerms.NAME = 'organization_name';
+    backendTerms.MINUTES = 'duration';
+    backendTerms.DATE = 'when';
+    backendTerms.TYPE = 'is_billable';
+  }
+
   return backendTerms[columnName];
 };
 
@@ -134,10 +141,6 @@ export const REFETCH_RANDOM_TIME_MIN = 10;
 
 // max offset for the wait ( in seconds )
 export const REFETCH_RANDOM_TIME_MAX = 40;
-
-// Gupshup documentation help link
-export const GUPSHUP_DOCUMENTATION_HELP_LINK =
-  'https://www.gupshup.io/developer/docs/bot-platform/guide/whatsapp-api-documentation';
 
 // pre-requisite link for facebook business manager verification in organization setup
 export const FB_MANAGER_VERIFICATION =

@@ -39,6 +39,7 @@
 .SimulatorVideo {
   margin-top: 5px;
   max-width: 180px;
+  max-height: 120px;
 }
 
 .Audio {
