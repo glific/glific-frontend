@@ -45,7 +45,7 @@ jobs:
 
       - name: Setup frontend
         run: |
-          git log --pretty=format:'%h was %an, %ar, message: %s' > log.txt
+          git log --oneline > log.txt
           cat log.txt
           echo copy env file.
           cp .env.example .env
