@@ -30,7 +30,7 @@ jobs:
     steps:
       # frontend setup
       - name: Setup frontend
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
