@@ -24,6 +24,7 @@ import triggerSelectedIcon from '../../../assets/images/icons/Trigger/Selected.s
 import triggerIcon from '../../../assets/images/icons/Trigger/Unselected.svg';
 import notificationIcon from '../../../assets/images/icons/Notification/Unselected.svg';
 import notificationSelectedIcon from '../../../assets/images/icons/Notification/Selected.svg';
+import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
   icon: string;
@@ -62,30 +63,26 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     notification: notificationSelectedIcon,
   };
 
+  const iconImage = (
+    <img
+      src={
+        location.pathname.startsWith(`/${icon}`)
+          ? stringsToSelectedIcons[icon]
+          : stringsToIcons[icon]
+      }
+      alt={'Selected '.concat(icon)}
+      data-testid="listIcon"
+    />
+  );
+
   return (
     <div>
       {count && icon === 'notification' ? (
-        <Badge badgeContent={count} color="secondary">
-          <img
-            src={
-              location.pathname.startsWith(`/${icon}`)
-                ? stringsToSelectedIcons[icon]
-                : stringsToIcons[icon]
-            }
-            alt={'Selected '.concat(icon)}
-            data-testid="listIcon"
-          />
+        <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
+          {iconImage}
         </Badge>
       ) : (
-        <img
-          src={
-            location.pathname.startsWith(`/${icon}`)
-              ? stringsToSelectedIcons[icon]
-              : stringsToIcons[icon]
-          }
-          alt={'Selected '.concat(icon)}
-          data-testid="listIcon"
-        />
+        iconImage
       )}
     </div>
   );

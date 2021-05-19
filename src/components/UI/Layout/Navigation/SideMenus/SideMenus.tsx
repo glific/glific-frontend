@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
 import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
-import { MARK_NOTIFICATIONS_AS_READ } from '../../../../../graphql/mutations/Notifications';
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
 import { getSideDrawerMenus } from '../../../../../context/role';
@@ -36,18 +35,6 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     getCount();
   }, []);
 
-  const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
-    onCompleted: () => {
-      getCount();
-    },
-  });
-
-  const markAsRead = () => {
-    if (notificationCount) {
-      markNotificationAsRead();
-    }
-  };
-
   const menuObj: any[] = getSideDrawerMenus();
 
   const menuList = menuObj.map((menu) => {
@@ -68,7 +55,6 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         key={menu.icon}
         component={NavLink}
         to={menu.path}
-        onClick={markAsRead}
       >
         <ListItemIcon className={styles.ListItemIcon}>
           {notificationCount ? (

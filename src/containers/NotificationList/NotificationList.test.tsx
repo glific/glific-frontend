@@ -6,12 +6,18 @@ import { NotificationList } from './NotificationList';
 import {
   getUnFitleredNotificationCountQuery,
   getNotificationsQuery,
+  markAllNotificationAsRead,
 } from '../../mocks/Notifications';
 import { setUserSession } from '../../services/AuthService';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
-const mocks = [getUnFitleredNotificationCountQuery, getNotificationsQuery, getNotificationsQuery];
+const mocks = [
+  getUnFitleredNotificationCountQuery,
+  getNotificationsQuery,
+  getNotificationsQuery,
+  markAllNotificationAsRead,
+];
 
 const notifications = (
   <MockedProvider mocks={mocks} addTypename={false}>

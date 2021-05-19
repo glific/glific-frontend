@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Popover } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -15,6 +15,7 @@ import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../../graphql/que
 import Menu from '../../components/UI/Menu/Menu';
 import { Button } from '../../components/UI/Form/Button/Button';
 import { copyToClipboard } from '../../common/utils';
+import MARK_NOTIFICATIONS_AS_READ from '../../graphql/mutations/Notifications';
 
 export interface NotificationListProps {}
 
@@ -44,6 +45,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const [markNotificationAsRead, { data }] = useMutation(MARK_NOTIFICATIONS_AS_READ, {});
+
+  useEffect(() => {
+    if (!data) markNotificationAsRead();
+  }, []);
 
   const setDialog = (id: any, item: any) => {
     if (item.category === 'Message') {
@@ -93,7 +100,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
           onKeyDown={handleClick}
           aria-hidden="true"
         >
-          {/* {croppedtext.length > 25 ? `${croppedtext.slice(0, 25)}...` : croppedtext} */}
           {entityObj.name ? (
             <span>
               Contact: {entityObj.name}
