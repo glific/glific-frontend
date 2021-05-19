@@ -45,7 +45,8 @@ jobs:
 
       - name: Setup frontend
         run: |
-          echo git branch --show-current
+          git log --pretty=format:'%h was %an, %ar, message: %s' > log.txt
+          cat log.txt
           echo copy env file.
           cp .env.example .env
           echo done.
