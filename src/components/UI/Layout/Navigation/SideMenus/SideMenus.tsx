@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
+import { useLazyQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
+import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
 import { getSideDrawerMenus } from '../../../../../context/role';
@@ -15,6 +17,23 @@ export interface SideMenusProps {
 const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
   const { t } = useTranslation();
+  const [notificationCount, setNotificationCount] = useState<any>();
+
+  const [getCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
+    variables: {
+      filter: {
+        is_read: false,
+      },
+    },
+    fetchPolicy: 'network-only',
+    onCompleted: (countData) => {
+      setNotificationCount(countData.countNotifications);
+    },
+  });
+
+  useEffect(() => {
+    getCount();
+  }, []);
 
   const menuObj: any[] = getSideDrawerMenus();
 
@@ -38,7 +57,11 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         to={menu.path}
       >
         <ListItemIcon className={styles.ListItemIcon}>
-          <ListIcon icon={menu.icon} />
+          {notificationCount ? (
+            <ListIcon icon={menu.icon} count={notificationCount} />
+          ) : (
+            <ListIcon icon={menu.icon} />
+          )}
         </ListItemIcon>
         {props.opened ? (
           <ListItemText

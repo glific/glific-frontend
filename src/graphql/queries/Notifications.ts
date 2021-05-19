@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export const FILTER_NOTIFICATIONS = gql`
   query notifications($filter: NotificationFilter, $opts: Opts) {
     notifications(filter: $filter, opts: $opts) {
+      id
       category
       entity
       message

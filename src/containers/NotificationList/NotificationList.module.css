@@ -71,7 +71,7 @@
 .Time,
 .Severity,
 .Category {
-  width: 15%;
+  width: 13%;
 }
 
 .Entity {
@@ -80,4 +80,9 @@
 
 .Message {
   width: 30%;
+}
+
+.RedirectArrow {
+  width: 16px;
+  color: #119656;
 }
