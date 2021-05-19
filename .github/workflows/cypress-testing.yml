@@ -42,6 +42,8 @@ jobs:
       # frontend setup
       - name: Setup frontend
         uses: actions/checkout@v2
+
+      - name: Setup frontend
         run: |
           echo copy env file.
           cp .env.example .env
@@ -125,7 +127,7 @@ jobs:
         # Run cypress
       - name: Cypress run
         run: |
-          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
+          yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
