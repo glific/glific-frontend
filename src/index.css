@@ -91,10 +91,6 @@ html {
   --temba-textinput-padding: 9px;
   --temba-textinput-font-size: var(--font-size);
 
-  font-size: var(--font-size);
-  font-weight: 300;
-  font-family: var(--font-family);
-
   --button-y: 6px;
   --button-x: 14px;
 }

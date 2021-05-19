@@ -50,6 +50,13 @@ const menus = [
     roles: ['Manager', 'Admin'],
   },
   {
+    title: 'Notifications',
+    path: '/notifications',
+    icon: 'notification',
+    type: 'sideDrawer',
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+  {
     title: 'Collections',
     path: '/collection',
     type: 'staffManagement',

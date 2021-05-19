@@ -1,4 +1,5 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../graphql/queries/Notifications';
+import { MARK_NOTIFICATIONS_AS_READ } from '../graphql/mutations/Notifications';
 
 export const getNotificationsQuery = {
   request: {
@@ -12,6 +13,7 @@ export const getNotificationsQuery = {
     data: {
       notifications: [
         {
+          id: '1',
           category: 'Message',
           entity:
             '{"status":"valid","phone":"9876543210_1","name":"Glific Simulator One","last_message_at":"2021-03-22T07:25:12Z","is_hsm":null,"id":2,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',
@@ -23,8 +25,7 @@ export const getNotificationsQuery = {
     },
   },
 };
-
-export const getNotificationCountQuery = {
+export const getUnFitleredNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
@@ -33,7 +34,34 @@ export const getNotificationCountQuery = {
   },
   result: {
     data: {
-      countNotifications: 1,
+      countNotifications: 2,
+    },
+  },
+};
+
+export const getNotificationCountQuery = {
+  request: {
+    query: GET_NOTIFICATIONS_COUNT,
+    variables: {
+      filter: {
+        is_read: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      countNotifications: 2,
+    },
+  },
+};
+
+export const markAllNotificationAsRead = {
+  request: {
+    query: MARK_NOTIFICATIONS_AS_READ,
+  },
+  result: {
+    data: {
+      markNotificationAsRead: true,
     },
   },
 };

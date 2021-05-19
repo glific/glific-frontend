@@ -8,7 +8,6 @@ import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Da
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
-import { ReactComponent as NotificationIcon } from '../../../assets/images/icons/Notification/ErrorLogs.svg';
 import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
 import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
@@ -104,10 +103,6 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       <Link to="/webhook-logs" className={styles.Webhook}>
         <WebhookLogsIcon />
         {t('View webhook logs')}
-      </Link>
-      <Link to="/notifications" className={styles.Notifications}>
-        <NotificationIcon />
-        {t('View Notifications')}
       </Link>
     </>
   );
