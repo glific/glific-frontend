@@ -54,7 +54,7 @@ const menus = [
     path: '/notifications',
     icon: 'notification',
     type: 'sideDrawer',
-    roles: ['Staff', 'Manager', 'Admin'],
+    roles: ['Manager', 'Admin'],
   },
   {
     title: 'Collections',
