@@ -1,4 +1,4 @@
-name: Cypress Test
+name: Integration Testing
 
 on:
   push:
@@ -28,10 +28,6 @@ jobs:
         node-version: [15.11.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # frontend setup
-      - name: Setup frontend
-        uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -42,6 +38,22 @@ jobs:
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
+
+      # frontend setup
+      - name: Setup frontend
+        uses: actions/checkout@v2
+        run: |
+          echo copy env file.
+          cp .env.example .env
+          echo done.
+          cat /proc/sys/fs/inotify/max_user_watches
+          echo set watchers
+          sudo sysctl fs.inotify.max_user_watches=524288
+          sudo sysctl -p
+          cat /proc/sys/fs/inotify/max_user_watches
+          echo start yarn setup.
+          yarn setup
+          echo done.
 
       # backend setup
       - name: Setup backend
@@ -58,11 +70,7 @@ jobs:
           mkdir cert
           cd cert 
           echo "${{ secrets.TEST_CERTIFICATE }}" > glific.test+1.pem
-
-          cat glific.test+1.pem
-
           echo "${{ secrets.TEST_CERTIFICATE_KEY }}" > glific.test+1-key.pem
-          cat glific.test+1-key.pem
           cd ../../
           cd config
           cp dev.secret.exs.txt dev.secret.exs
@@ -98,37 +106,19 @@ jobs:
           cp cypress-testing/cypress.json.example cypress.json
           echo Copy Cypress.json from example
 
-        # frontend setup
-      - name: Setup frontend
-        run: |
-          echo copy env file.
-          cp .env.example .env
-          echo done.
-          cat /proc/sys/fs/inotify/max_user_watches
-          echo set watchers
-          sudo sysctl fs.inotify.max_user_watches=524288
-          sudo sysctl -p
-          cat /proc/sys/fs/inotify/max_user_watches
-          echo start yarn setup.
-          yarn setup
-          echo done.
-          cd ../
-
         # Run frontend
       - name: Run glific frontend
         run: |
-          ls -la
           HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn run react-scripts -r @cypress/instrument-cra start &
 
         # Run backend
       - name: Run glific backend
         run: |
-          ls -la
           cd ../glific/
           mix phx.server &
           cd ../glific-frontend/
 
-      - name: Wait for 3 minutes for the frontend to start
+      - name: Wait for some time for the frontend to start
         run: |
           sleep 3m
 
