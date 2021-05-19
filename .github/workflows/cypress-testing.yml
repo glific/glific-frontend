@@ -28,6 +28,10 @@ jobs:
         node-version: [15.11.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # frontend setup
+      - name: Setup frontend
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -39,12 +43,9 @@ jobs:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
-      # frontend setup
-      - name: Setup frontend
-        uses: actions/checkout@v2
-
       - name: Setup frontend
         run: |
+          echo git branch --show-current
           echo copy env file.
           cp .env.example .env
           echo done.
