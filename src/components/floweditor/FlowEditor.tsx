@@ -27,6 +27,36 @@ import {
 let renewTokenCalled = false;
 let tokenRenewed = false;
 
+const { fetch } = window;
+window.fetch = (...args) =>
+  (async (args1) => {
+    const yo = args1;
+    if (checkAuthStatusService()) {
+      if (yo && yo.length > 1) {
+        // eslint-disable-next-line
+        // @ts-ignore
+        yo[1].headers = { ...args1[1]?.headers, Authorization: getAuthSession('access_token') };
+      }
+      const result = await fetch(...yo);
+      return result;
+    }
+    renewTokenCalled = true;
+    const authToken = await renewAuthToken();
+    if (authToken.data) {
+      // update localstore
+      setAuthSession(JSON.stringify(authToken.data.data));
+      renewTokenCalled = false;
+      tokenRenewed = false;
+    }
+    if (yo && yo.length > 1) {
+      // eslint-disable-next-line
+      // @ts-ignore
+      yo[1].headers = { ...args1[1]?.headers, Authorization: getAuthSession('access_token') };
+    }
+    const result = await fetch(...yo);
+    return result;
+  })(args);
+
 ((send) => {
   XMLHttpRequest.prototype.send = async function (body) {
     this.addEventListener('loadend', () => {
