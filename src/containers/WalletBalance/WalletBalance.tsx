@@ -17,6 +17,7 @@ export interface WalletBalanceProps {
 
 export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   const variables = { organizationId: getUserSession('organizationId') };
+  const [retried, setRetried] = useState(false);
   const [displayBalance, setDisplayBalance] = useState<any>(null);
   const { t } = useTranslation();
   const balanceOkayString = t('Wallet balance is okay');
@@ -75,7 +76,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   );
 
   // get gupshup balance
-  const { data: balanceData, loading, error, subscribeToMore } = useQuery(BSPBALANCE, {
+  const { data: balanceData, loading, error, refetch, subscribeToMore } = useQuery(BSPBALANCE, {
     variables,
   });
 
@@ -126,7 +127,12 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   };
 
   if (error) {
-    errorBody();
+    if (!retried) {
+      refetch();
+      setRetried(true);
+    } else {
+      errorBody();
+    }
   }
 
   const updateBody = () => {
