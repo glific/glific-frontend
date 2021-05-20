@@ -32,9 +32,7 @@ window.fetch = (...args) =>
   (async (parameters) => {
     const parametersCopy = parameters;
     if (checkAuthStatusService()) {
-      if (parametersCopy && parametersCopy.length > 1) {
-        // eslint-disable-next-line
-        // @ts-ignore
+      if (parametersCopy[1]) {
         parametersCopy[1].headers = {
           ...parameters[1]?.headers,
           Authorization: getAuthSession('access_token'),
@@ -51,9 +49,7 @@ window.fetch = (...args) =>
       renewTokenCalled = false;
       tokenRenewed = false;
     }
-    if (parametersCopy && parametersCopy.length > 1) {
-      // eslint-disable-next-line
-      // @ts-ignore
+    if (parametersCopy[1]) {
       parametersCopy[1].headers = {
         ...parameters[1]?.headers,
         Authorization: getAuthSession('access_token'),
