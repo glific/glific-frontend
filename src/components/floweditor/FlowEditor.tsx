@@ -34,7 +34,7 @@ window.fetch = (...args) =>
     if (checkAuthStatusService()) {
       if (parametersCopy[1]) {
         parametersCopy[1].headers = {
-          ...parameters[1]?.headers,
+          ...parametersCopy[1].headers,
           Authorization: getAuthSession('access_token'),
         };
       }
@@ -51,7 +51,7 @@ window.fetch = (...args) =>
     }
     if (parametersCopy[1]) {
       parametersCopy[1].headers = {
-        ...parameters[1]?.headers,
+        ...parametersCopy[1].headers,
         Authorization: getAuthSession('access_token'),
       };
     }
