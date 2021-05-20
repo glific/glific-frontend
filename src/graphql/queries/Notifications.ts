@@ -9,6 +9,7 @@ export const FILTER_NOTIFICATIONS = gql`
       message
       severity
       updatedAt
+      isRead
     }
   }
 `;

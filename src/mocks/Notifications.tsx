@@ -20,6 +20,7 @@ export const getNotificationsQuery = {
           message: 'Cannot send session message to contact, invalid bsp status.',
           severity: '"Error"',
           updatedAt: '2021-03-24T07:50:22Z',
+          isRead: false,
         },
       ],
     },
