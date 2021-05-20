@@ -29,15 +29,18 @@ let tokenRenewed = false;
 
 const { fetch } = window;
 window.fetch = (...args) =>
-  (async (args1) => {
-    const yo = args1;
+  (async (parameters) => {
+    const parametersCopy = parameters;
     if (checkAuthStatusService()) {
-      if (yo && yo.length > 1) {
+      if (parametersCopy && parametersCopy.length > 1) {
         // eslint-disable-next-line
         // @ts-ignore
-        yo[1].headers = { ...args1[1]?.headers, Authorization: getAuthSession('access_token') };
+        parametersCopy[1].headers = {
+          ...parameters[1]?.headers,
+          Authorization: getAuthSession('access_token'),
+        };
       }
-      const result = await fetch(...yo);
+      const result = await fetch(...parametersCopy);
       return result;
     }
     renewTokenCalled = true;
@@ -48,12 +51,15 @@ window.fetch = (...args) =>
       renewTokenCalled = false;
       tokenRenewed = false;
     }
-    if (yo && yo.length > 1) {
+    if (parametersCopy && parametersCopy.length > 1) {
       // eslint-disable-next-line
       // @ts-ignore
-      yo[1].headers = { ...args1[1]?.headers, Authorization: getAuthSession('access_token') };
+      parametersCopy[1].headers = {
+        ...parameters[1]?.headers,
+        Authorization: getAuthSession('access_token'),
+      };
     }
-    const result = await fetch(...yo);
+    const result = await fetch(...parametersCopy);
     return result;
   })(args);
 
