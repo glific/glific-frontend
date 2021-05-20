@@ -25,11 +25,13 @@ import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
+import { TemplateButtons } from '../../containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
 import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
 import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
 import { getUserSession } from '../../services/AuthService';
 import { setNotification } from '../../common/notification';
 import setLogs from '../../config/logs';
+import { WhatsAppTemplateButton } from '../../common/RichEditor';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -54,6 +56,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
+  const [reply, setReply] = useState('');
 
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
@@ -126,21 +129,28 @@ export const Simulator: React.FC<SimulatorProps> = ({
     type: string,
     media: any,
     location: any
-  ) => (
-    <div className={getStyleForDirection(direction)} key={index}>
-      <ChatMessageType
-        type={type}
-        media={media}
-        body={text}
-        location={location}
-        isSimulatedMessage={isSimulatedMessage}
-      />
-      <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-        {moment(insertedAt).format(TIME_FORMAT)}
-      </span>
-      {direction === 'send' ? <DoneAllIcon /> : null}
-    </div>
-  );
+  ) => {
+    const { body, buttons } = WhatsAppTemplateButton(text);
+    return (
+      <div className={getStyleForDirection(direction)} key={index}>
+        <ChatMessageType
+          type={type}
+          media={media}
+          body={body}
+          location={location}
+          isSimulatedMessage={isSimulatedMessage}
+        />
+        <TemplateButtons
+          template={buttons}
+          callbackTemplateButtonClick={(value: string) => setReply(value)}
+        />
+        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+          {moment(insertedAt).format(TIME_FORMAT)}
+        </span>
+        {direction === 'send' ? <DoneAllIcon /> : null}
+      </div>
+    );
+  };
 
   const getChatMessage = () => {
     const chatMessage = messages
@@ -155,10 +165,16 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setSimulatedMessage(chatMessage);
   };
 
-  const sendMessage = () => {
+  const sendMessage = (quickReplyText?: string) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     // check if send message text is not empty
-    if (sendMessageText) {
+    if (sendMessageText || quickReplyText) {
+      const payload: any = {
+        text: sendMessageText,
+      };
+
+      if (quickReplyText) payload.text = quickReplyText;
+
       axios({
         method: 'POST',
         url: GUPSHUP_CALLBACK_URL,
@@ -167,9 +183,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           payload: {
             id: uuidv4(),
             type: 'text',
-            payload: {
-              text: sendMessageText,
-            },
+            payload,
             sender: {
               // this number will be the simulated contact number
               phone: data ? data.simulatorGet.phone : '',
@@ -230,6 +244,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
       sendMessage();
     }
   }, [message, data]);
+
+  useEffect(() => {
+    if (reply) sendMessage(reply);
+  }, [reply]);
 
   const messageRef = useCallback(
     (node: any) => {
