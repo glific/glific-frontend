@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Popover } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -53,8 +53,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
-  const { data: notifications } = useQuery(FILTER_NOTIFICATIONS, {});
-  console.log(notifications);
 
   const [markNotificationAsRead, { data }] = useMutation(MARK_NOTIFICATIONS_AS_READ, {});
 
@@ -73,6 +71,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       history.push({ pathname: `/flow/configure/${uuidFlow}` });
     }
   };
+
   const additionalAction = [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,

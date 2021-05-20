@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, screen } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen, prettyDOM, act } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -12,9 +12,8 @@ import { setUserSession } from '../../services/AuthService';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
-const mocks = [
+const mocks: any = [
   getUnFitleredNotificationCountQuery,
-  getNotificationsQuery,
   getNotificationsQuery,
   markAllNotificationAsRead,
 ];
@@ -29,13 +28,18 @@ const notifications = (
 
 test('It should load notifications', async () => {
   const { container, getByText } = render(notifications);
+
   expect(getByText('Loading...')).toBeInTheDocument();
+
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
   });
 
-  const time = await screen.findByText('TIME');
+  const time = await screen.findByText('TIMESTAMP');
   const category = await screen.findByText('CATEGORY');
   const severity = await screen.findByText('SEVERITY');
   const entity = await screen.findByText('ENTITY');
