@@ -1,0 +1,14 @@
+.TemplateButtonContainer {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 404px;
+}
+
+.TemplateButton {
+  background-color: #cacaca !important;
+  width: 100%;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  margin: 2px 0px 1px 0px !important;
+  padding: 10px 0px !important;
+}
