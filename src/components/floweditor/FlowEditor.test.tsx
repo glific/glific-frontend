@@ -10,6 +10,7 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
+import { setAuthSession } from '../../services/AuthService';
 
 const mocks = [
   getFlowDetailsQuery,
@@ -109,4 +110,19 @@ test('test if XMLHTTPRequest works ', async () => {
   await waitFor(() => {
     expect(newRequest.readyState).toBe(4);
   });
+});
+
+test('fetch api calls', async () => {
+  render(wrapper);
+  const tokenExpiryDate = new Date();
+  tokenExpiryDate.setDate(new Date().getDate() + 1);
+
+  setAuthSession(
+    '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+      tokenExpiryDate +
+      '"}'
+  );
+  fetch('https://glific.test')
+    .then((response) => response.json())
+    .then((data) => console.log(data));
 });
