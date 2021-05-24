@@ -6,9 +6,9 @@ export const CREATE_EXTENSION = gql`
       extension {
         code
         isActive
+        isValid
         module
         name
-        clientId
       }
       errors {
         message
@@ -19,8 +19,8 @@ export const CREATE_EXTENSION = gql`
 `;
 
 export const DELETE_EXTENSION = gql`
-  mutation deleteExtension($id: ID) {
-    deleteExtension(id: $id) {
+  mutation deleteExtension($id: ID, $clientId: ID) {
+    deleteExtension(id: $id, clientId: $clientId) {
       Extension {
         code
         id

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_EXTENSION = gql`
-  query Extension($id: ID!) {
-    Extension(id: $id) {
+  query Extension($id: ID!, $clientId: ID!) {
+    Extension(id: $id, clientId: $clientId) {
       Extension {
         code
         id
@@ -10,7 +10,6 @@ export const GET_EXTENSION = gql`
         updatedAt
         isActive
         isValid
-        module
         name
         organization {
           name

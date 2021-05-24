@@ -106,11 +106,13 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
+  const [isLoadedData, setIsLoadedData] = useState(false);
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
   const itemId = match.params.id ? match.params.id : false;
+
   let variables: any = itemId ? { id: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -136,11 +138,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
-
   if (listItem === 'credential') {
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
   }
-
+  if (listItem === 'Extension') {
+    variables = { clientId: itemId, id: itemId };
+  }
   const { loading, error } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
@@ -148,6 +151,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       if (data) {
         item = data[listItem][listItem];
         if (item) {
+          setIsLoadedData(true);
           setLink(data[listItem][listItem][linkParameter]);
           setStates(item);
           setLanguageId(languageSupport ? item.language.id : null);
@@ -210,6 +214,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setErrorMessage(client, data[itemCreated].errors[0]);
         }
+      } else if (listItem === 'Extension' && !data[itemCreated].extension.isValid) {
+        const errorMessage = 'failed to compile';
+        setErrorMessage(client, errorMessage);
       } else {
         if (additionalQuery) {
           additionalQuery(data[`create${camelCaseItem}`][listItem].id);
@@ -220,6 +227,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data.createSavedSearch);
         }
+
         // display successful message after create
         setNotification(client, `${capitalListItemName} created successfully!`);
       }
@@ -246,15 +254,23 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setErrorMessage(client, error);
     return null;
   }
-
   const performTask = (payload: any) => {
     if (itemId) {
-      updateItem({
-        variables: {
-          id: itemId,
-          input: payload,
-        },
-      });
+      if (isLoadedData) {
+        updateItem({
+          variables: {
+            id: itemId,
+            input: payload,
+          },
+        });
+      } else {
+        // for extensions creation itemId is needed
+        createItem({
+          variables: {
+            input: payload,
+          },
+        });
+      }
     } else {
       createItem({
         variables: {
@@ -283,7 +299,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (data && data.heading && type === 'search') return;
       }
     }
-
     // remove fields from the payload that marked as skipPayload = true
     formFields.forEach((field: any) => {
       if (field.additionalState) {
@@ -446,7 +461,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   );
 
   const handleDeleteItem = () => {
-    deleteItem({ variables: { id: itemId } });
+    if (listItem === 'Extension') {
+      deleteItem({ variables: { id: itemId, clientId: itemId } });
+    } else {
+      deleteItem({ variables: { id: itemId } });
+    }
   };
   let dialogBox;
 

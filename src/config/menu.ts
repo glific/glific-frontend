@@ -87,12 +87,6 @@ const menus = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Extensions',
-    path: '/extensions',
-    type: 'staffManagement',
-    roles: ['Glific_admin', 'Staff', 'Manager'],
-  },
-  {
     title: 'My Profile',
     path: '/user-profile',
     type: 'userAccount',

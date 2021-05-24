@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { Dialog, DialogContent } from '@material-ui/core';
+
 import * as Yup from 'yup';
 
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,87 +16,94 @@ import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon
 
 import { FormLayout } from '../Form/FormLayout';
 
-// import styles from './Extensions.module.css';
+import styles from './Extensions.module.css';
 
 export interface ExtensionProps {
   match: any;
+  openDialog: boolean;
 }
 const flowIcon = <ConsultingIcon />;
 const queries = {
   getItemQuery: GET_EXTENSION,
   createItemQuery: CREATE_EXTENSION,
-  deleteItemQuery: DELETE_EXTENSION,
   updateItemQuery: UPDATE_EXTENSION,
+  deleteItemQuery: DELETE_EXTENSION,
 };
-
-export const Extensions: React.SFC<ExtensionProps> = ({ match }) => {
-  console.log('extensions', queries);
-  const location = useLocation();
+export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => {
   const [name, setName] = useState('');
-  const [module, setModule] = useState('');
+  const [code, setCode] = useState('');
   const { t } = useTranslation();
 
-  const states = { name, module };
-
-  const setStates = ({ name: nameValue, keywords: moduleValue }: any) => {
-    // Override name & keywords when creating Flow Copy
-    let fieldName = nameValue;
-    let fieldmodule = moduleValue;
-    if (location.state === 'copy') {
-      fieldName = `Copy of ${nameValue}`;
-      fieldmodule = '';
-    }
-    setName(fieldName);
-
-    // we are receiving keywords as an array object
-    if (fieldmodule.length > 0) {
-      // lets display it comma separated
-      setModule(fieldmodule.join(','));
-    }
+  const states = { name, code };
+  const setStates = ({ name: nameValue, code: codeValue }: any) => {
+    setName(nameValue);
+    setCode(codeValue);
   };
-
   const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Name is required.')),
-    module: Yup.string().required(t('Module is required.')),
+    name: Yup.string().required(t('Title is required.')),
+    code: Yup.string().required(t('Code is required.')),
   });
-  const dialogMessage = t("You won't be able to use this flow again.");
-
+  const dialogMessage = t("You won't be able to use this extension again.");
   const formFields = [
     {
       component: Input,
       name: 'name',
       type: 'text',
-      placeholder: t('Name'),
+      placeholder: t('Title'),
+      inputProp: {
+        onChange: (event: any) => setName(event.target.value),
+      },
     },
-    {
-      component: Input,
-      name: 'module',
-      type: 'textarea',
-      placeholder: t('Module'),
-    },
+
     {
       component: Input,
       name: 'code',
       type: 'text',
-      placeholder: t('Code'),
+      rows: 3,
+      textArea: true,
+      placeholder: t('Code snippet'),
+      inputProp: {
+        onChange: (event: any) => setCode(event.target.value),
+      },
     },
   ];
+  // check if data is already present
+  const title = name && code ? 'Edit extension code' : 'Add extension code';
 
+  const setPayload = (payload: any) => {
+    const data = { ...payload };
+    if (match.params.id) {
+      data.clientId = match.params.id;
+    }
+    return data;
+  };
   return (
-    <FormLayout
-      {...queries}
-      match={match}
-      states={states}
-      setStates={setStates}
-      validationSchema={FormSchema}
-      listItemName="extensions"
-      dialogMessage={dialogMessage}
-      formFields={formFields}
-      redirectionLink="extensions"
-      listItem="extensions"
-      icon={flowIcon}
-      languageSupport={false}
-    />
+    <Dialog
+      open={!!openDialog}
+      classes={{
+        paper: styles.Dialogbox,
+      }}
+    >
+      <DialogContent classes={{ root: styles.DialogContent }}>
+        <FormLayout
+          {...queries}
+          match={match}
+          states={states}
+          setStates={setStates}
+          validationSchema={FormSchema}
+          listItemName="extension"
+          dialogMessage={dialogMessage}
+          formFields={formFields}
+          setPayload={setPayload}
+          redirectionLink="organizations"
+          listItem="Extension"
+          icon={flowIcon}
+          title={title}
+          type="Extension"
+          languageSupport={false}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };
 

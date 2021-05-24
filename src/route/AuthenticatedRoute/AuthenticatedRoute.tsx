@@ -8,6 +8,7 @@ import { getUserRole } from '../../context/role';
 import { useToast } from '../../services/ToastService';
 import { Chat } from '../../containers/Chat/Chat';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import Extensions from '../../containers/Extensions/Extensions';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -57,7 +58,6 @@ const OrganizationList = lazy(() => import('../../containers/OrganizationList/Or
 const ConsultingHourList = lazy(
   () => import('../../containers/Consulting/ConsultingList/ConsultingList')
 );
-const Extension = lazy(() => import('../../containers/Extensions/Extensions'));
 
 const routeStaff = (
   <Switch>
@@ -91,7 +91,6 @@ const routeStaff = (
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
-    <Route path="/extensions" exact component={Extension} />
 
     <Route path="/myaccount" exact component={MyAccount} />
     <Route path="/" render={defaultRedirect} />
@@ -175,7 +174,11 @@ const routeAdmin = (
       exact
       component={({ match }: any) => <ConsultingHourList openDialog match={match} />}
     />
-    <Route path="/extensions" exact component={Extension} />
+    <Route
+      path="/organizations/:id/extensions"
+      exact
+      component={({ match }: any) => <Extensions openDialog match={match} />}
+    />
 
     <Route path="/" render={defaultRedirect} />
   </Switch>
