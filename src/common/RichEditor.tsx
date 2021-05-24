@@ -155,9 +155,16 @@ export const WhatsAppTemplateButton = (text: string) => {
         const [key, value]: any = btn.split(',');
         // Checking if given value is valid link
         const [link] = [...value.matchAll(regexForLink)];
-        const callToActionButton: any = { title: key.trim(), value: null, type: 'call-to-action' };
+        const callToActionButton: any = {
+          title: key.trim(),
+          value: null,
+          type: 'call-to-action',
+          tooltip: 'Currently not supported',
+        };
         if (link) {
-          callToActionButton.value = link;
+          const [url] = link;
+          callToActionButton.value = url;
+          callToActionButton.tooltip = '';
         }
         return callToActionButton;
       }
