@@ -61,7 +61,7 @@ const setConfig = (uuid: any) => ({
   flowType: 'messaging',
   localStorage: true,
   mutable: true,
-  filters: ['whatsapp'],
+  filters: ['whatsapp', 'classifier'],
 
   excludeTypes: [
     'add_contact_urn',
@@ -71,7 +71,6 @@ const setConfig = (uuid: any) => ({
     'start_session',
     'open_ticket',
     'transfer_airtime',
-    'split_by_intent',
     'split_by_contact_field',
     'split_by_random',
     'split_by_groups',
