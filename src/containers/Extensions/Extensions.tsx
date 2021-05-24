@@ -72,7 +72,7 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
       component: Checkbox,
       name: 'isActive',
       title: (
-        <Typography variant="h6" style={{ color: '#073f24' }}>
+        <Typography variant="body2" style={{ color: '#93A29B' }}>
           {t('Is active?')}
         </Typography>
       ),
@@ -85,7 +85,6 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
 
   const setPayload = (payload: any) => {
     const data = { ...payload };
-    console.log(data);
     if (match.params.id) {
       data.clientId = match.params.id;
     }
