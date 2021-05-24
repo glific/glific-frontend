@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@material-ui/core';
-
+import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
-
 import { useTranslation } from 'react-i18next';
 
+import styles from './Extensions.module.css';
 import {
   CREATE_EXTENSION,
   DELETE_EXTENSION,
@@ -13,10 +13,8 @@ import {
 import GET_EXTENSION from '../../graphql/queries/Exntesions';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
-
 import { FormLayout } from '../Form/FormLayout';
-
-import styles from './Extensions.module.css';
+import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 
 export interface ExtensionProps {
   match: any;
@@ -32,17 +30,21 @@ const queries = {
 export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
+  const [isActive, setIsActive] = useState(false);
   const { t } = useTranslation();
 
-  const states = { name, code };
-  const setStates = ({ name: nameValue, code: codeValue }: any) => {
+  const states = { name, code, isActive };
+  const setStates = ({ name: nameValue, code: codeValue, isActive: isActiveValue }: any) => {
     setName(nameValue);
     setCode(codeValue);
+    setIsActive(isActiveValue);
   };
+
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Title is required.')),
     code: Yup.string().required(t('Code is required.')),
   });
+
   const dialogMessage = t("You won't be able to use this extension again.");
   const formFields = [
     {
@@ -66,12 +68,24 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
         onChange: (event: any) => setCode(event.target.value),
       },
     },
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: (
+        <Typography variant="h6" style={{ color: '#073f24' }}>
+          {t('Is active?')}
+        </Typography>
+      ),
+      onchange: (event: any) => setIsActive(event.target.value),
+    },
   ];
-  // check if data is already present
+
+  // title depends on if data is already present
   const title = name && code ? 'Edit extension code' : 'Add extension code';
 
   const setPayload = (payload: any) => {
     const data = { ...payload };
+    console.log(data);
     if (match.params.id) {
       data.clientId = match.params.id;
     }

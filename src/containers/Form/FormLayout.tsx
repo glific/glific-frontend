@@ -107,6 +107,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
+  const [customError, setCustomError] = useState<any>(null);
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
@@ -159,6 +160,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
+
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
@@ -170,6 +172,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           customHandler(client, data[itemUpdated].errors);
         } else {
           setErrorMessage(client, data[itemUpdated].errors[0]);
+        }
+      } else if (listItem === 'Extension' && !data[itemUpdated].Extension.isValid) {
+        if (customError) {
+          const errors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(errors);
         }
       } else {
         if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
@@ -215,8 +222,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           setErrorMessage(client, data[itemCreated].errors[0]);
         }
       } else if (listItem === 'Extension' && !data[itemCreated].extension.isValid) {
-        const errorMessage = 'failed to compile';
-        setErrorMessage(client, errorMessage);
+        if (customError) {
+          const errors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(errors);
+        }
       } else {
         if (additionalQuery) {
           additionalQuery(data[`create${camelCaseItem}`][listItem].id);
@@ -285,7 +294,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       ...itemData,
       ...defaultAttribute,
     };
-
     payload = languageSupport
       ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
@@ -400,7 +408,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           languageId,
         }}
         validationSchema={validationSchema}
-        onSubmit={(itemData) => {
+        onSubmit={(itemData, { setErrors }) => {
+          if (listItemName === 'extension') {
+            setCustomError({ setErrors });
+          }
           saveHandler(itemData);
           onSaveClick(true);
         }}
