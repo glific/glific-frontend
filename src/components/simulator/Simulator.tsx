@@ -132,23 +132,28 @@ export const Simulator: React.FC<SimulatorProps> = ({
   ) => {
     const { body, buttons } = WhatsAppTemplateButton(text);
     return (
-      <div className={getStyleForDirection(direction)} key={index}>
-        <ChatMessageType
-          type={type}
-          media={media}
-          body={body}
-          location={location}
-          isSimulatedMessage={isSimulatedMessage}
-        />
-        <TemplateButtons
-          template={buttons}
-          callbackTemplateButtonClick={(value: string) => setReply(value)}
-        />
-        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-          {moment(insertedAt).format(TIME_FORMAT)}
-        </span>
-        {direction === 'send' ? <DoneAllIcon /> : null}
-      </div>
+      <>
+        <div className={getStyleForDirection(direction)} key={index}>
+          <ChatMessageType
+            type={type}
+            media={media}
+            body={body}
+            location={location}
+            isSimulatedMessage={isSimulatedMessage}
+          />
+
+          <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+            {moment(insertedAt).format(TIME_FORMAT)}
+          </span>
+          {direction === 'send' ? <DoneAllIcon /> : null}
+        </div>
+        <div className={styles.TemplateButtons}>
+          <TemplateButtons
+            template={buttons}
+            callbackTemplateButtonClick={(value: string) => setReply(value)}
+          />
+        </div>
+      </>
     );
   };
 

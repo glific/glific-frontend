@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
+import CallIcon from '@material-ui/icons/Call';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import styles from './TemplateButtons.module.css';
 
@@ -20,13 +22,22 @@ export const TemplateButtons: React.SFC<TemplateButtonProps> = ({
     }
   };
 
+  const startIcon = (type: string, value: string) => {
+    if (type === 'call-to-action') {
+      return value ? <OpenInNewIcon /> : <CallIcon />;
+    }
+    return null;
+  };
+
   return (
     <div className={styles.TemplateButtonContainer}>
-      {template?.map(({ title, value, type }: any) => (
+      {template?.map(({ title, value, type, tooltip }: any) => (
         <Button
+          key={title}
+          title={tooltip}
           className={styles.TemplateButton}
-          key={value}
           onClick={() => handleButtonClick(type, value)}
+          startIcon={startIcon(type, value)}
         >
           {title}
         </Button>
