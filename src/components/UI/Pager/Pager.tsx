@@ -143,7 +143,7 @@ const tableHeadColumns = (
           key={name}
           className={`${styles.TableCell} ${columnStyles ? columnStyles[i] : null}`}
         >
-          {i !== columnNames.length - 1 && !removeSortBy?.includes(name) ? (
+          {i !== columnNames.length - 1 && name !== '' && !removeSortBy?.includes(name) ? (
             <TableSortLabel
               active={setColumnToBackendTerms(listName, name) === tableVals.sortCol}
               direction={tableVals.sortDirection}

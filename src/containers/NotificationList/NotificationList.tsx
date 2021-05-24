@@ -18,6 +18,7 @@ import { copyToClipboard } from '../../common/utils';
 import MARK_NOTIFICATIONS_AS_READ from '../../graphql/mutations/Notifications';
 
 export interface NotificationListProps {}
+const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;
 
 const getTime = (time: string) => (
   <div className={styles.TableText}>{moment(time).format('DD-MM-YYYY hh:mm')}</div>
@@ -25,7 +26,14 @@ const getTime = (time: string) => (
 
 const getText = (text: string) => <div className={styles.TableText}>{text}</div>;
 
-const columnStyles = [styles.Time, styles.Category, styles.Severity, styles.Entity, styles.Message];
+const columnStyles = [
+  styles.Mark,
+  styles.Time,
+  styles.Category,
+  styles.Severity,
+  styles.Entity,
+  styles.Message,
+];
 const notificationIcon = <NotificationIcon className={styles.NotificationIcon} />;
 
 const queries = {
@@ -49,7 +57,9 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [markNotificationAsRead, { data }] = useMutation(MARK_NOTIFICATIONS_AS_READ, {});
 
   useEffect(() => {
-    if (!data) markNotificationAsRead();
+    setTimeout(() => {
+      if (!data) markNotificationAsRead();
+    }, 1000);
   }, []);
 
   const setDialog = (id: any, item: any) => {
@@ -61,10 +71,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       history.push({ pathname: `/flow/configure/${uuidFlow}` });
     }
   };
+
   const additionalAction = [
     {
       icon: <ArrowForwardIcon className={styles.RedirectArrow} />,
       parameter: 'id',
+      label: 'Check',
       dialog: setDialog,
     },
   ];
@@ -114,7 +126,8 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     );
   };
 
-  const getColumns = ({ category, entity, message, severity, updatedAt }: any) => ({
+  const getColumns = ({ category, entity, message, severity, updatedAt, isRead }: any) => ({
+    isRead: getDot(isRead),
     updatedAt: getTime(updatedAt),
     category: getText(category),
     severity: getText(severity.replace(/"/g, '')),
@@ -127,7 +140,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     setAnchorEl(null);
   };
 
-  const columnNames = ['TIME', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
+  const columnNames = ['', 'TIMESTAMP', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
 
   const columnAttributes = {
     columnNames,
