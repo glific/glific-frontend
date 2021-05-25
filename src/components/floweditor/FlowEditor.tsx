@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
@@ -17,7 +17,7 @@ import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 import { setAuthHeaders } from '../../services/AuthService';
-// import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -163,7 +163,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let modal = null;
   let dialog = null;
 
-  // const [getOrganizationServices, { data: services }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+  const [getOrganizationServices, { data: services }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: (data) => {
@@ -235,8 +235,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   useEffect(() => {
     setAuthHeaders();
-    // getOrganizationServices();
     const files = loadfiles();
+    getOrganizationServices();
+
     return () => {
       Object.keys(files).forEach((node: any) => {
         if (files[node]) {
@@ -252,23 +253,23 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, []);
 
   useEffect(() => {
-    // if (services) {
-    // check if runtime main file is present and then load
-    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
-    if (lastFile) {
-      // const { dialogflow, googleCloudStorage } = services.organizationServices;
+    if (services) {
+      // check if runtime main file is present and then load
+      const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
+      if (lastFile) {
+        const { dialogflow, googleCloudStorage } = services.organizationServices;
 
-      // if (googleCloudStorage) {
-      //   config.attachmentsEnabled = true;
-      // }
-      // if (!dialogflow) {
-      //   config.excludeTypes.push('split_by_intent');
-      // }
-      lastFile.onload = () => {
+        if (googleCloudStorage) {
+          config.attachmentsEnabled = true;
+        }
+        if (!dialogflow) {
+          config.excludeTypes.push('split_by_intent');
+        }
+
         showFlowEditor(document.getElementById('flow'), config);
-      };
+      }
     }
-  }, [config]);
+  }, [config, services]);
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
