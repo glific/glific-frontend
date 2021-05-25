@@ -10,7 +10,7 @@ import {
   DELETE_EXTENSION,
   UPDATE_EXTENSION,
 } from '../../graphql/mutations/Extensions';
-import GET_EXTENSION from '../../graphql/queries/Exntesions';
+import { GET_ORGANIZATION_EXTENSION } from '../../graphql/queries/Exntesions';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
 import { FormLayout } from '../Form/FormLayout';
@@ -22,7 +22,7 @@ export interface ExtensionProps {
 }
 const flowIcon = <ConsultingIcon />;
 const queries = {
-  getItemQuery: GET_EXTENSION,
+  getItemQuery: GET_ORGANIZATION_EXTENSION,
   createItemQuery: CREATE_EXTENSION,
   updateItemQuery: UPDATE_EXTENSION,
   deleteItemQuery: DELETE_EXTENSION,

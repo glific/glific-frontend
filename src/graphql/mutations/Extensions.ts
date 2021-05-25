@@ -9,6 +9,7 @@ export const CREATE_EXTENSION = gql`
         isValid
         module
         name
+        id
       }
       errors {
         message
@@ -19,8 +20,8 @@ export const CREATE_EXTENSION = gql`
 `;
 
 export const DELETE_EXTENSION = gql`
-  mutation deleteExtension($id: ID, $clientId: ID) {
-    deleteExtension(id: $id, clientId: $clientId) {
+  mutation deleteExtension($id: ID!) {
+    deleteExtension(id: $id) {
       Extension {
         code
         id
@@ -40,8 +41,8 @@ export const DELETE_EXTENSION = gql`
 `;
 
 export const UPDATE_EXTENSION = gql`
-  mutation updateExtension($id: ID!, $input: ExtensionInput!) {
-    updateExtension(id: $id, input: $input) {
+  mutation update_organization_extension($clientId: ID!, $input: ExtensionInput!) {
+    update_organization_extension(clientId: $clientId, input: $input) {
       Extension {
         code
         id

@@ -143,30 +143,29 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
   }
   if (listItem === 'Extension') {
-    variables = { clientId: itemId, id: itemId };
+    variables = { clientId: itemId };
   }
+
   const { loading, error } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
     onCompleted: (data) => {
       if (data) {
-        item = data[listItem][listItem];
+        item = data[listItem] ? data[listItem][listItem] : data[Object.keys(data)[0]][listItem];
         if (item) {
           setIsLoadedData(true);
-          setLink(data[listItem][listItem][linkParameter]);
+          setLink(data[listItem] ? data[listItem][listItem][linkParameter] : item.linkParameter);
           setStates(item);
           setLanguageId(languageSupport ? item.language.id : null);
         }
       }
     },
   });
-
   const camelCaseItem = listItem[0].toUpperCase() + listItem.slice(1);
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
       const itemUpdated = Object.keys(data)[0];
-
       if (data[itemUpdated] && data[itemUpdated].errors) {
         if (customHandler) {
           customHandler(client, data[itemUpdated].errors);
@@ -266,14 +265,23 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const performTask = (payload: any) => {
     if (itemId) {
       if (isLoadedData) {
-        updateItem({
-          variables: {
-            id: itemId,
-            input: payload,
-          },
-        });
+        if (listItem === 'Extension') {
+          updateItem({
+            variables: {
+              clientId: itemId,
+              input: payload,
+            },
+          });
+        } else {
+          updateItem({
+            variables: {
+              id: itemId,
+              input: payload,
+            },
+          });
+        }
       } else {
-        // for extensions creation itemId is needed
+        // for creation of extension  itemId is needed
         createItem({
           variables: {
             input: payload,
@@ -472,12 +480,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   );
 
   const handleDeleteItem = () => {
-    if (listItem === 'Extension') {
-      deleteItem({ variables: { id: itemId, clientId: itemId } });
-    } else {
-      deleteItem({ variables: { id: itemId } });
-    }
+    deleteItem({ variables: { id: itemId } });
   };
+
   let dialogBox;
 
   if (showDialog) {
