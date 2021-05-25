@@ -1,6 +1,8 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
 import { convertToRaw, convertFromRaw } from 'draft-js';
+import CallIcon from '@material-ui/icons/Call';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 const MarkDownConvertor = require('markdown-draft-js');
 
@@ -160,11 +162,13 @@ export const WhatsAppTemplateButton = (text: string) => {
           value: null,
           type: 'call-to-action',
           tooltip: 'Currently not supported',
+          icon: <CallIcon />,
         };
         if (link) {
           const [url] = link;
           callToActionButton.value = url;
           callToActionButton.tooltip = '';
+          callToActionButton.icon = <OpenInNewIcon />;
         }
         return callToActionButton;
       }

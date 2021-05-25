@@ -132,8 +132,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   ) => {
     const { body, buttons } = WhatsAppTemplateButton(text);
     return (
-      <>
-        <div className={getStyleForDirection(direction)} key={index}>
+      <div key={index}>
+        <div className={getStyleForDirection(direction)}>
           <ChatMessageType
             type={type}
             media={media}
@@ -151,9 +151,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <TemplateButtons
             template={buttons}
             callbackTemplateButtonClick={(value: string) => setReply(value)}
+            isSimulator
           />
         </div>
-      </>
+      </div>
     );
   };
 

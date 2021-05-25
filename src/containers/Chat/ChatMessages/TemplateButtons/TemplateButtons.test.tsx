@@ -5,15 +5,17 @@ const props: any = {
   template: [
     {
       title: 'Click here',
-      value: 'www.google.com',
+      value: 'http://www.google.com',
       tooltip: 'Currently not supported',
       type: 'call-to-action',
+      icon: <span></span>,
     },
     {
       title: 'Contact us',
       value: null,
       tooltip: 'Currently not supported',
       type: 'call-to-action',
+      icon: <span></span>,
     },
   ],
 };
@@ -26,13 +28,14 @@ test('renders components successfully with call-to-action buttons', () => {
 });
 
 test('renders components successfully with callback event', () => {
+  props.isSimulator = true;
   render(<TemplateButtons {...props} />);
   const button = screen.getByText(/Click here/i);
   expect(button).toBeInTheDocument();
 
   fireEvent.click(button);
   expect(window.open).toHaveBeenCalledTimes(1);
-  expect(window.open).toHaveBeenCalledWith('www.google.com', '_blank');
+  expect(window.open).toHaveBeenCalledWith('http://www.google.com', '_blank');
 });
 
 test('renders components with quick reply buttons', () => {
@@ -42,8 +45,10 @@ test('renders components with quick reply buttons', () => {
       value: 'Yes',
       tooltip: null,
       type: 'quick-reply',
+      icon: <span></span>,
     },
   ];
+  props.isSimulator = true;
   props.callbackTemplateButtonClick = jest.fn();
 
   render(<TemplateButtons {...props} />);

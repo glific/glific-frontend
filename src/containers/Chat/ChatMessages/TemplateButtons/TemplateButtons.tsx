@@ -1,18 +1,18 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
-import CallIcon from '@material-ui/icons/Call';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import styles from './TemplateButtons.module.css';
 
 interface TemplateButtonProps {
   template: Array<any>;
   callbackTemplateButtonClick?: any;
+  isSimulator?: any;
 }
 
 export const TemplateButtons: React.SFC<TemplateButtonProps> = ({
   template,
-  callbackTemplateButtonClick = () => null,
+  callbackTemplateButtonClick,
+  isSimulator = false,
 }) => {
   const handleButtonClick = (type: string, value: string) => {
     if (type === 'call-to-action') {
@@ -22,22 +22,16 @@ export const TemplateButtons: React.SFC<TemplateButtonProps> = ({
     }
   };
 
-  const startIcon = (type: string, value: string) => {
-    if (type === 'call-to-action') {
-      return value ? <OpenInNewIcon /> : <CallIcon />;
-    }
-    return null;
-  };
-
   return (
     <div className={styles.TemplateButtonContainer}>
-      {template?.map(({ title, value, type, tooltip }: any) => (
+      {template?.map(({ title, value, type, tooltip, icon }): any => (
         <Button
           key={title}
           title={tooltip}
-          className={styles.TemplateButton}
+          className={`${styles.TemplateButton} ${isSimulator ? styles.Simulator : styles.Chat}`}
           onClick={() => handleButtonClick(type, value)}
-          startIcon={startIcon(type, value)}
+          startIcon={icon}
+          disabled={!isSimulator}
         >
           {title}
         </Button>
