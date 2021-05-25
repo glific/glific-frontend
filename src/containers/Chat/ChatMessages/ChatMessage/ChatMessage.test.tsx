@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, within, fireEvent, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, waitFor, screen, prettyDOM } from '@testing-library/react';
 import moment from 'moment';
 
 import ChatMessage from './ChatMessage';
@@ -75,6 +75,7 @@ const Props = (link: any) => {
       },
     },
     jumpToMessage: Function,
+    focus: true,
   };
 };
 
@@ -174,6 +175,88 @@ describe('<ChatMessage />', () => {
     const { getByTestId } = render(chatMessageDoc);
     await waitFor(() => {
       fireEvent.click(getByTestId('reply-message'));
+    });
+  });
+
+  const props = Props('TEXT');
+  test('it should render error with payload', async () => {
+    props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...props} />
+      </MockedProvider>
+    );
+    const errors = screen.getAllByTestId('tooltip');
+    expect(errors[0]).toHaveTextContent('Warning.svg');
+  });
+
+  const imageProps = Props('IMAGE');
+  test('it should render error with message', () => {
+    imageProps.media = {
+      url:
+        'https://i.picsum.photos/id/674/200/300.jpg?hmac=kS3VQkm7AuZdYJGUABZGmnNj_3KtZ6Twgb5Qb9ITssY',
+      caption: '\n',
+    };
+    props.errors = '{"message": ["Something went wrong"]}';
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...imageProps} />
+      </MockedProvider>
+    );
+  });
+
+  test('it should render error with error message', () => {
+    props.errors = '{"error": "Something went wrong"}';
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...props} />
+      </MockedProvider>
+    );
+
+    const errors = screen.getAllByTestId('tooltip');
+    expect(errors[0]).toHaveTextContent('Warning.svg');
+  });
+
+  const receivedProps = {
+    id: '93',
+    body: null,
+    insertedAt: '2021-05-25T14:09:43.623251Z',
+    messageNumber: 2,
+    receiver: {
+      id: '4',
+    },
+    sender: {
+      id: '1',
+    },
+    location: null,
+    tags: [],
+    type: 'IMAGE',
+    media: {
+      url:
+        'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
+      caption: '\n',
+    },
+    errors: '{}',
+    contextMessage: null,
+    contactId: '4',
+    popup: true,
+    focus: true,
+    showMessage: true,
+  };
+
+  test('it should render with image', async () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...receivedProps} />
+      </MockedProvider>
+    );
+    const messageMenu = screen.getByTestId('messageOptions');
+
+    await waitFor(() => {});
+
+    expect(messageMenu).toBeInTheDocument();
+    await waitFor(() => {
+      fireEvent.mouseDown(messageMenu);
     });
   });
 });
