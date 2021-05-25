@@ -1,4 +1,4 @@
-import { GET_EXTENSION } from '../graphql/queries/Exntesions';
+import { GET_EXTENSION, GET_ORGANIZATION_EXTENSION } from '../graphql/queries/Exntesions';
 import { CREATE_EXTENSION } from '../graphql/mutations/Extensions';
 
 export const getExtension = {
@@ -19,6 +19,31 @@ export const getExtension = {
           insertedAt: '2021-05-22T05:34:54Z',
           isActive: false,
           isValid: false,
+          name: 'GCS bucket',
+          updatedAt: '2021-05-24T10:25:06Z',
+        },
+      },
+    },
+  },
+};
+
+export const getOrganizationExtension = {
+  request: {
+    query: GET_ORGANIZATION_EXTENSION,
+    variables: {
+      clientId: '1',
+    },
+  },
+  result: {
+    data: {
+      extension: {
+        extension: {
+          code:
+            'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
+          id: '1',
+          insertedAt: '2021-05-22T05:34:54Z',
+          isActive: false,
+          isValid: true,
           name: 'GCS bucket',
           updatedAt: '2021-05-24T10:25:06Z',
         },
