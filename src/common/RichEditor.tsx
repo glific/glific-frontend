@@ -134,9 +134,12 @@ export const WhatsAppToJsx = (text: any) => {
 };
 
 export const WhatsAppTemplateButton = (text: string) => {
+  const result: any = { body: text, buttons: null };
+
+  // Returning early if text is null
+  if (!text) return result;
   // Checking if template consists of buttons or not because they are separated with `|`
   const isTemplateButtonsPresent = text.indexOf('|');
-  const result: any = { body: text, buttons: null };
   if (isTemplateButtonsPresent > 0) {
     const templateStr = text.split('|');
     const templateButtons = templateStr.map((val: string, index: number) => {
