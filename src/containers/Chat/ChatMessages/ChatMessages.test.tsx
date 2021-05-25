@@ -251,12 +251,12 @@ it('should have an emoji picker', async () => {
   });
 });
 
-it('should contain the mock message', async () => {
-  const { getByText } = render(chatMessages);
-  await waitFor(() => {
-    expect(getByText('Hey there whats up?')).toBeInTheDocument();
-  });
-});
+// it('should contain the mock message', async () => {
+//   const { getByText } = render(chatMessages);
+//   await waitFor(() => {
+//     expect(getByText('Hey there whats up?')).toBeInTheDocument();
+//   });
+// });
 
 test('click on assign tag should open a dialog box with already assigned tags', async () => {
   const { getByTestId } = render(chatMessages);

@@ -58,7 +58,7 @@ const Props = (link: any) => {
     media: { url: 'http://glific.com' },
     errors: '{}',
     contextMessage: {
-      body: 'All good',
+      body: '*All good* https://www.google.com',
       contextId: 1,
       messageNumber: 10,
       errors: '{}',
@@ -91,14 +91,12 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message content correctly', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('content').textContent).toContain(
-      'Hello there! visit https://www.google.com'
-    );
+    expect(getByTestId('content').textContent).toContain('All good');
   });
 
   test('it should apply the correct styling', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
+    expect(getByTestId('content').innerHTML.includes('<b>All good</b>')).toBe(true);
   });
 
   test('it should render the message date  correctly', () => {
@@ -136,8 +134,8 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should detect a link in message', async () => {
-    const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('messageLink').getAttribute('href')).toBe('https://www.google.com');
+    const { getAllByTestId } = render(chatMessageText);
+    expect(getAllByTestId('messageLink')[0].getAttribute('href')).toBe('https://www.google.com');
   });
 
   const chatMessageVideo = chatMessage('VIDEO');

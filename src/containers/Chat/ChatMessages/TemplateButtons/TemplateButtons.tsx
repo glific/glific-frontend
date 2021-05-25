@@ -6,7 +6,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import styles from './TemplateButtons.module.css';
 
 interface TemplateButtonProps {
-  template: Array<string>;
+  template: Array<any>;
   callbackTemplateButtonClick?: any;
 }
 
