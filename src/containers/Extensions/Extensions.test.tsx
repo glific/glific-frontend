@@ -1,11 +1,11 @@
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { getOrganizationExtension, createExtension } from '../../mocks/Extension';
+import { getOrganizationExtension, createExtension, updateExtension } from '../../mocks/Extension';
 import { setUserSession } from '../../services/AuthService';
 import { Extensions } from './Extensions';
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-const mocks = [getOrganizationExtension, createExtension];
+const mocks = [getOrganizationExtension, createExtension, updateExtension];
 const props = {
   match: { params: {} },
   openDialog: true,

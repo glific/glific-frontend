@@ -1,5 +1,5 @@
 import { GET_EXTENSION, GET_ORGANIZATION_EXTENSION } from '../graphql/queries/Exntesions';
-import { CREATE_EXTENSION } from '../graphql/mutations/Extensions';
+import { CREATE_EXTENSION, UPDATE_EXTENSION } from '../graphql/mutations/Extensions';
 
 export const getExtension = {
   request: {
@@ -60,6 +60,35 @@ export const createExtension = {
         clientId: '5',
         code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
         isActive: false,
+        name: 'Activity',
+      },
+    },
+  },
+  result: {
+    data: {
+      createExtension: {
+        extension: {
+          code:
+            'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+          isActive: false,
+          isValid: true,
+          module: 'Elixir.Glific.Test.Extension',
+          name: 'Activity',
+        },
+      },
+    },
+  },
+};
+
+export const updateExtension = {
+  request: {
+    query: UPDATE_EXTENSION,
+    variables: {
+      clientId: '5',
+      input: {
+        clientId: '5',
+        code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+        isActive: true,
         name: 'Activity',
       },
     },
