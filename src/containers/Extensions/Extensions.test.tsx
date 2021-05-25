@@ -18,7 +18,6 @@ const wrapper = (
 test('it should render form correctly', async () => {
   const { container } = render(wrapper);
   await waitFor(() => {});
-
   expect(screen.getByText('Add extension code')).toBeInTheDocument();
   const inputElements = screen.getAllByRole('textbox');
 
@@ -32,12 +31,17 @@ test('it should render form correctly', async () => {
   });
 
   const checkboxElement = screen.getAllByRole('checkbox');
+
   await waitFor(() => {
     fireEvent.change(checkboxElement[0], { target: { value: 'false' } });
   });
   await waitFor(() => {
     const submitButton = screen.getByText('Save');
     expect(submitButton).toBeInTheDocument();
+
+    const cancelButton = screen.getByText('Cancel');
+    expect(cancelButton).toBeInTheDocument();
+
     fireEvent.click(submitButton);
   });
 });

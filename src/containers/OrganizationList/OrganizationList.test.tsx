@@ -47,6 +47,11 @@ test('Perform button actions on Org List', async () => {
   });
 
   const label = await screen.findByText('Organizations');
+
+  const extensionButton = screen.getAllByRole('button', {
+    name: 'extension.svg',
+  })[0];
+
   const approveButton = screen.getAllByRole('button', {
     name: 'Unblock.svg',
   })[0];
@@ -57,9 +62,11 @@ test('Perform button actions on Org List', async () => {
   expect(label).toBeInTheDocument();
   expect(approveButton).toBeInTheDocument();
   expect(activateButton).toBeInTheDocument();
+  expect(extensionButton).toBeInTheDocument();
 
   fireEvent.click(approveButton);
   fireEvent.click(activateButton);
+  fireEvent.click(extensionButton);
 
   const deleteButton = screen.getByRole('button', { name: 'Delete' });
   expect(deleteButton).toBeInTheDocument();
