@@ -234,7 +234,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowName]);
 
   useEffect(() => {
-    setAuthHeaders();
+    const { fetch, xmlSend } = setAuthHeaders();
     const files = loadfiles();
     getOrganizationServices();
 
@@ -249,6 +249,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
       for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
         clearTimeout(timeoutId);
       }
+      XMLHttpRequest.prototype.send = xmlSend;
+      window.fetch = fetch;
     };
   }, []);
 
