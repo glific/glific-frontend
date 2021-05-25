@@ -71,11 +71,6 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
   const dialogMessage = 'This action cannot be undone.';
   const dialogTitle = 'Are you sure you want to delete this consulting record?';
 
-  const addNewButton = {
-    show: true,
-    label: 'Add Hours',
-  };
-
   return (
     <>
       <List
@@ -91,7 +86,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
         searchParameter="organizationName"
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
-        button={addNewButton}
+        noItemText="consulting record"
         {...queries}
         {...columnAttributes}
       />

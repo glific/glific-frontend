@@ -72,6 +72,7 @@ export interface ListProps {
   collapseRow?: any;
   defaultSortBy?: string | null;
   removeSortBy?: any;
+  noItemText?: string | null;
 }
 
 interface TableVals {
@@ -114,6 +115,7 @@ export const List: React.SFC<ListProps> = ({
   collapseOpen,
   collapseRow,
   defaultSortBy,
+  noItemText = null,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -595,7 +597,7 @@ export const List: React.SFC<ListProps> = ({
       {searchVal ? (
         <div>Sorry, no results found! Please try a different search.</div>
       ) : (
-        <div>There are no {listItemName}s right now. Please create one.</div>
+        <div>There are no {noItemText || listItemName}s right now. Please create one.</div>
       )}
     </div>
   );
