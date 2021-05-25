@@ -15,19 +15,13 @@ export const setErrorMessage = (client: any, error: any, title?: string) => {
   let errorMessage;
   // error === '' when we are resetting the error
   if (error !== '') {
-    if (error.message) {
-      errorMessage = {
-        title,
-        message: error.message,
-        type: error.name,
-        networkError: error.networkError,
-        graphqlError: error.graphQLErrors,
-      };
-    } else {
-      errorMessage = {
-        message: error,
-      };
-    }
+    errorMessage = {
+      title,
+      message: error.message,
+      type: error.name,
+      networkError: error.networkError,
+      graphqlError: error.graphQLErrors,
+    };
   } else {
     errorMessage = '';
   }
