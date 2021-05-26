@@ -256,8 +256,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     </Tooltip>
   ) : null;
 
-  const message = contextMessage ? contextMessage.body : body;
-  const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(message);
+  const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
   return (
     <div
@@ -283,7 +282,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   <ChatMessageType
                     type={contextMessage.type}
                     media={contextMessage.media}
-                    body={bodyText}
+                    body={contextMessage.body}
                     insertedAt={contextMessage.insertedAt}
                     location={contextMessage.location}
                   />
