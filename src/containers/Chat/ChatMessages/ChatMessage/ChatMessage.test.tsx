@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, within, fireEvent, waitFor, screen, prettyDOM } from '@testing-library/react';
+import { render, within, fireEvent, waitFor, screen } from '@testing-library/react';
 import moment from 'moment';
 
 import ChatMessage from './ChatMessage';
@@ -33,7 +33,7 @@ const mocks = [
 ];
 
 const insertedAt = '2020-06-19T18:44:02Z';
-const Props = (link: any) => {
+const Props: any = (link: any) => {
   return {
     id: 1,
     body: '*Hello there!* visit https://www.google.com',
@@ -92,12 +92,14 @@ describe('<ChatMessage />', () => {
 
   test('it should render the message content correctly', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('content').textContent).toContain('All good');
+    expect(getByTestId('content').textContent).toContain(
+      'Hello there! visit https://www.google.com'
+    );
   });
 
   test('it should apply the correct styling', () => {
     const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('content').innerHTML.includes('<b>All good</b>')).toBe(true);
+    expect(getByTestId('content').innerHTML.includes('<b>Hello there!</b>')).toBe(true);
   });
 
   test('it should render the message date  correctly', () => {
@@ -145,6 +147,14 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageVideo);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download video
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageAudio = chatMessage('AUDIO');
@@ -153,6 +163,14 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageAudio);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download audio
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageImage = chatMessage('IMAGE');
@@ -161,14 +179,37 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageImage);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download image
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageDoc = chatMessage('DOCUMENT');
 
   test('it should show the download media option when clicked on down arrow and message type is document', async () => {
-    const { getAllByTestId } = render(chatMessageDoc);
+    const { getAllByTestId, getAllByText } = render(chatMessageDoc);
     fireEvent.click(getAllByTestId('popup')[0]);
-    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // for speedsend
+    const speedSend = getAllByText('Add to speed sends');
+    expect(speedSend[0]).toBeInTheDocument();
+
+    await waitFor(() => {
+      fireEvent.click(speedSend[0]);
+    });
+
+    // For download document
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   test('it should click on replied message', async () => {
@@ -186,18 +227,19 @@ describe('<ChatMessage />', () => {
         <ChatMessage {...props} />
       </MockedProvider>
     );
+
     const errors = screen.getAllByTestId('tooltip');
     expect(errors[0]).toHaveTextContent('Warning.svg');
   });
 
-  const imageProps = Props('IMAGE');
+  const imageProps = Props('DOCUMENT');
   test('it should render error with message', () => {
     imageProps.media = {
-      url:
-        'https://i.picsum.photos/id/674/200/300.jpg?hmac=kS3VQkm7AuZdYJGUABZGmnNj_3KtZ6Twgb5Qb9ITssY',
-      caption: '\n',
+      url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
+      caption: 'test',
     };
-    props.errors = '{"message": ["Something went wrong"]}';
+    imageProps.errors = '{"message": ["Something went wrong"]}';
+
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessage {...imageProps} />
