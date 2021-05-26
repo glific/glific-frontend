@@ -17,6 +17,7 @@ export const GET_FLOW = gql`
         id
         name
         uuid
+        isActive
         keywords
         ignoreKeywords
       }
