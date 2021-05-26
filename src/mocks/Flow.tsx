@@ -25,6 +25,7 @@ export const getFlowQuery = {
         flow: {
           id: '1',
           name: 'Help',
+          isActive: true,
           uuid: 'b050c652-65b5-4ccf-b62b-1e8b3f328676',
           keywords: ['help'],
           ignoreKeywords: false,

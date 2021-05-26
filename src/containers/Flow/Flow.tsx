@@ -79,11 +79,6 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
 
   const formFields = [
     {
-      component: Checkbox,
-      name: 'isActive',
-      title: t('Is active?'),
-    },
-    {
       component: Input,
       name: 'name',
       type: 'text',
@@ -95,6 +90,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       type: 'text',
       placeholder: t('Keywords'),
       helperText: t('Enter comma separated keywords that trigger this flow'),
+    },
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Is active?'),
     },
     {
       component: Checkbox,
