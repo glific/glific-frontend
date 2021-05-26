@@ -57,6 +57,9 @@ const OrganizationList = lazy(() => import('../../containers/OrganizationList/Or
 const ConsultingHourList = lazy(
   () => import('../../containers/Consulting/ConsultingList/ConsultingList')
 );
+const ContactFieldList = lazy(
+  () => import('../../containers/ContactField/ContactFieldList/ContactFieldList')
+);
 
 const routeStaff = (
   <Switch>
@@ -172,6 +175,7 @@ const routeAdmin = (
       exact
       component={({ match }: any) => <ConsultingHourList openDialog match={match} />}
     />
+    <Route path="/contact-fields/" exact component={ContactFieldList} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );

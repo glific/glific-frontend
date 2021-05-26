@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const GET_ALL_CONTACT_FIELDS = gql`
-  query contactsFields($filter: contactsFieldFilter, $opts: Opts) {
+  query contactsFields($filter: ContactsFieldFilter, $opts: Opts) {
     contactsFields(filter: $filter, opts: $opts) {
       valueType
       updatedAt
@@ -41,7 +41,7 @@ export const GET_CONTACT_FIELD_BY_ID = gql`
 `;
 
 export const COUNT_CONTACT_FIELDS = gql`
-  query countContactsFields($filter: ContactsFieldfilter) {
+  query countContactsFields($filter: ContactsFieldFilter) {
     countContactsFields(filter: $filter)
   }
 `;

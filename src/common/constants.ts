@@ -134,6 +134,11 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     backendTerms.ENTITY = 'entity';
     backendTerms.MESSAGE = 'message';
   }
+
+  if (listName === 'contactField') {
+    backendTerms['VARIABLE NAME'] = 'name';
+    backendTerms['INPUT NAME'] = 'name';
+  }
   return backendTerms[columnName];
 };
 
