@@ -12,6 +12,7 @@ import {
 } from '../../graphql/mutations/Extensions';
 import { GET_ORGANIZATION_EXTENSION } from '../../graphql/queries/Exntesions';
 import { Input } from '../../components/UI/Form/Input/Input';
+import { OrganizationList } from '../OrganizationList/OrganizationList';
 import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
 import { FormLayout } from '../Form/FormLayout';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
@@ -91,32 +92,35 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
     return data;
   };
   return (
-    <Dialog
-      open={!!openDialog}
-      classes={{
-        paper: styles.Dialogbox,
-      }}
-    >
-      <DialogContent classes={{ root: styles.DialogContent }}>
-        <FormLayout
-          {...queries}
-          match={match}
-          states={states}
-          setStates={setStates}
-          validationSchema={FormSchema}
-          listItemName="extension"
-          dialogMessage={dialogMessage}
-          formFields={formFields}
-          setPayload={setPayload}
-          redirectionLink="organizations"
-          listItem="Extension"
-          icon={flowIcon}
-          title={title}
-          type="Extension"
-          languageSupport={false}
-        />
-      </DialogContent>
-    </Dialog>
+    <>
+      <OrganizationList />
+      <Dialog
+        open={!!openDialog}
+        classes={{
+          paper: styles.Dialogbox,
+        }}
+      >
+        <DialogContent classes={{ root: styles.DialogContent }}>
+          <FormLayout
+            {...queries}
+            match={match}
+            states={states}
+            setStates={setStates}
+            validationSchema={FormSchema}
+            listItemName="extension"
+            dialogMessage={dialogMessage}
+            formFields={formFields}
+            setPayload={setPayload}
+            redirectionLink="organizations"
+            listItem="Extension"
+            icon={flowIcon}
+            title={title}
+            type="Extension"
+            languageSupport={false}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
