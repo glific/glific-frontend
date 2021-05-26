@@ -117,6 +117,10 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
             title={title}
             type="Extension"
             languageSupport={false}
+            idType="clientId"
+            refetchQueries={[
+              { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: match.params.id } },
+            ]}
           />
         </DialogContent>
       </Dialog>

@@ -34,6 +34,7 @@ export interface FormLayoutProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
+  idType?: string;
   additionalAction?: any;
   additionalQuery?: any;
   linkParameter?: any;
@@ -76,6 +77,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   defaultAttribute = null,
   additionalAction = null,
   icon,
+  idType = 'id',
   additionalState,
   title,
   linkParameter = null,
@@ -114,7 +116,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   let item: any = null;
   const itemId = match.params.id ? match.params.id : false;
 
-  let variables: any = itemId ? { id: itemId } : false;
+  let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
@@ -141,9 +143,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   });
   if (listItem === 'credential') {
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
-  }
-  if (listItem === 'Extension') {
-    variables = { clientId: itemId };
   }
 
   const { loading, error } = useQuery(getItemQuery, {
@@ -172,7 +171,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setErrorMessage(client, data[itemUpdated].errors[0]);
         }
-      } else if (listItem === 'Extension' && !data[itemUpdated].Extension.isValid) {
+      } else if (!data[itemUpdated][listItem].isValid) {
         if (customError) {
           const errors = { code: 'Failed to compile code. Please check again' };
           customError.setErrors(errors);
@@ -220,7 +219,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setErrorMessage(client, data[itemCreated].errors[0]);
         }
-      } else if (listItem === 'Extension' && !data[itemCreated].extension.isValid) {
+      } else if (!data[itemCreated][listItem].isValid) {
         if (customError) {
           const errors = { code: 'Failed to compile code. Please check again' };
           customError.setErrors(errors);
@@ -235,10 +234,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (afterSave) {
           afterSave(data.createSavedSearch);
         }
-
+        setIsLoadedData(true);
         // display successful message after create
         setNotification(client, `${capitalListItemName} created successfully!`);
       }
+
       onSaveClick(false);
     },
     refetchQueries: () => {
@@ -265,21 +265,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const performTask = (payload: any) => {
     if (itemId) {
       if (isLoadedData) {
-        if (listItem === 'Extension') {
-          updateItem({
-            variables: {
-              clientId: itemId,
-              input: payload,
-            },
-          });
-        } else {
-          updateItem({
-            variables: {
-              id: itemId,
-              input: payload,
-            },
-          });
-        }
+        updateItem({
+          variables: {
+            [idType]: itemId,
+            input: payload,
+          },
+        });
       } else {
         // for creation of extension  itemId is needed
         createItem({
@@ -417,9 +408,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }}
         validationSchema={validationSchema}
         onSubmit={(itemData, { setErrors }) => {
-          if (listItemName === 'extension') {
-            setCustomError({ setErrors });
-          }
+          // when you want to show custom error on form field and error message is not coming from api
+          setCustomError({ setErrors });
+
           saveHandler(itemData);
           onSaveClick(true);
         }}

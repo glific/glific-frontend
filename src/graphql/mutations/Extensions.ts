@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 export const CREATE_EXTENSION = gql`
   mutation createExtension($input: ExtensionInput!) {
     createExtension(input: $input) {
-      extension {
+      Extension {
         code
         isActive
         isValid
