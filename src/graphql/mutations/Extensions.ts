@@ -50,7 +50,6 @@ export const UPDATE_EXTENSION = gql`
         updatedAt
         isActive
         isValid
-        module
         name
         organization {
           name

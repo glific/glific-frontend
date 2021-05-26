@@ -57,7 +57,7 @@ export const createExtension = {
     query: CREATE_EXTENSION,
     variables: {
       input: {
-        clientId: '5',
+        clientId: '1',
         code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
         isActive: false,
         name: 'Activity',
@@ -84,9 +84,9 @@ export const updateExtension = {
   request: {
     query: UPDATE_EXTENSION,
     variables: {
-      clientId: '5',
+      clientId: '1',
       input: {
-        clientId: '5',
+        clientId: '1',
         code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
         isActive: true,
         name: 'Activity',
@@ -95,7 +95,7 @@ export const updateExtension = {
   },
   result: {
     data: {
-      createExtension: {
+      update_organization_extension: {
         extension: {
           code:
             'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
