@@ -24,38 +24,62 @@ const mocks = [
   simulatorReleaseSubscription,
   simulatorReleaseQuery,
   simulatorGetQuery,
-  simulatorGetQuery,
-  simulatorGetQuery,
 ];
 const defaultProps = {
-  showSimulator: true,
+  showSimulator: false,
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
 };
 
-const simulator = (
-  <MockedProvider mocks={mocks}>
-    <Simulator {...defaultProps} />
-  </MockedProvider>
-);
-
 test('simulator should open on click of simulator icon', async () => {
-  const { getByTestId } = render(simulator);
-  fireEvent.click(getByTestId('simulatorIcon'));
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...defaultProps} />
+    </MockedProvider>
+  );
+  // To open simulator
+  const button = getByTestId('simulatorIcon');
 
   await waitFor(() => {
-    expect(mockSetShowSimulator).toBeCalled();
+    fireEvent.click(button);
+    expect(mockSetShowSimulator).toHaveBeenCalledTimes(1);
+  });
+});
+
+test('opened simulator should close when click of simulator icon', async () => {
+  defaultProps.showSimulator = true;
+  const { getByTestId, container } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...defaultProps} />
+    </MockedProvider>
+  );
+
+  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+
+  // To open simulator
+  const button = getByTestId('simulatorIcon');
+
+  await waitFor(() => {
+    fireEvent.click(button);
+    expect(mockSetShowSimulator).toHaveBeenCalledTimes(1);
   });
 });
 
 test('send a message from the simulator', async () => {
-  const { getByTestId } = render(simulator);
-  let input: any;
+  defaultProps.showSimulator = true;
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...defaultProps} />
+    </MockedProvider>
+  );
+
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+  const input = getByTestId('simulatorInput');
+  fireEvent.change(input, { target: { value: 'something' } });
 
   await waitFor(() => {
-    input = getByTestId('simulatorInput');
-    fireEvent.change(input, { target: { value: 'something' } });
     fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
   });
 
@@ -67,7 +91,12 @@ test('send a message from the simulator', async () => {
 });
 
 test('click on clear icon closes the simulator', async () => {
-  const { getByTestId } = render(simulator);
+  defaultProps.showSimulator = true;
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...defaultProps} />
+    </MockedProvider>
+  );
   await waitFor(() => {
     fireEvent.click(getByTestId('clearIcon'));
   });
@@ -148,7 +177,7 @@ const client = new ApolloClient({
   assumeImmutableResults: true,
 });
 
-const HSMProps = {
+const HSMProps: any = {
   showSimulator: true,
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
@@ -171,4 +200,18 @@ test('simulator should open by default in preview HSM', async () => {
 test('simulator icon should not be seen in preview HSM', async () => {
   const { getByTestId } = render(HSMSimulator);
   expect(() => getByTestId('simulatorIcon')).toThrow();
+});
+
+test('simulator should render template message', () => {
+  HSMProps.message = {
+    type: 'TEXT',
+    location: null,
+    media: { caption: 'This is time for play. | [view contact, +917834811114]\n' },
+    body: 'This is time for play. | [view contact, +917834811114]\n',
+  };
+  const { container } = render(
+    <ApolloProvider client={client}>
+      <Simulator {...HSMProps} />
+    </ApolloProvider>
+  );
 });

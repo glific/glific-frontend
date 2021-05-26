@@ -13,10 +13,11 @@ import { ReactComponent as WarningIcon } from '../../../../assets/images/icons/W
 import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
+import { TemplateButtons } from '../TemplateButtons/TemplateButtons';
 import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
-import { WhatsAppToJsx } from '../../../../common/RichEditor';
+import { WhatsAppToJsx, WhatsAppTemplateButton } from '../../../../common/RichEditor';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from '../../../../common/utils';
@@ -255,6 +256,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     </Tooltip>
   ) : null;
 
+  const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
+
   return (
     <div
       className={additionalClass}
@@ -299,12 +302,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           } ${type === 'STICKER' ? styles.StickerBackground : ''}`}
         >
           <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
-            <div className={styles.Content} data-testid="content">
-              <div>
+            <div>
+              <div className={styles.Content} data-testid="content">
                 <ChatMessageType
                   type={type}
                   media={media}
-                  body={body}
+                  body={bodyText}
                   insertedAt={insertedAt}
                   location={location}
                 />
@@ -369,6 +372,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       {saveTemplateMessage}
 
       <div className={messageDetails}>
+        <div className={`${messageErrorStatus && styles.TemplateButtonOnError}`}>
+          <TemplateButtons template={templateButtons} />
+        </div>
         {date}
         {displayTag ? (
           <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>

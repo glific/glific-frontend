@@ -1,10 +1,13 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
 import { convertToRaw, convertFromRaw } from 'draft-js';
+import CallIcon from '@material-ui/icons/Call';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
+const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 export const TextReplacements: any = [
   {
     bold: {
@@ -92,7 +95,6 @@ export const WhatsAppToJsx = (text: any) => {
   // regex for checking whatsapp formatting for both bold and italic
   const complexFormatting = [/(_\*.*\*_)/, /(\*_.*_\*)/];
   // regex for checking links in the message
-  const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
   if (typeof text === 'string') {
     // search for all the links in the message
@@ -129,4 +131,56 @@ export const WhatsAppToJsx = (text: any) => {
   });
 
   return modifiedText;
+};
+
+export const WhatsAppTemplateButton = (text: string) => {
+  const result: any = { body: text, buttons: null };
+
+  // Returning early if text is null
+  if (!text) return result;
+  // Checking if template consists of buttons or not because they are separated with `|`
+  const isTemplateButtonsPresent = text.indexOf('|');
+  if (isTemplateButtonsPresent > 0) {
+    const templateStr = text.split('|');
+    const templateButtons = templateStr.map((val: string, index: number) => {
+      /**
+       * templateStr 0th element is template message
+       * otherwise slice from 1 to last value
+       * For removing `[]` brackets
+       */
+      if (index === 0) return val.trim();
+      return val.trim().slice(1, -1);
+    });
+    const [messageBody, ...buttons] = templateButtons;
+
+    // Checking if template type is call to action or quick reply
+
+    const btnWithKeyValues = buttons.map((btn: string) => {
+      if (btn.indexOf(',') > 0) {
+        const [key, value]: any = btn.split(',');
+        // Checking if given value is valid link
+        const [link] = [...value.matchAll(regexForLink)];
+        const callToActionButton: any = {
+          title: key.trim(),
+          value: null,
+          type: 'call-to-action',
+          tooltip: 'Currently not supported',
+          icon: <CallIcon />,
+        };
+        if (link) {
+          const [url] = link;
+          callToActionButton.value = url;
+          callToActionButton.tooltip = '';
+          callToActionButton.icon = <OpenInNewIcon />;
+        }
+        return callToActionButton;
+      }
+      return { title: btn, value: btn, type: 'quick-reply' };
+    });
+
+    result.body = messageBody;
+    result.buttons = btnWithKeyValues;
+  }
+
+  return result;
 };
