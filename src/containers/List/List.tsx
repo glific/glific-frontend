@@ -72,6 +72,7 @@ export interface ListProps {
   collapseRow?: any;
   defaultSortBy?: string | null;
   removeSortBy?: any;
+  noItemText?: string | null;
 }
 
 interface TableVals {
@@ -114,6 +115,7 @@ export const List: React.SFC<ListProps> = ({
   collapseOpen,
   collapseRow,
   defaultSortBy,
+  noItemText = null,
 }: ListProps) => {
   const client = useApolloClient();
 
@@ -135,7 +137,6 @@ export const List: React.SFC<ListProps> = ({
   if (defaultSortBy) {
     defaultColumnSort = defaultSortBy;
   }
-
   // get the last sort column value from local storage if exist else set the default column
   const getSortColumn = (listItemNameValue: string, columnName: string) => {
     // set the column name
@@ -159,7 +160,6 @@ export const List: React.SFC<ListProps> = ({
   const getSortDirection = (listItemNameValue: string) => {
     // set column direction
     let sortDirection: any = 'asc';
-
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
 
@@ -362,7 +362,8 @@ export const List: React.SFC<ListProps> = ({
 
   // Reformat all items to be entered in table
   function getIcons(
-    id: number | undefined,
+    // id: number | undefined,
+    item: any,
     label: string,
     isReserved: boolean | null,
     listItems: any,
@@ -370,6 +371,7 @@ export const List: React.SFC<ListProps> = ({
   ) {
     // there might be a case when we might want to allow certain actions for reserved items
     // currently we don't allow edit or delete for reserved items. hence return early
+    const { id } = item;
     if (isReserved) {
       return null;
     }
@@ -399,7 +401,6 @@ export const List: React.SFC<ListProps> = ({
           </Tooltip>
         </IconButton>
       ) : null;
-
     if (id) {
       return (
         <div className={styles.Icons}>
@@ -416,7 +417,7 @@ export const List: React.SFC<ListProps> = ({
 
             if (action.link) {
               return (
-                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
+                <a href={`${action.link}/${additionalActionParameter}`} key={key}>
                   <IconButton
                     color="default"
                     className={styles.additonalButton}
@@ -426,7 +427,7 @@ export const List: React.SFC<ListProps> = ({
                       {action.icon}
                     </Tooltip>
                   </IconButton>
-                </Link>
+                </a>
               );
             }
             if (action.dialog) {
@@ -436,7 +437,7 @@ export const List: React.SFC<ListProps> = ({
                   data-testid="additionalButton"
                   className={styles.additonalButton}
                   id="additionalButton-icon"
-                  onClick={() => action.dialog(additionalActionParameter)}
+                  onClick={() => action.dialog(additionalActionParameter, item)}
                   key={key}
                 >
                   <Tooltip title={`${action.label}`} placement="top" key={key}>
@@ -474,7 +475,7 @@ export const List: React.SFC<ListProps> = ({
         : { chat: true, edit: true, delete: true };
       return {
         ...columns(listItemObj),
-        operations: getIcons(listItemObj.id, label, isReserved, listItemObj, allowedAction),
+        operations: getIcons(listItemObj, label, isReserved, listItemObj, allowedAction),
         recordId: listItemObj.id,
       };
     });
@@ -596,7 +597,7 @@ export const List: React.SFC<ListProps> = ({
       {searchVal ? (
         <div>Sorry, no results found! Please try a different search.</div>
       ) : (
-        <div>There are no {listItemName}s right now. Please create one.</div>
+        <div>There are no {noItemText || listItemName}s right now. Please create one.</div>
       )}
     </div>
   );

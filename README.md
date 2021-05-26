@@ -5,7 +5,7 @@
 [![Code coverage badge](https://img.shields.io/codecov/c/github/glific/glific-frontend/master.svg)](https://codecov.io/gh/glific/glific-frontend/branch/master)
 ![GitHub issues](https://img.shields.io/github/issues-raw/glific/glific-frontend)
 [![Discord](https://img.shields.io/discord/717975833226248303.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/MVf2KF)
-[![Glific](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/ocex65&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ocex65/runs)
+[![Glific](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/ocex65&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ocex65/runs)
 
 Frontend interface built using React.
 

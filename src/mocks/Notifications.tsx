@@ -1,11 +1,12 @@
 import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../graphql/queries/Notifications';
+import { MARK_NOTIFICATIONS_AS_READ } from '../graphql/mutations/Notifications';
 
 export const getNotificationsQuery = {
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: {},
-      opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'updated_at' },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },
   result: {
@@ -14,17 +15,19 @@ export const getNotificationsQuery = {
         {
           category: 'Message',
           entity:
-            '{"status":"valid","phone":"9876543210_1","name":"Glific Simulator One","last_message_at":"2021-03-22T07:25:12Z","is_hsm":null,"id":2,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',
-          message: 'Cannot send session message to contact, invalid bsp status.',
+            '{"status":"valid","phone":"8535124479","name":"Adelle Cavin","last_message_at":"2021-05-19T14:01:17Z","is_hsm":false,"id":9,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',
+
+          id: '15',
+          isRead: false,
+          message: 'Could not send message to contact: Check Gupshup Setting',
           severity: '"Error"',
-          updatedAt: '2021-03-24T07:50:22Z',
+          updatedAt: '2021-05-20T12:06:26Z',
         },
       ],
     },
   },
 };
-
-export const getNotificationCountQuery = {
+export const getUnFitleredNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
@@ -33,7 +36,35 @@ export const getNotificationCountQuery = {
   },
   result: {
     data: {
-      countNotifications: 1,
+      countNotifications: 2,
+    },
+  },
+};
+
+export const getNotificationCountQuery = {
+  request: {
+    query: GET_NOTIFICATIONS_COUNT,
+    variables: {
+      filter: {
+        is_read: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      countNotifications: 2,
+    },
+  },
+};
+
+export const markAllNotificationAsRead = {
+  request: {
+    query: MARK_NOTIFICATIONS_AS_READ,
+    variables: {},
+  },
+  result: {
+    data: {
+      markNotificationAsRead: true,
     },
   },
 };

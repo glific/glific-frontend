@@ -1,10 +1,10 @@
-name: Continuous Integration
+name: Unit Testing
 
 on:
   push:
-    branches: [master, v1.0]
+    branches: [master]
   pull_request:
-    branches: [master, v1.0]
+    branches: [master]
 
 jobs:
   test:

@@ -16,44 +16,7 @@ import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
-import {
-  checkAuthStatusService,
-  getAuthSession,
-  renewAuthToken,
-  setAuthSession,
-} from '../../services/AuthService';
-
-// // add authorization header in all calls
-let renewTokenCalled = false;
-let tokenRenewed = false;
-
-((send) => {
-  XMLHttpRequest.prototype.send = async function (body) {
-    this.addEventListener('loadend', () => {
-      if (this.status === 401) {
-        window.location.href = '/logout/user';
-      }
-    });
-    if (checkAuthStatusService()) {
-      this.setRequestHeader('Authorization', getAuthSession('access_token'));
-      send.call(this, body);
-    } else if (renewTokenCalled && !tokenRenewed) {
-      send.call(this, body);
-      tokenRenewed = true;
-    } else if (!renewTokenCalled) {
-      renewTokenCalled = true;
-      const authToken = await renewAuthToken();
-      if (authToken.data) {
-        // update localstore
-        setAuthSession(JSON.stringify(authToken.data.data));
-        renewTokenCalled = false;
-        tokenRenewed = false;
-      }
-      this.setRequestHeader('Authorization', getAuthSession('access_token'));
-      send.call(this, body);
-    }
-  };
-})(XMLHttpRequest.prototype.send);
+import { setAuthHeaders } from '../../services/AuthService';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -95,10 +58,10 @@ const glificBase = FLOW_EDITOR_API;
 
 const setConfig = (uuid: any) => ({
   flow: uuid,
-  flowType: 'message',
+  flowType: 'messaging',
   localStorage: true,
   mutable: true,
-  filters: ['whatsapp'],
+  filters: ['whatsapp', 'classifier'],
 
   excludeTypes: [
     'add_contact_urn',
@@ -108,7 +71,6 @@ const setConfig = (uuid: any) => ({
     'start_session',
     'open_ticket',
     'transfer_airtime',
-    'split_by_intent',
     'split_by_contact_field',
     'split_by_random',
     'split_by_groups',
@@ -267,6 +229,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowName]);
 
   useEffect(() => {
+    setAuthHeaders();
     const files = loadfiles();
     return () => {
       Object.keys(files).forEach((node: any) => {

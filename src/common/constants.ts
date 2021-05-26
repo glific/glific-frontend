@@ -127,6 +127,13 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     backendTerms.TYPE = 'is_billable';
   }
 
+  if (listName === 'notification') {
+    backendTerms.TIMESTAMP = 'updated_at';
+    backendTerms.SEVERITY = 'severity';
+    backendTerms.CATEGORY = 'category';
+    backendTerms.ENTITY = 'entity';
+    backendTerms.MESSAGE = 'message';
+  }
   return backendTerms[columnName];
 };
 

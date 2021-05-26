@@ -71,7 +71,7 @@
 .Time,
 .Severity,
 .Category {
-  width: 15%;
+  width: 13%;
 }
 
 .Entity {
@@ -80,4 +80,23 @@
 
 .Message {
   width: 30%;
+}
+
+.RedirectArrow {
+  width: 16px;
+  color: #119656;
+}
+
+.Mark {
+  width: 2px;
+}
+
+.Dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: red;
+  margin-right: 3px;
+  position: relative;
+  margin-top: 15px;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, within, fireEvent, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, waitFor, screen } from '@testing-library/react';
 import moment from 'moment';
 
 import ChatMessage from './ChatMessage';
@@ -33,7 +33,7 @@ const mocks = [
 ];
 
 const insertedAt = '2020-06-19T18:44:02Z';
-const Props = (link: any) => {
+const Props: any = (link: any) => {
   return {
     id: 1,
     body: '*Hello there!* visit https://www.google.com',
@@ -58,7 +58,7 @@ const Props = (link: any) => {
     media: { url: 'http://glific.com' },
     errors: '{}',
     contextMessage: {
-      body: 'All good',
+      body: '*All good* https://www.google.com',
       contextId: 1,
       messageNumber: 10,
       errors: '{}',
@@ -75,6 +75,7 @@ const Props = (link: any) => {
       },
     },
     jumpToMessage: Function,
+    focus: true,
   };
 };
 
@@ -136,8 +137,8 @@ describe('<ChatMessage />', () => {
   });
 
   test('it should detect a link in message', async () => {
-    const { getByTestId } = render(chatMessageText);
-    expect(getByTestId('messageLink').getAttribute('href')).toBe('https://www.google.com');
+    const { getAllByTestId } = render(chatMessageText);
+    expect(getAllByTestId('messageLink')[0].getAttribute('href')).toBe('https://www.google.com');
   });
 
   const chatMessageVideo = chatMessage('VIDEO');
@@ -146,6 +147,14 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageVideo);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download video
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageAudio = chatMessage('AUDIO');
@@ -154,6 +163,14 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageAudio);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download audio
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageImage = chatMessage('IMAGE');
@@ -162,20 +179,126 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageImage);
     fireEvent.click(getAllByTestId('popup')[0]);
     expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // For download image
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   const chatMessageDoc = chatMessage('DOCUMENT');
 
   test('it should show the download media option when clicked on down arrow and message type is document', async () => {
-    const { getAllByTestId } = render(chatMessageDoc);
+    const { getAllByTestId, getAllByText } = render(chatMessageDoc);
     fireEvent.click(getAllByTestId('popup')[0]);
-    expect(getAllByTestId('downloadMedia')[0]).toBeVisible();
+
+    // for speedsend
+    const speedSend = getAllByText('Add to speed sends');
+    expect(speedSend[0]).toBeInTheDocument();
+
+    await waitFor(() => {
+      fireEvent.click(speedSend[0]);
+    });
+
+    // For download document
+    const download = getAllByTestId('downloadMedia')[0];
+    expect(download).toBeVisible();
+
+    await waitFor(() => {
+      fireEvent.click(download);
+    });
   });
 
   test('it should click on replied message', async () => {
     const { getByTestId } = render(chatMessageDoc);
     await waitFor(() => {
       fireEvent.click(getByTestId('reply-message'));
+    });
+  });
+
+  const props = Props('TEXT');
+  test('it should render error with payload', async () => {
+    props.errors = '{"payload": {"payload": {"reason": "Something went wrong"}}} ';
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...props} />
+      </MockedProvider>
+    );
+
+    const errors = screen.getAllByTestId('tooltip');
+    expect(errors[0]).toHaveTextContent('Warning.svg');
+  });
+
+  const imageProps = Props('DOCUMENT');
+  test('it should render error with message', () => {
+    imageProps.media = {
+      url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
+      caption: 'test',
+    };
+    imageProps.errors = '{"message": ["Something went wrong"]}';
+
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...imageProps} />
+      </MockedProvider>
+    );
+  });
+
+  test('it should render error with error message', () => {
+    props.errors = '{"error": "Something went wrong"}';
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...props} />
+      </MockedProvider>
+    );
+
+    const errors = screen.getAllByTestId('tooltip');
+    expect(errors[0]).toHaveTextContent('Warning.svg');
+  });
+
+  const receivedProps = {
+    id: '93',
+    body: null,
+    insertedAt: '2021-05-25T14:09:43.623251Z',
+    messageNumber: 2,
+    receiver: {
+      id: '4',
+    },
+    sender: {
+      id: '1',
+    },
+    location: null,
+    tags: [],
+    type: 'IMAGE',
+    media: {
+      url:
+        'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
+      caption: '\n',
+    },
+    errors: '{}',
+    contextMessage: null,
+    contactId: '4',
+    popup: true,
+    focus: true,
+    showMessage: true,
+  };
+
+  test('it should render with image', async () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...receivedProps} />
+      </MockedProvider>
+    );
+    const messageMenu = screen.getByTestId('messageOptions');
+
+    await waitFor(() => {});
+
+    expect(messageMenu).toBeInTheDocument();
+    await waitFor(() => {
+      fireEvent.mouseDown(messageMenu);
     });
   });
 });

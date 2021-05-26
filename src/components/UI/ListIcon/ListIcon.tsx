@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import Badge from '@material-ui/core/Badge';
 
 import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
 import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
@@ -21,13 +22,17 @@ import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Select
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
 import triggerSelectedIcon from '../../../assets/images/icons/Trigger/Selected.svg';
 import triggerIcon from '../../../assets/images/icons/Trigger/Unselected.svg';
+import notificationIcon from '../../../assets/images/icons/Notification/Unselected.svg';
+import notificationSelectedIcon from '../../../assets/images/icons/Notification/Selected.svg';
+import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
   icon: string;
+  count?: number;
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
-  const { icon } = props;
+  const { icon, count } = props;
 
   const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
@@ -41,6 +46,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     'speed-send': speedSendIcon,
     template: templateIcon,
     trigger: triggerIcon,
+    notification: notificationIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
@@ -54,9 +60,10 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     'speed-send': speedSendSelectedIcon,
     template: templateSelectedIcon,
     trigger: triggerSelectedIcon,
+    notification: notificationSelectedIcon,
   };
 
-  return (
+  const iconImage = (
     <img
       src={
         location.pathname.startsWith(`/${icon}`)
@@ -66,6 +73,18 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
       alt={'Selected '.concat(icon)}
       data-testid="listIcon"
     />
+  );
+
+  return (
+    <div>
+      {count && icon === 'notification' ? (
+        <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
+          {iconImage}
+        </Badge>
+      ) : (
+        iconImage
+      )}
+    </div>
   );
 };
 
