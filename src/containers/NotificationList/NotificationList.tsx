@@ -188,19 +188,23 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
 
   const filterOnSeverity = (
     <div className={styles.filters}>
-      {severityList.map((label, index) => (
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state[label]}
-              color="primary"
-              onChange={handleCheckedBox}
-              name={severityList[index]}
-            />
-          }
-          label={severityList[index]}
-        />
-      ))}
+      {severityList.map((label, index) => {
+        const key = index;
+        return (
+          <FormControlLabel
+            key={key}
+            control={
+              <Checkbox
+                checked={state[label]}
+                color="primary"
+                onChange={handleCheckedBox}
+                name={severityList[index]}
+              />
+            }
+            label={severityList[index]}
+          />
+        );
+      })}
     </div>
   );
   return (
