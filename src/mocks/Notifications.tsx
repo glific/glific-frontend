@@ -5,7 +5,7 @@ export const getNotificationsQuery = {
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
-      filter: {},
+      filter: { severity: '' },
       opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },
@@ -27,6 +27,34 @@ export const getNotificationsQuery = {
     },
   },
 };
+
+export const getFilteredNotificationsQuery = {
+  request: {
+    query: FILTER_NOTIFICATIONS,
+    variables: {
+      filter: { severity: 'Warning' },
+      opts: { limit: 50, offset: 0, order: 'ASC' },
+    },
+  },
+  result: {
+    data: {
+      notifications: [
+        {
+          category: 'Message',
+          entity:
+            '{"status":"valid","phone":"8535124479","name":"Adelle Cavin","last_message_at":"2021-05-19T14:01:17Z","is_hsm":false,"id":9,"group_id":null,"flow_id":null,"bsp_status":"hsm"}',
+
+          id: '15',
+          isRead: false,
+          message: 'Could not send message to contact: Check Gupshup Setting',
+          severity: '"Warning"',
+          updatedAt: '2021-05-20T12:06:26Z',
+        },
+      ],
+    },
+  },
+};
+
 export const getUnFitleredNotificationCountQuery = {
   request: {
     query: GET_NOTIFICATIONS_COUNT,
@@ -53,6 +81,38 @@ export const getNotificationCountQuery = {
   result: {
     data: {
       countNotifications: 2,
+    },
+  },
+};
+
+export const getCountWithEmptyFilter = {
+  request: {
+    query: GET_NOTIFICATIONS_COUNT,
+    variables: {
+      filter: {
+        severity: '',
+      },
+    },
+  },
+  result: {
+    data: {
+      countNotifications: 2,
+    },
+  },
+};
+
+export const getCountWithFilter = {
+  request: {
+    query: GET_NOTIFICATIONS_COUNT,
+    variables: {
+      filter: {
+        severity: 'Warning',
+      },
+    },
+  },
+  result: {
+    data: {
+      countNotifications: 1,
     },
   },
 };
