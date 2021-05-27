@@ -7,7 +7,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import styles from './NotificationList.module.css';
-import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Unselected.svg';
+import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Selected.svg';
 import { ReactComponent as ViewIcon } from '../../assets/images/icons/View.svg';
 import CopyIcon from '../../assets/images/icons/Copy.png';
 import { List } from '../List/List';
@@ -51,7 +51,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const [state, setState] = useState<any>({
-    Critical: false,
+    Critical: true,
     Warning: false,
   });
   let filterValue: any = '';
@@ -187,7 +187,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   }
 
   const filterOnSeverity = (
-    <div className={styles.filters}>
+    <div className={styles.Filters}>
       {severityList.map((label, index) => {
         const key = index;
         return (
@@ -202,6 +202,9 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
               />
             }
             label={severityList[index]}
+            classes={{
+              label: styles.FilterLabel,
+            }}
           />
         );
       })}

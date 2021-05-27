@@ -5,7 +5,7 @@ export const getNotificationsQuery = {
   request: {
     query: FILTER_NOTIFICATIONS,
     variables: {
-      filter: { severity: '' },
+      filter: { severity: 'Critical' },
       opts: { limit: 50, offset: 0, order: 'ASC' },
     },
   },
@@ -20,7 +20,7 @@ export const getNotificationsQuery = {
           id: '15',
           isRead: false,
           message: 'Could not send message to contact: Check Gupshup Setting',
-          severity: '"Error"',
+          severity: '"Critical"',
           updatedAt: '2021-05-20T12:06:26Z',
         },
       ],
@@ -90,7 +90,7 @@ export const getCountWithEmptyFilter = {
     query: GET_NOTIFICATIONS_COUNT,
     variables: {
       filter: {
-        severity: '',
+        severity: 'Critical',
       },
     },
   },
