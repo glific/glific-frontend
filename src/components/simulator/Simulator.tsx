@@ -172,8 +172,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
             },
             sender: {
               // this number will be the simulated contact number
-              phone: data ? data.simulatorGet.phone : '',
-              name: data ? data.simulatorGet.name : '',
+              phone: data ? data.simulatorGet?.phone : '',
+              name: data ? data.simulatorGet?.name : '',
             },
           },
         },
