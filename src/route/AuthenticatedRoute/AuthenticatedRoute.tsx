@@ -176,6 +176,16 @@ const routeAdmin = (
       component={({ match }: any) => <ConsultingHourList openDialog match={match} />}
     />
     <Route path="/contact-fields/" exact component={ContactFieldList} />
+    <Route
+      path="/contact-fields/add"
+      exact
+      component={({ match }: any) => <ContactFieldList openDialog match={match} />}
+    />
+    <Route
+      path="/contact-fields/:id/edit"
+      exact
+      component={({ match }: any) => <ContactFieldList openDialog match={match} />}
+    />
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );

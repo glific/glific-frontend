@@ -1,9 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import { Dialog, DialogContent } from '@material-ui/core';
+import { Dialog, DialogContent } from '@material-ui/core';
 
 import styles from './ContactFieldList.module.css';
 import { List } from '../../List/List';
+import { ContactField } from '../ContactField';
 import { setVariables } from '../../../common/constants';
 import {
   COUNT_CONTACT_FIELDS,
@@ -26,16 +27,13 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     deleteItemQuery: DELETE_CONTACT_FIELDS,
   };
 
-  const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'VALUE TYPE'];
+  const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'SHORTCODE'];
 
-  const getName = (label: string) => {
-    const text = label.split(' ').join('_').toLowerCase();
-    return (
-      <div className={styles.LabelContainer}>
-        <p className={styles.LabelText}>@contact.fields.{text}</p>
-      </div>
-    );
-  };
+  const getName = (label: string) => (
+    <div className={styles.LabelContainer}>
+      <p className={styles.LabelText}>{label}</p>
+    </div>
+  );
 
   const getOtherColumn = (label: any) => (
     <div>
@@ -43,10 +41,10 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     </div>
   );
 
-  const getColumns = ({ name, valueType }: any) => ({
-    variableName: getName(name),
+  const getColumns = ({ name, shortcode }: any) => ({
+    variableName: getName(shortcode),
     name: getOtherColumn(name),
-    valueType: getOtherColumn(valueType),
+    shortcode: getOtherColumn(shortcode),
   });
 
   const columnAttributes = {
@@ -77,16 +75,16 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
         {...queries}
         {...columnAttributes}
       />
-      {/* <Dialog
+      <Dialog
         open={!!openDialog}
         classes={{
           paper: styles.Dialogbox,
         }}
       >
         <DialogContent classes={{ root: styles.DialogContent }}>
-          <Consulting match={match} />
+          <ContactField match={match} />
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </>
   );
 };
