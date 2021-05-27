@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ColorPicker } from './ColorPicker';
+import userEvent from '@testing-library/user-event';
 
 const serFieldValueMock = jest.fn();
 
@@ -43,9 +44,12 @@ describe('<ColorPicker />', () => {
 describe('Test choose color', () => {
   it('choose color', async () => {
     const { findByTestId } = render(wrapper);
+
     const container = await findByTestId('ChooseColor');
-    fireEvent.click(container);
+    fireEvent.keyDown(container);
+
     const color = await screen.findByDisplayValue('22194D');
-    fireEvent.change(color, { target: { value: '9900EF' } });
+    userEvent.type(color, '{selectall}{backspace}9900EF');
+    expect(color).toHaveValue('9900EF');
   });
 });
