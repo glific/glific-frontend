@@ -48,6 +48,7 @@ export interface ListProps {
   showCheckbox?: boolean;
   searchParameter?: string;
   filters?: any;
+  filterList?: any;
   displayListType?: string;
   cardLink?: any;
   editSupport?: boolean;
@@ -96,6 +97,7 @@ export const List: React.SFC<ListProps> = ({
   columnStyles,
   title,
   dialogTitle,
+  filterList,
   removeSortBy = null,
   button = {
     show: true,
@@ -205,6 +207,7 @@ export const List: React.SFC<ListProps> = ({
     filter[searchParameter] = searchVal;
   }
   filter = { ...filter, ...filters };
+
   const filterPayload = useCallback(() => {
     let order = 'ASC';
     if (tableVals.sortDirection) {
@@ -219,7 +222,7 @@ export const List: React.SFC<ListProps> = ({
         orderWith: tableVals.sortCol,
       },
     };
-  }, [searchVal, tableVals]);
+  }, [searchVal, tableVals, filters]);
 
   // Get the total number of items here
   const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
@@ -231,7 +234,6 @@ export const List: React.SFC<ListProps> = ({
     variables: filterPayload(),
     fetchPolicy: 'cache-and-network',
   });
-
   // Get item data here
   const [
     fetchUserCollections,
@@ -244,7 +246,7 @@ export const List: React.SFC<ListProps> = ({
 
   useEffect(() => {
     refetchCount();
-  }, [filterPayload, searchVal]);
+  }, [filterPayload, searchVal, filters]);
 
   useEffect(() => {
     if (userRole.length === 0) {
@@ -611,6 +613,7 @@ export const List: React.SFC<ListProps> = ({
           </IconButton>
           {title}
         </Typography>
+        {filterList}
         <div className={styles.Buttons}>
           <SearchBar
             handleSubmit={handleSearch}

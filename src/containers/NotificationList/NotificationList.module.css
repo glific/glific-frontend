@@ -100,3 +100,10 @@
   position: relative;
   margin-top: 15px;
 }
+
+.filters {
+  display: flex;
+  align-items: center;
+  margin-left: 50px;
+  color: #073f24 !important;
+}

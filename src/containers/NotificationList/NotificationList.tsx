@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Popover } from '@material-ui/core';
+import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
@@ -50,6 +50,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
   const history = useHistory();
+  const [state, setState] = useState<any>({
+    Critical: false,
+    Warning: false,
+  });
+  let filterValue: any = '';
+
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
@@ -168,8 +174,37 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </div>
     </Popover>
   );
+
+  const severityList = ['Critical', 'Warning'];
+
+  const handleCheckedBox = (event: any) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+  const keys = Object.keys(state).filter((k) => state[k] === true);
+  if (keys.length === 1) {
+    [filterValue] = keys;
+  }
+
+  const filterOnSeverity = (
+    <div className={styles.filters}>
+      {severityList.map((label, index) => (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={state[label]}
+              color="primary"
+              onChange={handleCheckedBox}
+              name={severityList[index]}
+            />
+          }
+          label={severityList[index]}
+        />
+      ))}
+    </div>
+  );
   return (
-    <>
+    <div>
       <List
         title="Notifications"
         listItem="notifications"
@@ -184,9 +219,11 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         additionalAction={additionalAction}
         {...columnAttributes}
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
+        filters={{ severity: filterValue }}
+        filterList={filterOnSeverity}
       />
       {popover}
-    </>
+    </div>
   );
 };
 
