@@ -79,8 +79,8 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
       <FormLayout
         {...queries}
         title={t('Add contact fields')}
-        listItem="contacts_field"
-        listItemName="contacts_field"
+        listItem="contactsField"
+        listItemName="contactsField"
         match={match}
         refetchQueries={[
           {

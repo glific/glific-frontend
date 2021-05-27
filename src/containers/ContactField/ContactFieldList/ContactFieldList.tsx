@@ -20,7 +20,7 @@ interface ContactFieldListProps {
 
 const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog }: any) => {
   const { t } = useTranslation();
-  console.log(match, openDialog);
+
   const queries = {
     countQuery: COUNT_CONTACT_FIELDS,
     filterItemsQuery: GET_ALL_CONTACT_FIELDS,
@@ -41,8 +41,8 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     </div>
   );
 
-  const getColumns = ({ name, shortcode }: any) => ({
-    variableName: getName(shortcode),
+  const getColumns = ({ variable, name, shortcode }: any) => ({
+    variable: getName(variable),
     name: getOtherColumn(name),
     shortcode: getOtherColumn(shortcode),
   });
@@ -72,6 +72,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
         searchParameter="name"
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
+        removeSortBy={['INPUT NAME']}
         {...queries}
         {...columnAttributes}
       />

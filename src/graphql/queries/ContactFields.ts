@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export const GET_ALL_CONTACT_FIELDS = gql`
   query contactsFields($filter: ContactsFieldFilter, $opts: Opts) {
     contactsFields(filter: $filter, opts: $opts) {
+      variable
       valueType
       updatedAt
       shortcode
@@ -20,9 +21,10 @@ export const GET_ALL_CONTACT_FIELDS = gql`
 `;
 
 export const GET_CONTACT_FIELD_BY_ID = gql`
-  query contacts_field($id: ID!) {
-    contacts_field(id: $id) {
-      contacts_field {
+  query contactsField($id: ID!) {
+    contactsField(id: $id) {
+      contactsField {
+        variable
         valueType
         updatedAt
         shortcode
