@@ -1,13 +1,16 @@
 .EndDate {
-  width: 180px;
+  min-width: 110px;
+  width: 15%;
 }
 
 .Name {
-  width: 350px;
+  min-width: 290px;
+  width: 40%;
 }
 
 .Collections {
-  width: 250px;
+  min-width: 145px;
+  width: 20%;
 }
 
 .Icon {
@@ -28,19 +31,20 @@
 }
 
 .EndDateVal {
-  width: 185px;
   padding-top: 12px;
   color: #93a29b;
   font-size: 17px;
 }
 
 .Collection {
+  padding-top: 12px;
   color: #93a29b;
   font-size: 17px;
 }
 
 .Actions {
-  width: 200px;
+  min-width: 150px;
+  width: 25%;
   justify-content: flex-end;
   margin-left: auto;
 }

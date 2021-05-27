@@ -185,7 +185,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     data.when = moment(when).toISOString();
 
     if (organization) {
-      data.organizationId = Number(organization.id);
+      data.clientId = Number(organization.id);
       data.organizationName = organization.name;
     }
 

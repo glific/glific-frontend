@@ -27,6 +27,8 @@
   margin-right: 24px;
   color: #333;
   background: white;
+  width: 200px;
+  margin-top: 4px;
 }
 
 .SendMessage {
@@ -273,4 +275,8 @@
 .CrossIcon {
   margin-left: 15px;
   color: grey;
+}
+
+.TemplateButtons {
+  width: 200px;
 }
