@@ -118,7 +118,7 @@ export const getFlowDetailsQuery = {
     data: {
       flows: [
         {
-          isActive: 'true',
+          isActive: true,
           name: 'help workflow',
           keywords: ['help'],
         },
