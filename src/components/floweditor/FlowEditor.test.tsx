@@ -112,17 +112,17 @@ test('test if XMLHTTPRequest works ', async () => {
   });
 });
 
-test('fetch api calls', async () => {
-  render(wrapper);
-  const tokenExpiryDate = new Date();
-  tokenExpiryDate.setDate(new Date().getDate() + 1);
+// test('fetch api calls', async () => {
+//   render(wrapper);
+//   const tokenExpiryDate = new Date();
+//   tokenExpiryDate.setDate(new Date().getDate() + 1);
 
-  setAuthSession(
-    '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
-      tokenExpiryDate +
-      '"}'
-  );
-  fetch('https://glific.test')
-    .then((response) => response.json())
-    .then((data) => console.log(data));
-});
+//   setAuthSession(
+//     '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
+//       tokenExpiryDate +
+//       '"}'
+//   );
+//   fetch('https://glific.test')
+//     .then((response) => response.json())
+//     .then((data) => console.log(data));
+// });
