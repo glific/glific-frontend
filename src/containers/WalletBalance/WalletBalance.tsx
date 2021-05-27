@@ -81,7 +81,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   });
 
   const updateBalanceValue = (balance: any) => {
-    if (balance && balance !== null) {
+    if (balance) {
       setDisplayBalance(balance);
     }
   };

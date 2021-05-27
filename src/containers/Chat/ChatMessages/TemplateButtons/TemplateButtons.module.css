@@ -1,0 +1,30 @@
+.TemplateButtonContainer {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 404px;
+  margin: 4px 0px;
+}
+
+.TemplateButton {
+  width: 100%;
+  border-radius: 10px !important;
+  margin: 2px 0px 1px 0px !important;
+  padding: 12px 0px !important;
+  font-size: 16px;
+  line-height: 1.25 !important;
+}
+
+.Simulator {
+  background-color: #ffffff !important;
+  color: #1690cf !important;
+}
+
+.Chat {
+  background-color: #eaedec !important;
+  color: #119656 !important;
+}
+
+.TemplateButton:disabled {
+  color: #9a9e9f !important;
+  pointer-events: none !important;
+}
