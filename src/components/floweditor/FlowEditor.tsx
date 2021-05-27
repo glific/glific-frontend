@@ -62,7 +62,7 @@ const setConfig = (uuid: any) => ({
   flowType: 'messaging',
   localStorage: true,
   mutable: true,
-  attachmentsEnabled: true,
+  attachmentsEnabled: false,
   filters: ['whatsapp', 'classifier'],
 
   excludeTypes: [
