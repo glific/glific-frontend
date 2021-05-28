@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './ContactField.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
+import { ReactComponent as ContactVariableIcon } from '../../assets/images/icons/ContactVariable.svg';
 import {
   GET_CONTACT_FIELD_BY_ID,
   GET_ALL_CONTACT_FIELDS,
@@ -72,15 +72,15 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
   ];
 
   const dialogMessage = 'This action cannot be undone.';
-  const consultHourIcon = <ConsultingIcon className={styles.ConsultingIcon} />;
+  const consultHourIcon = <ContactVariableIcon className={styles.ContactFieldIcon} />;
 
   return (
     <div className={`${styles.Layout} ${match.params.id ? styles.Edit : ''}`}>
       <FormLayout
         {...queries}
         title={t('Add contact fields')}
-        listItem="contacts_field"
-        listItemName="contacts_field"
+        listItem="contactsField"
+        listItemName="contactsField"
         match={match}
         refetchQueries={[
           {
