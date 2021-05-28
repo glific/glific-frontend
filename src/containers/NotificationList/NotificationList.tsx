@@ -50,7 +50,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
   const history = useHistory();
-  const [state, setState] = useState<any>({
+  const [filters, setFilters] = useState<any>({
     Critical: true,
     Warning: false,
   });
@@ -178,12 +178,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const severityList = ['Critical', 'Warning'];
 
   const handleCheckedBox = (event: any) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setFilters({ ...filters, [event.target.name]: event.target.checked });
   };
 
-  const keys = Object.keys(state).filter((k) => state[k] === true);
-  if (keys.length === 1) {
-    [filterValue] = keys;
+  const filterName = Object.keys(filters).filter((k) => filters[k] === true);
+  if (filterName.length === 1) {
+    [filterValue] = filterName;
   }
 
   const filterOnSeverity = (
@@ -195,7 +195,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
             key={key}
             control={
               <Checkbox
-                checked={state[label]}
+                checked={filters[label]}
                 color="primary"
                 onChange={handleCheckedBox}
                 name={severityList[index]}

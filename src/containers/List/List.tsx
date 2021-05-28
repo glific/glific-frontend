@@ -49,7 +49,7 @@ export interface ListProps {
   searchParameter?: string;
   filters?: any;
   filterList?: any;
-  listOrder?: any;
+  listOrder?: 'asc' | 'desc';
   displayListType?: string;
   cardLink?: any;
   editSupport?: boolean;
@@ -99,7 +99,7 @@ export const List: React.SFC<ListProps> = ({
   title,
   dialogTitle,
   filterList,
-  listOrder,
+  listOrder = 'asc',
   removeSortBy = null,
   button = {
     show: true,
@@ -162,15 +162,7 @@ export const List: React.SFC<ListProps> = ({
 
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
-    let sortDirection: any = '';
-
-    // set the direction if order is passed explicitly
-    if (listOrder) {
-      sortDirection = listOrder;
-    } else {
-      // set default column direction
-      sortDirection = 'asc';
-    }
+    let sortDirection: any = listOrder;
 
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
