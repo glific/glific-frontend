@@ -164,20 +164,26 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
-      const itemUpdated = Object.keys(data)[0];
-      if (data[itemUpdated] && data[itemUpdated].errors) {
+      let itemUpdatedObject: any = Object.keys(data)[0];
+      itemUpdatedObject = data[itemUpdatedObject];
+      const updatedItem = itemUpdatedObject[listItem];
+      const { isValid } = updatedItem;
+      const { errors } = itemUpdatedObject;
+
+      if (itemUpdatedObject && errors) {
         if (customHandler) {
-          customHandler(client, data[itemUpdated].errors);
+          customHandler(client, errors);
         } else {
-          setErrorMessage(client, data[itemUpdated].errors[0]);
+          setErrorMessage(client, errors[0]);
         }
-      } else if (!data[itemUpdated][listItem].isValid) {
+      } else if (typeof isValid === 'boolean' && !isValid) {
         if (customError) {
-          const errors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(errors);
+          // this is a custom error for extensions. We need to move this out of this component
+          const codeErrors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(codeErrors);
         }
       } else {
-        if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
+        if (type === 'copy') setLink(updatedItem[linkParameter]);
         if (additionalQuery) {
           additionalQuery(itemId);
         }
@@ -212,33 +218,36 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const itemCreated = `create${camelCaseItem}`;
-      if (data[itemCreated].errors) {
+      let itemCreatedObject: any = `create${camelCaseItem}`;
+      itemCreatedObject = data[itemCreatedObject];
+      const itemCreated = itemCreatedObject[listItem];
+      const { isValid } = itemCreated;
+      const { errors } = itemCreatedObject;
+      if (errors) {
         if (customHandler) {
-          customHandler(client, data[itemCreated].errors);
+          customHandler(client, errors);
         } else {
-          setErrorMessage(client, data[itemCreated].errors[0]);
+          setErrorMessage(client, errors[0]);
         }
-      } else if (!data[itemCreated][listItem].isValid) {
+      } else if (typeof isValid === 'boolean' && !isValid) {
         if (customError) {
-          const errors = { code: 'Failed to compile code. Please check again' };
-          customError.setErrors(errors);
+          const codeErrors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(codeErrors);
         }
       } else {
         if (additionalQuery) {
-          additionalQuery(data[`create${camelCaseItem}`][listItem].id);
+          additionalQuery(itemCreated.id);
         }
-        if (!itemId) setLink(data[itemCreated][listItem][linkParameter]);
+        if (!itemId) setLink(itemCreated[linkParameter]);
         setFormSubmitted(true);
         // emit data after save
         if (afterSave) {
           afterSave(data.createSavedSearch);
         }
-        setIsLoadedData(true);
         // display successful message after create
         setNotification(client, `${capitalListItemName} created successfully!`);
       }
-
+      setIsLoadedData(true);
       onSaveClick(false);
     },
     refetchQueries: () => {
@@ -272,7 +281,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           },
         });
       } else {
-        // for creation of extension  itemId is needed
         createItem({
           variables: {
             input: payload,

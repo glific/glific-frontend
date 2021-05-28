@@ -13,3 +13,13 @@
   max-height: 500px;
   overflow: hidden !important;
 }
+
+.Form input[type='text'],
+.Form textarea,
+.Form > div:nth-child(3) p {
+  color: #93a29b;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+}
