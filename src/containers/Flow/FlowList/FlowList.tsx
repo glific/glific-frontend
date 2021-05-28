@@ -7,6 +7,7 @@ import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
+import { ReactComponent as ContactVariable } from '../../../assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
 import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
@@ -103,6 +104,10 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       <Link to="/webhook-logs" className={styles.Webhook}>
         <WebhookLogsIcon />
         {t('View webhook logs')}
+      </Link>
+      <Link to="/contact-fields" className={styles.ContactFields}>
+        <ContactVariable />
+        {t('View contact variables')}
       </Link>
     </>
   );
