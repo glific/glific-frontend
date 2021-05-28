@@ -167,7 +167,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       let itemUpdatedObject: any = Object.keys(data)[0];
       itemUpdatedObject = data[itemUpdatedObject];
       const updatedItem = itemUpdatedObject[listItem];
-      const { isValid } = updatedItem;
       const { errors } = itemUpdatedObject;
 
       if (itemUpdatedObject && errors) {
@@ -176,7 +175,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setErrorMessage(client, errors[0]);
         }
-      } else if (typeof isValid === 'boolean' && !isValid) {
+      } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
         if (customError) {
           // this is a custom error for extensions. We need to move this out of this component
           const codeErrors = { code: 'Failed to compile code. Please check again' };
@@ -221,7 +220,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       let itemCreatedObject: any = `create${camelCaseItem}`;
       itemCreatedObject = data[itemCreatedObject];
       const itemCreated = itemCreatedObject[listItem];
-      const { isValid } = itemCreated;
+
       const { errors } = itemCreatedObject;
       if (errors) {
         if (customHandler) {
@@ -229,7 +228,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setErrorMessage(client, errors[0]);
         }
-      } else if (typeof isValid === 'boolean' && !isValid) {
+      } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
         if (customError) {
           const codeErrors = { code: 'Failed to compile code. Please check again' };
           customError.setErrors(codeErrors);
