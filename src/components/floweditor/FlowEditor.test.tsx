@@ -15,7 +15,6 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
 } from '../../mocks/Simulator';
-import { setAuthSession } from '../../services/AuthService';
 
 const mocks = [
   conversationQuery,
