@@ -7,6 +7,7 @@ import {
   getActiveFlow,
   getInactiveFlow,
   getFlowWithoutKeyword,
+  getOrganisationServicesQuery,
   publishFlow,
 } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
@@ -22,6 +23,7 @@ const mocks = [
   simulatorReleaseQuery,
   simulatorGetQuery,
   publishFlow,
+  getOrganisationServicesQuery,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -35,6 +37,8 @@ const wrapperFunction = (mocks: any) => (
     </MemoryRouter>
   </MockedProvider>
 );
+
+window.showFlowEditor = (node: any, config: any) => jest.fn();
 
 const defaultWrapper = wrapperFunction(activeFlowMocks);
 

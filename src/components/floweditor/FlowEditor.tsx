@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useQuery, useApolloClient } from '@apollo/client';
+import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 
@@ -17,6 +17,7 @@ import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 import { setAuthHeaders } from '../../services/AuthService';
+import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -61,6 +62,7 @@ const setConfig = (uuid: any) => ({
   flowType: 'messaging',
   localStorage: true,
   mutable: true,
+  attachmentsEnabled: false,
   filters: ['whatsapp', 'classifier'],
 
   excludeTypes: [
@@ -124,6 +126,7 @@ const setConfig = (uuid: any) => ({
     resthooks: `${glificBase}resthooks`,
     templates: `${glificBase}templates`,
     languages: `${glificBase}languages`,
+    attachments: `${glificBase}flow-attachment`,
     environment: `${glificBase}environment`,
     recipients: `${glificBase}recipients`,
     completion: `${glificBase}completion`,
@@ -159,6 +162,8 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   let modal = null;
   let dialog = null;
+
+  const [getOrganizationServices, { data: services }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: (data) => {
@@ -230,8 +235,10 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowName]);
 
   useEffect(() => {
-    setAuthHeaders();
+    const { fetch, xmlSend } = setAuthHeaders();
     const files = loadfiles();
+    getOrganizationServices();
+
     return () => {
       Object.keys(files).forEach((node: any) => {
         if (files[node]) {
@@ -243,18 +250,29 @@ export const FlowEditor = (props: FlowEditorProps) => {
       for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
         clearTimeout(timeoutId);
       }
+      XMLHttpRequest.prototype.send = xmlSend;
+      window.fetch = fetch;
     };
   }, []);
 
   useEffect(() => {
-    // check if runtime main file is present and then load
-    const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
-    if (lastFile) {
-      lastFile.onload = () => {
+    if (services) {
+      // check if runtime main file is present and then load
+      const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
+      if (lastFile) {
+        const { dialogflow, googleCloudStorage } = services.organizationServices;
+
+        if (googleCloudStorage) {
+          config.attachmentsEnabled = true;
+        }
+        if (!dialogflow) {
+          config.excludeTypes.push('split_by_intent');
+        }
+
         showFlowEditor(document.getElementById('flow'), config);
-      };
+      }
     }
-  }, [config]);
+  }, [config, services]);
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });

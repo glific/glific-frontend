@@ -181,6 +181,8 @@ export const setAuthHeaders = () => {
       return result;
     })(args);
 
+  const xmlSend = XMLHttpRequest.prototype.send;
+
   ((send) => {
     XMLHttpRequest.prototype.send = async function (body) {
       this.addEventListener('loadend', () => {
@@ -208,4 +210,6 @@ export const setAuthHeaders = () => {
       }
     };
   })(XMLHttpRequest.prototype.send);
+
+  return { xmlSend, fetch };
 };

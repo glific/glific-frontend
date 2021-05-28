@@ -10,6 +10,7 @@ import {
   ADD_FLOW_TO_COLLECTION,
   PUBLISH_FLOW,
 } from '../graphql/mutations/Flow';
+import { GET_ORGANIZATION_SERVICES } from '../graphql/queries/Organization';
 
 export const getFlowQuery = {
   request: {
@@ -228,6 +229,20 @@ export const publishFlow = {
     data: {
       publishFlow: {
         errors: [{ message: 'Something went wrong' }],
+      },
+    },
+  },
+};
+
+export const getOrganisationServicesQuery = {
+  request: {
+    query: GET_ORGANIZATION_SERVICES,
+  },
+  result: {
+    data: {
+      organizationServices: {
+        dialogflow: false,
+        googleCloudStorage: true,
       },
     },
   },

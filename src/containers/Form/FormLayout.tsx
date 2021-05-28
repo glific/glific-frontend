@@ -34,6 +34,7 @@ export interface FormLayoutProps {
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
   icon: any;
+  idType?: string;
   additionalAction?: any;
   additionalQuery?: any;
   linkParameter?: any;
@@ -76,6 +77,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   defaultAttribute = null,
   additionalAction = null,
   icon,
+  idType = 'id',
   additionalState,
   title,
   linkParameter = null,
@@ -106,12 +108,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [link, setLink] = useState(undefined);
   const [deleted, setDeleted] = useState(false);
   const [saveClick, onSaveClick] = useState(false);
+  const [isLoadedData, setIsLoadedData] = useState(false);
+  const [customError, setCustomError] = useState<any>(null);
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
   const itemId = match.params.id ? match.params.id : false;
-  let variables: any = itemId ? { id: itemId } : false;
+
+  let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
     onCompleted: () => {
@@ -136,7 +141,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       }
     },
   });
-
   if (listItem === 'credential') {
     variables = match.params.shortcode ? { shortcode: match.params.shortcode } : false;
   }
@@ -146,9 +150,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     skip: !itemId,
     onCompleted: (data) => {
       if (data) {
-        item = data[listItem][listItem];
+        item = data[listItem] ? data[listItem][listItem] : data[Object.keys(data)[0]][listItem];
         if (item) {
-          setLink(data[listItem][listItem][linkParameter]);
+          setIsLoadedData(true);
+          setLink(data[listItem] ? data[listItem][listItem][linkParameter] : item.linkParameter);
           setStates(item);
           setLanguageId(languageSupport ? item.language.id : null);
         }
@@ -159,16 +164,25 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [updateItem] = useMutation(updateItemQuery, {
     onCompleted: (data) => {
-      const itemUpdated = Object.keys(data)[0];
+      let itemUpdatedObject: any = Object.keys(data)[0];
+      itemUpdatedObject = data[itemUpdatedObject];
+      const updatedItem = itemUpdatedObject[listItem];
+      const { errors } = itemUpdatedObject;
 
-      if (data[itemUpdated] && data[itemUpdated].errors) {
+      if (itemUpdatedObject && errors) {
         if (customHandler) {
-          customHandler(client, data[itemUpdated].errors);
+          customHandler(client, errors);
         } else {
-          setErrorMessage(client, data[itemUpdated].errors[0]);
+          setErrorMessage(client, errors[0]);
+        }
+      } else if (updatedItem && typeof updatedItem.isValid === 'boolean' && !updatedItem.isValid) {
+        if (customError) {
+          // this is a custom error for extensions. We need to move this out of this component
+          const codeErrors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(codeErrors);
         }
       } else {
-        if (type === 'copy') setLink(data[itemUpdated][listItem][linkParameter]);
+        if (type === 'copy') setLink(updatedItem[linkParameter]);
         if (additionalQuery) {
           additionalQuery(itemId);
         }
@@ -203,18 +217,27 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
   const [createItem] = useMutation(createItemQuery, {
     onCompleted: (data) => {
-      const itemCreated = `create${camelCaseItem}`;
-      if (data[itemCreated].errors) {
+      let itemCreatedObject: any = `create${camelCaseItem}`;
+      itemCreatedObject = data[itemCreatedObject];
+      const itemCreated = itemCreatedObject[listItem];
+
+      const { errors } = itemCreatedObject;
+      if (errors) {
         if (customHandler) {
-          customHandler(client, data[itemCreated].errors);
+          customHandler(client, errors);
         } else {
-          setErrorMessage(client, data[itemCreated].errors[0]);
+          setErrorMessage(client, errors[0]);
+        }
+      } else if (itemCreated && typeof itemCreated.isValid === 'boolean' && !itemCreated.isValid) {
+        if (customError) {
+          const codeErrors = { code: 'Failed to compile code. Please check again' };
+          customError.setErrors(codeErrors);
         }
       } else {
         if (additionalQuery) {
-          additionalQuery(data[`create${camelCaseItem}`][listItem].id);
+          additionalQuery(itemCreated.id);
         }
-        if (!itemId) setLink(data[itemCreated][listItem][linkParameter]);
+        if (!itemId) setLink(itemCreated[linkParameter]);
         setFormSubmitted(true);
         // emit data after save
         if (afterSave) {
@@ -223,6 +246,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         // display successful message after create
         setNotification(client, `${capitalListItemName} created successfully!`);
       }
+      setIsLoadedData(true);
       onSaveClick(false);
     },
     refetchQueries: () => {
@@ -246,15 +270,22 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setErrorMessage(client, error);
     return null;
   }
-
   const performTask = (payload: any) => {
     if (itemId) {
-      updateItem({
-        variables: {
-          id: itemId,
-          input: payload,
-        },
-      });
+      if (isLoadedData) {
+        updateItem({
+          variables: {
+            [idType]: itemId,
+            input: payload,
+          },
+        });
+      } else {
+        createItem({
+          variables: {
+            input: payload,
+          },
+        });
+      }
     } else {
       createItem({
         variables: {
@@ -269,7 +300,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       ...itemData,
       ...defaultAttribute,
     };
-
     payload = languageSupport
       ? { ...payload, languageId: Number(languageIdValue) }
       : { ...payload };
@@ -283,7 +313,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (data && data.heading && type === 'search') return;
       }
     }
-
     // remove fields from the payload that marked as skipPayload = true
     formFields.forEach((field: any) => {
       if (field.additionalState) {
@@ -325,7 +354,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   if (formSubmitted && redirect) {
-    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+    if (action && link) {
+      window.location.href = `${additionalAction.link}/${link}`;
+    }
+    return <Redirect to={`/${redirectionLink}`} />;
   }
 
   if (deleted) {
@@ -385,7 +417,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           languageId,
         }}
         validationSchema={validationSchema}
-        onSubmit={(itemData) => {
+        onSubmit={(itemData, { setErrors }) => {
+          // when you want to show custom error on form field and error message is not coming from api
+          setCustomError({ setErrors });
+
           saveHandler(itemData);
           onSaveClick(true);
         }}
@@ -448,6 +483,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const handleDeleteItem = () => {
     deleteItem({ variables: { id: itemId } });
   };
+
   let dialogBox;
 
   if (showDialog) {
