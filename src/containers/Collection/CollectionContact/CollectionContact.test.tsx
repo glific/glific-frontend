@@ -6,7 +6,12 @@ import { CollectionContact } from './CollectionContact';
 import { countCollectionContactsQuery } from '../../../mocks/Contact';
 import { getCollectionQuery } from '../../../mocks/Collection';
 
-const mocks = [countCollectionContactsQuery, getCollectionQuery, getCollectionQuery];
+const mocks = [
+  countCollectionContactsQuery,
+  countCollectionContactsQuery,
+  getCollectionQuery,
+  getCollectionQuery,
+];
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>

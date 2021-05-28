@@ -108,3 +108,12 @@ export const FILTER_ORGANIZATIONS = gql`
     }
   }
 `;
+
+export const GET_ORGANIZATION_SERVICES = gql`
+  query organizationServices {
+    organizationServices {
+      dialogflow
+      googleCloudStorage
+    }
+  }
+`;

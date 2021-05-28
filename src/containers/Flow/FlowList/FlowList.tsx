@@ -34,7 +34,7 @@ const getDate = (date: string, fallback: string = '') => (
   </div>
 );
 
-const columnStyles = [styles.Name, styles.LastPublished, styles.LastDraft, styles.Actions];
+const columnStyles = [styles.Name, styles.DateColumn, styles.DateColumn, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
 const queries = {

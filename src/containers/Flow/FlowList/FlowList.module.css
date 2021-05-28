@@ -3,13 +3,14 @@
 }
 
 .Name {
-  width: 291px;
+  width: 35%;
+  min-width: 200px;
 }
 
 .Actions {
-  width: 200px;
   justify-content: flex-end;
   margin-left: auto;
+  min-width: 200px;
 }
 
 .LabelText {
@@ -39,9 +40,7 @@
 }
 
 .LastPublished {
-  width: 250px;
   padding-top: 12px;
-  margin-right: 23px;
   text-align: left;
   font-size: 16px;
   color: #93a29b;
@@ -95,4 +94,9 @@
 .Keyword {
   font-size: 12px;
   color: #93a29b !important;
+}
+
+.DateColumn {
+  width: 18%;
+  min-width: 120px;
 }

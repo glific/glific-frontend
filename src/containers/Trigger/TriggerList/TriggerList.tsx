@@ -42,7 +42,7 @@ const getEndDate = (date: any) => (
   <div className={styles.EndDateVal}>{moment(date).format(FULL_DATE_FORMAT)}</div>
 );
 
-const getCollections = (group: any) => <p className={styles.Collection}>{group.label}</p>;
+const getCollections = (group: any) => <div className={styles.Collection}>{group.label}</div>;
 
 const getColumns = ({ endDate, group, frequency, days, flow, startAt, isActive }: any) => ({
   name: getName(flow, startAt, frequency, days, isActive),

@@ -10,6 +10,9 @@ const dialogBox = (
     title={'Are you sure?'}
     handleOk={mockCallbackOK}
     handleCancel={mockCallbackCancel}
+    titleAlign="left"
+    alignButtons="center"
+    contentText="This is context text"
   />
 );
 
@@ -41,4 +44,16 @@ it('should check if callback method is called when confirm button is clicked', (
   const { getByTestId } = render(dialogBox);
   fireEvent.click(getByTestId('ok-button'));
   expect(mockCallbackOK).toHaveBeenCalled();
+});
+
+it('Dialogbox with no ok and cancel buttons', () => {
+  const { container } = render(
+    <DialogBox
+      skipOk
+      skipCancel
+      title="Dialog with no action buttons"
+      handleCancel={mockCallbackCancel}
+    />
+  );
+  expect(container).toBeInTheDocument();
 });
