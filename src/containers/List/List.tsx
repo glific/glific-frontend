@@ -162,13 +162,16 @@ export const List: React.SFC<ListProps> = ({
 
   // get the last sort direction value from local storage if exist else set the default order
   const getSortDirection = (listItemNameValue: string) => {
-    // set column direction
-    let sortDirection: any = 'asc';
+    let sortDirection: any = '';
 
     // set the direction if order is passed explicitly
     if (listOrder) {
       sortDirection = listOrder;
+    } else {
+      // set default column direction
+      sortDirection = 'asc';
     }
+
     // check if we have sorting stored in local storage
     const sortValue = getLastListSessionValues(listItemNameValue, true);
     if (sortValue) {
