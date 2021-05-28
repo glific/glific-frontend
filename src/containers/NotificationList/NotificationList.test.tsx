@@ -1,11 +1,14 @@
-import { render, waitFor, fireEvent, screen, act } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { NotificationList } from './NotificationList';
 import {
   getUnFitleredNotificationCountQuery,
+  getFilteredNotificationsQuery,
   getNotificationsQuery,
+  getCountWithFilter,
+  getCountWithEmptyFilter,
   markAllNotificationAsRead,
 } from '../../mocks/Notifications';
 import { setUserSession } from '../../services/AuthService';
@@ -15,7 +18,11 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 const mocks: any = [
   getUnFitleredNotificationCountQuery,
   getNotificationsQuery,
+  getUnFitleredNotificationCountQuery,
+  getCountWithFilter,
+  getCountWithEmptyFilter,
   markAllNotificationAsRead,
+  getFilteredNotificationsQuery,
 ];
 
 const notifications = (
@@ -31,9 +38,8 @@ test('It should load notifications', async () => {
 
   expect(getByText('Loading...')).toBeInTheDocument();
 
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  });
+  await waitFor(() => {});
+  await waitFor(() => {});
 
   await waitFor(() => {
     expect(getByText('Notifications')).toBeInTheDocument();
@@ -83,4 +89,11 @@ test('it should show copy text and view option on clicking entity ', async () =>
     const doneButton = getByText('Done');
     fireEvent.click(doneButton);
   });
+});
+
+test('it should show filter checkboxes', async () => {
+  const { container, getAllByRole } = render(notifications);
+  await waitFor(() => {});
+  const checkboxInput = screen.getAllByRole('checkbox');
+  fireEvent.click(checkboxInput[0]);
 });

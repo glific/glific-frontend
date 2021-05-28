@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Popover } from '@material-ui/core';
+import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import styles from './NotificationList.module.css';
-import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Unselected.svg';
+import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Selected.svg';
 import { ReactComponent as ViewIcon } from '../../assets/images/icons/View.svg';
 import CopyIcon from '../../assets/images/icons/Copy.png';
 import { List } from '../List/List';
@@ -50,6 +50,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
   const history = useHistory();
+  const [filters, setFilters] = useState<any>({
+    Critical: true,
+    Warning: false,
+  });
+  let filterValue: any = '';
+
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
@@ -168,8 +174,44 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
       </div>
     </Popover>
   );
+
+  const severityList = ['Critical', 'Warning'];
+
+  const handleCheckedBox = (event: any) => {
+    setFilters({ ...filters, [event.target.name]: event.target.checked });
+  };
+
+  const filterName = Object.keys(filters).filter((k) => filters[k] === true);
+  if (filterName.length === 1) {
+    [filterValue] = filterName;
+  }
+
+  const filterOnSeverity = (
+    <div className={styles.Filters}>
+      {severityList.map((label, index) => {
+        const key = index;
+        return (
+          <FormControlLabel
+            key={key}
+            control={
+              <Checkbox
+                checked={filters[label]}
+                color="primary"
+                onChange={handleCheckedBox}
+                name={severityList[index]}
+              />
+            }
+            label={severityList[index]}
+            classes={{
+              label: styles.FilterLabel,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
   return (
-    <>
+    <div>
       <List
         title="Notifications"
         listItem="notifications"
@@ -184,9 +226,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         additionalAction={additionalAction}
         {...columnAttributes}
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
+        filters={{ severity: filterValue }}
+        filterList={filterOnSeverity}
+        listOrder="desc"
       />
       {popover}
-    </>
+    </div>
   );
 };
 
