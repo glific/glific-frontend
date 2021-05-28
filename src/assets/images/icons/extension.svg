@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="23px" viewBox="0 0 24 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Code extension - heading</title>
+    <g id="Extension-code" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Extension-code" transform="translate(-269.000000, -28.000000)" stroke="#073F24" stroke-width="2.5">
+            <g id="Extension-code---heading" transform="translate(257.000000, 16.000000)">
+                <g id="Code-extension---heading" transform="translate(12.000000, 14.000000)">
+                    <g id="Group" transform="translate(12.000000, 9.696970) scale(-1, 1) rotate(90.000000) translate(-12.000000, -9.696970) translate(2.303030, -2.303030)">
+                        <path d="M9.6969697,19 C15.0524582,19 19.3939394,14.6585188 19.3939394,9.3030303 L19.3939394,5.66666667 L0,5.66666667 L0,9.3030303 C0,14.6585188 4.34148121,19 9.6969697,19 Z" id="Oval" stroke-linejoin="round"></path>
+                        <line x1="5.6969697" y1="5.33333333" x2="5.6969697" y2="1.18423789e-15" id="Path-22"></line>
+                        <line x1="13.6969697" y1="5.33333333" x2="13.6969697" y2="1.18423789e-15" id="Path-22-Copy"></line>
+                        <line x1="9.6969697" y1="18.6301833" x2="9.6969697" y2="24" id="Path-32"></line>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

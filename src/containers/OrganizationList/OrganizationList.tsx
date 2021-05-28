@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { IconButton, OutlinedInput } from '@material-ui/core';
@@ -18,6 +20,8 @@ import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activa
 import { ReactComponent as UnblockIcon } from '../../assets/images/icons/Unblock.svg';
 import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
 import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
+import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
+
 import { setNotification } from '../../common/notification';
 
 export interface OrganizationListProps {}
@@ -32,6 +36,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const { t } = useTranslation();
   const client = useApolloClient();
   const [orgName, setOrgName] = useState('');
+  const history = useHistory();
 
   const columnNames = ['NAME', 'IS APPROVED', 'IS ACTIVE', 'ACTIONS'];
 
@@ -83,7 +88,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
   const approveIcon = <UnblockIcon />;
   const activeIcon = <ActivateIcon />;
-
+  const extensionIcon = <ExtensionIcon />;
   const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
   const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
 
@@ -181,9 +186,19 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     };
   };
 
+  const addExtension = (id: any) => {
+    history.push({ pathname: `/organizations/${id}/extensions` });
+  };
+
   const dialogMessage = deleteDialogue;
 
   const additionalActions = [
+    {
+      icon: extensionIcon,
+      parameter: 'id',
+      label: t('Extension code'),
+      dialog: addExtension,
+    },
     {
       icon: approveIcon,
       parameter: 'id',
@@ -197,7 +212,6 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       button: activateButton,
     },
   ];
-
   const addNewButton = { show: false, label: 'Add New' };
   const restrictedAction = () => ({ delete: false, edit: false });
 
