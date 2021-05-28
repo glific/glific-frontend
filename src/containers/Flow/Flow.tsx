@@ -93,11 +93,6 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       component: Checkbox,
-      name: 'isActive',
-      title: t('Is active?'),
-    },
-    {
-      component: Checkbox,
       name: 'ignoreKeywords',
       title: t('Ignore Keywords'),
       info: {
@@ -105,6 +100,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
           'If activated, users will not be able to change this flow by entering keyword for any other flow.'
         ),
       },
+    },
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Is active?'),
     },
   ];
 

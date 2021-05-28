@@ -103,7 +103,7 @@ export const filterFlowQuery = {
   },
 };
 
-export const getFlowDetailsQuery = {
+const getFlowDetails = (isActive = true, keywords = ['help']) => ({
   request: {
     query: GET_FLOW_DETAILS,
     variables: {
@@ -118,14 +118,18 @@ export const getFlowDetailsQuery = {
     data: {
       flows: [
         {
-          isActive: true,
+          isActive,
           name: 'help workflow',
-          keywords: ['help'],
+          keywords,
         },
       ],
     },
   },
-};
+});
+
+export const getActiveFlow = getFlowDetails();
+export const getInactiveFlow = getFlowDetails(false);
+export const getFlowWithoutKeyword = getFlowDetails(true, []);
 
 export const getFlowCountQuery = {
   request: {
