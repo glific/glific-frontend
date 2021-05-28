@@ -8,6 +8,7 @@ import { getUserRole } from '../../context/role';
 import { useToast } from '../../services/ToastService';
 import { Chat } from '../../containers/Chat/Chat';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
+import Extensions from '../../containers/Extensions/Extensions';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -93,6 +94,7 @@ const routeStaff = (
     <Route path="/user-profile" exact component={UserProfile} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/blocked-contacts" exact component={BlockContactList} />
+
     <Route path="/myaccount" exact component={MyAccount} />
     <Route path="/" render={defaultRedirect} />
   </Switch>
@@ -182,10 +184,11 @@ const routeAdmin = (
       component={({ match }: any) => <ContactFieldList openDialog match={match} />}
     />
     <Route
-      path="/contact-fields/:id/edit"
+      path="/organizations/:id/extensions"
       exact
-      component={({ match }: any) => <ContactFieldList openDialog match={match} />}
+      component={({ match }: any) => <Extensions openDialog match={match} />}
     />
+
     <Route path="/" render={defaultRedirect} />
   </Switch>
 );

@@ -1,0 +1,25 @@
+.ExtensionIcon {
+  width: 29px;
+  height: 29px;
+}
+.Dialogbox {
+  border-radius: 32px !important;
+  margin: 0px;
+  min-width: 456px;
+}
+
+.DialogContent {
+  padding: 0px 0px 4px 0px !important;
+  max-height: 500px;
+  overflow: hidden !important;
+}
+
+.Form input[type='text'],
+.Form textarea,
+.Form > div:nth-child(3) p {
+  color: #93a29b;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+}

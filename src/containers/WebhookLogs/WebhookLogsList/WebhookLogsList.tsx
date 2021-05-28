@@ -184,7 +184,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
     </Popover>
   );
   return (
-    <>
+    <div className={styles.Container}>
       <List
         title={t('Webhook Logs')}
         listItem="webhookLogs"
@@ -200,7 +200,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
         removeSortBy={['STATUS']}
       />
       {popover}
-    </>
+    </div>
   );
 };
 

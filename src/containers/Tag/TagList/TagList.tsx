@@ -42,7 +42,7 @@ const columnStyles = [
   styles.Label,
   styles.Description,
   styles.Keywords,
-  styles.LastModified,
+  styles.LastModifiedColumn,
   styles.Actions,
 ];
 const tagIcon = <TagIcon className={styles.TagIcon} />;

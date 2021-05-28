@@ -3,7 +3,7 @@ import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { getFlowDetailsQuery, publishFlow } from '../../mocks/Flow';
+import { getFlowDetailsQuery, getOrganisationServicesQuery, publishFlow } from '../../mocks/Flow';
 import { conversationQuery } from '../../mocks/Chat';
 import {
   simulatorGetQuery,
@@ -19,7 +19,11 @@ const mocks = [
   simulatorReleaseQuery,
   simulatorGetQuery,
   publishFlow,
+  getOrganisationServicesQuery,
 ];
+
+window.showFlowEditor = (node: any, config: any) => jest.fn();
+
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <MemoryRouter>
