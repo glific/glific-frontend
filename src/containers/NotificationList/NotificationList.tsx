@@ -228,6 +228,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         removeSortBy={[t('Entity'), t('Severity'), t('Category')]}
         filters={{ severity: filterValue }}
         filterList={filterOnSeverity}
+        listOrder="desc"
       />
       {popover}
     </div>

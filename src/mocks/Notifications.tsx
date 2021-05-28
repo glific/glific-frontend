@@ -6,7 +6,7 @@ export const getNotificationsQuery = {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: { severity: 'Critical' },
-      opts: { limit: 50, offset: 0, order: 'ASC' },
+      opts: { limit: 50, offset: 0, order: 'DESC' },
     },
   },
   result: {
@@ -33,7 +33,7 @@ export const getFilteredNotificationsQuery = {
     query: FILTER_NOTIFICATIONS,
     variables: {
       filter: { severity: 'Warning' },
-      opts: { limit: 50, offset: 0, order: 'ASC' },
+      opts: { limit: 50, offset: 0, order: 'DESC' },
     },
   },
   result: {
