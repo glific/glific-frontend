@@ -150,7 +150,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
         editSupport={false}
-        backLinkButton={{ text: t('Back to flows'), link: '/webhook-logs' }}
+        backLinkButton={{ text: t('Back to flows'), link: '/flow' }}
         {...queries}
         {...columnAttributes}
       />
