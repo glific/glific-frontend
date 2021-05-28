@@ -354,7 +354,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   if (formSubmitted && redirect) {
-    return <Redirect to={action ? `${additionalAction.link}/${link}` : `/${redirectionLink}`} />;
+    if (action && link) {
+      window.location.href = `${additionalAction.link}/${link}`;
+    }
+    return <Redirect to={`/${redirectionLink}`} />;
   }
 
   if (deleted) {
