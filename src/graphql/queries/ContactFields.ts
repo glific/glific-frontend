@@ -20,9 +20,9 @@ export const GET_ALL_CONTACT_FIELDS = gql`
 `;
 
 export const GET_CONTACT_FIELD_BY_ID = gql`
-  query contacts_field($id: ID!) {
-    contacts_field(id: $id) {
-      contacts_field {
+  query contactsField($id: ID!) {
+    contactsField(id: $id) {
+      contactsField {
         valueType
         updatedAt
         shortcode
