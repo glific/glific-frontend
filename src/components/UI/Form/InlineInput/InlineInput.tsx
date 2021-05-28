@@ -1,49 +1,60 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import { Input } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import React, { useState, useEffect, createRef } from 'react';
+import { TextField } from '@material-ui/core';
+import { ReactComponent as Icon } from '../../../../assets/images/icons/Green.svg';
 
-interface InlineInputProps {
-  valueProxy: string;
-  type?: string;
-  submitCallback: any;
+import styles from './InlineInput.module.css';
+
+export interface InlineInputProps {
+  value: string;
+  label?: string;
+  closeModal: any;
+  callback: any;
 }
 
-const InlineInput: React.SFC<InlineInputProps> = ({
-  valueProxy,
-  type = 'text',
-  submitCallback,
+export const InlineInput: React.SFC<InlineInputProps> = ({
+  value,
+  closeModal,
+  callback,
+  label = 'Input',
 }) => {
-  const handleSubmit = (value: any) => {
-    submitCallback(value);
+  const [inputVal, setInputVal] = useState(value);
+  const containerRef: any = createRef();
+
+  const handleCallback = () => {
+    if (inputVal) {
+      callback(inputVal);
+    }
   };
 
-  const validationSchema = Yup.object().shape({
-    value: Yup.string().required('Required'),
-  });
-
-  const initialValues = {
-    value: valueProxy,
+  const handleClose = (e: any) => {
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
+      closeModal();
+    }
   };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClose);
+    return () => document.removeEventListener('mousedown', handleClose);
+  }, []);
+
+  const endAdornment = <Icon onClick={handleCallback} className={styles.Icon} title="Save" />;
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={(values) => {
-        // same shape as initial values
-        console.log(values);
-        handleSubmit(values);
-      }}
-    >
-      {({ errors, touched }) => (
-        <Form>
-          <Input name="value" type={type} />
-          {errors.value && touched.value ? <div>{errors.value}</div> : null}
-          <button type="submit">Submit</button>
-        </Form>
-      )}
-    </Formik>
+    <div ref={containerRef} onBlur={handleClose}>
+      <TextField
+        variant="outlined"
+        value={inputVal}
+        label={label}
+        fullWidth
+        onChange={(event) => setInputVal(event.target.value)}
+        InputProps={{
+          classes: {
+            input: styles.InlineInput,
+          },
+          endAdornment,
+        }}
+        autoFocus
+      />
+    </div>
   );
 };
