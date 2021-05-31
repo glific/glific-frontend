@@ -17,6 +17,7 @@ export const GET_FLOW = gql`
         id
         name
         uuid
+        isActive
         keywords
         ignoreKeywords
       }
@@ -48,6 +49,7 @@ export const FILTER_FLOW = gql`
 export const GET_FLOW_DETAILS = gql`
   query getFlowName($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
+      isActive
       name
       keywords
     }

@@ -35,14 +35,16 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const location = useLocation();
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const states = { name, keywords, ignoreKeywords };
+  const states = { isActive, name, keywords, ignoreKeywords };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
+    isActive: isActiveValue,
     ignoreKeywords: ignoreKeywordsValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
@@ -52,7 +54,9 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       fieldName = `Copy of ${nameValue}`;
       fieldKeywords = '';
     }
+
     setName(fieldName);
+    setIsActive(isActiveValue);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -96,6 +100,11 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
           'If activated, users will not be able to change this flow by entering keyword for any other flow.'
         ),
       },
+    },
+    {
+      component: Checkbox,
+      name: 'isActive',
+      title: t('Is active?'),
     },
   ];
 

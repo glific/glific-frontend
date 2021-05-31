@@ -17,6 +17,7 @@ export const CREATE_FLOW = gql`
       flow {
         id
         name
+        isActive
         uuid
       }
       errors {
@@ -33,6 +34,7 @@ export const UPDATE_FLOW = gql`
       flow {
         id
         name
+        isActive
         uuid
       }
       errors {

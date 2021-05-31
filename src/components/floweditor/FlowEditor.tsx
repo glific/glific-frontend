@@ -217,6 +217,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       opts: {},
     },
   });
+
   let flowTitle: any;
 
   // flowname can return an empty array if the uuid present is not correct
@@ -341,11 +342,15 @@ export const FlowEditor = (props: FlowEditorProps) => {
   };
 
   const getFlowKeyword = () => {
-    if (flowName && flowName.flows.length > 0) {
-      if (flowName.flows[0].keywords.length > 0) {
-        setFlowKeyword(`draft:${flowName.flows[0].keywords[0]}`);
-      } else {
+    const flows = flowName ? flowName.flows : null;
+    if (flows && flows.length > 0) {
+      const { isActive, keywords } = flows[0];
+      if (isActive && keywords.length > 0) {
+        setFlowKeyword(`draft:${keywords[0]}`);
+      } else if (keywords.length === 0) {
         setFlowKeyword('No keyword found');
+      } else {
+        setFlowKeyword('Sorry, the flow is not active');
       }
     }
   };
