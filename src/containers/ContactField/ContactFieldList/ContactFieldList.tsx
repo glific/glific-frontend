@@ -16,7 +16,7 @@ import {
   DELETE_CONTACT_FIELDS,
   UPDATE_CONTACT_FIELDS,
 } from '../../../graphql/mutations/ContactFields';
-import { ReactComponent as ContactVariableIcon } from '../../../assets/images/icons/ContactVariable.svg';
+import { ReactComponent as ContactVariableIcon } from '../../../assets/images/icons/ContactVariableDark.svg';
 import { ReactComponent as EditIcon } from '../../../assets/images/icons/GreenEdit.svg';
 
 interface ContactFieldListProps {
