@@ -44,8 +44,3 @@
   font-size: 16px;
   font-family: 'Heebo', sans-serif;
 }
-
-.Edit div > fieldset {
-  color: green;
-  border: green solid 2px;
-}

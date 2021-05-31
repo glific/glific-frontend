@@ -117,7 +117,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
   };
 
   const getColumns = (row: any) => ({
-    variableName: getName(row.shortcode),
+    variableName: getName(row.variable),
     name: getOtherColumn(row, 'name'),
     shortcode: getOtherColumn(row, 'shortcode'),
   });
@@ -128,16 +128,14 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     columnStyles: [styles.Label, styles.OtherColumn, styles.OtherColumn, styles.Actions],
   };
 
-  const listIcon = (
-    <ContactVariableIcon className={styles.ConsultingHoursIcon} color="primary.dark" />
-  );
+  const listIcon = <ContactVariableIcon className={styles.ContactFieldIcon} color="primary.dark" />;
   const dialogMessage = 'This action cannot be undone.';
   const dialogTitle = 'Are you sure you want to delete this contact field record?';
 
   return (
     <>
       <List
-        title={t('Contact Fields')}
+        title={t('Contact Variables')}
         listItem="contactsFields"
         listItemName="contactField"
         pageLink="contact-fields"

@@ -31,11 +31,6 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
     shortcode,
   };
 
-  const setStates = ({ shortcode: _shortcode, name: _name }: any) => {
-    setName(_name);
-    setShortcode(_shortcode);
-  };
-
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('name is required.')),
     shortcode: Yup.string()
@@ -75,7 +70,7 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
   const consultHourIcon = <ContactVariableIcon className={styles.ContactFieldIcon} />;
 
   return (
-    <div className={`${styles.Layout} ${match.params.id ? styles.Edit : ''}`}>
+    <div className={styles.Layout}>
       <FormLayout
         {...queries}
         title={t('Add contact fields')}
@@ -89,7 +84,7 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
           },
         ]}
         states={states}
-        setStates={setStates}
+        setStates={null}
         validationSchema={FormSchema}
         dialogMessage={dialogMessage}
         formFields={formFields}

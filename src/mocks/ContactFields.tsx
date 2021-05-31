@@ -3,6 +3,7 @@ import { UPDATE_CONTACT_FIELDS } from '../graphql/mutations/ContactFields';
 
 const contactFieldsListMock = [
   {
+    variable: '@contact.fields.age_group',
     valueType: 'TEXT',
     updatedAt: '2021-05-31T02:46:05Z',
     shortcode: 'age_group',
@@ -17,6 +18,7 @@ const contactFieldsListMock = [
     },
   },
   {
+    variable: '@contact.fields.dob',
     valueType: 'TEXT',
     updatedAt: '2021-05-31T02:46:05Z',
     shortcode: 'dob',
