@@ -18,11 +18,14 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
   label = 'Input',
 }) => {
   const [inputVal, setInputVal] = useState(value);
+  const [isError, setIsError] = useState(false);
   const containerRef: any = createRef();
 
   const handleCallback = () => {
     if (inputVal) {
       callback(inputVal);
+    } else {
+      setIsError(true);
     }
   };
 
@@ -35,7 +38,7 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
   useEffect(() => {
     document.addEventListener('mousedown', handleClose);
     return () => document.removeEventListener('mousedown', handleClose);
-  }, []);
+  });
 
   const endAdornment = (
     <Icon onClick={handleCallback} className={styles.Icon} title="Save" data-testid="save-button" />
@@ -57,6 +60,7 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
         }}
         autoFocus
       />
+      {isError ? <p className={styles.ErrorText}>Required</p> : null}
     </div>
   );
 };

@@ -3,7 +3,6 @@ import { InlineInput } from './InlineInput';
 
 const props = {
   value: '',
-  label: 'Input',
   closeModal: jest.fn(),
   callback: jest.fn(),
 };
@@ -11,13 +10,22 @@ const props = {
 test('it should render component', async () => {
   render(<InlineInput {...props} />);
   const inputElements = screen.getAllByRole('textbox');
-  await waitFor(() => {
-    fireEvent.change(inputElements[0], { target: { value: 'Glific' } });
-  });
+  fireEvent.change(inputElements[0], { target: { value: 'Glific' } });
+  await waitFor(() => {});
 
   const saveButton = screen.getByTitle('Save');
   fireEvent.click(saveButton);
   expect(props.callback).toHaveBeenCalledTimes(1);
 
   fireEvent.mouseDown(window.document);
+});
+
+test('it should render component with error', async () => {
+  render(<InlineInput {...props} />);
+  const inputElements = screen.getAllByRole('textbox');
+  fireEvent.change(inputElements[0], { target: { value: '' } });
+  await waitFor(() => {});
+
+  const saveButton = screen.getByTitle('Save');
+  fireEvent.click(saveButton);
 });

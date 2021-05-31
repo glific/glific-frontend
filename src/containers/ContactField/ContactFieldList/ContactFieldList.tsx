@@ -33,26 +33,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
   const { t } = useTranslation();
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
 
-  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS, {
-    update(cache, { data: updateContactsField }) {
-      const existingList: Array<any> | any = cache.readQuery({
-        query: GET_ALL_CONTACT_FIELDS,
-        variables: setVariables(),
-      });
-      console.log({ existingList, updateContactsField });
-      // const updatedList = existingList.data.contactsFields.map((contactField: any) => {
-      //   if(contactField.id === updateContactsField.id){
-      //     return updateContactsField
-      //   }
-      //   return contactField
-      // })
-
-      // cache.writeQuery({
-      //   query: GET_ALL_CONTACT_FIELDS,
-      //   data: {contactsFields: updatedList}
-      // });
-    },
-  });
+  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS);
 
   const queries = {
     countQuery: COUNT_CONTACT_FIELDS,
