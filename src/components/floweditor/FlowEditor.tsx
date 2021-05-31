@@ -18,10 +18,11 @@ import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
 import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 import { setAuthHeaders } from '../../services/AuthService';
 import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
+import { Loading } from '../UI/Layout/Loading/Loading';
 
 declare function showFlowEditor(node: any, config: any): void;
 
-const loadfiles = () => {
+const loadfiles = (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
   let index = 0;
@@ -30,6 +31,11 @@ const loadfiles = () => {
       if (filesToLoad[fileName].endsWith('.js')) {
         index += 1;
         const script = document.createElement('script');
+        if (index === 2) {
+          script.onload = () => {
+            startFlowEditor();
+          };
+        }
         script.src = filesToLoad[fileName];
         script.id = `flowEditorScript${index}`;
         script.async = false;
@@ -150,6 +156,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const { uuid } = match.params;
   const [publishDialog, setPublishDialog] = useState(false);
   const [simulatorId, setSimulatorId] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
@@ -163,7 +170,20 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let modal = null;
   let dialog = null;
 
-  const [getOrganizationServices, { data: services }] = useLazyQuery(GET_ORGANIZATION_SERVICES);
+  const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
+    onCompleted: (services) => {
+      const { dialogflow, googleCloudStorage } = services.organizationServices;
+
+      if (googleCloudStorage) {
+        config.attachmentsEnabled = true;
+      }
+      if (!dialogflow) {
+        config.excludeTypes.push('split_by_intent');
+      }
+      showFlowEditor(document.getElementById('flow'), config);
+      setLoading(false);
+    },
+  });
 
   const [publishFlow] = useMutation(PUBLISH_FLOW, {
     onCompleted: (data) => {
@@ -236,8 +256,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   useEffect(() => {
     const { fetch, xmlSend } = setAuthHeaders();
-    const files = loadfiles();
-    getOrganizationServices();
+    const files = loadfiles(() => {
+      getOrganizationServices();
+    });
 
     return () => {
       Object.keys(files).forEach((node: any) => {
@@ -254,25 +275,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
       window.fetch = fetch;
     };
   }, []);
-
-  useEffect(() => {
-    if (services) {
-      // check if runtime main file is present and then load
-      const lastFile: HTMLScriptElement | null = document.body.querySelector('#flowEditorScript2');
-      if (lastFile) {
-        const { dialogflow, googleCloudStorage } = services.organizationServices;
-
-        if (googleCloudStorage) {
-          config.attachmentsEnabled = true;
-        }
-        if (!dialogflow) {
-          config.excludeTypes.push('split_by_intent');
-        }
-
-        showFlowEditor(document.getElementById('flow'), config);
-      }
-    }
-  }, [config, services]);
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
@@ -429,6 +431,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           ) : null}
         </div>
         <div id="flow" />
+        {loading && <Loading />}
       </div>
     </>
   );
