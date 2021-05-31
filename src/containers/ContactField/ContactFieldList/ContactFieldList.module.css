@@ -1,0 +1,90 @@
+.ContactFieldIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Label {
+  width: 40%;
+}
+
+.LabelText {
+  font-family: 'heebo', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #073f24;
+  line-height: 1.25;
+}
+
+.OtherColumnContainer {
+  position: relative;
+}
+
+.OtherColumnEditContainer {
+  position: absolute;
+  top: 24px;
+  background: white;
+  width: 320px;
+  min-width: 140px;
+  padding: 8px;
+  box-shadow: 0px 1px 4px 0px;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+.OtherColumnText {
+  font-family: 'heebo', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+}
+
+.OtherColumnText > span {
+  padding: 8px;
+  margin-left: -8px;
+  background: radial-gradient(white, transparent);
+}
+
+.OtherColumnText > span > button {
+  padding: 0px !important;
+  min-width: auto !important;
+}
+
+.LabelContainer {
+  height: fit-content;
+  align-items: baseline;
+  align-content: center;
+}
+
+.OtherColumn {
+  display: flex;
+  align-content: center;
+  width: 20%;
+}
+
+.Actions {
+  width: 20%;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.Dialogbox {
+  border-radius: 32px !important;
+  margin: 0px;
+  min-width: 456px;
+}
+
+.DialogContent {
+  padding: 0px 0px 4px 0px !important;
+}
+
+.BackToFlows {
+  color: #119656;
+  position: fixed;
+  top: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  left: 262px;
+  cursor: pointer;
+  text-decoration: none;
+}

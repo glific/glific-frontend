@@ -1,0 +1,21 @@
+.Icon {
+  width: 24px;
+  height: 24px;
+  color: green;
+  cursor: pointer;
+}
+
+.InlineInput {
+  padding: 14px !important;
+}
+
+.Container {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.ErrorText {
+  color: red;
+  margin: 4px;
+}

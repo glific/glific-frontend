@@ -1,0 +1,46 @@
+.ContactFieldIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Layout {
+  height: 100%;
+}
+
+.Layout > div {
+  height: 100%;
+}
+
+.Layout > div > h5 {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 20px;
+}
+
+.Form {
+  width: 456px;
+}
+
+.Form > div:nth-of-type(3) {
+  width: 100% !important;
+}
+
+.Form > div:nth-of-type(3) > div {
+  width: 100% !important;
+}
+
+.Form input[type='text'] {
+  color: #93a29b;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+}
+
+.Form textarea {
+  color: #93a29b;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+}
