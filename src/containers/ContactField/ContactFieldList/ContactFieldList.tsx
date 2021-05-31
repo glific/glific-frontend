@@ -73,7 +73,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     setItemToBeEdited(null);
   };
 
-  const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'SHORTCODE'];
+  const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'SHORTCODE', 'ACTIONS'];
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>

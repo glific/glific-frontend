@@ -37,7 +37,9 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
     return () => document.removeEventListener('mousedown', handleClose);
   }, []);
 
-  const endAdornment = <Icon onClick={handleCallback} className={styles.Icon} title="Save" />;
+  const endAdornment = (
+    <Icon onClick={handleCallback} className={styles.Icon} title="Save" data-testid="save-button" />
+  );
 
   return (
     <div ref={containerRef} onBlur={handleClose}>
