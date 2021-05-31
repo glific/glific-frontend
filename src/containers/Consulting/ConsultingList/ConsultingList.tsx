@@ -11,7 +11,6 @@ import {
   GET_CONSULTING_HOURS,
   GET_CONSULTING_HOURS_COUNT,
 } from '../../../graphql/queries/Consulting';
-import { DELETE_CONSULTING_HOURS } from '../../../graphql/mutations/Consulting';
 import { ReactComponent as ConsultingIcon } from '../../../assets/images/icons/icon-consulting.svg';
 
 interface ConsultingListProps {
@@ -25,7 +24,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
   const queries = {
     countQuery: GET_CONSULTING_HOURS_COUNT,
     filterItemsQuery: GET_CONSULTING_HOURS,
-    deleteItemQuery: DELETE_CONSULTING_HOURS,
+    deleteItemQuery: null,
   };
 
   const columnNames = ['NAME', 'DATE', 'MINUTES', 'TYPE', 'ACTIONS'];
@@ -71,6 +70,8 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
   const dialogMessage = 'This action cannot be undone.';
   const dialogTitle = 'Are you sure you want to delete this consulting record?';
 
+  const restrictedAction = () => ({ delete: false, edit: true });
+
   return (
     <>
       <List
@@ -83,6 +84,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
           query: GET_CONSULTING_HOURS,
           variables: setVariables(),
         }}
+        restrictedAction={restrictedAction}
         searchParameter="organizationName"
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
