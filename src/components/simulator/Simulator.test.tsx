@@ -66,29 +66,29 @@ test('opened simulator should close when click of simulator icon', async () => {
   });
 });
 
-// test('send a message from the simulator', async () => {
-//   defaultProps.showSimulator = true;
-//   const { getByTestId } = render(
-//     <MockedProvider mocks={mocks}>
-//       <Simulator {...defaultProps} />
-//     </MockedProvider>
-//   );
+test('send a message from the simulator', async () => {
+  defaultProps.showSimulator = true;
+  const { getByTestId } = render(
+    <MockedProvider mocks={mocks}>
+      <Simulator {...defaultProps} />
+    </MockedProvider>
+  );
 
-//   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
-//   const input = getByTestId('simulatorInput');
-//   fireEvent.change(input, { target: { value: 'something' } });
+  const input = getByTestId('simulatorInput');
+  fireEvent.change(input, { target: { value: 'something' } });
 
-//   await waitFor(() => {
-//     fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
-//   });
+  await waitFor(() => {
+    fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+  });
 
-//   const responseData = { data: {} };
-//   mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
-//   await waitFor(() => {
-//     expect(input).toHaveTextContent('');
-//   });
-// });
+  const responseData = { data: {} };
+  mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+  await waitFor(() => {
+    expect(input).toHaveTextContent('');
+  });
+});
 
 test('click on clear icon closes the simulator', async () => {
   defaultProps.showSimulator = true;
