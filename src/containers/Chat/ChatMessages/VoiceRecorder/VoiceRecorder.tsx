@@ -15,11 +15,10 @@ export interface VoiceRecorderProps {
   clearAudio: any;
   uploading?: boolean;
   isMicActive?: boolean;
-  setIsMicActive?: any;
 }
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
-  const { handleAudioRecording, clearAudio, uploading, setIsMicActive, isMicActive } = props;
+  const { handleAudioRecording, clearAudio, uploading, isMicActive } = props;
   const [showRecordCounter, setShowRecordCounter] = useState(false);
 
   const { t } = useTranslation();
@@ -51,7 +50,6 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     // start recording
     startRecording();
 
-    setIsMicActive(true);
     // show indicator
     setShowRecordCounter(true);
   };
@@ -69,7 +67,6 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     clearBlobUrl();
 
     handleAudioRecording('');
-    setIsMicActive(false);
   };
 
   let audioPreview;

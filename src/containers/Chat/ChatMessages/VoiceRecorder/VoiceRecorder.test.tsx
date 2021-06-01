@@ -4,12 +4,10 @@ import * as useReactMediaRecorder from 'react-media-recorder/';
 import { useState } from 'react';
 
 const handleAudioRecordingMock = jest.fn();
-const setIsMicActive = jest.fn();
 const defaultProps = {
   handleAudioRecording: handleAudioRecordingMock,
   clearAudio: false,
   isMicActive: false,
-  setIsMicActive: setIsMicActive,
 };
 
 afterEach(() => jest.restoreAllMocks());

@@ -66,7 +66,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
   const [uploading, setUploading] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
 
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
@@ -118,7 +117,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
         setClearAudio(true);
         setRecordedAudio('');
-        setIsMicActive(!isMicActive);
         setUploading(false);
       }
     },
@@ -319,7 +317,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         clearAudio={clearAudio}
         uploading={uploading}
         isMicActive={recordedAudio !== ''}
-        setIsMicActive={setIsMicActive}
       />
     );
   }
