@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 
 import { Layout } from './Layout';
 import { MemoryRouter } from 'react-router';
@@ -9,7 +9,7 @@ import { walletBalanceQuery, walletBalanceSubscription } from '../../../mocks/Or
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('layout testing', () => {
-  it('renders the appropriate components', () => {
+  it('renders the appropriate components', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
         <MemoryRouter>
@@ -17,6 +17,8 @@ describe('layout testing', () => {
         </MemoryRouter>
       </MockedProvider>
     );
+
+    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
     expect(getByTestId('navbar')).toBeInTheDocument();
     expect(getByTestId('layout')).toBeInTheDocument();
   });
