@@ -13,7 +13,7 @@ import {
 import { GET_ORGANIZATION_EXTENSION } from '../../graphql/queries/Exntesions';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { OrganizationList } from '../OrganizationList/OrganizationList';
-import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
+import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
 import { FormLayout } from '../Form/FormLayout';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 
@@ -21,7 +21,7 @@ export interface ExtensionProps {
   match: any;
   openDialog: boolean;
 }
-const flowIcon = <ConsultingIcon />;
+const extensionIcon = <ExtensionIcon />;
 const queries = {
   getItemQuery: GET_ORGANIZATION_EXTENSION,
   createItemQuery: CREATE_EXTENSION,
@@ -77,7 +77,7 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
           {t('Is active?')}
         </Typography>
       ),
-      onchange: (event: any) => setIsActive(event.target.value),
+      handleChange: (value: any) => setIsActive(value),
     },
   ];
 
@@ -113,7 +113,7 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
             setPayload={setPayload}
             redirectionLink="organizations"
             listItem="Extension"
-            icon={flowIcon}
+            icon={extensionIcon}
             title={title}
             type="Extension"
             languageSupport={false}
