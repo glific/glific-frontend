@@ -309,7 +309,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (isCollection) {
     quickSendTypes = [speedSends, templates];
   }
-
   let audioOption: any;
   // enable audio only if GCS is configured
   if (permission && permission.attachmentsEnabled && !selectedTemplate) {
@@ -319,7 +318,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         handleAudioRecording={handleAudioRecording}
         clearAudio={clearAudio}
         uploading={uploading}
-        isMicActive={isMicActive}
+        isMicActive={recordedAudio !== ''}
         setIsMicActive={setIsMicActive}
       />
     );
