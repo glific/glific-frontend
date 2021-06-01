@@ -335,6 +335,7 @@ test('Contact: if not cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
   // need to check this test
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
