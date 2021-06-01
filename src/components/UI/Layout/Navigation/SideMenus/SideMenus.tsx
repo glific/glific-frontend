@@ -23,6 +23,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     variables: {
       filter: {
         is_read: false,
+        severity: 'critical',
       },
     },
     fetchPolicy: 'network-only',
