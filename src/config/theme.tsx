@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
@@ -55,6 +55,14 @@ const theme = createMuiTheme({
       '@global': {
         // override the pseudo-classes
         '.Mui-disabled': { cursor: 'not-allowed !important' },
+      },
+    },
+    MuiCheckbox: {
+      root: {
+        color: '#073f24',
+        '&$checked': {
+          color: '#119656',
+        },
       },
     },
   },
