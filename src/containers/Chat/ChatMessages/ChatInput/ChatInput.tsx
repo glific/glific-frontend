@@ -66,6 +66,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
   const [uploading, setUploading] = useState(false);
+  const [isMicActive, setIsMicActive] = useState(false);
+
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -100,7 +102,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       }
     },
   });
-
   const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
     onCompleted: (data: any) => {
       if (data) {
@@ -117,6 +118,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
         setClearAudio(true);
         setRecordedAudio('');
+        setIsMicActive(!isMicActive);
         setUploading(false);
       }
     },
@@ -317,6 +319,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         handleAudioRecording={handleAudioRecording}
         clearAudio={clearAudio}
         uploading={uploading}
+        isMicActive={isMicActive}
+        setIsMicActive={setIsMicActive}
       />
     );
   }

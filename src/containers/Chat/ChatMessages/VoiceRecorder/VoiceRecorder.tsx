@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { useReactMediaRecorder } from 'react-media-recorder';
 import { IconButton } from '@material-ui/core';
-import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 import StopIcon from '@material-ui/icons/Stop';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { useTranslation } from 'react-i18next';
+import { ReactComponent as MicIcon } from '../../../../assets/images/icons/Mic/Inactive.svg';
+import { ReactComponent as MicActiveIcon } from '../../../../assets/images/icons/Mic/Active.svg';
 
 import styles from './VoiceRecorder.module.css';
 
@@ -13,13 +14,15 @@ export interface VoiceRecorderProps {
   handleAudioRecording: any;
   clearAudio: any;
   uploading?: boolean;
+  isMicActive?: boolean;
+  setIsMicActive?: any;
 }
 
 export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
-  const { handleAudioRecording, clearAudio, uploading } = props;
+  const { handleAudioRecording, clearAudio, uploading, setIsMicActive, isMicActive } = props;
   const [showRecordCounter, setShowRecordCounter] = useState(false);
-  const { t } = useTranslation();
 
+  const { t } = useTranslation();
   // function to save the recording to a file
   const saveRecording = useCallback(async (blobUrl: string, blob: Blob) => {
     // set the blob for processing
@@ -45,10 +48,10 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   const startCallback = () => {
     // let's clear previous recording
     clearBlobUrl();
-
     // start recording
     startRecording();
 
+    setIsMicActive(true);
     // show indicator
     setShowRecordCounter(true);
   };
@@ -57,7 +60,6 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   const stopCallback = () => {
     // stop recording
     stopRecording();
-
     // show indicator
     setShowRecordCounter(false);
   };
@@ -67,6 +69,7 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     clearBlobUrl();
 
     handleAudioRecording('');
+    setIsMicActive(false);
   };
 
   let audioPreview;
@@ -106,7 +109,6 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   }
 
   let showRecordingOption;
-
   if (error === 'permission_denied') {
     showRecordingOption = (
       <IconButton className={styles.RecorderIcon} data-testid="recorder">
@@ -116,7 +118,11 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
   } else if (status !== 'recording') {
     showRecordingOption = (
       <IconButton className={styles.RecorderIcon} onClick={startCallback} data-testid="recorder">
-        <MicIcon data-testid="micIcon" />
+        {isMicActive ? (
+          <MicActiveIcon data-testid="micIcon" className={styles.MicIcon} />
+        ) : (
+          <MicIcon data-testid="micIcon" className={styles.MicIcon} />
+        )}
       </IconButton>
     );
   } else {
