@@ -19,3 +19,6 @@
   color: red;
   margin: 4px;
 }
+.ErrorText::first-letter {
+  text-transform: capitalize;
+}

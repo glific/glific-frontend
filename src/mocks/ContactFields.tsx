@@ -93,3 +93,18 @@ export const mocks = [
     },
   },
 ];
+
+export const contactFieldErrorMock = {
+  request: {
+    query: UPDATE_CONTACT_FIELDS,
+    variables: { id: '2', input: { shortcode: 'age_group' } },
+  },
+  result: {
+    data: {
+      updateContactsField: {
+        contactsField: null,
+        errors: [{ key: 'shortcode', message: 'has already been taken' }],
+      },
+    },
+  },
+};

@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import ContactFieldList from './ContactFieldList';
 import { setUserSession } from '../../../services/AuthService';
-import { mocks } from '../../../mocks/ContactFields';
+import { mocks, contactFieldErrorMock } from '../../../mocks/ContactFields';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 
@@ -36,18 +36,60 @@ test('it renders list successfully', async () => {
   expect(shortcodeLabel).toBeInTheDocument();
   expect(actionLabel).toBeInTheDocument();
 
-  const editButton = screen.getAllByRole('button', {
+  const editButtons = screen.getAllByRole('button', {
     name: 'GreenEdit.svg',
-  })[0];
-  expect(editButton).toBeInTheDocument();
-  fireEvent.click(editButton);
+  });
+  expect(editButtons[0]).toBeInTheDocument();
+  fireEvent.click(editButtons[0]);
 
   await waitFor(() => {});
-
+  // Edit, clears value and click save
   const inputFields = screen.getAllByRole('textbox');
-  userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+  userEvent.type(inputFields[1], '{selectall}{backspace}');
 
   await waitFor(() => {});
+
+  const saveButton = screen.getByTestId('save-button');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {});
+
+  userEvent.type(inputFields[1], '{selectall}{backspace}Age Group Name');
+  fireEvent.click(saveButton);
+
+  await waitFor(() => {});
+});
+
+const errorMock: any = [...mocks];
+errorMock.pop();
+errorMock.push(contactFieldErrorMock);
+
+const listError = (
+  <MockedProvider mocks={errorMock}>
+    <Router>
+      <ContactFieldList {...props} />
+    </Router>
+  </MockedProvider>
+);
+
+test('it renders component, edits field, saves and error occurs', async () => {
+  render(listError);
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+  const editButtons = screen.getAllByRole('button', {
+    name: 'GreenEdit.svg',
+  });
+  expect(editButtons[3]).toBeInTheDocument();
+  fireEvent.click(editButtons[3]);
+
+  await waitFor(() => {});
+  // Edit, clears value and click save
+  const inputFields = screen.getAllByRole('textbox');
+  userEvent.type(inputFields[1], '{selectall}{backspace}age_group');
+
+  await waitFor(() => {});
+
   const saveButton = screen.getByTestId('save-button');
   fireEvent.click(saveButton);
 

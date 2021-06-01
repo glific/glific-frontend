@@ -32,8 +32,25 @@ interface EditItemShape {
 const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog }: any) => {
   const { t } = useTranslation();
   const [itemToBeEdited, setItemToBeEdited] = useState<EditItemShape | any>(null);
+  const [error, setError] = useState<any>(null);
 
-  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS);
+  const handleCloseModal = () => {
+    setError(null);
+    setItemToBeEdited(null);
+  };
+
+  const [updateContactField] = useMutation(UPDATE_CONTACT_FIELDS, {
+    onCompleted: (response: any) => {
+      const { errors: _errors } = response.updateContactsField;
+      if (_errors?.length > 0) {
+        const { key, message } = _errors[0];
+        setError(`${key} ${message}`);
+      } else {
+        // Cleanup
+        handleCloseModal();
+      }
+    },
+  });
 
   const queries = {
     countQuery: COUNT_CONTACT_FIELDS,
@@ -42,6 +59,11 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
   };
 
   const handleEditCallback = (row: any, updatedVal: string, column: string) => {
+    if (!updatedVal) {
+      setError('Required');
+      return;
+    }
+
     const payload = { [column]: updatedVal };
 
     const variables = {
@@ -50,8 +72,6 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
     };
 
     updateContactField({ variables });
-    // Cleanup
-    setItemToBeEdited(null);
   };
 
   const columnNames = ['VARIABLE NAME', 'INPUT NAME', 'SHORTCODE', 'ACTIONS'];
@@ -86,7 +106,8 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
               key={itemToBeEdited}
               value={label}
               label={labelText}
-              closeModal={() => setItemToBeEdited(null)}
+              error={error}
+              closeModal={() => handleCloseModal()}
               callback={(updatedColumnValue: string) =>
                 handleEditCallback(row, updatedColumnValue, column)
               }
@@ -114,7 +135,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
   const dialogTitle = 'Are you sure you want to delete this contact field record?';
 
   return (
-    <>
+    <div className={styles.Container}>
       <List
         title={t('Contact Variables')}
         listItem="contactsFields"
@@ -143,7 +164,7 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
           <ContactField match={match} />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 
