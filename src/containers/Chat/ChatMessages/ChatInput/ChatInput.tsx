@@ -66,6 +66,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
   const [uploading, setUploading] = useState(false);
+
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
@@ -100,7 +101,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       }
     },
   });
-
   const [uploadMediaBlob] = useMutation(UPLOAD_MEDIA_BLOB, {
     onCompleted: (data: any) => {
       if (data) {
@@ -307,7 +307,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (isCollection) {
     quickSendTypes = [speedSends, templates];
   }
-
   let audioOption: any;
   // enable audio only if GCS is configured
   if (permission && permission.attachmentsEnabled && !selectedTemplate) {
@@ -317,6 +316,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         handleAudioRecording={handleAudioRecording}
         clearAudio={clearAudio}
         uploading={uploading}
+        isMicActive={recordedAudio !== ''}
       />
     );
   }
