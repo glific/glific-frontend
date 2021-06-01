@@ -9,6 +9,7 @@ export interface InlineInputProps {
   label?: string;
   closeModal: any;
   callback: any;
+  error: string | null;
 }
 
 export const InlineInput: React.SFC<InlineInputProps> = ({
@@ -16,18 +17,10 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
   closeModal,
   callback,
   label = 'Input',
+  error,
 }) => {
   const [inputVal, setInputVal] = useState(value);
-  const [isError, setIsError] = useState(false);
   const containerRef: any = createRef();
-
-  const handleCallback = () => {
-    if (inputVal) {
-      callback(inputVal);
-    } else {
-      setIsError(true);
-    }
-  };
 
   const handleClose = (e: any) => {
     if (containerRef.current && !containerRef.current.contains(e.target)) {
@@ -41,7 +34,12 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
   });
 
   const endAdornment = (
-    <Icon onClick={handleCallback} className={styles.Icon} title="Save" data-testid="save-button" />
+    <Icon
+      onClick={() => callback(inputVal)}
+      className={styles.Icon}
+      title="Save"
+      data-testid="save-button"
+    />
   );
 
   return (
@@ -60,7 +58,7 @@ export const InlineInput: React.SFC<InlineInputProps> = ({
         }}
         autoFocus
       />
-      {isError ? <p className={styles.ErrorText}>Required</p> : null}
+      {error ? <p className={styles.ErrorText}>{error}</p> : null}
     </div>
   );
 };

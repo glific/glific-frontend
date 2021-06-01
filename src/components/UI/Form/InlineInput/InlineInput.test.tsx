@@ -1,10 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { InlineInput } from './InlineInput';
 
-const props = {
+const props: any = {
   value: '',
   closeModal: jest.fn(),
   callback: jest.fn(),
+  error: null,
 };
 
 test('it should render component', async () => {
@@ -21,6 +22,7 @@ test('it should render component', async () => {
 });
 
 test('it should render component with error', async () => {
+  props.error = 'Shortcode value is already taken';
   render(<InlineInput {...props} />);
   const inputElements = screen.getAllByRole('textbox');
   fireEvent.change(inputElements[0], { target: { value: '' } });
