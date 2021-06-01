@@ -4,9 +4,12 @@ import * as useReactMediaRecorder from 'react-media-recorder/';
 import { useState } from 'react';
 
 const handleAudioRecordingMock = jest.fn();
+const setIsMicActive = jest.fn();
 const defaultProps = {
   handleAudioRecording: handleAudioRecordingMock,
   clearAudio: false,
+  isMicActive: false,
+  setIsMicActive: setIsMicActive,
 };
 
 afterEach(() => jest.restoreAllMocks());
@@ -45,6 +48,9 @@ test('check recording', async () => {
 
   // start recording
   fireEvent.click(getByTestId('micIcon'));
+
+  // stop recording
+  fireEvent.click(getByTestId('recorder'));
 
   // still need to check stop recording
   await waitFor(() => {});
