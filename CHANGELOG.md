@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v1.6.0](https://github.com/glific/glific-frontend/compare/v1.6.0...HEAD)
+
+> 01 June 2021
+
+- Added contact variables support [`#1417`](https://github.com/glific/glific-frontend/pull/1417)
+- Added flow isActive option [`#1412`](https://github.com/glific/glific-frontend/pull/1412)
+- Added structure for extensions [`#1402`](https://github.com/glific/glific-frontend/pull/1402)
+- Added missing localizations [`#1416`](https://github.com/glific/glific-frontend/pull/1416)
+- Fixed horizontal scroll issue for flows [`#1392`](https://github.com/glific/glific-frontend/pull/1392)
+- Added support for Template buttons [`#1404`](https://github.com/glific/glific-frontend/pull/1404)
+- Retry wallet balance query on fail [`#1400`](https://github.com/glific/glific-frontend/pull/1400)
+- Added split by intent in floweditor [`#1405`](https://github.com/glific/glific-frontend/pull/1405)
+- UI fixes [`#1399`](https://github.com/glific/glific-frontend/pull/1399)
+- Flow editor bug fixes [`#1401`](https://github.com/glific/glific-frontend/pull/1401)
+- Cypress testing integration in github workflow [`#1397`](https://github.com/glific/glific-frontend/pull/1397)
+- Added notification menu to sidebar [`#1377`](https://github.com/glific/glific-frontend/pull/1377)
+- Updated floweditor with the latest version [`#1395`](https://github.com/glific/glific-frontend/pull/1395)
+- Updated registration tooltip message [`#1390`](https://github.com/glific/glific-frontend/pull/1390)
+- Added Consulting hours [`#1388`](https://github.com/glific/glific-frontend/pull/1388)
+- Moved certificate to script [`#1389`](https://github.com/glific/glific-frontend/pull/1389)
+- Updated organization registration, changed help link[`#1383`](https://github.com/glific/glific-frontend/pull/1383)
+- Removed error key from error message and fixed alignments [`#1375`](https://github.com/glific/glific-frontend/pull/1375)
+#### [v1.5.1](https://github.com/glific/glific-frontend/compare/v1.5.0...v1.5.1)
+
+> 10 May 2021
+
+- Send attachment audio's as mp3 [`#1374`](https://github.com/glific/glific-frontend/pull/1374)
+- Added stripe portal in payment pending state [`#1376`](https://github.com/glific/glific-frontend/pull/1376)
+
 #### [v1.5.0](https://github.com/glific/glific-frontend/compare/v1.4.2...v1.5.0)
 
 > 09 May 2021
