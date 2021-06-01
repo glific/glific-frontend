@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-export const theme = createMuiTheme({
+const theme = createMuiTheme({
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
