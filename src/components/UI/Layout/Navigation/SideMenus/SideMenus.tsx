@@ -58,11 +58,11 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         to={menu.path}
       >
         <ListItemIcon className={styles.ListItemIcon}>
-          {notificationCount ? (
-            <ListIcon icon={menu.icon} count={notificationCount} />
-          ) : (
-            <ListIcon icon={menu.icon} />
-          )}
+          <ListIcon
+            icon={menu.icon}
+            count={notificationCount}
+            showBadge={menu.badge ? menu.badge : false}
+          />
         </ListItemIcon>
         {props.opened ? (
           <ListItemText
