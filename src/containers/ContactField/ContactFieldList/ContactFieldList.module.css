@@ -39,7 +39,12 @@
   line-height: 1.25;
 }
 
+.OtherColumnText:hover > span {
+  display: inline;
+}
+
 .OtherColumnText > span {
+  display: none;
   padding: 8px;
   margin-left: -8px;
   background: radial-gradient(white, transparent);
