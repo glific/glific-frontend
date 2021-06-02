@@ -60,7 +60,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon
             icon={menu.icon}
-            count={notificationCount}
+            count={menu.badge? notificationCount: 0}
             showBadge={menu.badge ? menu.badge : false}
           />
         </ListItemIcon>
