@@ -54,6 +54,7 @@ const menus = [
     path: '/notifications',
     icon: 'notification',
     type: 'sideDrawer',
+    badge: true,
     roles: ['Manager', 'Admin'],
   },
   {
