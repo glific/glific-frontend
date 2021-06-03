@@ -414,6 +414,7 @@ test('click on Clear conversation', async () => {
   });
 });
 
+const messages = new Array(20).fill(body).map((b, index) => ({ ...b, id: `${index}` }));
 test('Load more messages', async () => {
   const searchQuery = {
     query: SEARCH_QUERY,
@@ -436,7 +437,7 @@ test('Load more messages', async () => {
             bspStatus: 'SESSION_AND_HSM',
             isOrgRead: true,
           },
-          messages: new Array(20).fill(body),
+          messages,
         },
       ],
     },

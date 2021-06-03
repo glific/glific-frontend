@@ -95,10 +95,9 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
             alignButtons="left"
           >
             <div data-testid="variablesDialog">
-              {formFieldItems.map((field: any, index: any) => {
-                const key = index;
-                return <Field {...field} key={key} />;
-              })}
+              {formFieldItems.map((field: any) => (
+                <Field {...field} key={field.name} />
+              ))}
             </div>
           </DialogBox>
         </Form>
