@@ -173,6 +173,23 @@ export const Organisation: React.SFC = () => {
     return error;
   };
 
+  const validateInOfficeFlow = (value: any) => {
+    let error;
+    if (!IsDisabledInOffice && (startTimeInOffice || endTimeInOffice) && !value) {
+      error = t('Please select in office default flow ');
+    }
+    return error;
+  };
+
+  const validateOutOfOfficeFlow = (value: any) => {
+    let error;
+    if (!IsDisabled && (startTime || endTime) && !value) {
+      error = t('Please select out of office default flow ');
+    }
+
+    return error;
+  };
+
   const validation = {
     name: Yup.string().required(t('Organisation name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
@@ -320,6 +337,7 @@ export const Organisation: React.SFC = () => {
       helperText: t(
         'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
       ),
+      validate: validateOutOfOfficeFlow,
     },
     {
       component: AutoComplete,
@@ -335,6 +353,7 @@ export const Organisation: React.SFC = () => {
       helperText: t(
         'the selected flow will trigger when end-users are in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
       ),
+      validate: validateInOfficeFlow,
     },
   ];
 
