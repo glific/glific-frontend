@@ -1,0 +1,41 @@
+.organization {
+  width: 90% !important;
+}
+
+.organization > div:nth-child(n + 2) {
+  display: inline-block;
+  width: 48%;
+  vertical-align: top;
+  margin-right: 2% !important;
+}
+
+.organization > div:first-child {
+  display: inline-block !important;
+  width: 48% !important;
+  margin-right: 2% !important;
+}
+
+.organization > div:nth-of-type(5) {
+  display: block;
+  margin: 0 0 20px 0;
+}
+
+.organization > div:nth-of-type(8),
+.organization > div:nth-of-type(9),
+.organization > div:nth-of-type(10),
+.organization > div:nth-of-type(11) {
+  display: inline-block;
+  width: 25% !important;
+  margin: 0% !important;
+}
+
+.organization > div:last-child {
+  display: block;
+}
+
+.CheckboxLabel {
+  font-size: 20px;
+  font-weight: 800;
+  color: '#073f24';
+  line-height: 1;
+}

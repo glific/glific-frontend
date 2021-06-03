@@ -54,6 +54,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           onChange={(date) => handleDateChange(date)}
           keyboardIcon={<ScheduleIcon />}
           helperText={hasError ? errorText : ''}
+          className={styles.picker}
         />
       </Grid>
     </MuiPickersUtilsProvider>

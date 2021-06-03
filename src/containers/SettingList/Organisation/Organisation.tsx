@@ -23,6 +23,8 @@ import { ReactComponent as Settingicon } from '../../../assets/images/icons/Sett
 import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import { copyToClipboard } from '../../../common/utils';
+// import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
+import styles from './Organization.module.css';
 
 const SettingIcon = <Settingicon />;
 
@@ -47,6 +49,13 @@ export const Organisation: React.SFC = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [signaturePhrase, setSignaturePhrase] = useState();
   const [phone, setPhone] = useState<string>('');
+  const [hoursInOffice, setHoursInOffice] = useState(true);
+  const [enabledDaysInOffice, setEnabledDaysInOffice] = useState<any>([]);
+  const [startTimeInOffice, setStartTimeInOffice] = useState();
+  const [endTimeInOffice, setEndTimeInOffice] = useState();
+  const [flowIdInOffice, setFlowIdInOffice] = useState<any>({});
+  const [IsDisabledInOffice, setIsDisableInOffice] = useState(false);
+
   const { t } = useTranslation();
 
   const States = {
@@ -60,6 +69,11 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
     signaturePhrase,
     phone,
+    hoursInOffice,
+    enabledDaysInOffice,
+    startTimeInOffice,
+    endTimeInOffice,
+    flowIdInOffice,
   };
 
   // get the published flow list
@@ -79,6 +93,12 @@ export const Organisation: React.SFC = () => {
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
   const setOutOfOffice = (data: any) => {
+    setStartTimeInOffice(data.startTime);
+    setEndTimeInOffice(data.endTime);
+    setEnabledDaysInOffice(getEnabledDays(data.enabledDays));
+  };
+
+  const setInOffice = (data: any) => {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
     setEnabledDays(getEnabledDays(data.enabledDays));
@@ -97,8 +117,12 @@ export const Organisation: React.SFC = () => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
+    setIsDisableInOffice(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
     setFlowId(getFlow(outOfOfficeValue.flowId));
+    setInOffice(outOfOfficeValue);
+    setHoursInOffice(outOfOfficeValue.enabled);
+    setFlowIdInOffice(getFlow(outOfOfficeValue.flowId));
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
@@ -121,6 +145,10 @@ export const Organisation: React.SFC = () => {
 
   const handleChange = (value: any) => {
     setIsDisable(!value);
+  };
+
+  const handleChangeInOffice = (value: any) => {
+    setIsDisableInOffice(!value);
   };
 
   let activeLanguage: any = [];
@@ -189,6 +217,7 @@ export const Organisation: React.SFC = () => {
       type: 'text',
       placeholder: t('Webhook signature'),
     },
+
     {
       component: Input,
       name: 'phone',
@@ -208,16 +237,26 @@ export const Organisation: React.SFC = () => {
         </InputAdornment>
       ),
     },
+
     {
       component: Checkbox,
       name: 'hours',
       title: (
-        <Typography variant="h6" style={{ color: '#073f24' }}>
-          {t('Hours of operations')}
+        <Typography className={styles.CheckboxLabel}>
+          {t('Default flow - out of office')}
         </Typography>
       ),
       handleChange,
     },
+    {
+      component: Checkbox,
+      name: 'hoursInOffice',
+      title: (
+        <Typography className={styles.CheckboxLabel}>{t('Default flow - in operation')}</Typography>
+      ),
+      handleChange: handleChangeInOffice,
+    },
+
     {
       component: TimePicker,
       name: 'startTime',
@@ -231,6 +270,19 @@ export const Organisation: React.SFC = () => {
       disabled: IsDisabled,
     },
     {
+      component: TimePicker,
+      name: 'startTimeInOffice',
+      placeholder: t('Opens'),
+      disabled: IsDisabledInOffice,
+    },
+    {
+      component: TimePicker,
+      name: 'endTimeInOffice',
+      placeholder: t('Closes'),
+      disabled: IsDisabledInOffice,
+    },
+
+    {
       component: AutoComplete,
       name: 'enabledDays',
       options: dayList,
@@ -243,6 +295,18 @@ export const Organisation: React.SFC = () => {
     },
     {
       component: AutoComplete,
+      name: 'enabledDaysInOffice',
+      options: dayList,
+      optionLabel: 'label',
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select days'),
+      },
+      disabled: IsDisabledInOffice,
+    },
+
+    {
+      component: AutoComplete,
       name: 'flowId',
       options: flow.flows,
       optionLabel: 'name',
@@ -253,7 +317,22 @@ export const Organisation: React.SFC = () => {
       },
       disabled: IsDisabled,
       helperText: t(
-        'the selected flow will be triggered for messages received outside hours of operations'
+        'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
+      ),
+    },
+    {
+      component: AutoComplete,
+      name: 'flowIdInOffice',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select default flow'),
+      },
+      disabled: IsDisabledInOffice,
+      helperText: t(
+        'the selected flow will trigger when end-users are in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
       ),
     },
   ];
@@ -313,7 +392,7 @@ export const Organisation: React.SFC = () => {
     <FormLayout
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
-      title="organization"
+      title="organization settings"
       match={{ params: { id: organizationId } }}
       states={States}
       setStates={setStates}
@@ -332,6 +411,7 @@ export const Organisation: React.SFC = () => {
       type="settings"
       redirect
       afterSave={saveHandler}
+      customStyles={styles.organization}
     />
   );
 };

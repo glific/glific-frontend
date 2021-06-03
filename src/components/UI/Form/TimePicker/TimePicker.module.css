@@ -1,5 +1,9 @@
 .TimePicker {
   width: 241px;
   display: inline-block;
-  padding: 10px 2px;
+  padding: 10px 0px;
+}
+
+.picker {
+  width: 90%;
 }
