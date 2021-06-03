@@ -17,6 +17,16 @@ export const UPDATE_ORGANIZATION = gql`
             enabled
           }
         }
+        inOffice {
+          enabled
+          startTime
+          endTime
+          flowId
+          enabledDays {
+            id
+            enabled
+          }
+        }
         activeLanguages {
           id
           label

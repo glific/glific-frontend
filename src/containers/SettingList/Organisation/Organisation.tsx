@@ -93,15 +93,15 @@ export const Organisation: React.SFC = () => {
   const getEnabledDays = (data: any) => data.filter((option: any) => option.enabled);
 
   const setOutOfOffice = (data: any) => {
-    setStartTimeInOffice(data.startTime);
-    setEndTimeInOffice(data.endTime);
-    setEnabledDaysInOffice(getEnabledDays(data.enabledDays));
-  };
-
-  const setInOffice = (data: any) => {
     setStartTime(data.startTime);
     setEndTime(data.endTime);
     setEnabledDays(getEnabledDays(data.enabledDays));
+  };
+
+  const setInOffice = (data: any) => {
+    setStartTimeInOffice(data.startTime);
+    setEndTimeInOffice(data.endTime);
+    setEnabledDaysInOffice(getEnabledDays(data.enabledDays));
   };
 
   const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
@@ -109,6 +109,7 @@ export const Organisation: React.SFC = () => {
   const setStates = ({
     name: nameValue,
     outOfOffice: outOfOfficeValue,
+    inOffice: inOfficeValue,
     activeLanguages: activeLanguagesValue,
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
@@ -117,12 +118,12 @@ export const Organisation: React.SFC = () => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
-    setIsDisableInOffice(!outOfOfficeValue.enabled);
+    setIsDisableInOffice(!inOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
     setFlowId(getFlow(outOfOfficeValue.flowId));
-    setInOffice(outOfOfficeValue);
-    setHoursInOffice(outOfOfficeValue.enabled);
-    setFlowIdInOffice(getFlow(outOfOfficeValue.flowId));
+    setInOffice(inOfficeValue);
+    setHoursInOffice(inOfficeValue.enabled);
+    setFlowIdInOffice(getFlow(inOfficeValue.flowId));
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
@@ -380,11 +381,17 @@ export const Organisation: React.SFC = () => {
         flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
         startTime: payloadCopy.startTime,
       },
+      inOffice: {
+        enabled: payloadCopy.hoursInOffice,
+        enabledDays: assignDays(payloadCopy.enabledDaysInOffice),
+        endTime: payloadCopy.endTimeInOffice,
+        flowId: payloadCopy.flowIdInOffice ? payloadCopy.flowIdInOffice.id : null,
+        startTime: payloadCopy.startTimeInOffice,
+      },
       defaultLanguageId,
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
     };
-
     return object;
   };
 

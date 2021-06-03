@@ -19,6 +19,16 @@ export const GET_ORGANIZATION = gql`
           endTime
           flowId
         }
+        inOffice {
+          enabled
+          enabledDays {
+            id
+            enabled
+          }
+          startTime
+          endTime
+          flowId
+        }
         defaultLanguage {
           id
           label
