@@ -24,6 +24,8 @@ const mockElement = () => ({
   update: jest.fn(),
 });
 
+window.open = jest.fn();
+
 const mockElements = () => {
   const elements = {};
 
