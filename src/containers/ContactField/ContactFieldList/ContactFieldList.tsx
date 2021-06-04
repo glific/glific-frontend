@@ -92,13 +92,11 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
       <div className={styles.OtherColumnContainer}>
         <p className={styles.OtherColumnText}>
           {label}
-          {!false ? (
-            <span>
-              <Button onClick={() => setItemToBeEdited({ id, column })}>
-                <EditIcon />
-              </Button>
-            </span>
-          ) : null}
+          <span>
+            <Button onClick={() => setItemToBeEdited({ id, column })}>
+              <EditIcon />
+            </Button>
+          </span>
         </p>
         {showInline ? (
           <div className={styles.OtherColumnEditContainer}>
