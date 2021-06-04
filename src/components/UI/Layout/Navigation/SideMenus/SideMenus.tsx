@@ -23,6 +23,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
     variables: {
       filter: {
         is_read: false,
+        severity: 'critical',
       },
     },
     fetchPolicy: 'network-only',
@@ -57,11 +58,11 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         to={menu.path}
       >
         <ListItemIcon className={styles.ListItemIcon}>
-          {notificationCount ? (
-            <ListIcon icon={menu.icon} count={notificationCount} />
-          ) : (
-            <ListIcon icon={menu.icon} />
-          )}
+          <ListIcon
+            icon={menu.icon}
+            count={menu.badge ? notificationCount : 0}
+            showBadge={menu.badge ? menu.badge : false}
+          />
         </ListItemIcon>
         {props.opened ? (
           <ListItemText
