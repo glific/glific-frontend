@@ -24,7 +24,7 @@ import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Setting
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import { copyToClipboard } from '../../../common/utils';
 // import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
-import styles from './Organization.module.css';
+import styles from './Organisation.module.css';
 
 const SettingIcon = <Settingicon />;
 
@@ -49,12 +49,6 @@ export const Organisation: React.SFC = () => {
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [signaturePhrase, setSignaturePhrase] = useState();
   const [phone, setPhone] = useState<string>('');
-  const [hoursInOffice, setHoursInOffice] = useState(true);
-  const [enabledDaysInOffice, setEnabledDaysInOffice] = useState<any>([]);
-  const [startTimeInOffice, setStartTimeInOffice] = useState();
-  const [endTimeInOffice, setEndTimeInOffice] = useState();
-  const [flowIdInOffice, setFlowIdInOffice] = useState<any>({});
-  const [IsDisabledInOffice, setIsDisableInOffice] = useState(false);
 
   const { t } = useTranslation();
 
@@ -69,11 +63,6 @@ export const Organisation: React.SFC = () => {
     defaultLanguage,
     signaturePhrase,
     phone,
-    hoursInOffice,
-    enabledDaysInOffice,
-    startTimeInOffice,
-    endTimeInOffice,
-    flowIdInOffice,
   };
 
   // get the published flow list
@@ -98,18 +87,11 @@ export const Organisation: React.SFC = () => {
     setEnabledDays(getEnabledDays(data.enabledDays));
   };
 
-  const setInOffice = (data: any) => {
-    setStartTimeInOffice(data.startTime);
-    setEndTimeInOffice(data.endTime);
-    setEnabledDaysInOffice(getEnabledDays(data.enabledDays));
-  };
-
   const getFlow = (id: string) => flow.flows.filter((option: any) => option.id === id)[0];
 
   const setStates = ({
     name: nameValue,
     outOfOffice: outOfOfficeValue,
-    inOffice: inOfficeValue,
     activeLanguages: activeLanguagesValue,
     defaultLanguage: defaultLanguageValue,
     signaturePhrase: signaturePhraseValue,
@@ -118,12 +100,9 @@ export const Organisation: React.SFC = () => {
     setName(nameValue);
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
-    setIsDisableInOffice(!inOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
     setFlowId(getFlow(outOfOfficeValue.flowId));
-    setInOffice(inOfficeValue);
-    setHoursInOffice(inOfficeValue.enabled);
-    setFlowIdInOffice(getFlow(inOfficeValue.flowId));
+
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);
@@ -148,10 +127,6 @@ export const Organisation: React.SFC = () => {
     setIsDisable(!value);
   };
 
-  const handleChangeInOffice = (value: any) => {
-    setIsDisableInOffice(!value);
-  };
-
   let activeLanguage: any = [];
   const validateActiveLanguages = (value: any) => {
     activeLanguage = value;
@@ -169,14 +144,6 @@ export const Organisation: React.SFC = () => {
     if (value) {
       const IsPresent = activeLanguage.filter((language: any) => language.id === value.id);
       if (IsPresent.length === 0) error = t('Default language needs to be an active language.');
-    }
-    return error;
-  };
-
-  const validateInOfficeFlow = (value: any) => {
-    let error;
-    if (!IsDisabledInOffice && (startTimeInOffice || endTimeInOffice) && !value) {
-      error = t('Please select in office default flow ');
     }
     return error;
   };
@@ -259,70 +226,9 @@ export const Organisation: React.SFC = () => {
     {
       component: Checkbox,
       name: 'hours',
-      title: (
-        <Typography className={styles.CheckboxLabel}>
-          {t('Default flow - out of office')}
-        </Typography>
-      ),
+      title: <Typography className={styles.CheckboxLabel}>{t('Default flow')}</Typography>,
       handleChange,
     },
-    {
-      component: Checkbox,
-      name: 'hoursInOffice',
-      title: (
-        <Typography className={styles.CheckboxLabel}>{t('Default flow - in operation')}</Typography>
-      ),
-      handleChange: handleChangeInOffice,
-    },
-
-    {
-      component: TimePicker,
-      name: 'startTime',
-      placeholder: t('Opens'),
-      disabled: IsDisabled,
-    },
-    {
-      component: TimePicker,
-      name: 'endTime',
-      placeholder: t('Closes'),
-      disabled: IsDisabled,
-    },
-    {
-      component: TimePicker,
-      name: 'startTimeInOffice',
-      placeholder: t('Opens'),
-      disabled: IsDisabledInOffice,
-    },
-    {
-      component: TimePicker,
-      name: 'endTimeInOffice',
-      placeholder: t('Closes'),
-      disabled: IsDisabledInOffice,
-    },
-
-    {
-      component: AutoComplete,
-      name: 'enabledDays',
-      options: dayList,
-      optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select days'),
-      },
-      disabled: IsDisabled,
-    },
-    {
-      component: AutoComplete,
-      name: 'enabledDaysInOffice',
-      options: dayList,
-      optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Select days'),
-      },
-      disabled: IsDisabledInOffice,
-    },
-
     {
       component: AutoComplete,
       name: 'flowId',
@@ -341,19 +247,26 @@ export const Organisation: React.SFC = () => {
     },
     {
       component: AutoComplete,
-      name: 'flowIdInOffice',
-      options: flow.flows,
-      optionLabel: 'name',
-      multiple: false,
+      name: 'enabledDays',
+      options: dayList,
+      optionLabel: 'label',
       textFieldProps: {
         variant: 'outlined',
-        label: t('Select default flow'),
+        label: t('Select days'),
       },
-      disabled: IsDisabledInOffice,
-      helperText: t(
-        'the selected flow will trigger when end-users are in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
-      ),
-      validate: validateInOfficeFlow,
+      disabled: IsDisabled,
+    },
+    {
+      component: TimePicker,
+      name: 'startTime',
+      placeholder: t('Start'),
+      disabled: IsDisabled,
+    },
+    {
+      component: TimePicker,
+      name: 'endTime',
+      placeholder: t('Stop'),
+      disabled: IsDisabled,
     },
   ];
 
@@ -400,13 +313,7 @@ export const Organisation: React.SFC = () => {
         flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
         startTime: payloadCopy.startTime,
       },
-      inOffice: {
-        enabled: payloadCopy.hoursInOffice,
-        enabledDays: assignDays(payloadCopy.enabledDaysInOffice),
-        endTime: payloadCopy.endTimeInOffice,
-        flowId: payloadCopy.flowIdInOffice ? payloadCopy.flowIdInOffice.id : null,
-        startTime: payloadCopy.startTimeInOffice,
-      },
+
       defaultLanguageId,
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
