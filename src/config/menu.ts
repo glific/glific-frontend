@@ -55,6 +55,7 @@ const menus = [
     icon: 'notification',
     type: 'sideDrawer',
     badge: true,
+    callback: 'getNotificationCount',
     roles: ['Manager', 'Admin'],
   },
   {
