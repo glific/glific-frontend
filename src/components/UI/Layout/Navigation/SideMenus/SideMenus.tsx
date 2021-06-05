@@ -28,8 +28,9 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
   //   fetchPolicy: 'network-only',
   // });
 
-  const getNotificationCount = () => {
-    console.log('notification called!');
+  const getCount = (countCallback: any) => {
+    // countCallback();
+    console.log(countCallback, 'notification called!');
     return 3;
   };
 
@@ -57,7 +58,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon
             icon={menu.icon}
-            count={menu.badge ? getNotificationCount() : 0}
+            count={menu.badge ? getCount(menu.callback) : 0}
             showBadge={menu.badge ? menu.badge : false}
           />
         </ListItemIcon>
