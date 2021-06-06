@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
-// import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
-// import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
+import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
 import styles from './SideMenus.module.css';
 import ListIcon from '../../../ListIcon/ListIcon';
 import { getSideDrawerMenus } from '../../../../../context/role';
@@ -18,20 +18,33 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // const [getCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
-  //   variables: {
-  //     filter: {
-  //       is_read: false,
-  //       severity: 'critical',
-  //     },
-  //   },
-  //   fetchPolicy: 'network-only',
-  // });
+  // handle count for notifictions
+  const [notificationCount, setNotificationCount] = useState<any>();
+  const [getNotificationCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
+    variables: {
+      filter: {
+        is_read: false,
+        severity: 'critical',
+      },
+    },
+    fetchPolicy: 'network-only',
+    onCompleted: (countData) => {
+      setNotificationCount(countData.countNotifications);
+    },
+  });
 
-  const getCount = (countCallback: any) => {
-    // countCallback();
-    console.log(countCallback, 'notification called!');
-    return 3;
+  useEffect(() => {
+    getNotificationCount();
+  }, []);
+
+  // let's get count specific to menu paths
+  const getCount = (menuPath: any) => {
+    if (menuPath === '/notifications') {
+      // get menu notification count
+      return notificationCount;
+    }
+
+    return 0;
   };
 
   const menuObj: any[] = getSideDrawerMenus();
@@ -58,7 +71,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon
             icon={menu.icon}
-            count={menu.badge ? getCount(menu.callback) : 0}
+            count={menu.badge ? getCount(menu.path) : 0}
             showBadge={menu.badge ? menu.badge : false}
           />
         </ListItemIcon>
