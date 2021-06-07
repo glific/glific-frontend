@@ -60,11 +60,26 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const [markNotificationAsRead, { data }] = useMutation(MARK_NOTIFICATIONS_AS_READ, {});
+  const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
+    onCompleted: (data) => {
+      if (data.markNotificationAsRead) {
+        client.writeQuery({
+          query: GET_NOTIFICATIONS_COUNT,
+          variables: {
+            filter: {
+              is_read: false,
+              severity: 'critical',
+            },
+          },
+          data: { countNotifications: 0 },
+        });
+      }
+    },
+  });
 
   useEffect(() => {
     setTimeout(() => {
-      if (!data) markNotificationAsRead();
+      markNotificationAsRead();
     }, 1000);
   }, []);
 

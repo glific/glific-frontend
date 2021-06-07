@@ -18,7 +18,6 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
   const location = useLocation();
   const { t } = useTranslation();
   const [notificationCount, setNotificationCount] = useState<any>();
-
   const [getCount] = useLazyQuery(GET_NOTIFICATIONS_COUNT, {
     variables: {
       filter: {
@@ -26,7 +25,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         severity: 'critical',
       },
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     onCompleted: (countData) => {
       setNotificationCount(countData.countNotifications);
     },
