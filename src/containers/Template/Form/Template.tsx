@@ -9,6 +9,7 @@ import styles from './Template.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
+import { TemplateOptions } from '../../TemplateOptions/TemplateOptions';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../common/RichEditor';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import {
@@ -74,6 +75,16 @@ export interface TemplateProps {
   getCategory?: any;
 }
 
+interface CallToActionTemplate {
+  type: string;
+  title: string;
+  value: string;
+}
+
+interface QuickReplyTemplate {
+  value: string;
+}
+
 const Template: React.SFC<TemplateProps> = (props) => {
   const {
     match,
@@ -104,6 +115,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
+  const [templateType, setTemplateType] = useState<string | null>(null);
+  const [templateButtons, setTemplateButtons] = useState<
+    Array<CallToActionTemplate | QuickReplyTemplate>
+  >([]);
+  const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const { t } = useTranslation();
 
   const states = {
@@ -116,6 +132,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     example,
     category,
     isActive,
+    templateButtons,
+    isAddButtonChecked,
   };
 
   const setStates = ({
@@ -417,8 +435,69 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
+  const addTemplateButtons = (addFromTemplate: boolean = false) => {
+    let buttons: any = [];
+    const buttonType: any = {
+      'quick-reply': { value: '' },
+      'call-to-action': { type: '', title: '', value: '' },
+    };
+
+    if (templateType) {
+      buttons = addFromTemplate
+        ? [...templateButtons, buttonType[templateType]]
+        : [buttonType[templateType]];
+    }
+
+    setTemplateButtons(buttons);
+  };
+
+  const removeTemplateButtons = (index: number) => {
+    const result = templateButtons.filter((val, idx) => idx !== index);
+    setTemplateButtons(result);
+  };
+
+  useEffect(() => {
+    if (templateType) {
+      addTemplateButtons();
+    }
+  }, [templateType]);
+
+  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
+    const { value } = event.target;
+    const obj = { ...row };
+    obj[eventType] = value;
+
+    const result = templateButtons.map((val: any, idx: number) => {
+      if (idx === index) return obj;
+      return val;
+    });
+
+    setTemplateButtons(result);
+  };
+
+  const templateRadioOptions = [
+    {
+      component: Checkbox,
+      title: <Typography variant="h6">Add buttons</Typography>,
+      name: 'isAddButtonChecked',
+      handleChange: (value: boolean) => setIsAddButtonChecked(value),
+    },
+    {
+      component: TemplateOptions,
+      isAddButtonChecked,
+      templateType,
+      inputFields: templateButtons,
+      onAddClick: addTemplateButtons,
+      onRemoveClick: removeTemplateButtons,
+      onInputChange: handeInputChange,
+      onTemplateTypeChange: (value: string) => setTemplateType(value),
+    },
+  ];
+
+  const hsmFields = [...formField.slice(0, 1), ...templateRadioOptions, ...formField.slice(1)];
+
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...formField, ...attachmentField]
+    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
     : [...formFields, ...attachmentField];
 
   const setPayload = (payload: any) => {
@@ -520,7 +599,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return data;
   };
 
-  const validation = {
+  const validation: any = {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
@@ -539,6 +618,30 @@ const Template: React.SFC<TemplateProps> = (props) => {
         then: Yup.string().required(t('Attachment URL is required.')),
       }),
   };
+
+  if (defaultAttribute.isHsm && isAddButtonChecked) {
+    if (templateType === 'call-to-action') {
+      validation.templateButtons = Yup.array()
+        .of(
+          Yup.object().shape({
+            type: Yup.string().required('Required'),
+            title: Yup.string().required('Required'),
+            value: Yup.string().required('Required'),
+          })
+        )
+        .min(1)
+        .max(2);
+    } else {
+      validation.templateButtons = Yup.array()
+        .of(
+          Yup.object().shape({
+            value: Yup.string().required('Required'),
+          })
+        )
+        .min(1)
+        .max(3);
+    }
+  }
 
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
   const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);
