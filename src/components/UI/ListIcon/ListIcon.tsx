@@ -78,7 +78,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
 
   return (
     <div>
-      {count && showBadge ? (
+      {showBadge && count ? (
         <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
           {iconImage}
         </Badge>
