@@ -234,6 +234,7 @@ export const List: React.SFC<ListProps> = ({
   const [fetchQuery, { loading, error, data }] = useLazyQuery(filterItemsQuery, {
     variables: filterPayload(),
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
   // Get item data here
   const [

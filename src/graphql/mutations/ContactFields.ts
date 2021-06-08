@@ -1,21 +1,12 @@
 import { gql } from '@apollo/client';
+import { CONTACT_FIELDS } from '../queries/ContactFields';
 
 export const CREATE_CONTACT_FIELDS = gql`
+  ${CONTACT_FIELDS}
   mutation createContactsField($input: ContactsFieldInput!) {
     createContactsField(input: $input) {
       contactsField {
-        valueType
-        updatedAt
-        shortcode
-        scope
-        name
-        insertedAt
-        id
-        organization {
-          shortcode
-          isApproved
-          isActive
-        }
+        ...contactsFields
       }
       errors {
         message
@@ -26,21 +17,11 @@ export const CREATE_CONTACT_FIELDS = gql`
 `;
 
 export const UPDATE_CONTACT_FIELDS = gql`
+  ${CONTACT_FIELDS}
   mutation updateContactsField($id: ID!, $input: ContactsFieldInput!) {
     updateContactsField(id: $id, input: $input) {
       contactsField {
-        valueType
-        updatedAt
-        shortcode
-        scope
-        name
-        insertedAt
-        id
-        organization {
-          shortcode
-          isApproved
-          isActive
-        }
+        ...contactsFields
       }
       errors {
         message
@@ -51,21 +32,11 @@ export const UPDATE_CONTACT_FIELDS = gql`
 `;
 
 export const DELETE_CONTACT_FIELDS = gql`
+${CONTACT_FIELDS}
   mutation deleteContactsField($id: ID!) {
     deleteContactsField(id: $id) {
-      contactsField {
-        valueType
-        updatedAt
-        shortcode
-        scope
-        name
-        insertedAt
-        id
-        organization {
-          shortcode
-          isApproved
-          isActive
-        }
+      ...contactsFields
+      
       }
       errors {
         message
