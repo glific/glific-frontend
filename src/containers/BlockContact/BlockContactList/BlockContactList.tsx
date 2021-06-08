@@ -134,6 +134,7 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
         button={{ show: false, label: '' }}
         dialogMessage={dialogMessage}
         {...queries}
+        noItemText="blocked contact"
         editSupport={false}
         {...columnAttributes}
       />
