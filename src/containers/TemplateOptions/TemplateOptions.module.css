@@ -1,6 +1,5 @@
 .TextField {
   width: 100%;
-  margin-bottom: 17px;
 }
 
 .TextField > div > input {
@@ -62,6 +61,11 @@
 .TextFieldWrapper {
   display: block !important;
 }
-.TextFieldWrapper > p {
-  margin-top: -12px;
+
+.FormControl {
+  margin-bottom: 17px;
+}
+
+.FormControl > p {
+  margin-left: 16px;
 }

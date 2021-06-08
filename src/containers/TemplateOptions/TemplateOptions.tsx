@@ -1,5 +1,12 @@
 import React from 'react';
-import { RadioGroup, FormControlLabel, Radio, TextField, FormHelperText } from '@material-ui/core';
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  TextField,
+  FormHelperText,
+  FormControl,
+} from '@material-ui/core';
 
 import styles from './TemplateOptions.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -25,7 +32,9 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   onTemplateTypeChange,
   onInputChange,
 }) => {
-  console.log(touched, errors);
+  const buttonTitle = 'Button Title';
+  const buttonValue = 'Button Value';
+
   const addButton = (
     <Button variant="outlined" color="primary" onClick={() => onAddClick(true)}>
       Add {templateType?.replaceAll('-', ' ')}
@@ -36,31 +45,36 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     const { type, title, value }: any = row;
     let template: any = null;
 
+    const isError = (key: string) =>
+      errors.templateButtons && errors.templateButtons[index] && errors.templateButtons[index][key];
+
     if (templateType === 'call-to-action') {
       template = (
         <div className={styles.WrapperBackground}>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
-                <RadioGroup
-                  aria-label="call-to-action"
-                  name="call-to-action"
-                  row
-                  value={type}
-                  onChange={(e: any) => onInputChange(e, row, index, 'type')}
-                >
-                  <FormControlLabel
-                    value="phone-no"
-                    control={<Radio color="primary" />}
-                    label="Phone number"
-                  />
-                  <FormControlLabel value="url" control={<Radio color="primary" />} label="URL" />
-                </RadioGroup>
-                {errors.templateButtons &&
-                touched.templateButtons &&
-                touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index].type}</FormHelperText>
-                ) : null}
+                <FormControl fullWidth error={isError('type')} className={styles.FormControl}>
+                  <RadioGroup
+                    aria-label="call-to-action"
+                    name="call-to-action"
+                    row
+                    value={type}
+                    onChange={(e: any) => onInputChange(e, row, index, 'type')}
+                  >
+                    <FormControlLabel
+                      value="phone-no"
+                      control={<Radio color="primary" />}
+                      label="Phone number"
+                    />
+                    <FormControlLabel value="url" control={<Radio color="primary" />} label="URL" />
+                  </RadioGroup>
+                  {errors.templateButtons &&
+                  touched.templateButtons &&
+                  touched.templateButtons[index] ? (
+                    <FormHelperText>{errors.templateButtons[index].type}</FormHelperText>
+                  ) : null}
+                </FormControl>
               </div>
               <div>
                 {inputFields.length > 1 ? (
@@ -69,34 +83,40 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               </div>
             </div>
             <div className={styles.TextFieldWrapper}>
-              <TextField
-                title={title}
-                placeholder="Button title"
-                variant="outlined"
-                label="Button title"
-                onChange={(e: any) => onInputChange(e, row, index, 'title')}
-                className={styles.TextField}
-              />
-              {errors.templateButtons &&
-              touched.templateButtons &&
-              touched.templateButtons[index] ? (
-                <FormHelperText>{errors.templateButtons[index].title}</FormHelperText>
-              ) : null}
+              <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
+                <TextField
+                  title={title}
+                  placeholder={buttonTitle}
+                  variant="outlined"
+                  label={buttonTitle}
+                  onChange={(e: any) => onInputChange(e, row, index, 'title')}
+                  className={styles.TextField}
+                  error={isError('value')}
+                />
+                {errors.templateButtons &&
+                touched.templateButtons &&
+                touched.templateButtons[index] ? (
+                  <FormHelperText>{errors.templateButtons[index].title}</FormHelperText>
+                ) : null}
+              </FormControl>
             </div>
             <div className={styles.TextFieldWrapper}>
-              <TextField
-                title={value}
-                placeholder="Button value"
-                variant="outlined"
-                label="Button value"
-                onChange={(e: any) => onInputChange(e, row, index, 'value')}
-                className={styles.TextField}
-              />
-              {errors.templateButtons &&
-              touched.templateButtons &&
-              touched.templateButtons[index] ? (
-                <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
-              ) : null}
+              <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
+                <TextField
+                  title={value}
+                  placeholder={buttonValue}
+                  variant="outlined"
+                  label={buttonValue}
+                  onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                  className={styles.TextField}
+                  error={isError('value')}
+                />
+                {errors.templateButtons &&
+                touched.templateButtons &&
+                touched.templateButtons[index] ? (
+                  <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
+                ) : null}
+              </FormControl>
             </div>
           </div>
           <div>
@@ -110,16 +130,22 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       template = (
         <div className={styles.WrapperBackground}>
           <div className={styles.QuickReplyWrapper}>
-            <TextField
-              title={title}
-              placeholder="Button title"
-              variant="outlined"
-              onChange={(e: any) => onInputChange(e, row, index, 'value')}
-              className={styles.TextField}
-            />
-            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-              <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
-            ) : null}
+            <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
+              <TextField
+                title={title}
+                placeholder={buttonTitle}
+                label={buttonTitle}
+                variant="outlined"
+                onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                className={styles.TextField}
+                error={isError('value')}
+              />
+              {errors.templateButtons &&
+              touched.templateButtons &&
+              touched.templateButtons[index] ? (
+                <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
+              ) : null}
+            </FormControl>
             <div>
               {inputFields.length > 1 ? <DeleteIcon onClick={() => onRemoveClick(index)} /> : null}
             </div>
