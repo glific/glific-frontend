@@ -32,11 +32,11 @@ export const UPDATE_CONTACT_FIELDS = gql`
 `;
 
 export const DELETE_CONTACT_FIELDS = gql`
-${CONTACT_FIELDS}
+  ${CONTACT_FIELDS}
   mutation deleteContactsField($id: ID!) {
     deleteContactsField(id: $id) {
-      ...contactsFields
-      
+      contactsField {
+        ...contactsFields
       }
       errors {
         message
