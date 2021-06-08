@@ -68,8 +68,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [reducedHeight, setReducedHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [scrolledToMessage, setScrolledToMessage] = useState(false);
-  const [showJumpToLatest, setShowJumpToLatest] = useState(true);
-  const [defaultJumpToLatest, setDefaultShowJumpToLatest] = useState(true);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
   const { t } = useTranslation();
@@ -80,24 +79,25 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     setShowLoadMore(true);
     setScrolledToMessage(false);
     setShowJumpToLatest(false);
-    setDefaultShowJumpToLatest(true);
   }, [contactId]);
 
   useEffect(() => {
-    const messageContainer: any = document.querySelector('.messageContainer');
-    if (messageContainer) {
-      messageContainer.addEventListener('scroll', (event: any) => {
-        const messageContainerTarget = event.target;
-        if (
-          Math.round(messageContainerTarget.scrollTop) ===
-          messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
-        ) {
-          setShowJumpToLatest(false);
-        } else if (showJumpToLatest === false) {
-          setShowJumpToLatest(true);
-        }
-      });
-    }
+    setTimeout(() => {
+      const messageContainer: any = document.querySelector('.messageContainer');
+      if (messageContainer) {
+        messageContainer.addEventListener('scroll', (event: any) => {
+          const messageContainerTarget = event.target;
+          if (
+            Math.round(messageContainerTarget.scrollTop) ===
+            messageContainerTarget.scrollHeight - messageContainerTarget.offsetHeight
+          ) {
+            setShowJumpToLatest(false);
+          } else if (showJumpToLatest === false) {
+            setShowJumpToLatest(true);
+          }
+        });
+      }
+    }, 1000);
   }, [setShowJumpToLatest, contactId, reducedHeight]);
 
   const scrollToLatestMessage = () => {
@@ -763,7 +763,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const showLatestMessage = () => {
     setShowJumpToLatest(false);
-    setDefaultShowJumpToLatest(false);
 
     // check if we have offset 0 (messageNumber === offset)
     if (conversationInfo.messages[0].messageNumber !== 0) {
@@ -818,9 +817,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       ) : null}
       {topChatBar}
       {messageListContainer}
-      {conversationInfo.messages.length && (showJumpToLatest || defaultJumpToLatest)
-        ? jumpToLatest
-        : null}
+      {conversationInfo.messages.length && showJumpToLatest ? jumpToLatest : null}
       {chatInputSection}
     </Container>
   );
