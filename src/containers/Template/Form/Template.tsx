@@ -462,6 +462,47 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }
   }, [templateType]);
 
+  const getTemplateAndButton = (text: string) => {
+    if (!text) return null;
+
+    const areButtonsPresent = text.indexOf('|');
+
+    let message: any = text;
+    let buttons: any = null;
+
+    if (areButtonsPresent !== -1) {
+      buttons = text.substr(areButtonsPresent);
+      message = text.substr(0, areButtonsPresent);
+    }
+
+    return { message, buttons };
+  };
+
+  useEffect(() => {
+    if (templateButtons.length > 0) {
+      const parse = templateButtons.reduce((result: any, temp: any) => {
+        const { title, value } = temp;
+        if (templateType === 'call-to-action' && value && title) {
+          result.push(`[${title}, ${value}]`);
+        }
+        if (templateType === 'quick-reply' && value) {
+          result.push(`[${value}]`);
+        }
+        return result;
+      }, []);
+
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+
+      const { message }: any = getTemplateAndButton(convertToWhatsApp(example));
+
+      const sampleText: any = parsedText && message + parsedText;
+
+      if (sampleText) {
+        setExample(EditorState.createWithContent(WhatsAppToDraftEditor(sampleText)));
+      }
+    }
+  }, [templateButtons]);
+
   const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
     const { value } = event.target;
     const obj = { ...row };
@@ -626,7 +667,22 @@ const Template: React.SFC<TemplateProps> = (props) => {
           Yup.object().shape({
             type: Yup.string().required('Required'),
             title: Yup.string().required('Required'),
-            value: Yup.string().required('Required'),
+            value: Yup.string()
+              .required('Required')
+              .when('type', {
+                is: (val: any) => val === 'phone-no',
+                then: Yup.string().matches(
+                  /^(\+)\d{12}(\d{2})?$/gm,
+                  'Enter phone no is correct format'
+                ),
+              })
+              .when('type', {
+                is: (val: any) => val === 'url',
+                then: Yup.string().matches(
+                  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
+                  'Enter correct url'
+                ),
+              }),
           })
         )
         .min(1)

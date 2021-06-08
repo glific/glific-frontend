@@ -10,7 +10,10 @@ import {
 
 import styles from './TemplateOptions.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
+import Tooltip from '../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as InfoIcon } from '../../assets/images/icons/Info.svg';
+import { GUPSHUP_CALL_TO_ACTION, GUPSHUP_QUICK_REPLY } from '../../common/constants';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -64,10 +67,34 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                   >
                     <FormControlLabel
                       value="phone-no"
-                      control={<Radio color="primary" />}
+                      control={
+                        <Radio
+                          color="primary"
+                          disabled={
+                            (index === 0 &&
+                              inputFields.length > 1 &&
+                              inputFields[0].type !== 'phone-no') ||
+                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone-no')
+                          }
+                        />
+                      }
                       label="Phone number"
                     />
-                    <FormControlLabel value="url" control={<Radio color="primary" />} label="URL" />
+                    <FormControlLabel
+                      value="url"
+                      control={
+                        <Radio
+                          color="primary"
+                          disabled={
+                            (index === 0 &&
+                              inputFields.length > 1 &&
+                              inputFields[0].type !== 'url') ||
+                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
+                          }
+                        />
+                      }
+                      label="URL"
+                    />
                   </RadioGroup>
                   {errors.templateButtons &&
                   touched.templateButtons &&
@@ -89,9 +116,9 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                   placeholder={buttonTitle}
                   variant="outlined"
                   label={buttonTitle}
-                  onChange={(e: any) => onInputChange(e, row, index, 'title')}
+                  onBlur={(e: any) => onInputChange(e, row, index, 'title')}
                   className={styles.TextField}
-                  error={isError('value')}
+                  error={isError('title')}
                 />
                 {errors.templateButtons &&
                 touched.templateButtons &&
@@ -107,7 +134,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                   placeholder={buttonValue}
                   variant="outlined"
                   label={buttonValue}
-                  onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                  onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                   className={styles.TextField}
                   error={isError('value')}
                 />
@@ -136,7 +163,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                 placeholder={buttonTitle}
                 label={buttonTitle}
                 variant="outlined"
-                onChange={(e: any) => onInputChange(e, row, index, 'value')}
+                onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
               />
@@ -169,18 +196,28 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         value={templateType}
         onChange={(event) => onTemplateTypeChange(event.target.value)}
       >
-        <FormControlLabel
-          value="call-to-action"
-          control={<Radio color="primary" />}
-          label="Call to actions"
-          classes={{ root: styles.RadioLabel }}
-        />
-        <FormControlLabel
-          value="quick-reply"
-          control={<Radio color="primary" />}
-          label="Quick replies"
-          className={styles.RadioLabel}
-        />
+        <div className={styles.RadioLabelWrapper}>
+          <FormControlLabel
+            value="call-to-action"
+            control={<Radio color="primary" />}
+            label="Call to actions"
+            classes={{ root: styles.RadioLabel }}
+          />
+          <Tooltip title={GUPSHUP_CALL_TO_ACTION} placement="right" tooltipClass={styles.Tooltip}>
+            <InfoIcon />
+          </Tooltip>
+        </div>
+        <div className={styles.RadioLabelWrapper}>
+          <FormControlLabel
+            value="quick-reply"
+            control={<Radio color="primary" />}
+            label="Quick replies"
+            className={styles.RadioLabel}
+          />
+          <Tooltip title={GUPSHUP_QUICK_REPLY} placement="right" tooltipClass={styles.Tooltip}>
+            <InfoIcon />
+          </Tooltip>
+        </div>
       </RadioGroup>
 
       {templateType ? (

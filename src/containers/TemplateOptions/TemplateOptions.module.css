@@ -15,7 +15,7 @@
 }
 
 .WrapperBackground {
-  padding: 24px 24px 8px 24px;
+  padding: 16px 24px 8px 24px;
   background: white;
   border-radius: 16px;
   margin-bottom: 6px;
@@ -67,5 +67,19 @@
 }
 
 .FormControl > p {
-  margin-left: 16px;
+  margin-left: 12px;
+}
+
+.RadioLabelWrapper {
+  width: 50%;
+  align-items: center;
+  display: flex;
+}
+
+.Tooltip {
+  background-color: #042c19 !important;
+  font-size: 12px;
+  line-height: 1.2;
+  border-radius: 8px;
+  font-weight: 400;
 }
