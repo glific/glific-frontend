@@ -1,11 +1,9 @@
-
-.Message{
+.Message {
   display: flex;
   align-items: center;
 }
 
-
-.Message svg{
+.Message svg {
   margin-right: 10px;
 }
 

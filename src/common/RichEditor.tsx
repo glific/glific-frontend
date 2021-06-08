@@ -7,36 +7,37 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
-const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
+const regexForLink =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 export const TextReplacements: any = [
   {
     bold: {
       char: '*',
       tag: 'b',
-      replace: (text: string) => <b key={text}>{text}</b>
-    }
+      replace: (text: string) => <b key={text}>{text}</b>,
+    },
   },
   {
     italics: {
       char: '_',
       tag: 'i',
-      replace: (text: string) => <i>{text}</i>
-    }
+      replace: (text: string) => <i>{text}</i>,
+    },
   },
   {
     strikethrough: {
       char: '~',
       tag: 's',
-      replace: (text: string) => <s>{text}</s>
-    }
+      replace: (text: string) => <s>{text}</s>,
+    },
   },
   {
     codeBlock: {
       char: '``',
       tag: 'code',
-      replace: (text: string) => <code>{text}</code>
-    }
-  }
+      replace: (text: string) => <code>{text}</code>,
+    },
+  },
 ];
 
 // Finds double asterisks in text with a regular expression.
@@ -83,7 +84,7 @@ export const WhatsAppToDraftEditor = (text: string) => {
   const addedBold = text.replace(regexforBold, (str: any) => `*${str}*`);
 
   const rawData = MarkDownConvertor.markdownToDraft(addedBold, {
-    preserveNewlines: true
+    preserveNewlines: true,
   });
   const contentState = convertFromRaw(rawData);
   return contentState;
@@ -165,7 +166,7 @@ export const WhatsAppTemplateButton = (text: string) => {
           value: null,
           type: 'call-to-action',
           tooltip: 'Currently not supported',
-          icon: <CallIcon />
+          icon: <CallIcon />,
         };
         if (link) {
           const [url] = link;

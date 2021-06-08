@@ -46,7 +46,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
     linkURL,
     errorMessage,
     successMessage,
-    staffInstructions
+    staffInstructions,
   } = props;
   // handle visibility for the password field
   const [showPassword, setShowPassword] = useState(false);
@@ -100,12 +100,14 @@ export const Auth: React.SFC<AuthProps> = (props) => {
   // visibility of the field
   const passwordFieldAdditionalInfo = {
     endAdornmentCallback: handlePasswordVisibility,
-    togglePassword: showPassword
+    togglePassword: showPassword,
   };
 
-  const handlePhone = () => (value: string): void => {
-    initialFormValues.phone = value;
-  };
+  const handlePhone =
+    () =>
+    (value: string): void => {
+      initialFormValues.phone = value;
+    };
 
   let formElements;
   // we should not render form elements when displaying success message

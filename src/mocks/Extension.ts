@@ -13,8 +13,7 @@ export const getExtension = {
     data: {
       extension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
           id: '1',
           insertedAt: '2021-05-22T05:34:54Z',
           isActive: false,
@@ -38,8 +37,7 @@ export const getOrganizationExtension = {
     data: {
       extension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
           id: '1',
           insertedAt: '2021-05-22T05:34:54Z',
           isActive: false,
@@ -68,8 +66,7 @@ export const createExtension = {
     data: {
       createExtension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: false,
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',
@@ -97,8 +94,7 @@ export const updateExtension = {
     data: {
       update_organization_extension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: true,
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',
