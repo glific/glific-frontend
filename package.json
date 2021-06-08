@@ -14,7 +14,7 @@
     "@appsignal/plugin-path-decorator": "^1.0.6",
     "@appsignal/plugin-window-events": "^1.0.6",
     "@appsignal/react": "^1.0.7",
-    "@date-io/date-fns": "2.10.11",
+    "@date-io/date-fns": "1.x",
     "@draft-js-plugins/editor": "^4.1.0",
     "@glific/flow-editor": "^1.13.9-2",
     "@jumpn/utils-graphql": "^0.6.0",
