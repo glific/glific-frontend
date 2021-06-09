@@ -9,13 +9,14 @@ import styles from './FlowEditor.module.css';
 import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
 import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as WarningIcon } from '../../assets/images/icons/Warning.svg';
+import { ReactComponent as ExportIcon } from '../../assets/images/icons/Flow/Export.svg';
 import { Button } from '../UI/Form/Button/Button';
 import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
 import { Simulator } from '../simulator/Simulator';
 import { DialogBox } from '../UI/DialogBox/DialogBox';
 import { setNotification } from '../../common/notification';
 import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
-import { GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
+import { EXPORT_FLOW, GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 import { setAuthHeaders } from '../../services/AuthService';
 import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
 import { Loading } from '../UI/Layout/Loading/Loading';
@@ -169,6 +170,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   let modal = null;
   let dialog = null;
+  let flowTitle: any;
 
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
     onCompleted: (services) => {
@@ -182,6 +184,21 @@ export const FlowEditor = (props: FlowEditorProps) => {
       }
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
+    },
+  });
+
+  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: async ({ exportFlowDefinition }) => {
+      const { definition } = exportFlowDefinition;
+      const blob = new Blob([definition], { type: 'application/json' });
+      const href = await URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = href;
+      link.download = `${flowTitle}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   });
 
@@ -238,11 +255,12 @@ export const FlowEditor = (props: FlowEditorProps) => {
     },
   });
 
-  let flowTitle: any;
+  let flowId: any;
 
   // flowname can return an empty array if the uuid present is not correct
   if (flowName && flowName.flows.length > 0) {
     flowTitle = flowName.flows[0].name;
+    flowId = flowName.flows[0].id;
   }
 
   useEffect(() => {
@@ -380,6 +398,14 @@ export const FlowEditor = (props: FlowEditorProps) => {
         >
           Back
         </Button>
+
+        <div
+          className={styles.ExportIcon}
+          onClick={() => exportFlowMutation({ variables: { id: flowId } })}
+          aria-hidden="true"
+        >
+          <ExportIcon />
+        </div>
 
         <Button
           variant="outlined"

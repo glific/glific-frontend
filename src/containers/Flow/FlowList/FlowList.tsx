@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery } from '@apollo/client';
 
 import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as ExportIcon } from '../../../assets/images/icons/Flow/Export.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from '../../../assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
 import { List } from '../../List/List';
-import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
+import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from '../../../graphql/queries/Flow';
 import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 
@@ -49,8 +51,30 @@ export const FlowList: React.SFC<FlowListProps> = () => {
   const history = useHistory();
   const { t } = useTranslation();
 
+  const [flowName, setFlowName] = useState('');
+
+  const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: async ({ exportFlowDefinition }) => {
+      const { definition } = exportFlowDefinition;
+      const blob = new Blob([definition], { type: 'application/json' });
+      const href = await URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = href;
+      link.download = `${flowName}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+  });
+
   const setDialog = (id: any) => {
     history.push({ pathname: `/flow/${id}/edit`, state: 'copy' });
+  };
+
+  const exportFlow = (id: any, item: any) => {
+    setFlowName(item.name);
+    exportFlowMutation({ variables: { id } });
   };
 
   const additionalAction = [
@@ -65,6 +89,12 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       icon: <DuplicateIcon />,
       parameter: 'id',
       dialog: setDialog,
+    },
+    {
+      label: t('Export flow'),
+      icon: <ExportIcon />,
+      parameter: 'id',
+      dialog: exportFlow,
     },
   ];
 
