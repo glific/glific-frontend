@@ -351,9 +351,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
             variables: subscriptionVariables,
             updateQuery: (prev, { subscriptionData }) =>
               updateConversations(prev, subscriptionData, 'STATUS'),
-            onError: (e) => {
-              console.log('e', e);
-            },
+            onError: () => {},
           });
 
           // tag added subscription
