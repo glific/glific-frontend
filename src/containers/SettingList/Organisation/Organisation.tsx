@@ -118,12 +118,17 @@ export const Organisation: React.SFC = () => {
 
   useEffect(() => {
     if (orgData) {
-      const FlowIdPresent = orgData.organization.organization.outOfOffice.flowId;
+      // const FlowIdPresent = orgData.organization.organization.outOfOffice.flowId;
 
       const data = orgData.organization.organization;
       // get login OrganizationId
       setOrganizationId(data.id);
-      if (FlowIdPresent !== null) setIsFlowDisable(false);
+
+      const days = orgData.organization.organization.outOfOffice.enabledDays;
+      const selectedDays = Object.keys(days).filter((k) => days[k].enabled === true);
+
+      // show another flow if days are selected
+      if (selectedDays.length > 0) setIsFlowDisable(false);
     }
   }, [orgData]);
 
@@ -162,24 +167,6 @@ export const Organisation: React.SFC = () => {
 
     return error;
   };
-  const validateInOfficeDefaultFlow = (value: any) => {
-    let error;
-    if (!IsFlowDisabled && startTime && endTime && !value) {
-      error = t('Please select default flow ');
-    }
-
-    return error;
-  };
-  const handleTime = (value: any) => {
-    if (value) {
-      setIsFlowDisable(false);
-    }
-  };
-  const customHandler = (value: any) => {
-    if (value === null || flowId) {
-      setIsFlowDisable(true);
-    }
-  };
 
   const validateDaysSelection = (value: any) => {
     let error;
@@ -189,6 +176,13 @@ export const Organisation: React.SFC = () => {
 
     return error;
   };
+
+  const handleChangeInDays = (value: any) => {
+    if (value.length > 0) {
+      setIsFlowDisable(false);
+    }
+  };
+
   const validation = {
     name: Yup.string().required(t('Organisation name is required.')),
     activeLanguages: Yup.array().required(t('Supported Languages is required.')),
@@ -287,6 +281,7 @@ export const Organisation: React.SFC = () => {
         label: t('Select days'),
       },
       disabled: IsDisabled,
+      onChange: handleChangeInDays,
       validate: validateDaysSelection,
     },
     {
@@ -294,17 +289,12 @@ export const Organisation: React.SFC = () => {
       name: 'startTime',
       placeholder: t('Start'),
       disabled: IsDisabled,
-      handleAccept: handleTime,
-      customHandler,
     },
     {
       component: TimePicker,
       name: 'endTime',
       placeholder: t('Stop'),
       disabled: IsDisabled,
-      handleAccept: handleTime,
-
-      customHandler,
     },
   ];
   if (IsFlowDisabled === false) {
@@ -321,7 +311,7 @@ export const Organisation: React.SFC = () => {
       disabled: IsDisabled,
       extraText: t('Would you like to trigger a flow for all the other days & times?'),
 
-      validate: validateInOfficeDefaultFlow,
+      // validate: validateInOfficeDefaultFlow,
     });
   }
 

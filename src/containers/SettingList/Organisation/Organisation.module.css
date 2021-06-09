@@ -16,7 +16,7 @@
   margin-right: 2% !important;
 }
 .organization > div:nth-of-type(6) {
-  margin: 0% !important;
+  margin: 32px 0 0 0 !important;
 }
 .organization > div:nth-of-type(n + 6) {
   display: block;
