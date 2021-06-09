@@ -82,3 +82,21 @@ test('Submit form', async () => {
     fireEvent.click(submit);
   });
 });
+
+test('check if flow field appears on selcting days', async () => {
+  const { container, getByText, getAllByTestId } = render(wrapper);
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    const autoCompleteInput = screen.getAllByTestId('autocomplete-element');
+
+    fireEvent.mouseDown(autoCompleteInput[3]);
+
+    waitFor(() => {
+      const selectedOption = screen.getByText('Monday');
+      expect(selectedOption).toBeInTheDocument();
+
+      fireEvent.click(selectedOption);
+    });
+  });
+});
