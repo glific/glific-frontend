@@ -118,8 +118,6 @@ export const Organisation: React.SFC = () => {
 
   useEffect(() => {
     if (orgData) {
-      // const FlowIdPresent = orgData.organization.organization.outOfOffice.flowId;
-
       const data = orgData.organization.organization;
       // get login OrganizationId
       setOrganizationId(data.id);
