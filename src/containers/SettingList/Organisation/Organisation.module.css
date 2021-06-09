@@ -1,5 +1,5 @@
 .organization {
-  width: 90% !important;
+  width: 100% !important;
 }
 
 .organization > div:nth-child(n + 2) {

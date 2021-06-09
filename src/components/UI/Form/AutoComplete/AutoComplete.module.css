@@ -40,3 +40,10 @@
 .Paper > ul > li {
   color: #073f24;
 }
+
+.ExtraText {
+  color: #073f24;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 8px 0;
+}

@@ -16,6 +16,7 @@ export interface AutocompleteProps {
   form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
   helperText?: any;
+  extraText?: any;
   multiple?: boolean;
   disabled?: boolean;
   helpLink?: any;
@@ -60,6 +61,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   classes = {},
   renderTags = true,
   selectedOptionsIds = [],
+  extraText,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -150,6 +152,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
+        {extraText ? <div className={styles.ExtraText}>{extraText}</div> : null}
         <Autocomplete
           classes={classes}
           multiple={multiple}

@@ -16,6 +16,8 @@ export interface TimePickerProps {
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
   disabled?: boolean;
+  handleAccept?: any;
+  customHandler?: any;
 }
 
 export const TimePicker: React.SFC<TimePickerProps> = ({
@@ -25,6 +27,8 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   form: { setFieldValue, touched, errors },
   placeholder,
   disabled = false,
+  handleAccept,
+  customHandler,
 }) => {
   moment.defaultFormat = 'Thh:mm:ss';
   const dateValue = field.value ? moment(field.value, moment.defaultFormat).toDate() : null;
@@ -34,6 +38,9 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
   const hasError = touchedVal && errorText !== undefined;
 
   const handleDateChange = (time: Date | null) => {
+    if (customHandler) {
+      customHandler(time);
+    }
     const value = time ? moment(time).format('THH:mm:ss') : null;
     setFieldValue(field.name, value);
   };
@@ -52,6 +59,7 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
           value={dateValue}
           disabled={disabled}
           onChange={(date) => handleDateChange(date)}
+          onAccept={handleAccept}
           keyboardIcon={<ScheduleIcon />}
           helperText={hasError ? errorText : ''}
           className={styles.picker}
