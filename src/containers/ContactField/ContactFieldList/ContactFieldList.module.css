@@ -8,7 +8,6 @@
 }
 
 .LabelText {
-  font-family: 'heebo', sans-serif;
   font-weight: 500;
   font-size: 16px;
   color: #073f24;
@@ -32,14 +31,22 @@
 }
 
 .OtherColumnText {
-  font-family: 'heebo', sans-serif;
   font-weight: 400;
   font-size: 16px;
   color: #93a29b;
   line-height: 1.25;
 }
 
+.OtherColumnText:hover > span {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 900ms;
+}
+
 .OtherColumnText > span {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 300ms, opacity 300ms;
   padding: 8px;
   margin-left: -8px;
   background: radial-gradient(white, transparent);

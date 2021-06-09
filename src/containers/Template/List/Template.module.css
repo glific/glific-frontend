@@ -16,7 +16,6 @@
 }
 
 .LabelText {
-  font-family: 'heebo', sans-serif;
   display: flex;
   font-weight: 500;
   font-size: 20px;
@@ -24,6 +23,7 @@
   margin-top: 12px;
   margin-bottom: 12px;
   line-height: 1;
+  word-break: break-all;
 }
 
 .TableText {

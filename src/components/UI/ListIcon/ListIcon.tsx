@@ -29,10 +29,11 @@ import styles from './ListIcon.module.css';
 export interface ListIconProps {
   icon: string;
   count?: number;
+  showBadge?: boolean;
 }
 
 export const ListIcon: React.SFC<ListIconProps> = (props) => {
-  const { icon, count } = props;
+  const { icon, count, showBadge } = props;
 
   const location = useLocation();
   const stringsToIcons: { [iconName: string]: string } = {
@@ -77,7 +78,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
 
   return (
     <div>
-      {count && icon === 'notification' ? (
+      {showBadge && count ? (
         <Badge badgeContent={count} color="secondary" classes={{ badge: styles.Badge }}>
           {iconImage}
         </Badge>

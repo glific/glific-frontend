@@ -109,6 +109,11 @@ temba-select:focus {
 #flow * {
   box-sizing: initial !important;
 }
+
+#flow,
+.ReactModalPortal {
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+}
 /* flow editor css */
 
 body {
