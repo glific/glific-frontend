@@ -12,6 +12,7 @@
   display: flex;
   padding: 16px;
   flex-wrap: wrap;
+  padding-bottom: 32px;
 }
 
 .Link {

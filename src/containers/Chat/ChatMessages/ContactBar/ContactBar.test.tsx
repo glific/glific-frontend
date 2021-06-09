@@ -205,17 +205,17 @@ describe('Collection test', () => {
       </MemoryRouter>
     </MockedProvider>
   );
-  test('It should render the collection name correctly', () => {
+  test('It should render the collection name correctly', async () => {
     const { getByText } = render(component);
-
+    await waitFor(() => {});
     const contactBarComponent = screen.getByTestId('beneficiaryName');
     expect(contactBarComponent).toBeInTheDocument();
     expect(getByText('Default Collection')).toBeInTheDocument();
   });
 
-  test('It should render the collection name correctly', () => {
+  test('It should render the collection name correctly', async () => {
     const { getByText } = render(component);
-
+    await waitFor(() => {});
     const contactBarComponent = screen.getByTestId('beneficiaryName');
     expect(contactBarComponent).toBeInTheDocument();
     expect(getByText('Default Collection')).toBeInTheDocument();

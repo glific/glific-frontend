@@ -335,6 +335,7 @@ test('Contact: if not cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
   // need to check this test
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
@@ -413,6 +414,7 @@ test('click on Clear conversation', async () => {
   });
 });
 
+const messages = new Array(20).fill(body).map((b, index) => ({ ...b, id: `${index}` }));
 test('Load more messages', async () => {
   const searchQuery = {
     query: SEARCH_QUERY,
@@ -435,7 +437,7 @@ test('Load more messages', async () => {
             bspStatus: 'SESSION_AND_HSM',
             isOrgRead: true,
           },
-          messages: new Array(20).fill(body),
+          messages,
         },
       ],
     },

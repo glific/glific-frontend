@@ -767,9 +767,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
     // check if we have offset 0 (messageNumber === offset)
     if (conversationInfo.messages[0].messageNumber !== 0) {
-      // set limit upto current message number
-      const limit =
-        conversationInfo.messages[conversationInfo.messages.length - 1].messageNumber + 20;
+      // set limit to default message limit
+      const limit = DEFAULT_MESSAGE_LIMIT;
 
       // set variable for contact chats
       const variables: any = {

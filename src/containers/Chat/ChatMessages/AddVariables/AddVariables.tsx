@@ -96,7 +96,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           >
             <div data-testid="variablesDialog">
               {formFieldItems.map((field: any) => (
-                <Field {...field} />
+                <Field {...field} key={field.name} />
               ))}
             </div>
           </DialogBox>

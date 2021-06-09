@@ -28,15 +28,17 @@ describe('side drawer testing', () => {
     });
   });
 
-  it('should open bottom menus', () => {
+  it('should open bottom menus', async () => {
     const { getByTestId, getAllByTestId } = render(component);
     fireEvent.click(getByTestId('bottom-menu'));
+    await waitFor(() => {});
     expect(getAllByTestId('MenuItem')[0]).toHaveTextContent('My Profile');
   });
 
-  it('correct menu items rendered', () => {
+  it('correct menu items rendered', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getAllByTestId } = render(component);
+    await waitFor(() => {});
     let menuItems = getAllByTestId('list-item');
     const sideDrawerMenus = getMenus('sideDrawer', 'Admin');
     for (let i = 0; i < menuItems.length / 2; i++) {
@@ -44,9 +46,10 @@ describe('side drawer testing', () => {
     }
   });
 
-  it('should contain a help button', () => {
+  it('should contain a help button', async () => {
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
     const { getByTestId } = render(component);
+    await waitFor(() => {});
     expect(getByTestId('helpButton')).toBeInTheDocument();
   });
 });

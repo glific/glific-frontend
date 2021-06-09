@@ -95,7 +95,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         refetchQueries={{ query: GET_FLOWS, variables: setVariables() }}
         {...queries}
         {...columnAttributes}
-        searchParameter="name"
+        searchParameter="nameOrKeyword"
         removeSortBy={[t('Last Published'), t('Last Saved in Draft')]}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ CREATE FLOW') }}
