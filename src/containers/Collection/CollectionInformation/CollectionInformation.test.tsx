@@ -41,9 +41,9 @@ const collectionUsersQuery = {
 };
 
 describe('<CollectionInformation />', () => {
-  test('it should mount', () => {
+  test('it should mount', async () => {
     render(wrapper);
-
+    await waitFor(() => {});
     const collectionInformation = screen.getByTestId('CollectionInformation');
 
     expect(collectionInformation).toBeInTheDocument();
@@ -51,9 +51,9 @@ describe('<CollectionInformation />', () => {
 });
 
 describe('render SessionInfo', () => {
-  test('it should have session data', () => {
+  test('it should have session data', async () => {
     const { getByText } = render(wrapper);
-
+    await waitFor(() => {});
     const SessionInfo = getByText('Session messages:');
 
     expect(SessionInfo).toBeInTheDocument();

@@ -60,13 +60,17 @@ describe('testing <SavedSearchToolbar />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      const moreStatus: any = getByRole('button');
-      fireEvent.click(moreStatus);
-    });
+    await waitFor(() => {});
+    const moreStatus: any = getByRole('button');
+    fireEvent.click(moreStatus);
+
+    await waitFor(() => {});
+
     const optin: any = getByText('Optin');
     expect(optin).toBeInTheDocument();
     fireEvent.click(optin);
+
+    await waitFor(() => {});
   });
 
   test('check if savedSearch query return error', async () => {
