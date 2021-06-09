@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
 
 const props = {
   pageTitle: 'Setup your NGO on Glific',
-  buttonText: 'GET STARTED',
+  buttonText: 'Get Started',
   formFields: [
     {
       component: Input,
@@ -87,7 +87,7 @@ test('Organization with success onboarding', () => {
     UserEvent.type(inputElements[0], 'JaneDoe');
 
     // click on continue
-    const button = screen.getByText('GET STARTED');
+    const button = screen.getByText('Get Started');
     fireEvent.click(button);
     expect(props.saveHandler).toHaveBeenCalledWith({ name: 'test' }, true, jest.fn(), jest.fn());
   });
