@@ -28,6 +28,7 @@ export const getOrganizationQuery = [
             id: '1',
             outOfOffice: {
               enabled: true,
+              defaultFlowId: '3',
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
@@ -70,6 +71,7 @@ export const getOrganizationQuery = [
             id: '1',
             outOfOffice: {
               enabled: true,
+              defaultFlowId: '3',
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
@@ -112,6 +114,7 @@ export const getOrganizationQuery = [
             id: '1',
             outOfOffice: {
               enabled: true,
+              defaultFlowId: '3',
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
