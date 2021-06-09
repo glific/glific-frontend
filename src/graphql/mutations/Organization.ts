@@ -8,16 +8,7 @@ export const UPDATE_ORGANIZATION = gql`
         shortcode
         name
         outOfOffice {
-          enabled
-          startTime
-          endTime
-          flowId
-          enabledDays {
-            id
-            enabled
-          }
-        }
-        inOffice {
+          defaultFlowId
           enabled
           startTime
           endTime
