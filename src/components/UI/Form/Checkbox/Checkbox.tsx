@@ -11,10 +11,11 @@ export interface CheckboxProps {
   form: any;
   handleChange?: Function;
   info?: { title: string };
+  disabled?: boolean;
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
-  const { field, title, info = false } = props;
+  const { field, title, info = false, disabled = false } = props;
   const handleChange = () => {
     props.form.setFieldValue(props.field.name, !props.field.value);
     if (props.handleChange) props.handleChange(!props.field.value);
@@ -31,6 +32,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
             color="primary"
             checked={field.value ? field.value : false}
             onChange={handleChange}
+            disabled={disabled}
           />
         }
         labelPlacement="end"

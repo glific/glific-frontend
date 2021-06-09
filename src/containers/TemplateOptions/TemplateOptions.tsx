@@ -7,6 +7,7 @@ import {
   FormHelperText,
   FormControl,
 } from '@material-ui/core';
+import { FieldArray } from 'formik';
 
 import styles from './TemplateOptions.module.css';
 import { Button } from '../../components/UI/Form/Button/Button';
@@ -19,7 +20,7 @@ export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
   inputFields: Array<any>;
-  form: { touched: any; errors: any };
+  form: { touched: any; errors: any; values: any };
   onAddClick: any;
   onRemoveClick: any;
   onInputChange: any;
@@ -29,7 +30,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   isAddButtonChecked,
   templateType,
   inputFields,
-  form: { touched, errors },
+  form: { touched, errors, values },
   onAddClick,
   onRemoveClick,
   onTemplateTypeChange,
@@ -38,22 +39,37 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
 
-  const addButton = (
-    <Button variant="outlined" color="primary" onClick={() => onAddClick(true)}>
+  const handleAddClick = (helper: any, type: boolean) => {
+    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+    helper.push(obj);
+    onAddClick();
+  };
+
+  const handleRemoveClick = (helper: any, idx: number) => {
+    helper.remove(idx);
+    onRemoveClick(idx);
+  };
+
+  const addButton = (helper: any, type: boolean = false) => (
+    <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
       Add {templateType?.replaceAll('-', ' ')}
     </Button>
   );
 
-  const getButtons = (row: any, index: number) => {
+  const getButtons = (row: any, index: number, arrayHelpers: any) => {
     const { type, title, value }: any = row;
     let template: any = null;
 
     const isError = (key: string) =>
-      errors.templateButtons && errors.templateButtons[index] && errors.templateButtons[index][key];
+      !!(
+        errors.templateButtons &&
+        errors.templateButtons[index] &&
+        errors.templateButtons[index][key]
+      );
 
     if (templateType === 'call-to-action') {
       template = (
-        <div className={styles.WrapperBackground}>
+        <div className={styles.WrapperBackground} key={index.toString()}>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
@@ -105,7 +121,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               </div>
               <div>
                 {inputFields.length > 1 ? (
-                  <DeleteIcon onClick={() => onRemoveClick(index)} />
+                  <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
                 ) : null}
               </div>
             </div>
@@ -147,7 +163,9 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
             </div>
           </div>
           <div>
-            {inputFields.length === index + 1 && inputFields.length !== 2 ? addButton : null}
+            {inputFields.length === index + 1 && inputFields.length !== 2
+              ? addButton(arrayHelpers, true)
+              : null}
           </div>
         </div>
       );
@@ -155,7 +173,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
 
     if (templateType === 'quick-reply') {
       template = (
-        <div className={styles.WrapperBackground}>
+        <div className={styles.WrapperBackground} key={index.toString()}>
           <div className={styles.QuickReplyWrapper}>
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
@@ -174,11 +192,15 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               ) : null}
             </FormControl>
             <div>
-              {inputFields.length > 1 ? <DeleteIcon onClick={() => onRemoveClick(index)} /> : null}
+              {inputFields.length > 1 ? (
+                <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
+              ) : null}
             </div>
           </div>
           <div>
-            {inputFields.length === index + 1 && inputFields.length !== 3 ? addButton : null}
+            {inputFields.length === index + 1 && inputFields.length !== 3
+              ? addButton(arrayHelpers)
+              : null}
           </div>
         </div>
       );
@@ -221,7 +243,14 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       </RadioGroup>
 
       {templateType ? (
-        <div>{inputFields.map((row, index): any => getButtons(row, index))}</div>
+        <FieldArray
+          name="templateButtons"
+          render={(arrayHelpers) =>
+            values.templateButtons.map((row: any, index: any) =>
+              getButtons(row, index, arrayHelpers)
+            )
+          }
+        />
       ) : null}
     </div>
   );

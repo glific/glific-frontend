@@ -146,6 +146,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getShortcode={shortcode}
         getExample={example}
         getCategory={category}
+        onExampleChange={(val: any) => setExample(val)}
       />
       <Simulator
         setSimulatorId={0}

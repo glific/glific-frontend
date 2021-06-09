@@ -73,6 +73,7 @@ export interface TemplateProps {
   getShortcode?: any;
   getExample?: any;
   getCategory?: any;
+  onExampleChange?: any;
 }
 
 interface CallToActionTemplate {
@@ -99,6 +100,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getShortcode,
     getExample,
     getCategory,
+    onExampleChange,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -435,7 +437,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
-  const addTemplateButtons = (addFromTemplate: boolean = false) => {
+  const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
     const buttonType: any = {
       'quick-reply': { value: '' },
@@ -458,7 +460,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   useEffect(() => {
     if (templateType) {
-      addTemplateButtons();
+      addTemplateButtons(false);
     }
   }, [templateType]);
 
@@ -498,7 +500,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       const sampleText: any = parsedText && message + parsedText;
 
       if (sampleText) {
-        setExample(EditorState.createWithContent(WhatsAppToDraftEditor(sampleText)));
+        onExampleChange(EditorState.createWithContent(WhatsAppToDraftEditor(sampleText)));
       }
     }
   }, [templateButtons]);
@@ -521,6 +523,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       component: Checkbox,
       title: <Typography variant="h6">Add buttons</Typography>,
       name: 'isAddButtonChecked',
+      disabled: !!(defaultAttribute.isHsm && match.params.id),
       handleChange: (value: boolean) => setIsAddButtonChecked(value),
     },
     {
