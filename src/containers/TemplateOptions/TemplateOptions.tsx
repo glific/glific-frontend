@@ -75,8 +75,8 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               <div className={styles.RadioStyles}>
                 <FormControl fullWidth error={isError('type')} className={styles.FormControl}>
                   <RadioGroup
-                    aria-label="call-to-action"
-                    name="call-to-action"
+                    aria-label="action-radio-buttons"
+                    name="action-radio-buttons"
                     row
                     value={type}
                     onChange={(e: any) => onInputChange(e, row, index, 'type')}
@@ -205,7 +205,6 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         </div>
       );
     }
-
     return template;
   };
 

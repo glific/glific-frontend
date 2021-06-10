@@ -538,7 +538,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
-  const hsmFields = [...formField.slice(0, 1), ...templateRadioOptions, ...formField.slice(1)];
+  const hsmFields = formField && [
+    ...formField.slice(0, 1),
+    ...templateRadioOptions,
+    ...formField.slice(1),
+  ];
 
   const fields = defaultAttribute.isHsm
     ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
