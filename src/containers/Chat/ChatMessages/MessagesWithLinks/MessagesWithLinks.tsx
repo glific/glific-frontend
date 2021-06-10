@@ -17,7 +17,7 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   let linkPreview = null;
   const messagebody: any = WhatsAppToJsx(message);
   const regexForLink =
-    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi;
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
   // first element is the url, if the url is sent
   const linkMessage = regexForLink.exec(message);
