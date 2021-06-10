@@ -82,15 +82,17 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                     onChange={(e: any) => onInputChange(e, row, index, 'type')}
                   >
                     <FormControlLabel
-                      value="phone-no"
+                      value="phone_number"
                       control={
                         <Radio
                           color="primary"
                           disabled={
                             (index === 0 &&
                               inputFields.length > 1 &&
-                              inputFields[0].type !== 'phone-no') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'phone-no')
+                              inputFields[0].type !== 'phone_number') ||
+                            (index > 0 &&
+                              inputFields[0].type &&
+                              inputFields[0].type === 'phone_number')
                           }
                         />
                       }

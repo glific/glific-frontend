@@ -13,7 +13,7 @@ const props = (isAddButtonChecked: any, templateType: any, inputFields: any, for
   form,
 });
 
-const callToAction = { type: 'phone-no', value: '', title: '' };
+const callToAction = { type: 'phone_number', value: '', title: '' };
 const quickReply = { value: '' };
 
 const form: any = {

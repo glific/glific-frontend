@@ -548,6 +548,32 @@ const Template: React.SFC<TemplateProps> = (props) => {
     ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
     : [...formFields, ...attachmentField];
 
+  const getButtonTemplatePayload = () => {
+    const buttons = templateButtons.reduce((result: any, button) => {
+      const { type: buttonType, value, title }: any = button;
+      if (templateType === 'call-to-action') {
+        const typeObj: any = {
+          phone_number: 'PHONE_NUMBER',
+          url: 'URL',
+        };
+        const obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+        result.push(obj);
+      }
+
+      if (templateType === 'quick-reply') {
+        const obj: any = { type: 'QUICK_REPLY', text: value };
+        result.push(obj);
+      }
+      return result;
+    }, []);
+
+    return {
+      hasButtons: true,
+      buttons: JSON.stringify(buttons),
+      buttonType: templateType,
+    };
+  };
+
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
     let translationsCopy: any = {};
@@ -615,6 +641,13 @@ const Template: React.SFC<TemplateProps> = (props) => {
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.id;
+
+        if (isAddButtonChecked && templateType) {
+          const templateButtonData = getButtonTemplatePayload();
+          Object.assign(payloadCopy, { ...templateButtonData });
+        }
+        delete payloadCopy.isAddButtonChecked;
+        delete payloadCopy.templateButtons;
       } else {
         delete payloadCopy.example;
         delete payloadCopy.isActive;
@@ -677,7 +710,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
             value: Yup.string()
               .required('Required')
               .when('type', {
-                is: (val: any) => val === 'phone-no',
+                is: (val: any) => val === 'phone_number',
                 then: Yup.string().matches(
                   /^(\+)\d{12}(\d{2})?$/gm,
                   'Enter phone no is correct format'
