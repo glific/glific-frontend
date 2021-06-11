@@ -238,8 +238,7 @@ export const messageReceivedSubscription = {
         type: 'TEXT',
         media: {
           caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+          url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
         location: null,
         errors: '{}',
@@ -274,8 +273,7 @@ export const collectionSendSubscription = {
         type: 'TEXT',
         media: {
           caption: null,
-          url:
-            'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+          url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
         },
         location: null,
         errors: '{}',
@@ -303,8 +301,7 @@ const messageSubscriptionData = {
     type: 'TEXT',
     media: {
       caption: null,
-      url:
-        'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
+      url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
     },
     location: null,
     errors: '{}',
@@ -349,8 +346,7 @@ export const savedSearchStatusQuery = {
     data: {
       savedSearches: [
         {
-          args:
-            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: true,
           label: 'All',
@@ -358,8 +354,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args:
-            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '2',
           isReserved: true,
           label: 'All unread conversations',
@@ -367,8 +362,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args:
-            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '3',
           isReserved: true,
           label: 'Not replied',
@@ -376,8 +370,7 @@ export const savedSearchStatusQuery = {
           count: 10,
         },
         {
-          args:
-            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '4',
           isReserved: true,
           label: 'Optin',
@@ -398,8 +391,7 @@ export const savedSearchQuery = {
     data: {
       savedSearches: [
         {
-          args:
-            '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
+          args: '{"messageOpts":{"limit":5},"filter":{"includeTags":["12"]},"contactOpts":{"limit":10}}',
           id: '1',
           isReserved: false,
           label: 'test',

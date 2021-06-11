@@ -30,7 +30,7 @@ export const RouteSetupSteps: React.SFC = () => {
           title="Setup your NGO on Glific"
           subtitle="Before you get started, please make sure you have completed the following processes:"
           links={links}
-          buttonText="CONTINUE"
+          buttonText="Continue"
           handleStep={handleStep}
         />
       );
@@ -39,7 +39,7 @@ export const RouteSetupSteps: React.SFC = () => {
         <Registration
           title="Setup your NGO on Glific"
           handleStep={handleStep}
-          buttonText="GET STARTED"
+          buttonText="Get Started"
         />
       );
     case 2:

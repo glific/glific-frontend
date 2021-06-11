@@ -301,26 +301,24 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
     [getContactQuery]
   );
 
-  const [
-    loadCollectionData,
-    { subscribeToMore: collectionSubscribe, data: collectionData },
-  ] = useLazyQuery<any>(SEARCH_QUERY, {
-    variables: COLLECTION_SEARCH_QUERY_VARIABLES,
-    nextFetchPolicy: 'cache-only',
-    onCompleted: () => {
-      const subscriptionVariables = { organizationId: getUserSession('organizationId') };
+  const [loadCollectionData, { subscribeToMore: collectionSubscribe, data: collectionData }] =
+    useLazyQuery<any>(SEARCH_QUERY, {
+      variables: COLLECTION_SEARCH_QUERY_VARIABLES,
+      nextFetchPolicy: 'cache-only',
+      onCompleted: () => {
+        const subscriptionVariables = { organizationId: getUserSession('organizationId') };
 
-      if (collectionSubscribe) {
-        // collection sent subscription
-        collectionSubscribe({
-          document: COLLECTION_SENT_SUBSCRIPTION,
-          variables: subscriptionVariables,
-          updateQuery: (prev, { subscriptionData }) =>
-            updateConversations(prev, subscriptionData, 'COLLECTION'),
-        });
-      }
-    },
-  });
+        if (collectionSubscribe) {
+          // collection sent subscription
+          collectionSubscribe({
+            document: COLLECTION_SENT_SUBSCRIPTION,
+            variables: subscriptionVariables,
+            updateQuery: (prev, { subscriptionData }) =>
+              updateConversations(prev, subscriptionData, 'COLLECTION'),
+          });
+        }
+      },
+    });
 
   const [loadData, { loading, error, subscribeToMore, data, refetch }] = useLazyQuery<any>(
     SEARCH_QUERY,
@@ -353,9 +351,7 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
             variables: subscriptionVariables,
             updateQuery: (prev, { subscriptionData }) =>
               updateConversations(prev, subscriptionData, 'STATUS'),
-            onError: (e) => {
-              console.log('e', e);
-            },
+            onError: () => {},
           });
 
           // tag added subscription
