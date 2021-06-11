@@ -12,7 +12,9 @@ jest.mock('@material-ui/core/Select', () => (props: any) => {
           onChange();
         }}
       >
-        {children}
+        <option key={children[0].props.value} value={children[0].props.value}>
+          {children[0].props.children}
+        </option>
       </select>
     </div>
   );
