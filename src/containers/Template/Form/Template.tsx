@@ -17,7 +17,7 @@ import {
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
-import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
+import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from '../../../common/constants';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
@@ -440,8 +440,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const addTemplateButtons = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
     const buttonType: any = {
-      'quick-reply': { value: '' },
-      'call-to-action': { type: '', title: '', value: '' },
+      QUICK_REPLY: { value: '' },
+      CALL_TO_ACTION: { type: '', title: '', value: '' },
     };
 
     if (templateType) {
@@ -484,10 +484,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (templateButtons.length > 0) {
       const parse = templateButtons.reduce((result: any, temp: any) => {
         const { title, value } = temp;
-        if (templateType === 'call-to-action' && value && title) {
+        if (templateType === CALL_TO_ACTION && value && title) {
           result.push(`[${title}, ${value}]`);
         }
-        if (templateType === 'quick-reply' && value) {
+        if (templateType === QUICK_REPLY && value) {
           result.push(`[${value}]`);
         }
         return result;
@@ -551,7 +551,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const getButtonTemplatePayload = () => {
     const buttons = templateButtons.reduce((result: any, button) => {
       const { type: buttonType, value, title }: any = button;
-      if (templateType === 'call-to-action') {
+      if (templateType === CALL_TO_ACTION) {
         const typeObj: any = {
           phone_number: 'PHONE_NUMBER',
           url: 'URL',
@@ -560,17 +560,23 @@ const Template: React.SFC<TemplateProps> = (props) => {
         result.push(obj);
       }
 
-      if (templateType === 'quick-reply') {
-        const obj: any = { type: 'QUICK_REPLY', text: value };
+      if (templateType === QUICK_REPLY) {
+        const obj: any = { type: QUICK_REPLY, text: value };
         result.push(obj);
       }
       return result;
     }, []);
 
+    // get template body
+    const templateBody = getTemplateAndButton(convertToWhatsApp(body));
+    const templateExample = getTemplateAndButton(convertToWhatsApp(example));
+
     return {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
+      body: EditorState.createWithContent(WhatsAppToDraftEditor(templateBody?.message)),
+      example: EditorState.createWithContent(WhatsAppToDraftEditor(templateExample?.message)),
     };
   };
 
@@ -594,6 +600,12 @@ const Template: React.SFC<TemplateProps> = (props) => {
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
           payloadCopy.category = payloadCopy.category.id;
+          if (isAddButtonChecked && templateType) {
+            const templateButtonData = getButtonTemplatePayload();
+            Object.assign(payloadCopy, { ...templateButtonData });
+          }
+          delete payloadCopy.isAddButtonChecked;
+          delete payloadCopy.templateButtons;
         } else {
           delete payloadCopy.example;
           delete payloadCopy.isActive;
@@ -646,8 +658,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
           const templateButtonData = getButtonTemplatePayload();
           Object.assign(payloadCopy, { ...templateButtonData });
         }
-        delete payloadCopy.isAddButtonChecked;
-        delete payloadCopy.templateButtons;
       } else {
         delete payloadCopy.example;
         delete payloadCopy.isActive;
@@ -655,6 +665,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
         delete payloadCopy.category;
       }
 
+      delete payloadCopy.isAddButtonChecked;
+      delete payloadCopy.templateButtons;
       delete payloadCopy.language;
 
       if (payloadCopy.type === 'TEXT') {
@@ -701,7 +713,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   };
 
   if (defaultAttribute.isHsm && isAddButtonChecked) {
-    if (templateType === 'call-to-action') {
+    if (templateType === CALL_TO_ACTION) {
       validation.templateButtons = Yup.array()
         .of(
           Yup.object().shape({

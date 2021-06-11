@@ -14,7 +14,12 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import Tooltip from '../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as InfoIcon } from '../../assets/images/icons/Info.svg';
-import { GUPSHUP_CALL_TO_ACTION, GUPSHUP_QUICK_REPLY } from '../../common/constants';
+import {
+  GUPSHUP_CALL_TO_ACTION,
+  GUPSHUP_QUICK_REPLY,
+  CALL_TO_ACTION,
+  QUICK_REPLY,
+} from '../../common/constants';
 
 export interface TemplateOptionsProps {
   isAddButtonChecked: boolean;
@@ -38,6 +43,10 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
 }) => {
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
+  const buttonTitles: any = {
+    CALL_TO_ACTION: 'Call to action',
+    QUICK_REPLY: 'Quick Reply',
+  };
 
   const handleAddClick = (helper: any, type: boolean) => {
     const obj = type ? { type: '', value: '', title: '' } : { value: '' };
@@ -51,7 +60,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   };
 
   const addButton = (helper: any, type: boolean = false) => {
-    const title = templateType ? templateType.replaceAll('-', ' ') : '';
+    const title = templateType ? buttonTitles[templateType] : '';
     return (
       <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
         Add {title}
@@ -70,7 +79,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         errors.templateButtons[index][key]
       );
 
-    if (templateType === 'call-to-action') {
+    if (templateType === CALL_TO_ACTION) {
       template = (
         <div className={styles.WrapperBackground} key={index.toString()}>
           <div className={styles.CallToActionWrapper}>
@@ -176,7 +185,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       );
     }
 
-    if (templateType === 'quick-reply') {
+    if (templateType === QUICK_REPLY) {
       template = (
         <div className={styles.WrapperBackground} key={index.toString()}>
           <div className={styles.QuickReplyWrapper}>
@@ -224,7 +233,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
-            value="call-to-action"
+            value={CALL_TO_ACTION}
             control={<Radio color="primary" />}
             label="Call to actions"
             classes={{ root: styles.RadioLabel }}
@@ -235,7 +244,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
         </div>
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
-            value="quick-reply"
+            value={QUICK_REPLY}
             control={<Radio color="primary" />}
             label="Quick replies"
             className={styles.RadioLabel}

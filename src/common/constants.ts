@@ -169,3 +169,7 @@ export const GUPSHUP_CALL_TO_ACTION =
 // Gupshpu quick reply text
 export const GUPSHUP_QUICK_REPLY =
   'You may get user responses via buttons. Whatsapp allows 3 quick replies. These are static unline the call to actions where you can define call or link actions.';
+
+// Call to action button
+export const CALL_TO_ACTION = 'CALL_TO_ACTION';
+export const QUICK_REPLY = 'QUICK_REPLY';
