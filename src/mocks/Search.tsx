@@ -15,8 +15,7 @@ export const createSearchQuery = {
       input: {
         label: 'new search description',
         shortcode: 'new search',
-        args:
-          '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+        args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
       },
     },
   },
@@ -25,8 +24,7 @@ export const createSearchQuery = {
       createSavedSearch: {
         errors: null,
         savedSearch: {
-          args:
-            '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '11',
           label: 'new search description',
           shortcode: 'new search',
@@ -71,8 +69,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -87,8 +84,7 @@ export const getSearchesQuery = [
       data: {
         savedSearches: [
           {
-            args:
-              '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+            args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
             id: '8',
             label: 'Test search',
             shortcode: 'Save Search',
@@ -110,8 +106,7 @@ export const getSearch = {
     data: {
       savedSearch: {
         savedSearch: {
-          args:
-            '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
+          args: '{"messageOpts":{"offset":0,"limit":10},"filter":{"term":"","includeTags":["10"]},"contactOpts":{"offset":0,"limit":20}}',
           id: '1',
           label: 'Test search',
           shortcode: 'Save Search collection',

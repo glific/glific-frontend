@@ -274,8 +274,7 @@ describe('<ChatMessage />', () => {
     tags: [],
     type: 'IMAGE',
     media: {
-      url:
-        'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
+      url: 'https://i.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
       caption: '\n',
     },
     errors: '{}',

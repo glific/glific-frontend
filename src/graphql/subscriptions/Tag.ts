@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const ADD_MESSAGE_TAG_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     createdMessageTag(organizationId: $organizationId) {
       message {
         id
@@ -27,7 +27,7 @@ export const ADD_MESSAGE_TAG_SUBSCRIPTION = gql`
 `;
 
 export const DELETE_MESSAGE_TAG_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     deletedMessageTag(organizationId: $organizationId) {
       message {
         id

@@ -54,9 +54,8 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       setAttachmentURL(data.uploadMedia);
       setUploading(false);
     },
-    onError: (error: any) => {
+    onError: () => {
       setUploading(false);
-      console.log('Error', error);
     },
   });
 

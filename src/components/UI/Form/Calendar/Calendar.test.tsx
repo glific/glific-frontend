@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { Calendar } from './Calendar';
 
-
 describe('<Calendar />', () => {
   const props = {
     name: 'dateFrom',
@@ -36,5 +35,4 @@ describe('<Calendar />', () => {
     UserEvent.type(input, '09/03/2020');
     expect(input).toHaveValue('09/03/2020');
   });
-
 });
