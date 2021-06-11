@@ -545,8 +545,6 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [templateType]);
 
   const getTemplateAndButton = (text: string) => {
-    if (!text) return null;
-
     const areButtonsPresent = text.indexOf('|');
 
     let message: any = text;
@@ -648,8 +646,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
-      body: EditorState.createWithContent(WhatsAppToDraftEditor(templateBody?.message)),
-      example: EditorState.createWithContent(WhatsAppToDraftEditor(templateExample?.message)),
+      body: EditorState.createWithContent(WhatsAppToDraftEditor(templateBody.message)),
+      example: EditorState.createWithContent(WhatsAppToDraftEditor(templateExample.message)),
     };
   };
 
