@@ -23,7 +23,6 @@ import { ReactComponent as Settingicon } from '../../../assets/images/icons/Sett
 import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import { copyToClipboard } from '../../../common/utils';
-// import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
 import styles from './Organisation.module.css';
 
 const SettingIcon = <Settingicon />;
@@ -307,9 +306,7 @@ export const Organisation: React.SFC = () => {
         label: t('Select flow'),
       },
       disabled: IsDisabled,
-      extraText: t('Would you like to trigger a flow for all the other days & times?'),
-
-      // validate: validateInOfficeDefaultFlow,
+      Label: t('Would you like to trigger a flow for all the other days & times?'),
     });
   }
 
