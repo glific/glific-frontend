@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, prettyDOM } from '@testing-library/react';
 import { Formik } from 'formik';
 import { TemplateOptions } from './TemplateOptions';
 
@@ -43,6 +43,10 @@ test('it renders call to action button template successfully', async () => {
       <TemplateOptions {...defaultProps} />
     </Formik>
   );
+
+  const callToActionButton = screen.getAllByRole('radio');
+  fireEvent.change(callToActionButton[2], { target: { value: 'phone_number' } });
+  await waitFor(() => {});
 
   const [value, title] = screen.getAllByRole('textbox');
 

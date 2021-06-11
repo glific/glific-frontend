@@ -50,11 +50,14 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     onRemoveClick(idx);
   };
 
-  const addButton = (helper: any, type: boolean = false) => (
-    <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
-      Add {templateType?.replaceAll('-', ' ')}
-    </Button>
-  );
+  const addButton = (helper: any, type: boolean = false) => {
+    const title = templateType ? templateType.replaceAll('-', ' ') : '';
+    return (
+      <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
+        Add {title}
+      </Button>
+    );
+  };
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
     const { type, title, value }: any = row;
