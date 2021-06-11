@@ -129,7 +129,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                   {errors.templateButtons &&
                   touched.templateButtons &&
                   touched.templateButtons[index] ? (
-                    <FormHelperText>{errors.templateButtons[index].type}</FormHelperText>
+                    <FormHelperText>{errors.templateButtons[index]?.type}</FormHelperText>
                   ) : null}
                 </FormControl>
               </div>
@@ -153,7 +153,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                 {errors.templateButtons &&
                 touched.templateButtons &&
                 touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index].title}</FormHelperText>
+                  <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
                 ) : null}
               </FormControl>
             </div>
@@ -171,7 +171,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                 {errors.templateButtons &&
                 touched.templateButtons &&
                 touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
+                  <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
                 ) : null}
               </FormControl>
             </div>
@@ -202,7 +202,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
               {errors.templateButtons &&
               touched.templateButtons &&
               touched.templateButtons[index] ? (
-                <FormHelperText>{errors.templateButtons[index].value}</FormHelperText>
+                <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
               ) : null}
             </FormControl>
             <div>
