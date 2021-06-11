@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, prettyDOM } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Formik } from 'formik';
 import { TemplateOptions } from './TemplateOptions';
 
@@ -37,7 +37,7 @@ test('it renders component and selects call to action type', async () => {
 test('it renders call to action button template successfully', async () => {
   const inputFields = [callToAction];
   form.values.templateButtons.push(callToAction);
-  const defaultProps = props(true, 'call-to-action', inputFields, form);
+  const defaultProps = props(true, 'CALL_TO_ACTION', inputFields, form);
   render(
     <Formik initialValues={inputFields} onSubmit={() => jest.fn()}>
       <TemplateOptions {...defaultProps} />
@@ -63,7 +63,7 @@ test('it renders quick reply button template successfully', async () => {
   const inputFields = [quickReply, quickReply];
   form.values.templateButtons.push(quickReply);
   form.values.templateButtons.push(quickReply);
-  const defaultProps = props(true, 'quick-reply', inputFields, form);
+  const defaultProps = props(true, 'QUICK_REPLY', inputFields, form);
   render(
     <Formik initialValues={inputFields} onSubmit={() => jest.fn()}>
       <TemplateOptions {...defaultProps} />
@@ -79,7 +79,7 @@ test('it renders quick reply button template successfully', async () => {
   fireEvent.click(deleteButtons[1]);
   await waitFor(() => {});
 
-  const addButton = screen.getByText('Add quick reply');
+  const addButton = screen.getByText('Add Quick Reply');
   fireEvent.click(addButton);
   await waitFor(() => {});
 });

@@ -55,6 +55,9 @@ export const GET_TEMPLATE = gql`
         category
         shortcode
         example
+        hasButtons
+        buttons
+        buttonType
       }
     }
   }
