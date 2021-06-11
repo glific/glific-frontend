@@ -5,6 +5,7 @@
 
 .ListItemIcon {
   min-width: 32px !important;
+  margin: 5px 0 0 0;
 }
 
 .IconItem {
@@ -29,10 +30,6 @@
 .ClosedItem {
   width: 60% !important;
   padding: 12px !important;
-}
-
-.Text {
-  font-family: 'Heebo', sans-serif;
 }
 
 .SelectedText {

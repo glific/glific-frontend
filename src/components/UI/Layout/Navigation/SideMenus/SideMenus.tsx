@@ -27,7 +27,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         severity: 'critical',
       },
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     onCompleted: (countData) => {
       setNotificationCount(countData.countNotifications);
     },

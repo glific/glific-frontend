@@ -66,7 +66,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     setIgnoreKeywords(ignoreKeywordsValue);
   };
 
-  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+  const regex =
+    /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),

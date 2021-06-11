@@ -1,5 +1,4 @@
 .SavedSearchToolbar {
-  font-family: 'heebo';
   padding: 16px 6px;
   display: flex;
 }
@@ -55,7 +54,6 @@
 
 .LabelContainer {
   align-items: center;
-  font-family: 'heebo';
   padding: 8px 16px;
   font-size: 16px;
   display: flex;

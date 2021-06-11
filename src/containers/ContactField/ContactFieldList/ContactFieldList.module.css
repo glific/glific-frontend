@@ -8,7 +8,6 @@
 }
 
 .LabelText {
-  font-family: 'heebo', sans-serif;
   font-weight: 500;
   font-size: 16px;
   color: #073f24;
@@ -32,7 +31,6 @@
 }
 
 .OtherColumnText {
-  font-family: 'heebo', sans-serif;
   font-weight: 400;
   font-size: 16px;
   color: #93a29b;

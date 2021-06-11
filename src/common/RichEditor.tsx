@@ -7,7 +7,8 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 const MarkDownConvertor = require('markdown-draft-js');
 
 // Indicates how to replace different parts of the text from WhatsApp to HTML.
-const regexForLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
+const regexForLink =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 export const TextReplacements: any = [
   {
     bold: {
