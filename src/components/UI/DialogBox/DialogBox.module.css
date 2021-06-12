@@ -50,3 +50,11 @@
 .Title {
   max-width: 395px;
 }
+
+.DialogContentCenter {
+  text-align: center;
+}
+
+.DialogContentLeft {
+  text-align: left;
+}

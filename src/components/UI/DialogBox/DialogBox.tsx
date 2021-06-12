@@ -17,6 +17,7 @@ export interface DialogProps {
   buttonOk?: string;
   buttonCancel?: string;
   titleAlign?: string;
+  contentAlign?: string;
   colorOk?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   colorCancel?: 'inherit' | 'primary' | 'secondary' | 'default' | undefined;
   alignButtons?: string;
@@ -38,6 +39,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   colorCancel = 'default',
   alignButtons = 'left',
   titleAlign = 'center',
+  contentAlign = 'left',
   skipCancel = false,
   skipOk = false,
   contentText,
@@ -68,6 +70,11 @@ export const DialogBox: React.SFC<DialogProps> = ({
   let titleStyle = styles.DialogTitleCenter;
   if (titleAlign === 'left') {
     titleStyle = styles.DialogTitleLeft;
+  }
+
+  let contentStyle = styles.DialogContentLeft;
+  if (contentAlign === 'center') {
+    contentStyle = styles.DialogContentCenter;
   }
 
   let okButtonDisplay = null;
@@ -105,7 +112,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
           <div className={styles.Title}>{title}</div>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent className={contentStyle}>
           {contentText ? (
             <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
           ) : null}
