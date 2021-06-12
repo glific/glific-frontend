@@ -43,9 +43,10 @@ export const ErrorHandler: React.SFC<ErrorHandlerProps> = () => {
 
   // for multiple message
   if (Array.isArray(data.errorMessage.message)) {
-    message = data.errorMessage.message.map((e: any, index: number) => (
-      <div key={index}>{e.message}</div>
-    ));
+    message = data.errorMessage.message.map((e: any, index: number) => {
+      const key = `message-${index}`;
+      return <div key={key}>{e.message}</div>;
+    });
   }
 
   // logged error in logflare
