@@ -40,14 +40,12 @@
 .DialogTitleCenter {
   composes: DialogTitle;
   text-align: center;
+  max-width: 395px;
 }
 
 .DialogTitleLeft {
   composes: DialogTitle;
   text-align: left;
-}
-
-.Title {
   max-width: 395px;
 }
 

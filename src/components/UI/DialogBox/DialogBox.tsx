@@ -96,33 +96,31 @@ export const DialogBox: React.SFC<DialogProps> = ({
     dialogActionStyle = styles.DialogActionsCenter;
   }
   return (
-    <div>
-      <Dialog
-        data-testid="dialogBox"
-        open={open}
-        classes={{
-          container: styles.Dialogbox,
-          paper: styles.DialogboxPaper,
-          scrollPaper: styles.ScrollPaper,
-        }}
-        onClose={handleCancelButton}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
-          <div className={styles.Title}>{title}</div>
-        </DialogTitle>
-        <DialogContent className={contentStyle}>
-          {contentText ? (
-            <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
-          ) : null}
-          {children}
-        </DialogContent>
-        <DialogActions className={dialogActionStyle}>
-          {okButtonDisplay}
-          {cancelButtonDisplay}
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog
+      data-testid="dialogBox"
+      open={open}
+      classes={{
+        container: styles.Dialogbox,
+        paper: styles.DialogboxPaper,
+        scrollPaper: styles.ScrollPaper,
+      }}
+      onClose={handleCancelButton}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title" className={titleStyle} data-testid="dialogTitle">
+        {title}
+      </DialogTitle>
+      <DialogContent className={contentStyle}>
+        {contentText ? (
+          <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
+        ) : null}
+        {children}
+      </DialogContent>
+      <DialogActions className={dialogActionStyle}>
+        {okButtonDisplay}
+        {cancelButtonDisplay}
+      </DialogActions>
+    </Dialog>
   );
 };
