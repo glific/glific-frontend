@@ -1,6 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
 import ChatMessageType from './ChatMessageType';
-import Viewer from 'react-viewer';
 import * as Img from 'react-image';
 
 const defaultProps: any = (type: string) => {
