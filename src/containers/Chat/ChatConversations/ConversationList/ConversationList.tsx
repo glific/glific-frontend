@@ -98,13 +98,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   }, [savedSearchCriteriaId]);
 
-  const { loading: conversationLoading, error: conversationError, data } = useQuery<any>(
-    SEARCH_QUERY,
-    {
-      variables: queryVariables,
-      fetchPolicy: 'cache-only',
-    }
-  );
+  const {
+    loading: conversationLoading,
+    error: conversationError,
+    data,
+  } = useQuery<any>(SEARCH_QUERY, {
+    variables: queryVariables,
+    fetchPolicy: 'cache-only',
+  });
 
   const filterVariables = () => {
     if (props.savedSearchCriteria && Object.keys(props.searchParam).length === 0) {
@@ -193,9 +194,8 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
   }, [contactsData]);
 
-  const [getFilterConvos, { called, loading, error, data: searchData }] = useLazyQuery<any>(
-    SEARCH_QUERY
-  );
+  const [getFilterConvos, { called, loading, error, data: searchData }] =
+    useLazyQuery<any>(SEARCH_QUERY);
 
   // fetch data when typing for search
   const [getFilterSearch] = useLazyQuery<any>(SEARCH_MULTI_QUERY, {

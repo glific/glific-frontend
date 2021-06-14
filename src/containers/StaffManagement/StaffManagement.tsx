@@ -62,7 +62,8 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
       {
         key: 3,
         title: 'Staff',
-        description: t(`Access only to the chat section and their collections. Access can be limited to chatting
+        description:
+          t(`Access only to the chat section and their collections. Access can be limited to chatting
         with all contacts or only to the ones in their assigned collection.`),
       },
       { key: 4, title: 'None', description: t('No access to the platform. They can’t login.') },

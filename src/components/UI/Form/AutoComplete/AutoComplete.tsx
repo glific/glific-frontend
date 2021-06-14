@@ -114,7 +114,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
      * default selected options along with newly selected options will be visible
      * else,
      * only post selected options will be visible
-     
+
      */
     if (!renderTags) {
       tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));

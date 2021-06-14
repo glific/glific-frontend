@@ -88,9 +88,8 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     },
   });
 
-  const [getCollectionContacts, { data: collectionContactsData }] = useLazyQuery(
-    GET_COLLECTION_CONTACTS
-  );
+  const [getCollectionContacts, { data: collectionContactsData }] =
+    useLazyQuery(GET_COLLECTION_CONTACTS);
   const [updateCollectionContacts] = useMutation(UPDATE_COLLECTION_CONTACTS, {
     onCompleted: (data) => {
       const { numberDeleted, groupContacts } = data.updateGroupContacts;
