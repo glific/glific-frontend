@@ -107,7 +107,6 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
   let dialog = null;
 
   const setContactsDialog = (id: any) => {
-    console.log(id);
     getCollectionContacts({ variables: { id } });
     getContacts();
     setCollectionId(id);
@@ -191,7 +190,6 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
-
   return (
     <>
       <List
