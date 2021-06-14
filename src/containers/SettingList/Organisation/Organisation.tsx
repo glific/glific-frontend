@@ -306,7 +306,7 @@ export const Organisation: React.SFC = () => {
         label: t('Select flow'),
       },
       disabled: IsDisabled,
-      Label: t('Would you like to trigger a flow for all the other days & times?'),
+      questionText: t('Would you like to trigger a flow for all the other days & times?'),
     });
   }
 
