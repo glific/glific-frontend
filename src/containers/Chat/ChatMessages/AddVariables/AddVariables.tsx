@@ -35,6 +35,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   const [contactVariables, setContactVariables] = useState<any>([]);
   let contacts: any = [];
   let fields: any = [];
+  let selectedVariables: any = [];
 
   const glificBase = FLOW_EDITOR_API;
   const prefix1 = '@contact.field.';
@@ -47,8 +48,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
         headers: { Authorization: getAuthSession('access_token') },
       })
       .then((res) => {
-        fields = res.data.results.map((i: any) => ({ ...i, key: prefix1.concat(i.key) }));
-
+        fields = res.data.results.map((i: any) => ({ key: prefix1.concat(i.key) }));
         // get contact keys
         axios
           .get(`${glificBase}completion`, {
@@ -57,7 +57,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           .then((response) => {
             const properties = response.data.types[5];
             contacts = properties.properties
-              .map((i: any) => ({ ...i, key: prefix2.concat(i.key) }))
+              .map((i: any) => ({ key: prefix2.concat(i.key) }))
               .concat(fields);
             setContactVariables(contacts);
           });
@@ -84,7 +84,9 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           },
         });
 
-        validationObj[`variable${index}`] = Yup.string().required(`Variable ${index} is required.`);
+        validationObj[`variable${index}`] = Yup.object()
+          .nullable()
+          .required(`Variable ${index} is required.`);
       }
       setFormFieldItems(formFieldItem);
       setValidation(validationObj);
@@ -101,11 +103,14 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
 
   const updateText = (variable: any) => {
     let body = bodyText;
+
     Object.keys(variable).forEach((element: string, index: number) => {
-      body = body.replace(`{{${index + 1}}}`, variable[element]);
+      body = body.replace(`{{${index + 1}}}`, variable[element].key);
     });
     updateEditorState(body);
-    variableParams(Object.values(variable));
+    selectedVariables = Object.values(variable).map((item: any) => item.key);
+
+    variableParams(selectedVariables);
   };
 
   const validationSchema = Yup.object().shape(validation);
