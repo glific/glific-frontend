@@ -494,8 +494,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         handleCancel={() => setShowDialog(false)}
         colorOk="secondary"
         alignButtons="center"
+        contentAlign="center"
       >
-        <p className={styles.DialogText}>{dialogMessage}</p>
+        {dialogMessage}
       </DialogBox>
     );
   }
