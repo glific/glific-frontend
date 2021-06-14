@@ -59,8 +59,8 @@ export const GET_FLOW_DETAILS = gql`
 
 export const EXPORT_FLOW = gql`
   query exportFlow($id: ID!) {
-    exportFlowDefinition(id: $id) {
-      definition
+    exportFlow(id: $id) {
+      exportData
     }
   }
 `;

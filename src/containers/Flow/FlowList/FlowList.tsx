@@ -55,9 +55,9 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
-    onCompleted: async ({ exportFlowDefinition }) => {
-      const { definition } = exportFlowDefinition;
-      const blob = new Blob([definition], { type: 'application/json' });
+    onCompleted: async ({ exportFlow }) => {
+      const { exportData } = exportFlow;
+      const blob = new Blob([exportData], { type: 'application/json' });
       const href = await URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = href;
