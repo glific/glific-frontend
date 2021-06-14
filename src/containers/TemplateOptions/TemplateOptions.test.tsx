@@ -7,6 +7,7 @@ const props = (isAddButtonChecked: any, templateType: any, inputFields: any, for
   onRemoveClick: jest.fn(),
   onInputChange: jest.fn(),
   onTemplateTypeChange: jest.fn(),
+  disabled: false,
   isAddButtonChecked,
   templateType,
   inputFields,

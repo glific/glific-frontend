@@ -211,23 +211,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      let bodyVal;
-      if (hasButtons) {
-        const { buttons: buttonsVal, template } = getTemplateAndButtons(
-          templateButtonType,
-          bodyValue,
-          buttons
-        );
-        setTemplateButtons(buttonsVal);
-        bodyVal = template;
-      } else {
-        bodyVal = bodyValue;
-      }
-      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyVal)));
+      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
     }
 
     if (exampleValue) {
-      let exampleBody;
+      let exampleBody: any;
       if (hasButtons) {
         const { buttons: buttonsVal, template } = getTemplateAndButtons(
           templateButtonType,
@@ -239,10 +227,14 @@ const Template: React.SFC<TemplateProps> = (props) => {
       } else {
         exampleBody = exampleValue;
       }
-      const editorStateBody = EditorState.createWithContent(WhatsAppToDraftEditor(exampleBody));
-      setTimeout(() => onExampleChange(editorStateBody), 0);
+      const editorStateBody = EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue));
+      setTimeout(() => setExample(editorStateBody), 0);
+      setTimeout(() => onExampleChange(exampleBody), 10);
     }
 
+    if (hasButtons) {
+      setIsAddButtonChecked(hasButtons);
+    }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
     } else {
@@ -570,7 +562,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       const sampleText: any = parsedText && message + parsedText;
 
       if (sampleText) {
-        onExampleChange(EditorState.createWithContent(WhatsAppToDraftEditor(sampleText)));
+        onExampleChange(sampleText);
       }
     }
   }, [templateButtons]);
@@ -601,6 +593,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       isAddButtonChecked,
       templateType,
       inputFields: templateButtons,
+      disabled: !!match.params.id,
       onAddClick: addTemplateButtons,
       onRemoveClick: removeTemplateButtons,
       onInputChange: handeInputChange,

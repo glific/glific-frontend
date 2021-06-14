@@ -30,6 +30,7 @@ export interface TemplateOptionsProps {
   onRemoveClick: any;
   onInputChange: any;
   onTemplateTypeChange: any;
+  disabled: any;
 }
 export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   isAddButtonChecked,
@@ -40,6 +41,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   onRemoveClick,
   onTemplateTypeChange,
   onInputChange,
+  disabled = false,
 }) => {
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
@@ -75,6 +77,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     const isError = (key: string) =>
       !!(
         errors.templateButtons &&
+        touched.templateButtons &&
         errors.templateButtons[index] &&
         errors.templateButtons[index][key]
       );
@@ -268,5 +271,5 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     </div>
   );
 
-  return <div>{isAddButtonChecked ? radioTemplateType : null}</div>;
+  return <div>{isAddButtonChecked && !disabled ? radioTemplateType : null}</div>;
 };
