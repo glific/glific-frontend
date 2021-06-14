@@ -52,22 +52,29 @@
 }
 
 .Document {
-  composes: Image;
-  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.Document div {
+  width: 250px;
+  display: flex;
+}
+
+.Document > div > svg {
+  margin-right: 8px;
 }
 
 .DocumentText {
   display: flex;
   align-items: center;
-  width: 200px;
-}
-
-.DocumentText svg {
-  margin-right: 4px;
 }
 
 .DocumentText {
   color: #073f24;
   text-decoration: none;
-  font-weight: 700;
+}
+
+.DownloadIcon {
+  margin-left: auto;
 }
