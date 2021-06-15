@@ -1,0 +1,85 @@
+.TextField {
+  width: 100%;
+}
+
+.TextField > div > input {
+  padding: 14.5px ​14px !important;
+}
+
+.Font {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #93a29b;
+}
+
+.WrapperBackground {
+  padding: 16px 24px 8px 24px;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 6px;
+}
+
+.CallToActionWrapper {
+  composes: Font;
+}
+
+.CallToActionWrapper > div {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.CallToActionWrapper > div > div:last-child {
+  cursor: pointer;
+}
+
+.QuickReplyWrapper {
+  composes: Font;
+  display: flex;
+  align-items: center;
+}
+
+.QuickReplyWrapper > div {
+  margin: 0px 4px 17px 4px;
+  cursor: pointer;
+}
+
+.RadioStyles {
+  composes: Font;
+}
+
+.RadioLabel > span:last-child {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  font-family: 'Heebo', sans-serif !important;
+  color: #073f24 !important;
+}
+
+.TextFieldWrapper {
+  display: block !important;
+}
+
+.FormControl {
+  margin-bottom: 17px;
+}
+
+.FormControl > p {
+  margin-left: 12px;
+}
+
+.RadioLabelWrapper {
+  width: 50%;
+  align-items: center;
+  display: flex;
+}
+
+.Tooltip {
+  background-color: #042c19 !important;
+  font-size: 12px;
+  line-height: 1.2;
+  border-radius: 8px;
+  font-weight: 400;
+}
