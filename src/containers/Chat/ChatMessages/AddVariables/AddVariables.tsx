@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
@@ -29,16 +28,16 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   variableParam,
 }: AddVariablesPropTypes) => {
   const [formFieldItems, setFormFieldItems] = useState<any>([]);
-  const [validation, setValidation] = useState<any>({});
   const [initialValues, setInitialValues] = useState<any>({});
   const { t } = useTranslation();
   const [contactVariables, setContactVariables] = useState<any>([]);
+
   let contacts: any = [];
   let fields: any = [];
   let selectedVariables: any = [];
 
   const glificBase = FLOW_EDITOR_API;
-  const prefix1 = '@contact.field.';
+  const prefix1 = '@contact.fields.';
   const prefix2 = '@contact.';
 
   useEffect(() => {
@@ -58,7 +57,9 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
             const properties = response.data.types[5];
             contacts = properties.properties
               .map((i: any) => ({ key: prefix2.concat(i.key) }))
-              .concat(fields);
+              .concat(fields)
+              .slice(1);
+            console.log(contacts.slice(1));
             setContactVariables(contacts);
           });
       });
@@ -68,7 +69,6 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
     const isVariable = bodyText.match(pattern);
     if (isVariable) {
       const formFieldItem: any = [];
-      const validationObj: any = {};
 
       for (let index = 1; index <= isVariable.length; index += 1) {
         formFieldItem.push({
@@ -83,13 +83,9 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
             label: `Variable ${index}`,
           },
         });
-
-        validationObj[`variable${index}`] = Yup.object()
-          .nullable()
-          .required(`Variable ${index} is required.`);
       }
+
       setFormFieldItems(formFieldItem);
-      setValidation(validationObj);
     }
   }, [bodyText, contactVariables]);
 
@@ -105,21 +101,21 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
     let body = bodyText;
 
     Object.keys(variable).forEach((element: string, index: number) => {
-      body = body.replace(`{{${index + 1}}}`, variable[element].key);
+      body = body.replace(
+        `{{${index + 1}}}`,
+        variable[element].key ? variable[element].key : variable[element]
+      );
     });
     updateEditorState(body);
-    selectedVariables = Object.values(variable).map((item: any) => item.key);
+    selectedVariables = Object.values(variable).map((item: any) => (item.key ? item.key : item));
 
     variableParams(selectedVariables);
   };
-
-  const validationSchema = Yup.object().shape(validation);
 
   const form = (
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={validationSchema}
       onSubmit={(itemData) => {
         updateText(itemData);
         setVariable(false);

@@ -13,6 +13,8 @@ export interface AutocompleteProps {
   additionalOptionLabel?: string;
   field: any;
   icon?: any;
+  freeSolo?: boolean;
+  autoSelect?: boolean;
   form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
   helperText?: any;
@@ -47,6 +49,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   helperText,
   multiple = true,
   disabled = false,
+  freeSolo = false,
+  autoSelect = false,
   getOptions,
   asyncValues,
   roleSelection,
@@ -155,6 +159,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
+          freeSolo={freeSolo}
+          autoSelect={autoSelect}
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
           getOptionDisabled={getOptionDisabled}
