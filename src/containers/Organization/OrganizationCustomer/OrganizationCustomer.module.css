@@ -1,0 +1,34 @@
+.OrganizationCustomerIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.Layout {
+  height: 100%;
+}
+
+.Layout > div {
+  height: 100%;
+}
+
+.Layout > div > h5 {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 20px;
+}
+
+.Form {
+  width: 456px;
+}
+
+.Form input[type='text'] {
+  color: #93a29b;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+}
+
+.Edit div > fieldset {
+  color: green;
+  border: green solid 2px;
+}
