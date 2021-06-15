@@ -58,6 +58,7 @@ const formIsActive = {
       Is active?
     </Typography>
   ),
+  darkCheckbox: true,
 };
 
 /**

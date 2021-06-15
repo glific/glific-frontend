@@ -23,6 +23,7 @@ import { ReactComponent as Settingicon } from '../../../assets/images/icons/Sett
 import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
 import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
 import { copyToClipboard } from '../../../common/utils';
+import styles from './Organisation.module.css';
 
 const SettingIcon = <Settingicon />;
 
@@ -40,13 +41,16 @@ export const Organisation: React.SFC = () => {
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
+  const [defaultFlowId, setDefaultFlowId] = useState<any>({});
   const [flowId, setFlowId] = useState<any>({});
   const [IsDisabled, setIsDisable] = useState(false);
+  const [IsFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
   const [signaturePhrase, setSignaturePhrase] = useState();
   const [phone, setPhone] = useState<string>('');
+
   const { t } = useTranslation();
 
   const States = {
@@ -55,6 +59,7 @@ export const Organisation: React.SFC = () => {
     startTime,
     endTime,
     enabledDays,
+    defaultFlowId,
     flowId,
     activeLanguages,
     defaultLanguage,
@@ -98,6 +103,7 @@ export const Organisation: React.SFC = () => {
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
+    setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
     setFlowId(getFlow(outOfOfficeValue.flowId));
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
@@ -114,6 +120,12 @@ export const Organisation: React.SFC = () => {
       const data = orgData.organization.organization;
       // get login OrganizationId
       setOrganizationId(data.id);
+
+      const days = orgData.organization.organization.outOfOffice.enabledDays;
+      const selectedDays = Object.keys(days).filter((k) => days[k].enabled === true);
+
+      // show another flow if days are selected
+      if (selectedDays.length > 0) setIsFlowDisable(false);
     }
   }, [orgData]);
 
@@ -142,6 +154,30 @@ export const Organisation: React.SFC = () => {
       if (IsPresent.length === 0) error = t('Default language needs to be an active language.');
     }
     return error;
+  };
+
+  const validateOutOfOfficeFlow = (value: any) => {
+    let error;
+    if (!IsDisabled && !value) {
+      error = t('Please select default flow ');
+    }
+
+    return error;
+  };
+
+  const validateDaysSelection = (value: any) => {
+    let error;
+    if (!IsDisabled && value.length === 0) {
+      error = t('Please select days');
+    }
+
+    return error;
+  };
+
+  const handleChangeInDays = (value: any) => {
+    if (value.length > 0) {
+      setIsFlowDisable(false);
+    }
   };
 
   const validation = {
@@ -189,6 +225,7 @@ export const Organisation: React.SFC = () => {
       type: 'text',
       placeholder: t('Webhook signature'),
     },
+
     {
       component: Input,
       name: 'phone',
@@ -208,27 +245,28 @@ export const Organisation: React.SFC = () => {
         </InputAdornment>
       ),
     },
+
     {
       component: Checkbox,
       name: 'hours',
-      title: (
-        <Typography variant="h6" style={{ color: '#073f24' }}>
-          {t('Hours of operations')}
-        </Typography>
-      ),
+      title: <Typography className={styles.CheckboxLabel}>{t('Default flow')}</Typography>,
       handleChange,
     },
     {
-      component: TimePicker,
-      name: 'startTime',
-      placeholder: t('Opens'),
+      component: AutoComplete,
+      name: 'defaultFlowId',
+      options: flow.flows,
+      optionLabel: 'name',
+      multiple: false,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Select flow'),
+      },
       disabled: IsDisabled,
-    },
-    {
-      component: TimePicker,
-      name: 'endTime',
-      placeholder: t('Closes'),
-      disabled: IsDisabled,
+      helperText: t(
+        'the selected flow will trigger when end-users aren’t in any flow, their message doesn’t match any keyword, and the time of their message is as defined above.'
+      ),
+      validate: validateOutOfOfficeFlow,
     },
     {
       component: AutoComplete,
@@ -240,8 +278,24 @@ export const Organisation: React.SFC = () => {
         label: t('Select days'),
       },
       disabled: IsDisabled,
+      onChange: handleChangeInDays,
+      validate: validateDaysSelection,
     },
     {
+      component: TimePicker,
+      name: 'startTime',
+      placeholder: t('Start'),
+      disabled: IsDisabled,
+    },
+    {
+      component: TimePicker,
+      name: 'endTime',
+      placeholder: t('Stop'),
+      disabled: IsDisabled,
+    },
+  ];
+  if (IsFlowDisabled === false) {
+    formFields.push({
       component: AutoComplete,
       name: 'flowId',
       options: flow.flows,
@@ -249,14 +303,12 @@ export const Organisation: React.SFC = () => {
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
-        label: t('Select default flow'),
+        label: t('Select flow'),
       },
       disabled: IsDisabled,
-      helperText: t(
-        'the selected flow will be triggered for messages received outside hours of operations'
-      ),
-    },
-  ];
+      questionText: t('Would you like to trigger a flow for all the other days & times?'),
+    });
+  }
 
   const assignDays = (enabledDay: any) => {
     const array: any = [];
@@ -291,21 +343,21 @@ export const Organisation: React.SFC = () => {
     const defaultLanguageId = payloadCopy.defaultLanguage.id;
     // remove defaultLanguage from the payload
     delete payloadCopy.defaultLanguage;
-
     object = {
       name: payloadCopy.name,
       outOfOffice: {
+        defaultFlowId: payloadCopy.defaultFlowId ? payloadCopy.defaultFlowId.id : null,
         enabled: payloadCopy.hours,
         enabledDays: assignDays(payloadCopy.enabledDays),
         endTime: payloadCopy.endTime,
         flowId: payloadCopy.flowId ? payloadCopy.flowId.id : null,
         startTime: payloadCopy.startTime,
       },
+
       defaultLanguageId,
       activeLanguageIds,
       signaturePhrase: payload.signaturePhrase,
     };
-
     return object;
   };
 
@@ -313,7 +365,7 @@ export const Organisation: React.SFC = () => {
     <FormLayout
       backLinkButton={{ text: t('Back to settings'), link: '/settings' }}
       {...queries}
-      title="organization"
+      title="organization settings"
       match={{ params: { id: organizationId } }}
       states={States}
       setStates={setStates}
@@ -332,6 +384,7 @@ export const Organisation: React.SFC = () => {
       type="settings"
       redirect
       afterSave={saveHandler}
+      customStyles={styles.organization}
     />
   );
 };

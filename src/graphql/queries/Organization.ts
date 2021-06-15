@@ -10,6 +10,7 @@ export const GET_ORGANIZATION = gql`
           phone
         }
         outOfOffice {
+          defaultFlowId
           enabled
           enabledDays {
             id
