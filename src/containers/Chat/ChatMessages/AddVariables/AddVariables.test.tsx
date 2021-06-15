@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -20,7 +20,7 @@ const mocks = [FLOW_EDITOR_API];
 const defaultProps = {
   setVariable: setVariableMock,
   handleCancel: jest.fn(),
-  bodyText: 'Your OTP for {{1}} is {{2}}. This is valid for {{3}}.',
+  bodyText: 'Hi {{1}}, Please find the attached bill.',
   updateEditorState: jest.fn(),
   variableParams: jest.fn(),
   variableParam: ['this', '4563', '5 minutes'],
@@ -40,19 +40,41 @@ const whenStable = async () => {
   });
 };
 
-test('it should render variable options and save the form', async () => {
+const axiosApiCall = async () => {
   axios.get.mockImplementationOnce(() => Promise.resolve(responseData1));
 
   axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+};
 
-  const { getByTestId, getByText } = render(wrapper);
+test('it should render variable options and save the form', async () => {
+  axiosApiCall();
+  const { container, getByTestId, getByText } = render(wrapper);
 
   const getSpy = jest.spyOn(axios, 'get').mockResolvedValueOnce(responseData);
   await whenStable();
 
   expect(getByTestId('variablesDialog')).toBeInTheDocument();
+  const autocomplete = screen.getByTestId('AutocompleteInput');
+  const input = within(autocomplete).getByRole('textbox');
+
+  autocomplete.focus();
+  // assign value to input field
+  fireEvent.change(input, { target: { value: '@contact.name' } });
+  // navigate to the first item in the autocomplete box
+  fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+  // select the first item
+  fireEvent.keyDown(autocomplete, { key: 'Enter' });
 
   fireEvent.click(getByText('Done'));
+});
 
-  getSpy.mockRestore();
+test('cancel button clicked', async () => {
+  axiosApiCall();
+  const { container, getByTestId, getByText } = render(wrapper);
+
+  const getSpy = jest.spyOn(axios, 'get').mockResolvedValueOnce(responseData);
+  await whenStable();
+
+  expect(getByTestId('variablesDialog')).toBeInTheDocument();
+  fireEvent.click(getByText('Cancel'));
 });
