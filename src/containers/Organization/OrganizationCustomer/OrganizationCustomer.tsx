@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Dialog, DialogContent } from '@material-ui/core';
+import { useLazyQuery } from '@apollo/client';
 
 import styles from './OrganizationCustomer.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { FormLayout } from '../../Form/FormLayout';
-import { ReactComponent as ConsultingIcon } from '../../../assets/images/icons/icon-consulting.svg';
+import { ReactComponent as OrganizationCustomerIcon } from '../../../assets/images/icons/customer_details.svg';
 import { GET_ORGANIZATION_BILLING } from '../../../graphql/queries/Billing';
 import { CREATE_BILLING, UPDATE_BILLING } from '../../../graphql/mutations/Billing';
 
@@ -22,6 +23,21 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [currency, setCurrency] = useState('');
+  const [isBillingPresent, setIsBillingPresent] = useState(false);
+
+  const variables = { filter: { organizationId: match.params.id } };
+  const [getBillingDetailsForOrganization] = useLazyQuery(GET_ORGANIZATION_BILLING, {
+    variables,
+    onCompleted: ({ getOrganizationBilling }) => {
+      if (getOrganizationBilling) {
+        setIsBillingPresent(!!getOrganizationBilling.billing);
+      }
+    },
+  });
+
+  useEffect(() => {
+    getBillingDetailsForOrganization();
+  }, []);
 
   const { t } = useTranslation();
 
@@ -51,6 +67,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       name: 'name',
       type: 'text',
       placeholder: t('Customer Name'),
+      disabled: isBillingPresent,
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -59,6 +76,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       component: Input,
       name: 'email',
       type: 'text',
+      disabled: isBillingPresent,
       placeholder: t('Customer Email'),
       inputProp: {
         onChange: (event: any) => setEmail(event.target.value),
@@ -68,6 +86,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       component: Input,
       name: 'currency',
       type: 'text',
+      disabled: isBillingPresent,
       placeholder: t('Currency'),
       inputProp: {
         onChange: (event: any) => setCurrency(event.target.value),
@@ -81,36 +100,44 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
     return payloadBody;
   };
 
-  const icon = <ConsultingIcon className={styles.OrganizationCustomerIcon} />;
+  const icon = <OrganizationCustomerIcon className={styles.OrganizationCustomerIcon} />;
+  const title = isBillingPresent ? 'Customer Details' : 'Add Customer';
+  const editStyles = isBillingPresent ? styles.Edit : '';
 
   return (
-    <Dialog
-      open={openDialog}
-      classes={{
-        paper: styles.Dialogbox,
-      }}
-    >
-      <DialogContent classes={{ root: styles.DialogContent }}>
-        <FormLayout
-          {...queries}
-          title={t('Add Customer')}
-          listItem="getOrganizationBilling"
-          listItemName="getOrganizationBilling"
-          pageLink="getOrganizationBilling"
-          match={match}
-          refetchQueries={[]}
-          states={states}
-          setStates={setStates}
-          setPayload={setPayload}
-          validationSchema={FormSchema}
-          formFields={formFields}
-          redirectionLink="organizations"
-          icon={icon}
-          languageSupport={false}
-          customStyles={[styles.Form]}
-          type="customer"
-        />
-      </DialogContent>
-    </Dialog>
+    <div className={styles.container}>
+      <Dialog
+        open={openDialog}
+        classes={{
+          paper: styles.Dialogbox,
+        }}
+      >
+        <DialogContent classes={{ root: styles.DialogContent }}>
+          <div className={`${styles.Layout} ${editStyles}`}>
+            <FormLayout
+              {...queries}
+              title={t(`${title}`)}
+              listItem="billing"
+              listItemName="billing"
+              match={match}
+              refetchQueries={[
+                { query: GET_ORGANIZATION_BILLING, variables: { organizationId: match.params.id } },
+              ]}
+              states={states}
+              setStates={setStates}
+              setPayload={setPayload}
+              validationSchema={FormSchema}
+              formFields={formFields}
+              redirectionLink="organizations"
+              icon={icon}
+              languageSupport={false}
+              customStyles={[styles.Form]}
+              type="customer"
+              idType="organizationId"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
