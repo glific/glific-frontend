@@ -21,6 +21,7 @@ import { ReactComponent as UnblockIcon } from '../../assets/images/icons/Unblock
 import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
 import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
+import { ReactComponent as CustomerDetailsIcon } from '../../assets/images/icons/customer_details.svg';
 import { setNotification } from '../../common/notification';
 import { Extensions } from '../Extensions/Extensions';
 import { OrganizationCustomer } from '../Organization/OrganizationCustomer/OrganizationCustomer';
@@ -98,6 +99,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
   const approveIcon = <UnblockIcon />;
   const activeIcon = <ActivateIcon />;
   const extensionIcon = <ExtensionIcon />;
+  const customerDetailsIcon = <CustomerDetailsIcon />;
   const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
   const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
 
@@ -213,7 +215,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
       dialog: addExtension,
     },
     {
-      icon: extensionIcon,
+      icon: customerDetailsIcon,
       parameter: 'id',
       label: t('Add/View Customer'),
       dialog: addCustomer,

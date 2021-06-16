@@ -10,10 +10,12 @@ afterEach(cleanup);
 const mocks = getAllOrganizations;
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
+const props = { match: { params: {} }, openExtensionModal: false, openCustomerModal: false };
+
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <OrganizationList />
+      <OrganizationList {...props} />
     </Router>
   </MockedProvider>
 );
@@ -59,14 +61,18 @@ test('Perform button actions on Org List', async () => {
     name: 'Remove.svg',
   })[0];
 
+  const orgCustomerButton = screen.getAllByRole('button', { name: 'customer_details.svg' })[0];
+
   expect(label).toBeInTheDocument();
   expect(approveButton).toBeInTheDocument();
   expect(activateButton).toBeInTheDocument();
   expect(extensionButton).toBeInTheDocument();
+  expect(orgCustomerButton).toBeInTheDocument();
 
   fireEvent.click(approveButton);
   fireEvent.click(activateButton);
   fireEvent.click(extensionButton);
+  fireEvent.click(orgCustomerButton);
 
   const deleteButton = screen.getByRole('button', { name: 'Delete' });
   expect(deleteButton).toBeInTheDocument();
