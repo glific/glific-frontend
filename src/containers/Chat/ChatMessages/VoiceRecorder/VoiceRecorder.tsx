@@ -72,8 +72,8 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
           <audio src={mediaBlobUrl} controls className={styles.AudioPlayer} />
         </div>
         <div className={styles.AudioPlayerClose}>
-          <IconButton>
-            <CancelIcon onClick={cancelCallback} data-testid="cancelIcon" />
+          <IconButton onClick={cancelCallback}>
+            <CancelIcon data-testid="cancelIcon" />
           </IconButton>
         </div>
       </div>
