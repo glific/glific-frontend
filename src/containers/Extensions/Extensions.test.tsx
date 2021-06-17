@@ -16,7 +16,7 @@ const wrapper = (
   </MockedProvider>
 );
 test('it should render form correctly', async () => {
-  const { container } = render(wrapper);
+  render(wrapper);
   await waitFor(() => {});
   expect(screen.getByText('Add extension code')).toBeInTheDocument();
   const inputElements = screen.getAllByRole('textbox');
@@ -44,4 +44,25 @@ test('it should render form correctly', async () => {
 
     fireEvent.click(submitButton);
   });
+});
+
+test('it should render filled form with extension details', async () => {
+  const editProps = { ...props };
+  editProps.match.params = { id: '1' };
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Extensions {...editProps} />
+    </MockedProvider>
+  );
+  await waitFor(() => {});
+
+  const checkbox = screen.getByRole('checkbox');
+  fireEvent.click(checkbox);
+
+  await waitFor(() => {});
+
+  const submit = screen.getByRole('button', { name: 'Save' });
+  fireEvent.click(submit);
+
+  await waitFor(() => {});
 });
