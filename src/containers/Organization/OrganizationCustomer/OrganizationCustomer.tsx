@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Dialog, DialogContent } from '@material-ui/core';
-import { useLazyQuery } from '@apollo/client';
 
 import styles from './OrganizationCustomer.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
@@ -25,20 +24,6 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
   const [currency, setCurrency] = useState('');
   const [isBillingPresent, setIsBillingPresent] = useState(false);
 
-  const variables = { filter: { organizationId: match.params.id } };
-  const [getBillingDetailsForOrganization] = useLazyQuery(GET_ORGANIZATION_BILLING, {
-    variables,
-    onCompleted: ({ getOrganizationBilling }) => {
-      if (getOrganizationBilling) {
-        setIsBillingPresent(!!getOrganizationBilling.billing);
-      }
-    },
-  });
-
-  useEffect(() => {
-    getBillingDetailsForOrganization();
-  }, []);
-
   const { t } = useTranslation();
 
   const states = { name, email, currency };
@@ -46,6 +31,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
     setName(nameVal);
     setEmail(emailVal);
     setCurrency(currencyVal);
+    setIsBillingPresent(true);
   };
 
   const queries: any = {
