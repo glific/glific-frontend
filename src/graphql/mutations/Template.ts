@@ -20,6 +20,9 @@ export const CREATE_TEMPLATE = gql`
         label
         translations
         type
+        hasButtons
+        buttons
+        buttonType
       }
       errors {
         key
