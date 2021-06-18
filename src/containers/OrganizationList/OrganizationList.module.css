@@ -74,5 +74,9 @@
 }
 
 .Delete {
-  color: red;
+  color: #dd1f1f;
+}
+
+.Inactive {
+  color: #93a29b;
 }

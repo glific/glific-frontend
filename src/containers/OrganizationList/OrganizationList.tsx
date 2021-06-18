@@ -55,14 +55,14 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
 
   const getStatus = (id: any, status: string) => {
     const options = [
-      { id: 'INACTIVE', label: 'Inactive' },
+      { id: 'INACTIVE', label: <div className={styles.Inactive}>Inactive</div> },
       { id: 'APPROVED', label: 'Approved' },
       { id: 'ACTIVE', label: 'Active' },
       { id: 'SUSPENDED', label: 'Suspended' },
       { id: 'READY_TO_DELETE', label: <div className={styles.Delete}>Ready to delete</div> },
     ];
 
-    const languageField = {
+    const statusField = {
       onChange: (event: any) => {
         updateOrganizationStatus({
           variables: {
@@ -72,8 +72,9 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
         });
       },
       value: status,
+      style: { width: '187px' },
     };
-    return <Dropdown options={options} placeholder="" field={languageField} />;
+    return <Dropdown options={options} placeholder="" field={statusField} />;
   };
 
   const columnStyles: any = [styles.Label, styles.Status, styles.Actions];
