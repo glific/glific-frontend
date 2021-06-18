@@ -41,28 +41,27 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   const prefix2 = '@contact.';
 
   useEffect(() => {
-    // get fields keys
-    axios
-      .get(`${glificBase}fields`, {
+    const getVariableOptions = async () => {
+      // get fields keys
+      const fieldsData = await axios.get(`${glificBase}fields`, {
         headers: { Authorization: getAuthSession('access_token') },
-      })
-      .then((res) => {
-        fields = res.data.results.map((i: any) => ({ key: prefix1.concat(i.key) }));
-        // get contact keys
-        axios
-          .get(`${glificBase}completion`, {
-            headers: { Authorization: getAuthSession('access_token') },
-          })
-          .then((response) => {
-            const properties = response.data.types[5];
-            contacts = properties.properties
-              .map((i: any) => ({ key: prefix2.concat(i.key) }))
-              .concat(fields)
-              .slice(1);
-            console.log(contacts.slice(1));
-            setContactVariables(contacts);
-          });
       });
+
+      fields = fieldsData.data.results.map((i: any) => ({ key: prefix1.concat(i.key) }));
+
+      // get contact keys
+      const contactData = await axios.get(`${glificBase}completion`, {
+        headers: { Authorization: getAuthSession('access_token') },
+      });
+      const properties = contactData.data.types[5];
+      contacts = properties.properties
+        .map((i: any) => ({ key: prefix2.concat(i.key) }))
+        .concat(fields)
+        .slice(1);
+      setContactVariables(contacts);
+    };
+
+    getVariableOptions();
   }, []);
 
   useEffect(() => {
@@ -78,6 +77,8 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           options: contactVariables,
           optionLabel: 'key',
           multiple: false,
+          freeSolo: true,
+          autoSelect: true,
           textFieldProps: {
             variant: 'outlined',
             label: `Variable ${index}`,
