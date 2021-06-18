@@ -28,16 +28,14 @@ test('Organization list renders correctly', async () => {
 
   const label = await screen.findByText('Organizations');
   const nameLabel = await screen.findByText('NAME');
-  const isActiveLabel = await screen.findByText('IS ACTIVE');
-  const actionLabel = await screen.findByText('ACTIONS');
+  const statusLabel = await screen.findByText('STATUS');
 
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();
-  expect(isActiveLabel).toBeInTheDocument();
-  expect(actionLabel).toBeInTheDocument();
+  expect(statusLabel).toBeInTheDocument();
 });
 
-test('Perform button actions on Org List', async () => {
+test('Update status', async () => {
   render(list);
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -48,25 +46,7 @@ test('Perform button actions on Org List', async () => {
 
   const label = await screen.findByText('Organizations');
 
-  const extensionButton = screen.getAllByRole('button', {
-    name: 'extension.svg',
-  })[0];
-
-  const approveButton = screen.getAllByRole('button', {
-    name: 'Unblock.svg',
-  })[0];
-  const activateButton = screen.getAllByRole('button', {
-    name: 'Remove.svg',
-  })[0];
-
   expect(label).toBeInTheDocument();
-  expect(approveButton).toBeInTheDocument();
-  expect(activateButton).toBeInTheDocument();
-  expect(extensionButton).toBeInTheDocument();
-
-  fireEvent.click(approveButton);
-  fireEvent.click(activateButton);
-  fireEvent.click(extensionButton);
 
   const deleteButton = screen.getByRole('button', { name: 'Delete' });
   expect(deleteButton).toBeInTheDocument();

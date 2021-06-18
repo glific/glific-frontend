@@ -396,7 +396,7 @@ export const List: React.SFC<ListProps> = ({
     }
 
     const deleteButton = (Id: any, text: string) =>
-      allowedAction.delete || listItems.isActive === false ? (
+      allowedAction.delete ? (
         <IconButton
           aria-label="Delete"
           color="default"

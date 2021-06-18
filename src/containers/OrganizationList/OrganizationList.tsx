@@ -143,7 +143,12 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     },
   ];
   const addNewButton = { show: false, label: 'Add New' };
-  const restrictedAction = () => ({ delete: false, edit: false });
+  const restrictedAction = (listItem: any) => {
+    if (listItem.status === 'READY_TO_DELETE') {
+      return { delete: true, edit: false };
+    }
+    return { delete: false, edit: false };
+  };
 
   return (
     <List
