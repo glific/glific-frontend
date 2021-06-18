@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
@@ -29,19 +29,19 @@ describe('<ResetPasswordPhone />', () => {
   it('test the form submission with phone', async () => {
     render(wrapper);
 
-    await waitFor(() => {
-      // enter the phone
-      const input = screen.getByRole('textbox');
-      UserEvent.type(input, '+919978776554');
+    // enter the phone
+    const input = screen.getByRole('textbox');
+    UserEvent.type(input, '+919978776554');
 
-      // click on continue
-      const continueButton = screen.getByText('Generate OTP to confirm');
-      UserEvent.click(continueButton);
-    });
+    // click on continue
+    const continueButton = screen.getByText('Generate OTP to confirm');
+    UserEvent.click(continueButton);
 
     // let's mock successful login submission
     const responseData = { data: { data: { data: {} } } };
-    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+    });
   });
 
   it('test the form submission with incorrect phone', async () => {
@@ -57,6 +57,8 @@ describe('<ResetPasswordPhone />', () => {
 
     // set the mock
     const errorMessage = 'Cannot send the otp to 919978776554';
-    axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    act(() => {
+      axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
+    });
   });
 });
