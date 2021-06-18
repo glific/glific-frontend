@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
@@ -29,13 +29,15 @@ describe('<ResetPasswordPhone />', () => {
   it('test the form submission with phone', async () => {
     render(wrapper);
 
-    // enter the phone
-    const input = screen.getByRole('textbox');
-    UserEvent.type(input, '+919978776554');
+    await waitFor(() => {
+      // enter the phone
+      const input = screen.getByRole('textbox');
+      UserEvent.type(input, '+919978776554');
 
-    // click on continue
-    const continueButton = screen.getByText('Generate OTP to confirm');
-    UserEvent.click(continueButton);
+      // click on continue
+      const continueButton = screen.getByText('Generate OTP to confirm');
+      UserEvent.click(continueButton);
+    });
 
     // let's mock successful login submission
     const responseData = { data: { data: { data: {} } } };
