@@ -22,15 +22,25 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [currency, setCurrency] = useState('');
+  const [tds, setTds] = useState(0);
+  const [billingId, setBillingId] = useState(null);
   const [isBillingPresent, setIsBillingPresent] = useState(false);
 
   const { t } = useTranslation();
 
-  const states = { name, email, currency };
-  const setStates = ({ name: nameVal, email: emailVal, currency: currencyVal }: any) => {
+  const states = { name, email, currency, tds };
+  const setStates = ({
+    name: nameVal,
+    email: emailVal,
+    currency: currencyVal,
+    tdsAmount: tdsVal,
+    id: idVal,
+  }: any) => {
     setName(nameVal);
     setEmail(emailVal);
     setCurrency(currencyVal);
+    setTds(tdsVal);
+    setBillingId(idVal);
     setIsBillingPresent(true);
   };
 
@@ -45,6 +55,9 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
     name: Yup.string().required(t('Name is required.')),
     email: Yup.string().email(t('Email is invalid')).required(t('Email is required.')),
     currency: Yup.string().required(t('Currency is required.')),
+    tds: Yup.number()
+      .min(0, 'TDS should not be negative')
+      .max(10, 'TDS amount should be less than or equal 10%'),
   });
 
   const formFields = [
@@ -53,7 +66,6 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       name: 'name',
       type: 'text',
       placeholder: t('Customer Name'),
-      disabled: isBillingPresent,
       inputProp: {
         onChange: (event: any) => setName(event.target.value),
       },
@@ -62,7 +74,6 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       component: Input,
       name: 'email',
       type: 'text',
-      disabled: isBillingPresent,
       placeholder: t('Customer Email'),
       inputProp: {
         onChange: (event: any) => setEmail(event.target.value),
@@ -72,10 +83,18 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
       component: Input,
       name: 'currency',
       type: 'text',
-      disabled: isBillingPresent,
       placeholder: t('Currency'),
       inputProp: {
         onChange: (event: any) => setCurrency(event.target.value),
+      },
+    },
+    {
+      component: Input,
+      name: 'tds',
+      type: 'number',
+      placeholder: t('TDS%'),
+      inputProp: {
+        onChange: (event: any) => setTds(event.target.value),
       },
     },
   ];
@@ -83,12 +102,20 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
   const setPayload = (payload: any) => {
     const payloadBody = { ...payload };
     payloadBody.organizationId = match.params.id;
+
+    payloadBody.tds_amount = Number(payloadBody.tds);
+    delete payloadBody.tds;
+
+    payloadBody.deduct_tds = !!payloadBody.tds_amount;
+    if (isBillingPresent) {
+      payloadBody.billingId = billingId;
+    }
+
     return payloadBody;
   };
 
   const icon = <OrganizationCustomerIcon className={styles.OrganizationCustomerIcon} />;
   const title = isBillingPresent ? 'Customer Details' : 'Add Customer';
-  const editStyles = isBillingPresent ? styles.Edit : '';
 
   return (
     <div className={styles.container}>
@@ -99,7 +126,7 @@ export const OrganizationCustomer: React.SFC<OrganizationCustomerProps> = ({
         }}
       >
         <DialogContent classes={{ root: styles.DialogContent }}>
-          <div className={`${styles.Layout} ${editStyles}`}>
+          <div className={styles.Layout}>
             <FormLayout
               {...queries}
               title={t(`${title}`)}

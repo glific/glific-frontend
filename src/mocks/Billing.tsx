@@ -159,6 +159,8 @@ const getOrganizationBilling = {
           stripeSubscriptionId: null,
           stripeSubscriptionItems: '{}',
           stripeSubscriptionStatus: null,
+          tdsAmount: 4,
+          deductTds: true,
         },
       },
     },

@@ -17,10 +17,12 @@ test('it renders organization-customer component successfully without form data'
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
   const [name, email, currency] = screen.getAllByRole('textbox');
+  const tds = screen.getByRole('spinbutton');
 
   fireEvent.change(name, { target: { value: 'testing' } });
   fireEvent.change(email, { target: { value: 'testing@example.com' } });
   fireEvent.change(currency, { target: { value: 'inr' } });
+  fireEvent.change(tds, { target: { value: 4 } });
 
   await waitFor(() => {});
 
@@ -37,4 +39,9 @@ test('it renders organization-customer component successfully with form data', a
     </MockedProvider>
   );
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+  const submitButton = screen.getByRole('button', { name: 'Save' });
+  fireEvent.click(submitButton);
+
+  await waitFor(() => {});
 });

@@ -12,6 +12,8 @@ export const GET_ORGANIZATION_BILLING = gql`
         stripeSubscriptionId
         stripeSubscriptionItems
         stripeSubscriptionStatus
+        tdsAmount
+        deductTds
       }
     }
   }
