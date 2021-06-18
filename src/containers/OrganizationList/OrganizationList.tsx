@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { IconButton, OutlinedInput } from '@material-ui/core';
+import { OutlinedInput } from '@material-ui/core';
 import { useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './OrganizationList.module.css';
@@ -14,15 +14,12 @@ import {
 } from '../../graphql/mutations/Organization';
 import { List } from '../List/List';
 import { setVariables } from '../../common/constants';
-import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
+
 import { ReactComponent as OrganisationIcon } from '../../assets/images/icons/Organisation.svg';
-import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activate.svg';
-import { ReactComponent as UnblockIcon } from '../../assets/images/icons/Unblock.svg';
-import { ReactComponent as RemoveIcon } from '../../assets/images/icons/Remove.svg';
-import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
 import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
 
 import { setNotification } from '../../common/notification';
+import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
 export interface OrganizationListProps {}
 
@@ -38,7 +35,7 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const [orgName, setOrgName] = useState('');
   const history = useHistory();
 
-  const columnNames = ['NAME', 'IS APPROVED', 'IS ACTIVE', 'ACTIONS'];
+  const columnNames = ['NAME', 'STATUS', 'ACTIONS'];
 
   const getName = (label: string, insertedAt: any) => (
     <div className={styles.LabelContainer}>
@@ -50,33 +47,40 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     </div>
   );
 
-  const getStatus = (status: boolean, option: string) => {
-    let text: any;
+  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS, {
+    onCompleted: () => {
+      setNotification(client, 'Organization updated successfully');
+    },
+  });
 
-    switch (option) {
-      case 'active':
-        text = status ? 'Active' : 'Inactive';
-        break;
-      case 'approve':
-        text = status ? 'Approved' : 'Pending';
-        break;
-      default:
-        break;
-    }
+  const getStatus = (id: any, status: string) => {
+    const options = [
+      { id: 'INACTIVE', label: 'Inactive' },
+      { id: 'APPROVED', label: 'Approved' },
+      { id: 'ACTIVE', label: 'Active' },
+      { id: 'SUSPENDED', label: 'Suspended' },
+      { id: 'READY_TO_DELETE', label: <div className={styles.Delete}>Ready to delete</div> },
+    ];
 
-    return (
-      <div>
-        <p className={styles.StatusText}>{text}</p>
-      </div>
-    );
+    const languageField = {
+      onChange: (event: any) => {
+        updateOrganizationStatus({
+          variables: {
+            updateOrganizationId: id,
+            status: event.target.value,
+          },
+        });
+      },
+      value: status,
+    };
+    return <Dropdown options={options} placeholder="" field={languageField} />;
   };
 
-  const columnStyles: any = [styles.Label, styles.Status, styles.Status, styles.Actions];
+  const columnStyles: any = [styles.Label, styles.Status, styles.Actions];
 
-  const getColumns = ({ name, isActive, isApproved, insertedAt }: any) => ({
+  const getColumns = ({ id, name, insertedAt, status }: any) => ({
     name: getName(name, insertedAt),
-    isApproved: getStatus(isApproved, 'approve'),
-    isActive: getStatus(isActive, 'active'),
+    isApproves: getStatus(id, status),
   });
 
   const columnAttributes = {
@@ -86,77 +90,15 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   };
 
   const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
-  const approveIcon = <UnblockIcon />;
-  const activeIcon = <ActivateIcon />;
-  const extensionIcon = <ExtensionIcon />;
-  const [updateOrganizationStatus] = useMutation(UPDATE_ORGANIZATION_STATUS);
-  const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
+  const extensionIcon = <ExtensionIcon className={styles.ExtensionIcon} />;
 
-  const handleOrganizationStatus = (id: any, payload: any, refetch: any) => {
-    const variables = {
-      updateOrganizationId: id,
-      ...payload,
-    };
-    updateOrganizationStatus({ variables, refetchQueries: refetch });
-    setNotification(client, 'Organization updated successfully');
-  };
+  const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
 
   const handleDeleteInActiveOrg = ({ payload, refetch, setDeleteItemID }: any) => {
     deleteInActiveOrg({ variables: payload, refetchQueries: refetch });
     // Setting delete item id to null to prevent showing dialogue again
     setDeleteItemID(null);
     setNotification(client, 'Organization deleted successfully');
-  };
-
-  const activateButton = (listItems: any, action: any, key: number, refetch: any) => {
-    const { isApproved, isActive } = listItems;
-
-    /**
-     * Default icon and labels for activate button
-     */
-    const iconLabel = isActive ? 'Deactivate organization' : 'Activate organization';
-    const icon = isActive ? <RemoveIcon /> : action.icon;
-
-    return (
-      <IconButton
-        color="default"
-        data-testid="additionalButton"
-        className={styles.additonalButton}
-        id="additionalButton-icon"
-        onClick={() =>
-          handleOrganizationStatus(listItems.id, { isActive: !isActive, isApproved }, refetch)
-        }
-        key={key}
-      >
-        <Tooltip title={iconLabel} placement="top" key={key}>
-          {icon}
-        </Tooltip>
-      </IconButton>
-    );
-  };
-
-  const approveButton = (listItems: any, action: any, key: number, refetch: any) => {
-    const { isApproved, isActive } = listItems;
-
-    const icon = isApproved ? <ApprovedIcon /> : action.icon;
-    const iconLabel = isApproved ? 'Unapprove organization' : 'Approve organization';
-
-    return (
-      <IconButton
-        color="default"
-        data-testid="additionalButton"
-        className={styles.additonalButton}
-        id="additionalButton-icon"
-        key={key}
-        onClick={() =>
-          handleOrganizationStatus(listItems.id, { isApproved: !isApproved, isActive }, refetch)
-        }
-      >
-        <Tooltip title={iconLabel} placement="top" key={key}>
-          {icon}
-        </Tooltip>
-      </IconButton>
-    );
   };
 
   const deleteDialogue = (id: any, name: any) => {
@@ -198,18 +140,6 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       parameter: 'id',
       label: t('Extension code'),
       dialog: addExtension,
-    },
-    {
-      icon: approveIcon,
-      parameter: 'id',
-      label: t('Approve'),
-      button: approveButton,
-    },
-    {
-      icon: activeIcon,
-      parameter: 'id',
-      label: t('Activate'),
-      button: activateButton,
     },
   ];
   const addNewButton = { show: false, label: 'Add New' };

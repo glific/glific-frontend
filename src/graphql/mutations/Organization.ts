@@ -103,22 +103,13 @@ export const UPDATE_CREDENTIAL = gql`
 `;
 
 export const UPDATE_ORGANIZATION_STATUS = gql`
-  mutation updateOrganizationStatus(
-    $updateOrganizationId: ID!
-    $isActive: Boolean
-    $isApproved: Boolean
-  ) {
-    updateOrganizationStatus(
-      updateOrganizationId: $updateOrganizationId
-      isActive: $isActive
-      isApproved: $isApproved
-    ) {
+  mutation updateOrganizationStatus($updateOrganizationId: ID!, $status: OrganizationStatusEnum) {
+    updateOrganizationStatus(updateOrganizationId: $updateOrganizationId, status: $status) {
       organization {
-        email
-        isActive
-        isApproved
+        id
         name
-        shortcode
+        status
+        insertedAt
       }
       errors {
         key
