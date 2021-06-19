@@ -55,21 +55,40 @@ describe('<MyAccount />', () => {
       UserEvent.click(resendButton);
     });
 
-    // enter otp
-    const input = container.querySelector('input[type="text"]');
-    UserEvent.type(input, '76554');
+    // trigger validation errors
+    await waitFor(() => {
+      // click on save button
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
 
-    // enter password
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+    // check for validation errors
+    await waitFor(() => {
+      expect(screen.getAllByText('Input required')).toHaveLength(2);
+    });
 
-    // view password
-    const passwordToggle = screen.getByTestId('passwordToggle');
-    UserEvent.click(passwordToggle);
+    await waitFor(() => {
+      // enter otp
+      const input = container.querySelector('input[type="text"]');
+      UserEvent.type(input, '76554');
 
-    // click on save button
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
+      // enter password
+      const password = container.querySelector('input[type="password"]');
+      UserEvent.type(password, 'pass123456');
+
+      // view password
+      const passwordToggle = screen.getByTestId('passwordToggle');
+      UserEvent.click(passwordToggle);
+
+      // click on save button
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
+
+    // assert successful save
+    // await waitFor(() => {
+    //   expect(screen.getByText('Password updated successfully!')).toBeInTheDocument();
+    // });
   });
 
   test('generate OTP error response', async () => {
@@ -121,17 +140,24 @@ describe('<MyAccount />', () => {
       UserEvent.click(generateOTPButton);
     });
 
-    // enter otp
-    const input = container.querySelector('input[type="text"]');
-    UserEvent.type(input, '1234');
+    await waitFor(() => {
+      // enter otp
+      const input = container.querySelector('input[type="text"]');
+      UserEvent.type(input, '1234');
 
-    // enter password
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+      // enter password
+      const password = container.querySelector('input[type="password"]');
+      UserEvent.type(password, 'pass123456');
 
-    // click on save button
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
+      // click on save button
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
+
+    // assert for incorrect OTP
+    // await waitFor(() => {
+    //   expect(screen.getByText('Please enter a valid OTP')).toBeInTheDocument();
+    // });
   });
 
   test('generate OTP error with too many attempts', async () => {
@@ -147,16 +173,18 @@ describe('<MyAccount />', () => {
       UserEvent.click(generateOTPButton);
     });
 
-    // enter otp
-    const input = container.querySelector('input[type="text"]');
-    UserEvent.type(input, '4567');
+    await waitFor(() => {
+      // enter otp
+      const input = container.querySelector('input[type="text"]');
+      UserEvent.type(input, '4567');
 
-    // enter password
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+      // enter password
+      const password = container.querySelector('input[type="password"]');
+      UserEvent.type(password, 'pass123456');
 
-    // click on save button
-    const saveButton = screen.getByText('Save');
-    UserEvent.click(saveButton);
+      // click on save button
+      const saveButton = screen.getByText('Save');
+      UserEvent.click(saveButton);
+    });
   });
 });
