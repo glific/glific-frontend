@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
@@ -27,11 +27,11 @@ describe('<ResetPasswordPhone />', () => {
   });
 
   it('test the form submission with phone', async () => {
-    render(wrapper);
+    const { container } = render(wrapper);
 
     // enter the phone
-    const input = screen.getByRole('textbox');
-    UserEvent.type(input, '+919978776554');
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on continue
     const continueButton = screen.getByText('Generate OTP to confirm');
@@ -45,11 +45,11 @@ describe('<ResetPasswordPhone />', () => {
   });
 
   it('test the form submission with incorrect phone', async () => {
-    render(wrapper);
+    const { container } = render(wrapper);
 
     // enter the phone
-    const input = screen.getByRole('textbox');
-    UserEvent.type(input, '+919978776554');
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
 
     // click on GENERATE button
     const continueButton = screen.getByText('Generate OTP to confirm');
