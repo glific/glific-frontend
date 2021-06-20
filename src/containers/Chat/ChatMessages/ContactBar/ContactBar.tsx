@@ -367,22 +367,24 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     }
     flowButton = (
       <Tooltip title={toolTip} placement="right">
-        <Button
-          data-testid="disabledFlowButton"
-          className={styles.ListButtonPrimary}
-          disabled={disabled}
-          onClick={() => {
-            getFlows();
-            setShowFlowDialog(true);
-          }}
-        >
-          {disabled ? (
-            <FlowUnselectedIcon className={styles.Icon} />
-          ) : (
-            <FlowIcon className={styles.Icon} />
-          )}
-          Start a flow
-        </Button>
+        <span>
+          <Button
+            data-testid="disabledFlowButton"
+            className={styles.ListButtonPrimary}
+            disabled={disabled}
+            onClick={() => {
+              getFlows();
+              setShowFlowDialog(true);
+            }}
+          >
+            {disabled ? (
+              <FlowUnselectedIcon className={styles.Icon} />
+            ) : (
+              <FlowIcon className={styles.Icon} />
+            )}
+            Start a flow
+          </Button>
+        </span>
       </Tooltip>
     );
   }
