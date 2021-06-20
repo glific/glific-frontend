@@ -103,8 +103,7 @@ export const FILTER_ORGANIZATIONS = gql`
     organizations(filter: $filter, opts: $opts) {
       id
       name
-      isActive
-      isApproved
+      status
       insertedAt
     }
   }
