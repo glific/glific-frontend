@@ -17,11 +17,17 @@ import { setVariables } from '../../common/constants';
 
 import { ReactComponent as OrganisationIcon } from '../../assets/images/icons/Organisation.svg';
 import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
-
+import { ReactComponent as CustomerDetailsIcon } from '../../assets/images/icons/customer_details.svg';
 import { setNotification } from '../../common/notification';
 import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
+import { Extensions } from '../Extensions/Extensions';
+import { OrganizationCustomer } from '../Organization/OrganizationCustomer/OrganizationCustomer';
 
-export interface OrganizationListProps {}
+export interface OrganizationListProps {
+  match: any;
+  openExtensionModal?: boolean;
+  openCustomerModal?: boolean;
+}
 
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
@@ -29,7 +35,11 @@ const queries = {
   deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
 };
 
-export const OrganizationList: React.SFC<OrganizationListProps> = () => {
+export const OrganizationList: React.SFC<OrganizationListProps> = ({
+  match,
+  openExtensionModal,
+  openCustomerModal,
+}) => {
   const { t } = useTranslation();
   const client = useApolloClient();
   const [orgName, setOrgName] = useState('');
@@ -93,6 +103,8 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
   const extensionIcon = <ExtensionIcon className={styles.ExtensionIcon} />;
 
+  const customerDetailsIcon = <CustomerDetailsIcon />;
+
   const [deleteInActiveOrg] = useMutation(DELETE_INACTIVE_ORGANIZATIONS);
 
   const handleDeleteInActiveOrg = ({ payload, refetch, setDeleteItemID }: any) => {
@@ -133,6 +145,10 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
     history.push({ pathname: `/organizations/${id}/extensions` });
   };
 
+  const addCustomer = (id: any) => {
+    history.push({ pathname: `/organizations/${id}/customer` });
+  };
+
   const dialogMessage = deleteDialogue;
 
   const additionalActions = [
@@ -141,6 +157,12 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
       parameter: 'id',
       label: t('Extension code'),
       dialog: addExtension,
+    },
+    {
+      icon: customerDetailsIcon,
+      parameter: 'id',
+      label: t('Add/View Customer'),
+      dialog: addCustomer,
     },
   ];
   const addNewButton = { show: false, label: 'Add New' };
@@ -152,25 +174,29 @@ export const OrganizationList: React.SFC<OrganizationListProps> = () => {
   };
 
   return (
-    <List
-      title={t('Organizations')}
-      listItem="organizations"
-      listItemName="organization"
-      pageLink="organization"
-      listIcon={listIcon}
-      dialogMessage={dialogMessage}
-      refetchQueries={{
-        query: FILTER_ORGANIZATIONS,
-        variables: setVariables(),
-      }}
-      additionalAction={additionalActions}
-      button={addNewButton}
-      restrictedAction={restrictedAction}
-      searchParameter="name"
-      editSupport={false}
-      {...queries}
-      {...columnAttributes}
-    />
+    <>
+      <List
+        title={t('Organizations')}
+        listItem="organizations"
+        listItemName="organization"
+        pageLink="organization"
+        listIcon={listIcon}
+        dialogMessage={dialogMessage}
+        refetchQueries={{
+          query: FILTER_ORGANIZATIONS,
+          variables: setVariables(),
+        }}
+        additionalAction={additionalActions}
+        button={addNewButton}
+        restrictedAction={restrictedAction}
+        searchParameter="name"
+        editSupport={false}
+        {...queries}
+        {...columnAttributes}
+      />
+      <Extensions openDialog={!!openExtensionModal} match={match} />
+      <OrganizationCustomer openDialog={!!openCustomerModal} match={match} />
+    </>
   );
 };
 
