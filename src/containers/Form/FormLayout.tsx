@@ -273,10 +273,27 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const performTask = (payload: any) => {
     if (itemId) {
       if (isLoadedData) {
+        let idKey = idType;
+        let idVal = itemId;
+
+        /**
+         * When idType is organizationId
+         * We are updating billing for given organization
+         * since match.params.id is orgId we want billing
+         * id to update billing details
+         */
+        const payloadBody = { ...payload };
+        if (idType === 'organizationId') {
+          idKey = 'id';
+          idVal = payloadBody.billingId;
+          // Clearning unnecessary fields
+          delete payloadBody.billingId;
+        }
+
         updateItem({
           variables: {
-            [idType]: itemId,
-            input: payload,
+            [idKey]: idVal,
+            input: payloadBody,
           },
         });
       } else {

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_ORGANIZATION_BILLING = gql`
-  query getOrganizationBilling {
-    getOrganizationBilling {
+  query getOrganizationBilling($organizationId: Gid) {
+    getOrganizationBilling(organizationId: $organizationId) {
       billing {
         id
         name
@@ -12,6 +12,8 @@ export const GET_ORGANIZATION_BILLING = gql`
         stripeSubscriptionId
         stripeSubscriptionItems
         stripeSubscriptionStatus
+        tdsAmount
+        deductTds
       }
     }
   }

@@ -8,7 +8,6 @@ import { getUserRole } from '../../context/role';
 import { useToast } from '../../services/ToastService';
 import { Chat } from '../../containers/Chat/Chat';
 import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
-import Extensions from '../../containers/Extensions/Extensions';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
@@ -186,7 +185,12 @@ const routeAdmin = (
     <Route
       path="/organizations/:id/extensions"
       exact
-      component={({ match }: any) => <Extensions openDialog match={match} />}
+      component={({ match }: any) => <OrganizationList openExtensionModal match={match} />}
+    />
+    <Route
+      path="/organizations/:id/customer"
+      exact
+      component={({ match }: any) => <OrganizationList openCustomerModal match={match} />}
     />
 
     <Route path="/" render={defaultRedirect} />
