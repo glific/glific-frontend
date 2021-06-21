@@ -167,46 +167,47 @@ test('list sorting', async () => {
   });
 });
 
-describe('dialogMessage with custom component for delete', async () => {
+describe('DialogMessage tests', () => {
   let props = { ...orgProps };
-  const useCustomDialog = () => {
-    const component = (
-      <div>
-        <input type="text" placeholder="Testing custom dialog with input text" />
-      </div>
-    );
-    return {
-      component,
-      handleOkCallback: jest.fn(),
-      isConfirmed: true,
+
+  test('dialogMessage with custom component for delete', async () => {
+    const useCustomDialog = () => {
+      const component = (
+        <div>
+          <input type="text" placeholder="Testing custom dialog with input text" />
+        </div>
+      );
+      return {
+        component,
+        handleOkCallback: jest.fn(),
+        isConfirmed: true,
+      };
     };
-  };
 
-  props.dialogMessage = useCustomDialog;
-  props.additionalAction = [
-    {
-      icon: ApprovedIcon,
-      parameter: 'id',
-      label: 'Approve',
-      button: () => <button onClick={() => jest.fn()}>Approve</button>,
-    },
-    {
-      icon: ActivateIcon,
-      parameter: 'id',
-      label: 'Activate',
-      button: () => <button onClick={() => jest.fn()}>Activate</button>,
-    },
-  ];
+    props.dialogMessage = useCustomDialog;
+    props.additionalAction = [
+      {
+        icon: ApprovedIcon,
+        parameter: 'id',
+        label: 'Approve',
+        button: () => <button onClick={() => jest.fn()}>Approve</button>,
+      },
+      {
+        icon: ActivateIcon,
+        parameter: 'id',
+        label: 'Activate',
+        button: () => <button onClick={() => jest.fn()}>Activate</button>,
+      },
+    ];
 
-  const list = (
-    <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
-      <Router>
-        <List {...props} />
-      </Router>
-    </MockedProvider>
-  );
+    const list = (
+      <MockedProvider mocks={ORG_LIST_MOCK} addTypename={false}>
+        <Router>
+          <List {...props} />
+        </Router>
+      </MockedProvider>
+    );
 
-  test('Dialog message prop with custom component and additional Actions', async () => {
     const { container } = render(list);
 
     expect(container).toBeInTheDocument();
