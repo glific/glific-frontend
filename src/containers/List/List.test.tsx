@@ -1,11 +1,11 @@
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { render, screen, cleanup, act, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { Tag } from '../Tag/Tag';
 import { List } from './List';
 
 import { Switch, Route } from 'react-router-dom';
-import { within, fireEvent, waitFor } from '@testing-library/dom';
+import { within, fireEvent } from '@testing-library/dom';
 import { LIST_MOCKS, defaultProps, ORG_LIST_MOCK, orgProps } from './List.test.helper';
 import { setUserSession } from '../../services/AuthService';
 import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activate.svg';
@@ -27,7 +27,7 @@ afterEach(cleanup);
 describe('<List />', () => {
   test('should have loading', () => {
     const { getByText } = render(list);
-    act(() => {
+    waitFor(() => {
       expect(getByText('Loading...')).toBeInTheDocument();
     });
   });
@@ -209,8 +209,6 @@ describe('DialogMessage tests', () => {
     );
 
     const { container } = render(list);
-
-    expect(container).toBeInTheDocument();
 
     await waitFor(() => {
       const { queryByLabelText } = within(container.querySelector('tbody tr'));
