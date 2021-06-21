@@ -65,6 +65,13 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiMenuItem: {
+      root: {
+        '&:hover': {
+          backgroundColor: '#EDF6F2',
+        },
+      },
+    },
   },
 });
 

@@ -21,7 +21,6 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
 
   // first element is the url, if the url is sent
   const linkMessage = regexForLink.exec(message);
-
   if (linkMessage) {
     linkPreview = (
       <div className={styles.LinkPreview}>

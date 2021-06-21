@@ -273,7 +273,6 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
     <div className={styles.Form}>
       <Dropdown
         options={languageOptions}
-        label={t('Change language')}
         placeholder={t('Available languages')}
         field={languageField}
       />

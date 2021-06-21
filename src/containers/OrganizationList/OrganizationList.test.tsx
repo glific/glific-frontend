@@ -10,10 +10,12 @@ afterEach(cleanup);
 const mocks = getAllOrganizations;
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
+const props = { match: { params: {} }, openExtensionModal: false, openCustomerModal: false };
+
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <OrganizationList />
+      <OrganizationList {...props} />
     </Router>
   </MockedProvider>
 );
@@ -28,16 +30,14 @@ test('Organization list renders correctly', async () => {
 
   const label = await screen.findByText('Organizations');
   const nameLabel = await screen.findByText('NAME');
-  const isActiveLabel = await screen.findByText('IS ACTIVE');
-  const actionLabel = await screen.findByText('ACTIONS');
+  const statusLabel = await screen.findByText('STATUS');
 
   expect(label).toBeInTheDocument();
   expect(nameLabel).toBeInTheDocument();
-  expect(isActiveLabel).toBeInTheDocument();
-  expect(actionLabel).toBeInTheDocument();
+  expect(statusLabel).toBeInTheDocument();
 });
 
-test('Perform button actions on Org List', async () => {
+test('Update status', async () => {
   render(list);
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -52,21 +52,13 @@ test('Perform button actions on Org List', async () => {
     name: 'extension.svg',
   })[0];
 
-  const approveButton = screen.getAllByRole('button', {
-    name: 'Unblock.svg',
-  })[0];
-  const activateButton = screen.getAllByRole('button', {
-    name: 'Remove.svg',
-  })[0];
+  const orgCustomerButton = screen.getAllByRole('button', { name: 'customer_details.svg' })[0];
 
   expect(label).toBeInTheDocument();
-  expect(approveButton).toBeInTheDocument();
-  expect(activateButton).toBeInTheDocument();
   expect(extensionButton).toBeInTheDocument();
-
-  fireEvent.click(approveButton);
-  fireEvent.click(activateButton);
+  expect(orgCustomerButton).toBeInTheDocument();
   fireEvent.click(extensionButton);
+  fireEvent.click(orgCustomerButton);
 
   const deleteButton = screen.getByRole('button', { name: 'Delete' });
   expect(deleteButton).toBeInTheDocument();
