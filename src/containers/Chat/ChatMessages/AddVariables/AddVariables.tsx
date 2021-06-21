@@ -37,25 +37,28 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   let selectedVariables: any = [];
 
   const glificBase = FLOW_EDITOR_API;
-  const prefix1 = '@contact.fields.';
-  const prefix2 = '@contact.';
+  const contactFieldsprefix = '@contact.fields.';
+  const contactVariablesprefix = '@contact.';
+  const headers = { Authorization: getAuthSession('access_token') };
 
   useEffect(() => {
     const getVariableOptions = async () => {
       // get fields keys
       const fieldsData = await axios.get(`${glificBase}fields`, {
-        headers: { Authorization: getAuthSession('access_token') },
+        headers,
       });
 
-      fields = fieldsData.data.results.map((i: any) => ({ key: prefix1.concat(i.key) }));
+      fields = fieldsData.data.results.map((i: any) => ({
+        key: contactFieldsprefix.concat(i.key),
+      }));
 
       // get contact keys
       const contactData = await axios.get(`${glificBase}completion`, {
-        headers: { Authorization: getAuthSession('access_token') },
+        headers,
       });
       const properties = contactData.data.types[5];
       contacts = properties.properties
-        .map((i: any) => ({ key: prefix2.concat(i.key) }))
+        .map((i: any) => ({ key: contactVariablesprefix.concat(i.key) }))
         .concat(fields)
         .slice(1);
       setContactVariables(contacts);
