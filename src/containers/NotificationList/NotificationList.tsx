@@ -7,7 +7,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import styles from './NotificationList.module.css';
-import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Selected.svg';
+import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Notification-dark-icon.svg';
 import { ReactComponent as ViewIcon } from '../../assets/images/icons/View.svg';
 import CopyIcon from '../../assets/images/icons/Copy.png';
 import { List } from '../List/List';
