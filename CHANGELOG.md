@@ -24,6 +24,26 @@ All notable changes to this project will be documented in this file. Dates are d
 - Sync master with v1.6 [`#1438`](https://github.com/glific/glific-frontend/pull/1438)
 - Upgrade to latest packages [`89b4c04`](https://github.com/glific/glific-frontend/commit/89b4c047bbbe17cdcaea023ba005c457a03aed0e)
 
+#### [v1.6.2](https://github.com/glific/glific-frontend/compare/v1.6.1...v1.6.2)
+
+> 07 June 2021
+
+- Update version [`#1448`](https://github.com/glific/glific-frontend/pull/1448)
+- Code fixes [`#1444`](https://github.com/glific/glific-frontend/pull/1444)
+- Now edit icons will show on hover effect for contact variables [`#1432`](https://github.com/glific/glific-frontend/pull/1432)
+- Notification count fixes [`#1430`](https://github.com/glific/glific-frontend/pull/1430)
+- Code clean up, [`72ee89d`](https://github.com/glific/glific-frontend/commit/72ee89d654eaef4f9ec10ad162975becb256a28b)
+- Added transition effect for hovering for contact variables [`9d3ba59`](https://github.com/glific/glific-frontend/commit/9d3ba5927b0987c396a574997f47dc391f05608a)
+- Update package [`b0dce81`](https://github.com/glific/glific-frontend/commit/b0dce81aef68334d45b3cb53fd2fd2e80e6acf7c)
+
+#### [v1.6.1](https://github.com/glific/glific-frontend/compare/v1.6.0...v1.6.1)
+
+> 03 June 2021
+
+- Bug fix for large searches [`#1435`](https://github.com/glific/glific-frontend/pull/1435)
+- Bug fix for search [`f992432`](https://github.com/glific/glific-frontend/commit/f99243299bb84ceea93fe3cdcbd71a84ffff9803)
+- Updated package [`3217e84`](https://github.com/glific/glific-frontend/commit/3217e8448f81c6bdfa75919231191d9562a2076e)
+
 #### [v1.6.0](https://github.com/glific/glific-frontend/compare/v1.6.0...HEAD)
 
 > 01 June 2021
