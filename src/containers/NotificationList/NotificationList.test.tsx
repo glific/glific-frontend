@@ -34,7 +34,7 @@ const notifications = (
 );
 
 test('It should load notifications', async () => {
-  const { container, getByText } = render(notifications);
+  const { getByText } = render(notifications);
 
   expect(getByText('Loading...')).toBeInTheDocument();
 
@@ -59,7 +59,7 @@ test('It should load notifications', async () => {
 });
 
 test('click on forward arrrow', async () => {
-  const { getAllByTestId } = render(notifications);
+  render(notifications);
   await waitFor(() => {
     const arrow = screen.getAllByTestId('tooltip');
     fireEvent.click(arrow[0]);
@@ -67,7 +67,7 @@ test('click on forward arrrow', async () => {
 });
 
 test('it should show copy text and view option on clicking entity ', async () => {
-  const { getAllByTestId, getByTestId, getByText } = render(notifications);
+  const { getByTestId, getByText } = render(notifications);
   await waitFor(() => {
     const entityMenu = screen.getAllByTestId('Menu');
     fireEvent.click(entityMenu[0]);
@@ -92,7 +92,7 @@ test('it should show copy text and view option on clicking entity ', async () =>
 });
 
 test('it should show filter checkboxes', async () => {
-  const { container, getAllByRole } = render(notifications);
+  render(notifications);
   await waitFor(() => {});
   const checkboxInput = screen.getAllByRole('checkbox');
   fireEvent.click(checkboxInput[0]);
