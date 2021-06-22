@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -18,26 +18,26 @@ describe('<Registration />', () => {
     jest.resetAllMocks();
   });
 
-  test('it should render correctly', async () => {
+  it('should render correctly', async () => {
     const { findByTestId } = render(wrapper);
 
     const registration = await findByTestId('AuthContainer');
     expect(registration).toHaveTextContent('Create your new account');
   });
 
-  test('it should submit the form correctly', async () => {
+  it('should submit the form correctly', async () => {
     const { container } = render(wrapper);
-    const inputElements = screen.getAllByRole('textbox');
-    UserEvent.type(inputElements[0], 'JaneDoe');
-    UserEvent.type(inputElements[1], '+919978776554');
 
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+    await waitFor(() => {
+      const inputElements = screen.getAllByRole('textbox');
+      UserEvent.type(inputElements[0], 'JaneDoe');
+      UserEvent.type(inputElements[1], '+919978776554');
 
-    // click on continue
-    const continueButton = screen.getByText('Continue');
+      const password = container.querySelector('input[type="password"]');
+      UserEvent.type(password, 'pass123456');
 
-    act(() => {
+      // click on continue
+      const continueButton = screen.getByText('Continue');
       UserEvent.click(continueButton);
     });
 
@@ -46,10 +46,10 @@ describe('<Registration />', () => {
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
   });
 
-  test('it should submit the form correctly and give error', async () => {
+  it('should submit the form correctly and give error', async () => {
     const { container } = render(wrapper);
-    const inputElements = screen.getAllByRole('textbox');
 
+    const inputElements = screen.getAllByRole('textbox');
     UserEvent.type(inputElements[0], 'JaneDoe');
     UserEvent.type(inputElements[1], '+919978776554');
 
