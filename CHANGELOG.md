@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v1.7.0](https://github.com/glific/glific-frontend/compare/v1.6.2...v1.7.0)
+
+> 22 June 2021
+
+- Added contact variables suggestion [`#1461`](https://github.com/glific/glific-frontend/pull/1461)
+- Updated organization status format [`#1472`](https://github.com/glific/glific-frontend/pull/1472)
+- Add/Edit Stripe customer and TDS support [`#1471`](https://github.com/glific/glific-frontend/pull/1471)
+- Support for HSM template with interactive buttons [`#1459`](https://github.com/glific/glific-frontend/pull/1459)
+- Added in-office flow in the form structure [`#1434`](https://github.com/glific/glific-frontend/pull/1434)
+- Fixed mismatched tooltip [`#1470`](https://github.com/glific/glific-frontend/pull/1470)
+- Removed send message/ start a flow option from collection screen [`#1469`](https://github.com/glific/glific-frontend/pull/1469)
+- Updated UI for document attachment UI on chat screen [`#1460`](https://github.com/glific/glific-frontend/pull/1460)
+- Package upgrade [`#1456`](https://github.com/glific/glific-frontend/pull/1456)
+- Fixed notification count problem [`#1446`](https://github.com/glific/glific-frontend/pull/1446)
+- Flows can be searched by name and keyword [`#1447`](https://github.com/glific/glific-frontend/pull/1447)
+- CSS code cleanups [`#1450`](https://github.com/glific/glific-frontend/pull/1450)
+- UI fixes [`#1433`](https://github.com/glific/glific-frontend/pull/1433)
+- Sync v1.6 with master [`#1449`](https://github.com/glific/glific-frontend/pull/1449)
+- Notification cleanup [`#1445`](https://github.com/glific/glific-frontend/pull/1445)
+- Sync master with v1.6 [`#1438`](https://github.com/glific/glific-frontend/pull/1438)
+- Upgrade to latest packages [`89b4c04`](https://github.com/glific/glific-frontend/commit/89b4c047bbbe17cdcaea023ba005c457a03aed0e)
+
 #### [v1.6.0](https://github.com/glific/glific-frontend/compare/v1.6.0...HEAD)
 
 > 01 June 2021
@@ -24,6 +46,7 @@ All notable changes to this project will be documented in this file. Dates are d
 - Moved certificate to script [`#1389`](https://github.com/glific/glific-frontend/pull/1389)
 - Updated organization registration, changed help link[`#1383`](https://github.com/glific/glific-frontend/pull/1383)
 - Removed error key from error message and fixed alignments [`#1375`](https://github.com/glific/glific-frontend/pull/1375)
+
 #### [v1.5.1](https://github.com/glific/glific-frontend/compare/v1.5.0...v1.5.1)
 
 > 10 May 2021
