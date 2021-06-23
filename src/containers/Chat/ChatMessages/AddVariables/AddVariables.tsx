@@ -87,14 +87,13 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           optionLabel: 'key',
           multiple: false,
           freeSolo: true,
-          selectTextAsOption: true,
+          selectTextAsOption: !!initialValues[`variable${index}`],
+          onInputChange: (event: any, newInputValue: any) => {
+            syncInitialValuesWithFormik(newInputValue, index);
+          },
           textFieldProps: {
             variant: 'outlined',
             label: `Variable ${index}`,
-            onChange: (event: any) => {
-              const { value } = event.target;
-              syncInitialValuesWithFormik(value, index);
-            },
           },
         });
       }

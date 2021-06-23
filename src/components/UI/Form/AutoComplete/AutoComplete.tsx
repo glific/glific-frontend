@@ -37,6 +37,7 @@ export interface AutocompleteProps {
   renderTags?: boolean;
   selectedOptionsIds?: any;
   selectTextAsOption?: boolean;
+  onInputChange?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -68,6 +69,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   renderTags = true,
   selectedOptionsIds = [],
   selectTextAsOption = false,
+  onInputChange = () => null,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -192,6 +194,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             }
             setFieldValue(field.name, value);
           }}
+          onInputChange={onInputChange}
           inputValue={asyncSearch ? searchTerm : undefined}
           value={getValue}
           disabled={disabled}
