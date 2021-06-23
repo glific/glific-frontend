@@ -1,5 +1,5 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 
@@ -19,46 +19,60 @@ describe('<Registration />', () => {
   });
 
   it('should render correctly', async () => {
-    const { findByTestId } = render(wrapper);
+    render(wrapper);
 
-    const registration = await findByTestId('AuthContainer');
-    expect(registration).toHaveTextContent('Create your new account');
+    await waitFor(() => {
+      const registration = screen.getByTestId('AuthContainer');
+      expect(registration).toHaveTextContent('Create your new account');
+    });
   });
 
   it('should submit the form correctly', async () => {
     const { container } = render(wrapper);
 
+    const userName = await container.querySelector('input[name="userName"]');
+    userEvent.type(userName, 'Jane Doe');
+
+    const phone = await container.querySelector('input[type="tel"]');
+    userEvent.type(phone, '+919978776554');
+
+    const password = await container.querySelector('input[type="password"]');
+    userEvent.type(password, 'pas123456');
+
     await waitFor(() => {
-      const inputElements = screen.getAllByRole('textbox');
-      UserEvent.type(inputElements[0], 'JaneDoe');
-      UserEvent.type(inputElements[1], '+919978776554');
-
-      const password = container.querySelector('input[type="password"]');
-      UserEvent.type(password, 'pass123456');
-
       // click on continue
       const continueButton = screen.getByText('Continue');
-      UserEvent.click(continueButton);
+      userEvent.click(continueButton);
     });
 
     // let's mock successful registration submission
     const responseData = { data: { data: { data: {} } } };
     axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    await waitFor(() => {
+      const authContainer = screen.getByTestId('AuthContainer');
+      expect(authContainer).toHaveTextContent(
+        'We are unable to register, kindly contact your technical team.'
+      );
+    });
   });
 
   it('should submit the form correctly and give error', async () => {
     const { container } = render(wrapper);
 
-    const inputElements = screen.getAllByRole('textbox');
-    UserEvent.type(inputElements[0], 'JaneDoe');
-    UserEvent.type(inputElements[1], '+919978776554');
+    await waitFor(() => {
+      const inputElements = screen.getAllByRole('textbox');
 
-    const password = container.querySelector('input[type="password"]');
-    UserEvent.type(password, 'pass123456');
+      userEvent.type(inputElements[0], 'Jane Doe');
+      userEvent.type(inputElements[1], '+919978776554');
 
-    // click on continue
-    const continueButton = screen.getByText('Continue');
-    UserEvent.click(continueButton);
+      const password = container.querySelector('input[type="password"]');
+      userEvent.type(password, 'pass123456');
+
+      // click on continue
+      const continueButton = screen.getByText('Continue');
+      userEvent.click(continueButton);
+    });
 
     // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
