@@ -48,9 +48,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
         headers,
       });
 
-      fields = fieldsData.data.results.map((i: any) => ({
-        key: contactFieldsprefix.concat(i.key),
-      }));
+      fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
 
       // get contact keys
       const contactData = await axios.get(`${glificBase}completion`, {
@@ -58,9 +56,10 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
       });
       const properties = contactData.data.types[5];
       contacts = properties.properties
-        .map((i: any) => ({ key: contactVariablesprefix.concat(i.key) }))
+        .map((i: any) => contactVariablesprefix.concat(i.key))
         .concat(fields)
         .slice(1);
+
       setContactVariables(contacts);
     };
 
@@ -88,6 +87,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           optionLabel: 'key',
           multiple: false,
           freeSolo: true,
+          selectTextAsOption: true,
           textFieldProps: {
             variant: 'outlined',
             label: `Variable ${index}`,
@@ -96,7 +96,6 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
               syncInitialValuesWithFormik(value, index);
             },
           },
-          onChange: (val: any) => syncInitialValuesWithFormik(val, index),
         });
       }
 

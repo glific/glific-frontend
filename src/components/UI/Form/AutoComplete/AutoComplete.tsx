@@ -36,6 +36,7 @@ export interface AutocompleteProps {
   classes?: any;
   renderTags?: boolean;
   selectedOptionsIds?: any;
+  selectTextAsOption?: boolean;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -66,6 +67,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   classes = {},
   renderTags = true,
   selectedOptionsIds = [],
+  selectTextAsOption = false,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -103,7 +105,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     if (additionalOptionLabel) {
       return option[additionalOptionLabel];
     }
-    return '';
+    return option;
   };
 
   /**
@@ -165,7 +167,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           freeSolo={freeSolo}
           autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
+          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
             if (roleSelection) {
@@ -214,6 +216,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             </>
           )}
           renderInput={(params: any) => {
+            const { inputProps } = params;
+            inputProps.value = selectTextAsOption ? field.value : inputProps.value;
             const asyncChange = asyncSearch
               ? {
                   onChange: (event: any) => {
@@ -225,6 +229,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             return (
               <TextField
                 {...params}
+                inputProps={inputProps}
                 {...asyncChange}
                 error={hasError}
                 helperText={hasError ? errorText : ''}
