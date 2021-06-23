@@ -67,8 +67,15 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
     getVariableOptions();
   }, []);
 
+  const syncInitialValuesWithFormik = (val: any, index: number) => {
+    const initialStateValue = { ...initialValues };
+    initialStateValue[`variable${index}`] = val;
+    setInitialValues(initialStateValue);
+  };
+
   useEffect(() => {
     const isVariable = bodyText.match(pattern);
+
     if (isVariable) {
       const formFieldItem: any = [];
 
@@ -81,17 +88,21 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           optionLabel: 'key',
           multiple: false,
           freeSolo: true,
-          autoSelect: true,
           textFieldProps: {
             variant: 'outlined',
             label: `Variable ${index}`,
+            onChange: (event: any) => {
+              const { value } = event.target;
+              syncInitialValuesWithFormik(value, index);
+            },
           },
+          onChange: (val: any) => syncInitialValuesWithFormik(val, index),
         });
       }
 
       setFormFieldItems(formFieldItem);
     }
-  }, [bodyText, contactVariables]);
+  }, [bodyText, contactVariables, initialValues]);
 
   useEffect(() => {
     const initialValue: any = {};
@@ -103,7 +114,6 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
 
   const updateText = (variable: any) => {
     let body = bodyText;
-
     Object.keys(variable).forEach((element: string, index: number) => {
       body = body.replace(
         `{{${index + 1}}}`,
