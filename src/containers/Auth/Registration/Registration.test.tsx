@@ -37,7 +37,7 @@ describe('<Registration />', () => {
     userEvent.type(phone, '+919978776554');
 
     const password = await container.querySelector('input[type="password"]');
-    userEvent.type(password, 'pas123456');
+    userEvent.type(password, 'pass123456');
 
     await waitFor(() => {
       // click on continue
@@ -60,15 +60,16 @@ describe('<Registration />', () => {
   it('should submit the form correctly and give error', async () => {
     const { container } = render(wrapper);
 
+    const userName = await container.querySelector('input[name="userName"]');
+    userEvent.type(userName, 'Jane Doe');
+
+    const phone = await container.querySelector('input[type="tel"]');
+    userEvent.type(phone, '+919978776554');
+
+    const password = await container.querySelector('input[type="password"]');
+    userEvent.type(password, 'pass123456');
+
     await waitFor(() => {
-      const inputElements = screen.getAllByRole('textbox');
-
-      userEvent.type(inputElements[0], 'Jane Doe');
-      userEvent.type(inputElements[1], '+919978776554');
-
-      const password = container.querySelector('input[type="password"]');
-      userEvent.type(password, 'pass123456');
-
       // click on continue
       const continueButton = screen.getByText('Continue');
       userEvent.click(continueButton);
