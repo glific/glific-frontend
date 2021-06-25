@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useApolloClient, useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
-import { Button } from '@material-ui/core';
+import { Button, ClickAwayListener } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Draggable from 'react-draggable';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
@@ -22,7 +22,11 @@ import { Button as FormButton } from '../UI/Form/Button/Button';
 import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
 import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { SEARCH_QUERY_VARIABLES, TIME_FORMAT } from '../../common/constants';
+import {
+  SEARCH_QUERY_VARIABLES,
+  TIME_FORMAT,
+  SAMPLE_MEDIA_FOR_SIMULATOR,
+} from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
 import { TemplateButtons } from '../../containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
@@ -32,6 +36,7 @@ import { getUserSession } from '../../services/AuthService';
 import { setNotification } from '../../common/notification';
 import setLogs from '../../config/logs';
 import { WhatsAppTemplateButton } from '../../common/RichEditor';
+import { MessageType } from '../../containers/Chat/ChatConversations/MessageType/MessageType';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -57,6 +62,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [reply, setReply] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
@@ -171,6 +177,31 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setSimulatedMessage(chatMessage);
   };
 
+  const sendMediaMessage = (type: string, payload: any) => {
+    axios({
+      method: 'POST',
+      url: GUPSHUP_CALLBACK_URL,
+      data: {
+        type: 'message',
+        payload: {
+          id: uuidv4(),
+          type,
+          payload,
+          sender: {
+            // this number will be the simulated contact number
+            phone: data ? data.simulatorGet?.phone : '',
+            name: data ? data.simulatorGet?.name : '',
+          },
+        },
+      },
+    }).catch((error) => {
+      // add log's
+      setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
+      setLogs(error, 'error');
+    });
+    getChatMessage();
+  };
+
   const sendMessage = (quickReplyText?: string) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     // check if send message text is not empty
@@ -265,6 +296,23 @@ export const Simulator: React.FC<SimulatorProps> = ({
     [messages]
   );
 
+  const handleAttachmentClick = (media: any) => {
+    const { name: type, payload } = media;
+    sendMediaMessage(type, payload);
+  };
+
+  const dropdown = (
+    <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+      <div className={styles.Dropdown}>
+        {SAMPLE_MEDIA_FOR_SIMULATOR.map((media: any) => (
+          <Button onClick={() => handleAttachmentClick(media)}>
+            <MessageType type={media.id} color="dark" key={media.id} />
+          </Button>
+        ))}
+      </div>
+    </ClickAwayListener>
+  );
+
   const simulator = (
     <Draggable>
       <div className={styles.SimContainer}>
@@ -309,7 +357,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
                     disabled={isPreviewMessage}
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
-                  <AttachFileIcon className={styles.AttachFileIcon} />
+                  <AttachFileIcon
+                    className={styles.AttachFileIcon}
+                    onClick={() => setIsOpen(!isOpen)}
+                  />
+                  {isOpen ? dropdown : null}
                   <CameraAltIcon className={styles.Icon} />
                 </div>
 

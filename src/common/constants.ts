@@ -173,3 +173,45 @@ export const GUPSHUP_QUICK_REPLY =
 // Call to action button
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const QUICK_REPLY = 'QUICK_REPLY';
+
+export const SAMPLE_MEDIA_FOR_SIMULATOR = [
+  {
+    name: 'image',
+    id: 'IMAGE',
+    payload: {
+      caption: 'Sample image',
+      url: 'https://storage.googleapis.com/grasshopper/uploads/outbound/2021-24/NGO Main Account/4df861ba-70a7-482e-a521-d3bda8e9d972.png',
+    },
+  },
+  {
+    name: 'audio',
+    id: 'AUDIO',
+    payload: {
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3',
+    },
+  },
+  {
+    name: 'video',
+    id: 'VIDEO',
+    payload: {
+      caption: 'Sample video',
+      url: 'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4',
+    },
+  },
+  {
+    name: 'file',
+    id: 'DOCUMENT',
+    payload: {
+      caption: 'sample.pdf',
+      url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
+    },
+  },
+  {
+    name: 'sticker',
+    id: 'STICKER',
+    payload: {
+      caption: 'sample.pdf',
+      url: 'https://storage.googleapis.com/grasshopper/uploads/outbound/2021-24/NGO Main Account/4df861ba-70a7-482e-a521-d3bda8e9d972.png',
+    },
+  },
+];
