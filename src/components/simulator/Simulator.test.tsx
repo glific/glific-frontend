@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { Simulator } from './Simulator';
 import { SEARCH_QUERY } from '../../graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../common/constants';
@@ -30,6 +29,7 @@ const defaultProps = {
   setShowSimulator: mockSetShowSimulator,
   setSimulatorId: mockSetShowSimulator,
   isPreviewMessage: false,
+  resetMessage: jest.fn(),
 };
 
 test('simulator should open on click of simulator icon', async () => {
@@ -49,7 +49,7 @@ test('simulator should open on click of simulator icon', async () => {
 
 test('opened simulator should close when click of simulator icon', async () => {
   defaultProps.showSimulator = true;
-  const { getByTestId, container } = render(
+  const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...defaultProps} />
     </MockedProvider>
@@ -66,7 +66,7 @@ test('opened simulator should close when click of simulator icon', async () => {
   });
 });
 
-test('send a message from the simulator', async () => {
+test('send a message/media from the simulator', async () => {
   defaultProps.showSimulator = true;
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
@@ -88,6 +88,19 @@ test('send a message from the simulator', async () => {
   await waitFor(() => {
     expect(input).toHaveTextContent('');
   });
+
+  // Get attachment icon
+  const attachmentIcon = screen.getByTestId('attachment');
+  expect(attachmentIcon).toBeInTheDocument();
+
+  fireEvent.click(attachmentIcon);
+  await waitFor(() => {});
+
+  const [imageButton] = screen.getAllByRole('button');
+  expect(imageButton).toBeInTheDocument();
+
+  fireEvent.click(imageButton);
+  await waitFor(async () => new Promise((resolve) => setTimeout(resolve, 0)));
 });
 
 test('click on clear icon closes the simulator', async () => {
@@ -209,7 +222,7 @@ test('simulator should render template message', () => {
     media: { caption: 'This is time for play. | [view contact, +917834811114]\n' },
     body: 'This is time for play. | [view contact, +917834811114]\n',
   };
-  const { container } = render(
+  render(
     <ApolloProvider client={client}>
       <Simulator {...HSMProps} />
     </ApolloProvider>
