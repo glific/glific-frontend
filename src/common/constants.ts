@@ -174,13 +174,14 @@ export const GUPSHUP_QUICK_REPLY =
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const QUICK_REPLY = 'QUICK_REPLY';
 
+// Gupshup sample media
 export const SAMPLE_MEDIA_FOR_SIMULATOR = [
   {
     name: 'image',
     id: 'IMAGE',
     payload: {
       caption: 'Sample image',
-      url: 'https://storage.googleapis.com/grasshopper/uploads/outbound/2021-24/NGO Main Account/4df861ba-70a7-482e-a521-d3bda8e9d972.png',
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
     },
   },
   {
@@ -195,7 +196,7 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     id: 'VIDEO',
     payload: {
       caption: 'Sample video',
-      url: 'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4',
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/video/sample01.mp4',
     },
   },
   {
@@ -203,7 +204,7 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     id: 'DOCUMENT',
     payload: {
       caption: 'sample.pdf',
-      url: 'https://file-examples-com.github.io/uploads/2017/10/file-sample_150kB.pdf',
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf',
     },
   },
   {
@@ -211,7 +212,7 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     id: 'STICKER',
     payload: {
       caption: 'sample.pdf',
-      url: 'https://storage.googleapis.com/grasshopper/uploads/outbound/2021-24/NGO Main Account/4df861ba-70a7-482e-a521-d3bda8e9d972.png',
+      url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
     },
   },
 ];

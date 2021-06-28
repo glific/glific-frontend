@@ -305,8 +305,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div className={styles.Dropdown}>
         {SAMPLE_MEDIA_FOR_SIMULATOR.map((media: any) => (
-          <Button onClick={() => handleAttachmentClick(media)}>
-            <MessageType type={media.id} color="dark" key={media.id} />
+          <Button onClick={() => handleAttachmentClick(media)} key={media.id}>
+            <MessageType type={media.id} color="dark" />
           </Button>
         ))}
       </div>
@@ -358,6 +358,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                     onChange={(event) => setInputMessage(event.target.value)}
                   />
                   <AttachFileIcon
+                    data-testid="attachment"
                     className={styles.AttachFileIcon}
                     onClick={() => setIsOpen(!isOpen)}
                   />
