@@ -82,7 +82,6 @@ const setConfig = (uuid: any) => ({
     'transfer_airtime',
     'split_by_contact_field',
     'split_by_random',
-    'split_by_groups',
     'split_by_scheme',
   ],
 

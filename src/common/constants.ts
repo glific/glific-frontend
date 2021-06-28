@@ -161,3 +161,15 @@ export const FB_MANAGER_VERIFICATION =
 // pre-requisite link for gupshup account creation in organization setup
 export const GUPSHUP_ACCOUNT_CREATION =
   'https://glific.slab.com/public/posts/setup-the-organization-on-gupshup-and-go-live-qwbjphx0';
+
+// Gupshup call to action text
+export const GUPSHUP_CALL_TO_ACTION =
+  "Whatsapp provides options to call, or send end-users to an external url. You can add only up to one button of each type. You may define a dynamic URL to be able to send links with different extensions. Ex. ‘https://www.glific.org/{{1}}' due to the variable you can programatically send different links to different users or same message to users at different times.";
+
+// Gupshpu quick reply text
+export const GUPSHUP_QUICK_REPLY =
+  'You may get user responses via buttons. Whatsapp allows 3 quick replies. These are static unline the call to actions where you can define call or link actions.';
+
+// Call to action button
+export const CALL_TO_ACTION = 'CALL_TO_ACTION';
+export const QUICK_REPLY = 'QUICK_REPLY';

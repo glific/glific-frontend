@@ -4,6 +4,7 @@ import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getProvidersQuery,
+  getOrganisationSettings,
   getCredential,
 } from '../../mocks/Organization';
 import { FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
@@ -74,5 +75,6 @@ export const LIST_ITEM_MOCKS = [
   ...getOrganizationQuery,
   ...getProvidersQuery,
   ...getCredential,
+  getOrganisationSettings,
   getOrganizationLanguagesQuery,
 ];

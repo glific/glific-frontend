@@ -309,16 +309,18 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   }
   let audioOption: any;
   // enable audio only if GCS is configured
-  if (permission && permission.attachmentsEnabled && !selectedTemplate) {
+  if (permission && permission.attachmentsEnabled) {
+    if (!selectedTemplate) {
+      audioOption = (
+        <VoiceRecorder
+          handleAudioRecording={handleAudioRecording}
+          clearAudio={clearAudio}
+          uploading={uploading}
+          isMicActive={recordedAudio !== ''}
+        />
+      );
+    }
     uploadPermission = true;
-    audioOption = (
-      <VoiceRecorder
-        handleAudioRecording={handleAudioRecording}
-        clearAudio={clearAudio}
-        uploading={uploading}
-        isMicActive={recordedAudio !== ''}
-      />
-    );
   }
 
   if (attachment) {

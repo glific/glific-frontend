@@ -73,17 +73,34 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
   const removeFirstLineBreak = (text: any) =>
     text?.length === 1 ? text.slice(0, 1).replace(/(\r\n|\n|\r)/, '') : text;
 
+  const getTemplate = (text: string) => {
+    const { body } = sampleMessages;
+    const areButtonsPresent = body.indexOf('|');
+    if (areButtonsPresent > -1) {
+      const buttons = body.substr(areButtonsPresent);
+      return text + buttons;
+    }
+    return text;
+  };
+
   const getSimulatorMessage = (messages: any) => {
     const message = removeFirstLineBreak(messages);
     const media: any = { ...sampleMessages.media };
-    media.caption = message;
-    setSampleMessages((val) => ({ ...val, body: message, media }));
+    const text = getTemplate(message);
+    media.caption = text;
+    setSampleMessages((val) => ({ ...val, body: text, media }));
   };
 
   const getAttachmentUrl = (type: any, media: any) => {
     const mediaBody = { ...media };
     mediaBody.caption = sampleMessages.body;
     setSampleMessages((val) => ({ ...val, type, media: mediaBody }));
+  };
+
+  const addButtonsToSampleMessage = (buttonTemplate: string) => {
+    const message: any = { ...sampleMessages };
+    message.body = buttonTemplate;
+    setSampleMessages(message);
   };
 
   const formFields = [
@@ -146,6 +163,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         getShortcode={shortcode}
         getExample={example}
         getCategory={category}
+        onExampleChange={addButtonsToSampleMessage}
       />
       <Simulator
         setSimulatorId={0}

@@ -12,7 +12,6 @@ import {
 } from '../../graphql/mutations/Extensions';
 import { GET_ORGANIZATION_EXTENSION } from '../../graphql/queries/Exntesions';
 import { Input } from '../../components/UI/Form/Input/Input';
-import { OrganizationList } from '../OrganizationList/OrganizationList';
 import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
 import { FormLayout } from '../Form/FormLayout';
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
@@ -92,40 +91,37 @@ export const Extensions: React.SFC<ExtensionProps> = ({ match, openDialog }) => 
     return data;
   };
   return (
-    <>
-      <OrganizationList />
-      <Dialog
-        open={!!openDialog}
-        classes={{
-          paper: styles.Dialogbox,
-        }}
-      >
-        <DialogContent classes={{ root: styles.DialogContent }}>
-          <FormLayout
-            {...queries}
-            match={match}
-            states={states}
-            setStates={setStates}
-            validationSchema={FormSchema}
-            listItemName="extension"
-            dialogMessage={dialogMessage}
-            formFields={formFields}
-            setPayload={setPayload}
-            redirectionLink="organizations"
-            listItem="Extension"
-            icon={extensionIcon}
-            title={title}
-            type="Extension"
-            languageSupport={false}
-            idType="clientId"
-            customStyles={[styles.Form]}
-            refetchQueries={[
-              { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: match.params.id } },
-            ]}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog
+      open={!!openDialog}
+      classes={{
+        paper: styles.Dialogbox,
+      }}
+    >
+      <DialogContent classes={{ root: styles.DialogContent }}>
+        <FormLayout
+          {...queries}
+          match={match}
+          states={states}
+          setStates={setStates}
+          validationSchema={FormSchema}
+          listItemName="extension"
+          dialogMessage={dialogMessage}
+          formFields={formFields}
+          setPayload={setPayload}
+          redirectionLink="organizations"
+          listItem="Extension"
+          icon={extensionIcon}
+          title={title}
+          type="Extension"
+          languageSupport={false}
+          idType="clientId"
+          customStyles={[styles.Form]}
+          refetchQueries={[
+            { query: GET_ORGANIZATION_EXTENSION, variables: { clientId: match.params.id } },
+          ]}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };
 

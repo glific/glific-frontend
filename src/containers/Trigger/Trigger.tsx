@@ -123,6 +123,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
           Is active?
         </Typography>
       ),
+      darkCheckbox: true,
     },
     {
       component: AutoComplete,

@@ -68,3 +68,15 @@
   margin-top: 16px;
   margin-bottom: 16px;
 }
+
+.ExtensionIcon {
+  width: 18px;
+}
+
+.Delete {
+  color: #dd1f1f;
+}
+
+.Inactive {
+  color: #93a29b;
+}

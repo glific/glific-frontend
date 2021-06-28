@@ -72,14 +72,14 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
   if (phone) {
     let phoneDisplayValue = maskedPhone;
     let visibilityElement = (
-      <Tooltip title={t('Hide number')} placement="right">
+      <Tooltip title={t('Show number')} placement="right">
         <Visibility classes={{ root: styles.Visibility }} />
       </Tooltip>
     );
     if (showPlainPhone) {
       phoneDisplayValue = phone;
       visibilityElement = (
-        <Tooltip title={t('Show number')} placement="right">
+        <Tooltip title={t('Hide number')} placement="right">
           <VisibilityOff classes={{ root: styles.Visibility }} />
         </Tooltip>
       );
