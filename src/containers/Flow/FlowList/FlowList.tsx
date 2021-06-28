@@ -15,6 +15,7 @@ import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from '../../../graphql/queries/Flow';
 import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
+import { exportFlowMethod } from '../../../common/utils';
 
 export interface FlowListProps {}
 
@@ -57,14 +58,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
-      const blob = new Blob([exportData], { type: 'application/json' });
-      const href = await URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = href;
-      link.download = `${flowName}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      await exportFlowMethod(exportData, flowName);
     },
   });
 

@@ -20,6 +20,7 @@ import { EXPORT_FLOW, GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
 import { setAuthHeaders } from '../../services/AuthService';
 import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
 import { Loading } from '../UI/Layout/Loading/Loading';
+import { exportFlowMethod } from '../../common/utils';
 
 declare function showFlowEditor(node: any, config: any): void;
 
@@ -190,14 +191,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     fetchPolicy: 'network-only',
     onCompleted: async ({ exportFlow }) => {
       const { exportData } = exportFlow;
-      const blob = new Blob([exportData], { type: 'application/json' });
-      const href = await URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = href;
-      link.download = `${flowTitle}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      exportFlowMethod(exportData, flowTitle);
     },
   });
 
