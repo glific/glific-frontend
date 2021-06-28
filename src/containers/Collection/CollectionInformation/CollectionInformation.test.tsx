@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { CollectionInformation } from './CollectionInformation';
 import { MockedProvider } from '@apollo/client/testing';
 import { getCollectionInfo, getCollectionUsersQuery } from '../../../mocks/Collection';

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     receivedMessage(organizationId: $organizationId) {
       id
       body
@@ -63,7 +63,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
 `;
 
 export const MESSAGE_SENT_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     sentMessage(organizationId: $organizationId) {
       id
       body
@@ -125,7 +125,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
 `;
 
 export const MESSAGE_STATUS_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     updateMessageStatus(organizationId: $organizationId) {
       id
       receiver {
@@ -137,7 +137,7 @@ export const MESSAGE_STATUS_SUBSCRIPTION = gql`
 `;
 
 export const COLLECTION_SENT_SUBSCRIPTION = gql`
-  subscription($organizationId: ID!) {
+  subscription ($organizationId: ID!) {
     sentGroupMessage(organizationId: $organizationId) {
       id
       body

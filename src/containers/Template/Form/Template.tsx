@@ -9,6 +9,7 @@ import styles from './Template.module.css';
 import { Input } from '../../../components/UI/Form/Input/Input';
 import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
 import { FormLayout } from '../../Form/FormLayout';
+import { TemplateOptions } from '../../TemplateOptions/TemplateOptions';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../common/RichEditor';
 import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
 import {
@@ -16,7 +17,7 @@ import {
   UPDATE_TEMPLATE,
   DELETE_TEMPLATE,
 } from '../../../graphql/mutations/Template';
-import { MEDIA_MESSAGE_TYPES } from '../../../common/constants';
+import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from '../../../common/constants';
 import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
 import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
@@ -57,6 +58,57 @@ const formIsActive = {
       Is active?
     </Typography>
   ),
+  darkCheckbox: true,
+};
+
+/**
+ *
+ * @param templateButtons buttons that need to be converted to gupshup format
+ * @param templateType depending on template type convert button to gupshup format
+ */
+const convertButtonsToTemplate = (templateButtons: Array<any>, templateType: string | null) =>
+  templateButtons.reduce((result: any, temp: any) => {
+    const { title, value } = temp;
+    if (templateType === CALL_TO_ACTION && value && title) {
+      result.push(`[${title}, ${value}]`);
+    }
+    if (templateType === QUICK_REPLY && value) {
+      result.push(`[${value}]`);
+    }
+    return result;
+  }, []);
+
+/**
+ *
+ * @param templateType template type
+ * @param message
+ * @param buttons
+ * Since messages and buttons are now separated
+ * we are combining both message and buttons,
+ * so that you can see preview in simulator
+ */
+const getTemplateAndButtons = (templateType: string, message: string, buttons: string) => {
+  const templateButtons = JSON.parse(buttons);
+  let result: any;
+  if (templateType === CALL_TO_ACTION) {
+    result = templateButtons.map((button: any) => {
+      const { phone_number: phoneNo, url, type, text } = button;
+      return { type, value: url || phoneNo, title: text };
+    });
+  }
+
+  if (templateType === QUICK_REPLY) {
+    result = templateButtons.map((button: any) => {
+      const { text, type } = button;
+      return { type, value: text };
+    });
+  }
+
+  // Getting in template format of gupshup
+  const templateFormat = convertButtonsToTemplate(result, templateType);
+  // Pre-pending message with buttons
+  const template = `${message} | ${templateFormat.join(' | ')}`;
+  return { buttons: result, template };
 };
 
 export interface TemplateProps {
@@ -72,6 +124,17 @@ export interface TemplateProps {
   getShortcode?: any;
   getExample?: any;
   getCategory?: any;
+  onExampleChange?: any;
+}
+
+interface CallToActionTemplate {
+  type: string;
+  title: string;
+  value: string;
+}
+
+interface QuickReplyTemplate {
+  value: string;
 }
 
 const Template: React.SFC<TemplateProps> = (props) => {
@@ -88,6 +151,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getShortcode,
     getExample,
     getCategory,
+    onExampleChange,
   } = props;
 
   const [label, setLabel] = useState('');
@@ -104,6 +168,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [warning, setWarning] = useState<any>();
   const [isUrlValid, setIsUrlValid] = useState<any>();
+  const [templateType, setTemplateType] = useState<string | null>(null);
+  const [templateButtons, setTemplateButtons] = useState<
+    Array<CallToActionTemplate | QuickReplyTemplate>
+  >([]);
+  const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
   const { t } = useTranslation();
 
   const states = {
@@ -116,6 +185,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     example,
     category,
     isActive,
+    templateButtons,
+    isAddButtonChecked,
   };
 
   const setStates = ({
@@ -129,6 +200,9 @@ const Template: React.SFC<TemplateProps> = (props) => {
     MessageMedia: MessageMediaValue,
     shortcode: shortcodeValue,
     category: categoryValue,
+    buttonType: templateButtonType,
+    buttons,
+    hasButtons,
   }: any) => {
     if (languageIdValue) {
       setLanguageId(languageIdValue);
@@ -140,8 +214,27 @@ const Template: React.SFC<TemplateProps> = (props) => {
     if (typeof bodyValue === 'string') {
       setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
     }
+
     if (exampleValue) {
-      setExample(EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue)));
+      let exampleBody: any;
+      if (hasButtons) {
+        const { buttons: buttonsVal, template } = getTemplateAndButtons(
+          templateButtonType,
+          exampleValue,
+          buttons
+        );
+        exampleBody = template;
+        setTemplateButtons(buttonsVal);
+      } else {
+        exampleBody = exampleValue;
+      }
+      const editorStateBody = EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue));
+      setTimeout(() => setExample(editorStateBody), 0);
+      setTimeout(() => onExampleChange(exampleBody), 10);
+    }
+
+    if (hasButtons) {
+      setIsAddButtonChecked(hasButtons);
     }
     if (typeValue && typeValue !== 'TEXT') {
       setType({ id: typeValue, label: typeValue });
@@ -155,7 +248,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setAttachmentURL('');
     }
     if (shortcodeValue) {
-      setShortcode(shortcodeValue);
+      setTimeout(() => setShortcode(shortcodeValue), 0);
     }
     if (categoryValue) {
       setCategory({ label: categoryValue, id: categoryValue });
@@ -417,9 +510,140 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
+  const addTemplateButtons = (addFromTemplate: boolean = true) => {
+    let buttons: any = [];
+    const buttonType: any = {
+      QUICK_REPLY: { value: '' },
+      CALL_TO_ACTION: { type: '', title: '', value: '' },
+    };
+
+    if (templateType) {
+      buttons = addFromTemplate
+        ? [...templateButtons, buttonType[templateType]]
+        : [buttonType[templateType]];
+    }
+
+    setTemplateButtons(buttons);
+  };
+
+  const removeTemplateButtons = (index: number) => {
+    const result = templateButtons.filter((val, idx) => idx !== index);
+    setTemplateButtons(result);
+  };
+
+  useEffect(() => {
+    if (templateType) {
+      addTemplateButtons(false);
+    }
+  }, [templateType]);
+
+  const getTemplateAndButton = (text: string) => {
+    const areButtonsPresent = text.indexOf('|');
+
+    let message: any = text;
+    let buttons: any = null;
+
+    if (areButtonsPresent !== -1) {
+      buttons = text.substr(areButtonsPresent);
+      message = text.substr(0, areButtonsPresent);
+    }
+
+    return { message, buttons };
+  };
+
+  // Converting buttons to template and vice-versa to show realtime update on simulator
+  useEffect(() => {
+    if (templateButtons.length > 0) {
+      const parse = convertButtonsToTemplate(templateButtons, templateType);
+
+      const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
+
+      const { message }: any = getTemplateAndButton(convertToWhatsApp(example));
+
+      const sampleText: any = parsedText && message + parsedText;
+
+      if (sampleText) {
+        onExampleChange(sampleText);
+      }
+    }
+  }, [templateButtons]);
+
+  const handeInputChange = (event: any, row: any, index: any, eventType: any) => {
+    const { value } = event.target;
+    const obj = { ...row };
+    obj[eventType] = value;
+
+    const result = templateButtons.map((val: any, idx: number) => {
+      if (idx === index) return obj;
+      return val;
+    });
+
+    setTemplateButtons(result);
+  };
+
+  const templateRadioOptions = [
+    {
+      component: Checkbox,
+      title: <Typography variant="h6">Add buttons</Typography>,
+      name: 'isAddButtonChecked',
+      disabled: !!(defaultAttribute.isHsm && match.params.id),
+      handleChange: (value: boolean) => setIsAddButtonChecked(value),
+    },
+    {
+      component: TemplateOptions,
+      isAddButtonChecked,
+      templateType,
+      inputFields: templateButtons,
+      disabled: !!match.params.id,
+      onAddClick: addTemplateButtons,
+      onRemoveClick: removeTemplateButtons,
+      onInputChange: handeInputChange,
+      onTemplateTypeChange: (value: string) => setTemplateType(value),
+    },
+  ];
+
+  const hsmFields = formField && [
+    ...formField.slice(0, 1),
+    ...templateRadioOptions,
+    ...formField.slice(1),
+  ];
+
   const fields = defaultAttribute.isHsm
-    ? [formIsActive, ...formFields, ...formField, ...attachmentField]
+    ? [formIsActive, ...formFields, ...hsmFields, ...attachmentField]
     : [...formFields, ...attachmentField];
+
+  // Creating payload for button template
+  const getButtonTemplatePayload = () => {
+    const buttons = templateButtons.reduce((result: any, button) => {
+      const { type: buttonType, value, title }: any = button;
+      if (templateType === CALL_TO_ACTION) {
+        const typeObj: any = {
+          phone_number: 'PHONE_NUMBER',
+          url: 'URL',
+        };
+        const obj: any = { type: typeObj[buttonType], text: title, [buttonType]: value };
+        result.push(obj);
+      }
+
+      if (templateType === QUICK_REPLY) {
+        const obj: any = { type: QUICK_REPLY, text: value };
+        result.push(obj);
+      }
+      return result;
+    }, []);
+
+    // get template body
+    const templateBody = getTemplateAndButton(convertToWhatsApp(body));
+    const templateExample = getTemplateAndButton(convertToWhatsApp(example));
+
+    return {
+      hasButtons: true,
+      buttons: JSON.stringify(buttons),
+      buttonType: templateType,
+      body: EditorState.createWithContent(WhatsAppToDraftEditor(templateBody.message)),
+      example: EditorState.createWithContent(WhatsAppToDraftEditor(templateExample.message)),
+    };
+  };
 
   const setPayload = (payload: any) => {
     let payloadCopy = payload;
@@ -441,6 +665,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
         delete payloadCopy.language;
         if (payloadCopy.isHsm) {
           payloadCopy.category = payloadCopy.category.id;
+          if (isAddButtonChecked && templateType) {
+            const templateButtonData = getButtonTemplatePayload();
+            Object.assign(payloadCopy, { ...templateButtonData });
+          }
         } else {
           delete payloadCopy.example;
           delete payloadCopy.isActive;
@@ -450,6 +678,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
         if (payloadCopy.type === 'TEXT') {
           delete payloadCopy.attachmentURL;
         }
+
+        // Removing unnecessary fields
+        delete payloadCopy.isAddButtonChecked;
+        delete payloadCopy.templateButtons;
       } else if (!defaultAttribute.isHsm) {
         let messageMedia = null;
         if (payloadCopy.type && payloadCopy.attachmentURL) {
@@ -488,6 +720,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
       }
       if (payloadCopy.isHsm) {
         payloadCopy.category = payloadCopy.category.id;
+
+        if (isAddButtonChecked && templateType) {
+          const templateButtonData = getButtonTemplatePayload();
+          Object.assign(payloadCopy, { ...templateButtonData });
+        }
       } else {
         delete payloadCopy.example;
         delete payloadCopy.isActive;
@@ -495,6 +732,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
         delete payloadCopy.category;
       }
 
+      delete payloadCopy.isAddButtonChecked;
+      delete payloadCopy.templateButtons;
       delete payloadCopy.language;
 
       if (payloadCopy.type === 'TEXT') {
@@ -520,7 +759,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return data;
   };
 
-  const validation = {
+  const validation: any = {
     language: Yup.object().nullable().required('Language is required.'),
     label: Yup.string().required(t('Title is required.')).max(50, t('Title length is too long.')),
     body: Yup.string()
@@ -539,6 +778,45 @@ const Template: React.SFC<TemplateProps> = (props) => {
         then: Yup.string().required(t('Attachment URL is required.')),
       }),
   };
+
+  if (defaultAttribute.isHsm && isAddButtonChecked) {
+    if (templateType === CALL_TO_ACTION) {
+      validation.templateButtons = Yup.array()
+        .of(
+          Yup.object().shape({
+            type: Yup.string().required('Required'),
+            title: Yup.string().required('Required'),
+            value: Yup.string()
+              .required('Required')
+              .when('type', {
+                is: (val: any) => val === 'phone_number',
+                then: Yup.string().matches(
+                  /^(\+)\d{12}(\d{2})?$/gm,
+                  'Enter phone no is correct format'
+                ),
+              })
+              .when('type', {
+                is: (val: any) => val === 'url',
+                then: Yup.string().matches(
+                  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi,
+                  'Enter correct url'
+                ),
+              }),
+          })
+        )
+        .min(1)
+        .max(2);
+    } else {
+      validation.templateButtons = Yup.array()
+        .of(
+          Yup.object().shape({
+            value: Yup.string().required('Required'),
+          })
+        )
+        .min(1)
+        .max(3);
+    }
+  }
 
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
   const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);

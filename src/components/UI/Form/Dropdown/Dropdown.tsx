@@ -8,7 +8,7 @@ export interface DropdownProps {
   type?: any;
   field?: any;
   options: any;
-  label: string;
+  label?: string;
   form?: any;
   placeholder: string;
   helperText?: string;
@@ -19,16 +19,8 @@ export interface DropdownProps {
 }
 
 export const Dropdown: React.SFC<DropdownProps> = (props) => {
-  const {
-    options,
-    placeholder,
-    field,
-    helperText,
-    disabled,
-    form,
-    fieldValue,
-    fieldChange,
-  } = props;
+  const { options, placeholder, field, helperText, disabled, form, fieldValue, fieldChange } =
+    props;
 
   const { onChange, value, ...rest } = field;
 
@@ -67,7 +59,7 @@ export const Dropdown: React.SFC<DropdownProps> = (props) => {
           }}
           value={fieldValue !== undefined ? fieldValue : value}
           {...rest}
-          label={placeholder}
+          label={placeholder !== '' ? placeholder : undefined}
           fullWidth
           disabled={disabled}
         >

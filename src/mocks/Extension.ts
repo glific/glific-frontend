@@ -13,8 +13,7 @@ export const getExtension = {
     data: {
       extension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
           id: '1',
           insertedAt: '2021-05-22T05:34:54Z',
           isActive: false,
@@ -36,16 +35,19 @@ export const getOrganizationExtension = {
   },
   result: {
     data: {
-      extension: {
-        extension: {
-          code:
-            'defmodule Glific.Test.Extension, do :def default_phone(), do: %{phone: 9876543210}',
+      getOrganizationExtension: {
+        Extension: {
+          code: 'test',
           id: '1',
-          insertedAt: '2021-05-22T05:34:54Z',
+          insertedAt: '2021-06-17T04:57:05Z',
           isActive: false,
-          isValid: true,
-          name: 'GCS bucket',
-          updatedAt: '2021-05-24T10:25:06Z',
+          isValid: null,
+          name: 'test',
+          organization: {
+            isActive: true,
+            name: 'Glific',
+          },
+          updatedAt: '2021-06-17T04:57:05Z',
         },
       },
     },
@@ -68,8 +70,7 @@ export const createExtension = {
     data: {
       createExtension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: false,
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',
@@ -97,8 +98,7 @@ export const updateExtension = {
     data: {
       update_organization_extension: {
         extension: {
-          code:
-            'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
+          code: 'defmodule Glific.Test.Extension, do: def default_phone(), do: %{phone: 9876543210}',
           isActive: true,
           isValid: true,
           module: 'Elixir.Glific.Test.Extension',

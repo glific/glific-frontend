@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import { Img } from 'react-image';
 
 import styles from './ChatMessageType.module.css';
@@ -10,8 +9,9 @@ import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
 import loadingImage from '../../../../../assets/images/loading.gif';
 import FallbackImage from '../../../../../assets/images/imageError.png';
 import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
-import DocumentThumbnail from '../../../../../assets/images/imagethumbnail.jpg';
 import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
+import { ReactComponent as DocumentIconDark } from '../../../../../assets/images/icons/Document/Dark.svg';
+import { ReactComponent as DownloadIcon } from '../../../../../assets/images/icons/Download.svg';
 
 export interface ChatMessageTypeProps {
   type: string;
@@ -113,17 +113,21 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
 
     case 'DOCUMENT':
       messageBody = (
-        <>
-          <div
-            data-testid="documentMessage"
-            style={{ background: `url("${DocumentThumbnail}") no-repeat` }}
-            className={styles.Document}
-          />
-          <a href={media.url} className={styles.DocumentText}>
-            <GetAppIcon />
+        <div data-testid="documentMessage" className={styles.Document}>
+          <div>
+            <DocumentIconDark />
             {media.caption}
+          </div>
+          <a
+            href={media.url}
+            className={styles.DocumentText}
+            download={media.caption}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <DownloadIcon className={styles.DownloadIcon} />
           </a>
-        </>
+        </div>
       );
       break;
 

@@ -68,20 +68,22 @@ export const BillingForm: React.FC<BillingProps> = () => {
   });
 
   // get organization billing details
-  const { data: billData, loading: billLoading, refetch } = useQuery(GET_ORGANIZATION_BILLING, {
+  const {
+    data: billData,
+    loading: billLoading,
+    refetch,
+  } = useQuery(GET_ORGANIZATION_BILLING, {
     fetchPolicy: 'network-only',
   });
 
-  const [
-    getCouponCode,
-    { data: couponCode, loading: couponLoading, error: couponError },
-  ] = useLazyQuery(GET_COUPON_CODE, {
-    onCompleted: ({ getCouponCode: couponCodeResult }) => {
-      if (couponCodeResult.code) {
-        setCouponApplied(true);
-      }
-    },
-  });
+  const [getCouponCode, { data: couponCode, loading: couponLoading, error: couponError }] =
+    useLazyQuery(GET_COUPON_CODE, {
+      onCompleted: ({ getCouponCode: couponCodeResult }) => {
+        if (couponCodeResult.code) {
+          setCouponApplied(true);
+        }
+      },
+    });
   const [getCustomerPortal, { loading: portalLoading }] = useLazyQuery(GET_CUSTOMER_PORTAL, {
     fetchPolicy: 'network-only',
     onCompleted: (customerPortal: any) => {

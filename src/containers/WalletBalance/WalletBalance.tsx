@@ -76,7 +76,13 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({ fullOpen }) => {
   );
 
   // get gupshup balance
-  const { data: balanceData, loading, error, refetch, subscribeToMore } = useQuery(BSPBALANCE, {
+  const {
+    data: balanceData,
+    loading,
+    error,
+    refetch,
+    subscribeToMore,
+  } = useQuery(BSPBALANCE, {
     variables,
   });
 

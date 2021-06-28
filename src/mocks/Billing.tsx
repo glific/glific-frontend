@@ -1,4 +1,7 @@
-import CREATE_BILLING_SUBSCRIPTION, { UPDATE_BILLING } from '../graphql/mutations/Billing';
+import CREATE_BILLING_SUBSCRIPTION, {
+  UPDATE_BILLING,
+  CREATE_BILLING,
+} from '../graphql/mutations/Billing';
 import GET_ORGANIZATION_BILLING, {
   GET_COUPON_CODE,
   GET_CUSTOMER_PORTAL,
@@ -138,3 +141,71 @@ export const getCouponCode = {
     },
   },
 };
+
+const getOrganizationBilling = {
+  request: {
+    query: GET_ORGANIZATION_BILLING,
+    variables: { organizationId: '1' },
+  },
+  result: {
+    data: {
+      getOrganizationBilling: {
+        billing: {
+          currency: 'inr',
+          email: 'testing@example.com',
+          id: '1',
+          isActive: true,
+          name: 'test',
+          stripeSubscriptionId: null,
+          stripeSubscriptionItems: '{}',
+          stripeSubscriptionStatus: null,
+          tdsAmount: 4,
+          deductTds: true,
+        },
+      },
+    },
+  },
+};
+
+const getOrganizationBillingWithNoBilling = {
+  request: {
+    query: GET_ORGANIZATION_BILLING,
+    variables: { organizationId: '2' },
+  },
+  result: {
+    data: {
+      getOrganizationBilling: {
+        billing: null,
+      },
+    },
+  },
+};
+
+const createOrganizationBilling = {
+  request: {
+    query: CREATE_BILLING,
+    variables: {
+      currency: 'inr',
+      email: 'testing@example.com',
+      name: 'testing',
+      organizationId: '2',
+    },
+  },
+  result: {
+    data: {
+      createBilling: {
+        billing: {
+          id: '1',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const organizationCustomerMock = [
+  createOrganizationBilling,
+  getOrganizationBilling,
+  getOrganizationBillingWithNoBilling,
+  updateBillingQuery,
+];

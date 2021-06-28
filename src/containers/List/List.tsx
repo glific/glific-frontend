@@ -226,7 +226,12 @@ export const List: React.SFC<ListProps> = ({
   }, [searchVal, tableVals, filters]);
 
   // Get the total number of items here
-  const { loading: l, error: e, data: countData, refetch: refetchCount } = useQuery(countQuery, {
+  const {
+    loading: l,
+    error: e,
+    data: countData,
+    refetch: refetchCount,
+  } = useQuery(countQuery, {
     variables: { filter },
   });
 
@@ -236,10 +241,8 @@ export const List: React.SFC<ListProps> = ({
     fetchPolicy: 'cache-and-network',
   });
   // Get item data here
-  const [
-    fetchUserCollections,
-    { loading: loadingCollections, data: userCollections },
-  ] = useLazyQuery(GET_CURRENT_USER);
+  const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
+    useLazyQuery(GET_CURRENT_USER);
 
   const checkUserRole = () => {
     userRole = getUserRole();
@@ -314,10 +317,11 @@ export const List: React.SFC<ListProps> = ({
        * 2. isConfirm: To check true or false value
        * 3. handleOkCallback: Callback action to delete item
        */
-      const { component: componentToRender, isConfirmed, handleOkCallback } = message(
-        deleteItemID,
-        deleteItemName
-      );
+      const {
+        component: componentToRender,
+        isConfirmed,
+        handleOkCallback,
+      } = message(deleteItemID, deleteItemName);
       component = componentToRender;
       props.disableOk = !isConfirmed;
       props.handleOk = () => handleOkCallback({ refetch: fetchQuery, setDeleteItemID });
@@ -392,7 +396,7 @@ export const List: React.SFC<ListProps> = ({
     }
 
     const deleteButton = (Id: any, text: string) =>
-      allowedAction.delete || listItems.isActive === false ? (
+      allowedAction.delete ? (
         <IconButton
           aria-label="Delete"
           color="default"
@@ -600,7 +604,10 @@ export const List: React.SFC<ListProps> = ({
       {searchVal ? (
         <div>Sorry, no results found! Please try a different search.</div>
       ) : (
-        <div>There are no {noItemText || listItemName}s right now. Please create one.</div>
+        <div>
+          There are no {noItemText || listItemName}s right now.
+          {button.show && 'Please create one.'}
+        </div>
       )}
     </div>
   );

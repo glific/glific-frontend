@@ -28,20 +28,14 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
     handleAudioRecording(blob);
   }, []);
 
-  const {
-    status,
-    error,
-    startRecording,
-    stopRecording,
-    mediaBlobUrl,
-    clearBlobUrl,
-  } = useReactMediaRecorder({
-    audio: true,
-    blobPropertyBag: {
-      type: 'audio/mpeg',
-    },
-    onStop: saveRecording,
-  });
+  const { status, error, startRecording, stopRecording, mediaBlobUrl, clearBlobUrl } =
+    useReactMediaRecorder({
+      audio: true,
+      blobPropertyBag: {
+        type: 'audio/mpeg',
+      },
+      onStop: saveRecording,
+    });
 
   // function to start recording
   const startCallback = () => {
@@ -78,8 +72,8 @@ export const VoiceRecorder: React.SFC<VoiceRecorderProps> = (props) => {
           <audio src={mediaBlobUrl} controls className={styles.AudioPlayer} />
         </div>
         <div className={styles.AudioPlayerClose}>
-          <IconButton>
-            <CancelIcon onClick={cancelCallback} data-testid="cancelIcon" />
+          <IconButton onClick={cancelCallback}>
+            <CancelIcon data-testid="cancelIcon" />
           </IconButton>
         </div>
       </div>

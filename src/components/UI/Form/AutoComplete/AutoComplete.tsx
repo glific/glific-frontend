@@ -13,9 +13,12 @@ export interface AutocompleteProps {
   additionalOptionLabel?: string;
   field: any;
   icon?: any;
+  freeSolo?: boolean;
+  autoSelect?: boolean;
   form: { dirty?: any; touched?: any; errors?: any; setFieldValue: any };
   textFieldProps?: any;
   helperText?: any;
+  questionText?: any;
   multiple?: boolean;
   disabled?: boolean;
   helpLink?: any;
@@ -33,6 +36,8 @@ export interface AutocompleteProps {
   classes?: any;
   renderTags?: boolean;
   selectedOptionsIds?: any;
+  selectTextAsOption?: boolean;
+  onInputChange?: any;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -45,8 +50,11 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   form: { touched, errors, setFieldValue },
   textFieldProps,
   helperText,
+  questionText,
   multiple = true,
   disabled = false,
+  freeSolo = false,
+  autoSelect = false,
   getOptions,
   asyncValues,
   roleSelection,
@@ -60,6 +68,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   classes = {},
   renderTags = true,
   selectedOptionsIds = [],
+  selectTextAsOption = false,
+  onInputChange = () => null,
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -97,7 +107,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
     if (additionalOptionLabel) {
       return option[additionalOptionLabel];
     }
-    return '';
+    return option;
   };
 
   /**
@@ -114,7 +124,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
      * default selected options along with newly selected options will be visible
      * else,
      * only post selected options will be visible
-     
+
      */
     if (!renderTags) {
       tagsToRender = value.filter((option: any) => !selectedOptionsIds.includes(option.id));
@@ -150,13 +160,16 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   return (
     <div className={styles.Input}>
       <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
+        {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
           multiple={multiple}
           data-testid="autocomplete-element"
           options={optionValue}
+          freeSolo={freeSolo}
+          autoSelect={autoSelect}
           disableClearable={disableClearable}
-          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : '')}
+          getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
           onChange={(event, value: any) => {
             if (roleSelection) {
@@ -181,6 +194,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             }
             setFieldValue(field.name, value);
           }}
+          onInputChange={onInputChange}
           inputValue={asyncSearch ? searchTerm : undefined}
           value={getValue}
           disabled={disabled}
@@ -205,6 +219,8 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             </>
           )}
           renderInput={(params: any) => {
+            const { inputProps } = params;
+            inputProps.value = selectTextAsOption ? field.value : inputProps.value;
             const asyncChange = asyncSearch
               ? {
                   onChange: (event: any) => {
@@ -216,6 +232,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
             return (
               <TextField
                 {...params}
+                inputProps={inputProps}
                 {...asyncChange}
                 error={hasError}
                 helperText={hasError ? errorText : ''}

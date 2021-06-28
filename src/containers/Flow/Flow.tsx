@@ -66,7 +66,8 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     setIgnoreKeywords(ignoreKeywordsValue);
   };
 
-  const regex = /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
+  const regex =
+    /^\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*(,\s*[^-!$%^&*()+|~=`{}[\]:";'<>?,./]+\s*)*$/g;
 
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('Name is required.')),
@@ -100,11 +101,13 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
           'If activated, users will not be able to change this flow by entering keyword for any other flow.'
         ),
       },
+      darkCheckbox: true,
     },
     {
       component: Checkbox,
       name: 'isActive',
       title: t('Is active?'),
+      darkCheckbox: true,
     },
   ];
 
