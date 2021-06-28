@@ -4,7 +4,7 @@ import {
   USER_COUNT,
   GET_USER_ROLES,
 } from '../../graphql/queries/User';
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
+import { UPDATE_USER } from '../../graphql/mutations/User';
 import { USER_LANGUAGES } from '../../graphql/queries/Organization';
 import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
 
@@ -30,11 +30,16 @@ const GET_USER_MOCK = {
       user: {
         user: {
           id: '1',
-          name: 'NGO Admin',
+          name: 'Staff',
           phone: '919999988888',
           isRestricted: false,
-          roles: ['Admin'],
-          groups: [],
+          roles: ['Staff'],
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
         },
       },
     },
@@ -115,24 +120,39 @@ const GET_GROUPS = {
 const UPDATE_USER_MOCK = {
   request: {
     query: UPDATE_USER,
-    variables: {},
+    variables: {
+      id: '1',
+      input: { name: 'Staff Admin', isRestricted: false, groupIds: ['2'], roles: ['Staff'] },
+    },
   },
-  result: {},
-};
-
-const DELETE_USER_MOCK = {
-  request: {
-    query: DELETE_USER,
-    variables: {},
+  result: {
+    data: {
+      updateUser: {
+        errors: null,
+        user: {
+          groups: [
+            {
+              id: '2',
+              label: 'Optout contacts',
+            },
+          ],
+          id: '1',
+          isRestricted: false,
+          name: 'Staff Admin',
+          phone: '919999988888',
+          roles: ['Staff'],
+        },
+      },
+    },
   },
-  result: {},
 };
 
 export const STAFF_MANAGEMENT_MOCKS = [
+  GET_USER_MOCK,
   GET_ROLES_MOCK,
   GET_USER_LANGUAGE_MOCK,
-  GET_USER_MOCK,
   GET_GROUPS,
+  UPDATE_USER_MOCK,
 ];
 
 export const USER_COUNT_MOCK = {

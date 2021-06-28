@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, prettyDOM } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { StaffManagement } from './StaffManagement';
@@ -8,25 +8,36 @@ const mocks = STAFF_MANAGEMENT_MOCKS;
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <StaffManagement match={{ params: { id: 1 } }} />
+    <StaffManagement match={{ params: { id: '1' } }} />
   </MockedProvider>
 );
 
 test('should load the staff user edit form', async () => {
-  const { container } = render(staffManagement);
+  render(staffManagement);
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 10)));
 
-  console.log(prettyDOM(container));
+  const submitButton = screen.getByRole('button', { name: 'Save' });
+  expect(submitButton).toBeInTheDocument();
+
+  fireEvent.click(submitButton);
+  await waitFor(() => {});
 });
 
 test('it should have a help link', async () => {
-  const { getByText, findByTestId } = render(staffManagement);
+  render(staffManagement);
 
   // loading is show initially
-  expect(getByText('Loading...')).toBeInTheDocument();
-
-  const helpButton = await findByTestId('helpButton');
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  const helpButton = screen.getByTestId('helpButton');
   fireEvent.click(helpButton);
-  expect(getByText('User roles')).toBeInTheDocument();
+
+  expect(screen.getByText('User roles')).toBeInTheDocument();
+
+  const closeButton = screen.getByRole('button', { name: 'Close' });
+  expect(closeButton).toBeInTheDocument();
+
+  fireEvent.click(closeButton);
+  await waitFor(() => {});
 });
