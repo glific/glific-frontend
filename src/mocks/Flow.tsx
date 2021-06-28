@@ -119,6 +119,7 @@ const getFlowDetails = (isActive = true, keywords = ['help']) => ({
     data: {
       flows: [
         {
+          id: '1',
           isActive,
           name: 'help workflow',
           keywords,
