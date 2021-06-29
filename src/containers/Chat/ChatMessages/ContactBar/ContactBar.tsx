@@ -27,6 +27,8 @@ import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
+import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Chat/SelectedCollection.svg';
+import { ReactComponent as SavedSearchIcon } from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg';
 import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
@@ -515,11 +517,25 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const getTitleAndIconForSmallScreen = (() => {
+    const { location } = history;
+
+    if (location.pathname.includes('collection')) {
+      return { title: 'Group', icon: CollectionIcon };
+    }
+
+    if (location.pathname.includes('saved-searches')) {
+      return { title: 'Search', icon: SavedSearchIcon };
+    }
+
+    return { title: 'Chat', icon: ChatIcon };
+  })();
+
   // CONTACT: display session timer & Assigned to
-  let sesssionAndCollectionAssignedTo;
-  if (contactId) {
-    sesssionAndCollectionAssignedTo = (
-      <>
+  const { title, icon: IconComponent } = getTitleAndIconForSmallScreen;
+  const sesssionAndCollectionAssignedTo = (
+    <>
+      {contactId ? (
         <div className={styles.SessionTimerContainer}>
           <div className={styles.SessionTimer} data-testid="sessionTimer">
             <span>Session Timer</span>
@@ -538,16 +554,16 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             ) : null}
           </div>
         </div>
-        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-          <IconButton className={styles.MobileIcon}>
-            <ChatIcon />
-          </IconButton>
+      ) : null}
+      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+        <IconButton className={styles.MobileIcon}>
+          <IconComponent />
+        </IconButton>
 
-          <div className={styles.TitleText}>Chats</div>
-        </div>
-      </>
-    );
-  }
+        <div className={styles.TitleText}>{title}</div>
+      </div>
+    </>
+  );
 
   // COLLECTION: display contact info & Assigned to
   let collectionStatus: any;
