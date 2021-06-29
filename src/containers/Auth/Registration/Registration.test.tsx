@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -39,12 +39,46 @@ describe('<Registration />', () => {
     const password = await container.querySelector('input[type="password"]');
     userEvent.type(password, 'pass123456');
 
-    // click on continue
-    const continueButton = screen.getByText('Continue');
-    userEvent.click(continueButton);
-
     // let's mock successful registration submission
-    // as we cannot register without opt in we will always get error response
+    const responseData = {
+      values: { username: 'Jane Doe', phone: '+919978776554', password: 'pass123456' },
+    };
+    axios.post.mockImplementationOnce(() => Promise.resolve(responseData));
+
+    // click on continue
+    await waitFor(() => {
+      const continueButton = screen.getByText('Continue');
+      //userEvent.click(continueButton);
+    });
+
+    // TODOS: we need to test successful response
+    // await waitFor(() => {
+    //   const authContainer = screen.getByTestId('AuthContainer');
+    //   expect(authContainer).toHaveTextContent(
+    //     'Please confirm the OTP received at your WhatsApp number.'
+    //   );
+    // });
+  });
+
+  it('should submit the form correctly and give error', async () => {
+    const { container } = render(wrapper);
+
+    const userName = await container.querySelector('input[name="userName"]');
+    userEvent.type(userName, 'Jane Doe');
+
+    const phone = await container.querySelector('input[type="tel"]');
+    userEvent.type(phone, '+919978776554');
+
+    const password = await container.querySelector('input[type="password"]');
+    userEvent.type(password, 'pass123456');
+
+    await waitFor(() => {
+      // click on continue
+      const continueButton = screen.getByText('Continue');
+      userEvent.click(continueButton);
+    });
+
+    // set the mock error case while registration
     const errorMessage = 'Cannot register 919978776554';
     axios.post.mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
