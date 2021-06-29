@@ -204,6 +204,7 @@
   color: #a4a7ab;
   transform: rotate(-40deg);
   margin-right: 4px;
+  cursor: pointer;
 }
 
 .Simulator .Screen .Controls input {
@@ -279,4 +280,18 @@
 
 .TemplateButtons {
   width: 200px;
+}
+
+.Dropdown {
+  position: absolute;
+  top: -168px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0px !important;
+  justify-content: left;
+}
+
+.Dropdown button {
+  padding: 4px;
+  justify-content: left;
 }

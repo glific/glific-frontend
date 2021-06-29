@@ -173,3 +173,43 @@ export const GUPSHUP_QUICK_REPLY =
 // Call to action button
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
 export const QUICK_REPLY = 'QUICK_REPLY';
+
+// Gupshup sample media
+export const SAMPLE_MEDIA_FOR_SIMULATOR = [
+  {
+    name: 'image',
+    id: 'IMAGE',
+    payload: {
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
+    },
+  },
+  {
+    name: 'audio',
+    id: 'AUDIO',
+    payload: {
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3',
+    },
+  },
+  {
+    name: 'video',
+    id: 'VIDEO',
+    payload: {
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/video/sample01.mp4',
+    },
+  },
+  {
+    name: 'file',
+    id: 'DOCUMENT',
+    payload: {
+      caption: 'sample pdf', // represents title of document
+      url: 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf',
+    },
+  },
+  {
+    name: 'sticker',
+    id: 'STICKER',
+    payload: {
+      url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
+    },
+  },
+];

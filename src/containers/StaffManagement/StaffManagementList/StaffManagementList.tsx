@@ -62,7 +62,6 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
 
   const getRestrictedAction = (param: any) => {
     const action: any = { chat: true, edit: true, delete: true };
-
     // we should disable edit actions for admin and managers in case of users with Glific admin role
     if (
       (getUserRole().includes('Admin') || getUserRole().includes('Manager')) &&
