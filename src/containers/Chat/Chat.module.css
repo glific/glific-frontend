@@ -25,7 +25,7 @@
     justify-content: center;
   }
   .Chat {
-    height: 88vh !important; 
+    height: calc(100vh - 46px) !important;
   }
   .ToolBar {
     padding: 24px 16px 0 16px !important;

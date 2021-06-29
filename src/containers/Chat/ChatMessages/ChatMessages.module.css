@@ -3,7 +3,7 @@
     display: none !important;
   }
   .ChatMessages {
-    height: 88vh !important;
+    height: calc(100vh - 46px) !important;
   }
 }
 
