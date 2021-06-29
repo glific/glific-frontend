@@ -1,4 +1,4 @@
-import { render, within, screen } from '@testing-library/react';
+import { render, within, screen, act } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
@@ -319,8 +319,18 @@ test('cancel after dialog box open', async () => {
   fireEvent.click(getByText('Cancel'));
 });
 
+// Need to first scroll up
+
 test('click on Jump to latest', async () => {
   const { getByTestId } = render(chatMessages);
+  const messageContainer: any = document.querySelector('.messageContainer');
+
+  await act(async () => {
+    await new Promise((r) => setTimeout(r, 1500));
+  });
+
+  fireEvent.scroll(messageContainer, { target: { scrollTop: 10 } });
+
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
   });
@@ -335,8 +345,9 @@ test('Contact: if not cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-  // need to check this test
+  
+  // need to check why we click this
+  
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
@@ -357,8 +368,16 @@ it('should have title as group name', async () => {
   });
 });
 
+// Need to scroll up first
+
 test('Collection: click on Jump to latest', async () => {
   const { getByTestId } = render(chatMessagesWithCollection);
+  const messageContainer: any = document.querySelector('.messageContainer');
+  await act(async () => {
+    await new Promise((r) => setTimeout(r, 1500));
+  });
+
+  fireEvent.scroll(messageContainer, { target: { scrollTop: 10 } });
 
   await waitFor(() => {
     fireEvent.click(getByTestId('jumpToLatest'));
@@ -372,10 +391,11 @@ test('Collection: if not cache', async () => {
     </MockedProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
-
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
+ // need to check why we click this
+  
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
 });
 
 test('Collection: if cache', async () => {
@@ -393,9 +413,12 @@ test('Collection: if cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('jumpToLatest'));
-  });
+
+  // need to check why we click this
+  
+  // await waitFor(() => {
+  //   fireEvent.click(getByTestId('jumpToLatest'));
+  // });
 });
 
 test('click on Clear conversation', async () => {

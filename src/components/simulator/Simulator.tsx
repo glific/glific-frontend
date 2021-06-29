@@ -290,7 +290,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
     (node: any) => {
       if (node) {
         const nodeCopy = node;
-        nodeCopy.scrollTop = node.scrollHeight;
+        setTimeout(() => {
+          nodeCopy.scrollTop = node.scrollHeight;
+        }, 100);
       }
     },
     [messages]
@@ -299,6 +301,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const handleAttachmentClick = (media: any) => {
     const { name: type, payload } = media;
     sendMediaMessage(type, payload);
+    setIsOpen(false);
   };
 
   const dropdown = (

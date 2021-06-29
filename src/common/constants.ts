@@ -180,7 +180,6 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     name: 'image',
     id: 'IMAGE',
     payload: {
-      caption: 'Sample image',
       url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
     },
   },
@@ -195,7 +194,6 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     name: 'video',
     id: 'VIDEO',
     payload: {
-      caption: 'Sample video',
       url: 'https://www.buildquickbots.com/whatsapp/media/sample/video/sample01.mp4',
     },
   },
@@ -203,7 +201,7 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     name: 'file',
     id: 'DOCUMENT',
     payload: {
-      caption: 'sample.pdf',
+      caption: 'sample pdf', // represents title of document
       url: 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf',
     },
   },
@@ -211,7 +209,6 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     name: 'sticker',
     id: 'STICKER',
     payload: {
-      caption: 'sample.pdf',
       url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
     },
   },
