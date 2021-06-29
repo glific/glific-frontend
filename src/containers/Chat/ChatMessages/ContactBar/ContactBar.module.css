@@ -211,7 +211,7 @@
 
   .Chat {
     display: flex !important;
-    padding: 12px 4px 12px 8px !important;
+    padding: 12px !important;
   }
 
   .ContactCollections {
@@ -222,5 +222,10 @@
     display: block;
     justify-content: space-between;
     width: 100%;
+  }
+
+  .MobileIcon {
+    background-color: #eaedec !important;
+    margin-right: 0px !important;
   }
 }

@@ -521,18 +521,18 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     const { location } = history;
 
     if (location.pathname.includes('collection')) {
-      return { title: 'Groups', icon: CollectionIcon };
+      return CollectionIcon;
     }
 
     if (location.pathname.includes('saved-searches')) {
-      return { title: 'Search', icon: SavedSearchIcon };
+      return SavedSearchIcon;
     }
 
-    return { title: 'Chats', icon: ChatIcon };
+    return ChatIcon;
   })();
 
   // CONTACT: display session timer & Assigned to
-  const { title, icon: IconComponent } = getTitleAndIconForSmallScreen;
+  const IconComponent = getTitleAndIconForSmallScreen;
   const sesssionAndCollectionAssignedTo = (
     <>
       {contactId ? (
@@ -559,8 +559,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
         <IconButton className={styles.MobileIcon}>
           <IconComponent />
         </IconButton>
-
-        <div className={styles.TitleText}>{title}</div>
       </div>
     </>
   );

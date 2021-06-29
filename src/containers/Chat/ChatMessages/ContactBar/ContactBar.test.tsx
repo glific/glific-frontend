@@ -46,7 +46,7 @@ const component = (
 );
 
 test('it should render the name correctly', async () => {
-  const { getByText } = render(component);
+  const { getByText, container } = render(component);
 
   const contactBarComponent = screen.getByTestId('beneficiaryName');
   expect(contactBarComponent).toBeInTheDocument();
@@ -120,8 +120,7 @@ describe('Menu test', () => {
     global.innerWidth = 500;
     // // Trigger the window resize event.
     global.dispatchEvent(new Event('resize'));
-
-    expect(screen.getByText('Chats')).toBeInTheDocument();
+    expect(screen.getByText('UnselectedDark.svg')).toBeInTheDocument();
   });
 
   test('clicking on clear chat button should open up a dialog box', async () => {
