@@ -49,9 +49,18 @@ export const FILTER_FLOW = gql`
 export const GET_FLOW_DETAILS = gql`
   query getFlowName($filter: FlowFilter!, $opts: Opts!) {
     flows(filter: $filter, opts: $opts) {
+      id
       isActive
       name
       keywords
+    }
+  }
+`;
+
+export const EXPORT_FLOW = gql`
+  query exportFlow($id: ID!) {
+    exportFlow(id: $id) {
+      exportData
     }
   }
 `;

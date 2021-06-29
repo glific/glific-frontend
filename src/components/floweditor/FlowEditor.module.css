@@ -89,3 +89,17 @@
   vertical-align: middle;
   height: 16px;
 }
+
+.ExportIcon {
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  margin-right: 15px;
+  align-items: center;
+  background-color: white;
+  height: 40px;
+  margin-left: 6px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #073f24;
+}
