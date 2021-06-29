@@ -16,8 +16,6 @@ export const getObject = (arr: any, data: any) => {
   return result;
 };
 
-export { getObject as default };
-
 export const parseText = (text: string) => {
   try {
     return JSON.parse(text);
@@ -69,4 +67,17 @@ export const addLogsMethod = (event: string, logData: any) => {
   setLogs(logData, 'info');
 };
 
+export const exportFlowMethod = async (exportData: any, flowName: string) => {
+  const blob = new Blob([exportData], { type: 'application/json' });
+  const href = await URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = href;
+  link.download = `${flowName}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 export { addLogsMethod as addLogs };
+
+export { getObject as default };

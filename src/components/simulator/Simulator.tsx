@@ -290,7 +290,9 @@ export const Simulator: React.FC<SimulatorProps> = ({
     (node: any) => {
       if (node) {
         const nodeCopy = node;
-        nodeCopy.scrollTop = node.scrollHeight;
+        setTimeout(() => {
+          nodeCopy.scrollTop = node.scrollHeight;
+        }, 100);
       }
     },
     [messages]
