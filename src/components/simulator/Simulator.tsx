@@ -301,6 +301,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const handleAttachmentClick = (media: any) => {
     const { name: type, payload } = media;
     sendMediaMessage(type, payload);
+    setIsOpen(false);
   };
 
   const dropdown = (

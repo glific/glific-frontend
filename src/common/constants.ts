@@ -201,6 +201,7 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     name: 'file',
     id: 'DOCUMENT',
     payload: {
+      caption: 'sample pdf', // represents title of document
       url: 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf',
     },
   },
