@@ -345,9 +345,9 @@ test('Contact: if not cache', async () => {
     </ApolloProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
-  
+
   // need to check why we click this
-  
+
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
@@ -391,8 +391,8 @@ test('Collection: if not cache', async () => {
     </MockedProvider>
   );
   const { getByTestId } = render(chatMessagesWithCollection);
- // need to check why we click this
-  
+  // need to check why we click this
+
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
@@ -415,7 +415,7 @@ test('Collection: if cache', async () => {
   const { getByTestId } = render(chatMessagesWithCollection);
 
   // need to check why we click this
-  
+
   // await waitFor(() => {
   //   fireEvent.click(getByTestId('jumpToLatest'));
   // });
@@ -423,9 +423,11 @@ test('Collection: if cache', async () => {
 
 test('click on Clear conversation', async () => {
   const chatMessages = (
-    <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
-    </ApolloProvider>
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <ChatMessages contactId="2" />
+      </ApolloProvider>
+    </MemoryRouter>
   );
   const { getByTestId } = render(chatMessages);
   await waitFor(() => {
@@ -473,9 +475,11 @@ test('Load more messages', async () => {
   });
 
   const chatMessages = (
-    <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
-    </ApolloProvider>
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <ChatMessages contactId="2" />
+      </ApolloProvider>
+    </MemoryRouter>
   );
 
   const { getByTestId } = render(chatMessages);
@@ -520,9 +524,11 @@ test('If search query gives error', async () => {
   });
 
   const chatMessages = (
-    <ApolloProvider client={client}>
-      <ChatMessages contactId="2" />
-    </ApolloProvider>
+    <MemoryRouter>
+      <ApolloProvider client={client}>
+        <ChatMessages contactId="2" />
+      </ApolloProvider>
+    </MemoryRouter>
   );
 
   render(chatMessages);

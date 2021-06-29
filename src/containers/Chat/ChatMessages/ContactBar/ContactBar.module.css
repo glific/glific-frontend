@@ -12,7 +12,6 @@
   align-items: flex-end;
 }
 
-
 .Chat {
   padding: 12px !important;
   padding-right: 40px !important;
@@ -212,6 +211,7 @@
 
   .Chat {
     display: flex !important;
+    padding: 12px 4px 12px 8px !important;
   }
 
   .ContactCollections {

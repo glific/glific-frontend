@@ -521,14 +521,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     const { location } = history;
 
     if (location.pathname.includes('collection')) {
-      return { title: 'Group', icon: CollectionIcon };
+      return { title: 'Groups', icon: CollectionIcon };
     }
 
     if (location.pathname.includes('saved-searches')) {
       return { title: 'Search', icon: SavedSearchIcon };
     }
 
-    return { title: 'Chat', icon: ChatIcon };
+    return { title: 'Chats', icon: ChatIcon };
   })();
 
   // CONTACT: display session timer & Assigned to
