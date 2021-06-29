@@ -48,9 +48,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
         headers,
       });
 
-      fields = fieldsData.data.results.map((i: any) => ({
-        key: contactFieldsprefix.concat(i.key),
-      }));
+      fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
 
       // get contact keys
       const contactData = await axios.get(`${glificBase}completion`, {
@@ -58,17 +56,25 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
       });
       const properties = contactData.data.types[5];
       contacts = properties.properties
-        .map((i: any) => ({ key: contactVariablesprefix.concat(i.key) }))
+        .map((i: any) => contactVariablesprefix.concat(i.key))
         .concat(fields)
         .slice(1);
+
       setContactVariables(contacts);
     };
 
     getVariableOptions();
   }, []);
 
+  const syncInitialValuesWithFormik = (val: any, index: number) => {
+    const initialStateValue = { ...initialValues };
+    initialStateValue[`variable${index}`] = val;
+    setInitialValues(initialStateValue);
+  };
+
   useEffect(() => {
     const isVariable = bodyText.match(pattern);
+
     if (isVariable) {
       const formFieldItem: any = [];
 
@@ -81,7 +87,10 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           optionLabel: 'key',
           multiple: false,
           freeSolo: true,
-          autoSelect: true,
+          selectTextAsOption: !!initialValues[`variable${index}`],
+          onInputChange: (event: any, newInputValue: any) => {
+            syncInitialValuesWithFormik(newInputValue, index);
+          },
           textFieldProps: {
             variant: 'outlined',
             label: `Variable ${index}`,
@@ -91,7 +100,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
 
       setFormFieldItems(formFieldItem);
     }
-  }, [bodyText, contactVariables]);
+  }, [bodyText, contactVariables, initialValues]);
 
   useEffect(() => {
     const initialValue: any = {};
@@ -103,7 +112,6 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
 
   const updateText = (variable: any) => {
     let body = bodyText;
-
     Object.keys(variable).forEach((element: string, index: number) => {
       body = body.replace(
         `{{${index + 1}}}`,

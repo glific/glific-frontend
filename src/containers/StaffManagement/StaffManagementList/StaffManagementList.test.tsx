@@ -1,24 +1,11 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { StaffManagementList } from './StaffManagementList';
-import { STAFF_MANAGEMENT_MOCKS } from '../StaffManagement.test.helper';
+import { FILTER_USER_MOCK, USER_COUNT_MOCK } from '../StaffManagement.test.helper';
 import { setUserSession } from '../../../services/AuthService';
 
-jest.mock('../../List/List', () => {
-  return {
-    List: (...props: any) => {
-      const { restrictedAction } = props[0];
-      return (
-        <div onClick={() => restrictedAction({ roles: ['Admin'] })} data-testid="staffList">
-          <span>Staff Management</span>
-        </div>
-      );
-    },
-  };
-});
-
-const mocks = STAFF_MANAGEMENT_MOCKS;
+const mocks = [USER_COUNT_MOCK, FILTER_USER_MOCK];
 
 const staffManagement = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -29,18 +16,17 @@ const staffManagement = (
 );
 
 test('StaffManagementList is rendered correctly', async () => {
-  const { getByText } = render(staffManagement);
+  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Manager'] }));
+  render(staffManagement);
 
-  await waitFor(() => {
-    expect(getByText('Staff Management')).toBeInTheDocument();
-  });
-});
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  const nameLabel = screen.getByText('NAME');
+  const phoneLabel = screen.getByText('PHONE NO');
+  const assignedToLabel = screen.getByText('ASSIGNED TO');
+  const actionLabel = screen.getByText('ACTIONS');
 
-test('check restricted action with manager role', async () => {
-  setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
-
-  const { getByTestId } = render(staffManagement);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('staffList'));
-  });
+  expect(nameLabel).toBeInTheDocument();
+  expect(phoneLabel).toBeInTheDocument();
+  expect(assignedToLabel).toBeInTheDocument();
+  expect(actionLabel).toBeInTheDocument();
 });
