@@ -34,7 +34,7 @@ span.emoji-mart-emoji {
   font-size: medium;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 768px) {
   .Editor {
     width: 100%;
     min-height: 40px;
