@@ -26,9 +26,12 @@ import { validateMedia } from '../../../common/utils';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
+const validateExample = (value: any) => value.indexOf('|') === -1;
+
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => original.getCurrentContent().getPlainText())
+    .test('Do not allow Pipe symbol', 'Symbol | is not allowed', validateExample)
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string()
@@ -538,7 +541,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [templateType]);
 
   const getTemplateAndButton = (text: string) => {
-    const areButtonsPresent = text.indexOf('|');
+    const exp = /(\|\s\[)|(\|\[)/;
+    const areButtonsPresent = text.search(exp);
 
     let message: any = text;
     let buttons: any = null;
@@ -550,6 +554,14 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
     return { message, buttons };
   };
+
+  // Removing buttons when checkbox is checked or unchecked
+  useEffect(() => {
+    if (getExample) {
+      const { message }: any = getTemplateAndButton(convertToWhatsApp(getExample));
+      onExampleChange(message || '');
+    }
+  }, [isAddButtonChecked]);
 
   // Converting buttons to template and vice-versa to show realtime update on simulator
   useEffect(() => {
