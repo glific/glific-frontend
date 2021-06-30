@@ -1,4 +1,4 @@
-import { render, wait, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
+import { render, within, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -14,7 +14,7 @@ setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
 describe('SpeedSend', () => {
   test('cancel button should redirect to SpeedSendlist page', async () => {
-    const { container, getByText, unmount } = render(
+    const { container, getByText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <Switch>
@@ -24,6 +24,7 @@ describe('SpeedSend', () => {
         </Router>
       </MockedProvider>
     );
+
     await waitFor(() => {
       const { queryByText } = within(container.querySelector('form'));
       const button = queryByText('Cancel');
@@ -31,13 +32,13 @@ describe('SpeedSend', () => {
     });
 
     expect(getByText('Loading...')).toBeInTheDocument();
-    await wait();
-    expect(getByText('Speed sends')).toBeInTheDocument();
-    unmount();
+    await waitFor(() => {
+      expect(getByText('Speed sends')).toBeInTheDocument();
+    });
   });
 
   test('save button should add a new template', async () => {
-    const { container, getAllByTestId } = render(
+    const { container } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <Router>
           <SpeedSend match={{ params: { id: null } }} />
@@ -48,20 +49,22 @@ describe('SpeedSend', () => {
       </MockedProvider>
     );
 
-    await wait();
-    fireEvent.change(container.querySelector('input[name="label"]'), {
-      target: { value: 'new Template' },
+    await waitFor(() => {
+      fireEvent.change(container.querySelector('input[name="label"]'), {
+        target: { value: 'new Template' },
+      });
     });
 
     const { queryByText } = within(container.querySelector('form'));
-    const button = queryByText('Save');
-    fireEvent.click(button);
-    await wait();
-    await wait();
+    await waitFor(() => {
+      const button = queryByText('Save');
+      fireEvent.click(button);
+    });
 
-    expect(queryByText('Message is required.')).toBeInTheDocument();
-
-    // const { getByText } = within(container.querySelector('tbody'));
-    // expect(getByText('Good message')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(queryByText('Message is required.')).toBeInTheDocument();
+      const { getByText } = within(container.querySelector('tbody'));
+      expect(getByText('Good message')).toBeInTheDocument();
+    });
   });
 });
