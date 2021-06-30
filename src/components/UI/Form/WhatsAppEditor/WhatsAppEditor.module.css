@@ -33,3 +33,16 @@ span.emoji-mart-emoji {
 .emoji-mart-emoji {
   font-size: medium;
 }
+
+@media only screen and (max-width: 1024px) {
+  .Editor {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .EmojiButton {
+    position: absolute;
+    bottom: -8%;
+    right: 20%;
+  }
+}

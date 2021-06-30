@@ -125,12 +125,6 @@
   z-index: 100;
 }
 
-@media only screen and (max-width: 768px) {
-  .QuickSend {
-    font-size: 12px;
-  }
-}
-
 .QuickSendSelected {
   background-color: #119656;
 }
@@ -242,4 +236,53 @@
 
 svg.SendIcon {
   margin-top: 2px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .QuickSend {
+    font-size: 12px;
+  }
+
+  .CrossIcon {
+    position: absolute !important;
+    bottom: -5%;
+    right: 60%;
+  }
+
+  .CrossIconWithVariable {
+    position: absolute !important;
+    bottom: -5%;
+    right: 60%;
+  }
+
+  .VariableIcon {
+    position: absolute !important;
+    bottom: -5%;
+    right: 50%;
+  }
+
+  .AttachmentIcon {
+    position: absolute !important;
+    bottom: -5%;
+    right: 30%;
+  }
+
+  .SendButtonContainer {
+    position: absolute;
+    bottom: 0px;
+    right: 10%;
+  }
+
+  .ChatInputElements {
+    display: flex;
+    height: 64px;
+    width: 100%;
+    padding: 10px 10px 24px 10px;
+    background-color: #ffffff;
+    justify-content: space-between;
+    height: fit-content;
+    max-height: 200px;
+    overflow-y: scroll;
+    padding-right: 5px;
+  }
 }

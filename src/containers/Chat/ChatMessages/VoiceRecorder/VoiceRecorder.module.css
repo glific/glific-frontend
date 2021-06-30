@@ -36,3 +36,11 @@
   height: 24px;
   width: 24px;
 }
+
+@media only screen and (max-width: 1024px) {
+  .RecorderIcon {
+    position: absolute !important;
+    bottom: -5%;
+    right: 40%;
+  }
+}
