@@ -26,12 +26,9 @@ import { validateMedia } from '../../../common/utils';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
-const validateExample = (value: any) => value.indexOf('|') === -1;
-
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => original.getCurrentContent().getPlainText())
-    .test('Do not allow Pipe symbol', 'Symbol | is not allowed', validateExample)
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string()
