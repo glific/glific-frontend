@@ -27,8 +27,7 @@ describe('<Calendar />', () => {
 
   it('test empty date event', async () => {
     render(wrapper);
-    const input = await screen.getByRole('textbox');
-    UserEvent.type(input, '');
+    const input = screen.getByRole('textbox');
     expect(input).toHaveValue('');
   });
 

@@ -42,7 +42,6 @@ export const Calendar: React.SFC<CalendarProps> = ({
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid className={styles.Calendar}>
         <KeyboardDatePicker
-          error={hasError ? errorText : ''}
           autoOk
           variant={variant}
           inputVariant={inputVariant}
