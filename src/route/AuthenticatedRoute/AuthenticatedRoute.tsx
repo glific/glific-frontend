@@ -60,6 +60,12 @@ const ConsultingHourList = lazy(
 const ContactFieldList = lazy(
   () => import('../../containers/ContactField/ContactFieldList/ContactFieldList')
 );
+const InteractiveMessageList = lazy(
+  () => import('../../containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList')
+);
+const InteractiveMessage = lazy(
+  () => import('../../containers/InteractiveMessage/InteractiveMessage')
+);
 
 const routeStaff = (
   <Switch>
@@ -140,6 +146,8 @@ const routeAdmin = (
     <Route path="/blocked-contacts" exact component={BlockContactList} />
     <Route path="/webhook-logs" exact component={WebhookLogsList} />
     <Route path="/notifications" exact component={NotificationList} />
+    <Route path="/interactive-message" exact component={InteractiveMessageList} />
+    <Route path="/interactive-message/add" exact component={InteractiveMessage} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
     <Route
