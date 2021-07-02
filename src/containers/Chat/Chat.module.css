@@ -19,6 +19,18 @@
     display: none !important;
     width: 100% !important;
   }
+  .TabContainer {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center;
+  }
+  .Chat {
+    height: calc(100vh - 46px) !important;
+  }
+  .ToolBar {
+    padding: 24px 16px 0 16px !important;
+    width: 100% !important;
+  }
 }
 
 .NoConversations {
@@ -34,11 +46,6 @@
 
 .Icon {
   margin: 0px 8px 8px 8px;
-}
-
-.ToolBar {
-  padding: 24px 16px 0 16px !important;
-  width: 338px;
 }
 
 .Title {
@@ -60,6 +67,10 @@
   color: #073f24 !important;
 }
 
+.ToolBar {
+  padding: 24px 16px 0 16px !important;
+  width: 338px;
+}
 .TabContainer {
   display: -webkit-inline-box;
   width: 345px;
