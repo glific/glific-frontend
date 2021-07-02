@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { Calendar } from './Calendar';
@@ -8,23 +7,27 @@ describe('<Calendar />', () => {
     name: 'dateFrom',
     type: 'date',
     placeholder: 'Date from',
-
     label: 'Date range',
     field: { name: 'example', value: null },
-    form: { dirty: false, touched: false, errors: false, setFieldValue: function () {} },
+    form: {
+      dirty: false,
+      touched: false,
+      errors: {},
+      setFieldValue: function () {},
+    },
   };
 
   const wrapper = <Calendar {...props} />;
 
   it('renders <Calendar /> component', async () => {
-    const { findByTestId } = render(wrapper);
-    const authContainer = await findByTestId('date-picker-inline');
+    render(wrapper);
+    const authContainer = await screen.getByTestId('date-picker-inline');
     expect(authContainer).toHaveTextContent('Date from');
   });
 
   it('test empty date event', async () => {
     render(wrapper);
-    const input = screen.getByRole('textbox');
+    const input = await screen.getByRole('textbox');
     UserEvent.type(input, '');
     expect(input).toHaveValue('');
   });
