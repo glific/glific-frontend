@@ -21,7 +21,7 @@ describe('<Calendar />', () => {
 
   it('renders <Calendar /> component', async () => {
     render(wrapper);
-    const authContainer = await screen.getByTestId('date-picker-inline');
+    const authContainer = screen.getByTestId('date-picker-inline');
     expect(authContainer).toHaveTextContent('Date from');
   });
 

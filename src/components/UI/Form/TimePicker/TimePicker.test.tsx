@@ -19,8 +19,8 @@ describe('<TimePicker />', () => {
   const wrapper = <TimePicker {...props} />;
 
   it('renders <TimePicker /> component', async () => {
-    const { findByTestId } = render(wrapper);
-    const authContainer = await findByTestId('time-picker');
+    render(wrapper);
+    const authContainer = screen.getByTestId('time-picker');
     expect(authContainer).toHaveTextContent('TimePicker');
   });
 });
@@ -33,7 +33,6 @@ describe('<TimePicker />', () => {
   it('test empty time event', async () => {
     render(wrapper);
     const input = screen.getByRole('textbox');
-    UserEvent.type(input, '');
     expect(input).toHaveValue('');
   });
 

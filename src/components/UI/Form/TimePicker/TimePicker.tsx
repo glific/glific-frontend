@@ -43,7 +43,6 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
       <Grid className={styles.TimePicker}>
         <KeyboardTimePicker
           autoOk
-          error={hasError ? errorText : ''}
           variant={variant}
           inputVariant={inputVariant}
           label={placeholder}
