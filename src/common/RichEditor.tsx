@@ -104,11 +104,20 @@ export const WhatsAppToJsx = (text: any) => {
     if (allLinks.length > 0) {
       allLinks.forEach((link) => {
         // add anchor tag for each link
-        modifiedText = reactStringReplace(modifiedText, link[0], (match: any) => (
-          <a href={match} data-testid="messageLink" target="_blank" rel="noopener noreferrer">
-            {match}
-          </a>
-        ));
+        modifiedText = reactStringReplace(modifiedText, link[0], (match: any, index: number) => {
+          const key = `messageLink-${index}`;
+          return (
+            <a
+              href={match}
+              data-testid="messageLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              key={key}
+            >
+              {match}
+            </a>
+          );
+        });
       });
     }
   }

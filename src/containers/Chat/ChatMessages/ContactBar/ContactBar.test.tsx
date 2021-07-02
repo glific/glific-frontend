@@ -130,9 +130,9 @@ describe('Menu test', () => {
       expect(
         screen.getByText('Are you sure you want to clear all conversation for this contact?')
       ).toBeInTheDocument();
+      // click on cancel
+      fireEvent.click(screen.getByTestId('ok-button'));
     });
-    // click on cancel
-    fireEvent.click(screen.getByTestId('ok-button'));
   });
 
   test('close clear conversation popup on click of cancel', async () => {
@@ -178,7 +178,7 @@ describe('Menu test', () => {
     </MockedProvider>
   );
 
-  test('Select flow should be blocked when Bsp Status is none', async () => {
+  test('select flow should be blocked when Bsp Status is none', async () => {
     cleanup();
     const { getByTestId } = render(componentWithBspStatusNone);
     await waitFor(() => {
