@@ -1,0 +1,59 @@
+.ListReplyContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.GlobalButton {
+  width: 100%;
+}
+.GlobalButton > span {
+  justify-content: center;
+}
+
+.GlobalButtonText {
+}
+
+.List {
+  height: calc(100% - 60px);
+  overflow-y: auto;
+}
+
+.ListTitle {
+  background: gainsboro;
+  padding: 4px 0px;
+}
+
+.ListItem {
+  width: 100%;
+}
+
+.ListItem > span {
+  justify-content: space-between;
+}
+
+.Drawer {
+  background: white;
+  z-index: 100;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding: 8px;
+  height: 360px;
+}
+
+.DrawerHeading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.SendButton {
+  padding: 4px 0px;
+}
+
+.SendButton > button {
+  width: 100%;
+}
+.SendButton > span {
+  justify-content: center;
+}

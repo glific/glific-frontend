@@ -21,6 +21,7 @@ import { WhatsAppToJsx, WhatsAppTemplateButton } from '../../../../common/RichEd
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from '../../../../common/utils';
+import { ListReplyTemplate, ChatTemplate } from '../ListReplyTemplate/ListReplyTemplate';
 
 export interface ChatMessageProps {
   id: number;
@@ -46,6 +47,7 @@ export interface ChatMessageProps {
   errors: any;
   contextMessage: any;
   jumpToMessage: any;
+  interactiveContent: string;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -77,6 +79,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     errors,
     contextMessage,
     jumpToMessage,
+    interactiveContent,
   } = props;
 
   useEffect(() => {
@@ -258,6 +261,9 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
+  const content: any = JSON.parse(interactiveContent);
+  const isInteractiveContentPresent: Boolean = !!Object.entries(content).length;
+
   return (
     <div
       className={additionalClass}
@@ -304,13 +310,17 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
             <div>
               <div className={styles.Content} data-testid="content">
-                <ChatMessageType
-                  type={type}
-                  media={media}
-                  body={bodyText}
-                  insertedAt={insertedAt}
-                  location={location}
-                />
+                {isInteractiveContentPresent && !isSender ? (
+                  <ListReplyTemplate {...content} disabled component={ChatTemplate} />
+                ) : (
+                  <ChatMessageType
+                    type={type}
+                    media={media}
+                    body={bodyText}
+                    insertedAt={insertedAt}
+                    location={location}
+                  />
+                )}
               </div>
             </div>
           </Tooltip>
