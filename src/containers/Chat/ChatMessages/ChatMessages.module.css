@@ -2,13 +2,16 @@
   .JumpToLatest {
     display: none !important;
   }
+  .ChatMessages {
+    height: calc(100vh - 46px) !important;
+  }
 }
 
 .ChatMessages {
   display: flex;
   padding-left: 0px !important;
   flex-flow: column;
-  height: 88vh;
+  height: 100vh;
   background-color: #f9f7f4;
   position: relative;
 }
