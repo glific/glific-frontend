@@ -75,7 +75,13 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
 
   const getTemplate = (text: string) => {
     const { body } = sampleMessages;
-    const areButtonsPresent = body.indexOf('|');
+    /**
+     * Regular expression to check if message contains given pattern
+     * If pattern is present search will return first index of given pattern
+     * otherwise it will return -1
+     */
+    const exp = /(\|\s\[)|(\|\[)/;
+    const areButtonsPresent = body.search(exp);
     if (areButtonsPresent > -1) {
       const buttons = body.substr(areButtonsPresent);
       return text + buttons;

@@ -139,20 +139,21 @@ export const WhatsAppTemplateButton = (text: string) => {
 
   // Returning early if text is null
   if (!text) return result;
-  // Checking if template consists of buttons or not because they are separated with `|`
-  const isTemplateButtonsPresent = text.indexOf('|');
+  /**
+   * Regular expression to check if there is buttons present in message
+   * `search` will return first index of given pattern or it will return -1 if not found
+   */
+  const exp = /(\|\s\[)|(\|\[)/;
+  const isTemplateButtonsPresent = text.search(exp);
+
   if (isTemplateButtonsPresent > 0) {
-    const templateStr = text.split('|');
-    const templateButtons = templateStr.map((val: string, index: number) => {
-      /**
-       * templateStr 0th element is template message
-       * otherwise slice from 1 to last value
-       * For removing `[]` brackets
-       */
-      if (index === 0) return val.trim();
-      return val.trim().slice(1, -1);
-    });
-    const [messageBody, ...buttons] = templateButtons;
+    const messageBody = text.substr(0, isTemplateButtonsPresent);
+    const buttonsStr = text.substr(isTemplateButtonsPresent);
+    const templateStr = buttonsStr.split('|');
+
+    const buttons = templateStr
+      .map((val: string) => val && val.trim().slice(1, -1))
+      .filter((a) => a);
 
     // Checking if template type is call to action or quick reply
 
