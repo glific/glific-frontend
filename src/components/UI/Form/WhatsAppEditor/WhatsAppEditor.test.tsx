@@ -1,4 +1,3 @@
-import React from 'react';
 import WhatsAppEditor from './WhatsAppEditor';
 import { render, fireEvent } from '@testing-library/react';
 import { EditorState } from 'draft-js';
