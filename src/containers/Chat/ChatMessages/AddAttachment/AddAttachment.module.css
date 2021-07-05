@@ -4,7 +4,7 @@
   flex-wrap: wrap;
   min-height: 80px;
   margin-bottom: 20px;
-  width: 410px;
+  min-width: 280px;
 }
 
 .DialogContent > div:nth-child(1) {

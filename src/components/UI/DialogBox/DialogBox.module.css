@@ -52,8 +52,10 @@
 
 .DialogContentCenter {
   text-align: center;
+  word-break: break-word;
 }
 
 .DialogContentLeft {
   text-align: left;
+  word-break: break-word;
 }
