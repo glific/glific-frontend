@@ -36,9 +36,9 @@ export interface ListProps {
   listItemName: string;
   dialogMessage: string | any;
   pageLink: string;
-  columns: any;
+  columns: Function;
   listIcon: any;
-  columnStyles: any;
+  columnStyles: Array<any>;
   title: string;
   button?: {
     show: boolean;
@@ -47,11 +47,11 @@ export interface ListProps {
   };
   showCheckbox?: boolean;
   searchParameter?: string;
-  filters?: any;
+  filters?: Object | null;
   filterList?: any;
   listOrder?: 'asc' | 'desc';
   displayListType?: string;
-  cardLink?: any;
+  cardLink?: Object | null;
   editSupport?: boolean;
   additionalAction?: Array<{
     icon: any;
@@ -68,12 +68,15 @@ export interface ListProps {
   };
   refetchQueries?: any;
   dialogTitle?: string;
-  backLinkButton?: any;
+  backLinkButton?: {
+    text: string;
+    link: string;
+  };
   restrictedAction?: any;
-  collapseOpen?: any;
-  collapseRow?: any;
+  collapseOpen?: boolean;
+  collapseRow?: string;
   defaultSortBy?: string | null;
-  removeSortBy?: any;
+  removeSortBy?: Array<any> | null;
   noItemText?: string | null;
 }
 
@@ -116,13 +119,12 @@ export const List: React.SFC<ListProps> = ({
   refetchQueries,
   backLinkButton,
   restrictedAction,
-  collapseOpen,
-  collapseRow,
+  collapseOpen = false,
+  collapseRow = undefined,
   defaultSortBy,
   noItemText = null,
 }: ListProps) => {
   const client = useApolloClient();
-
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
   const [deleteItemName, setDeleteItemName] = useState<string>('');
@@ -131,7 +133,6 @@ export const List: React.SFC<ListProps> = ({
 
   // check if the user has access to manage collections
   const userRolePermissions = getUserRolePermissions();
-
   const capitalListItemName = listItemName
     ? listItemName[0].toUpperCase() + listItemName.slice(1)
     : '';
@@ -520,7 +521,6 @@ export const List: React.SFC<ListProps> = ({
   if (countData) {
     itemCount = countData[`count${listItem[0].toUpperCase()}${listItem.slice(1)}`];
   }
-
   let displayList;
   if (displayListType === 'list') {
     displayList = (
@@ -564,6 +564,7 @@ export const List: React.SFC<ListProps> = ({
       </>
     );
   }
+
   const backLink = backLinkButton ? (
     <div className={styles.BackLink}>
       <Link to={backLinkButton.link}>
