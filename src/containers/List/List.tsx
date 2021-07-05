@@ -37,7 +37,7 @@ export interface ListProps {
   dialogMessage: string | any;
   pageLink: string;
   columns: Function;
-  listIcon: any;
+  listIcon: Object;
   columnStyles: Array<any>;
   title: string;
   button?: {

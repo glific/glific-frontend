@@ -29,7 +29,7 @@ export interface ProfileProps {
   additionalField?: any;
   additionalProfileStates?: any;
   additionalState?: any;
-  additionalQuery?: any;
+  additionalQuery?: Function;
   afterDelete?: any;
   removePhoneField?: boolean;
 }
