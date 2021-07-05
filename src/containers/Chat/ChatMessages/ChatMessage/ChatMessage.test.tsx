@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, within, fireEvent, waitFor, screen } from '@testing-library/react';
 import moment from 'moment';
 
@@ -301,5 +300,75 @@ describe('<ChatMessage />', () => {
     await waitFor(() => {
       fireEvent.mouseDown(messageMenu);
     });
+  });
+
+  const quickReplyTemplate = {
+    type: 'quick_reply',
+    content: {
+      type: 'image',
+      url: 'https://picsum.photos/200/300',
+      caption: 'body text',
+    },
+    options: [
+      {
+        type: 'text',
+        title: 'First',
+      },
+      {
+        type: 'text',
+        title: 'Second',
+      },
+      {
+        type: 'text',
+        title: 'Third',
+      },
+    ],
+  };
+
+  const listTemplate = {
+    type: 'list',
+    title: 'title text',
+    body: 'body text',
+    globalButtons: [
+      {
+        type: 'text',
+        title: 'button text',
+      },
+    ],
+    items: [
+      {
+        title: 'first Section',
+        subtitle: 'first Subtitle',
+        options: [
+          {
+            type: 'text',
+            title: 'section 1 row 1',
+            description: 'first row of first section desctiption',
+          },
+        ],
+      },
+    ],
+  };
+
+  test('it should render with quick reply interactive template', async () => {
+    receivedProps.interactiveContent = JSON.stringify(quickReplyTemplate);
+    receivedProps.type = 'QUICK_REPLY';
+
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...receivedProps} />
+      </MockedProvider>
+    );
+  });
+
+  test('it should render with list interactive template', async () => {
+    receivedProps.interactiveContent = JSON.stringify(listTemplate);
+    receivedProps.type = 'LIST';
+
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...receivedProps} />
+      </MockedProvider>
+    );
   });
 });

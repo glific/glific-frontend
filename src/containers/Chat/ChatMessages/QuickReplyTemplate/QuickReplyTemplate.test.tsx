@@ -22,29 +22,43 @@ const content = {
   caption: 'body text',
 };
 
-const props = {
+const props: any = {
   type: 'quick_reply',
   content,
   options,
   onQuickReplyClick: jest.fn(),
-  isSimulator: false,
 };
 
-test('it renders QuickReplyTemplate on chat screen', async () => {
+test('it renders QuickReplyTemplate on simulator with image', async () => {
+  props.isSimulator = true;
   render(<QuickReplyTemplate {...props} />);
+
   const button = screen.getByRole('button', { name: 'First' });
   expect(button).toBeInTheDocument();
   fireEvent.click(button);
 
   await waitFor(() => {});
+
+  const mockBtnCallback = props.onQuickReplyClick;
+  expect(mockBtnCallback).toBeCalledTimes(1);
 });
 
-test('it renders QuickReplyTemplate on simulator', async () => {
+test('it renders QuickReplyTemplate on chat screen', async () => {
+  props.disabled = true;
+  render(<QuickReplyTemplate {...props} />);
+});
+
+const textContent = {
+  type: 'text',
+  caption: 'body text',
+};
+
+test('it renders QuickReplyTemplate on simulator with text', async () => {
+  props.content = textContent;
+  props.isSimulator = true;
   render(<QuickReplyTemplate {...props} />);
 
   const button = screen.getByRole('button', { name: 'First' });
   expect(button).toBeInTheDocument();
   fireEvent.click(button);
-
-  await waitFor(() => {});
 });
