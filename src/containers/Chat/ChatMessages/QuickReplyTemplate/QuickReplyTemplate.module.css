@@ -1,0 +1,27 @@
+.ButtonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ButtonItem {
+  margin: 4px 0px;
+}
+
+.ButtonItem > button {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.ChatMessageButton {
+  background: #eaedec !important;
+  color: #119656 !important;
+  border-radius: 12px;
+  padding: 11px 16px;
+}
+
+.SimulatorButton {
+  background: #eaedec !important;
+  color: #1690cf !important;
+  padding: 11px 16px;
+}

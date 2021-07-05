@@ -14,7 +14,12 @@ import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/D
 import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
 import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
 import { TemplateButtons } from '../TemplateButtons/TemplateButtons';
-import { DATE_FORMAT, TIME_FORMAT } from '../../../../common/constants';
+import {
+  DATE_FORMAT,
+  TIME_FORMAT,
+  INTERACTIVE_LIST,
+  INTERACTIVE_QUICK_REPLY,
+} from '../../../../common/constants';
 import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
 import { setNotification } from '../../../../common/notification';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from '../../../../common/RichEditor';
@@ -22,6 +27,7 @@ import { ChatMessageType } from './ChatMessageType/ChatMessageType';
 import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from '../../../../common/utils';
 import { ListReplyTemplate, ChatTemplate } from '../ListReplyTemplate/ListReplyTemplate';
+import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
 
 export interface ChatMessageProps {
   id: number;
@@ -264,6 +270,20 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const content: any = JSON.parse(interactiveContent);
   const isInteractiveContentPresent: Boolean = !!Object.entries(content).length;
 
+  const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
+  const stickerClasses = type === 'STICKER' ? styles.StickerBackground : '';
+
+  const chatMessageClasses = [styles.ChatMessage, mineColor, errorClasses, stickerClasses];
+
+  let template = null;
+  if (type === INTERACTIVE_LIST) {
+    template = <ListReplyTemplate {...content} disabled component={ChatTemplate} />;
+  }
+
+  if (type === INTERACTIVE_QUICK_REPLY) {
+    template = <QuickReplyTemplate {...content} disabled />;
+  }
+
   return (
     <div
       className={additionalClass}
@@ -302,16 +322,12 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       <div className={styles.Inline}>
         {iconLeft ? icon : null}
         {ErrorIcon}
-        <div
-          className={`${styles.ChatMessage} ${mineColor} ${
-            messageErrorStatus ? styles.ErrorContent : ''
-          } ${type === 'STICKER' ? styles.StickerBackground : ''}`}
-        >
+        <div className={chatMessageClasses.join(' ')}>
           <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
             <div>
               <div className={styles.Content} data-testid="content">
                 {isInteractiveContentPresent && !isSender ? (
-                  <ListReplyTemplate {...content} disabled component={ChatTemplate} />
+                  template
                 ) : (
                   <ChatMessageType
                     type={type}

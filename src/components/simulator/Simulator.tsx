@@ -26,6 +26,8 @@ import {
   SEARCH_QUERY_VARIABLES,
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
+  INTERACTIVE_LIST,
+  INTERACTIVE_QUICK_REPLY,
 } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -42,6 +44,8 @@ import {
   SimulatorTemplate,
   ListReplyTemplateDrawer,
 } from '../../containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
+
+import { QuickReplyTemplate } from '../../containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -153,8 +157,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   ) => {
     const { body, buttons } = WhatsAppTemplateButton(text);
 
-    const content = JSON.parse(interactiveContent);
-    const isInteractiveContentPresent = !!Object.entries(content).length;
+    // Checking if interactive content is present then only parse to JSON
+    const content = interactiveContent && JSON.parse(interactiveContent);
+    let isInteractiveContentPresent = false;
+    let template = {};
 
     const TimeComponent = () => (
       <>
@@ -165,15 +171,35 @@ export const Simulator: React.FC<SimulatorProps> = ({
       </>
     );
 
+    if (content) {
+      isInteractiveContentPresent = !!Object.entries(content).length;
+
+      if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
+        template = (
+          <ListReplyTemplate
+            {...content}
+            component={SimulatorTemplate}
+            onGlobalButtonClick={handleOpenListReplyDrawer}
+          />
+        );
+      }
+
+      if (isInteractiveContentPresent && type === INTERACTIVE_QUICK_REPLY) {
+        template = (
+          <QuickReplyTemplate
+            {...content}
+            isSimulator
+            onQuickReplyClick={(value: string) => setReply(value)}
+          />
+        );
+      }
+    }
+
     return (
       <div key={index}>
         <div className={getStyleForDirection(direction)}>
           {isInteractiveContentPresent && direction !== 'send' ? (
-            <ListReplyTemplate
-              {...content}
-              component={SimulatorTemplate}
-              onGlobalButtonClick={handleOpenListReplyDrawer}
-            />
+            template
           ) : (
             <ChatMessageType
               type={type}
@@ -369,6 +395,11 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setSelectedListTemplate(null);
   };
 
+  const handleListDrawerItemClick = (text: string) => {
+    sendMessage(text);
+    handleListReplyDrawerClose();
+  };
+
   const dropdown = (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div className={styles.Dropdown}>
@@ -409,6 +440,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
+              {isDrawerOpen ? <div className={styles.BackgroundTint} /> : null}
               <div className={styles.Controls}>
                 <div>
                   <InsertEmoticonIcon className={styles.Icon} />
@@ -448,7 +480,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 <ListReplyTemplateDrawer
                   drawerTitle="Items"
                   items={selectedListTemplate}
-                  onItemClick={(item: any) => sendMessage(item)}
+                  onItemClick={handleListDrawerItemClick}
                   onDrawerClose={handleListReplyDrawerClose}
                 />
               ) : null}

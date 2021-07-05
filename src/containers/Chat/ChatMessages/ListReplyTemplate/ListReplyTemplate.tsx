@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Radio } from '@material-ui/core';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import MenuIcon from '@material-ui/icons/Menu';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import styles from './ListReplyTemplate.module.css';
@@ -35,7 +36,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
   const { title, body, globalButtonTitle, items, onGlobalButtonClick, disabled } = props;
 
   return (
-    <div className={styles.ChatTemplate}>
+    <div>
       <div className={styles.ChatTemplateBody}>
         <p>{title}</p>
         <p>{body}</p>
@@ -45,7 +46,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
           variant="contained"
           color="default"
           disabled={disabled}
-          startIcon={<FormatListBulletedIcon />}
+          startIcon={<MenuIcon />}
           onClick={() => onGlobalButtonClick(items)}
           className={styles.GlobalButton}
         >
@@ -69,7 +70,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
         disabled={disabled}
         startIcon={<FormatListBulletedIcon />}
         onClick={() => onGlobalButtonClick(items)}
-        className={styles.GlobalButton}
+        className={styles.SimulatorButton}
       >
         {globalButtonTitle}
       </Button>
@@ -86,38 +87,32 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
   };
 
   const list = items.map((item: any) => {
-    const { title, options } = item;
-    return (
-      <div key={title}>
-        <div className={styles.ListTitle}>{title}</div>
-        {/* Options */}
+    const { options } = item;
+    return options.map((option: any) => (
+      <Button
+        key={option.title}
+        className={styles.ListItem}
+        onClick={() => setCheckedItem(option.title)}
+      >
+        <div>{option.title}</div>
         <div>
-          {options.map((option: any) => (
-            <Button
-              key={option.title}
-              className={styles.ListItem}
-              onClick={() => setCheckedItem(option.title)}
-            >
-              <div>{option.title}</div>
-              <div>
-                <Radio
-                  value={option.title}
-                  name="radio-list-item"
-                  checked={option.title === checkedItem}
-                />
-              </div>
-            </Button>
-          ))}
+          <Radio
+            value={option.title}
+            name="radio-list-item"
+            size="small"
+            checked={option.title === checkedItem}
+            color="primary"
+          />
         </div>
-      </div>
-    );
+      </Button>
+    ));
   });
 
   return (
     <div className={styles.Drawer}>
       <div className={styles.DrawerHeading}>
-        {drawerTitle}
-        <ClearIcon onClick={onDrawerClose} />
+        <h3>{drawerTitle}</h3>
+        <ClearIcon onClick={onDrawerClose} className={styles.DrawerCloseIcon} />
       </div>
       <div className={styles.List}>{list}</div>
       <div className={styles.SendButton}>
@@ -136,7 +131,6 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
 
 export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
   const { globalButtons, component: TemplateComponent, ...rest } = props;
-
   const globalButtonTitle = globalButtons?.length ? globalButtons[0].title : '';
 
   return <TemplateComponent globalButtonTitle={globalButtonTitle} {...rest} />;
