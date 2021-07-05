@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import {
   RadioGroup,
@@ -9,19 +10,19 @@ import {
 } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
-import styles from './TemplateOptions.module.css';
-import { Button } from '../../components/UI/Form/Button/Button';
-import Tooltip from '../../components/UI/Tooltip/Tooltip';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
-import { ReactComponent as InfoIcon } from '../../assets/images/icons/Info.svg';
+import styles from './InteractiveOptions.module.css';
+import { Button } from '../../../components/UI/Form/Button/Button';
+import Tooltip from '../../../components/UI/Tooltip/Tooltip';
+import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
 import {
   GUPSHUP_CALL_TO_ACTION,
   GUPSHUP_QUICK_REPLY,
   CALL_TO_ACTION,
   QUICK_REPLY,
-} from '../../common/constants';
+} from '../../../common/constants';
 
-export interface TemplateOptionsProps {
+export interface InteractiveOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
   inputFields: Array<any>;
@@ -32,7 +33,7 @@ export interface TemplateOptionsProps {
   onTemplateTypeChange: any;
   disabled: any;
 }
-export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
+export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   isAddButtonChecked,
   templateType,
   inputFields,
@@ -43,7 +44,6 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   onInputChange,
   disabled = false,
 }) => {
-  console.log(values);
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
   const buttonTitles: any = {
@@ -226,6 +226,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
     return template;
   };
 
+  console.log(values);
   const radioTemplateType = (
     <div>
       <RadioGroup
@@ -262,11 +263,11 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       {templateType ? (
         <FieldArray
           name="templateButtons"
-          render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) =>
-              getButtons(row, index, arrayHelpers)
-            )
-          }
+          // render={(arrayHelpers) =>
+          //   values.templateButtons.map((row: any, index: any) =>
+          //     getButtons(row, index, arrayHelpers)
+          //   )
+          // }
         />
       ) : null}
     </div>

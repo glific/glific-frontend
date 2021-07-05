@@ -13,6 +13,7 @@ import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW } from '../../graphql/mutations/F
 import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW } from '../../graphql/queries/Flow';
 import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
+import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 
 export interface FlowProps {
   match: any;
@@ -79,6 +80,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: 'You can also use variables in message enter @ to see the available list',
+    },
+    {
+      component: InteractiveOptions,
+      isAddButtonChecked: true,
+      templateType: 'CALL_TO_ACTION',
+      inputFields: [],
+      disabled: false,
+      onAddClick: () => {},
+      onRemoveClick: () => {},
+      onInputChange: () => {},
+      onTemplateTypeChange: (value: string) => {
+        console.log(value);
+      },
     },
   ];
 
