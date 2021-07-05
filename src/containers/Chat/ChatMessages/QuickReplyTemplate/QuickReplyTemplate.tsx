@@ -27,9 +27,8 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   const { content, options, disabled = false, onQuickReplyClick, isSimulator = false } = props;
 
   const quickReplyButtons = options.map((option: ButtonOption) => (
-    <div className={styles.ButtonItem}>
+    <div className={styles.ButtonItem} key={option.title}>
       <Button
-        key={option.title}
         variant="contained"
         color="default"
         disabled={disabled}
