@@ -9,6 +9,7 @@ import styles from './PhoneInput.module.css';
 export interface InputProps {
   enableSearch?: boolean;
   inputProps?: {
+    name: string;
     required: boolean;
     autoFocus: boolean;
   };
@@ -23,6 +24,7 @@ export const PhoneInput: React.SFC<InputProps> = ({
   form: { errors, setFieldValue },
   field,
   inputProps = {
+    name: field.name,
     required: true,
     autoFocus: false,
   },

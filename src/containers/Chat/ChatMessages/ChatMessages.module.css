@@ -2,6 +2,9 @@
   .JumpToLatest {
     display: none !important;
   }
+  .ChatMessages {
+    height: calc(100vh - 46px) !important;
+  }
 }
 
 .ChatMessages {

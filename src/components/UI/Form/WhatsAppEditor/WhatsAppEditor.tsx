@@ -65,6 +65,17 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     setEditorState(editorStateCopy);
   };
 
+  const emojiStyles: any = {
+    position: 'absolute',
+    bottom: '60px',
+    right: '-150px',
+    zIndex: 100,
+  };
+
+  if (window.innerWidth <= 768) {
+    emojiStyles.right = '5%';
+  }
+
   return (
     <>
       <ReactResizeDetector
@@ -104,7 +115,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
               data-testid="emoji-popup"
               title={t('Pick your emoji…')}
               emoji="point_up"
-              style={{ position: 'absolute', bottom: '60px', right: '-150px', zIndex: 100 }}
+              style={emojiStyles}
               onSelect={handleEmoji}
             />
           ) : null}

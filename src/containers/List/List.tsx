@@ -42,7 +42,7 @@ export interface ListProps {
   title: string;
   button?: {
     show: boolean;
-    label: string;
+    label?: string;
     link?: string;
   };
   showCheckbox?: boolean;

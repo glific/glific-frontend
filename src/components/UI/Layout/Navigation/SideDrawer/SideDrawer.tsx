@@ -9,9 +9,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -56,19 +56,22 @@ const themeUI = createMuiTheme({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     drawer: {
-      zIndex: 0,
+      zIndex: 1000,
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
     },
     navClose: {
-      width: '72px',
+      width: '0px',
+      [theme.breakpoints.up('sm')]: {
+        width: '72px',
+      },
     },
     drawerOpen: {
-      width: drawerWidth,
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: drawerWidth,
+      },
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -80,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.leavingScreen,
       }),
       overflowX: 'hidden',
-      width: theme.spacing(7) + 1,
+      width: '0px',
       [theme.breakpoints.up('sm')]: {
         width: theme.spacing(9) + 1,
       },
@@ -222,75 +225,71 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
           {drawer}
         </Drawer>
       </Hidden>
-      <Hidden xsDown implementation="css">
-        <Drawer
-          className={clsx(classes.drawer, {
+      <Drawer
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: fullOpen,
+          [classes.drawerClose]: !fullOpen,
+        })}
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: fullOpen,
             [classes.drawerClose]: !fullOpen,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: fullOpen,
-              [classes.drawerClose]: !fullOpen,
-            }),
+          }),
+        }}
+        variant="permanent"
+      >
+        <div
+          data-testid="helpButton"
+          aria-hidden="true"
+          className={helpButtonStyle}
+          onClick={() => {
+            window.open(GLIFIC_DOCS_URL, '_blank');
           }}
-          variant="permanent"
         >
-          <div
-            data-testid="helpButton"
-            aria-hidden="true"
-            className={helpButtonStyle}
-            onClick={() => {
-              window.open(GLIFIC_DOCS_URL, '_blank');
-            }}
-          >
-            {t('Help Documents')}
-            <QuestionIcon />
+          {t('Help Documents')}
+          <QuestionIcon />
+        </div>
+        <div className={bottonMenuClasses.join(' ')}>
+          {settingMenu}
+          <div data-testid="bottom-menu" aria-hidden="true">
+            <Menu menus={getStaffManagementMenus()}>
+              <IconButton data-testid="staffManagementMenu">
+                <Tooltip title={t('Staff Management')} placement="top">
+                  <img
+                    src={
+                      [
+                        '/collection',
+                        '/staff-management',
+                        '/blocked-contacts',
+                        '/consulting-hours',
+                      ].includes(location.pathname)
+                        ? ActiveStaffIcon
+                        : InactiveStaffIcon
+                    }
+                    className={styles.StaffIcon}
+                    alt="staff icon"
+                  />
+                </Tooltip>
+              </IconButton>
+            </Menu>
           </div>
-          <div className={bottonMenuClasses.join(' ')}>
-            {settingMenu}
-            <div data-testid="bottom-menu" aria-hidden="true">
-              <Menu menus={getStaffManagementMenus()}>
-                <IconButton data-testid="staffManagementMenu">
-                  <Tooltip title={t('Staff Management')} placement="top">
-                    <img
-                      src={
-                        [
-                          '/collection',
-                          '/staff-management',
-                          '/blocked-contacts',
-                          '/consulting-hours',
-                        ].includes(location.pathname)
-                          ? ActiveStaffIcon
-                          : InactiveStaffIcon
-                      }
-                      className={styles.StaffIcon}
-                      alt="staff icon"
-                    />
-                  </Tooltip>
-                </IconButton>
-              </Menu>
-            </div>
-            <div>
-              <Menu menus={getUserAccountMenus()}>
-                <IconButton data-testid="profileMenu">
-                  <Tooltip title={t('Profile')} placement="top">
-                    <img
-                      src={
-                        location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon
-                      }
-                      className={styles.UserIcon}
-                      alt="user icon"
-                    />
-                  </Tooltip>
-                </IconButton>
-              </Menu>
-            </div>
+          <div>
+            <Menu menus={getUserAccountMenus()}>
+              <IconButton data-testid="profileMenu">
+                <Tooltip title={t('Profile')} placement="top">
+                  <img
+                    src={location.pathname === '/user-profile' ? ActiveUserIcon : InactiveUserIcon}
+                    className={styles.UserIcon}
+                    alt="user icon"
+                  />
+                </Tooltip>
+              </IconButton>
+            </Menu>
           </div>
-          {drawer}
-          <WalletBalance fullOpen={fullOpen} />
-        </Drawer>
-      </Hidden>
+        </div>
+        {drawer}
+        <WalletBalance fullOpen={fullOpen} />
+      </Drawer>
     </nav>
   );
 };

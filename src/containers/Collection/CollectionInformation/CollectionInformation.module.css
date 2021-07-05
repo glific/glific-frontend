@@ -48,3 +48,9 @@
 .Count:not(:empty) ~ .Count:not(:empty):before {
   content: ', ';
 }
+
+@media only screen and (max-width: 768px) {
+  .CollectionInformation {
+    display: none;
+  }
+}

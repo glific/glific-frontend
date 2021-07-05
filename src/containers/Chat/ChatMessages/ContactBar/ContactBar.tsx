@@ -10,13 +10,13 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import MenuIcon from '@material-ui/icons/Menu';
+
 import { useMutation, useLazyQuery, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ContactBar.module.css';
 import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
-import GlificLogo from '../../../../assets/images/logo/Logo.svg';
+
 import { ReactComponent as DropdownIcon } from '../../../../assets/images/icons/BrownDropdown.svg';
 import { ReactComponent as AddContactIcon } from '../../../../assets/images/icons/Contact/Light.svg';
 import { ReactComponent as BlockIcon } from '../../../../assets/images/icons/Block.svg';
@@ -27,6 +27,8 @@ import { ReactComponent as FlowIcon } from '../../../../assets/images/icons/Flow
 import { ReactComponent as FlowUnselectedIcon } from '../../../../assets/images/icons/Flow/Unselected.svg';
 import { ReactComponent as ClearConversation } from '../../../../assets/images/icons/Chat/ClearConversation.svg';
 import { ReactComponent as ChatIcon } from '../../../../assets/images/icons/Chat/UnselectedDark.svg';
+import { ReactComponent as CollectionIcon } from '../../../../assets/images/icons/Chat/SelectedCollection.svg';
+import { ReactComponent as SavedSearchIcon } from '../../../../assets/images/icons/Chat/SelectedSavedSearch.svg';
 import { GET_COLLECTIONS } from '../../../../graphql/queries/Collection';
 import { UPDATE_CONTACT_COLLECTIONS } from '../../../../graphql/mutations/Collection';
 import { GET_CONTACT_COLLECTIONS } from '../../../../graphql/queries/Contact';
@@ -367,22 +369,24 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     }
     flowButton = (
       <Tooltip title={toolTip} placement="right">
-        <Button
-          data-testid="disabledFlowButton"
-          className={styles.ListButtonPrimary}
-          disabled={disabled}
-          onClick={() => {
-            getFlows();
-            setShowFlowDialog(true);
-          }}
-        >
-          {disabled ? (
-            <FlowUnselectedIcon className={styles.Icon} />
-          ) : (
-            <FlowIcon className={styles.Icon} />
-          )}
-          Start a flow
-        </Button>
+        <span>
+          <Button
+            data-testid="disabledFlowButton"
+            className={styles.ListButtonPrimary}
+            disabled={disabled}
+            onClick={() => {
+              getFlows();
+              setShowFlowDialog(true);
+            }}
+          >
+            {disabled ? (
+              <FlowUnselectedIcon className={styles.Icon} />
+            ) : (
+              <FlowIcon className={styles.Icon} />
+            )}
+            Start a flow
+          </Button>
+        </span>
       </Tooltip>
     );
   }
@@ -515,11 +519,25 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
     );
   }
 
+  const getTitleAndIconForSmallScreen = (() => {
+    const { location } = history;
+
+    if (location.pathname.includes('collection')) {
+      return CollectionIcon;
+    }
+
+    if (location.pathname.includes('saved-searches')) {
+      return SavedSearchIcon;
+    }
+
+    return ChatIcon;
+  })();
+
   // CONTACT: display session timer & Assigned to
-  let sesssionAndCollectionAssignedTo;
-  if (contactId) {
-    sesssionAndCollectionAssignedTo = (
-      <>
+  const IconComponent = getTitleAndIconForSmallScreen;
+  const sesssionAndCollectionAssignedTo = (
+    <>
+      {contactId ? (
         <div className={styles.SessionTimerContainer}>
           <div className={styles.SessionTimer} data-testid="sessionTimer">
             <span>Session Timer</span>
@@ -538,16 +556,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             ) : null}
           </div>
         </div>
-        <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
-          <IconButton className={styles.MobileIcon}>
-            <ChatIcon />
-          </IconButton>
-
-          <div className={styles.TitleText}>Chats</div>
-        </div>
-      </>
-    );
-  }
+      ) : null}
+      <div className={styles.Chat} onClick={() => showChats()} aria-hidden="true">
+        <IconButton className={styles.MobileIcon}>
+          <IconComponent />
+        </IconButton>
+      </div>
+    </>
+  );
 
   // COLLECTION: display contact info & Assigned to
   let collectionStatus: any;
@@ -558,10 +574,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   return (
     <Toolbar className={styles.ContactBar} color="primary">
       <div className={styles.ContactBarWapper}>
-        <div className={styles.MobileHeader}>
-          <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
-          <MenuIcon className={styles.MenuIcon} />
-        </div>
         <div className={styles.ContactInfoContainer}>
           <div className={styles.ContactInfoWrapper}>
             <div className={styles.InfoWrapperRight}>
