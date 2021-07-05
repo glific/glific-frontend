@@ -76,6 +76,7 @@ const Props: any = (link: any) => {
     },
     jumpToMessage: Function,
     focus: true,
+    interactiveContent: '{}',
   };
 };
 
@@ -283,6 +284,7 @@ describe('<ChatMessage />', () => {
     popup: true,
     focus: true,
     showMessage: true,
+    interactiveContent: '{}',
   };
 
   test('it should render with image', async () => {
