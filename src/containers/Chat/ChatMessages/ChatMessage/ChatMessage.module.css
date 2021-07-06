@@ -240,3 +240,15 @@
 .TemplateButtonOnError {
   margin-left: 42px;
 }
+
+.InteractiveMessage {
+  box-shadow: none !important;
+}
+
+.InteractiveMessageMimeColor {
+  background-color: #00000000;
+}
+
+.InteractiveContent {
+  padding: 0px !important;
+}

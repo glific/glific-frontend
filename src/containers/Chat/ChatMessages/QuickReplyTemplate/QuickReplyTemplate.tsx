@@ -52,13 +52,15 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
     <div>
-      <ChatMessageType
-        type={contentType}
-        body={caption || text || filename}
-        media={media}
-        location={{}}
-        isSimulatedMessage={isSimulator}
-      />
+      <div className={styles.MessageContent}>
+        <ChatMessageType
+          type={contentType}
+          body={caption || text || filename}
+          media={media}
+          location={{}}
+          isSimulatedMessage={isSimulator}
+        />
+      </div>
       <div className={styles.ButtonContainer}>{quickReplyButtons}</div>
     </div>
   );

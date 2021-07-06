@@ -61,7 +61,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
   const { title, body, globalButtonTitle, items, onGlobalButtonClick, disabled } = props;
 
   return (
-    <div>
+    <div className={styles.SimulatorContent}>
       <p>{title}</p>
       <p>{body}</p>
       <hr />
