@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. Dates are d
 
 - Added UI for interactive message list and quick-reply for chat screen and simulator [`#1497`](https://github.com/glific/glific-frontend/pull/1497)
 - Remove hardcoded audio type, that breaks media playing in safari [`#1504`](https://github.com/glific/glific-frontend/pull/1504)
-- Added responsive design for main screen [`#1491`](https://github.com/glific/glific-frontend/pull/1491)
+- Started with responsive chat screen [`#1491`](https://github.com/glific/glific-frontend/pull/1491)
 - Updated floweditor version with interactive list node support [`#1494`](https://github.com/glific/glific-frontend/pull/1494)
 - Now simulator will support attachments [`#1485`](https://github.com/glific/glific-frontend/pull/1485)
 - Added export functionality for flows [`#1458`](https://github.com/glific/glific-frontend/pull/1458)
