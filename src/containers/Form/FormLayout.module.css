@@ -26,12 +26,12 @@
 }
 
 .ItemAdd {
-  width: fit-content;
+  width: auto;
 }
 
 .Form {
   padding: 16px 24px;
-  width: 530px;
+  min-width: 200px;
 }
 
 .Buttons {

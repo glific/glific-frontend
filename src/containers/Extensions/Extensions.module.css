@@ -5,7 +5,8 @@
 .Dialogbox {
   border-radius: 32px !important;
   margin: 0px;
-  min-width: 456px;
+  min-width: 280px;
+  max-width: 436px;
 }
 
 .DialogContent {
@@ -21,4 +22,5 @@
   line-height: 1 !important;
   font-weight: 500 !important;
   font-size: 16px;
+  min-width: 400px;
 }

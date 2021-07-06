@@ -18,7 +18,8 @@
 }
 
 .Form {
-  width: 456px;
+  min-width: 300px;
+  max-width: 456px;
 }
 
 .Form > div:nth-of-type(3) {
