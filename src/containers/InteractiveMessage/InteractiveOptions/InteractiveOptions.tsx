@@ -20,6 +20,7 @@ import {
   GUPSHUP_QUICK_REPLY,
   CALL_TO_ACTION,
   QUICK_REPLY,
+  LIST,
 } from '../../../common/constants';
 
 export interface InteractiveOptionsProps {
@@ -44,10 +45,10 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onInputChange,
   disabled = false,
 }) => {
-  const buttonTitle = 'Button Title';
+  const buttonTitle = 'List Header';
   const buttonValue = 'Button Value';
   const buttonTitles: any = {
-    CALL_TO_ACTION: 'Call to action',
+    CALL_TO_ACTION: 'List',
     QUICK_REPLY: 'Quick Reply',
   };
 
@@ -82,58 +83,28 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
         errors.templateButtons[index] &&
         errors.templateButtons[index][key]
       );
+    console.log(templateType);
 
-    if (templateType === CALL_TO_ACTION) {
+    if (templateType === LIST) {
       template = (
         <div className={styles.WrapperBackground} key={index.toString()}>
           <div className={styles.CallToActionWrapper}>
             <div>
-              <div className={styles.RadioStyles}>
-                <FormControl fullWidth error={isError('type')} className={styles.FormControl}>
-                  <RadioGroup
-                    aria-label="action-radio-buttons"
-                    name="action-radio-buttons"
-                    row
-                    value={type}
-                    onChange={(e: any) => onInputChange(e, row, index, 'type')}
-                  >
-                    <FormControlLabel
-                      value="phone_number"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            (index === 0 &&
-                              inputFields.length > 1 &&
-                              inputFields[0].type !== 'phone_number') ||
-                            (index > 0 &&
-                              inputFields[0].type &&
-                              inputFields[0].type === 'phone_number')
-                          }
-                        />
-                      }
-                      label="Phone number"
-                    />
-                    <FormControlLabel
-                      value="url"
-                      control={
-                        <Radio
-                          color="primary"
-                          disabled={
-                            (index === 0 &&
-                              inputFields.length > 1 &&
-                              inputFields[0].type !== 'url') ||
-                            (index > 0 && inputFields[0].type && inputFields[0].type === 'url')
-                          }
-                        />
-                      }
-                      label="URL"
-                    />
-                  </RadioGroup>
+              <div className={styles.TextFieldWrapper}>
+                <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
+                  <TextField
+                    title={title}
+                    placeholder={buttonTitle}
+                    variant="outlined"
+                    label={buttonTitle}
+                    onBlur={(e: any) => onInputChange(e, row, index, 'title')}
+                    className={styles.TextField}
+                    error={isError('title')}
+                  />
                   {errors.templateButtons &&
                   touched.templateButtons &&
                   touched.templateButtons[index] ? (
-                    <FormHelperText>{errors.templateButtons[index]?.type}</FormHelperText>
+                    <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
                   ) : null}
                 </FormControl>
               </div>
@@ -158,24 +129,6 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
                 touched.templateButtons &&
                 touched.templateButtons[index] ? (
                   <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
-                ) : null}
-              </FormControl>
-            </div>
-            <div className={styles.TextFieldWrapper}>
-              <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
-                <TextField
-                  title={value}
-                  placeholder={buttonValue}
-                  variant="outlined"
-                  label={buttonValue}
-                  onBlur={(e: any) => onInputChange(e, row, index, 'value')}
-                  className={styles.TextField}
-                  error={isError('value')}
-                />
-                {errors.templateButtons &&
-                touched.templateButtons &&
-                touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
                 ) : null}
               </FormControl>
             </div>
@@ -238,9 +191,9 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
-            value={CALL_TO_ACTION}
+            value={LIST}
             control={<Radio color="primary" />}
-            label="Call to actions"
+            label="List"
             classes={{ root: styles.RadioLabel }}
           />
           <Tooltip title={GUPSHUP_CALL_TO_ACTION} placement="right" tooltipClass={styles.Tooltip}>
@@ -263,11 +216,11 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       {templateType ? (
         <FieldArray
           name="templateButtons"
-          // render={(arrayHelpers) =>
-          //   values.templateButtons.map((row: any, index: any) =>
-          //     getButtons(row, index, arrayHelpers)
-          //   )
-          // }
+          render={(arrayHelpers) =>
+            values.templateButtons.map((row: any, index: any) =>
+              getButtons(row, index, arrayHelpers)
+            )
+          }
         />
       ) : null}
     </div>

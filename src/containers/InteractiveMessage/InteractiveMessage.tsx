@@ -34,9 +34,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [body, setBody] = useState(EditorState.createEmpty());
   const [isActive, setIsActive] = useState(true);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
+  const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
+  const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const { t } = useTranslation();
 
-  const states = { isActive, name, keywords, ignoreKeywords, body };
+  const states = { isActive, name, keywords, ignoreKeywords, body, templateButtons, templateType };
 
   const setStates = ({
     name: nameValue,
@@ -63,6 +65,20 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     name: Yup.string().required(t('Name is required.')),
   });
 
+  const addTemplateButtons = (addFromTemplate: boolean = true) => {
+    let buttons: any = [];
+    const buttonType: any = {
+      QUICK_REPLY: { value: '' },
+      CALL_TO_ACTION: { type: '', title: '', value: '' },
+    };
+
+    buttons = addFromTemplate
+      ? [...templateButtons, buttonType[templateType]]
+      : [buttonType[templateType]];
+
+    setTemplateButtons(buttons);
+  };
+
   const dialogMessage = t("You won't be able to use this flow again.");
 
   const formFields = [
@@ -84,14 +100,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     {
       component: InteractiveOptions,
       isAddButtonChecked: true,
-      templateType: 'CALL_TO_ACTION',
-      inputFields: [],
+      templateType,
+      inputFields: templateButtons,
       disabled: false,
-      onAddClick: () => {},
+      onAddClick: addTemplateButtons,
       onRemoveClick: () => {},
       onInputChange: () => {},
       onTemplateTypeChange: (value: string) => {
-        console.log(value);
+        setTemplateType(value);
       },
     },
   ];

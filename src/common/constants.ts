@@ -172,6 +172,7 @@ export const GUPSHUP_QUICK_REPLY =
 
 // Call to action button
 export const CALL_TO_ACTION = 'CALL_TO_ACTION';
+export const LIST = 'LIST';
 export const QUICK_REPLY = 'QUICK_REPLY';
 
 // Gupshup sample media
