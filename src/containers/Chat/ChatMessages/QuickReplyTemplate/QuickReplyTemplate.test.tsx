@@ -50,7 +50,7 @@ test('it renders QuickReplyTemplate on chat screen', async () => {
 
 const textContent = {
   type: 'text',
-  caption: 'body text',
+  text: 'body text',
 };
 
 test('it renders QuickReplyTemplate on simulator with text', async () => {
@@ -61,4 +61,27 @@ test('it renders QuickReplyTemplate on simulator with text', async () => {
   const button = screen.getByRole('button', { name: 'First' });
   expect(button).toBeInTheDocument();
   fireEvent.click(button);
+});
+
+const fileContent = {
+  type: 'file',
+  filename: 'sample.pdf',
+  url: 'www.exampleurl.com',
+};
+
+test('it renders QuickReplyTemplate on simulator with file', async () => {
+  props.content = fileContent;
+  props.isSimulator = true;
+  render(<QuickReplyTemplate {...props} />);
+
+  const button = screen.getByRole('button', { name: 'First' });
+  expect(button).toBeInTheDocument();
+  fireEvent.click(button);
+});
+
+test('it renders QuickReplyTemplate with null', async () => {
+  /**
+   * When content and options are absent we are returning null
+   */
+  render(<QuickReplyTemplate />);
 });

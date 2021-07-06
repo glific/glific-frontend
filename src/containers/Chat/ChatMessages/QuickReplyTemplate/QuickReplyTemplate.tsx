@@ -7,7 +7,9 @@ import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType'
 interface Content {
   type: string;
   url?: string;
-  caption: string;
+  caption?: string;
+  text?: string;
+  filename?: string;
 }
 
 interface ButtonOption {
@@ -26,6 +28,10 @@ export interface QuickReplyTemplateProps {
 export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
   const { content, options, disabled = false, onQuickReplyClick, isSimulator = false } = props;
 
+  if (!content && !options) {
+    return null;
+  }
+
   const quickReplyButtons = options.map((option: ButtonOption) => (
     <div className={styles.ButtonItem} key={option.title}>
       <Button
@@ -40,14 +46,15 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     </div>
   ));
 
-  const { type, url, caption } = content;
+  const { type, url, caption = '', text = '', filename = '' } = content;
 
   const media = type === 'text' ? {} : { url, caption };
+  const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
     <div>
       <ChatMessageType
-        type={type.toUpperCase()}
-        body={caption}
+        type={contentType}
+        body={caption || text || filename}
         media={media}
         location={{}}
         isSimulatedMessage={isSimulator}

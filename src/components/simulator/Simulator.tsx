@@ -167,7 +167,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
           {moment(insertedAt).format(TIME_FORMAT)}
         </span>
-        {direction === 'send' ? <DoneAllIcon /> : null}
+        {direction === 'send' && <DoneAllIcon />}
       </>
     );
 
@@ -440,7 +440,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
-              {isDrawerOpen ? <div className={styles.BackgroundTint} /> : null}
+              {isDrawerOpen && <div className={styles.BackgroundTint} />}
               <div className={styles.Controls}>
                 <div>
                   <InsertEmoticonIcon className={styles.Icon} />
@@ -476,14 +476,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   <MicIcon />
                 </Button>
               </div>
-              {isDrawerOpen ? (
+              {isDrawerOpen && (
                 <ListReplyTemplateDrawer
                   drawerTitle="Items"
                   items={selectedListTemplate}
                   onItemClick={handleListDrawerItemClick}
                   onDrawerClose={handleListReplyDrawerClose}
                 />
-              ) : null}
+              )}
             </div>
           </div>
         </div>
