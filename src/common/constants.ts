@@ -213,3 +213,6 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     },
   },
 ];
+
+export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
+export const INTERACTIVE_LIST = 'LIST';

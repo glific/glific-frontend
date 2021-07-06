@@ -58,6 +58,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
           name
         }
       }
+      interactiveContent
     }
   }
 `;
@@ -120,6 +121,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
           name
         }
       }
+      interactiveContent
     }
   }
 `;
@@ -194,6 +196,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
           name
         }
       }
+      interactiveContent
     }
   }
 `;
