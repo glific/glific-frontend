@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v1.7.2](https://github.com/glific/glific-frontend/compare/v1.7.1...v1.7.2)
+
+> 06 July 2021
+
+- Added UI for interactive message for chat screen and simulator [`#1497`](https://github.com/glific/glific-frontend/pull/1497)
+- remove hardcoded audio type, that breaks media playing in safari [`#1504`](https://github.com/glific/glific-frontend/pull/1504)
+- Feature/responsive main screen [`#1491`](https://github.com/glific/glific-frontend/pull/1491)
+- Updated floweditor version with interactive list node support [`#1494`](https://github.com/glific/glific-frontend/pull/1494)
+- Now simulator will support attachments [`#1485`](https://github.com/glific/glific-frontend/pull/1485)
+- Added export functionality for flows [`#1458`](https://github.com/glific/glific-frontend/pull/1458)
+- Fixed jump to latest bug [`#1484`](https://github.com/glific/glific-frontend/pull/1484)
+- Suspense fallback loading fix [`#1483`](https://github.com/glific/glific-frontend/pull/1483)
+- Fixed attachment template bug [`#1481`](https://github.com/glific/glific-frontend/pull/1481)
+
 #### [v1.7.0](https://github.com/glific/glific-frontend/compare/v1.6.2...v1.7.0)
 
 > 22 June 2021
