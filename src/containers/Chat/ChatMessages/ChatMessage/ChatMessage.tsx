@@ -274,6 +274,13 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const stickerClasses = type === 'STICKER' ? styles.StickerBackground : '';
 
   const chatMessageClasses = [styles.ChatMessage, mineColor, errorClasses, stickerClasses];
+  const chatMessageContent = [styles.Content];
+
+  if (isInteractiveContentPresent && !isSender) {
+    chatMessageClasses.push(styles.InteractiveMessage);
+    chatMessageClasses.push(styles.InteractiveMessageMimeColor);
+    chatMessageContent.push(styles.InteractiveContent);
+  }
 
   let template = null;
   if (type === INTERACTIVE_LIST) {
@@ -325,7 +332,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={chatMessageClasses.join(' ')}>
           <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
             <div>
-              <div className={styles.Content} data-testid="content">
+              <div className={chatMessageContent.join(' ')} data-testid="content">
                 {isInteractiveContentPresent && !isSender ? (
                   template
                 ) : (

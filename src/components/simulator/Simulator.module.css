@@ -307,3 +307,8 @@
   background-color: rgba(0, 0, 0, 0.5);
   content: '';
 }
+
+.InteractiveReceivedMessage {
+  background: transparent !important;
+  padding: 0px !important;
+}
