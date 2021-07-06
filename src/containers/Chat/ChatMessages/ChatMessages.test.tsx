@@ -66,6 +66,7 @@ const body = {
       name: 'User',
     },
   },
+  interactiveContent: '{}',
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -200,6 +201,7 @@ export const collection = {
                 name: 'User',
               },
             },
+            interactiveContent: '{}',
           },
         ],
       },

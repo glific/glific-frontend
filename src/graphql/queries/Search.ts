@@ -69,6 +69,7 @@ export const SEARCH_QUERY = gql`
             name
           }
         }
+        interactiveContent
       }
     }
   }

@@ -88,7 +88,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             controlsList="nodownload"
             className={isSimulatedMessage ? styles.SimulatorAudio : styles.Audio}
           >
-            <source src={media.url} type="audio/ogg" />
+            <source src={media.url} />
           </audio>
         </div>
       );
