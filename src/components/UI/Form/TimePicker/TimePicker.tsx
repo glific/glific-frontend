@@ -42,8 +42,8 @@ export const TimePicker: React.SFC<TimePickerProps> = ({
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid className={styles.TimePicker}>
         <KeyboardTimePicker
-          autoOk
           error={hasError ? errorText : ''}
+          autoOk
           variant={variant}
           inputVariant={inputVariant}
           label={placeholder}
