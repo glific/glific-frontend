@@ -1,4 +1,3 @@
-import React from 'react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';

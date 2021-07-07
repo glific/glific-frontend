@@ -132,8 +132,18 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }
 
-  const getStyleForDirection = (direction: string): string =>
-    direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
+  const getStyleForDirection = (direction: string, isInteractive: boolean): string => {
+    const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
+    if (isInteractive && direction === 'received') {
+      return simulatorClasses.join(' ');
+    }
+
+    if (direction === 'send') {
+      return styles.SendMessage;
+    }
+
+    return styles.ReceivedMessage;
+  };
 
   const releaseUserSimulator = () => {
     releaseSimulator();
@@ -197,7 +207,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction)}>
+        <div className={getStyleForDirection(direction, isInteractiveContentPresent)}>
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (

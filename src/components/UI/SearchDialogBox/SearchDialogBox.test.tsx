@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { render, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SearchDialogBox } from './SearchDialogBox';
@@ -45,6 +43,7 @@ test('save with normal props', () => {
   fireEvent.click(getByText('Save'));
   // need assertions here
 });
+
 test('save with async prop', () => {
   const { getByText } = render(searchDialog(asyncSearchProps));
   fireEvent.click(getByText('Save'));

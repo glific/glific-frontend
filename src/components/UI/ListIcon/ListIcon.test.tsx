@@ -1,4 +1,3 @@
-import React from 'react';
 import { ListIcon } from './ListIcon';
 import { render } from '@testing-library/react';
 
