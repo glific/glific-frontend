@@ -1,55 +1,54 @@
+/* eslint-disable */
 import React from 'react';
-
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import styles from './InteractiveMessageList.module.css';
 import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
 
 import { List } from '../../List/List';
-import { FILTER_FLOW, GET_FLOW_COUNT } from '../../../graphql/queries/Flow';
 import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
-import { DATE_TIME_FORMAT } from '../../../common/constants';
+
+import {
+  FILTER_INTERACTIVE_MESSAGES,
+  GET_INTERACTIVE_MESSAGES_COUNT,
+} from '../../../graphql/queries/InteractiveMessage';
 
 export interface InteractiveMessageListProps {}
 
-const getName = (text: string, keywordsList: any) => {
-  const keywords = keywordsList.map((keyword: any) => keyword);
-
-  return (
-    <p className={`${styles.TableText} ${styles.NameText}`}>
-      {text}
-      <br />
-      <div className={styles.Keyword}>{keywords.join(', ')}</div>
-    </p>
-  );
+const getLabel = (text: string) => {
+  return <p className={styles.TableText}>{text}</p>;
 };
 
-const getDate = (date: string, fallback: string = '') => (
-  <div className={styles.LastPublished}>
-    {date ? moment(date).format(DATE_TIME_FORMAT) : fallback}
-  </div>
-);
+const getBody = (text: string) => {
+  const message = JSON.parse(text);
+  console.log(message);
+  let messageText = '';
+  if (message.type === 'list') {
+    messageText = message.body;
+  }
 
-const columnStyles = [styles.Name, styles.DateColumn, styles.DateColumn, styles.Actions];
+  return <div className={styles.TableText}>{messageText}</div>;
+};
+
+const columnStyles = [styles.Label, styles.Message, styles.Type, styles.Actions];
 const interactiveMsgIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
 
 const queries = {
-  countQuery: GET_FLOW_COUNT,
-  filterItemsQuery: FILTER_FLOW,
+  countQuery: GET_INTERACTIVE_MESSAGES_COUNT,
+  filterItemsQuery: FILTER_INTERACTIVE_MESSAGES,
   deleteItemQuery: DELETE_FLOW,
 };
 
 export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {
   const { t } = useTranslation();
 
-  const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
-    name: getName(name, keywords),
-    lastPublishedAt: getDate(lastPublishedAt, t('Not published yet')),
-    lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
+  const getColumns = ({ label, interactiveContent, type }: any) => ({
+    label: getLabel(label),
+    message: getBody(interactiveContent),
+    type: getLabel(type),
   });
 
-  const columnNames = ['TITLE', 'MESSAGE', 'TYPE', 'ACTIONS'];
+  const columnNames = ['LABEL', 'MESSAGE', 'TYPE', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this interactive message.");
 
   const columnAttributes = {
@@ -62,12 +61,14 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
     <>
       <List
         title={t('Interactive msg')}
-        listItem="flows"
-        listItemName="flow"
+        listItem="interactives"
+        listItemName="interactive"
         pageLink="interactive-message"
         listIcon={interactiveMsgIcon}
         dialogMessage={dialogMessage}
+        noItemText={'interactive messages'}
         {...queries}
+        removeSortBy={['TYPE', 'MESSAGE']}
         {...columnAttributes}
         button={{ show: true, label: t('+ ADD NEW') }}
       />

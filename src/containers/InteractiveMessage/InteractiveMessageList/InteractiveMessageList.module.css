@@ -2,8 +2,8 @@
   width: 180px;
 }
 
-.Name {
-  width: 35%;
+.Label {
+  width: 20%;
   min-width: 200px;
 }
 
@@ -95,7 +95,11 @@
   color: #93a29b !important;
 }
 
-.DateColumn {
-  width: 18%;
+.Message {
+  width: 40%;
   min-width: 120px;
+}
+
+.Type{
+  width: 20%;
 }
