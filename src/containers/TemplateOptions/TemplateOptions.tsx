@@ -43,7 +43,6 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
   onInputChange,
   disabled = false,
 }) => {
-  console.log(values);
   const buttonTitle = 'Button Title';
   const buttonValue = 'Button Value';
   const buttonTitles: any = {

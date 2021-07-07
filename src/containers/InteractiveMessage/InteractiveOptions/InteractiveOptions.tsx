@@ -18,10 +18,12 @@ import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.sv
 import {
   GUPSHUP_CALL_TO_ACTION,
   GUPSHUP_QUICK_REPLY,
-  CALL_TO_ACTION,
   QUICK_REPLY,
   LIST,
 } from '../../../common/constants';
+
+import { QuickReplyTemplate } from './QuickReplyTemplate';
+import { ListReplyTemplate } from './ListReplyTemplate';
 
 export interface InteractiveOptionsProps {
   isAddButtonChecked: boolean;
@@ -32,30 +34,28 @@ export interface InteractiveOptionsProps {
   onRemoveClick: any;
   onInputChange: any;
   onTemplateTypeChange: any;
+  onListItemAddClick: any;
+  onListItemRemoveClick: any;
   disabled: any;
 }
 export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   isAddButtonChecked,
   templateType,
   inputFields,
-  form: { touched, errors, values },
+  form,
   onAddClick,
   onRemoveClick,
   onTemplateTypeChange,
   onInputChange,
+  onListItemAddClick,
+  onListItemRemoveClick,
   disabled = false,
 }) => {
-  const buttonTitle = 'List Header';
-  const buttonValue = 'Button Value';
-  const buttonTitles: any = {
-    CALL_TO_ACTION: 'List',
-    QUICK_REPLY: 'Quick Reply',
-  };
-
-  const handleAddClick = (helper: any, type: boolean) => {
-    const obj = type ? { type: '', value: '', title: '' } : { value: '' };
+  const { values } = form;
+  const handleAddClick = (helper: any, type: string) => {
+    const obj = type === LIST ? { title: '', options: [] } : { value: '' };
     helper.push(obj);
-    onAddClick();
+    onAddClick(true);
   };
 
   const handleRemoveClick = (helper: any, idx: number) => {
@@ -63,123 +63,42 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     onRemoveClick(idx);
   };
 
-  const addButton = (helper: any, type: boolean = false) => {
-    const title = templateType ? buttonTitles[templateType] : '';
-    return (
-      <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
-        Add {title}
-      </Button>
-    );
-  };
-
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
-    const { type, title, value }: any = row;
     let template: any = null;
-
-    const isError = (key: string) =>
-      !!(
-        errors.templateButtons &&
-        touched.templateButtons &&
-        errors.templateButtons[index] &&
-        errors.templateButtons[index][key]
-      );
-    console.log(templateType);
-
     if (templateType === LIST) {
       template = (
-        <div className={styles.WrapperBackground} key={index.toString()}>
-          <div className={styles.CallToActionWrapper}>
-            <div>
-              <div className={styles.TextFieldWrapper}>
-                <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
-                  <TextField
-                    title={title}
-                    placeholder={buttonTitle}
-                    variant="outlined"
-                    label={buttonTitle}
-                    onBlur={(e: any) => onInputChange(e, row, index, 'title')}
-                    className={styles.TextField}
-                    error={isError('title')}
-                  />
-                  {errors.templateButtons &&
-                  touched.templateButtons &&
-                  touched.templateButtons[index] ? (
-                    <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
-                  ) : null}
-                </FormControl>
-              </div>
-              <div>
-                {inputFields.length > 1 ? (
-                  <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
-                ) : null}
-              </div>
-            </div>
-            <div className={styles.TextFieldWrapper}>
-              <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
-                <TextField
-                  title={title}
-                  placeholder={buttonTitle}
-                  variant="outlined"
-                  label={buttonTitle}
-                  onBlur={(e: any) => onInputChange(e, row, index, 'title')}
-                  className={styles.TextField}
-                  error={isError('title')}
-                />
-                {errors.templateButtons &&
-                touched.templateButtons &&
-                touched.templateButtons[index] ? (
-                  <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
-                ) : null}
-              </FormControl>
-            </div>
-          </div>
-          <div>
-            {inputFields.length === index + 1 && inputFields.length !== 2
-              ? addButton(arrayHelpers, true)
-              : null}
-          </div>
-        </div>
+        <ListReplyTemplate
+          index={index}
+          inputFields={inputFields}
+          form={form}
+          onListAddClick={() => handleAddClick(arrayHelpers, LIST)}
+          onListRemoveClick={() => handleRemoveClick(arrayHelpers, index)}
+          onListItemAddClick={(options: Array<any>) => onListItemAddClick(index, options)}
+          onListItemRemoveClick={(itemIndex: number) => onListItemRemoveClick(index, itemIndex)}
+          onInputChange={(value: string, payload: any) =>
+            onInputChange(LIST, index, value, payload)
+          }
+        />
       );
     }
 
     if (templateType === QUICK_REPLY) {
       template = (
-        <div className={styles.WrapperBackground} key={index.toString()}>
-          <div className={styles.QuickReplyWrapper}>
-            <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
-              <TextField
-                title={title}
-                placeholder={buttonTitle}
-                label={buttonTitle}
-                variant="outlined"
-                onBlur={(e: any) => onInputChange(e, row, index, 'value')}
-                className={styles.TextField}
-                error={isError('value')}
-              />
-              {errors.templateButtons &&
-              touched.templateButtons &&
-              touched.templateButtons[index] ? (
-                <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
-              ) : null}
-            </FormControl>
-            <div>
-              {inputFields.length > 1 ? (
-                <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
-              ) : null}
-            </div>
-          </div>
-          <div>
-            {inputFields.length === index + 1 && inputFields.length !== 3
-              ? addButton(arrayHelpers)
-              : null}
-          </div>
-        </div>
+        <QuickReplyTemplate
+          index={index}
+          inputFields={inputFields}
+          form={form}
+          onInputChange={(value: string, payload: any) =>
+            onInputChange(QUICK_REPLY, index, value, payload)
+          }
+          onAddClick={() => handleAddClick(arrayHelpers, QUICK_REPLY)}
+          onRemoveClick={() => handleRemoveClick(arrayHelpers, index)}
+        />
       );
     }
     return template;
   };
 
-  console.log(values);
   const radioTemplateType = (
     <div>
       <RadioGroup

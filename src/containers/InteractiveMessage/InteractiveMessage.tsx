@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
@@ -14,6 +14,7 @@ import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 import { GET_FLOW } from '../../graphql/queries/Flow';
 import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
+import { LIST, QUICK_REPLY } from '../../common/constants';
 
 export interface FlowProps {
   match: any;
@@ -65,11 +66,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     name: Yup.string().required(t('Name is required.')),
   });
 
-  const addTemplateButtons = (addFromTemplate: boolean = true) => {
+  const handleAddInteractiveTemplate = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
-      CALL_TO_ACTION: { type: '', title: '', value: '' },
+      LIST: { title: '', options: [{ title: '', description: '' }] },
     };
 
     buttons = addFromTemplate
@@ -78,6 +79,89 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     setTemplateButtons(buttons);
   };
+
+  const handleRemoveInteractiveTemplate = (index: number) => {
+    const buttons = [...templateButtons];
+    const result = buttons.filter((row, idx: number) => idx !== index);
+    setTemplateButtons(result);
+  };
+
+  const handleAddListItem = (rowNo: number, oldOptions: Array<any>) => {
+    const buttons = [...templateButtons];
+    const newOptions = [...oldOptions, { title: '', description: '' }];
+
+    const result = buttons.map((row: any, idx: number) =>
+      rowNo === idx ? { ...row, options: newOptions } : row
+    );
+
+    setTemplateButtons(result);
+  };
+
+  const handleRemoveListItem = (rowIdx: number, idx: number) => {
+    const buttons = [...templateButtons];
+    const result = buttons.map((row: any, index: number) => {
+      if (index === rowIdx) {
+        const newOptions = row.options.filter((r: any, itemIdx: number) => itemIdx !== idx);
+        return { ...row, options: newOptions };
+      }
+      return row;
+    });
+
+    setTemplateButtons(result);
+  };
+
+  const handleInputChange = (type: string, index: number, value: string, payload: any) => {
+    const { key, itemIndex, isOption } = payload;
+    const buttons = [...templateButtons];
+    let result = [];
+    if (type === QUICK_REPLY) {
+      result = buttons.map((row: any, idx: number) => {
+        if (idx === index) {
+          const newRow = { ...row };
+          newRow[key] = value;
+          return newRow;
+        }
+        return row;
+      });
+    }
+
+    if (type === LIST) {
+      result = buttons.map((row: any, idx: number) => {
+        const { options }: { options: Array<any> } = row;
+        if (idx === index) {
+          // for options
+          if (isOption) {
+            const updatedOptions = options.map((option: any, optionIdx: number) => {
+              if (optionIdx === itemIndex) {
+                const newOption = { ...option };
+                newOption[key] = value;
+                return newOption;
+              }
+              return option;
+            });
+
+            const updatedRowWithOptions = { ...row, options: updatedOptions };
+            return updatedRowWithOptions;
+          }
+
+          // for title
+          const newRow = { ...row };
+          newRow[key] = value;
+          return newRow;
+        }
+
+        return row;
+      });
+    }
+
+    setTemplateButtons(result);
+  };
+
+  useEffect(() => {
+    if (templateType) {
+      handleAddInteractiveTemplate(false);
+    }
+  }, [templateType]);
 
   const dialogMessage = t("You won't be able to use this flow again.");
 
@@ -103,9 +187,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
-      onAddClick: addTemplateButtons,
-      onRemoveClick: () => {},
-      onInputChange: () => {},
+      onAddClick: handleAddInteractiveTemplate,
+      onRemoveClick: handleRemoveInteractiveTemplate,
+      onInputChange: handleInputChange,
+      onListItemAddClick: handleAddListItem,
+      onListItemRemoveClick: handleRemoveListItem,
       onTemplateTypeChange: (value: string) => {
         setTemplateType(value);
       },
