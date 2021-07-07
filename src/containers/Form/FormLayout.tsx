@@ -21,9 +21,9 @@ import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 export interface FormLayoutProps {
   match: any;
   deleteItemQuery: DocumentNode;
-  states: any;
-  setStates: any;
-  validationSchema: any;
+  states: Object;
+  setStates: Function;
+  validationSchema: Object;
   listItemName: string;
   dialogMessage: string;
   formFields: Array<any>;
@@ -33,29 +33,32 @@ export interface FormLayoutProps {
   createItemQuery: DocumentNode;
   updateItemQuery: DocumentNode;
   defaultAttribute?: any;
-  icon: any;
+  icon: Object;
   idType?: string;
   additionalAction?: any;
-  additionalQuery?: any;
+  additionalQuery?: Function | null;
   linkParameter?: any;
-  cancelLink?: any;
+  cancelLink?: string | null;
   languageSupport?: boolean;
-  setPayload?: any;
+  setPayload?: Function;
   advanceSearch?: any;
   additionalState?: any;
   button?: string;
   type?: string;
-  afterSave?: any;
-  afterDelete?: any;
+  afterSave?: Function;
+  afterDelete?: { link: string };
   refetchQueries?: Array<any>;
   redirect?: boolean;
   title?: string;
-  getLanguageId?: any;
-  backLinkButton?: any;
+  getLanguageId?: Function;
+  backLinkButton?: {
+    text: string;
+    link: string;
+  };
   isAttachment?: boolean;
   getMediaId?: any;
   customStyles?: any;
-  customHandler?: any;
+  customHandler?: Function;
   copyNotification?: string;
 }
 
@@ -75,7 +78,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   updateItemQuery,
   additionalQuery = null,
   defaultAttribute = null,
-  additionalAction = null,
+  additionalAction,
   icon,
   idType = 'id',
   additionalState,
@@ -115,7 +118,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
   let item: any = null;
   const itemId = match.params.id ? match.params.id : false;
-
   let variables: any = itemId ? { [idType]: itemId } : false;
 
   const [deleteItem] = useMutation(deleteItemQuery, {
@@ -311,7 +313,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       });
     }
   };
-
   const saveHandler = ({ languageId: languageIdValue, ...itemData }: any) => {
     let payload = {
       ...itemData,
@@ -387,7 +388,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   if (formCancelled) {
     return <Redirect to={cancelLink ? `/${cancelLink}` : `/${redirectionLink}`} />;
   }
-
   const validateLanguage = (value: any) => {
     if (value && getLanguageId) {
       getLanguageId(value);
