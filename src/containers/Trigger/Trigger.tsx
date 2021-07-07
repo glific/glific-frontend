@@ -24,13 +24,17 @@ export interface TriggerProps {
   match: any;
 }
 const checkDateTimeValidation = (startAtValue: any, startDateValue: any) => {
-  const isTodayDate = moment(startDateValue).isAfter(moment());
+  const isDateAhead = moment(startDateValue).isAfter(moment());
   const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
 
-  if (!isTodayDate && isTimeAhead) {
-    return true;
+  if (!isDateAhead) {
+    // if start date is current date then only check for time
+    if (isTimeAhead) {
+      return true;
+    }
+    return false;
   }
-  return false;
+  return true;
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
