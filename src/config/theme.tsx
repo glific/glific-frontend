@@ -77,9 +77,6 @@ const theme = createMuiTheme({
 
 theme.typography.h6 = {
   fontSize: '1.25rem',
-  '@media (max-width:768px)': {
-    fontSize: '1rem',
-  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '1rem',
   },
@@ -87,9 +84,6 @@ theme.typography.h6 = {
 
 theme.typography.h5 = {
   fontSize: '1.25rem',
-  '@media (max-width:768px)': {
-    fontSize: '1rem',
-  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '1rem',
   },
