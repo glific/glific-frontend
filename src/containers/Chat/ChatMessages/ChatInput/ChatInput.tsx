@@ -70,6 +70,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+  const interactiveMsg = 'Interactive msg';
   let uploadPermission = false;
   const client = useApolloClient();
 
@@ -278,7 +279,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (contactBspStatus) {
     switch (contactBspStatus) {
       case 'SESSION':
-        quickSendTypes = [speedSends];
+        quickSendTypes = [speedSends, interactiveMsg];
         break;
       case 'SESSION_AND_HSM':
         quickSendTypes = [speedSends, templates];
