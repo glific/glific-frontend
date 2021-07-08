@@ -43,10 +43,10 @@ export interface SimulatorProps {
   setSimulatorId: any;
   simulatorIcon?: boolean;
   message?: any;
-  flowSimulator?: any;
+  flowSimulator?: boolean;
   isPreviewMessage?: boolean;
-  resetMessage?: any;
-  getFlowKeyword?: any;
+  resetMessage?: Function;
+  getFlowKeyword?: Function;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -201,10 +201,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
     });
     getChatMessage();
   };
-
   const sendMessage = (quickReplyText?: string) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     // check if send message text is not empty
+
     if (sendMessageText || quickReplyText) {
       const payload: any = {
         text: sendMessageText,
@@ -393,7 +393,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
     getSimulator();
   };
-
   return (
     <>
       {showSimulator ? simulator : null}
