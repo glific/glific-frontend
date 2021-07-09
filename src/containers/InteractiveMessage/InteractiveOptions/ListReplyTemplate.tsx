@@ -64,6 +64,12 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
   const showDeleteIcon = inputFields[index]?.options.length > 1;
   const defaultTitle = inputFields[index]?.title;
 
+  const isAddMoreOptionAllowed = inputFields.reduce((result: number, field: any) => {
+    const { options: optn } = field;
+    const sum = result + optn.length;
+    return sum;
+  }, 0);
+
   const handleAddListItem = (helper: any) => {
     helper.push({ title: '', description: '' });
     onListItemAddClick(options);
@@ -124,7 +130,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           <TextField
                             placeholder={`Title ${itemIndex + 1}`}
                             variant="outlined"
-                            label={`Enter list item ${index + 1} title`}
+                            label={`Enter list item ${itemIndex + 1} title`}
                             onChange={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
@@ -170,17 +176,19 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                     </div>
                   </div>
                   <div className={styles.ActionButtons}>
-                    {inputFields.length === index + 1 && options.length === itemIndex + 1 && (
-                      <Button
-                        color="primary"
-                        className={styles.AddButton}
-                        onClick={onListAddClick}
-                        startIcon={<AddIcon className={styles.AddIcon} />}
-                      >
-                        Add another list
-                      </Button>
-                    )}
-                    {options.length === itemIndex + 1 && (
+                    {isAddMoreOptionAllowed < 10 &&
+                      inputFields.length === index + 1 &&
+                      options.length === itemIndex + 1 && (
+                        <Button
+                          color="primary"
+                          className={styles.AddButton}
+                          onClick={onListAddClick}
+                          startIcon={<AddIcon className={styles.AddIcon} />}
+                        >
+                          Add another list
+                        </Button>
+                      )}
+                    {isAddMoreOptionAllowed < 10 && options.length === itemIndex + 1 && (
                       <Button
                         color="primary"
                         className={styles.AddButton}
