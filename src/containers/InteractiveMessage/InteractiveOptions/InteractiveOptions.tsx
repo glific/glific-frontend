@@ -1,26 +1,11 @@
 /* eslint-disable */
 import React from 'react';
-import {
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  TextField,
-  FormHelperText,
-  FormControl,
-} from '@material-ui/core';
+import { RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
 import styles from './InteractiveOptions.module.css';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import Tooltip from '../../../components/UI/Tooltip/Tooltip';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
-import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
-import {
-  GUPSHUP_CALL_TO_ACTION,
-  GUPSHUP_QUICK_REPLY,
-  QUICK_REPLY,
-  LIST,
-} from '../../../common/constants';
+import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
+import { QUICK_REPLY, LIST } from '../../../common/constants';
 
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';
@@ -112,24 +97,32 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
             value={LIST}
-            control={<Radio color="primary" />}
-            label="List"
+            control={
+              <Radio
+                color="primary"
+                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
+                size="small"
+              />
+            }
+            className={`${templateType === LIST ? styles.SelectedLabel : ''}`}
             classes={{ root: styles.RadioLabel }}
+            label="List message"
           />
-          <Tooltip title={GUPSHUP_CALL_TO_ACTION} placement="right" tooltipClass={styles.Tooltip}>
-            <InfoIcon />
-          </Tooltip>
         </div>
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
             value={QUICK_REPLY}
-            control={<Radio color="primary" />}
-            label="Quick replies"
-            className={styles.RadioLabel}
+            control={
+              <Radio
+                color="primary"
+                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
+                size="small"
+              />
+            }
+            className={`${templateType === QUICK_REPLY ? styles.SelectedLabel : ''}`}
+            classes={{ root: styles.RadioLabel }}
+            label="Reply buttons"
           />
-          <Tooltip title={GUPSHUP_QUICK_REPLY} placement="right" tooltipClass={styles.Tooltip}>
-            <InfoIcon />
-          </Tooltip>
         </div>
       </RadioGroup>
 

@@ -6,7 +6,7 @@ import styles from './InteractiveMessageList.module.css';
 import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
 
 import { List } from '../../List/List';
-import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
+import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
 
 import {
   FILTER_INTERACTIVE_MESSAGES,
@@ -21,7 +21,6 @@ const getLabel = (text: string) => {
 
 const getBody = (text: string) => {
   const message = JSON.parse(text);
-  console.log(message);
   let messageText = '';
   if (message.type === 'list') {
     messageText = message.body;
@@ -36,7 +35,7 @@ const interactiveMsgIcon = <InteractiveMessageIcon className={styles.FlowIcon} /
 const queries = {
   countQuery: GET_INTERACTIVE_MESSAGES_COUNT,
   filterItemsQuery: FILTER_INTERACTIVE_MESSAGES,
-  deleteItemQuery: DELETE_FLOW,
+  deleteItemQuery: DELETE_INTERACTIVE,
 };
 
 export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {

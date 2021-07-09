@@ -1,0 +1,54 @@
+.WrapperBackground {
+  padding: 16px 24px 8px 24px;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 6px;
+}
+
+.Font {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #93a29b;
+}
+
+.QuickReplyWrapper {
+  composes: Font;
+  display: flex;
+  align-items: center;
+}
+
+.QuickReplyWrapper > div {
+  margin: 0px 4px 17px 4px;
+  cursor: pointer;
+}
+
+.FormControl {
+  margin-bottom: 17px;
+}
+
+.FormControl > p {
+  margin-left: 12px;
+}
+
+.TextField {
+  width: 100%;
+}
+
+.TextField > div > input {
+  padding: 14.5px ​14px !important;
+}
+
+.AddButton {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  text-transform: inherit !important;
+}
+
+.AddIcon {
+  height: 16px;
+  width: 16px;
+}

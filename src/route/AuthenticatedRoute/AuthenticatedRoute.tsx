@@ -148,6 +148,7 @@ const routeAdmin = (
     <Route path="/notifications" exact component={NotificationList} />
     <Route path="/interactive-message" exact component={InteractiveMessageList} />
     <Route path="/interactive-message/add" exact component={InteractiveMessage} />
+    <Route path="/interactive-message/:id/edit" exact component={InteractiveMessage} />
     <Route exact path="/chat/collection" component={() => <Chat collectionId={-1} />} />
     <Route exact path="/chat/saved-searches/" component={() => <Chat savedSearches />} />
     <Route

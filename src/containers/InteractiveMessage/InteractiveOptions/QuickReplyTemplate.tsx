@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 
-import styles from './InteractiveOptions.module.css';
+import styles from './QuickReplyTemplate.module.css';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface QuickReplyTemplateProps {
   index: number;
@@ -38,7 +39,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   };
 
   const name = `Button ${index + 1}`;
-
+  const defaultValue = inputFields && inputFields[index]?.value;
   return (
     <div className={styles.WrapperBackground}>
       <div className={styles.QuickReplyWrapper}>
@@ -50,6 +51,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
             onBlur={(e: any) => handleInputChange(e, 'value')}
             className={styles.TextField}
             error={isError('value')}
+            defaultValue={defaultValue}
           />
           {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
             <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
@@ -59,8 +61,13 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
       </div>
       <div>
         {inputFields.length === index + 1 && inputFields.length !== 3 ? (
-          <Button variant="outlined" color="primary" onClick={onAddClick}>
-            Add Call to action
+          <Button
+            color="primary"
+            onClick={onAddClick}
+            className={styles.AddButton}
+            startIcon={<AddIcon className={styles.AddIcon} />}
+          >
+            Add quick reply
           </Button>
         ) : null}
       </div>

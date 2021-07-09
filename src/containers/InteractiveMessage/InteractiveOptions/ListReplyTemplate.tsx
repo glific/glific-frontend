@@ -2,8 +2,9 @@ import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
-import styles from './InteractiveOptions.module.css';
+import styles from './ListReplyTemplate.module.css';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface ListReplyTemplateProps {
   index: number;
@@ -57,11 +58,12 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
   }
 
   const err = errors.templateButtons && errors.templateButtons[index];
-  if (err && err.options?.length !== options.length) {
+  if (err && err.options && err.options.length !== options.length) {
     return null;
   }
 
   const showDeleteIcon = inputFields[index]?.options.length > 1;
+  const defaultTitle = inputFields[index]?.title;
 
   const handleAddListItem = (helper: any) => {
     helper.push({ title: '', description: '' });
@@ -86,7 +88,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
 
   return (
     <div className={styles.WrapperBackground} key={index.toString()}>
-      <div className={styles.QuickReplyWrapper}>
+      <div className={styles.Section}>
+        <div>List {index + 1}</div>
+        <div>{inputFields.length > 1 ? <DeleteIcon onClick={onListRemoveClick} /> : null}</div>
+      </div>
+      <div className={styles.ListReplyWrapper}>
         <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
@@ -95,43 +101,44 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             onBlur={(e: any) => handleInputChange(e, 'title')}
             className={styles.TextField}
             error={isError('title')}
+            defaultValue={defaultTitle}
           />
           {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
             <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
           ) : null}
         </FormControl>
-        <div>{inputFields.length > 1 ? <DeleteIcon onClick={onListRemoveClick} /> : null}</div>
+
         <div>
           <FieldArray
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
                 <div>
-                  <div className={styles.WrapperBackground} key={itemIndex.toString()}>
-                    <div className={styles.CallToActionWrapper}>
-                      <div>
-                        <div className={styles.TextFieldWrapper}>
-                          <FormControl
-                            fullWidth
+                  <div className={styles.ListReplyItemWrapper} key={itemIndex.toString()}>
+                    <div className={styles.ListReplyItemContent}>
+                      <div className={styles.TextFieldWrapper}>
+                        <FormControl
+                          fullWidth
+                          error={isError('title', itemIndex)}
+                          className={styles.FormControl}
+                        >
+                          <TextField
+                            placeholder={`Title ${itemIndex + 1}`}
+                            variant="outlined"
+                            label={`Title ${itemIndex + 1}`}
+                            onBlur={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
+                            className={styles.TextField}
                             error={isError('title', itemIndex)}
-                            className={styles.FormControl}
-                          >
-                            <TextField
-                              placeholder={`Title ${itemIndex + 1}`}
-                              variant="outlined"
-                              label={`Title ${itemIndex + 1}`}
-                              onBlur={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
-                              className={styles.TextField}
-                              error={isError('title', itemIndex)}
-                            />
-                            {isError('title', itemIndex) ? (
-                              <FormHelperText>
-                                {errors.templateButtons[index].options[itemIndex].title}
-                              </FormHelperText>
-                            ) : null}
-                          </FormControl>
-                        </div>
+                            defaultValue={itemRow.title}
+                          />
+                          {isError('title', itemIndex) ? (
+                            <FormHelperText>
+                              {errors.templateButtons[index].options[itemIndex].title}
+                            </FormHelperText>
+                          ) : null}
+                        </FormControl>
                       </div>
+
                       <div className={styles.TextFieldWrapper}>
                         <FormControl
                           fullWidth
@@ -147,6 +154,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             }
                             className={styles.TextField}
                             error={isError('description', itemIndex)}
+                            defaultValue={itemRow.description}
                           />
                           {isError('description', itemIndex) ? (
                             <FormHelperText>
@@ -162,17 +170,27 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       ) : null}
                     </div>
                   </div>
-                  <div>
-                    <Button variant="outlined" color="primary" onClick={onListAddClick}>
-                      Add another list
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => handleAddListItem(arrayHelpers)}
-                    >
-                      Add another list item
-                    </Button>
+                  <div className={styles.ActionButtons}>
+                    {inputFields.length === index + 1 && options.length === itemIndex + 1 && (
+                      <Button
+                        color="primary"
+                        className={styles.AddButton}
+                        onClick={onListAddClick}
+                        startIcon={<AddIcon className={styles.AddIcon} />}
+                      >
+                        Add another list
+                      </Button>
+                    )}
+                    {options.length === itemIndex + 1 && (
+                      <Button
+                        color="primary"
+                        className={styles.AddButton}
+                        onClick={() => handleAddListItem(arrayHelpers)}
+                        startIcon={<AddIcon className={styles.AddIcon} />}
+                      >
+                        Add another list item
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))

@@ -20,6 +20,7 @@ import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { validateMedia } from '../../common/utils';
+import { WhatsAppToDraftEditor } from '../../common/RichEditor';
 
 export interface FlowProps {
   match: any;
@@ -32,6 +33,49 @@ const queries = {
   createItemQuery: CREATE_INTERACTIVE,
   updateItemQuery: UPDATE_INTERACTIVE,
   deleteItemQuery: DELETE_INTERACTIVE,
+};
+
+const convertJSONtoStateData = (JSONData: any, templateType: string) => {
+  const data = { ...JSONData };
+  const { title, body, items, content, options, globalButtons } = data;
+
+  if (templateType === QUICK_REPLY) {
+    const { type, text, caption, url } = content;
+    const result: any = {};
+    result.templateButtons = options.map((option: any) => ({ value: option.title }));
+    switch (type) {
+      case 'image':
+      case 'video':
+        result.type = `${type.toUpperCase()}`;
+        result.attachmentURL = url;
+        result.body = caption;
+        break;
+      case 'file':
+        result.type = 'DOCUMENT';
+        result.attachmentURL = url;
+        break;
+      default:
+        result.type = null;
+        result.body = text;
+    }
+    return result;
+  }
+
+  const result: any = {};
+  result.templateButtons = items.map((item: any) => {
+    const itemOptions = item.options.map((option: any) => ({
+      title: option.title,
+      description: option.description,
+    }));
+    return {
+      title: item.title,
+      options: itemOptions,
+    };
+  });
+  result.body = body;
+  result.title = title;
+  result.globalButton = globalButtons[0].text;
+  return result;
 };
 
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
@@ -51,11 +95,29 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const states = { title, body, globalButton, templateButtons, templateType, type, attachmentURL };
 
-  const setStates = ({ type: typeValue, interactiveContent, globalButton }: any) => {
-    setTemplateType(typeValue);
-    /**
-     * Parse interactive content json and set fields accordingly
-     */
+  const setStates = ({
+    type: typeValue,
+    interactiveContent: interactiveContentValue,
+    label: labelVal,
+  }: any) => {
+    const content = JSON.parse(interactiveContentValue);
+    const data = convertJSONtoStateData(content, typeValue);
+    if (typeValue === LIST) {
+      setTitle(data.title);
+      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+      setTemplateType(typeValue);
+      setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+      setGlobalButton(data.globalButton);
+    }
+
+    if (typeValue === QUICK_REPLY) {
+      setTitle(labelVal);
+      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+      setTemplateType(typeValue);
+      setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+      setType({ id: data.type, label: data.type });
+      setAttachmentURL(data.attachmentURL);
+    }
   };
 
   const validateURL = (value: string) => {
