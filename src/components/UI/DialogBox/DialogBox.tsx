@@ -12,7 +12,7 @@ export interface DialogProps {
   open?: boolean;
   title: string;
   handleOk?: Function;
-  handleCancel: Function;
+  handleCancel?: Function;
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
@@ -31,7 +31,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   open = true,
   title,
   handleOk = () => {},
-  handleCancel,
+  handleCancel = () => {},
   children,
   buttonOk = 'Confirm',
   buttonCancel = 'Cancel',

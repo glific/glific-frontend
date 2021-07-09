@@ -5,6 +5,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import styles from './ListReplyTemplate.module.css';
+import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
+// import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 
 interface ListReplyTemplateProps {
   title: string;
@@ -32,8 +34,56 @@ interface ListTemplate {
   onDrawerClose: any;
 }
 
+// export const TemplateDialog:React.FC<any>=(props)=>{
+//   return <DialogBox title={} />
+// }
+
 export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
-  const { title, body, globalButtonTitle, items, onGlobalButtonClick, disabled } = props;
+  const [showDialog, setShowDialog] = useState(false);
+  const [checkedItem, setCheckedItem] = useState<any>(null);
+  const { title, body, globalButtonTitle, items } = props;
+
+  let dialog;
+
+  if (showDialog) {
+    const list = items.map((item: any) => {
+      const { options, title: listItemTitle } = item;
+      return (
+        <div className={styles.ListItemContainer}>
+          <div className={styles.ListItemTitle}>{listItemTitle}</div>
+          {options.map((option: any) => (
+            <Button
+              key={option.title}
+              className={styles.ListItemChat}
+              onClick={() => setCheckedItem(option.title)}
+            >
+              <div>{option.title}</div>
+              <div>
+                <Radio
+                  value={option.title}
+                  name="radio-list-item"
+                  size="small"
+                  checked={option.title === checkedItem}
+                  color="primary"
+                />
+              </div>
+            </Button>
+          ))}
+        </div>
+      );
+    });
+    dialog = (
+      <DialogBox
+        title={globalButtonTitle}
+        titleAlign="left"
+        handleOk={() => setShowDialog(false)}
+        buttonOk="Done"
+        skipCancel
+      >
+        <div style={{ width: '395px' }}> {list}</div>
+      </DialogBox>
+    );
+  }
 
   return (
     <div>
@@ -45,14 +95,14 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
         <Button
           variant="contained"
           color="default"
-          disabled={disabled}
           startIcon={<MenuIcon />}
-          onClick={() => onGlobalButtonClick(items)}
+          onClick={() => setShowDialog(true)}
           className={styles.GlobalButton}
         >
           {globalButtonTitle}
         </Button>
       </div>
+      {dialog}
     </div>
   );
 };
