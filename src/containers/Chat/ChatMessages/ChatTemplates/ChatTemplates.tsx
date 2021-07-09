@@ -19,14 +19,19 @@ interface ChatTemplatesProps {
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const { t } = useTranslation();
+  const { searchVal } = props;
 
-  const filterVariables = () => setVariables({ term: props.searchVal });
+  const filterVariables = () => setVariables({ term: searchVal });
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
   });
 
   const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MSG, {
-    variables: {},
+    variables: {
+      filter: {
+        label: searchVal,
+      },
+    },
   });
 
   if (loading) return <div />;
