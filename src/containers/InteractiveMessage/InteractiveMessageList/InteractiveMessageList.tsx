@@ -21,10 +21,15 @@ const getLabel = (text: string) => {
 
 const getBody = (text: string) => {
   const message = JSON.parse(text);
-  console.log(message);
   let messageText = '';
   if (message.type === 'list') {
     messageText = message.body;
+  } else if (message.type === 'quick_reply') {
+    if (message.content.type === 'text') {
+      messageText = message.content.text;
+    } else if (['image', 'video'].includes(message.content.type)) {
+      messageText = message.content.caption;
+    }
   }
 
   return <div className={styles.TableText}>{messageText}</div>;
