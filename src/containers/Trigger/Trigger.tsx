@@ -38,16 +38,16 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
-  const [flowId, setFlowId] = useState('');
+  const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [startDate, setStartDate] = useState('');
-  const [frequency, setfrequency] = useState<any>('');
+  const [frequency, setfrequency] = useState<any>(null);
   const [endDate, setEndDate] = useState('');
   const [isRepeating, setIsRepeating] = useState('');
   const [days, setDays] = useState([]);
   const [daysDisabled, setDaysDisabled] = useState(true);
-  const [groupId, setGroupId] = useState<any>('');
+  const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
 
   const location = useLocation();
