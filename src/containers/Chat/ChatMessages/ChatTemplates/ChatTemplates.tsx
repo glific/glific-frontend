@@ -32,49 +32,52 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (loading) return <div />;
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
-  const handleSendingbody = (obj: any) => {
-    if (obj.body) props.handleSelectText(obj.body);
-    else props.handleSelectText(JSON.parse(obj.interactiveContent));
-  };
+  // const handleSendingbody = (obj: any) => {
+  //   if (obj.body) props.handleSelectText(obj.body);
+  //   else props.handleSelectText(JSON.parse(obj.interactiveContent));
+  // };
 
   const getListItem = (obj: any, index: number) => {
     const key = index;
-    let contentToshow;
-    const interactiveJSON = JSON.parse(obj.interactiveContent);
-    if (!obj.body) {
+    let tabListToShow;
+    if (obj.body) {
+      tabListToShow = obj.body;
+    } else {
+      const interactiveJSON = JSON.parse(obj.interactiveContent);
       if (interactiveJSON.type === 'list') {
-        contentToshow = JSON.parse(obj.interactiveContent).body;
+        tabListToShow = interactiveJSON.body;
       } else if (interactiveJSON.type === 'quick_reply') {
         switch (interactiveJSON.content.type) {
           case 'text':
-            contentToshow = interactiveJSON.content.text;
+            tabListToShow = interactiveJSON.content.text;
             break;
           case 'image':
-            contentToshow = interactiveJSON.content.caption;
+            tabListToShow = interactiveJSON.content.caption;
             break;
           case 'video':
-            contentToshow = interactiveJSON.content.caption;
+            tabListToShow = interactiveJSON.content.caption;
             break;
           case 'file':
-            contentToshow = interactiveJSON.content.filename;
+            tabListToShow = interactiveJSON.content.filename;
             break;
           default:
             break;
         }
       }
     }
+
     return (
       <div key={key}>
         <ListItem
           data-testid="templateItem"
           button
           disableRipple
-          onClick={() => handleSendingbody(obj)}
+          onClick={() => props.handleSelectText(obj)}
           className={styles.PopperListItem}
         >
           <p className={styles.Text}>
             <b style={{ marginRight: '5px' }}>{obj.label}:</b>
-            <span>{obj.body ? WhatsAppToJsx(obj.body) : WhatsAppToJsx(contentToshow)}</span>
+            <span>{WhatsAppToJsx(tabListToShow)}</span>
           </p>
           {obj.MessageMedia ? (
             <div className={styles.AttachmentPin}>
@@ -124,7 +127,6 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     } else {
       listItems = interactiveObj.map((obj: any, index: number) => getListItem(obj, index));
     }
-
     listItems = listItems.filter((n) => n);
 
     return listItems.length !== 0 ? (

@@ -202,9 +202,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     resetVariable();
     // set selected template
     setSelectedTemplate(obj);
-
-    // Conversion from HTML text to EditorState
-    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj)));
+    if (obj.body) {
+      // Conversion from HTML text to EditorState
+      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj)));
+    } else {
+      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.interactiveContent)));
+    }
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
