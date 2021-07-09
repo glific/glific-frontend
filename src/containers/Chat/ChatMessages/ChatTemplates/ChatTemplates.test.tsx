@@ -3,13 +3,14 @@ import ChatTemplates from './ChatTemplates';
 import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
-const mocks = TEMPLATE_MOCKS;
+const mocks = [TEMPLATE_MOCKS];
 
 describe('<ChatTemplates />', () => {
   let defaultProps = {
     searchVal: '',
     handleSelectText: jest.fn(),
     isTemplate: false,
+    isInteractiveMsg: false,
   };
 
   beforeEach(() => {
@@ -17,6 +18,7 @@ describe('<ChatTemplates />', () => {
       searchVal: '',
       handleSelectText: jest.fn(),
       isTemplate: false,
+      isInteractiveMsg: false,
     };
   });
 
@@ -67,5 +69,33 @@ describe('<ChatTemplates />', () => {
     });
 
     expect(defaultProps.handleSelectText).toHaveBeenCalled();
+  });
+});
+
+describe('<ChatTemplates />', () => {
+  let customProps = {
+    searchVal: '',
+    handleSelectText: jest.fn(),
+    isTemplate: false,
+    isInteractiveMsg: true,
+  };
+  beforeEach(() => {
+    customProps = {
+      searchVal: '',
+      handleSelectText: jest.fn(),
+      isTemplate: false,
+      isInteractiveMsg: true,
+    };
+  });
+
+  const chatTemplates = () => {
+    return (
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatTemplates {...customProps} />
+      </MockedProvider>
+    );
+  };
+  test('it should render <ChatTemplates /> correctly with customProps', () => {
+    expect(render(chatTemplates())).toBeTruthy();
   });
 });

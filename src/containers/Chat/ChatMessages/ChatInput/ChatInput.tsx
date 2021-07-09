@@ -202,11 +202,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
-    // set selected template
-    setSelectedTemplate(obj);
+
     if (isInteractiveMsg) {
       submitMessage(obj.interactiveContent, obj.type);
     } else {
+      // set selected template
+      setSelectedTemplate(obj);
       // Conversion from HTML text to EditorState
       setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
     }
