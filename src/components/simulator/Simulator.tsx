@@ -26,6 +26,8 @@ import {
   SEARCH_QUERY_VARIABLES,
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
+  INTERACTIVE_LIST,
+  INTERACTIVE_QUICK_REPLY,
 } from '../../common/constants';
 import { GUPSHUP_CALLBACK_URL } from '../../config';
 import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
@@ -37,16 +39,23 @@ import { setNotification } from '../../common/notification';
 import setLogs from '../../config/logs';
 import { WhatsAppTemplateButton } from '../../common/RichEditor';
 import { MessageType } from '../../containers/Chat/ChatConversations/MessageType/MessageType';
+import {
+  ListReplyTemplate,
+  SimulatorTemplate,
+  ListReplyTemplateDrawer,
+} from '../../containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
+
+import { QuickReplyTemplate } from '../../containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
 
 export interface SimulatorProps {
   showSimulator: boolean;
   setSimulatorId: any;
   simulatorIcon?: boolean;
   message?: any;
-  flowSimulator?: any;
+  flowSimulator?: boolean;
   isPreviewMessage?: boolean;
-  resetMessage?: any;
-  getFlowKeyword?: any;
+  resetMessage?: Function;
+  getFlowKeyword?: Function;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -63,6 +72,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
   const [reply, setReply] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
+  // Template listing
+  const [isDrawerOpen, setIsDrawerOpen] = useState<Boolean>(false);
+  const [selectedListTemplate, setSelectedListTemplate] = useState<any>(null);
 
   const variables = { organizationId: getUserSession('organizationId') };
   const client = useApolloClient();
@@ -119,12 +132,27 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
   }
 
-  const getStyleForDirection = (direction: string): string =>
-    direction === 'send' ? styles.SendMessage : styles.ReceivedMessage;
+  const getStyleForDirection = (direction: string, isInteractive: boolean): string => {
+    const simulatorClasses = [styles.ReceivedMessage, styles.InteractiveReceivedMessage];
+    if (isInteractive && direction === 'received') {
+      return simulatorClasses.join(' ');
+    }
+
+    if (direction === 'send') {
+      return styles.SendMessage;
+    }
+
+    return styles.ReceivedMessage;
+  };
 
   const releaseUserSimulator = () => {
     releaseSimulator();
     setSimulatorId(0);
+  };
+
+  const handleOpenListReplyDrawer = (items: any) => {
+    setSelectedListTemplate(items);
+    setIsDrawerOpen(true);
   };
 
   const renderMessage = (
@@ -134,24 +162,65 @@ export const Simulator: React.FC<SimulatorProps> = ({
     insertedAt: string,
     type: string,
     media: any,
-    location: any
+    location: any,
+    interactiveContent: any
   ) => {
     const { body, buttons } = WhatsAppTemplateButton(text);
+
+    // Checking if interactive content is present then only parse to JSON
+    const content = interactiveContent && JSON.parse(interactiveContent);
+    let isInteractiveContentPresent = false;
+    let template = {};
+
+    const TimeComponent = () => (
+      <>
+        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+          {moment(insertedAt).format(TIME_FORMAT)}
+        </span>
+        {direction === 'send' && <DoneAllIcon />}
+      </>
+    );
+
+    if (content) {
+      isInteractiveContentPresent = !!Object.entries(content).length;
+
+      if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
+        template = (
+          <ListReplyTemplate
+            {...content}
+            component={SimulatorTemplate}
+            onGlobalButtonClick={handleOpenListReplyDrawer}
+          />
+        );
+      }
+
+      if (isInteractiveContentPresent && type === INTERACTIVE_QUICK_REPLY) {
+        template = (
+          <QuickReplyTemplate
+            {...content}
+            isSimulator
+            onQuickReplyClick={(value: string) => setReply(value)}
+          />
+        );
+      }
+    }
+
     return (
       <div key={index}>
-        <div className={getStyleForDirection(direction)}>
-          <ChatMessageType
-            type={type}
-            media={media}
-            body={body}
-            location={location}
-            isSimulatedMessage={isSimulatedMessage}
-          />
+        <div className={getStyleForDirection(direction, isInteractiveContentPresent)}>
+          {isInteractiveContentPresent && direction !== 'send' ? (
+            template
+          ) : (
+            <ChatMessageType
+              type={type}
+              media={media}
+              body={body}
+              location={location}
+              isSimulatedMessage={isSimulatedMessage}
+            />
+          )}
 
-          <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-            {moment(insertedAt).format(TIME_FORMAT)}
-          </span>
-          {direction === 'send' ? <DoneAllIcon /> : null}
+          <TimeComponent />
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons
@@ -167,11 +236,29 @@ export const Simulator: React.FC<SimulatorProps> = ({
   const getChatMessage = () => {
     const chatMessage = messages
       .map((simulatorMessage: any, index: number) => {
-        const { body, insertedAt, type, media, location } = simulatorMessage;
+        const { body, insertedAt, type, media, location, interactiveContent } = simulatorMessage;
         if (simulatorMessage.receiver.id === simulatorId) {
-          return renderMessage(body, 'received', index, insertedAt, type, media, location);
+          return renderMessage(
+            body,
+            'received',
+            index,
+            insertedAt,
+            type,
+            media,
+            location,
+            interactiveContent
+          );
         }
-        return renderMessage(body, 'send', index, insertedAt, type, media, location);
+        return renderMessage(
+          body,
+          'send',
+          index,
+          insertedAt,
+          type,
+          media,
+          location,
+          interactiveContent
+        );
       })
       .reverse();
     setSimulatedMessage(chatMessage);
@@ -201,10 +288,10 @@ export const Simulator: React.FC<SimulatorProps> = ({
     });
     getChatMessage();
   };
-
   const sendMessage = (quickReplyText?: string) => {
     const sendMessageText = inputMessage === '' && message ? message : inputMessage;
     // check if send message text is not empty
+
     if (sendMessageText || quickReplyText) {
       const payload: any = {
         text: sendMessageText,
@@ -248,8 +335,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const getPreviewMessage = () => {
     if (message && message.type) {
-      const { body, insertedAt, type, media, location } = message;
-      const previewMessage = renderMessage(body, 'received', 0, insertedAt, type, media, location);
+      const { body, insertedAt, type, media, location, interactiveContent } = message;
+      const previewMessage = renderMessage(
+        body,
+        'received',
+        0,
+        insertedAt,
+        type,
+        media,
+        location,
+        interactiveContent
+      );
       if (['STICKER', 'AUDIO'].includes(message.type)) {
         setSimulatedMessage(previewMessage);
       } else if (message.body || message.media?.caption) {
@@ -304,6 +400,16 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setIsOpen(false);
   };
 
+  const handleListReplyDrawerClose = () => {
+    setIsDrawerOpen(false);
+    setSelectedListTemplate(null);
+  };
+
+  const handleListDrawerItemClick = (text: string) => {
+    sendMessage(text);
+    handleListReplyDrawerClose();
+  };
+
   const dropdown = (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div className={styles.Dropdown}>
@@ -344,6 +450,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
               <div className={styles.Messages} ref={messageRef} data-testid="simulatedMessages">
                 {simulatedMessages}
               </div>
+              {isDrawerOpen && <div className={styles.BackgroundTint} />}
               <div className={styles.Controls}>
                 <div>
                   <InsertEmoticonIcon className={styles.Icon} />
@@ -379,6 +486,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
                   <MicIcon />
                 </Button>
               </div>
+              {isDrawerOpen && (
+                <ListReplyTemplateDrawer
+                  drawerTitle="Items"
+                  items={selectedListTemplate}
+                  onItemClick={handleListDrawerItemClick}
+                  onDrawerClose={handleListReplyDrawerClose}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -393,7 +508,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     }
     getSimulator();
   };
-
   return (
     <>
       {showSimulator ? simulator : null}

@@ -1,0 +1,42 @@
+.ButtonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ButtonItem {
+  margin: 4px 0px;
+}
+
+.ButtonItem > button {
+  width: 100%;
+  border-radius: 12px;
+  padding: 8px;
+  font-size: 16px;
+  box-shadow: none;
+}
+
+.ChatMessageButton {
+  background: #eaedec !important;
+  color: #119656 !important;
+  border-radius: 12px;
+  padding: 11px 16px;
+}
+
+.SimulatorButton {
+  background: white !important;
+  color: #1690cf !important;
+}
+
+.MessageContent {
+  max-width: 100%;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif, emoji;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  clear: both;
+  max-width: 404px;
+  min-width: 85px;
+  padding: 10px;
+  background: white;
+  margin-bottom: 5px;
+}

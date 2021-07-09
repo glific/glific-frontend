@@ -1,0 +1,109 @@
+.ListReplyContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.GlobalButton {
+  width: 100%;
+}
+
+.GlobalButton > span {
+  justify-content: center;
+}
+
+.SimulatorButton {
+  composes: GlobalButton;
+  font-size: 12.5px !important;
+}
+
+.List {
+  height: calc(100% - 60px);
+  overflow-y: auto;
+}
+
+.ListItem {
+  width: 100%;
+  font-size: 12px !important;
+}
+
+.ListItem > span {
+  justify-content: space-between;
+}
+
+.Drawer {
+  background: white;
+  z-index: 100;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  padding: 8px;
+  height: 360px;
+  border-radius: 12px 12px 0px 0px;
+}
+
+.DrawerHeading {
+  display: flex;
+  justify-content: center;
+}
+
+.DrawerHeading > h3 {
+  margin: 0px !important;
+}
+
+.DrawerCloseIcon {
+  position: absolute;
+  left: 10px;
+  cursor: pointer;
+}
+
+.SendButton {
+  padding: 4px 0px;
+}
+
+.SendButton > button {
+  width: 100%;
+}
+.SendButton > span {
+  justify-content: center;
+}
+
+.ChatTemplateBody {
+  max-width: 100%;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif, emoji;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  clear: both;
+  max-width: 404px;
+  min-width: 85px;
+  padding: 10px 16px;
+  background: white;
+}
+
+.ChatTemplateBody > p:nth-of-type(1) {
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.ChatTemplateBody > p:nth-of-type(2) {
+  margin-top: 4px;
+}
+
+.ChatTemplateButton {
+  margin-top: 8px;
+}
+
+.ChatTemplateButton > button {
+  color: #119656 !important;
+  border-radius: 12px;
+  padding: 11px 16px;
+}
+
+.ChatTemplateButton > button:disabled {
+  background: #eaedec !important;
+}
+
+.SimulatorContent {
+  background: white;
+  padding: 8px 10px;
+}

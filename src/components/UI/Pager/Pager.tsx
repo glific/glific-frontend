@@ -30,7 +30,7 @@ interface PagerProps {
   };
   showCheckbox?: boolean;
   collapseOpen: boolean;
-  collapseRow: string;
+  collapseRow: string | undefined;
 }
 
 // create a collapsible row

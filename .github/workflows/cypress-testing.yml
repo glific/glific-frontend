@@ -129,5 +129,3 @@ jobs:
         run: |
           yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1

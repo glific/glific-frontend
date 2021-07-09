@@ -201,13 +201,13 @@
 
 .AttachmentIcon {
   position: absolute !important;
-  bottom: 4px;
+  bottom: 6px;
   right: 122px;
 }
 
 .AttachmentIcon svg {
-  height: 26px;
-  width: 26px;
+  height: 24px;
+  width: 24px;
 }
 
 .VariableIcon {
