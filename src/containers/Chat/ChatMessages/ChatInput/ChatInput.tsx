@@ -288,7 +288,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         quickSendTypes = [speedSends, interactiveMsg];
         break;
       case 'SESSION_AND_HSM':
-        quickSendTypes = [speedSends, templates, interactiveMsg];
+        quickSendTypes = [speedSends, templates];
         break;
       case 'HSM':
         quickSendTypes = [templates];
