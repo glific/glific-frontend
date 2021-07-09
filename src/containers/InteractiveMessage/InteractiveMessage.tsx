@@ -21,6 +21,7 @@ import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { validateMedia } from '../../common/utils';
 import { WhatsAppToDraftEditor } from '../../common/RichEditor';
+import { Simulator } from '../../components/simulator/Simulator';
 
 export interface FlowProps {
   match: any;
@@ -484,22 +485,31 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   return (
-    <FormLayout
-      {...queries}
-      match={match}
-      states={states}
-      setStates={setStates}
-      setPayload={setPayload}
-      validationSchema={validationScheme}
-      listItem="interactive"
-      listItemName="interactive"
-      dialogMessage={dialogMessage}
-      formFields={formFields}
-      redirectionLink="interactive-message"
-      cancelLink="interactive-message"
-      icon={interactiveMessageIcon}
-      languageSupport={false}
-    />
+    <>
+      <FormLayout
+        {...queries}
+        match={match}
+        states={states}
+        setStates={setStates}
+        setPayload={setPayload}
+        validationSchema={validationScheme}
+        listItem="interactive"
+        listItemName="interactive"
+        dialogMessage={dialogMessage}
+        formFields={formFields}
+        redirectionLink="interactive-message"
+        cancelLink="interactive-message"
+        icon={interactiveMessageIcon}
+        languageSupport={false}
+      />
+      <Simulator
+        setSimulatorId={0}
+        showSimulator
+        isPreviewMessage
+        message={{}}
+        simulatorIcon={false}
+      />
+    </>
   );
 };
 
