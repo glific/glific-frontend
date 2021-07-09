@@ -161,6 +161,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         },
       });
+    } else if (selectedTab === 'Interactive msg') {
+      props.onSendMessage(message, null, 'LIST', selectedTemplate, variableParam);
     } else {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
@@ -198,12 +200,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleSelectText = (obj: any) => {
     resetVariable();
-
     // set selected template
     setSelectedTemplate(obj);
 
     // Conversion from HTML text to EditorState
-    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj)));
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -216,7 +217,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     }
 
     // check if variable present
-    const isVariable = obj.body.match(pattern);
+    const isVariable = obj.body?.match(pattern);
     if (isVariable) {
       setVariable(true);
     }
@@ -350,6 +351,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               <div className={styles.Popup}>
                 <ChatTemplates
                   isTemplate={selectedTab === templates}
+                  isInteractiveMsg={selectedTab === interactiveMsg}
                   searchVal={searchVal}
                   handleSelectText={handleSelectText}
                 />

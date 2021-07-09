@@ -361,7 +361,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         type: messageType,
         flow: 'OUTBOUND',
       };
-
       createAndSendMessage({
         variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });
