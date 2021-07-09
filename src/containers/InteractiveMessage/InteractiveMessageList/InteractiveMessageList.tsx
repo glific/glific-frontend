@@ -12,6 +12,7 @@ import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
 } from '../../../graphql/queries/InteractiveMessage';
+import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
 
 export interface InteractiveMessageListProps {}
 
@@ -41,7 +42,7 @@ const interactiveMsgIcon = <InteractiveMessageIcon className={styles.FlowIcon} /
 const queries = {
   countQuery: GET_INTERACTIVE_MESSAGES_COUNT,
   filterItemsQuery: FILTER_INTERACTIVE_MESSAGES,
-  deleteItemQuery: DELETE_FLOW,
+  deleteItemQuery: DELETE_INTERACTIVE,
 };
 
 export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {
