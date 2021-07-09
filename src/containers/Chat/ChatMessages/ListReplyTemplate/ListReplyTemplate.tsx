@@ -44,7 +44,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
     const list = items.map((item: any) => {
       const { options, title: listItemTitle } = item;
       return (
-        <div className={styles.ListItemContainer}>
+        <div className={styles.ListItemContainer} key={listItemTitle}>
           <div className={styles.ListItemTitle}>{listItemTitle}</div>
           {options.map((option: any) => (
             <Button
