@@ -6,8 +6,6 @@ import styles from './InteractiveMessageList.module.css';
 import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
 
 import { List } from '../../List/List';
-import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
-
 import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,

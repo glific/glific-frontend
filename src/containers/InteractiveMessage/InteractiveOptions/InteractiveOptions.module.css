@@ -4,10 +4,13 @@
 }
 
 .RadioLabelWrapper {
-  width: 50%;
   align-items: center;
   display: flex;
   padding: 16px 0px;
+}
+
+.RadioLabelWrapper:last-child {
+  margin-left: 32px;
 }
 
 .RadioLabelWrapper > label {
