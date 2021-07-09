@@ -48,10 +48,10 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
             placeholder={name}
             label={name}
             variant="outlined"
-            onBlur={(e: any) => handleInputChange(e, 'value')}
+            onChange={(e: any) => handleInputChange(e, 'value')}
+            value={defaultValue}
             className={styles.TextField}
             error={isError('value')}
-            defaultValue={defaultValue}
           />
           {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
             <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>

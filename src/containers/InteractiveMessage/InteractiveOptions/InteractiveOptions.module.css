@@ -6,7 +6,8 @@
 .RadioLabelWrapper {
   align-items: center;
   display: flex;
-  padding: 16px 0px;
+  padding-top: 24px;
+  padding-bottom: 16px;
 }
 
 .RadioLabelWrapper:last-child {
@@ -28,9 +29,12 @@
   font-weight: 500 !important;
   font-size: 16px !important;
   font-family: 'Heebo', sans-serif !important;
-  color: #073f24 !important;
 }
 
 .SelectedLabel {
   border-color: #073f24 !important;
+}
+
+.GlobalButton {
+  padding-bottom: 16px;
 }

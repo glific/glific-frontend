@@ -47,8 +47,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     );
   };
 
-  const sectionLabel = `Section ${index + 1}`;
-  const sectionPlaceholder = `Section ${index + 1} title`;
+  const sectionLabel = `Enter list ${index + 1} title`;
 
   const { templateButtons } = values;
   const { options } = templateButtons[index];
@@ -96,12 +95,12 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
         <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
-            placeholder={sectionPlaceholder}
+            placeholder={sectionLabel}
             variant="outlined"
-            onBlur={(e: any) => handleInputChange(e, 'title')}
+            onChange={(e: any) => handleInputChange(e, 'title')}
             className={styles.TextField}
             error={isError('title')}
-            defaultValue={defaultTitle}
+            value={defaultTitle}
           />
           {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
             <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
@@ -125,11 +124,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           <TextField
                             placeholder={`Title ${itemIndex + 1}`}
                             variant="outlined"
-                            label={`Title ${itemIndex + 1}`}
-                            onBlur={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
+                            label={`Enter list item ${index + 1} title`}
+                            onChange={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
-                            defaultValue={itemRow.title}
+                            value={itemRow.title}
                           />
                           {isError('title', itemIndex) ? (
                             <FormHelperText>
@@ -148,13 +147,13 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           <TextField
                             placeholder={`Description ${itemIndex + 1}`}
                             variant="outlined"
-                            label={`Description ${itemIndex + 1}`}
-                            onBlur={(e: any) =>
+                            label={`Enter list item ${itemIndex + 1} description`}
+                            onChange={(e: any) =>
                               handleInputChange(e, 'description', itemIndex, true)
                             }
                             className={styles.TextField}
                             error={isError('description', itemIndex)}
-                            defaultValue={itemRow.description}
+                            value={itemRow.description}
                           />
                           {isError('description', itemIndex) ? (
                             <FormHelperText>

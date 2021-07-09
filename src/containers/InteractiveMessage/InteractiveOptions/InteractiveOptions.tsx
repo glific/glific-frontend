@@ -1,6 +1,13 @@
 /* eslint-disable */
 import React from 'react';
-import { RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  TextField,
+  FormHelperText,
+} from '@material-ui/core';
 import { FieldArray } from 'formik';
 
 import styles from './InteractiveOptions.module.css';
@@ -21,6 +28,7 @@ export interface InteractiveOptionsProps {
   onTemplateTypeChange: any;
   onListItemAddClick: any;
   onListItemRemoveClick: any;
+  onGlobalButtonInputChange: any;
   disabled: any;
 }
 export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
@@ -34,9 +42,10 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onInputChange,
   onListItemAddClick,
   onListItemRemoveClick,
+  onGlobalButtonInputChange,
   disabled = false,
 }) => {
-  const { values, errors } = form;
+  const { values, errors, touched } = form;
 
   const handleAddClick = (helper: any, type: string) => {
     const obj = type === LIST ? { title: '', options: [] } : { value: '' };
@@ -96,21 +105,6 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       >
         <div className={styles.RadioLabelWrapper}>
           <FormControlLabel
-            value={LIST}
-            control={
-              <Radio
-                color="primary"
-                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
-                size="small"
-              />
-            }
-            className={`${templateType === LIST ? styles.SelectedLabel : ''}`}
-            classes={{ root: styles.RadioLabel }}
-            label="List message"
-          />
-        </div>
-        <div className={styles.RadioLabelWrapper}>
-          <FormControlLabel
             value={QUICK_REPLY}
             control={
               <Radio
@@ -124,7 +118,44 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             label="Reply buttons"
           />
         </div>
+        <div className={styles.RadioLabelWrapper}>
+          <FormControlLabel
+            value={LIST}
+            control={
+              <Radio
+                color="primary"
+                checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
+                size="small"
+              />
+            }
+            className={`${templateType === LIST ? styles.SelectedLabel : ''}`}
+            classes={{ root: styles.RadioLabel }}
+            label="List message"
+          />
+        </div>
       </RadioGroup>
+      {templateType && templateType === LIST && (
+        <div className={styles.GlobalButton}>
+          <FormControl
+            fullWidth
+            error={!!(errors.globalButton && touched.globalButton)}
+            className={styles.FormControl}
+          >
+            <TextField
+              placeholder="List header"
+              variant="outlined"
+              label="List header"
+              className={styles.TextField}
+              onChange={(e: any) => onGlobalButtonInputChange(e.target.value)}
+              value={values.globalButton}
+              error={!!errors.globalButton && touched.globalButton}
+            />
+            {!!(errors.globalButton && touched.globalButton) ? (
+              <FormHelperText>{errors.globalButton}</FormHelperText>
+            ) : null}
+          </FormControl>
+        </div>
+      )}
 
       {templateType ? (
         <FieldArray

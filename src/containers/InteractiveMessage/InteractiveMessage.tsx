@@ -57,7 +57,7 @@ const convertJSONtoStateData = (JSONData: any, templateType: string) => {
         break;
       default:
         result.type = null;
-        result.body = caption;
+        result.body = caption || '';
     }
     return result;
   }
@@ -75,7 +75,7 @@ const convertJSONtoStateData = (JSONData: any, templateType: string) => {
   });
   result.body = body;
   result.title = title;
-  result.globalButton = globalButtons[0].text;
+  result.globalButton = globalButtons[0].title;
   return result;
 };
 
@@ -273,7 +273,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: t('Body*'),
+      placeholder: t('Message*'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
@@ -298,6 +298,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       onTemplateTypeChange: (value: string) => {
         setTemplateType(value);
       },
+      onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
   ];
 
@@ -371,7 +372,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (templateTypeVal === LIST) {
       const { text: bodyText } = getPayloadByMediaType(type?.id, payload);
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
-      const globalButtons = [{ type: 'text', text: globalButtonVal }];
+      const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
       const listJSON = { type: 'list', title: titleVal, body: bodyText, globalButtons, items };
       Object.assign(updatedPayload, {
@@ -381,16 +382,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       });
     }
     return updatedPayload;
-  };
-
-  const globalButtonInput = {
-    component: Input,
-    name: 'globalButton',
-    type: 'text',
-    placeholder: t('Global Button*'),
-    inputProp: {
-      onBlur: (event: any) => setGlobalButton(event.target.value),
-    },
   };
 
   const attachmentInputs = [
@@ -431,8 +422,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
   ];
 
-  const formFields =
-    templateType === LIST ? [...fields, globalButtonInput] : [...fields, ...attachmentInputs];
+  const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
   const validation: any = {
     title: Yup.string().required(t('Title is required.')),
