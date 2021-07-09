@@ -28,11 +28,12 @@ import { setNotification } from '../../../../common/notification';
 
 export interface ChatInputProps {
   onSendMessage(
-    content: string,
+    content: any,
     mediaId: string | null,
     messageType: string,
     selectedTemplate: any,
-    variableParam: any
+    variableParam: any,
+    interactiveContent: any
   ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus?: string;
@@ -93,7 +94,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           data.createMessageMedia.messageMedia.id,
           attachmentType,
           selectedTemplate,
-          variableParam
+          variableParam,
+          null
         );
         setAttachmentAdded(false);
         setAttachmentURL('');
@@ -127,7 +129,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
-  const submitMessage = async (message: string) => {
+  const submitMessage = async (message: string, type: any = null) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
       // converting blob into base64 format as needed by backend
@@ -161,10 +163,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         },
       });
-    } else if (selectedTab === 'Interactive msg') {
-      props.onSendMessage(message, null, 'LIST', selectedTemplate, variableParam);
+    } else if (type) {
+      props.onSendMessage(null, null, type, null, null, message);
     } else {
-      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam, null);
       resetVariable();
     }
 
@@ -198,15 +200,15 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setAttachmentType('');
   };
 
-  const handleSelectText = (obj: any) => {
+  const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
     // set selected template
     setSelectedTemplate(obj);
-    if (obj.body) {
-      // Conversion from HTML text to EditorState
-      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj)));
+    if (isInteractiveMsg) {
+      submitMessage(obj.interactiveContent, obj.type);
     } else {
-      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.interactiveContent)));
+      // Conversion from HTML text to EditorState
+      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
     }
 
     // Add attachment if present
@@ -286,7 +288,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         quickSendTypes = [speedSends, interactiveMsg];
         break;
       case 'SESSION_AND_HSM':
-        quickSendTypes = [speedSends, templates];
+        quickSendTypes = [speedSends, templates, interactiveMsg];
         break;
       case 'HSM':
         quickSendTypes = [templates];

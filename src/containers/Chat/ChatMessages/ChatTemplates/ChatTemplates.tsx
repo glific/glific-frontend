@@ -12,7 +12,7 @@ import { FILTER_INTERACTIVE_MSG } from '../../../../graphql/queries/InteractiveM
 
 interface ChatTemplatesProps {
   searchVal: string;
-  handleSelectText(obj: any): void;
+  handleSelectText(obj: any, isInteractiveMsg: boolean): void;
   isTemplate: boolean; // Will need to change if search won't be just by 'speed send' or 'template'.
   isInteractiveMsg: boolean;
 }
@@ -32,15 +32,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   if (loading) return <div />;
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
-  // const handleSendingbody = (obj: any) => {
-  //   if (obj.body) props.handleSelectText(obj.body);
-  //   else props.handleSelectText(JSON.parse(obj.interactiveContent));
-  // };
-
-  const getListItem = (obj: any, index: number) => {
+  const getListItem = (obj: any, index: number, isInteractiveMsg: boolean = false) => {
     const key = index;
     let tabListToShow;
-    if (obj.body) {
+
+    if (!isInteractiveMsg) {
       tabListToShow = obj.body;
     } else {
       const interactiveJSON = JSON.parse(obj.interactiveContent);
@@ -72,7 +68,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
           data-testid="templateItem"
           button
           disableRipple
-          onClick={() => props.handleSelectText(obj)}
+          onClick={() => props.handleSelectText(obj, isInteractiveMsg)}
           className={styles.PopperListItem}
         >
           <p className={styles.Text}>
@@ -125,7 +121,9 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
         return null;
       });
     } else {
-      listItems = interactiveObj.map((obj: any, index: number) => getListItem(obj, index));
+      listItems = interactiveObj.map((obj: any, index: number) =>
+        getListItem(obj, index, props.isInteractiveMsg)
+      );
     }
     listItems = listItems.filter((n) => n);
 
