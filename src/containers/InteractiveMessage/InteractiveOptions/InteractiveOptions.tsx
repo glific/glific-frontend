@@ -51,7 +51,8 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onListItemRemoveClick,
   disabled = false,
 }) => {
-  const { values } = form;
+  const { values, errors } = form;
+
   const handleAddClick = (helper: any, type: string) => {
     const obj = type === LIST ? { title: '', options: [] } : { value: '' };
     helper.push(obj);

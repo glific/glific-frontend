@@ -28,13 +28,23 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     onInputChange,
   } = props;
 
-  const isError = (key: string) =>
-    !!(
+  const isError = (key: string, itemIdx: number | null = null) => {
+    if (itemIdx !== null) {
+      return !!(
+        errors.templateButtons &&
+        touched.templateButtons &&
+        errors.templateButtons[index] &&
+        errors.templateButtons[index].options[itemIdx]?.[key]
+      );
+    }
+
+    return !!(
       errors.templateButtons &&
       touched.templateButtons &&
       errors.templateButtons[index] &&
       errors.templateButtons[index][key]
     );
+  };
 
   const sectionLabel = `Section ${index + 1}`;
   const sectionPlaceholder = `Section ${index + 1} title`;
@@ -46,7 +56,12 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     return null;
   }
 
-  const showDeleteIcon = inputFields[index].options.length > 1;
+  const err = errors.templateButtons && errors.templateButtons[index];
+  if (err && err.options?.length !== options.length) {
+    return null;
+  }
+
+  const showDeleteIcon = inputFields[index]?.options.length > 1;
 
   const handleAddListItem = (helper: any) => {
     helper.push({ title: '', description: '' });
@@ -72,7 +87,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
   return (
     <div className={styles.WrapperBackground} key={index.toString()}>
       <div className={styles.QuickReplyWrapper}>
-        <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
+        <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
             placeholder={sectionPlaceholder}
@@ -98,7 +113,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                         <div className={styles.TextFieldWrapper}>
                           <FormControl
                             fullWidth
-                            error={isError('title')}
+                            error={isError('title', itemIndex)}
                             className={styles.FormControl}
                           >
                             <TextField
@@ -107,13 +122,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                               label={`Title ${itemIndex + 1}`}
                               onBlur={(e: any) => handleInputChange(e, 'title', itemIndex, true)}
                               className={styles.TextField}
-                              error={isError('title')}
+                              error={isError('title', itemIndex)}
                             />
-                            {errors.templateButtons &&
-                            touched.templateButtons &&
-                            touched.templateButtons[index] ? (
+                            {isError('title', itemIndex) ? (
                               <FormHelperText>
-                                {errors.templateButtons[index]?.title}
+                                {errors.templateButtons[index].options[itemIndex].title}
                               </FormHelperText>
                             ) : null}
                           </FormControl>
@@ -122,7 +135,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       <div className={styles.TextFieldWrapper}>
                         <FormControl
                           fullWidth
-                          error={isError('title')}
+                          error={isError('description', itemIndex)}
                           className={styles.FormControl}
                         >
                           <TextField
@@ -133,12 +146,12 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                               handleInputChange(e, 'description', itemIndex, true)
                             }
                             className={styles.TextField}
-                            error={isError('title')}
+                            error={isError('description', itemIndex)}
                           />
-                          {errors.templateButtons &&
-                          touched.templateButtons &&
-                          touched.templateButtons[index] ? (
-                            <FormHelperText>{errors.templateButtons[index]?.title}</FormHelperText>
+                          {isError('description', itemIndex) ? (
+                            <FormHelperText>
+                              {errors.templateButtons[index].options[itemIndex].description}
+                            </FormHelperText>
                           ) : null}
                         </FormControl>
                       </div>

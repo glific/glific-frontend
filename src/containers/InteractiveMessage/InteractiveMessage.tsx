@@ -9,12 +9,17 @@ import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as InteractiveMessageIcon } from '../../assets/images/icons/InteractiveMessage/Dark.svg';
 
-import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW } from '../../graphql/mutations/Flow';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_FLOW } from '../../graphql/queries/Flow';
+import {
+  CREATE_INTERACTIVE,
+  UPDATE_INTERACTIVE,
+  DELETE_INTERACTIVE,
+} from '../../graphql/mutations/InteractiveMessage';
+import { GET_INTERACTIVE_MESSAGE } from '../../graphql/queries/InteractiveMessage';
 import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
-import { LIST, QUICK_REPLY } from '../../common/constants';
+import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
+import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
+import { validateMedia } from '../../common/utils';
 
 export interface FlowProps {
   match: any;
@@ -23,48 +28,53 @@ export interface FlowProps {
 const interactiveMessageIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
 
 const queries = {
-  getItemQuery: GET_FLOW,
-  createItemQuery: CREATE_FLOW,
-  updateItemQuery: UPDATE_FLOW,
-  deleteItemQuery: DELETE_FLOW,
+  getItemQuery: GET_INTERACTIVE_MESSAGE,
+  createItemQuery: CREATE_INTERACTIVE,
+  updateItemQuery: UPDATE_INTERACTIVE,
+  deleteItemQuery: DELETE_INTERACTIVE,
 };
 
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
-  const [name, setName] = useState('');
-  const [keywords, setKeywords] = useState('');
+  const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
-  const [isActive, setIsActive] = useState(true);
-  const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
+  const [globalButton, setGlobalButton] = useState('');
+
+  const [isUrlValid, setIsUrlValid] = useState<any>();
+  const [type, setType] = useState<any>('');
+  const [attachmentURL, setAttachmentURL] = useState<any>();
+
+  const [warning, setWarning] = useState<any>();
+
   const { t } = useTranslation();
 
-  const states = { isActive, name, keywords, ignoreKeywords, body, templateButtons, templateType };
+  const states = { title, body, globalButton, templateButtons, templateType, type, attachmentURL };
 
-  const setStates = ({
-    name: nameValue,
-    keywords: keywordsValue,
-    isActive: isActiveValue,
-    ignoreKeywords: ignoreKeywordsValue,
-  }: any) => {
-    // Override name & keywords when creating Flow Copy
-
-    const fieldKeywords = keywordsValue;
-
-    setName(nameValue);
-    setIsActive(isActiveValue);
-
-    // we are receiving keywords as an array object
-    if (fieldKeywords.length > 0) {
-      // lets display it comma separated
-      setKeywords(fieldKeywords.join(','));
-    }
-    setIgnoreKeywords(ignoreKeywordsValue);
+  const setStates = ({ type: typeValue, interactiveContent, globalButton }: any) => {
+    setTemplateType(typeValue);
+    /**
+     * Parse interactive content json and set fields accordingly
+     */
   };
 
-  const FormSchema = Yup.object().shape({
-    name: Yup.string().required(t('Name is required.')),
-  });
+  const validateURL = (value: string) => {
+    if (value && type) {
+      validateMedia(value, type.id).then((response: any) => {
+        if (!response.data.is_valid) {
+          setIsUrlValid(response.data.message);
+        } else {
+          setIsUrlValid('');
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if ((type === '' || type) && attachmentURL) {
+      validateURL(attachmentURL);
+    }
+  }, [type, attachmentURL]);
 
   const handleAddInteractiveTemplate = (addFromTemplate: boolean = true) => {
     let buttons: any = [];
@@ -157,29 +167,59 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setTemplateButtons(result);
   };
 
+  const displayWarning = () => {
+    if (type.id === 'DOCUMENT') {
+      setWarning(
+        <div className={styles.Warning}>
+          <ol>
+            <li>{t('Body is not supported for document.')}</li>
+          </ol>
+        </div>
+      );
+    } else {
+      setWarning(null);
+    }
+  };
+
   useEffect(() => {
     if (templateType) {
       handleAddInteractiveTemplate(false);
     }
   }, [templateType]);
 
-  const dialogMessage = t("You won't be able to use this flow again.");
+  useEffect(() => {
+    displayWarning();
+  }, [type]);
 
-  const formFields = [
+  const dialogMessage = t("You won't be able to use this flow again.");
+  const options = MEDIA_MESSAGE_TYPES.filter(
+    (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
+  ).map((option: string) => ({ id: option, label: option }));
+
+  let timer: any = null;
+  const fields = [
     {
       component: Input,
-      name: 'name',
+      name: 'title',
       type: 'text',
       placeholder: t('Title*'),
+      inputProp: {
+        onBlur: (event: any) => setTitle(event.target.value),
+      },
     },
     {
       component: EmojiInput,
       name: 'body',
-      placeholder: t('Message*'),
+      placeholder: t('Body*'),
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      helperText: 'You can also use variables in message enter @ to see the available list',
+      // helperText: 'You can also use variables in message enter @ to see the available list',
+      inputProp: {
+        onBlur: (editorState: any) => {
+          setBody(editorState);
+        },
+      },
     },
     {
       component: InteractiveOptions,
@@ -198,21 +238,187 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
   ];
 
-  const setPayload = (payload: any) => {
-    let formattedKeywords;
-    if (payload.keywords) {
-      // remove white spaces
-      const inputKeywords = payload.keywords.replace(/[\s]+/g, '');
-      // convert to array
-      formattedKeywords = inputKeywords.split(',');
+  const getPayloadByMediaType = (mediaType: string, payload: any) => {
+    const result: any = {};
+
+    switch (mediaType) {
+      case 'IMAGE':
+      case 'VIDEO':
+        result.type = `${mediaType.toLowerCase()}`;
+        result.url = payload.attachmentURL;
+        result.caption = payload.body.getCurrentContent().getPlainText();
+        break;
+      case 'DOCUMENT':
+        result.type = 'file';
+        result.url = payload.attachmentURL;
+        result.filename = 'file';
+        break;
+      default:
+        result.type = 'text';
+        result.text = payload.body.getCurrentContent().getPlainText();
+        break;
     }
 
-    // return modified payload
-    return {
-      ...payload,
-      keywords: formattedKeywords,
-    };
+    return result;
   };
+
+  const getTemplateButtonPayload = (typeVal: string, buttons: Array<any>) => {
+    if (typeVal === QUICK_REPLY) {
+      return buttons.map((button: any) => ({ type: 'text', title: button.value }));
+    }
+
+    return buttons.map((button: any) => {
+      const { title: sectionTitle, options } = button;
+      const sectionOptions = options.map((option: any) => ({
+        type: 'text',
+        title: option.title,
+        description: option.description,
+      }));
+      return {
+        title: sectionTitle,
+        subtitle: sectionTitle,
+        options: sectionOptions,
+      };
+    });
+  };
+
+  const setPayload = (payload: any) => {
+    const updatedPayload: any = { type: null, interactiveContent: null, label: null };
+    const {
+      templateType: templateTypeVal,
+      templateButtons: templateButtonVal,
+      title: titleVal,
+      globalButton: globalButtonVal,
+    } = payload;
+
+    if (templateTypeVal === QUICK_REPLY) {
+      const content = getPayloadByMediaType(type?.id, payload);
+      const options = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
+
+      const quickReplyJSON = { type: 'quick_reply', content, options };
+
+      Object.assign(updatedPayload, {
+        type: QUICK_REPLY,
+        label: titleVal,
+        interactiveContent: JSON.stringify(quickReplyJSON),
+      });
+    }
+
+    if (templateTypeVal === LIST) {
+      const { text: bodyText } = getPayloadByMediaType(type?.id, payload);
+      const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
+      const globalButtons = [{ type: 'text', text: globalButtonVal }];
+
+      const listJSON = { type: 'list', title: titleVal, body: bodyText, globalButtons, items };
+      Object.assign(updatedPayload, {
+        type: LIST,
+        label: titleVal,
+        interactiveContent: JSON.stringify(listJSON),
+      });
+    }
+    return updatedPayload;
+  };
+
+  const globalButtonInput = {
+    component: Input,
+    name: 'globalButton',
+    type: 'text',
+    placeholder: t('Global Button*'),
+    inputProp: {
+      onBlur: (event: any) => setGlobalButton(event.target.value),
+    },
+  };
+
+  const attachmentInputs = [
+    {
+      component: AutoComplete,
+      name: 'type',
+      options,
+      optionLabel: 'label',
+      multiple: false,
+      helperText: warning,
+      textFieldProps: {
+        variant: 'outlined',
+        label: t('Attachment Type'),
+      },
+      onChange: (event: any) => {
+        const val = event || '';
+        if (!event) {
+          setIsUrlValid(val);
+        }
+        setType(val);
+      },
+    },
+    {
+      component: Input,
+      name: 'attachmentURL',
+      type: 'text',
+      placeholder: t('Attachment URL'),
+      validate: () => isUrlValid,
+      inputProp: {
+        onBlur: (event: any) => {
+          setAttachmentURL(event.target.value);
+        },
+        onChange: (event: any) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+        },
+      },
+    },
+  ];
+
+  const formFields =
+    templateType === LIST ? [...fields, globalButtonInput] : [...fields, ...attachmentInputs];
+
+  const validation: any = {
+    title: Yup.string().required(t('Title is required.')),
+    body: Yup.string()
+      .transform((current, original) => original.getCurrentContent().getPlainText())
+      .required(t('Message content is required.')),
+  };
+
+  if (templateType === LIST) {
+    validation.templateButtons = Yup.array()
+      .of(
+        Yup.object().shape({
+          title: Yup.string().required('Required'),
+          options: Yup.array().of(
+            Yup.object().shape({
+              title: Yup.string().required('Title is required'),
+              description: Yup.string().required('Description is required'),
+            })
+          ),
+        })
+      )
+      .min(1);
+
+    validation.globalButton = Yup.string().required('Required');
+  } else {
+    validation.templateButtons = Yup.array()
+      .of(
+        Yup.object().shape({
+          value: Yup.string().required('Required'),
+        })
+      )
+      .min(1)
+      .max(3);
+
+    validation.type = Yup.object()
+      .nullable()
+      .when('attachmentURL', {
+        is: (val: string) => val && val !== '',
+        then: Yup.object().nullable().required(t('Type is required.')),
+      });
+
+    validation.attachmentURL = Yup.string()
+      .nullable()
+      .when('type', {
+        is: (val: any) => val && val.id,
+        then: Yup.string().required(t('Attachment URL is required.')),
+      });
+  }
+
+  const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   return (
     <FormLayout
@@ -221,14 +427,13 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       states={states}
       setStates={setStates}
       setPayload={setPayload}
-      validationSchema={FormSchema}
-      listItemName="interactive msg"
+      validationSchema={validationScheme}
+      listItem="interactive"
+      listItemName="interactive"
       dialogMessage={dialogMessage}
       formFields={formFields}
-      redirectionLink="flow"
-      cancelLink="flow"
-      linkParameter="uuid"
-      listItem="flow"
+      redirectionLink="interactive-message"
+      cancelLink="interactive-message"
       icon={interactiveMessageIcon}
       languageSupport={false}
     />
