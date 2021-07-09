@@ -6,7 +6,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import styles from './ListReplyTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
-// import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
 
 interface ListReplyTemplateProps {
   title: string;
@@ -33,10 +32,6 @@ interface ListTemplate {
   onItemClick: any;
   onDrawerClose: any;
 }
-
-// export const TemplateDialog:React.FC<any>=(props)=>{
-//   return <DialogBox title={} />
-// }
 
 export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -80,7 +75,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
         buttonOk="Done"
         skipCancel
       >
-        <div style={{ width: '395px' }}> {list}</div>
+        <div className={styles.DialogContent}> {list}</div>
       </DialogBox>
     );
   }
