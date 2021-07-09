@@ -23,7 +23,7 @@ import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from '../../graphql/mu
 export interface TriggerProps {
   match: any;
 }
-const checkDateTimeValidation = (startAtValue: any, startDateValue: any) => {
+const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
   const isDateAhead = moment(startDateValue).isAfter(moment());
   const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
 
@@ -52,7 +52,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const location = useLocation();
   const { t } = useTranslation();
-  console.log(moment().format('THH:mm:ss'));
   const states = {
     flowId,
     startTime,
