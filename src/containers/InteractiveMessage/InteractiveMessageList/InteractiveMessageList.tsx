@@ -12,6 +12,7 @@ import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
 } from '../../../graphql/queries/InteractiveMessage';
+import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
 
 export interface InteractiveMessageListProps {}
 
@@ -24,6 +25,12 @@ const getBody = (text: string) => {
   let messageText = '';
   if (message.type === 'list') {
     messageText = message.body;
+  } else if (message.type === 'quick_reply') {
+    if (message.content.type === 'text') {
+      messageText = message.content.text;
+    } else if (['image', 'video'].includes(message.content.type)) {
+      messageText = message.content.caption;
+    }
   }
 
   return <div className={styles.TableText}>{messageText}</div>;
