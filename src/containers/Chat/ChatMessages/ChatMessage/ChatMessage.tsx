@@ -268,7 +268,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   const { body: bodyText, buttons: templateButtons } = WhatsAppTemplateButton(body);
 
   const content: any = JSON.parse(interactiveContent);
-  const isInteractiveContentPresent: Boolean = !!Object.entries(content).length;
+  const isInteractiveContentPresent: Boolean = content ? !!Object.entries(content).length : false;
 
   const errorClasses = messageErrorStatus ? styles.ErrorContent : '';
   const stickerClasses = type === 'STICKER' ? styles.StickerBackground : '';

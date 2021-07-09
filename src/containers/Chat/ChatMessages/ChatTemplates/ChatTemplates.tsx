@@ -8,38 +8,77 @@ import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/i
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
+import { FILTER_INTERACTIVE_MSG } from '../../../../graphql/queries/InteractiveMsg';
 
 interface ChatTemplatesProps {
   searchVal: string;
-  handleSelectText(obj: any): void;
+  handleSelectText(obj: any, isInteractiveMsg: boolean): void;
   isTemplate: boolean; // Will need to change if search won't be just by 'speed send' or 'template'.
+  isInteractiveMsg: boolean;
 }
 
 export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   const { t } = useTranslation();
+  const { searchVal } = props;
 
-  const filterVariables = () => setVariables({ term: props.searchVal });
+  const filterVariables = () => setVariables({ term: searchVal });
   const { loading, error, data } = useQuery<any>(FILTER_TEMPLATES, {
     variables: filterVariables(),
+  });
+
+  const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MSG, {
+    variables: {
+      filter: {
+        label: searchVal,
+      },
+    },
   });
 
   if (loading) return <div />;
   if (error || data.sessionTemplates === undefined) return <p>{t('Error :(')}</p>;
 
-  const getListItem = (obj: any, index: number) => {
+  const getListItem = (obj: any, index: number, isInteractiveMsg: boolean = false) => {
     const key = index;
+    let tabListToShow;
+
+    if (!isInteractiveMsg) {
+      tabListToShow = obj.body;
+    } else {
+      const interactiveJSON = JSON.parse(obj.interactiveContent);
+      if (interactiveJSON.type === 'list') {
+        tabListToShow = interactiveJSON.body;
+      } else if (interactiveJSON.type === 'quick_reply') {
+        switch (interactiveJSON.content.type) {
+          case 'text':
+            tabListToShow = interactiveJSON.content.text;
+            break;
+          case 'image':
+            tabListToShow = interactiveJSON.content.caption;
+            break;
+          case 'video':
+            tabListToShow = interactiveJSON.content.caption;
+            break;
+          case 'file':
+            tabListToShow = interactiveJSON.content.filename;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
     return (
       <div key={key}>
         <ListItem
           data-testid="templateItem"
           button
           disableRipple
-          onClick={() => props.handleSelectText(obj)}
+          onClick={() => props.handleSelectText(obj, isInteractiveMsg)}
           className={styles.PopperListItem}
         >
           <p className={styles.Text}>
             <b style={{ marginRight: '5px' }}>{obj.label}:</b>
-            <span>{WhatsAppToJsx(obj.body)}</span>
+            <span>{WhatsAppToJsx(tabListToShow)}</span>
           </p>
           {obj.MessageMedia ? (
             <div className={styles.AttachmentPin}>
@@ -63,22 +102,34 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
         });
       }
     });
-    const templateObj = [...data.sessionTemplates, ...translationsObj];
-    const text = props.isTemplate ? 'templates' : 'speed sends';
-    let listItems = templateObj.map((obj: any, index: number) => {
-      if (obj.isHsm === props.isTemplate) {
-        // True HSM === Template, False HSM === Speed send
-        // Display only active & APPROVED template
-        if (obj.isHsm && obj.isActive && obj.status === 'APPROVED') {
-          return getListItem(obj, index);
-        }
-        if (!obj.isHsm) {
-          return getListItem(obj, index);
-        }
-      }
-      return null;
-    });
 
+    const templateObj = [...data.sessionTemplates, ...translationsObj];
+    const interactiveObj = interactives ? [...interactives.interactives] : [];
+    let text;
+    let listItems;
+    if (props.isTemplate) text = 'templates';
+    else if (props.isInteractiveMsg) text = 'ineractive msg';
+    else text = 'speed sends';
+
+    if (!props.isInteractiveMsg) {
+      listItems = templateObj.map((obj: any, index: number) => {
+        if (obj.isHsm === props.isTemplate) {
+          // True HSM === Template, False HSM === Speed send
+          // Display only active & APPROVED template
+          if (obj.isHsm && obj.isActive && obj.status === 'APPROVED') {
+            return getListItem(obj, index);
+          }
+          if (!obj.isHsm) {
+            return getListItem(obj, index);
+          }
+        }
+        return null;
+      });
+    } else {
+      listItems = interactiveObj.map((obj: any, index: number) =>
+        getListItem(obj, index, props.isInteractiveMsg)
+      );
+    }
     listItems = listItems.filter((n) => n);
 
     return listItems.length !== 0 ? (

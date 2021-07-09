@@ -28,11 +28,12 @@ import { setNotification } from '../../../../common/notification';
 
 export interface ChatInputProps {
   onSendMessage(
-    content: string,
+    content: any,
     mediaId: string | null,
     messageType: string,
     selectedTemplate: any,
-    variableParam: any
+    variableParam: any,
+    interactiveContent: any
   ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus?: string;
@@ -70,6 +71,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
   const templates = 'Templates';
+  const interactiveMsg = 'Interactive msg';
   let uploadPermission = false;
   const client = useApolloClient();
 
@@ -92,7 +94,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           data.createMessageMedia.messageMedia.id,
           attachmentType,
           selectedTemplate,
-          variableParam
+          variableParam,
+          null
         );
         setAttachmentAdded(false);
         setAttachmentURL('');
@@ -126,7 +129,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
-  const submitMessage = async (message: string) => {
+  const submitMessage = async (message: string, type: any = null) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
       // converting blob into base64 format as needed by backend
@@ -160,8 +163,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         },
       });
+    } else if (type) {
+      props.onSendMessage(null, null, type, null, null, message);
     } else {
-      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
+      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam, null);
       resetVariable();
     }
 
@@ -195,14 +200,16 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setAttachmentType('');
   };
 
-  const handleSelectText = (obj: any) => {
+  const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
-
     // set selected template
     setSelectedTemplate(obj);
-
-    // Conversion from HTML text to EditorState
-    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+    if (isInteractiveMsg) {
+      submitMessage(obj.interactiveContent, obj.type);
+    } else {
+      // Conversion from HTML text to EditorState
+      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+    }
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -215,7 +222,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     }
 
     // check if variable present
-    const isVariable = obj.body.match(pattern);
+    const isVariable = obj.body?.match(pattern);
     if (isVariable) {
       setVariable(true);
     }
@@ -278,10 +285,10 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   if (contactBspStatus) {
     switch (contactBspStatus) {
       case 'SESSION':
-        quickSendTypes = [speedSends];
+        quickSendTypes = [speedSends, interactiveMsg];
         break;
       case 'SESSION_AND_HSM':
-        quickSendTypes = [speedSends, templates];
+        quickSendTypes = [speedSends, templates, interactiveMsg];
         break;
       case 'HSM':
         quickSendTypes = [templates];
@@ -335,7 +342,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
-
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -349,6 +355,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
               <div className={styles.Popup}>
                 <ChatTemplates
                   isTemplate={selectedTab === templates}
+                  isInteractiveMsg={selectedTab === interactiveMsg}
                   searchVal={searchVal}
                   handleSelectText={handleSelectText}
                 />
