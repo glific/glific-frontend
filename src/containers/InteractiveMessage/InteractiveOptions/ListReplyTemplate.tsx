@@ -113,8 +113,8 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
             name={`templateButtons[${index}].options`}
             render={(arrayHelpers) =>
               options.map((itemRow: any, itemIndex: any) => (
-                <div>
-                  <div className={styles.ListReplyItemWrapper} key={itemIndex.toString()}>
+                <div key={itemIndex.toString()}>
+                  <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
                         <FormControl
