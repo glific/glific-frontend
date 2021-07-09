@@ -40,7 +40,7 @@ const convertJSONtoStateData = (JSONData: any, templateType: string) => {
   const { title, body, items, content, options, globalButtons } = data;
 
   if (templateType === QUICK_REPLY) {
-    const { type, text, caption, url } = content;
+    const { type, caption, url } = content;
     const result: any = {};
     result.templateButtons = options.map((option: any) => ({ value: option.title }));
     switch (type) {
@@ -56,7 +56,7 @@ const convertJSONtoStateData = (JSONData: any, templateType: string) => {
         break;
       default:
         result.type = null;
-        result.body = text;
+        result.body = caption;
     }
     return result;
   }
@@ -317,7 +317,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         break;
       default:
         result.type = 'text';
-        result.text = payload.body.getCurrentContent().getPlainText();
+        result.text = payload.title;
+        result.caption = payload.body.getCurrentContent().getPlainText();
         break;
     }
 
