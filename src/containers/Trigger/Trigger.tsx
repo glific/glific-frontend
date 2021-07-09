@@ -23,6 +23,19 @@ import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from '../../graphql/mu
 export interface TriggerProps {
   match: any;
 }
+const checkDateTimeValidation = (startAtValue: string, startDateValue: string) => {
+  const isDateAhead = moment(startDateValue).isAfter(moment());
+  const isTimeAhead = startAtValue > moment().format('THH:mm:ss');
+
+  if (!isDateAhead) {
+    // if start date is current date then only check for time
+    if (isTimeAhead) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+};
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [flowId, setFlowId] = useState('');
@@ -36,9 +49,9 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>('');
   const [minDate, setMinDate] = useState<any>(new Date());
+
   const location = useLocation();
   const { t } = useTranslation();
-
   const states = {
     flowId,
     startTime,
@@ -59,18 +72,27 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   const FormSchema = Yup.object().shape({
     flowId: Yup.object().nullable().required(t('Flow is required')),
-    startTime: Yup.string().required(t('Time is required.')),
+    startTime: Yup.string()
+      .required(t('Time is required.'))
+      .when('startDate', (startDateValue: any, schema: any) =>
+        schema.test({
+          test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
+          message: 'Start time should be greater than current time',
+        })
+      ),
     startDate: Yup.string().nullable().required(t('Start date is required')),
+
     endDate: Yup.string()
       .nullable()
       .required(t('End date is required'))
       .when('startDate', (startDateValue: any, schema: any) =>
         schema.test({
           test: (endDateValue: any) =>
-            startDateValue && moment(endDateValue).isAfter(startDateValue, 'days'),
+            startDateValue && moment(endDateValue).isAfter(startDateValue),
           message: t('End date should be greater than the start date'),
         })
       ),
+
     days: Yup.array()
       .nullable()
       .when('frequency', {
@@ -148,6 +170,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       type: 'date',
       name: 'endDate',
       placeholder: t('End date'),
+      minDate,
     },
     {
       component: TimePicker,
@@ -240,7 +263,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     // covert the time to UTC
     const startAt = moment(`
       ${moment(payloadCopy.startDate).format('yyyy-MM-DD')}${payloadCopy.startTime}`).utc();
-
     const newPayload = {
       isActive: payloadCopy.isActive,
       isRepeating: true,
