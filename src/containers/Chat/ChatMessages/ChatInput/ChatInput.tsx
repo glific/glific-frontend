@@ -288,7 +288,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         quickSendTypes = [speedSends, interactiveMsg];
         break;
       case 'SESSION_AND_HSM':
-        quickSendTypes = [speedSends, templates];
+        quickSendTypes = [speedSends, templates, interactiveMsg];
         break;
       case 'HSM':
         quickSendTypes = [templates];
@@ -342,7 +342,6 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
-
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
