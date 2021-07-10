@@ -165,6 +165,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       });
     } else if (type) {
       props.onSendMessage(null, null, type, null, null, message);
+      setSelectedTab(''); // unselect the the tab
+      setOpen(false); // close the tab list suggestions
     } else {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam, null);
       resetVariable();
