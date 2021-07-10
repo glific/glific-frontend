@@ -38,6 +38,7 @@ export interface AutocompleteProps {
   selectedOptionsIds?: any;
   selectTextAsOption?: boolean;
   onInputChange?: any;
+  valueElementName?: string;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -70,6 +71,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   selectedOptionsIds = [],
   selectTextAsOption = false,
   onInputChange = () => null,
+  valueElementName = 'id',
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -171,7 +173,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
-          getOptionSelected={(option, value) => option.id === value.id}
+          getOptionSelected={(option, value) =>
+            option[valueElementName] === value[valueElementName]
+          }
           onChange={(event, value: any) => {
             if (roleSelection) {
               roleSelection(value);

@@ -183,6 +183,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       placeholder: t('Repeat'),
       options: triggerFrequency,
       optionLabel: 'label',
+      valueElementName: 'value',
       multiple: false,
       textFieldProps: {
         label: t('Repeat'),
