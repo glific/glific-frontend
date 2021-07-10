@@ -54,7 +54,7 @@ export const LIST_ITEM_MOCKS = [
       data: {
         createTag: {
           tag: {
-            id: '121',
+            id: '3',
             description: 'important label',
             label: 'important',
             colorCode: '#0C976D',
@@ -82,12 +82,12 @@ export const LIST_ITEM_MOCKS = [
       data: {
         createTag: {
           tag: {
-            id: '121',
+            id: '4',
             description: 'new Tag description',
             label: 'new Tag',
             colorCode: '#0C976D',
             parent: {
-              id: '1',
+              id: '2',
             },
           },
         },
@@ -124,7 +124,7 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            id: '87',
+            id: '2',
             label: 'Important',
             keywords: ['Hi'],
             description: 'important task',
@@ -134,7 +134,7 @@ export const LIST_ITEM_MOCKS = [
             updatedAt: '2020-12-01T18:00:28Z',
           },
           {
-            id: '94',
+            id: '1',
             label: 'To Do',
             keywords: ['Hi'],
             description: 'complete this task',

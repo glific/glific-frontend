@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
-import { Organisation } from './Organisation';
 import { MockedProvider } from '@apollo/client/testing';
 import { LIST_ITEM_MOCKS } from '../SettingList.test.helper';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Organisation } from './Organisation';
 
 const mocks = LIST_ITEM_MOCKS;
 
