@@ -81,7 +81,7 @@ export const convertToWhatsApp = (editorState: any) => {
 export const WhatsAppToDraftEditor = (text: string) => {
   const regexforBold = /[*][^*]*[*]/gi;
 
-  const addedBold = text.replace(regexforBold, (str: any) => `*${str}*`);
+  const addedBold = text && text.replace(regexforBold, (str: any) => `*${str}*`);
 
   const rawData = MarkDownConvertor.markdownToDraft(addedBold, {
     preserveNewlines: true,

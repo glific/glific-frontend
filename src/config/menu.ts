@@ -50,6 +50,14 @@ const menus = [
     roles: ['Manager', 'Admin'],
   },
   {
+    title: 'Interactive msg',
+    path: '/interactive-message',
+    icon: 'interactive-message',
+    type: 'sideDrawer',
+    roles: ['Manager', 'Admin'],
+  },
+
+  {
     title: 'Notifications',
     path: '/notifications',
     icon: 'notification',

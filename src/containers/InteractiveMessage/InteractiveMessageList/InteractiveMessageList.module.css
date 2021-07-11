@@ -1,0 +1,105 @@
+.Shortcode {
+  width: 180px;
+}
+
+.Label {
+  width: 20%;
+  min-width: 200px;
+}
+
+.Actions {
+  justify-content: flex-end;
+  margin-left: auto;
+  min-width: 200px;
+}
+
+.LabelText {
+  display: flex;
+  font-weight: 500;
+  font-size: 20px;
+  color: #073f24;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.TableText {
+  margin-right: 23px;
+  text-align: left;
+  padding: 12px 0px;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.FlowIcon {
+  width: 29px;
+  height: 29px;
+}
+
+.LastPublished {
+  padding-top: 12px;
+  text-align: left;
+  font-size: 16px;
+  color: #93a29b;
+  line-height: 1.25;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.Webhook {
+  color: #119656;
+  position: fixed;
+  bottom: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  left: 262px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ContactFields {
+  color: #119656;
+  position: fixed;
+  bottom: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  left: 440px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.ContactFields svg {
+  margin-right: 8px;
+  transform: scale(1.1);
+  margin-bottom: -2px;
+}
+
+.Notifications {
+  composes: Webhook;
+  left: 450px;
+}
+
+.Webhook svg {
+  margin-right: 8px;
+}
+
+.NameText {
+  font-size: 20px !important;
+  color: #073f24 !important;
+  word-break: break-all;
+}
+
+.Keyword {
+  font-size: 12px;
+  color: #93a29b !important;
+}
+
+.Message {
+  width: 40%;
+  min-width: 120px;
+}
+
+.Type{
+  width: 20%;
+}

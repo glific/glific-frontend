@@ -18,6 +18,8 @@ import flowSelectedIcon from '../../../assets/images/icons/Flow/Selected.svg';
 import searchSelectedIcon from '../../../assets/images/icons/Search/Selected.svg';
 // import goalsSelectedIcon from '../../../assets/images/icons/Goals/Selected.svg';
 import analyticsSelectedIcon from '../../../assets/images/icons/Analytics/Selected.svg';
+import interactiveMessageIcon from '../../../assets/images/icons/InteractiveMessage/Unselected.svg';
+import interactiveMessageSelectedIcon from '../../../assets/images/icons/InteractiveMessage/Selected.svg';
 import speedSendSelectedIcon from '../../../assets/images/icons/SpeedSend/Selected.svg';
 import templateSelectedIcon from '../../../assets/images/icons/Template/Selected.svg';
 import triggerSelectedIcon from '../../../assets/images/icons/Trigger/Selected.svg';
@@ -48,6 +50,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     template: templateIcon,
     trigger: triggerIcon,
     notification: notificationIcon,
+    'interactive-message': interactiveMessageIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {
@@ -62,6 +65,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     template: templateSelectedIcon,
     trigger: triggerSelectedIcon,
     notification: notificationSelectedIcon,
+    'interactive-message': interactiveMessageSelectedIcon,
   };
 
   const iconImage = (
