@@ -35,8 +35,8 @@ const queries = {
 export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState<any>({});
-  const [groups, setGroups] = useState([]);
+  const [roles, setRoles] = useState<any>(null);
+  const [groups, setGroups] = useState(null);
   const [isRestricted, setIsRestricted] = useState(false);
   const [staffRole, setStaffRole] = useState(false);
   const [helpDialog, setHelpDialog] = useState(false);
@@ -112,7 +112,7 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
   });
 
   useEffect(() => {
-    if (roles.id === 'Staff') {
+    if (roles && roles.id === 'Staff') {
       setStaffRole(true);
     }
   }, [roles]);
