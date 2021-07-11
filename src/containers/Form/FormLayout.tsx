@@ -169,7 +169,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       const updatedItem = itemUpdatedObject[listItem];
       const { errors } = itemUpdatedObject;
 
-      if (itemUpdatedObject && errors) {
+      if (errors) {
         if (customHandler) {
           customHandler(client, errors);
         } else {
