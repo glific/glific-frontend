@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -36,11 +35,11 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-const convertJSONtoStateData = (JSONData: any, templateType: string) => {
+const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
   const data = { ...JSONData };
   const { title, body, items, content, options, globalButtons } = data;
 
-  if (templateType === QUICK_REPLY) {
+  if (interactiveType === QUICK_REPLY) {
     const { type, caption, url } = content;
     const result: any = {};
     result.templateButtons = options.map((option: any) => ({ value: option.title }));
@@ -183,11 +182,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setTemplateButtons(result);
   };
 
-  const handleInputChange = (type: string, index: number, value: string, payload: any) => {
+  const handleInputChange = (
+    interactiveMessageType: string,
+    index: number,
+    value: string,
+    payload: any
+  ) => {
     const { key, itemIndex, isOption } = payload;
     const buttons = [...templateButtons];
     let result = [];
-    if (type === QUICK_REPLY) {
+    if (interactiveMessageType === QUICK_REPLY) {
       result = buttons.map((row: any, idx: number) => {
         if (idx === index) {
           const newRow = { ...row };
@@ -198,7 +202,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       });
     }
 
-    if (type === LIST) {
+    if (interactiveMessageType === LIST) {
       result = buttons.map((row: any, idx: number) => {
         const { options }: { options: Array<any> } = row;
         if (idx === index) {
@@ -333,8 +337,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     return buttons.map((button: any) => {
-      const { title: sectionTitle, options } = button;
-      const sectionOptions = options.map((option: any) => ({
+      const { title: sectionTitle, options: sectionOptions } = button;
+      const sectionOptionsObject = sectionOptions.map((option: any) => ({
         type: 'text',
         title: option.title,
         description: option.description,
@@ -342,7 +346,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       return {
         title: sectionTitle,
         subtitle: sectionTitle,
-        options: sectionOptions,
+        options: sectionOptionsObject,
       };
     });
   };
@@ -358,9 +362,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     if (templateTypeVal === QUICK_REPLY) {
       const content = getPayloadByMediaType(type?.id, payload);
-      const options = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
+      const quickReplyOptions = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
 
-      const quickReplyJSON = { type: 'quick_reply', content, options };
+      const quickReplyJSON = { type: 'quick_reply', content, options: quickReplyOptions };
 
       Object.assign(updatedPayload, {
         type: QUICK_REPLY,

@@ -48,18 +48,19 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       if (interactiveJSON.type === 'list') {
         tabListToShow = interactiveJSON.body;
       } else if (interactiveJSON.type === 'quick_reply') {
-        switch (interactiveJSON.content.type) {
+        const { content } = interactiveJSON;
+        switch (content.type) {
           case 'text':
-            tabListToShow = interactiveJSON.content.text;
+            tabListToShow = content.text;
             break;
           case 'image':
-            tabListToShow = interactiveJSON.content.caption;
+            tabListToShow = content.caption;
             break;
           case 'video':
-            tabListToShow = interactiveJSON.content.caption;
+            tabListToShow = content.caption;
             break;
           case 'file':
-            tabListToShow = interactiveJSON.content.filename;
+            tabListToShow = content.filename;
             break;
           default:
             break;

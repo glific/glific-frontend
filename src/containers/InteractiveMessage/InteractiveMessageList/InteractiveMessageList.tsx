@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,9 +13,7 @@ import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessag
 
 export interface InteractiveMessageListProps {}
 
-const getLabel = (text: string) => {
-  return <p className={styles.TableText}>{text}</p>;
-};
+const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const getBody = (text: string) => {
   const message = JSON.parse(text);
@@ -70,7 +67,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
         pageLink="interactive-message"
         listIcon={interactiveMsgIcon}
         dialogMessage={dialogMessage}
-        noItemText={'interactive messages'}
+        noItemText="interactive messages"
         {...queries}
         removeSortBy={['TYPE', 'MESSAGE']}
         {...columnAttributes}

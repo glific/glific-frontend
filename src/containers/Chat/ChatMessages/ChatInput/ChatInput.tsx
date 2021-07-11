@@ -33,7 +33,7 @@ export interface ChatInputProps {
     messageType: string,
     selectedTemplate: any,
     variableParam: any,
-    interactiveContent: any
+    interactiveContent?: any
   ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus?: string;
@@ -94,8 +94,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           data.createMessageMedia.messageMedia.id,
           attachmentType,
           selectedTemplate,
-          variableParam,
-          null
+          variableParam
         );
         setAttachmentAdded(false);
         setAttachmentURL('');
@@ -153,6 +152,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
 
+    // check if there is any attachment
     if (attachmentAdded) {
       createMediaMessage({
         variables: {
@@ -163,10 +163,12 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           },
         },
       });
+      // check if type is list or quick replies
     } else if (type) {
       props.onSendMessage(null, null, type, null, null, message);
+      // else the type will by default be text
     } else {
-      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam, null);
+      props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
       resetVariable();
     }
 
@@ -206,10 +208,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setSelectedTemplate(obj);
     if (isInteractiveMsg) {
       submitMessage(obj.interactiveContent, obj.type);
-    } else {
-      // Conversion from HTML text to EditorState
-      setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+      handleClickAway();
+      return;
     }
+    // Conversion from HTML text to EditorState
+    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {

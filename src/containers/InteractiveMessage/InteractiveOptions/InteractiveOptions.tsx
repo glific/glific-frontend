@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React from 'react';
 import {
   RadioGroup,
@@ -113,7 +112,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
                 size="small"
               />
             }
-            className={`${templateType === QUICK_REPLY ? styles.SelectedLabel : ''}`}
+            className={templateType === QUICK_REPLY ? styles.SelectedLabel : ''}
             classes={{ root: styles.RadioLabel }}
             label="Reply buttons"
           />
@@ -128,7 +127,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
                 size="small"
               />
             }
-            className={`${templateType === LIST ? styles.SelectedLabel : ''}`}
+            className={templateType === LIST ? styles.SelectedLabel : ''}
             classes={{ root: styles.RadioLabel }}
             label="List message"
           />
@@ -150,14 +149,14 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
               value={values.globalButton}
               error={!!errors.globalButton && touched.globalButton}
             />
-            {!!(errors.globalButton && touched.globalButton) ? (
+            {errors.globalButton && touched.globalButton && (
               <FormHelperText>{errors.globalButton}</FormHelperText>
-            ) : null}
+            )}
           </FormControl>
         </div>
       )}
 
-      {templateType ? (
+      {templateType && (
         <FieldArray
           name="templateButtons"
           render={(arrayHelpers) =>
@@ -166,9 +165,9 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             )
           }
         />
-      ) : null}
+      )}
     </div>
   );
 
-  return <div>{isAddButtonChecked && !disabled ? radioTemplateType : null}</div>;
+  return <div>{isAddButtonChecked && !disabled && radioTemplateType}</div>;
 };
