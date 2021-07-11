@@ -82,9 +82,9 @@ describe('<ChatInput />', () => {
     expect(getByTestId('message-input-container')).toBeInTheDocument();
   });
 
-  test('speed send and template buttons should exist', () => {
+  test('speed send,template and interactive message buttons should exist', () => {
     const { getAllByTestId } = render(chatInput);
-    expect(getAllByTestId('shortcutButton')).toHaveLength(2);
+    expect(getAllByTestId('shortcutButton')).toHaveLength(3);
   });
 
   test('it should not be able to submit without any message', () => {
@@ -210,6 +210,19 @@ describe('<ChatInput />', () => {
 
     await waitFor(() => {
       expect(sendMessageMock).toHaveBeenCalled();
+    });
+  });
+
+  test(' it can close or cancel speed sends before sending', async () => {
+    const { getAllByTestId, getByTestId } = render(chatInput);
+    const speedSends = getAllByTestId('shortcutButton')[0];
+    fireEvent.click(speedSends);
+    await waitFor(() => {
+      const listItem = getAllByTestId('templateItem')[0];
+      fireEvent.click(listItem);
+      const cancelButton = getByTestId('tooltip');
+      expect(cancelButton).toBeInTheDocument();
+      fireEvent.click(cancelButton);
     });
   });
 });
