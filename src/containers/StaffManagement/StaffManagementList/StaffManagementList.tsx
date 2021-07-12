@@ -33,11 +33,11 @@ export const StaffManagementList: React.SFC<StaffManagementProps> = () => {
     const roles = roleList.map((role: any) => role);
 
     return (
-      <p className={`${styles.TableText} ${styles.NameText}`}>
+      <div className={`${styles.TableText} ${styles.NameText}`}>
         {text}
         <br />
         <div className={styles.Role}>{roles.join(', ')}</div>
-      </p>
+      </div>
     );
   };
 

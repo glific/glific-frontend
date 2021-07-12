@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { EmojiInput } from './EmojiInput';
 import { EditorState } from 'draft-js';

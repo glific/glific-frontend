@@ -1,0 +1,40 @@
+.CheckedIcon {
+  height: 20px;
+  width: 20px;
+}
+
+.RadioLabelWrapper {
+  align-items: center;
+  display: flex;
+  padding-top: 24px;
+  padding-bottom: 16px;
+}
+
+.RadioLabelWrapper:last-child {
+  margin-left: 32px;
+}
+
+.RadioLabelWrapper > label {
+  border: solid 2px;
+  color: #073f24;
+  margin: 0px;
+  padding: 0px 16px;
+  border-radius: 21px;
+  min-height: 42px;
+  border-color: #93a29b;
+}
+
+.RadioLabel > span {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  font-family: 'Heebo', sans-serif !important;
+}
+
+.SelectedLabel {
+  border-color: #073f24 !important;
+}
+
+.GlobalButton {
+  padding-bottom: 16px;
+}

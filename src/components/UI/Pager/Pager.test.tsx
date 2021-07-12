@@ -1,4 +1,3 @@
-import React from 'react';
 import { Pager } from './Pager';
 import { render } from '@testing-library/react';
 

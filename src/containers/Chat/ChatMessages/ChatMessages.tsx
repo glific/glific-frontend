@@ -347,11 +347,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   // this function is called when the message is sent
   const sendMessageHandler = useCallback(
     (
-      body: string,
+      body: any,
       mediaId: string,
       messageType: string,
       selectedTemplate: any,
-      variableParam: any
+      variableParam: any,
+      interactiveContent: any
     ) => {
       const payload: any = {
         body,
@@ -360,8 +361,8 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         receiverId: contactId,
         type: messageType,
         flow: 'OUTBOUND',
+        interactiveContent,
       };
-
       createAndSendMessage({
         variables: { input: updatePayload(payload, selectedTemplate, variableParam) },
       });

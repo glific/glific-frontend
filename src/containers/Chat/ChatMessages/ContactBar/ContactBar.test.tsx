@@ -46,7 +46,7 @@ const component = (
 );
 
 test('it should render the name correctly', async () => {
-  const { getByText } = render(component);
+  const { getByText, container } = render(component);
 
   const contactBarComponent = screen.getByTestId('beneficiaryName');
   expect(contactBarComponent).toBeInTheDocument();
@@ -120,8 +120,7 @@ describe('Menu test', () => {
     global.innerWidth = 500;
     // // Trigger the window resize event.
     global.dispatchEvent(new Event('resize'));
-
-    expect(screen.getByText('Chats')).toBeInTheDocument();
+    expect(screen.getByText('UnselectedDark.svg')).toBeInTheDocument();
   });
 
   test('clicking on clear chat button should open up a dialog box', async () => {
@@ -131,9 +130,9 @@ describe('Menu test', () => {
       expect(
         screen.getByText('Are you sure you want to clear all conversation for this contact?')
       ).toBeInTheDocument();
+      // click on cancel
+      fireEvent.click(screen.getByTestId('ok-button'));
     });
-    // click on cancel
-    fireEvent.click(screen.getByTestId('ok-button'));
   });
 
   test('close clear conversation popup on click of cancel', async () => {
@@ -179,7 +178,7 @@ describe('Menu test', () => {
     </MockedProvider>
   );
 
-  test('Select flow should be blocked when Bsp Status is none', async () => {
+  test('select flow should be blocked when Bsp Status is none', async () => {
     cleanup();
     const { getByTestId } = render(componentWithBspStatusNone);
     await waitFor(() => {

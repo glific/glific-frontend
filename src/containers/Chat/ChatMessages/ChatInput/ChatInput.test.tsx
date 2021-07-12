@@ -84,7 +84,7 @@ describe('<ChatInput />', () => {
 
   test('speed send and template buttons should exist', () => {
     const { getAllByTestId } = render(chatInput);
-    expect(getAllByTestId('shortcutButton')).toHaveLength(2);
+    expect(getAllByTestId('shortcutButton')).toHaveLength(3);
   });
 
   test('it should not be able to submit without any message', () => {

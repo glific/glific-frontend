@@ -151,6 +151,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
 
   return (
     <ListItem
+      key={index}
       data-testid="list"
       button
       disableRipple

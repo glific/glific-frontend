@@ -1,0 +1,67 @@
+.Font {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #93a29b;
+}
+
+.Section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Section:first-child {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #073f24 !important;
+}
+
+.WrapperBackground {
+  padding: 16px 24px 8px 24px;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 6px;
+}
+
+.ListReplyWrapper {
+  padding: 12px 0px;
+}
+
+.ListReplyItemWrapper {
+  composes: Font;
+  display: flex;
+  align-items: center;
+}
+
+.ListReplyItemContent {
+  width: 100%;
+}
+
+.TextFieldWrapper {
+  padding-top: 8px;
+}
+
+.AddButton {
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  text-transform: inherit !important;
+}
+
+.AddIcon {
+  height: 16px;
+  width: 16px;
+}
+
+.ActionButtons {
+  padding-top: 16px;
+}
+
+.ActionButtons > button:first-child {
+  margin-right: 36px;
+}

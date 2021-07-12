@@ -87,9 +87,12 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     if (item.category === 'Message') {
       const chatID = JSON.parse(item.entity).id;
       history.push({ pathname: `/chat/${chatID}` });
-    } else {
+    } else if (item.category === 'Flow') {
       const uuidFlow = JSON.parse(item.entity).flow_uuid;
       history.push({ pathname: `/flow/configure/${uuidFlow}` });
+    } else {
+      // this is item.category == Partner
+      // need to figure out what should be done
     }
   };
 
@@ -234,7 +237,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         pageLink="notifications"
         listIcon={notificationIcon}
         searchParameter="message"
-        button={{ show: false, label: '' }}
+        button={{ show: false }}
         dialogMessage=""
         {...queries}
         restrictedAction={restrictedAction}

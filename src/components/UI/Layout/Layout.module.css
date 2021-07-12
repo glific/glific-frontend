@@ -6,8 +6,28 @@
   width: 100%;
 }
 
+.MobileHeader {
+  display: none;
+}
+
+.MenuIcon {
+  margin-left: auto;
+}
+
+.GlificLogo {
+  width: 42px;
+}
+
 @media only screen and (max-width: 768px) {
   .Main {
     width: 100%;
+  }
+
+  .MobileHeader {
+    padding: 8px 16px;
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    background-color: white;
   }
 }

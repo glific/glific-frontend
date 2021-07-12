@@ -6,55 +6,10 @@
   min-height: 85px !important;
 }
 
-@media only screen and (max-width: 768px) {
-  .ContactBar {
-    border-bottom: unset;
-    padding: 0px !important;
-    flex-direction: column;
-  }
-
-  .MobileHeader {
-    padding: 8px 16px;
-    display: flex !important;
-    align-items: center;
-    width: 100%;
-    background-color: white;
-  }
-
-  .MenuIcon {
-    margin-left: auto;
-  }
-
-  .ContactDetails {
-    padding: 12px !important;
-    padding-bottom: 0px !important;
-  }
-
-  .SessionTimerContainer {
-    display: none;
-  }
-
-  .Chat {
-    display: flex !important;
-  }
-
-  .ContactCollections {
-    padding-left: 12px;
-  }
-}
-
 .ContactInfoContainer {
   display: flex;
   width: 100%;
   align-items: flex-end;
-}
-
-.MobileHeader {
-  display: none;
-}
-
-.GlificLogo {
-  width: 42px;
 }
 
 .Chat {
@@ -236,4 +191,41 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .ContactBar {
+    border-bottom: unset;
+    padding: 0px !important;
+    flex-direction: column;
+  }
+
+  .ContactDetails {
+    padding: 12px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .SessionTimerContainer {
+    display: none;
+  }
+
+  .Chat {
+    display: flex !important;
+    padding: 12px !important;
+  }
+
+  .ContactCollections {
+    padding-left: 12px;
+  }
+
+  .ContactBarWapper {
+    display: block;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .MobileIcon {
+    background-color: #eaedec !important;
+    margin-right: 0px !important;
+  }
 }
