@@ -80,4 +80,31 @@ export const exportFlowMethod = async (exportData: any, flowName: string) => {
 
 export { addLogsMethod as addLogs };
 
+export const getInteractiveMessageBody = (interactiveJSON: any) => {
+  let messageBody;
+  if (interactiveJSON.type === 'list') {
+    messageBody = interactiveJSON.body;
+  } else if (interactiveJSON.type === 'quick_reply') {
+    const { content } = interactiveJSON;
+    switch (content.type) {
+      case 'text':
+        messageBody = content.text;
+        break;
+      case 'image':
+        messageBody = content.caption;
+        break;
+      case 'video':
+        messageBody = content.caption;
+        break;
+      case 'file':
+        messageBody = content.filename;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return messageBody;
+};
+
 export { getObject as default };

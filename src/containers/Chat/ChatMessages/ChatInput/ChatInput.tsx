@@ -25,6 +25,7 @@ import { AddVariables } from '../AddVariables/AddVariables';
 import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
 import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
 import { setNotification } from '../../../../common/notification';
+import { getInteractiveMessageBody } from '../../../../common/utils';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -58,6 +59,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [searchVal, setSearchVal] = useState('');
   const [attachment, setAttachment] = useState(false);
   const [attachmentAdded, setAttachmentAdded] = useState(false);
+  const [interactiveMessageContent, setInteractiveMessageContent] = useState<any>({});
   const [attachmentType, setAttachmentType] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState('');
   const [variable, setVariable] = useState(false);
@@ -81,6 +83,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     setUpdatedEditorState(undefined);
     setEditorState(EditorState.createEmpty());
     setSelectedTemplate(undefined);
+    setInteractiveMessageContent({});
     setVariableParam([]);
   };
 
@@ -128,7 +131,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     },
   });
 
-  const submitMessage = async (message: string, type: any = null) => {
+  const submitMessage = async (message: string) => {
     // let's check if we are sending voice recording
     if (recordedAudio) {
       // converting blob into base64 format as needed by backend
@@ -164,13 +167,20 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         },
       });
       // check if type is list or quick replies
-    } else if (type) {
-      props.onSendMessage(null, null, type, null, null, message);
+    } else if (interactiveMessageContent && interactiveMessageContent.type) {
+      props.onSendMessage(
+        null,
+        null,
+        interactiveMessageContent.type.toUpperCase(),
+        null,
+        null,
+        JSON.stringify(interactiveMessageContent)
+      );
       // else the type will by default be text
     } else {
       props.onSendMessage(message, null, 'TEXT', selectedTemplate, variableParam);
-      resetVariable();
     }
+    resetVariable();
 
     // Resetting the EditorState
     setEditorState(
@@ -205,14 +215,17 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
     // set selected template
-    setSelectedTemplate(obj);
+
+    let messageBody = obj.body;
     if (isInteractiveMsg) {
-      submitMessage(obj.interactiveContent, obj.type);
+      messageBody = getInteractiveMessageBody(JSON.parse(obj.interactiveContent));
+      setInteractiveMessageContent(JSON.parse(obj.interactiveContent));
       handleClickAway();
-      return;
+    } else {
+      setSelectedTemplate(obj);
     }
     // Conversion from HTML text to EditorState
-    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(obj.body)));
+    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(messageBody)));
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -390,10 +403,13 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
-          readOnly={selectedTemplate !== undefined && selectedTemplate.isHsm}
+          readOnly={
+            (selectedTemplate !== undefined && selectedTemplate.isHsm) ||
+            Object.keys(interactiveMessageContent).length !== 0
+          }
         />
 
-        {selectedTemplate ? (
+        {selectedTemplate || Object.keys(interactiveMessageContent).length > 0 ? (
           <Tooltip title={t('Remove message')} placement="top">
             <IconButton
               className={updatedEditorState ? styles.CrossIcon : styles.CrossIconWithVariable}
