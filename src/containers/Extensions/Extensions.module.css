@@ -2,11 +2,20 @@
   width: 29px;
   height: 29px;
 }
+
 .Dialogbox {
   border-radius: 32px !important;
   margin: 0px;
   min-width: 280px;
-  max-width: 436px;
+}
+
+@media only screen and (max-width: 768px) {
+  .Dialogbox {
+    max-width: 300px;
+  }
+  .Dialogbox Form {
+    max-width: 300px;
+  }
 }
 
 .DialogContent {
