@@ -6,6 +6,7 @@
 
 .GlobalButton {
   width: 100%;
+  background-color: #eaedec !important;
 }
 
 .GlobalButton > span {
@@ -21,9 +22,20 @@
   height: calc(100% - 60px);
   overflow-y: auto;
 }
+.ListItemChat {
+  padding: 0 !important;
+  font-size: 16px !important;
+  color: #93a29b !important;
+  width: 100%;
+}
+
+.ListItemChat > span {
+  justify-content: space-between;
+  text-transform: none !important;
+  font-weight: 400 !important;
+}
 
 .ListItem {
-  width: 100%;
   font-size: 12px !important;
 }
 
@@ -106,4 +118,19 @@
 .SimulatorContent {
   background: white;
   padding: 8px 10px;
+}
+
+.ListItemTitle {
+  color: #073f24;
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.ListItemContainer {
+  margin-bottom: 10px;
+}
+
+.DialogContent {
+  width: 370px;
 }
