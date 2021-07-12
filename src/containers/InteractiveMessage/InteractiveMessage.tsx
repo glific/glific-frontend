@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
@@ -83,6 +83,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
+
   const [globalButton, setGlobalButton] = useState('');
 
   const [isUrlValid, setIsUrlValid] = useState<any>();
@@ -90,6 +91,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [attachmentURL, setAttachmentURL] = useState<any>();
 
   const [warning, setWarning] = useState<any>();
+
+  // const [previewContent, setPreviewContent] = useState<any>(null);
 
   const { t } = useTranslation();
 
@@ -338,7 +341,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     return buttons.map((button: any) => {
       const { title: sectionTitle, options: sectionOptions } = button;
-      const sectionOptionsObject = sectionOptions.map((option: any) => ({
+      const sectionOptionsObject = sectionOptions?.map((option: any) => ({
         type: 'text',
         title: option.title,
         description: option.description,
@@ -351,14 +354,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     });
   };
 
-  const setPayload = (payload: any) => {
+  const convertStateDataToJSON = (
+    payload: any,
+    titleVal: string,
+    templateTypeVal: string,
+    templateButtonVal: Array<any>,
+    globalButtonVal: any
+  ) => {
     const updatedPayload: any = { type: null, interactiveContent: null, label: null };
-    const {
-      templateType: templateTypeVal,
-      templateButtons: templateButtonVal,
-      title: titleVal,
-      globalButton: globalButtonVal,
-    } = payload;
 
     if (templateTypeVal === QUICK_REPLY) {
       const content = getPayloadByMediaType(type?.id, payload);
@@ -374,7 +377,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const { text: bodyText } = getPayloadByMediaType(type?.id, payload);
+      const { caption: bodyText } = getPayloadByMediaType(type?.id, payload);
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -386,6 +389,24 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       });
     }
     return updatedPayload;
+  };
+
+  const setPayload = (payload: any) => {
+    const {
+      templateType: templateTypeVal,
+      templateButtons: templateButtonVal,
+      title: titleVal,
+      globalButton: globalButtonVal,
+    } = payload;
+
+    const payloadData = convertStateDataToJSON(
+      payload,
+      titleVal,
+      templateTypeVal,
+      templateButtonVal,
+      globalButtonVal
+    );
+    return payloadData;
   };
 
   const attachmentInputs = [
@@ -443,7 +464,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           options: Yup.array().of(
             Yup.object().shape({
               title: Yup.string().required('Title is required'),
-              description: Yup.string().required('Description is required'),
+              description: Yup.string(),
             })
           ),
         })
@@ -478,6 +499,48 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
+  const getPreviewData = () => {
+    if (!(templateButtons && templateButtons.length)) {
+      return null;
+    }
+
+    const isButtonPresent = templateButtons.some((button: any) => {
+      const { value, options: opts } = button;
+      return !!value || !!(opts && opts.some((o: any) => !!o.title));
+    });
+
+    if (!title || !isButtonPresent) {
+      return null;
+    }
+
+    const payload = {
+      title,
+      body,
+      attachmentURL,
+    };
+
+    const { interactiveContent } = convertStateDataToJSON(
+      payload,
+      title,
+      templateType,
+      templateButtons,
+      globalButton
+    );
+
+    const data = { templateType, interactiveContent };
+    return data;
+  };
+
+  const previewData = useMemo(getPreviewData, [
+    title,
+    body,
+    templateType,
+    templateButtons,
+    globalButton,
+    type,
+    attachmentURL,
+  ]);
+
   return (
     <>
       <FormLayout
@@ -495,12 +558,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         cancelLink="interactive-message"
         icon={interactiveMessageIcon}
         languageSupport={false}
+        // showPreviewButton
       />
       <Simulator
         setSimulatorId={0}
         showSimulator
         isPreviewMessage
         message={{}}
+        interactiveMessage={previewData}
         simulatorIcon={false}
       />
     </>

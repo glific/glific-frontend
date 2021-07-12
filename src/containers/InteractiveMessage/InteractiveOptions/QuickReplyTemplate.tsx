@@ -38,7 +38,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     onInputChange(value, payload);
   };
 
-  const name = `Button ${index + 1}`;
+  const name = 'Enter button text(20 char.)';
   const defaultValue = inputFields && inputFields[index]?.value;
   return (
     <div className={styles.WrapperBackground}>
@@ -46,7 +46,6 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
         <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
           <TextField
             placeholder={name}
-            label={name}
             variant="outlined"
             onChange={(e: any) => handleInputChange(e, 'value')}
             value={defaultValue}

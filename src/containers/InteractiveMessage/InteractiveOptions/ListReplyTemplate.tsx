@@ -4,6 +4,7 @@ import { FieldArray } from 'formik';
 
 import styles from './ListReplyTemplate.module.css';
 import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
+import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
 import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface ListReplyTemplateProps {
@@ -95,7 +96,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     <div className={styles.WrapperBackground} key={index.toString()}>
       <div className={styles.Section}>
         <div>List {index + 1}</div>
-        <div>{inputFields.length > 1 ? <DeleteIcon onClick={onListRemoveClick} /> : null}</div>
+        <div>
+          {inputFields.length > 1 ? (
+            <DeleteIcon className={styles.ListDeleteIcon} onClick={onListRemoveClick} />
+          ) : null}
+        </div>
       </div>
       <div className={styles.ListReplyWrapper}>
         <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
@@ -135,6 +140,14 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             className={styles.TextField}
                             error={isError('title', itemIndex)}
                             value={itemRow.title}
+                            InputProps={{
+                              endAdornment: itemIndex !== 0 && showDeleteIcon && (
+                                <CrossIcon
+                                  className={styles.ListDeleteIcon}
+                                  onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)}
+                                />
+                              ),
+                            }}
                           />
                           {isError('title', itemIndex) ? (
                             <FormHelperText>
@@ -168,11 +181,6 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                           ) : null}
                         </FormControl>
                       </div>
-                    </div>
-                    <div>
-                      {showDeleteIcon ? (
-                        <DeleteIcon onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)} />
-                      ) : null}
                     </div>
                   </div>
                   <div className={styles.ActionButtons}>

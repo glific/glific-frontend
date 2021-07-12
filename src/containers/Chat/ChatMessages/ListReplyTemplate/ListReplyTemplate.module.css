@@ -7,6 +7,7 @@
 .GlobalButton {
   width: 100%;
   background-color: #eaedec !important;
+  margin: 6px 0px !important;
 }
 
 .GlobalButton > span {
@@ -37,10 +38,15 @@
 
 .ListItem {
   font-size: 12px !important;
+  width: 100%;
 }
 
 .ListItem > span {
   justify-content: space-between;
+}
+
+.ListItem > span > div {
+  text-align: left;
 }
 
 .Drawer {
@@ -118,6 +124,10 @@
 .SimulatorContent {
   background: white;
   padding: 8px 10px;
+}
+
+.SimulatorContent > p:first-child {
+  font-weight: 500;
 }
 
 .ListItemTitle {
