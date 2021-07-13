@@ -101,7 +101,10 @@ export const StaffManagement: React.SFC<StaffManagementProps> = ({ match }) => {
     if (rolesValue) {
       setRoles({ id: rolesValue[0], label: rolesValue[0] });
     }
-    setGroups(groupsValue);
+
+    if (groupsValue) {
+      setGroups(groupsValue);
+    }
     setIsRestricted(isRestrictedValue);
   };
 

@@ -95,10 +95,14 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   const getValue = (() => {
     if (multiple && asyncSearch) return asyncValues.value;
-    if (multiple)
-      return optionValue.filter((option: any) =>
-        field.value.map((value: any) => value.id).includes(option.id)
-      );
+    if (multiple) {
+      if (optionValue.length > 0 && field.value) {
+        return optionValue.filter((option: any) =>
+          field.value.map((value: any) => value.id).includes(option.id)
+        );
+      }
+      return [];
+    }
     return field.value;
   })();
 
