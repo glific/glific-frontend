@@ -72,6 +72,18 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTypography: {
+      h5: {
+        '@media (max-width:768px)': {
+          fontSize: '1rem',
+        },
+      },
+      h6: {
+        '@media (max-width:768px)': {
+          fontSize: '1rem',
+        },
+      },
+    },
   },
 });
 

@@ -101,3 +101,9 @@
   font-size: 14px;
   margin-left: 16px;
 }
+
+@media only screen and (max-width: 768px) {
+  .DialogContent {
+    width: 280px !important;
+  }
+}
