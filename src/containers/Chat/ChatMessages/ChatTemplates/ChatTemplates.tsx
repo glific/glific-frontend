@@ -8,6 +8,7 @@ import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/i
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
+import { getInteractiveMessageBody } from '../../../../common/utils';
 import { FILTER_INTERACTIVE_MESSAGES } from '../../../../graphql/queries/InteractiveMessage';
 
 interface ChatTemplatesProps {
@@ -46,27 +47,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
       tabListToShow = obj.body;
     } else {
       const interactiveJSON = JSON.parse(obj.interactiveContent);
-      if (interactiveJSON.type === 'list') {
-        tabListToShow = interactiveJSON.body;
-      } else if (interactiveJSON.type === 'quick_reply') {
-        const { content } = interactiveJSON;
-        switch (content.type) {
-          case 'text':
-            tabListToShow = content.text;
-            break;
-          case 'image':
-            tabListToShow = content.caption;
-            break;
-          case 'video':
-            tabListToShow = content.caption;
-            break;
-          case 'file':
-            tabListToShow = content.filename;
-            break;
-          default:
-            break;
-        }
-      }
+      tabListToShow = getInteractiveMessageBody(interactiveJSON);
     }
 
     return (

@@ -3,17 +3,12 @@ import {
   GET_INTERACTIVE_MESSAGES_COUNT,
 } from '../graphql/queries/InteractiveMessage';
 
-export const filterInteractiveQuery = {
+const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
     query: FILTER_INTERACTIVE_MESSAGES,
     variables: {
-      filter: {},
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
+      filter,
+      opts,
     },
   },
   result: {
@@ -42,15 +37,34 @@ export const filterInteractiveQuery = {
         },
         {
           id: '4',
-          label: 'quick reply image',
+          label: 'quick reply text',
           type: 'QUICK_REPLY',
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
         },
+        {
+          id: '5',
+          label: 'quick reply video',
+          type: 'QUICK_REPLY',
+          interactiveContent:
+            '{"type": "quick_reply", "content": {"url": "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4", "type": "video", "caption": "Sample video"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
+        },
       ],
     },
   },
-};
+});
+
+export const filterInteractiveQuery = filterInteractiveFunction(
+  {},
+  {
+    limit: 50,
+    offset: 0,
+    order: 'ASC',
+    orderWith: 'label',
+  }
+);
+
+export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
 
 export const getInteractiveCountQuery = {
   request: {
