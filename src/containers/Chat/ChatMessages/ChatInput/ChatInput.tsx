@@ -218,9 +218,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
     let messageBody = obj.body;
     if (isInteractiveMsg) {
-      messageBody = getInteractiveMessageBody(JSON.parse(obj.interactiveContent));
-      setInteractiveMessageContent(JSON.parse(obj.interactiveContent));
-      handleClickAway();
+      const interactiveContent = JSON.parse(obj.interactiveContent);
+      messageBody = getInteractiveMessageBody(interactiveContent);
+      setInteractiveMessageContent(interactiveContent);
     } else {
       setSelectedTemplate(obj);
     }
@@ -242,6 +242,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     if (isVariable) {
       setVariable(true);
     }
+    handleClickAway();
   };
 
   const handleCancel = () => {

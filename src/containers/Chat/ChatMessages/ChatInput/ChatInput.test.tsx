@@ -131,7 +131,6 @@ describe('<ChatInput />', () => {
   });
 
   test('Interactive message list should open is interactive msg button is clicked', async () => {
-    // Speed sends button
     const { getAllByTestId, getByTestId, queryByTestId } = render(chatInput);
     fireEvent.click(getAllByTestId('shortcutButton')[2]);
     await waitFor(() => {
