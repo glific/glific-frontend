@@ -29,6 +29,7 @@ interface TemplateProps {
 interface ListTemplate {
   items: Array<any>;
   drawerTitle: string;
+  disableSend?: boolean;
   onItemClick: any;
   onDrawerClose: any;
 }
@@ -104,7 +105,6 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
 
 export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
   const { title, body, globalButtonTitle, items, onGlobalButtonClick, disabled } = props;
-
   return (
     <div className={styles.SimulatorContent}>
       <p>{title}</p>
@@ -124,7 +124,7 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
 };
 
 export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
-  const { items, drawerTitle, onItemClick, onDrawerClose } = props;
+  const { items, drawerTitle, onItemClick, onDrawerClose, disableSend = false } = props;
   const [checkedItem, setCheckedItem] = useState<any>(null);
 
   const handleItemClick = () => {
@@ -164,7 +164,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
         <Button
           variant="contained"
           color="primary"
-          disabled={!checkedItem}
+          disabled={!checkedItem || disableSend}
           onClick={handleItemClick}
         >
           Send

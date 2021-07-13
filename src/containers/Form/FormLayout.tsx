@@ -60,6 +60,8 @@ export interface FormLayoutProps {
   customStyles?: any;
   customHandler?: Function;
   copyNotification?: string;
+  showPreviewButton?: boolean;
+  onPreivewClick?: Function;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -101,6 +103,8 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   customStyles = null,
   customHandler,
   copyNotification = '',
+  showPreviewButton = false,
+  onPreivewClick = () => {},
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -489,6 +493,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               >
                 {t('Cancel')}
               </Button>
+              {showPreviewButton && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onPreivewClick}
+                  className={styles.Button}
+                  data-testid="previewButton"
+                >
+                  Preview
+                </Button>
+              )}
               {deleteButton}
             </div>
           </Form>

@@ -56,6 +56,7 @@ export interface SimulatorProps {
   isPreviewMessage?: boolean;
   resetMessage?: Function;
   getFlowKeyword?: Function;
+  interactiveMessage?: any;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -67,6 +68,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   isPreviewMessage,
   resetMessage,
   getFlowKeyword,
+  interactiveMessage,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -163,7 +165,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
     type: string,
     media: any,
     location: any,
-    interactiveContent: any
+    interactiveContent: any,
+    disableButtons: boolean = false
   ) => {
     const { body, buttons } = WhatsAppTemplateButton(text);
 
@@ -199,6 +202,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <QuickReplyTemplate
             {...content}
             isSimulator
+            disabled={disableButtons}
             onQuickReplyClick={(value: string) => setReply(value)}
           />
         );
@@ -355,6 +359,22 @@ export const Simulator: React.FC<SimulatorProps> = ({
         setSimulatedMessage('');
       }
     }
+
+    if (interactiveMessage) {
+      const { templateType, interactiveContent } = interactiveMessage;
+      const previewMessage = renderMessage(
+        '',
+        'received',
+        0,
+        new Date().toISOString(),
+        templateType,
+        null,
+        null,
+        interactiveContent,
+        true
+      );
+      setSimulatedMessage(previewMessage);
+    }
   };
 
   // to display only preview for template
@@ -381,6 +401,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
   useEffect(() => {
     if (reply) sendMessage(reply);
   }, [reply]);
+
+  useEffect(() => {
+    if (isPreviewMessage && interactiveMessage) {
+      getPreviewMessage();
+    }
+
+    // Cleaning up simulator when switching between templates
+    if (!interactiveMessage) {
+      setSimulatedMessage(null);
+    }
+  }, [interactiveMessage]);
 
   const messageRef = useCallback(
     (node: any) => {
@@ -490,6 +521,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 <ListReplyTemplateDrawer
                   drawerTitle="Items"
                   items={selectedListTemplate}
+                  disableSend={!!interactiveMessage}
                   onItemClick={handleListDrawerItemClick}
                   onDrawerClose={handleListReplyDrawerClose}
                 />

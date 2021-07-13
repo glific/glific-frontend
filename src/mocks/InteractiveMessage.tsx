@@ -18,7 +18,7 @@ export const filterInteractiveQuery = {
   },
   result: {
     data: {
-      interactives: [
+      interactiveTemplates: [
         {
           id: '1',
           label: 'list',
@@ -61,7 +61,7 @@ export const getInteractiveCountQuery = {
   },
   result: {
     data: {
-      countInteractives: 4,
+      countInteractiveTemplates: 4,
     },
   },
 };

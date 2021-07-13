@@ -8,8 +8,8 @@ import { ReactComponent as AttachmentIconUnselected } from '../../../../assets/i
 import { FILTER_TEMPLATES } from '../../../../graphql/queries/Template';
 import { WhatsAppToJsx } from '../../../../common/RichEditor';
 import { setVariables } from '../../../../common/constants';
-import { FILTER_INTERACTIVE_MSG } from '../../../../graphql/queries/InteractiveMsg';
 import { getInteractiveMessageBody } from '../../../../common/utils';
+import { FILTER_INTERACTIVE_MESSAGES } from '../../../../graphql/queries/InteractiveMessage';
 
 interface ChatTemplatesProps {
   searchVal: string;
@@ -27,11 +27,12 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     variables: filterVariables(),
   });
 
-  const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MSG, {
+  const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MESSAGES, {
     variables: {
       filter: {
         label: searchVal,
       },
+      opts: {},
     },
   });
 
@@ -86,11 +87,11 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
     });
 
     const templateObj = [...data.sessionTemplates, ...translationsObj];
-    const interactiveObj = interactives ? [...interactives.interactives] : [];
+    const interactiveObj = interactives ? [...interactives.interactiveTemplates] : [];
     let text;
     let listItems;
     if (props.isTemplate) text = 'templates';
-    else if (props.isInteractiveMsg) text = 'ineractive msg';
+    else if (props.isInteractiveMsg) text = 'interactive msg';
     else text = 'speed sends';
 
     if (!props.isInteractiveMsg) {
