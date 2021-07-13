@@ -151,6 +151,18 @@ describe('<ChatInput />', () => {
     });
   });
 
+  test('send an interactive message', async () => {
+    const { getAllByTestId, getByTestId } = render(chatInput);
+    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(interactiveMessages);
+    await waitFor(() => {
+      const listItem = getAllByTestId('templateItem')[0];
+      fireEvent.click(listItem);
+    });
+    fireEvent.click(getByTestId('sendButton'));
+    expect(inputSubmitted).toBe(true);
+  });
+
   test('clicking on a speed send from the list should store the value as input', async () => {
     const { getAllByTestId } = render(chatInput);
     const speedSends = getAllByTestId('shortcutButton')[0];
