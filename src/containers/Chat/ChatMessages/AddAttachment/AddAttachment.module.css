@@ -4,7 +4,7 @@
   flex-wrap: wrap;
   min-height: 80px;
   margin-bottom: 20px;
-  min-width: 280px;
+  width: 410px;
 }
 
 .DialogContent > div:nth-child(1) {
@@ -100,4 +100,10 @@
 .WaitUpload {
   font-size: 14px;
   margin-left: 16px;
+}
+
+@media only screen and (max-width: 768px) {
+  .DialogContent {
+    width: 280px !important;
+  }
 }

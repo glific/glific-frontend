@@ -72,21 +72,19 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTypography: {
+      h5: {
+        '@media (max-width:768px)': {
+          fontSize: '1rem',
+        },
+      },
+      h6: {
+        '@media (max-width:768px)': {
+          fontSize: '1rem',
+        },
+      },
+    },
   },
 });
-
-theme.typography.h6 = {
-  fontSize: '1.25rem',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '1rem',
-  },
-};
-
-theme.typography.h5 = {
-  fontSize: '1.25rem',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '1rem',
-  },
-};
 
 export default theme;

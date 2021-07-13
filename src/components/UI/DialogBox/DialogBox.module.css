@@ -2,8 +2,7 @@
   border-radius: 24px !important;
   margin: 0px !important;
   margin-top: 66px !important;
-  min-width: 240px !important;
-  max-width: 320px;
+  min-width: 395px !important;
 }
 
 .ScrollPaper {
@@ -12,7 +11,7 @@
 
 .Dialogbox {
   max-width: 80%;
-  min-width: 310px;
+  min-width: 459px;
   margin: 0 auto;
   height: unset !important;
   max-height: 90% !important;
@@ -58,4 +57,14 @@
 .DialogContentLeft {
   text-align: left;
   word-break: break-word;
+}
+
+@media only screen and (max-width: 768px) {
+  .DialogboxPaper {
+    min-width: 240px !important;
+    max-width: 320px;
+  }
+  .Dialogbox {
+    min-width: 310px;
+  }
 }

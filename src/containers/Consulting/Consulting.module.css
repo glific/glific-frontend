@@ -18,8 +18,7 @@
 }
 
 .Form {
-  min-width: 300px;
-  max-width: 456px;
+  width: 456px;
 }
 
 .Form > div:nth-of-type(3) {
@@ -47,4 +46,10 @@
 .Edit div > fieldset {
   color: green;
   border: green solid 2px;
+}
+
+@media only screen and (max-width: 768px) {
+  .Form {
+    width: 300px !important;
+  }
 }

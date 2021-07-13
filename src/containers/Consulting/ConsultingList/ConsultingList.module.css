@@ -42,10 +42,16 @@
 .Dialogbox {
   border-radius: 32px !important;
   margin: 0px;
-  min-width: 280px;
+  min-width: 456px;
   min-height: 704px;
 }
 
 .DialogContent {
   padding: 0px 0px 4px 0px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .Dialogbox {
+    min-width: 280px;
+  }
 }
