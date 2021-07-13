@@ -122,7 +122,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
             {helperText}
           </FormHelperText>
         ) : null}
-        {dropdown && dropdown}
+        {dropdown}
       </FormControl>
     </div>
   );
