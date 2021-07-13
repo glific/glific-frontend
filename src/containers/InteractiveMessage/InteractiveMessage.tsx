@@ -361,7 +361,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      // helperText: 'You can also use variables in message enter @ to see the available list',
+      helperText: 'You can also use variables in message enter @ to see the available list',
       inputProp: {
         onBlur: (editorState: any) => {
           setCursorPosition(editorState.getSelection().focusOffset);
