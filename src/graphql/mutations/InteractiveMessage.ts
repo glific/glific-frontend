@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_INTERACTIVE = gql`
-  mutation createInteractive($input: interactiveInput!) {
-    createInteractive(input: $input) {
-      interactive {
+  mutation createInteractiveTemplate($input: interactiveTemplateInput!) {
+    createInteractiveTemplate(input: $input) {
+      interactiveTemplate {
         type
         label
         interactiveContent
@@ -17,9 +17,9 @@ export const CREATE_INTERACTIVE = gql`
 `;
 
 export const UPDATE_INTERACTIVE = gql`
-  mutation updateInteractive($id: ID!, $input: interactiveInput!) {
-    updateInteractive(id: $id, input: $input) {
-      interactive {
+  mutation updateInteractiveTemplate($id: ID!, $input: interactiveTemplateInput!) {
+    updateInteractiveTemplate(id: $id, input: $input) {
+      interactiveTemplate {
         insertedAt
         interactiveContent
         label
@@ -36,8 +36,8 @@ export const UPDATE_INTERACTIVE = gql`
 `;
 
 export const DELETE_INTERACTIVE = gql`
-  mutation deleteInteractive($id: ID!) {
-    deleteInteractive(id: $id) {
+  mutation deleteInteractiveTemplate($id: ID!) {
+    deleteInteractiveTemplate(id: $id) {
       errors {
         key
         message
