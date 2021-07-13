@@ -57,6 +57,12 @@ const theme = createMuiTheme({
         '.Mui-disabled': { cursor: 'not-allowed !important' },
       },
     },
+
+    MuiListItem: {
+      root: {
+        color: '073F24',
+      },
+    },
     MuiCheckbox: {
       root: {
         color: '#073f24',
