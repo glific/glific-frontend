@@ -13,7 +13,9 @@ import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessag
 
 export interface InteractiveMessageListProps {}
 
-const getLabel = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
+
+const getType = (text: string) => <p className={styles.TableText}>{text}</p>;
 
 const getBody = (text: string) => {
   const message = JSON.parse(text);
@@ -46,7 +48,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
   const getColumns = ({ label, interactiveContent, type }: any) => ({
     label: getLabel(label),
     message: getBody(interactiveContent),
-    type: getLabel(type),
+    type: getType(type),
   });
 
   const columnNames = ['LABEL', 'MESSAGE', 'TYPE', 'ACTIONS'];
@@ -62,7 +64,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
     <>
       <List
         title={t('Interactive msg')}
-        listItem="interactives"
+        listItem="interactiveTemplates"
         listItemName="interactive"
         pageLink="interactive-message"
         listIcon={interactiveMsgIcon}

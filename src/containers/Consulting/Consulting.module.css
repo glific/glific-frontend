@@ -47,3 +47,9 @@
   color: green;
   border: green solid 2px;
 }
+
+@media only screen and (max-width: 768px) {
+  .Form {
+    width: 300px !important;
+  }
+}
