@@ -53,9 +53,20 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   return (
     <div>
       <div className={styles.MessageContent}>
+        {text && (
+          <div className={styles.TitleText}>
+            <ChatMessageType
+              type={contentType}
+              body={text}
+              media={{}}
+              location={{}}
+              isSimulatedMessage={isSimulator}
+            />
+          </div>
+        )}
         <ChatMessageType
           type={contentType}
-          body={caption || text || filename}
+          body={caption || filename}
           media={media}
           location={{}}
           isSimulatedMessage={isSimulator}
