@@ -2,12 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
+import axios from 'axios';
+import { ClickAwayListener } from '@material-ui/core';
 
 import styles from './InteractiveMessage.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as InteractiveMessageIcon } from '../../assets/images/icons/InteractiveMessage/Dark.svg';
-
 import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
@@ -19,8 +20,10 @@ import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { validateMedia } from '../../common/utils';
-import { WhatsAppToDraftEditor } from '../../common/RichEditor';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../common/RichEditor';
 import { Simulator } from '../../components/simulator/Simulator';
+import { FLOW_EDITOR_API } from '../../config';
+import { getAuthSession } from '../../services/AuthService';
 
 export interface FlowProps {
   match: any;
@@ -89,10 +92,49 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>('');
   const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [contactVariables, setContactVariables] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  // Setting cursor positon to 0
+  const [cursorPosition, setCursorPosition] = useState(0);
 
+  const [previousState, setPreviousState] = useState<any>({});
   const [warning, setWarning] = useState<any>();
 
-  // const [previewContent, setPreviewContent] = useState<any>(null);
+  useEffect(() => {
+    const glificBase = FLOW_EDITOR_API;
+    const contactFieldsprefix = '@contact.fields.';
+    const contactVariablesprefix = '@contact.';
+    const headers = { Authorization: getAuthSession('access_token') };
+
+    const getVariableOptions = async () => {
+      // get fields keys
+      const fieldsData = await axios.get(`${glificBase}fields`, {
+        headers,
+      });
+
+      const fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
+
+      // get contact keys
+      const contactData = await axios.get(`${glificBase}completion`, {
+        headers,
+      });
+
+      const properties = contactData.data.types.find(
+        ({ name }: { name: string }) => name === 'contact'
+      );
+
+      const contacts =
+        properties &&
+        properties.properties
+          .map((i: any) => contactVariablesprefix.concat(i.key))
+          .concat(fields)
+          .slice(1);
+
+      setContactVariables(contacts);
+    };
+
+    getVariableOptions();
+  }, []);
 
   const { t } = useTranslation();
 
@@ -141,16 +183,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   }, [type, attachmentURL]);
 
-  const handleAddInteractiveTemplate = (addFromTemplate: boolean = true) => {
+  const handleAddInteractiveTemplate = (
+    addFromTemplate: boolean = true,
+    templateTypeVal: string,
+    stateToRestore: any = null
+  ) => {
     let buttons: any = [];
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
     };
 
-    buttons = addFromTemplate
-      ? [...templateButtons, buttonType[templateType]]
-      : [buttonType[templateType]];
+    const template = stateToRestore || [buttonType[templateTypeVal]];
+    buttons = addFromTemplate ? [...templateButtons, buttonType[templateTypeVal]] : template;
 
     setTemplateButtons(buttons);
   };
@@ -237,6 +282,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setTemplateButtons(result);
   };
 
+  const handleContactVariableClick = (value: string) => {
+    const bodyText = convertToWhatsApp(body);
+    const startText = bodyText.substr(0, cursorPosition - 1);
+    const endText = bodyText.substr(cursorPosition);
+
+    const finalText = `${startText.trim()} ${value} ${endText.trim()}`;
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(finalText)));
+    setShowDropdown(false);
+  };
+
   const displayWarning = () => {
     if (type.id === 'DOCUMENT') {
       setWarning(
@@ -252,19 +307,43 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   useEffect(() => {
-    if (templateType) {
-      handleAddInteractiveTemplate(false);
-    }
-  }, [templateType]);
+    handleAddInteractiveTemplate(false, QUICK_REPLY);
+  }, []);
 
   useEffect(() => {
     displayWarning();
   }, [type]);
 
+  useEffect(() => {
+    function onKeyPress(e: any) {
+      if (e.key === '@') {
+        setShowDropdown(true);
+      }
+    }
+
+    window.addEventListener('keypress', onKeyPress);
+    return () => window.removeEventListener('keypress', onKeyPress);
+  }, []);
+
   const dialogMessage = t("You won't be able to use this flow again.");
+
   const options = MEDIA_MESSAGE_TYPES.filter(
     (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
   ).map((option: string) => ({ id: option, label: option }));
+
+  const dropdown = showDropdown && (
+    <ClickAwayListener onClickAway={() => setShowDropdown(false)}>
+      <div className={styles.DropdownWrapper}>
+        <div className={styles.Dropdown}>
+          {contactVariables.map((opt: string) => (
+            <div key={opt} onClick={() => handleContactVariableClick(opt)} aria-hidden="true">
+              {opt}
+            </div>
+          ))}
+        </div>
+      </div>
+    </ClickAwayListener>
+  );
 
   let timer: any = null;
   const fields = [
@@ -287,9 +366,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       // helperText: 'You can also use variables in message enter @ to see the available list',
       inputProp: {
         onBlur: (editorState: any) => {
+          setCursorPosition(editorState.getSelection().focusOffset);
           setBody(editorState);
         },
       },
+      dropdown,
     },
     {
       component: InteractiveOptions,
@@ -303,7 +384,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       onListItemAddClick: handleAddListItem,
       onListItemRemoveClick: handleRemoveListItem,
       onTemplateTypeChange: (value: string) => {
+        const stateToRestore = previousState[value];
         setTemplateType(value);
+        setPreviousState({ [templateType]: templateButtons });
+        handleAddInteractiveTemplate(false, value, stateToRestore);
       },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
