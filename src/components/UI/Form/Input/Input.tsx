@@ -30,6 +30,7 @@ export interface InputProps {
   validate?: any;
   endAdornment?: any;
   inputProp?: any;
+  dropdown?: any;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -46,6 +47,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     rows,
     endAdornment,
     inputProp,
+    dropdown,
   } = props;
 
   let fieldType = type;
@@ -120,6 +122,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
             {helperText}
           </FormHelperText>
         ) : null}
+        {dropdown}
       </FormControl>
     </div>
   );
