@@ -83,16 +83,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
-
   const [globalButton, setGlobalButton] = useState('');
-
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>('');
   const [attachmentURL, setAttachmentURL] = useState<any>();
-
   const [warning, setWarning] = useState<any>();
-
-  // const [previewContent, setPreviewContent] = useState<any>(null);
 
   const { t } = useTranslation();
 
@@ -550,7 +545,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={validationScheme}
-        listItem="interactive"
+        listItem="interactiveTemplate"
         listItemName="interactive"
         dialogMessage={dialogMessage}
         formFields={formFields}
@@ -558,7 +553,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         cancelLink="interactive-message"
         icon={interactiveMessageIcon}
         languageSupport={false}
-        // showPreviewButton
       />
       <Simulator
         setSimulatorId={0}

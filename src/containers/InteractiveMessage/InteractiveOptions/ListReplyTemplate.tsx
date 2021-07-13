@@ -97,9 +97,9 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
       <div className={styles.Section}>
         <div>List {index + 1}</div>
         <div>
-          {inputFields.length > 1 ? (
+          {inputFields.length > 1 && (
             <DeleteIcon className={styles.ListDeleteIcon} onClick={onListRemoveClick} />
-          ) : null}
+          )}
         </div>
       </div>
       <div className={styles.ListReplyWrapper}>
