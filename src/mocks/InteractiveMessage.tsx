@@ -3,17 +3,12 @@ import {
   GET_INTERACTIVE_MESSAGES_COUNT,
 } from '../graphql/queries/InteractiveMessage';
 
-export const filterInteractiveQuery = {
+const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
     query: FILTER_INTERACTIVE_MESSAGES,
     variables: {
-      filter: {},
-      opts: {
-        limit: 50,
-        offset: 0,
-        order: 'ASC',
-        orderWith: 'label',
-      },
+      filter,
+      opts,
     },
   },
   result: {
@@ -50,7 +45,19 @@ export const filterInteractiveQuery = {
       ],
     },
   },
-};
+});
+
+export const filterInteractiveQuery = filterInteractiveFunction(
+  {},
+  {
+    limit: 50,
+    offset: 0,
+    order: 'ASC',
+    orderWith: 'label',
+  }
+);
+
+export const searchInteractive = filterInteractiveFunction({ label: '' }, {});
 
 export const getInteractiveCountQuery = {
   request: {
