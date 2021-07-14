@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { RichUtils, Modifier, EditorState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
+import createMentionPlugin, { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -20,15 +21,41 @@ export interface EmojiInputProps {
   inputProp?: any;
 }
 
+const mentionPlugin = createMentionPlugin();
+const { MentionSuggestions } = mentionPlugin;
+const plugins = [mentionPlugin];
+
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
-  const { component: Component, editorRef, ...other } = inputProps;
+  const {
+    component: Component,
+    editorRef,
+    open,
+    suggestions,
+    onOpenChange,
+    onSearchChange,
+    ...other
+  } = inputProps;
+
   React.useImperativeHandle(ref, () => ({
     focus: () => {
       editorRef?.current?.focus();
     },
   }));
 
-  return <Component ref={editorRef} {...other} />;
+  return (
+    <>
+      <Component ref={editorRef} editorKey="editor" plugins={plugins} {...other} />
+      <MentionSuggestions
+        open={open}
+        onOpenChange={onOpenChange}
+        suggestions={suggestions}
+        onSearchChange={onSearchChange}
+        onAddMention={() => {
+          // get the mention object selected
+        }}
+      />
+    </>
+  );
 });
 
 export const EmojiInput: React.FC<EmojiInputProps> = ({
@@ -82,11 +109,28 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     }
   };
 
+  const mentions = props.inputProp?.suggestions || [];
+
+  const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState(mentions);
+
+  const onOpenChange = useCallback((_open: boolean) => {
+    setOpen(_open);
+  }, []);
+
+  const onSearchChange = useCallback(({ value }: { value: string }) => {
+    setSuggestions(defaultSuggestionsFilter(value, mentions));
+  }, []);
+
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
-    handleKeyCommand,
     editorRef: inputRef,
+    open,
+    suggestions,
+    onOpenChange,
+    onSearchChange,
+    handleKeyCommand,
     onBlur: handleBlur,
     onChange: draftJsChange,
   };
