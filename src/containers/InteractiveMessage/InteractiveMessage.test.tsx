@@ -95,7 +95,6 @@ test('it renders empty interactive form', async () => {
   // Adding list data
   const [, header, listTitle, listDesc] = screen.getAllByRole('textbox');
   expect(header).toBeInTheDocument();
-  79.27 | 67.47 | 83.93 | 80;
   expect(listTitle).toBeInTheDocument();
   expect(listDesc).toBeInTheDocument();
 
