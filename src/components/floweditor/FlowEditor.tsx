@@ -143,7 +143,7 @@ const setConfig = (uuid: any) => ({
     functions: `${glificBase}functions`,
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
-    interactives: `${glificBase}interactives`,
+    interactives: `${glificBase}interactive-templates`,
   },
 });
 

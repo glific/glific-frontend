@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
+import axios from 'axios';
 
 import styles from './InteractiveMessage.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
 import { FormLayout } from '../Form/FormLayout';
 import { ReactComponent as InteractiveMessageIcon } from '../../assets/images/icons/InteractiveMessage/Dark.svg';
-
 import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
@@ -21,12 +21,14 @@ import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete
 import { validateMedia } from '../../common/utils';
 import { WhatsAppToDraftEditor } from '../../common/RichEditor';
 import { Simulator } from '../../components/simulator/Simulator';
+import { FLOW_EDITOR_API } from '../../config';
+import { getAuthSession } from '../../services/AuthService';
 
 export interface FlowProps {
   match: any;
 }
 
-const interactiveMessageIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
+const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
 
 const queries = {
   getItemQuery: GET_INTERACTIVE_MESSAGE,
@@ -84,12 +86,50 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
-
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>('');
   const [attachmentURL, setAttachmentURL] = useState<any>();
+  const [contactVariables, setContactVariables] = useState([]);
 
+  const [previousState, setPreviousState] = useState<any>({});
   const [warning, setWarning] = useState<any>();
+
+  useEffect(() => {
+    const glificBase = FLOW_EDITOR_API;
+    const contactFieldsprefix = '@contact.fields.';
+    const contactVariablesprefix = '@contact.';
+    const headers = { Authorization: getAuthSession('access_token') };
+
+    const getVariableOptions = async () => {
+      // get fields keys
+      const fieldsData = await axios.get(`${glificBase}fields`, {
+        headers,
+      });
+
+      const fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
+
+      // get contact keys
+      const contactData = await axios.get(`${glificBase}completion`, {
+        headers,
+      });
+
+      const properties = contactData.data.types.find(
+        ({ name }: { name: string }) => name === 'contact'
+      );
+
+      const contacts =
+        properties &&
+        properties.properties
+          .map((i: any) => contactVariablesprefix.concat(i.key))
+          .concat(fields)
+          .map((val: string) => ({ name: val }))
+          .slice(1);
+
+      setContactVariables(contacts);
+    };
+
+    getVariableOptions();
+  }, []);
 
   const { t } = useTranslation();
 
@@ -138,16 +178,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   }, [type, attachmentURL]);
 
-  const handleAddInteractiveTemplate = (addFromTemplate: boolean = true) => {
+  const handleAddInteractiveTemplate = (
+    addFromTemplate: boolean = true,
+    templateTypeVal: string,
+    stateToRestore: any = null
+  ) => {
     let buttons: any = [];
     const buttonType: any = {
       QUICK_REPLY: { value: '' },
       LIST: { title: '', options: [{ title: '', description: '' }] },
     };
 
-    buttons = addFromTemplate
-      ? [...templateButtons, buttonType[templateType]]
-      : [buttonType[templateType]];
+    const template = stateToRestore || [buttonType[templateTypeVal]];
+    buttons = addFromTemplate ? [...templateButtons, buttonType[templateTypeVal]] : template;
 
     setTemplateButtons(buttons);
   };
@@ -249,16 +292,15 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   useEffect(() => {
-    if (templateType) {
-      handleAddInteractiveTemplate(false);
-    }
-  }, [templateType]);
+    handleAddInteractiveTemplate(false, QUICK_REPLY);
+  }, []);
 
   useEffect(() => {
     displayWarning();
   }, [type]);
 
   const dialogMessage = t("You won't be able to use this flow again.");
+
   const options = MEDIA_MESSAGE_TYPES.filter(
     (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
   ).map((option: string) => ({ id: option, label: option }));
@@ -281,11 +323,12 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      // helperText: 'You can also use variables in message enter @ to see the available list',
+      helperText: 'You can also use variables in message enter @ to see the available list',
       inputProp: {
         onBlur: (editorState: any) => {
           setBody(editorState);
         },
+        suggestions: contactVariables,
       },
     },
     {
@@ -300,7 +343,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       onListItemAddClick: handleAddListItem,
       onListItemRemoveClick: handleRemoveListItem,
       onTemplateTypeChange: (value: string) => {
+        const stateToRestore = previousState[value];
         setTemplateType(value);
+        setPreviousState({ [templateType]: templateButtons });
+        handleAddInteractiveTemplate(false, value, stateToRestore);
       },
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
@@ -338,7 +384,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     return buttons.map((button: any) => {
       const { title: sectionTitle, options: sectionOptions } = button;
-      const sectionOptionsObject = sectionOptions.map((option: any) => ({
+      const sectionOptionsObject = sectionOptions?.map((option: any) => ({
         type: 'text',
         title: option.title,
         description: option.description,
@@ -351,14 +397,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     });
   };
 
-  const setPayload = (payload: any) => {
+  const convertStateDataToJSON = (
+    payload: any,
+    titleVal: string,
+    templateTypeVal: string,
+    templateButtonVal: Array<any>,
+    globalButtonVal: any
+  ) => {
     const updatedPayload: any = { type: null, interactiveContent: null, label: null };
-    const {
-      templateType: templateTypeVal,
-      templateButtons: templateButtonVal,
-      title: titleVal,
-      globalButton: globalButtonVal,
-    } = payload;
 
     if (templateTypeVal === QUICK_REPLY) {
       const content = getPayloadByMediaType(type?.id, payload);
@@ -374,7 +420,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const { text: bodyText } = getPayloadByMediaType(type?.id, payload);
+      const { caption: bodyText } = getPayloadByMediaType(type?.id, payload);
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -386,6 +432,24 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       });
     }
     return updatedPayload;
+  };
+
+  const setPayload = (payload: any) => {
+    const {
+      templateType: templateTypeVal,
+      templateButtons: templateButtonVal,
+      title: titleVal,
+      globalButton: globalButtonVal,
+    } = payload;
+
+    const payloadData = convertStateDataToJSON(
+      payload,
+      titleVal,
+      templateTypeVal,
+      templateButtonVal,
+      globalButtonVal
+    );
+    return payloadData;
   };
 
   const attachmentInputs = [
@@ -443,7 +507,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           options: Yup.array().of(
             Yup.object().shape({
               title: Yup.string().required('Title is required'),
-              description: Yup.string().required('Description is required'),
+              description: Yup.string(),
             })
           ),
         })
@@ -478,6 +542,48 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
+  const getPreviewData = () => {
+    if (!(templateButtons && templateButtons.length)) {
+      return null;
+    }
+
+    const isButtonPresent = templateButtons.some((button: any) => {
+      const { value, options: opts } = button;
+      return !!value || !!(opts && opts.some((o: any) => !!o.title));
+    });
+
+    if (!title || !isButtonPresent) {
+      return null;
+    }
+
+    const payload = {
+      title,
+      body,
+      attachmentURL,
+    };
+
+    const { interactiveContent } = convertStateDataToJSON(
+      payload,
+      title,
+      templateType,
+      templateButtons,
+      globalButton
+    );
+
+    const data = { templateType, interactiveContent };
+    return data;
+  };
+
+  const previewData = useMemo(getPreviewData, [
+    title,
+    body,
+    templateType,
+    templateButtons,
+    globalButton,
+    type,
+    attachmentURL,
+  ]);
+
   return (
     <>
       <FormLayout
@@ -487,7 +593,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         setStates={setStates}
         setPayload={setPayload}
         validationSchema={validationScheme}
-        listItem="interactive"
+        listItem="interactiveTemplate"
         listItemName="interactive"
         dialogMessage={dialogMessage}
         formFields={formFields}
@@ -501,6 +607,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         showSimulator
         isPreviewMessage
         message={{}}
+        interactiveMessage={previewData}
         simulatorIcon={false}
       />
     </>

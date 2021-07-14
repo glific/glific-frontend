@@ -49,7 +49,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   const handleAddClick = (helper: any, type: string) => {
     const obj = type === LIST ? { title: '', options: [] } : { value: '' };
     helper.push(obj);
-    onAddClick(true);
+    onAddClick(true, type);
   };
 
   const handleRemoveClick = (helper: any, idx: number) => {

@@ -8,8 +8,10 @@ import {
   getAttachmentPermissionMock,
   uploadBlobMock,
 } from '../../../../mocks/Attachment';
+import { searchInteractive } from '../../../../mocks/InteractiveMessage';
 
 const mocks = [
+  searchInteractive,
   ...TEMPLATE_MOCKS,
   getAttachmentPermissionMock,
   uploadBlobMock,
@@ -82,7 +84,7 @@ describe('<ChatInput />', () => {
     expect(getByTestId('message-input-container')).toBeInTheDocument();
   });
 
-  test('speed send and template buttons should exist', () => {
+  test('speed send, template and interactive buttons should exist', () => {
     const { getAllByTestId } = render(chatInput);
     expect(getAllByTestId('shortcutButton')).toHaveLength(3);
   });
@@ -126,6 +128,38 @@ describe('<ChatInput />', () => {
     await waitFor(() => {
       fireEvent.click(getByTestId('resetButton'));
     });
+  });
+
+  test('Interactive message list should open is interactive msg button is clicked', async () => {
+    const { getAllByTestId, getByTestId, queryByTestId } = render(chatInput);
+    fireEvent.click(getAllByTestId('shortcutButton')[2]);
+    await waitFor(() => {
+      expect(getByTestId('chatTemplates')).toBeInTheDocument();
+    });
+    fireEvent.click(getAllByTestId('shortcutButton')[2]);
+    expect(queryByTestId('chatTemplates')).toBe(null);
+  });
+
+  test('clicking on a interactive msg from the list should store the value as input', async () => {
+    const { getAllByTestId } = render(chatInput);
+    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(interactiveMessages);
+    await waitFor(() => {
+      const listItem = getAllByTestId('templateItem')[0];
+      fireEvent.click(listItem);
+    });
+  });
+
+  test('send an interactive message', async () => {
+    const { getAllByTestId, getByTestId } = render(chatInput);
+    const interactiveMessages = getAllByTestId('shortcutButton')[2];
+    fireEvent.click(interactiveMessages);
+    await waitFor(() => {
+      const listItem = getAllByTestId('templateItem')[0];
+      fireEvent.click(listItem);
+    });
+    fireEvent.click(getByTestId('sendButton'));
+    expect(inputSubmitted).toBe(true);
   });
 
   test('clicking on a speed send from the list should store the value as input', async () => {
