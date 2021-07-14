@@ -28,7 +28,7 @@ export interface FlowProps {
   match: any;
 }
 
-const interactiveMessageIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
+const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
 
 const queries = {
   getItemQuery: GET_INTERACTIVE_MESSAGE,

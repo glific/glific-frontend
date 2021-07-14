@@ -75,9 +75,6 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
         onOpenChange={onOpenChange}
         suggestions={suggestions}
         onSearchChange={onSearchChange}
-        onAddMention={() => {
-          // get the mention object selected
-        }}
       />
     </>
   );
