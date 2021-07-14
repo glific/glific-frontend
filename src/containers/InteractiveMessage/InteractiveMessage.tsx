@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
 import axios from 'axios';
-import { ClickAwayListener } from '@material-ui/core';
 
 import styles from './InteractiveMessage.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -20,7 +19,7 @@ import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
 import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { validateMedia } from '../../common/utils';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../common/RichEditor';
+import { WhatsAppToDraftEditor } from '../../common/RichEditor';
 import { Simulator } from '../../components/simulator/Simulator';
 import { FLOW_EDITOR_API } from '../../config';
 import { getAuthSession } from '../../services/AuthService';
@@ -29,7 +28,7 @@ export interface FlowProps {
   match: any;
 }
 
-const interactiveMessageIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
+const interactiveMessageIcon = <InteractiveMessageIcon className={styles.Icon} />;
 
 const queries = {
   getItemQuery: GET_INTERACTIVE_MESSAGE,
@@ -91,9 +90,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [type, setType] = useState<any>('');
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  // Setting cursor positon to 0
-  const [cursorPosition, setCursorPosition] = useState(0);
 
   const [previousState, setPreviousState] = useState<any>({});
   const [warning, setWarning] = useState<any>();
@@ -126,6 +122,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         properties.properties
           .map((i: any) => contactVariablesprefix.concat(i.key))
           .concat(fields)
+          .map((val: string) => ({ name: val }))
           .slice(1);
 
       setContactVariables(contacts);
@@ -280,16 +277,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setTemplateButtons(result);
   };
 
-  const handleContactVariableClick = (value: string) => {
-    const bodyText = convertToWhatsApp(body);
-    const startText = bodyText.substr(0, cursorPosition - 1);
-    const endText = bodyText.substr(cursorPosition);
-
-    const finalText = `${startText.trim()} ${value} ${endText.trim()}`;
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(finalText)));
-    setShowDropdown(false);
-  };
-
   const displayWarning = () => {
     if (type.id === 'DOCUMENT') {
       setWarning(
@@ -312,36 +299,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     displayWarning();
   }, [type]);
 
-  useEffect(() => {
-    function onKeyPress(e: any) {
-      if (e.key === '@') {
-        setShowDropdown(true);
-      }
-    }
-
-    window.addEventListener('keypress', onKeyPress);
-    return () => window.removeEventListener('keypress', onKeyPress);
-  }, []);
-
   const dialogMessage = t("You won't be able to use this flow again.");
 
   const options = MEDIA_MESSAGE_TYPES.filter(
     (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
   ).map((option: string) => ({ id: option, label: option }));
-
-  const dropdown = showDropdown && (
-    <ClickAwayListener onClickAway={() => setShowDropdown(false)}>
-      <div className={styles.DropdownWrapper}>
-        <div className={styles.Dropdown}>
-          {contactVariables.map((opt: string) => (
-            <div key={opt} onClick={() => handleContactVariableClick(opt)} aria-hidden="true">
-              {opt}
-            </div>
-          ))}
-        </div>
-      </div>
-    </ClickAwayListener>
-  );
 
   let timer: any = null;
   const fields = [
@@ -364,11 +326,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       helperText: 'You can also use variables in message enter @ to see the available list',
       inputProp: {
         onBlur: (editorState: any) => {
-          setCursorPosition(editorState.getSelection().focusOffset);
           setBody(editorState);
         },
+        suggestions: contactVariables,
       },
-      dropdown,
     },
     {
       component: InteractiveOptions,

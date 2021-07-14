@@ -1,27 +1,9 @@
-.DropdownWrapper {
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  z-index: 100;
-  padding: 8px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0px 0px 2px 0px;
+.Warning {
+  color: #ff0000;
+  margin-left: -43px;
 }
 
-.Dropdown {
-  max-height: 200px;
-  overflow-y: auto;
-  background: white;
-  padding: 8px;
-}
-
-.Dropdown > div {
-  padding: 4px 0px;
-  cursor: pointer;
-  height: 32px;
-}
-
-.Dropdown > div:hover {
-  background-color: #edf6f2;
+.Icon {
+  width: 29px;
+  height: 29px;
 }

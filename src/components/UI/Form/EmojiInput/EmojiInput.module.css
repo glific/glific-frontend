@@ -9,3 +9,52 @@
 .Emoji {
   width: 24px;
 }
+
+.Font {
+  line-height: 1.25;
+  font-weight: 400;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  color: #073f24;
+  text-transform: inherit !important;
+}
+
+/* 
+  Overriding draft-js mentions styles as per requirement
+*/
+.mentionSuggestions {
+  composes: Font;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
+  box-shadow: 0px 6px 6px 0px lightgray;
+  z-index: 100;
+  overflow-y: auto;
+  max-height: 360px;
+}
+
+.mentionSuggestionsEntry {
+  padding: 7px 10px 3px 10px;
+  transition: background-color 0.4s cubic-bezier(0.27, 1.27, 0.48, 0.56);
+}
+
+.mentionSuggestionsEntry:active {
+  background-color: #edf6f2;
+}
+
+.mentionSuggestionsEntryFocused {
+  composes: mentionSuggestionsEntry;
+  background-color: #edf6f2;
+}
+
+.mentionSuggestionsEntryText,
+.mentionSuggestionsEntryTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
