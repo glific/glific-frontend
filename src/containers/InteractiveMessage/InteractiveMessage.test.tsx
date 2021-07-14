@@ -1,4 +1,4 @@
-import { render, cleanup, prettyDOM, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 
@@ -40,7 +40,7 @@ const whenStable = async () => {
 test('it renders empty interactive form', async () => {
   axiosApiCall();
 
-  const { container } = render(
+  render(
     <MockedProvider mocks={[...mocks]} addTypename={false}>
       <InteractiveMessage match={{ params: {} }} />
     </MockedProvider>
@@ -144,7 +144,7 @@ test('it renders empty interactive form', async () => {
 test('it renders empty interactive form in edit mode', async () => {
   axiosApiCall();
 
-  const { container } = render(
+  render(
     <MockedProvider mocks={[...mocks]} addTypename={false}>
       <InteractiveMessage match={{ params: { id: '2' } }} />
     </MockedProvider>
