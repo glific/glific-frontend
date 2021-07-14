@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
 import axios from 'axios';
-// import { ClickAwayListener } from '@material-ui/core';
 
 import styles from './InteractiveMessage.module.css';
 import { Input } from '../../components/UI/Form/Input/Input';
@@ -585,7 +584,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   ]);
 
-  console.log(contactVariables);
   return (
     <>
       <FormLayout

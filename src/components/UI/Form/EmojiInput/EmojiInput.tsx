@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { RichUtils, Modifier, EditorState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
-import createMentionPlugin, { defaultSuggestionsFilter } from '@draft-js-plugins/mention';
+import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -21,9 +21,32 @@ export interface EmojiInputProps {
   inputProp?: any;
 }
 
-const mentionPlugin = createMentionPlugin();
-const { MentionSuggestions } = mentionPlugin;
-const plugins = [mentionPlugin];
+const getMentionComponentAndPlugin = () => {
+  const mentionPlugin = createMentionPlugin({
+    theme: Styles,
+  });
+  const { MentionSuggestions } = mentionPlugin;
+  const plugins = [mentionPlugin];
+  return { plugins, MentionSuggestions };
+};
+
+const customSuggestionsFilter = (searchValue: string, suggestions: Array<any>) => {
+  const size = (list: any) => (list.constructor.name === 'List' ? list.size : list.length);
+
+  const get = (obj: any, attr: any) => (obj.get ? obj.get(attr) : obj[attr]);
+
+  const value = searchValue.toLowerCase();
+  const filteredSuggestions = suggestions.filter(
+    (suggestion) => !value || get(suggestion, 'name').toLowerCase().indexOf(value) > -1
+  );
+
+  /**
+   * We can restrict no of values from dropdown using this
+   * Currently returning all values for give dropdown
+   */
+  const length = size(filteredSuggestions);
+  return filteredSuggestions.slice(0, length);
+};
 
 const DraftField = React.forwardRef((inputProps: any, ref: any) => {
   const {
@@ -41,6 +64,8 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
       editorRef?.current?.focus();
     },
   }));
+
+  const { MentionSuggestions, plugins } = useMemo(getMentionComponentAndPlugin, []);
 
   return (
     <>
@@ -114,13 +139,15 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions);
 
-  const onOpenChange = useCallback((_open: boolean) => {
+  const onOpenChange = (_open: boolean) => {
     setOpen(_open);
-  }, []);
+  };
 
-  const onSearchChange = useCallback(({ value }: { value: string }) => {
-    setSuggestions(defaultSuggestionsFilter(value, mentions));
-  }, []);
+  const getSuggestions = useCallback(customSuggestionsFilter, []);
+
+  const onSearchChange = ({ value }: { value: string }) => {
+    setSuggestions(getSuggestions(value, mentions));
+  };
 
   const inputProps = {
     component: Editor,
