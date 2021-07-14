@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from '../../../assets/images/icons/Flow/Export.svg';
+import { ReactComponent as ImportIcon } from '../../../assets/images/icons/Flow/Import.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from '../../../assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
@@ -51,6 +52,7 @@ const configureIcon = <ConfigureIcon />;
 export const FlowList: React.SFC<FlowListProps> = () => {
   const history = useHistory();
   const { t } = useTranslation();
+  const inputRef = useRef<any>(null);
 
   const [flowName, setFlowName] = useState('');
 
@@ -70,6 +72,22 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     setFlowName(item.name);
     exportFlowMutation({ variables: { id } });
   };
+
+  const changeHandler = (event: any) => {
+    console.log(event.target.files[0]);
+  };
+
+  const importButton = (
+    <span>
+      <input type="file" ref={inputRef} hidden name="file" onChange={changeHandler} />
+      <ImportIcon
+        className={styles.ImportIcon}
+        onClick={() => {
+          if (inputRef.current) inputRef.current?.click();
+        }}
+      />
+    </span>
+  );
 
   const additionalAction = [
     {
@@ -123,6 +141,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         removeSortBy={[t('Last Published'), t('Last Saved in Draft')]}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ CREATE FLOW') }}
+        secondaryButton={importButton}
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>

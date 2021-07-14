@@ -130,3 +130,7 @@
   text-align: center;
   width: 204px;
 }
+
+.ButtonGroup {
+  display: flex;
+}
