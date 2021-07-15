@@ -21,7 +21,7 @@ import Menu from '../../../Menu/Menu';
 import * as constants from '../../../../../common/constants';
 import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
 import ActiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Active.svg';
-import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.png';
+import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.svg';
 import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
 import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
 import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';

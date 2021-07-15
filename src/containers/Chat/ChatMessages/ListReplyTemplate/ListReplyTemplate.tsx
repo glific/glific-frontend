@@ -109,7 +109,6 @@ export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
     <div className={styles.SimulatorContent}>
       <p>{title}</p>
       <p>{body}</p>
-      <hr />
       <Button
         color="default"
         disabled={disabled}
@@ -132,25 +131,32 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
   };
 
   const list = items.map((item: any) => {
-    const { options } = item;
-    return options.map((option: any) => (
-      <Button
-        key={option.title}
-        className={styles.ListItem}
-        onClick={() => setCheckedItem(option.title)}
-      >
-        <div>{option.title}</div>
-        <div>
-          <Radio
-            value={option.title}
-            name="radio-list-item"
-            size="small"
-            checked={option.title === checkedItem}
-            color="primary"
-          />
+    const { options, title: sectionTitle } = item;
+    return (
+      <div key={sectionTitle}>
+        <div className={styles.SectionTitle}>{sectionTitle}</div>
+        <div className={styles.Options}>
+          {options.map((option: any) => (
+            <Button
+              key={option.title}
+              className={styles.ListItem}
+              onClick={() => setCheckedItem(option.title)}
+            >
+              <div>{option.title}</div>
+              <div>
+                <Radio
+                  value={option.title}
+                  name="radio-list-item"
+                  size="small"
+                  checked={option.title === checkedItem}
+                  color="primary"
+                />
+              </div>
+            </Button>
+          ))}
         </div>
-      </Button>
-    ));
+      </div>
+    );
   });
 
   return (

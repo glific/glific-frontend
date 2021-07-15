@@ -70,6 +70,12 @@ export const MessageType: React.FC<MessageTypeProps> = ({
         </>
       );
       break;
+    case 'QUICK_REPLY':
+      message = 'Quick Reply';
+      break;
+    case 'LIST':
+      message = 'List';
+      break;
     default:
       message = type;
   }
