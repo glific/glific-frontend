@@ -99,3 +99,8 @@
   width: 18%;
   min-width: 120px;
 }
+
+.LastPublishedFallback {
+  composes: LastPublished;
+  color: #cd8888;
+}
