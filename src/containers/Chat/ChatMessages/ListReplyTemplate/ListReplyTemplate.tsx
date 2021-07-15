@@ -133,7 +133,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
   const list = items.map((item: any) => {
     const { options, title: sectionTitle } = item;
     return (
-      <div>
+      <div key={sectionTitle}>
         <div className={styles.SectionTitle}>{sectionTitle}</div>
         <div className={styles.Options}>
           {options.map((option: any) => (
