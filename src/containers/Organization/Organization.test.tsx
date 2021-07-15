@@ -2,11 +2,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import { fireEvent, render, waitFor, screen } from '@testing-library/react';
 import * as Yup from 'yup';
 import UserEvent from '@testing-library/user-event';
-
 import { MemoryRouter } from 'react-router-dom';
+
 import { Input } from '../../components/UI/Form/Input/Input';
 import { Organization } from './Organization';
-// import { act } from 'react-dom/test-utils';
 
 jest.mock('react-google-recaptcha', () => (props: any) => (
   <input

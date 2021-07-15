@@ -70,6 +70,7 @@ cache.writeQuery({
                 name: 'User',
               },
             },
+            interactiveContent: '{}',
           },
         ],
       },
