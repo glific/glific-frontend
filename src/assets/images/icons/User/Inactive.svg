@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="38px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon/User/Inactive</title>
+    <g id="Icon/User/Inactive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="User/Icon" stroke="#93A29B" stroke-width="2">
+            <circle id="Oval" cx="19" cy="19" r="18"></circle>
+            <circle id="Oval" cx="19" cy="14" r="4"></circle>
+            <path d="M19,22 C22.6934684,22 25.3941053,22.8973608 27,24.8539972 L27,24.8539972 L27,27 L11,27 L11,24.8539972 C12.6058947,22.8973608 15.3065316,22 19,22 Z" id="Path-12"></path>
+        </g>
+    </g>
+</svg>
