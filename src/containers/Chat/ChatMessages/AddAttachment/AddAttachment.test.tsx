@@ -38,6 +38,45 @@ test('it should render', () => {
   expect(getByTestId('attachmentDialog')).toBeInTheDocument();
 });
 
+test('uploading a file', async () => {
+  const { getByTestId } = render(addAttachment('IMAGE'));
+  const file = { name: 'photo.png' };
+
+  fireEvent.change(getByTestId('uploadFile'), { target: { files: [file] } });
+
+  await waitFor(() => {
+    expect(setAttachmentURL).toHaveBeenCalled();
+  });
+});
+
+// Need to clean previous test cases renders
+
+// test('add an attachment', async () => {
+//   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
+//   const responseData = { data: { is_valid: true } };
+//   act(() => {
+//     axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+//   });
+//   fireEvent.click(getByTestId('ok-button'));
+
+//   await waitFor(() => {
+//     expect(setAttachmentAdded).toHaveBeenCalled();
+//   });
+// });
+
+// test('attachment is invalid', async () => {
+//   const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
+//   const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
+//   act(() => {
+//     axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
+//   });
+//   fireEvent.click(getByTestId('ok-button'));
+
+//   await waitFor(() => {
+//     expect(getByText('Content type not valid')).toBeInTheDocument();
+//   });
+// });
+
 test('it should reset type if cross icon is clicked', () => {
   const { getByTestId } = render(addAttachment('IMAGE'));
   fireEvent.click(getByTestId('crossIcon'));
@@ -59,32 +98,6 @@ test('cancel button', () => {
   expect(setAttachment).toHaveBeenCalled();
 });
 
-test('add an attachment', async () => {
-  const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
-  const responseData = { data: { is_valid: true } };
-  act(() => {
-    axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
-  });
-  fireEvent.click(getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(setAttachmentAdded).toHaveBeenCalled();
-  });
-});
-
-test('attachment is invalid', async () => {
-  const { getByTestId, getByText } = render(addAttachment('IMAGE', 'https://glific.com'));
-  const responseData = { data: { is_valid: false, message: 'Content type not valid' } };
-  act(() => {
-    axios.get.mockImplementationOnce(() => Promise.resolve(responseData));
-  });
-  fireEvent.click(getByTestId('ok-button'));
-
-  await waitFor(() => {
-    expect(getByText('Content type not valid')).toBeInTheDocument();
-  });
-});
-
 test('show warnings if attachment type is audio', async () => {
   const { getByText } = render(addAttachment('AUDIO', 'https://glific.com'));
 
@@ -94,15 +107,4 @@ test('show warnings if attachment type is audio', async () => {
 test('show warnings if attachment type is sticker', async () => {
   const { getByText } = render(addAttachment('STICKER', 'https://glific.com'));
   expect(getByText('Animated stickers are not supported.')).toBeInTheDocument();
-});
-
-test('uploading a file', async () => {
-  const { getByTestId } = render(addAttachment('IMAGE'));
-  const file = { name: 'photo.png' };
-
-  fireEvent.change(getByTestId('uploadFile'), { target: { files: [file] } });
-
-  await waitFor(() => {
-    expect(setAttachmentURL).toHaveBeenCalled();
-  });
 });
