@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import styles from './AddAttachment.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -40,7 +41,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   attachmentType,
   uploadPermission,
 }: AddAttachmentPropTypes) => {
-  const [onSubmit, setOnSubmit] = useState(false);
   const [errors, setErrors] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState<null | string>(null);
@@ -60,7 +60,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   });
 
   const validateURL = () => {
-    if (attachmentURL && attachmentType && onSubmit) {
+    if (attachmentURL && attachmentType) {
       setVerifying(true);
       setErrors(null);
 
@@ -71,8 +71,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
         } else if (response.data.is_valid) {
           setVerifying(false);
           setAttachmentAdded(true);
-          setAttachment(false);
-          setOnSubmit(false);
+
           setErrors(null);
         }
       });
@@ -81,25 +80,41 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
 
   useEffect(() => {
     validateURL();
-  }, [attachmentURL, attachmentType, onSubmit]);
+  }, [attachmentURL, attachmentType]);
 
   const validate = (value: any) => {
     if (value !== attachmentURL) {
-      setOnSubmit(false);
       setAttachmentURL(value);
     } else if (!value) {
       setErrors(null);
     }
   };
 
+  const helperText = (
+    <div className={styles.HelperText}>
+      {t('Please wait for the attachment URL verification')}
+      <CircularProgress className={styles.ProgressIcon} />
+    </div>
+  );
+
+  let timer: any = null;
   const input = {
     component: Input,
     name: 'attachmentURL',
     type: 'text',
     placeholder: t('Attachment URL'),
     validate,
-    helperText: verifying && t('Please wait for the attachment URL verification'),
+    helperText: verifying && helperText,
     disabled: fileName !== null,
+    inputProp: {
+      onBlur: (event: any) => {
+        setAttachmentURL(event.target.value);
+      },
+      onChange: (event: any) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => setAttachmentURL(event.target.value), 1000);
+      },
+    },
   };
 
   let formFieldItems: any = [
@@ -111,7 +126,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       fieldValue: attachmentType,
       fieldChange: (event: any) => {
         setAttachmentType(event?.target.value);
-        setOnSubmit(false);
         setErrors(null);
       },
     },
@@ -147,6 +161,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   const onSubmitHandle = (itemData: { attachmentURL: any; attachmentType: any }) => {
     setAttachmentType(itemData.attachmentType);
     setAttachmentURL(itemData.attachmentURL);
+    setAttachment(false);
   };
 
   const addAttachment = (event: any) => {
@@ -173,8 +188,9 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       initialValues={{ attachmentURL, attachmentType }}
       validationSchema={validationSchema}
       onSubmit={(itemData) => {
-        setOnSubmit(true);
-        onSubmitHandle(itemData);
+        if (!errors) {
+          onSubmitHandle(itemData);
+        }
       }}
     >
       {({ submitForm }) => (
@@ -193,6 +209,7 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             }}
             buttonOk={t('Add')}
             alignButtons="left"
+            disableOk={verifying}
           >
             <div className={styles.DialogContent} data-testid="attachmentDialog">
               {formFieldItems.map((field: any) => (
