@@ -99,3 +99,7 @@
   width: 18%;
   min-width: 120px;
 }
+
+.ImportIcon {
+  cursor: pointer;
+}

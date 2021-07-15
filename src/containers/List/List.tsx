@@ -39,6 +39,7 @@ export interface ListProps {
   columns: Function;
   listIcon: Object;
   columnStyles: Array<any>;
+  secondaryButton?: any;
   title: string;
   button?: {
     show: boolean;
@@ -96,6 +97,7 @@ export const List: React.SFC<ListProps> = ({
   deleteItemQuery,
   listItemName,
   dialogMessage,
+  secondaryButton,
   pageLink,
   columns,
   columnStyles,
@@ -640,7 +642,10 @@ export const List: React.SFC<ListProps> = ({
         </div>
         <div>
           {dialogBox}
-          {buttonDisplay}
+          <div className={styles.ButtonGroup}>
+            {buttonDisplay}
+            {secondaryButton}
+          </div>
         </div>
       </div>
 
