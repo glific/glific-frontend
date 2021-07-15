@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file. Dates are d
 - Now dialog boxes UI are responsive [`#1490`](https://github.com/glific/glific-frontend/pull/1490)
 - Added interactive message support [`#1496`](https://github.com/glific/glific-frontend/pull/1496)
 - Error handling for calendar and time picker [`#1520`](https://github.com/glific/glific-frontend/pull/1520)
-- Fix/triggers date time [`#1512`](https://github.com/glific/glific-frontend/pull/1512)
+- Fixed triggers date time [`#1512`](https://github.com/glific/glific-frontend/pull/1512)
 
 #### [v1.8.1](https://github.com/glific/glific-frontend/compare/v1.8.0...v1.8.1)
 
