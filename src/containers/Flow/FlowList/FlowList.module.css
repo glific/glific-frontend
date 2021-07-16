@@ -103,3 +103,8 @@
 .ImportIcon {
   cursor: pointer;
 }
+
+.LastPublishedFallback {
+  composes: LastPublished;
+  color: #cd8888;
+}

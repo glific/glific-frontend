@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.0.0](https://github.com/glific/glific-frontend/compare/v1.8.1...v2.0.0)
+
+> 15 July 2021
+
+- Added expression in floweditor attachment [`#1534`](https://github.com/glific/glific-frontend/pull/1534)
+- Added contact field support for interactive messages [`#1531`](https://github.com/glific/glific-frontend/pull/1531)
+- Added support for preview for interactive messages [`#1526`](https://github.com/glific/glific-frontend/pull/1526)
+- Now dialog boxes UI are responsive [`#1490`](https://github.com/glific/glific-frontend/pull/1490)
+- Added interactive message support [`#1496`](https://github.com/glific/glific-frontend/pull/1496)
+- Error handling for calendar and time picker [`#1520`](https://github.com/glific/glific-frontend/pull/1520)
+- Fixed triggers date time [`#1512`](https://github.com/glific/glific-frontend/pull/1512)
+
+#### [v1.8.1](https://github.com/glific/glific-frontend/compare/v1.8.0...v1.8.1)
+
+> 12 July 2021
+
+- Added wait for response expression in floweditor [`#1528`](https://github.com/glific/glific-frontend/pull/1528)
+
 #### [v1.8.0](https://github.com/glific/glific-frontend/compare/v1.7.1...v1.8.0)
 
 > 06 July 2021

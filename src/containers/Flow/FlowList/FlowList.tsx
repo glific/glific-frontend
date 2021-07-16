@@ -38,6 +38,13 @@ const getDate = (date: string, fallback: string = '') => (
   </div>
 );
 
+const getLastPublished = (date: string, fallback: string = '') =>
+  date ? (
+    <div className={styles.LastPublished}>{moment(date).format(DATE_TIME_FORMAT)}</div>
+  ) : (
+    <div className={styles.LastPublishedFallback}>{fallback}</div>
+  );
+
 const columnStyles = [styles.Name, styles.DateColumn, styles.DateColumn, styles.Actions];
 const flowIcon = <FlowIcon className={styles.FlowIcon} />;
 
@@ -112,7 +119,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const getColumns = ({ name, keywords, lastChangedAt, lastPublishedAt }: any) => ({
     name: getName(name, keywords),
-    lastPublishedAt: getDate(lastPublishedAt, t('Not published yet')),
+    lastPublishedAt: getLastPublished(lastPublishedAt, t('Not published yet')),
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 

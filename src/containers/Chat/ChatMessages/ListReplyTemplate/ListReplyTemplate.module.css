@@ -10,10 +10,6 @@
   margin: 6px 0px !important;
 }
 
-.GlobalButton > span {
-  justify-content: center;
-}
-
 .SimulatorButton {
   composes: GlobalButton;
   font-size: 12.5px !important;
@@ -39,6 +35,7 @@
 .ListItem {
   font-size: 12px !important;
   width: 100%;
+  font-weight: 300 !important;
 }
 
 .ListItem > span {
@@ -47,6 +44,7 @@
 
 .ListItem > span > div {
   text-align: left;
+  color: #073f24;
 }
 
 .Drawer {
@@ -63,6 +61,7 @@
 .DrawerHeading {
   display: flex;
   justify-content: center;
+  color: #073f24;
 }
 
 .DrawerHeading > h3 {
@@ -143,4 +142,16 @@
 
 .DialogContent {
   width: 370px;
+}
+
+.SectionTitle {
+  color: #073f24;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 4px 8px;
+  background-color: #edf6f2;
+}
+
+.Options > button:hover {
+  background-color: #edf6f2;
 }
