@@ -10,27 +10,25 @@ import {
   GET_INTERACTIVE_MESSAGES_COUNT,
 } from '../../../graphql/queries/InteractiveMessage';
 import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
+import { getInteractiveMessageBody } from '../../../common/utils';
 
 export interface InteractiveMessageListProps {}
 
 const getLabel = (text: string) => <p className={styles.LabelText}>{text}</p>;
 
-const getType = (text: string) => <p className={styles.TableText}>{text}</p>;
+const getType = (text: string) => {
+  let type = '';
+  if (text === 'QUICK_REPLY') {
+    type = 'Quick Reply';
+  } else if (text === 'LIST') {
+    type = 'List';
+  }
+  return <p className={styles.TableText}>{type}</p>;
+};
 
 const getBody = (text: string) => {
-  const message = JSON.parse(text);
-  let messageText = '';
-  if (message.type === 'list') {
-    messageText = message.body;
-  } else if (message.type === 'quick_reply') {
-    if (message.content.type === 'text') {
-      messageText = message.content.text;
-    } else if (['image', 'video'].includes(message.content.type)) {
-      messageText = message.content.caption;
-    }
-  }
-
-  return <div className={styles.TableText}>{messageText}</div>;
+  const message = getInteractiveMessageBody(JSON.parse(text));
+  return <div className={styles.TableText}>{message}</div>;
 };
 
 const columnStyles = [styles.Label, styles.Message, styles.Type, styles.Actions];
