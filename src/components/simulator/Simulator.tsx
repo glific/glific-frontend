@@ -374,6 +374,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
         true
       );
       setSimulatedMessage(previewMessage);
+      if (templateType === INTERACTIVE_LIST) {
+        const { items } = JSON.parse(interactiveContent);
+        setSelectedListTemplate(items);
+      } else {
+        setIsDrawerOpen(false);
+      }
     }
   };
 
@@ -410,6 +416,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
     // Cleaning up simulator when switching between templates
     if (!interactiveMessage) {
       setSimulatedMessage(null);
+      setIsDrawerOpen(false);
     }
   }, [interactiveMessage]);
 
