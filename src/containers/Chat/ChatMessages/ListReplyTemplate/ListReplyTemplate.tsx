@@ -53,7 +53,10 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
               className={styles.ListItemChat}
               onClick={() => setCheckedItem(option.title)}
             >
-              <div>{option.title}</div>
+              <div>
+                <div>{option.title}</div>
+                <div>{option.description}</div>
+              </div>
               <div>
                 <Radio
                   value={option.title}
@@ -142,7 +145,10 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
               className={styles.ListItem}
               onClick={() => setCheckedItem(option.title)}
             >
-              <div>{option.title}</div>
+              <div>
+                <div>{option.title}</div>
+                <div>{option.description}</div>
+              </div>
               <div>
                 <Radio
                   value={option.title}
