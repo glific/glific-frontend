@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 
 import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
@@ -14,9 +14,10 @@ import { ReactComponent as ContactVariable } from '../../../assets/images/icons/
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
 import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from '../../../graphql/queries/Flow';
-import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
+import { DELETE_FLOW, IMPORT_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 import { exportFlowMethod } from '../../../common/utils';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
 
 export interface FlowListProps {}
 
@@ -62,6 +63,13 @@ export const FlowList: React.SFC<FlowListProps> = () => {
   const inputRef = useRef<any>(null);
 
   const [flowName, setFlowName] = useState('');
+  const [importing, setImporting] = useState(false);
+
+  const [importFlow] = useMutation(IMPORT_FLOW, {
+    onCompleted: () => {
+      setImporting(false);
+    },
+  });
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
@@ -81,7 +89,12 @@ export const FlowList: React.SFC<FlowListProps> = () => {
   };
 
   const changeHandler = (event: any) => {
-    console.log(event.target.files[0]);
+    const fileReader: any = new FileReader();
+    fileReader.onload = function () {
+      importFlow({ variables: { flow: fileReader.result } });
+    };
+    setImporting(true);
+    fileReader.readAsText(event.target.files[0]);
   };
 
   const importButton = (
@@ -131,6 +144,10 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     columns: getColumns,
     columnStyles,
   };
+
+  if (importing) {
+    return <Loading message="Uploading" />;
+  }
 
   return (
     <>
