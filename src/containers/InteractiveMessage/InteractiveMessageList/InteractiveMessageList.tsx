@@ -23,7 +23,7 @@ const getType = (text: string) => {
   } else if (text === 'LIST') {
     type = 'List';
   }
-  <p className={styles.TableText}>{type}</p>;
+  return <p className={styles.TableText}>{type}</p>;
 };
 
 const getBody = (text: string) => {
