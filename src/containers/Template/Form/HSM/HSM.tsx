@@ -109,6 +109,11 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
     setSampleMessages(message);
   };
 
+  let disabled = false;
+  if (match.params.id) {
+    disabled = true;
+  }
+
   const formFields = [
     {
       component: EmojiInput,
@@ -117,7 +122,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      disabled: match.params.id,
+      disabled,
       helperText:
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
       handleChange: getSimulatorMessage,
@@ -137,7 +142,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         variant: 'outlined',
         label: t('Category*'),
       },
-      disabled: !!match.params.id,
+      disabled,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
@@ -148,7 +153,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       name: 'shortcode',
       placeholder: t('Element name*'),
       validate: validateShortcode,
-      disabled: match.params.id,
+      disabled,
       inputProp: {
         onBlur: (event: any) => setShortcode(event.target.value),
       },
