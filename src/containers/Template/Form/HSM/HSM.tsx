@@ -137,7 +137,7 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
         variant: 'outlined',
         label: t('Category*'),
       },
-      disabled: match.params.id,
+      disabled: !!match.params.id,
       helperText: t('Select the most relevant category'),
       onChange: (event: any) => {
         setCategory(event);
