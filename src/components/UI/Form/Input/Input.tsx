@@ -90,6 +90,11 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     );
   }
 
+  let showError = false;
+  if (form && form.errors[field.name] && form.touched[field.name]) {
+    showError = true;
+  }
+
   return (
     <div className={styles.Input} data-testid="input">
       <FormControl fullWidth error={form && form.errors[field.name] && form.touched[field.name]}>
@@ -103,7 +108,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           type={fieldType}
           classes={{ multiline: styles.Multiline }}
           disabled={disabled}
-          error={form && form.errors[field.name] && form.touched[field.name]}
+          error={showError}
           multiline={textArea}
           rows={rows}
           className={styles.OutlineInput}

@@ -62,6 +62,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === LIST) {
       template = (
         <ListReplyTemplate
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}
@@ -79,6 +80,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <QuickReplyTemplate
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}
