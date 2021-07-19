@@ -84,7 +84,7 @@ test('Submit form', async () => {
 });
 
 test('check if flow field appears on selcting days', async () => {
-  const { container, getByText, getAllByTestId } = render(wrapper);
+  const { getByText } = render(wrapper);
   expect(getByText('Loading...')).toBeInTheDocument();
 
   await waitFor(() => {
