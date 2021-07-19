@@ -99,7 +99,14 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const importButton = (
     <span>
-      <input type="file" ref={inputRef} hidden name="file" onChange={changeHandler} />
+      <input
+        type="file"
+        ref={inputRef}
+        hidden
+        name="file"
+        onChange={changeHandler}
+        data-testid="import"
+      />
       <ImportIcon
         className={styles.ImportIcon}
         onClick={() => {
