@@ -103,7 +103,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       <ImportIcon
         className={styles.ImportIcon}
         onClick={() => {
-          if (inputRef.current) inputRef.current?.click();
+          if (inputRef.current) inputRef.current.click();
         }}
       />
     </span>
