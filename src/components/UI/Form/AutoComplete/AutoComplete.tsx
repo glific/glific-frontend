@@ -165,7 +165,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   return (
     <div className={styles.Input}>
-      <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
+      <FormControl fullWidth error={hasError}>
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
