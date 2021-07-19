@@ -48,7 +48,7 @@ const customSuggestionsFilter = (searchValue: string, suggestions: Array<any>) =
   return filteredSuggestions.slice(0, length);
 };
 
-const DraftField = React.forwardRef((inputProps: any, ref: any) => {
+const DraftField = (inputProps: any) => {
   const {
     component: Component,
     editorRef,
@@ -58,12 +58,6 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
     onSearchChange,
     ...other
   } = inputProps;
-
-  React.useImperativeHandle(ref, () => ({
-    focus: () => {
-      editorRef?.current?.focus();
-    },
-  }));
 
   const { MentionSuggestions, plugins } = useMemo(getMentionComponentAndPlugin, []);
 
@@ -78,14 +72,13 @@ const DraftField = React.forwardRef((inputProps: any, ref: any) => {
       />
     </>
   );
-});
+};
 
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
   handleChange,
   ...props
 }: EmojiInputProps) => {
-  const inputRef = React.useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { t } = useTranslation();
 
@@ -149,7 +142,6 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const inputProps = {
     component: Editor,
     editorState: props.form.values[rest.name],
-    editorRef: inputRef,
     open,
     suggestions,
     onOpenChange,
