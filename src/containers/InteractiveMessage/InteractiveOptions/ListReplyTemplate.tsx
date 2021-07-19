@@ -30,23 +30,30 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     onInputChange,
   } = props;
 
-  const isError = (key: string, itemIdx: number | null = null) => {
-    if (itemIdx !== null) {
-      return !!(
-        errors.templateButtons &&
-        touched.templateButtons &&
-        errors.templateButtons[index] &&
-        errors.templateButtons[index].options[itemIdx]?.[key]
-      );
-    }
-
-    return !!(
+  const isError = (key: string, itemIdx: number) => {
+    const error =
       errors.templateButtons &&
       touched.templateButtons &&
       errors.templateButtons[index] &&
-      errors.templateButtons[index][key]
-    );
+      touched.templateButtons[index] &&
+      errors.templateButtons[index].options &&
+      touched.templateButtons[index].options &&
+      errors.templateButtons[index].options[itemIdx] &&
+      errors.templateButtons[index].options[itemIdx][key];
+
+    return !!error;
   };
+
+  const isListTitleError = (() => {
+    const error =
+      errors.templateButtons &&
+      touched.templateButtons &&
+      errors.templateButtons[index] &&
+      touched.templateButtons[index] &&
+      errors.templateButtons[index].title;
+
+    return !!error;
+  })();
 
   const sectionLabel = `Enter list ${index + 1} title`;
 
@@ -54,11 +61,6 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
   const { options } = templateButtons[index];
 
   if (!options) {
-    return null;
-  }
-
-  const err = errors.templateButtons && errors.templateButtons[index];
-  if (err && err.options && err.options.length !== options.length) {
     return null;
   }
 
@@ -103,14 +105,14 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
         </div>
       </div>
       <div className={styles.ListReplyWrapper}>
-        <FormControl fullWidth error={isError('title')} className={styles.FormControl}>
+        <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
             placeholder={sectionLabel}
             variant="outlined"
             onChange={(e: any) => handleInputChange(e, 'title')}
             className={styles.TextField}
-            error={isError('title')}
+            error={isListTitleError}
             value={defaultTitle}
           />
           {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (

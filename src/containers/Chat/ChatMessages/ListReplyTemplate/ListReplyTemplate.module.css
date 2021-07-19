@@ -30,12 +30,18 @@
   justify-content: space-between;
   text-transform: none !important;
   font-weight: 400 !important;
+  text-align: left;
+}
+
+.ListItemChat > span > div > :last-child {
+  font-size: 12px;
 }
 
 .ListItem {
-  font-size: 12px !important;
+  font-size: 11px !important;
   width: 100%;
   font-weight: 300 !important;
+  text-transform: none !important;
 }
 
 .ListItem > span {
@@ -43,6 +49,12 @@
 }
 
 .ListItem > span > div {
+  text-align: left;
+  color: #073f24;
+}
+
+.ListItem > span > div > :last-child {
+  font-size: 9px !important;
   text-align: left;
   color: #073f24;
 }

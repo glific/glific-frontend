@@ -88,7 +88,7 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
     const { content } = interactiveJSON;
     switch (content.type) {
       case 'text':
-        messageBody = content.text;
+        messageBody = content.caption;
         break;
       case 'image':
         messageBody = content.caption;

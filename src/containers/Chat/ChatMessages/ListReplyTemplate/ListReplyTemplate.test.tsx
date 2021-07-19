@@ -14,17 +14,17 @@ const items = [
       {
         type: 'text',
         title: 'section 1 row 1',
-        description: 'first row of first section desctiption',
+        description: 'first row of first section description',
       },
       {
         type: 'text',
         title: 'section 1 row 2',
-        description: 'second row of first section desctiption',
+        description: 'second row of first section description',
       },
       {
         type: 'text',
         title: 'section 1 row 3',
-        description: 'third row of first section desctiption',
+        description: 'third row of first section description',
       },
     ],
   },
@@ -73,11 +73,13 @@ const listProps: any = {
   onDrawerClose: jest.fn(),
 };
 
-test('it renders ListReplyTemplate on SimulatorScreen', async () => {
+test('it renders ListReplyTemplate on SimulatorScreen and opens drawer', async () => {
   props.component = SimulatorTemplate;
   render(<ListReplyTemplateDrawer {...listProps} />);
 
-  const button = screen.getByRole('button', { name: 'section 1 row 1' });
+  const button = screen.getByRole('button', {
+    name: 'section 1 row 1 first row of first section description',
+  });
   fireEvent.click(button);
 
   await waitFor(() => {});
