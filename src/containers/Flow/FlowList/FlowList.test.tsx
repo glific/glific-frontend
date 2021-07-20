@@ -93,24 +93,24 @@ describe('<FlowList />', () => {
 
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
-    const importFlowButton = screen.getByText('Import.svg');
-    expect(importFlowButton).toBeInTheDocument();
-
-    const json = JSON.stringify(testJSON);
-
-    const file = new File([json], 'test.json', {
-      type: 'application/json',
+    await waitFor(() => {
+      const importFlowButton = screen.getByText('Import.svg');
+      expect(importFlowButton).toBeInTheDocument();
+      fireEvent.click(importFlowButton);
     });
 
-    fireEvent.click(importFlowButton);
-    await waitFor(() => {});
+    await waitFor(() => {
+      const json = JSON.stringify(testJSON);
+      const file = new File([json], 'test.json', {
+        type: 'application/json',
+      });
+      const input = screen.getByTestId('import');
+      Object.defineProperty(input, 'files', {
+        value: [file],
+      });
 
-    const input = screen.getByTestId('import');
-    Object.defineProperty(input, 'files', {
-      value: [file],
+      fireEvent.change(input);
     });
-
-    fireEvent.change(input);
 
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
   });
@@ -120,10 +120,11 @@ describe('<FlowList />', () => {
     render(flowList);
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
-    const exportButton = screen.getByText('Export.svg');
-    expect(exportButton).toBeInTheDocument();
+    await waitFor(() => {
+      const exportButton = screen.getByText('Export.svg');
+      expect(exportButton).toBeInTheDocument();
 
-    fireEvent.click(exportButton);
-    await waitFor(() => {});
+      fireEvent.click(exportButton);
+    });
   });
 });
