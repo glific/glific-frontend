@@ -8,13 +8,6 @@ const menus = [
     roles: ['Staff', 'Manager', 'Admin'],
   },
   {
-    title: 'Tags',
-    path: '/tag',
-    icon: 'tag',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
-  },
-  {
     title: 'Speed Sends',
     path: '/speed-send',
     icon: 'speed-send',
