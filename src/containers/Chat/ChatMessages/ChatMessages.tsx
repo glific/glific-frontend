@@ -7,7 +7,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ChatMessages.module.css';
-import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
 import { ContactBar } from './ContactBar/ContactBar';
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatInput } from './ChatInput/ChatInput';
@@ -15,7 +14,6 @@ import { setNotification, setErrorMessage } from '../../../common/notification';
 import {
   TIME_FORMAT,
   SEARCH_QUERY_VARIABLES,
-  setVariables,
   COLLECTION_SEARCH_QUERY_VARIABLES,
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LIMIT,
@@ -26,10 +24,7 @@ import { SEARCH_QUERY } from '../../../graphql/queries/Search';
 import {
   CREATE_AND_SEND_MESSAGE_MUTATION,
   CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION,
-  UPDATE_MESSAGE_TAGS,
 } from '../../../graphql/mutations/Chat';
-import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Selected.svg';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs } from '../../../common/utils';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
@@ -42,9 +37,6 @@ export interface ChatMessagesProps {
 export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collectionId }) => {
   // create an instance of apollo client
   const client = useApolloClient();
-  const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
-    variables: setVariables(),
-  });
   const urlString = new URL(window.location.href);
 
   let messageParameterOffset: any = 0;
@@ -62,8 +54,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
 
   const [editTagsMessageId, setEditTagsMessageId] = useState<number | null>(null);
   const [dialog, setDialogbox] = useState<string>();
-  const [selectedMessageTags, setSelectedMessageTags] = useState<any>(null);
-  const [previousMessageTags, setPreviousMessageTags] = useState<any>(null);
   const [showDropdown, setShowDropdown] = useState<any>(null);
   const [reducedHeight, setReducedHeight] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
@@ -270,16 +260,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   }, [data, parameterdata]);
 
   let messageList: any;
-  let unselectedTags: Array<any> = [];
-
-  // tagging message mutation
-  const [createMessageTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-    onCompleted: () => {
-      setNotification(client, t('Tags added successfully'));
-      setDialogbox('');
-    },
-  });
-
   const [sendMessageToCollection] = useMutation(CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION, {
     refetchQueries: [{ query: SEARCH_QUERY, variables: SEARCH_QUERY_VARIABLES }],
     onCompleted: () => {
@@ -502,52 +482,11 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     }
   }, [searchMessageNumber]);
 
-  const closeDialogBox = () => {
-    setDialogbox('');
-    setShowDropdown(null);
-  };
-
   // check if the search API results nothing for a particular contact ID and redirect to chat
   if (contactId && data) {
     if (data.search.length === 0 || data.search[0].contact.status === 'BLOCKED') {
       return <Redirect to="/chat" />;
     }
-  }
-
-  /* istanbul ignore next */
-  const handleSubmit = (tags: any) => {
-    const selectedTags = tags.filter((tag: any) => !previousMessageTags.includes(tag));
-    unselectedTags = previousMessageTags.filter((tag: any) => !tags.includes(tag));
-
-    if (selectedTags.length === 0 && unselectedTags.length === 0) {
-      setDialogbox('');
-      setShowDropdown(null);
-    } else {
-      createMessageTag({
-        variables: {
-          input: {
-            messageId: editTagsMessageId,
-            addTagIds: selectedTags,
-            deleteTagIds: unselectedTags,
-          },
-        },
-      });
-    }
-  };
-
-  const tags = allTags.data ? allTags.data.tags : [];
-
-  if (dialog === 'tag') {
-    dialogBox = (
-      <SearchDialogBox
-        selectedOptions={selectedMessageTags}
-        title={t('Assign tag to message')}
-        handleOk={handleSubmit}
-        handleCancel={closeDialogBox}
-        options={tags}
-        icon={<TagIcon />}
-      />
-    );
   }
 
   const showEditTagsDialog = (id: number) => {
@@ -590,20 +529,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         key={message.id}
         popup={message.id === showDropdown}
         onClick={() => showEditTagsDialog(message.id)}
-        setDialog={() => {
-          loadAllTags();
-
-          let messageTags = conversationInfo.messages.filter(
-            (messageObj: any) => messageObj.id === editTagsMessageId
-          );
-          if (messageTags.length > 0) {
-            messageTags = messageTags[0].tags;
-          }
-          const messageTagId = messageTags.map((tag: any) => tag.id);
-          setSelectedMessageTags(messageTagId);
-          setPreviousMessageTags(messageTagId);
-          setDialogbox('tag');
-        }}
         focus={index === 0}
         showMessage={
           index !== 0

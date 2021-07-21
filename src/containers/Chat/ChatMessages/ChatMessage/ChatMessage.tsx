@@ -368,15 +368,6 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   <Button
                     className={styles.Popper}
                     color="primary"
-                    onClick={props.setDialog}
-                    data-testid="dialogButton"
-                  >
-                    {t('Assign tag')}
-                  </Button>
-                  <br />
-                  <Button
-                    className={styles.Popper}
-                    color="primary"
                     onClick={() => setShowSaveMessageDialog(true)}
                   >
                     {t('Add to speed sends')}
