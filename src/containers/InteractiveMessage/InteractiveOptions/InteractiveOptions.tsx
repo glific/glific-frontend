@@ -157,14 +157,16 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       )}
 
       {templateType && (
-        <FieldArray
-          name="templateButtons"
-          render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) =>
-              getButtons(row, index, arrayHelpers)
-            )
-          }
-        />
+        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
+          <FieldArray
+            name="templateButtons"
+            render={(arrayHelpers) =>
+              values.templateButtons.map((row: any, index: any) =>
+                getButtons(row, index, arrayHelpers)
+              )
+            }
+          />
+        </div>
       )}
     </div>
   );

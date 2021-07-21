@@ -42,3 +42,9 @@
 .GlobalButton {
   padding-bottom: 16px;
 }
+
+.TemplateFields {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+}

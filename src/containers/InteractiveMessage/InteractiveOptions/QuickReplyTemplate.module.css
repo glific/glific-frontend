@@ -1,8 +1,5 @@
-.WrapperBackground {
-  padding: 16px 24px 8px 24px;
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 6px;
+.WrapperBackground > div > div {
+  margin-bottom: 16px !important;
 }
 
 .Font {
@@ -46,9 +43,14 @@
   font-size: 16px;
   font-family: 'Heebo', sans-serif;
   text-transform: inherit !important;
+  padding: 0px 8px !important;
 }
 
 .AddIcon {
   height: 16px;
   width: 16px;
+}
+
+.RemoveIcon {
+  cursor: pointer;
 }
