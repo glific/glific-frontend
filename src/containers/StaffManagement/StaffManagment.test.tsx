@@ -30,7 +30,7 @@ test('it should have a help link', async () => {
   // loading is show initially
   expect(screen.getByText('Loading...')).toBeInTheDocument();
   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-  const helpButton = await screen.getByTestId('helpButton');
+  const helpButton = screen.getByTestId('helpButton');
   fireEvent.click(helpButton);
 
   expect(screen.getByText('User roles')).toBeInTheDocument();
