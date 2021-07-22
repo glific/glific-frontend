@@ -189,11 +189,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
       if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
         template = (
-          <ListReplyTemplate
-            {...content}
-            component={SimulatorTemplate}
-            onGlobalButtonClick={handleOpenListReplyDrawer}
-          />
+          <>
+            <ListReplyTemplate
+              {...content}
+              component={SimulatorTemplate}
+              onGlobalButtonClick={handleOpenListReplyDrawer}
+            />
+            <TimeComponent />
+          </>
         );
       }
 
@@ -215,16 +218,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (
-            <ChatMessageType
-              type={type}
-              media={media}
-              body={body}
-              location={location}
-              isSimulatedMessage={isSimulatedMessage}
-            />
+            <>
+              <ChatMessageType
+                type={type}
+                media={media}
+                body={body}
+                location={location}
+                isSimulatedMessage={isSimulatedMessage}
+              />
+              <TimeComponent />
+            </>
           )}
-
-          <TimeComponent />
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons

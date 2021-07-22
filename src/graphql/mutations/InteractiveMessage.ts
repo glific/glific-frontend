@@ -7,6 +7,10 @@ export const CREATE_INTERACTIVE = gql`
         type
         label
         interactiveContent
+        language {
+          id
+          label
+        }
       }
       errors {
         key
@@ -26,6 +30,10 @@ export const UPDATE_INTERACTIVE = gql`
         type
         updatedAt
         id
+        language {
+          id
+          label
+        }
       }
       errors {
         key
