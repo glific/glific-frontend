@@ -91,7 +91,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
-  const [type, setType] = useState<any>('');
+  const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
 
@@ -365,7 +365,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   const displayWarning = () => {
-    if (type.id === 'DOCUMENT') {
+    if (type && type.id === 'DOCUMENT') {
       setWarning(
         <div className={styles.Warning}>
           <ol>
