@@ -57,6 +57,7 @@ const withResult = {
                 name: 'User',
               },
             },
+            interactiveContent: '{}',
           },
         ],
       },
