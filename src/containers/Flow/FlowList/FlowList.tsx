@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
@@ -18,6 +18,7 @@ import { DELETE_FLOW, IMPORT_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 import { exportFlowMethod } from '../../../common/utils';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { setErrorMessage } from '../../../common/notification';
 
 export interface FlowListProps {}
 
@@ -58,6 +59,7 @@ const queries = {
 const configureIcon = <ConfigureIcon />;
 
 export const FlowList: React.SFC<FlowListProps> = () => {
+  const client = useApolloClient();
   const history = useHistory();
   const { t } = useTranslation();
   const inputRef = useRef<any>(null);
@@ -66,7 +68,16 @@ export const FlowList: React.SFC<FlowListProps> = () => {
   const [importing, setImporting] = useState(false);
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
-    onCompleted: () => {
+    onCompleted: (result: any) => {
+      const { success } = result.importFlow;
+      if (!success) {
+        const message = 'This could happen if the flow is already present.';
+        setErrorMessage(
+          client,
+          { message },
+          'Sorry something went wrong, the import was unsuccessful'
+        );
+      }
       setImporting(false);
     },
   });
