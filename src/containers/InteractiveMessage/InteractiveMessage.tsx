@@ -386,7 +386,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     displayWarning();
   }, [type]);
 
-  const dialogMessage = t("You won't be able to use this flow again.");
+  const dialogMessage = t("You won't be able to use this again.");
 
   const options = MEDIA_MESSAGE_TYPES.filter(
     (msgType: string) => !['AUDIO', 'STICKER'].includes(msgType)
@@ -726,6 +726,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         cancelLink="interactive-message"
         icon={interactiveMessageIcon}
         languageSupport={false}
+        getQueryFetchPolicy="cache-and-network"
       />
       <Simulator
         setSimulatorId={0}
