@@ -349,9 +349,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       if (translationsCopy[Id]) {
         setStates({
           language: value,
-          type: translationsCopy[Id].type,
-          interactiveContent: translationsCopy[Id].interactiveContent,
-          label: translationsCopy[Id].label,
+          type: template.interactiveTemplate.interactiveTemplate.type,
+          interactiveContent: translationsCopy[Id],
+          label: template.interactiveTemplate.interactiveTemplate.label,
         });
       }
     }
@@ -566,7 +566,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     let translationsCopy: any = {};
     if (translations) {
       translationsCopy = JSON.parse(translations);
-      translationsCopy[language.id] = { ...payloadData };
+      translationsCopy[language.id] = payloadData.interactiveContent;
     }
 
     payloadData.translations = JSON.stringify(translationsCopy);
