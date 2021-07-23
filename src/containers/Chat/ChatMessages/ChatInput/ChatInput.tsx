@@ -34,7 +34,7 @@ export interface ChatInputProps {
     messageType: string,
     selectedTemplate: any,
     variableParam: any,
-    interactiveContent?: any
+    interactiveTemplateId?: any
   ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus?: string;
@@ -174,7 +174,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         interactiveMessageContent.type.toUpperCase(),
         null,
         null,
-        JSON.stringify(interactiveMessageContent)
+        Number(selectedTemplate.id)
       );
       // else the type will by default be text
     } else {
@@ -221,9 +221,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       const interactiveContent = JSON.parse(obj.interactiveContent);
       messageBody = getInteractiveMessageBody(interactiveContent);
       setInteractiveMessageContent(interactiveContent);
-    } else {
-      setSelectedTemplate(obj);
     }
+
+    setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
     setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(messageBody)));
 
