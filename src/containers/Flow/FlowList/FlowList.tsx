@@ -18,7 +18,7 @@ import { DELETE_FLOW, IMPORT_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 import { exportFlowMethod } from '../../../common/utils';
 import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { setErrorMessage } from '../../../common/notification';
+import { setNotification } from '../../../common/notification';
 
 export interface FlowListProps {}
 
@@ -71,10 +71,13 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     onCompleted: (result: any) => {
       const { success } = result.importFlow;
       if (!success) {
-        const message = t(
-          'This could happen if the flow is already present or error in the import file.'
+        setNotification(
+          client,
+          'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
+          'error'
         );
-        setErrorMessage(client, { message }, t('Sorry! An error occurred!'));
+      } else {
+        setNotification(client, 'The flow has been imported successfully.');
       }
       setImporting(false);
     },
