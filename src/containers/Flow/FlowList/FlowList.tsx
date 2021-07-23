@@ -71,12 +71,10 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     onCompleted: (result: any) => {
       const { success } = result.importFlow;
       if (!success) {
-        const message = 'This could happen if the flow is already present.';
-        setErrorMessage(
-          client,
-          { message },
-          'Sorry something went wrong, the import was unsuccessful'
+        const message = t(
+          'This could happen if the flow is already present or error in the import file.'
         );
+        setErrorMessage(client, { message }, t('Sorry something went wrong'));
       }
       setImporting(false);
     },
