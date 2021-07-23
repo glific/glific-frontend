@@ -46,7 +46,7 @@ export const LIST_ITEM_MOCKS = [
           description: 'important label',
           languageId: 1,
           colorCode: '#0C976D',
-          parentId: '1',
+          parentId: null,
         },
       },
     },
@@ -54,11 +54,11 @@ export const LIST_ITEM_MOCKS = [
       data: {
         createTag: {
           tag: {
-            id: '121',
+            id: 1,
             description: 'important label',
             label: 'important',
             colorCode: '#0C976D',
-            parent: { id: '1' },
+            parent: null,
           },
         },
       },
@@ -74,7 +74,7 @@ export const LIST_ITEM_MOCKS = [
           keywords: '',
           languageId: 1,
           colorCode: '#0C976D',
-          parentId: '1',
+          parentId: 1,
         },
       },
     },
@@ -82,12 +82,12 @@ export const LIST_ITEM_MOCKS = [
       data: {
         createTag: {
           tag: {
-            id: '121',
+            id: 2,
             description: 'new Tag description',
             label: 'new Tag',
             colorCode: '#0C976D',
             parent: {
-              id: '1',
+              id: 1,
             },
           },
         },
@@ -124,23 +124,23 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            id: '87',
+            id: '2',
             label: 'Important',
             keywords: ['Hi'],
             description: 'important task',
             isReserved: false,
             colorCode: '#0C976D',
-            parent: { id: '1' },
+            parent: { id: 1 },
             updatedAt: '2020-12-01T18:00:28Z',
           },
           {
-            id: '94',
+            id: '1',
             label: 'To Do',
             keywords: ['Hi'],
             description: 'complete this task',
             isReserved: false,
             colorCode: '#0C976D',
-            parent: { id: '2' },
+            parent: null,
             updatedAt: '2020-12-01T18:00:28Z',
           },
         ],
@@ -166,7 +166,7 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
-            parent: { id: '2' },
+            parent: null,
           },
         },
       },
@@ -189,7 +189,7 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
-            parent: { id: '2' },
+            parent: null,
           },
         },
       },
@@ -212,9 +212,7 @@ export const LIST_ITEM_MOCKS = [
               id: 1,
             },
             colorCode: '#00d084',
-            parent: {
-              id: '2',
-            },
+            parent: null,
           },
         },
       },
@@ -229,12 +227,12 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            id: '1',
+            id: 1,
             label: 'Messages',
             description: null,
             colorCode: '#0C976D',
-            parent: { id: '2' },
-            language: { id: '1', label: 'Hindi' },
+            parent: null,
+            language: { id: '1', label: 'English' },
           },
         ],
       },
@@ -249,12 +247,12 @@ export const LIST_ITEM_MOCKS = [
       data: {
         tags: [
           {
-            id: '1',
+            id: 1,
             label: 'Messages',
             description: null,
             colorCode: '#0C976D',
-            parent: { id: '2' },
-            language: { id: '1', label: 'Hindi' },
+            parent: null,
+            language: { id: '1', label: 'English' },
           },
         ],
       },

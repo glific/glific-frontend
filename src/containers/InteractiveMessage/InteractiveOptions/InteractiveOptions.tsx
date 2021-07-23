@@ -59,9 +59,11 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
 
   const getButtons = (row: any, index: number, arrayHelpers: any) => {
     let template: any = null;
+    const uniqueKey = `button_${index}_${new Date().getTime()}`;
     if (templateType === LIST) {
       template = (
         <ListReplyTemplate
+          key={uniqueKey}
           index={index}
           inputFields={inputFields}
           form={form}
@@ -79,6 +81,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <QuickReplyTemplate
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}

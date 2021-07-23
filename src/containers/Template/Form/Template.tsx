@@ -159,8 +159,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [example, setExample] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>({});
-  const [type, setType] = useState<any>('');
+  const [language, setLanguageId] = useState<any>(null);
+  const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -260,7 +260,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const [getSessionTemplates, { data: sessionTemplates }] = useLazyQuery<any>(FILTER_TEMPLATES, {
     variables: {
-      filter: { languageId: parseInt(language.id, 10) },
+      filter: { languageId: language ? parseInt(language.id, 10) : null },
       opts: {
         order: 'ASC',
         limit: null,
@@ -335,8 +335,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     return error;
   };
 
-  const UpdateTranslation = (value: any) => {
-    const Id = value.id;
+  const updateTranslation = (value: any) => {
+    const translationId = value.id;
     // restore if selected language is same as template
     if (template && template.sessionTemplate.sessionTemplate.language.id === value.id) {
       setStates({
@@ -349,13 +349,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
     } else if (translations && !defaultAttribute.isHsm) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
-      if (translationsCopy[Id]) {
+      if (translationsCopy[translationId]) {
         setStates({
           language: value,
-          label: translationsCopy[Id].label,
-          body: translationsCopy[Id].body,
-          type: translationsCopy[Id].MessageMedia ? translationsCopy[Id].MessageMedia.type : null,
-          MessageMedia: translationsCopy[Id].MessageMedia,
+          label: translationsCopy[translationId].label,
+          body: translationsCopy[translationId].body,
+          type: translationsCopy[translationId].MessageMedia
+            ? translationsCopy[translationId].MessageMedia.type
+            : null,
+          MessageMedia: translationsCopy[translationId].MessageMedia,
         });
       } else {
         setStates({
@@ -372,7 +374,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const getLanguageId = (value: any) => {
     // create translations only while updating
     if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
-      UpdateTranslation(value);
+      updateTranslation(value);
     }
     if (value) setLanguageId(value);
   };
@@ -399,7 +401,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   }, [type, attachmentURL]);
 
   const displayWarning = () => {
-    if (type.id === 'STICKER') {
+    if (type && type.id === 'STICKER') {
       setWarning(
         <div className={styles.Warning}>
           <ol>
@@ -408,7 +410,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
           </ol>
         </div>
       );
-    } else if (type.id === 'AUDIO') {
+    } else if (type && type.id === 'AUDIO') {
       setWarning(
         <div className={styles.Warning}>
           <ol>

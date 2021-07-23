@@ -41,13 +41,13 @@ export const Organisation: React.SFC = () => {
   const [enabledDays, setEnabledDays] = useState<any>([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  const [defaultFlowId, setDefaultFlowId] = useState<any>({});
-  const [flowId, setFlowId] = useState<any>({});
+  const [defaultFlowId, setDefaultFlowId] = useState<any>(null);
+  const [flowId, setFlowId] = useState<any>(null);
   const [IsDisabled, setIsDisable] = useState(false);
   const [IsFlowDisabled, setIsFlowDisable] = useState(true);
   const [organizationId, setOrganizationId] = useState(null);
   const [activeLanguages, setActiveLanguages] = useState([]);
-  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
+  const [defaultLanguage, setDefaultLanguage] = useState<any>(null);
   const [signaturePhrase, setSignaturePhrase] = useState();
   const [phone, setPhone] = useState<string>('');
 
@@ -103,8 +103,17 @@ export const Organisation: React.SFC = () => {
     setHours(outOfOfficeValue.enabled);
     setIsDisable(!outOfOfficeValue.enabled);
     setOutOfOffice(outOfOfficeValue);
-    setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
-    setFlowId(getFlow(outOfOfficeValue.flowId));
+
+    // set the value only if default flow is not null
+    if (outOfOfficeValue.defaultFlowId) {
+      setDefaultFlowId(getFlow(outOfOfficeValue.defaultFlowId));
+    }
+
+    // set the value only if out of office flow is not null
+    if (outOfOfficeValue.flowId) {
+      setFlowId(getFlow(outOfOfficeValue.flowId));
+    }
+
     setSignaturePhrase(signaturePhraseValue);
     if (activeLanguagesValue) setActiveLanguages(activeLanguagesValue);
     if (defaultLanguageValue) setDefaultLanguage(defaultLanguageValue);

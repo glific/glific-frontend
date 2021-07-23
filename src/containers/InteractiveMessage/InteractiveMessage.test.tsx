@@ -51,127 +51,122 @@ test('it renders empty interactive form', async () => {
   await whenStable();
 
   // Adding another quick reply button
-
-  const addQuickReplyButton = screen.getByText('Add quick reply');
-  expect(addQuickReplyButton).toBeInTheDocument();
-  fireEvent.click(addQuickReplyButton);
-
-  await waitFor(() => {});
-
-  // Get all input elements
-  const [, label, title, quickReply1, quickReply2, attachmentType, attachmentUrl] =
-    screen.getAllByRole('textbox');
-  expect(label).toBeInTheDocument();
-  expect(title).toBeInTheDocument();
-  expect(quickReply1).toBeInTheDocument();
-  expect(quickReply2).toBeInTheDocument();
-  expect(attachmentType).toBeInTheDocument();
-  expect(attachmentUrl).toBeInTheDocument();
-
-  fireEvent.change(label, { target: { value: 'new label' } });
-  fireEvent.blur(label);
-  await waitFor(() => {});
-
-  fireEvent.change(title, { target: { value: 'new title' } });
-  fireEvent.blur(title);
-  await waitFor(() => {});
-
-  fireEvent.change(quickReply1, { target: { value: 'Yes' } });
-  await waitFor(() => {});
-  fireEvent.change(quickReply2, { target: { value: 'No' } });
-  await waitFor(() => {});
-
-  const [languageComponent, attachmentTypeComponent] =
-    screen.getAllByTestId('autocomplete-element');
-
-  languageComponent.focus();
   await waitFor(() => {
-    fireEvent.keyDown(languageComponent, { key: 'ArrowDown' });
-    fireEvent.keyDown(languageComponent, { key: 'Enter' });
+    const addQuickReplyButton = screen.getByText('Add quick reply');
+    expect(addQuickReplyButton).toBeInTheDocument();
+    fireEvent.click(addQuickReplyButton);
   });
 
-  attachmentTypeComponent.focus();
   await waitFor(() => {
-    fireEvent.keyDown(attachmentTypeComponent, { key: 'ArrowDown' });
-    fireEvent.keyDown(attachmentTypeComponent, { key: 'Enter' });
+    // Get all input elements
+    const [title, quickReply1, quickReply2, attachmentType, attachmentUrl] =
+      screen.getAllByRole('textbox');
+    expect(title).toBeInTheDocument();
+    expect(quickReply1).toBeInTheDocument();
+    expect(quickReply2).toBeInTheDocument();
+    expect(attachmentType).toBeInTheDocument();
+    expect(attachmentUrl).toBeInTheDocument();
+
+    fireEvent.change(title, { target: { value: 'new title' } });
+    fireEvent.blur(title);
+    fireEvent.change(quickReply1, { target: { value: 'Yes' } });
+    fireEvent.change(quickReply2, { target: { value: 'No' } });
+    fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
+    fireEvent.blur(attachmentUrl);
   });
 
-  await waitFor(() => {});
-
-  fireEvent.change(attachmentUrl, { target: { value: 'https://picsum.photos/200/300' } });
-  fireEvent.blur(attachmentUrl);
-  await waitFor(() => {});
+  await waitFor(() => {
+    const autoComplete = screen.getByTestId('autocomplete-element');
+    fireEvent.click(autoComplete);
+    fireEvent.keyDown(autoComplete);
+  });
 
   // Switiching between radio buttons
   const [quickReplyRadio, listRadio] = screen.getAllByRole('radio');
-  expect(quickReplyRadio).toBeInTheDocument();
-  expect(listRadio).toBeInTheDocument();
+  await waitFor(() => {
+    expect(quickReplyRadio).toBeInTheDocument();
+    expect(listRadio).toBeInTheDocument();
+    fireEvent.click(listRadio);
+  });
 
-  fireEvent.click(listRadio);
-  await waitFor(() => {});
+  await waitFor(() => {
+    // Adding list data
+    const [, header, listTitle, listDesc] = screen.getAllByRole('textbox');
+    expect(header).toBeInTheDocument();
+    expect(listTitle).toBeInTheDocument();
+    expect(listDesc).toBeInTheDocument();
 
-  // Adding list data
-  const [, , , header, listTitle, listDesc] = screen.getAllByRole('textbox');
-  expect(header).toBeInTheDocument();
-  expect(listTitle).toBeInTheDocument();
-  expect(listDesc).toBeInTheDocument();
+    fireEvent.change(header, { target: { value: 'Section 1' } });
+    fireEvent.blur(header);
+    fireEvent.change(listTitle, { target: { value: 'title' } });
+    fireEvent.change(listDesc, { target: { value: 'desc' } });
+  });
 
-  fireEvent.change(header, { target: { value: 'Section 1' } });
-  fireEvent.blur(header);
-  await waitFor(() => {});
-  fireEvent.change(listTitle, { target: { value: 'title' } });
-  await waitFor(() => {});
-  fireEvent.change(listDesc, { target: { value: 'desc' } });
-  await waitFor(() => {});
+  await waitFor(() => {
+    // Adding another list item
+    const addAnotherListItemButton = screen.getByText('Add another list item');
+    expect(addAnotherListItemButton);
+    fireEvent.click(addAnotherListItemButton);
+  });
 
-  // Adding another list item
-  const addAnotherListItemButton = screen.getByText('Add another list item');
-  expect(addAnotherListItemButton);
-  fireEvent.click(addAnotherListItemButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    // Adding another list
+    const addAnotherListButton = screen.getByText('Add another list');
+    expect(addAnotherListButton);
+    fireEvent.click(addAnotherListButton);
+  });
 
-  // Adding another list
-  const addAnotherListButton = screen.getByText('Add another list');
-  expect(addAnotherListButton);
-  fireEvent.click(addAnotherListButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    // Deleting list
+    const deleteListButton = screen.getByText('Dark.svg');
+    expect(deleteListButton).toBeInTheDocument();
+    fireEvent.click(deleteListButton);
+  });
 
-  // Deleting list
-  const deleteListButton = screen.getByText('Dark.svg');
-  expect(deleteListButton).toBeInTheDocument();
-  fireEvent.click(deleteListButton);
-  await waitFor(() => {});
-
-  // Deleting list item
-  const deleteListItemButton = screen.getByText('Cross.svg');
-  expect(deleteListItemButton).toBeInTheDocument();
-  fireEvent.click(deleteListItemButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    // Deleting list item
+    const deleteListItemButton = screen.getByText('Cross.svg');
+    expect(deleteListItemButton).toBeInTheDocument();
+    fireEvent.click(deleteListItemButton);
+  });
 
   // Switching back to quick reply radio
   fireEvent.click(quickReplyRadio);
-  await waitFor(() => {});
 
-  const saveButton = screen.getByText('Save');
-  expect(saveButton).toBeInTheDocument();
-  fireEvent.click(saveButton);
-  await waitFor(() => {});
+  await waitFor(() => {
+    const saveButton = screen.getByText('Save');
+    expect(saveButton).toBeInTheDocument();
+    fireEvent.click(saveButton);
+  });
+
+  // some of the elements are not filled hence validation errors are shown
+  // validation errors
+  await waitFor(() => {
+    expect(screen.getByText('Title is required.')).toBeInTheDocument();
+  });
+
+  // TODOS: need to fix below
+  // // succesful save
+  // await waitFor(() => {
+  //   expect(screen.getByText('Interactive created successfully!')).toBeInTheDocument();
+  // });
 });
 
-// test('it renders empty interactive form in edit mode', async () => {
-//   axiosApiCall();
+test('it renders empty interactive form in edit mode', async () => {
+  axiosApiCall();
 
-//   render(
-//     <MockedProvider mocks={[...mocks]} addTypename={false}>
-//       <InteractiveMessage match={{ params: { id: '2' } }} />
-//     </MockedProvider>
-//   );
+  render(
+    <MockedProvider mocks={[...mocks]} addTypename={false}>
+      <InteractiveMessage match={{ params: { id: '2' } }} />
+    </MockedProvider>
+  );
 
-//   jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
-//   await whenStable();
+  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  await whenStable();
 
-//   const saveButton = screen.getByText('Save');
-//   expect(saveButton).toBeInTheDocument();
-//   fireEvent.click(saveButton);
-//   await waitFor(() => {});
-// });
+  await waitFor(() => {
+    const saveButton = screen.getByText('Save');
+    expect(saveButton).toBeInTheDocument();
+    fireEvent.click(saveButton);
+  });
+});
