@@ -9,7 +9,7 @@ import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
 import { addFlowToContactQuery } from '../mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
-import { UPDATE_CONTACT } from '../graphql/mutations/Contact';
+import { UPDATE_CONTACT, UPDATE_CONTACT_TAGS } from '../graphql/mutations/Contact';
 import { UPDATE_CONTACT_COLLECTIONS } from '../graphql/mutations/Collection';
 import { CLEAR_MESSAGES } from '../graphql/mutations/Chat';
 import { setVariables } from '../common/constants';
@@ -75,13 +75,13 @@ export const getContactQuery = {
           id: '1',
           name: 'Default User',
           phone: '+919820198765',
-          language: [],
+          language: { id: '1', label: 'English' },
           groups: [],
           status: 'VALID',
           bspStatus: 'SESSION_AND_HSM',
           settings: {},
           fields: {},
-          tags: [],
+          tags: [{ id: '1', label: 'important' }],
         },
       },
     },
@@ -134,6 +134,50 @@ export const getContactDetailsQuery = {
   },
 };
 
+export const updateContact = {
+  request: {
+    query: UPDATE_CONTACT,
+    variables: {
+      id: 1,
+      input: {
+        name: 'Default User',
+        phone: '+919820198765',
+        languageId: 1,
+      },
+    },
+  },
+  result: {
+    data: {
+      contact: {
+        id: '1',
+        name: 'Default Receiver',
+        phone: '99399393303',
+        language: { id: '1', label: 'English' },
+      },
+    },
+  },
+};
+
+export const updateContactTags = {
+  request: {
+    query: UPDATE_CONTACT_TAGS,
+    variables: {
+      input: {
+        addTagIds: [],
+        contactId: 1,
+        deleteTagIds: ['1'],
+      },
+    },
+  },
+  result: {
+    data: {
+      updateContactTags: {
+        contactTags: [{ id: '1' }, { id: '2' }],
+      },
+    },
+  },
+};
+
 export const LOGGED_IN_USER_MOCK = [
   getCurrentUserQuery,
   getContactDetailsQuery,
@@ -146,6 +190,8 @@ export const LOGGED_IN_USER_MOCK = [
   addFlowToContactQuery,
   clearMessagesQuery,
   ...getOrganizationQuery,
+  updateContact,
+  updateContactTags,
 ];
 
 export const updateContactStatusQuery = {

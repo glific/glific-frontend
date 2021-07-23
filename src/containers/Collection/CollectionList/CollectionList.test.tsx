@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { CollectionList } from './CollectionList';
 import {
@@ -58,7 +58,7 @@ describe('<CollectionList />', () => {
   });
 
   test('it should have add contact to collection dialog box ', async () => {
-    setUserSession(JSON.stringify({ roles: ['Admin'] }));
+    setUserSession(JSON.stringify({ roles: ['Staff'] }));
     const { getByText, getAllByTestId } = render(wrapper);
 
     // loading is show initially
@@ -72,6 +72,26 @@ describe('<CollectionList />', () => {
     });
 
     expect(getByText('Add contacts to the collection')).toBeInTheDocument();
+    const autocomplete = screen.getByTestId('autocomplete-element');
+    expect(autocomplete).toBeInTheDocument();
+
+    await waitFor(() => {
+      const input = screen.getByRole('textbox');
+      fireEvent.change(input, { target: { value: 'glific' } });
+    });
+
+    autocomplete.focus();
+    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+    await waitFor(() => {});
+
+    // select the first item
+    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+    await waitFor(() => {});
+
+    const save = screen.getByRole('button', { name: 'Save' });
+    fireEvent.click(save);
+
+    await waitFor(() => {});
   });
 
   test('add contacts to collection', async () => {

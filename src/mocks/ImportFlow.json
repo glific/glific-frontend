@@ -1,0 +1,42 @@
+{
+  "flows": [
+    {
+      "keywords": ["test"],
+      "definition": {
+        "vars": ["7a8c5b7f-9cc5-4e38-98e7-8bc1d97cf968"],
+        "uuid": "7a8c5b7f-9cc5-4e38-98e7-8bc1d97cf968",
+        "type": "messaging",
+        "spec_version": "13.1.0",
+        "revision": 1,
+        "nodes": [
+          {
+            "uuid": "a41afb72-9198-4d3c-9744-0b5e98d90324",
+            "exits": [{ "uuid": "b9489364-fa8e-4fc2-8fe5-7e59e4c4f67c", "destination_uuid": null }],
+            "actions": [
+              {
+                "uuid": "1d598023-5389-4e50-9ffb-c055139a4074",
+                "type": "send_msg",
+                "text": "Hi how you doing",
+                "quick_replies": [],
+                "attachments": []
+              }
+            ]
+          }
+        ],
+        "name": "flow with 1 node",
+        "localization": {},
+        "language": "base",
+        "expire_after_minutes": 10080,
+        "_ui": {
+          "nodes": {
+            "a41afb72-9198-4d3c-9744-0b5e98d90324": {
+              "type": "execute_actions",
+              "position": { "top": 0, "left": 0 }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "contact_field": []
+}

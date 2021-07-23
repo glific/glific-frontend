@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import styles from './FlowList.module.css';
 import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
 import { ReactComponent as ExportIcon } from '../../../assets/images/icons/Flow/Export.svg';
+import { ReactComponent as ImportIcon } from '../../../assets/images/icons/Flow/Import.svg';
 import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from '../../../assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
 import { List } from '../../List/List';
 import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from '../../../graphql/queries/Flow';
-import { DELETE_FLOW } from '../../../graphql/mutations/Flow';
+import { DELETE_FLOW, IMPORT_FLOW } from '../../../graphql/mutations/Flow';
 import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
 import { exportFlowMethod } from '../../../common/utils';
+import Loading from '../../../components/UI/Layout/Loading/Loading';
+import { setNotification } from '../../../common/notification';
 
 export interface FlowListProps {}
 
@@ -56,10 +59,29 @@ const queries = {
 const configureIcon = <ConfigureIcon />;
 
 export const FlowList: React.SFC<FlowListProps> = () => {
+  const client = useApolloClient();
   const history = useHistory();
   const { t } = useTranslation();
+  const inputRef = useRef<any>(null);
 
   const [flowName, setFlowName] = useState('');
+  const [importing, setImporting] = useState(false);
+
+  const [importFlow] = useMutation(IMPORT_FLOW, {
+    onCompleted: (result: any) => {
+      const { success } = result.importFlow;
+      if (!success) {
+        setNotification(
+          client,
+          'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
+          'error'
+        );
+      } else {
+        setNotification(client, 'The flow has been imported successfully.');
+      }
+      setImporting(false);
+    },
+  });
 
   const [exportFlowMutation] = useLazyQuery(EXPORT_FLOW, {
     fetchPolicy: 'network-only',
@@ -77,6 +99,34 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     setFlowName(item.name);
     exportFlowMutation({ variables: { id } });
   };
+
+  const changeHandler = (event: any) => {
+    const fileReader: any = new FileReader();
+    fileReader.onload = function () {
+      importFlow({ variables: { flow: fileReader.result } });
+    };
+    setImporting(true);
+    fileReader.readAsText(event.target.files[0]);
+  };
+
+  const importButton = (
+    <span>
+      <input
+        type="file"
+        ref={inputRef}
+        hidden
+        name="file"
+        onChange={changeHandler}
+        data-testid="import"
+      />
+      <ImportIcon
+        className={styles.ImportIcon}
+        onClick={() => {
+          if (inputRef.current) inputRef.current.click();
+        }}
+      />
+    </span>
+  );
 
   const additionalAction = [
     {
@@ -114,6 +164,10 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     columnStyles,
   };
 
+  if (importing) {
+    return <Loading message="Uploading" />;
+  }
+
   return (
     <>
       <List
@@ -130,6 +184,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         removeSortBy={[t('Last Published'), t('Last Saved in Draft')]}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ CREATE FLOW') }}
+        secondaryButton={importButton}
       />
 
       <Link to="/webhook-logs" className={styles.Webhook}>
