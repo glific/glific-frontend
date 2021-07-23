@@ -336,25 +336,26 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const updateTranslation = (value: any) => {
     const Id = value.id;
     // restore if selected language is same as template
-    if (template && template.interactiveTemplate.interactiveTemplate.language.id === value.id) {
-      setStates({
-        language: value,
-        type: template.interactiveTemplate.interactiveTemplate.type,
-        interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
-        label: template.interactiveTemplate.interactiveTemplate.label,
-      });
-    } else if (translations) {
+    if (translations) {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
-      if (translationsCopy[Id]) {
+      if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
         setStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
-          interactiveContent: translationsCopy[Id],
+          interactiveContent: JSON.stringify(translationsCopy[Id]),
           label: template.interactiveTemplate.interactiveTemplate.label,
         });
+        return;
       }
     }
+
+    setStates({
+      language: value,
+      type: template.interactiveTemplate.interactiveTemplate.type,
+      interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
+      label: template.interactiveTemplate.interactiveTemplate.label,
+    });
   };
 
   const handleLanguageChange = (value: any) => {
@@ -566,7 +567,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     let translationsCopy: any = {};
     if (translations) {
       translationsCopy = JSON.parse(translations);
-      translationsCopy[language.id] = payloadData.interactiveContent;
+      translationsCopy[language.id] = JSON.parse(payloadData.interactiveContent);
     }
 
     payloadData.translations = JSON.stringify(translationsCopy);
