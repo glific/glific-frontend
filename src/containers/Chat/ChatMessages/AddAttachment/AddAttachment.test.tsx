@@ -1,7 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
-import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { uploadMediaMock } from '../../../../mocks/Attachment';
-import axios from 'axios';
 import { AddAttachment } from './AddAttachment';
 
 jest.mock('axios');
