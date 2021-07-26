@@ -88,3 +88,15 @@ export const CREATE_FLOW_COPY = gql`
     }
   }
 `;
+
+export const IMPORT_FLOW = gql`
+  mutation importFlow($flow: Json) {
+    importFlow(flow: $flow) {
+      success
+      errors {
+        key
+        message
+      }
+    }
+  }
+`;
