@@ -720,7 +720,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         setPayload={setPayload}
         validationSchema={validationScheme}
         listItem="interactiveTemplate"
-        listItemName="interactive"
+        listItemName="interactive msg"
         dialogMessage={dialogMessage}
         formFields={formFields}
         redirectionLink="interactive-message"
