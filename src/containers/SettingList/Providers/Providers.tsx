@@ -153,18 +153,15 @@ export const Providers: React.SFC<ProvidersProps> = ({ match }) => {
     formFields = formField;
   };
 
-  let title;
-  if (providerData) {
-    title = providerData.providers[0].name;
-    providerData.providers.forEach((provider: any) => {
-      keys = JSON.parse(provider.keys);
-      secrets = JSON.parse(provider.secrets);
-      const fields = {};
-      Object.assign(fields, keys);
-      Object.assign(fields, secrets);
-      addField(fields);
-    });
-  }
+  const title = providerData.providers[0].name;
+  providerData.providers.forEach((provider: any) => {
+    keys = JSON.parse(provider.keys);
+    secrets = JSON.parse(provider.secrets);
+    const fields = {};
+    Object.assign(fields, keys);
+    Object.assign(fields, secrets);
+    addField(fields);
+  });
 
   const saveHandler = (data: any) => {
     if (data)

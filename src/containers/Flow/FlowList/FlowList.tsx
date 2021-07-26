@@ -29,7 +29,7 @@ const getName = (text: string, keywordsList: any) => {
     <p className={`${styles.TableText} ${styles.NameText}`}>
       {text}
       <br />
-      <div className={styles.Keyword}>{keywords.join(', ')}</div>
+      <span className={styles.Keyword}>{keywords.join(', ')}</span>
     </p>
   );
 };

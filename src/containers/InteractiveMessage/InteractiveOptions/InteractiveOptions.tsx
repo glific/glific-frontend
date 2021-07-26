@@ -57,7 +57,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     onRemoveClick(idx);
   };
 
-  const getButtons = (row: any, index: number, arrayHelpers: any) => {
+  const getButtons = (index: number, arrayHelpers: any) => {
     let template: any = null;
     const uniqueKey = `button_${index}_${new Date().getTime()}`;
     if (templateType === LIST) {
@@ -163,9 +163,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
         <FieldArray
           name="templateButtons"
           render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) =>
-              getButtons(row, index, arrayHelpers)
-            )
+            values.templateButtons.map((row: any, index: any) => getButtons(index, arrayHelpers))
           }
         />
       )}
