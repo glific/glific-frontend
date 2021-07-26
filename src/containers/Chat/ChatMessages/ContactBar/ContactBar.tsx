@@ -184,14 +184,14 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let assignedToCollection: any = [];
 
   if (data) {
-    initialSelectedCollectionIds = data.contact.contact.groups.map((group: any) => group.id);
-    selectedCollections = data.contact.contact.groups.map((group: any) => group.label);
-    assignedToCollection = data.contact.contact.groups.map((group: any) =>
-      group.users.map((user: any) => user.name)
-    );
+    const { groups } = data.contact.contact;
+    initialSelectedCollectionIds = groups.map((group: any) => group.id);
 
-    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
+    selectedCollections = groups.map((group: any) => group.label);
     selectedCollectionsName = shortenMultipleItems(selectedCollections);
+
+    assignedToCollection = groups.map((group: any) => group.users.map((user: any) => user.name));
+    assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
     assignedToCollection = shortenMultipleItems(assignedToCollection);
   }
 
