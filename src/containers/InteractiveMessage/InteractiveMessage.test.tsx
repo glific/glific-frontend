@@ -59,16 +59,12 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Get all input elements
-    const [, label, title, quickReply1, quickReply2, , attachmentUrl] =
-      screen.getAllByRole('textbox');
-    expect(label).toBeInTheDocument();
+    const [, title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
     expect(title).toBeInTheDocument();
     expect(quickReply1).toBeInTheDocument();
     expect(quickReply2).toBeInTheDocument();
     expect(attachmentUrl).toBeInTheDocument();
 
-    fireEvent.change(label, { target: { value: 'new label' } });
-    fireEvent.blur(label);
     fireEvent.change(title, { target: { value: 'new title' } });
     fireEvent.blur(title);
     fireEvent.change(quickReply1, { target: { value: 'Yes' } });

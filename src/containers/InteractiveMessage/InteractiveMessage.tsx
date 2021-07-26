@@ -83,8 +83,53 @@ const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
   return result;
 };
 
+const getDefaultValuesByTemplate = (templateData: any) => {
+  const { type: templateType, interactiveContent } = templateData;
+  const data = JSON.parse(interactiveContent);
+
+  let result: any = {};
+  if (templateType === QUICK_REPLY) {
+    const { type, content, options } = data;
+    const updatedOptions = options.map(() => ({ type: 'text', title: '' }));
+    const updatedContent = Object.keys(content).reduce((res: any, key: string) => {
+      if (['type', 'url'].includes(key)) res[key] = content[key];
+      else res[key] = '';
+      return res;
+    }, {});
+
+    result.type = type;
+    result.content = updatedContent;
+    result.options = updatedOptions;
+  }
+
+  if (templateType === LIST) {
+    result = Object.keys(data).reduce((res: any, key: string) => {
+      const dataVal = data[key];
+      if (typeof dataVal === 'string') {
+        res[key] = '';
+      }
+
+      if (key === 'items') {
+        const items: any = dataVal.map((item: any) => {
+          const optionVal = { type: 'text', title: '', description: '' };
+          const { options } = item;
+          const updatedOptions = options.map(() => optionVal);
+          return { title: '', subtitle: '', options: updatedOptions };
+        });
+        res[key] = items;
+      }
+
+      if (key === 'globalButtons') {
+        res[key] = dataVal.map(() => ({ type: 'text', title: '' }));
+      }
+
+      return res;
+    }, {});
+  }
+  return result;
+};
+
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
-  const [label, setLabel] = useState('');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
@@ -168,7 +213,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const states = {
     language,
-    label,
     title,
     body,
     globalButton,
@@ -182,31 +226,26 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     language: languageVal,
     type: typeValue,
     interactiveContent: interactiveContentValue,
-    label: labelVal,
     translations: translationsVal,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue);
-    setLabel(labelVal);
 
     if (languageOptions.length > 0 && languageVal) {
       const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
+    setTitle(data.title);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+    setTemplateType(typeValue);
+    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+
     if (typeValue === LIST) {
-      setTitle(data.title);
-      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
-      setTemplateType(typeValue);
-      setTimeout(() => setTemplateButtons(data.templateButtons), 100);
       setGlobalButton(data.globalButton);
     }
 
-    if (typeValue === QUICK_REPLY) {
-      setTitle(data.title);
-      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
-      setTemplateType(typeValue);
-      setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
       setType({ id: data.type, label: data.type });
       setAttachmentURL(data.attachmentURL);
     }
@@ -344,17 +383,26 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(translationsCopy[Id]),
-          label: template.interactiveTemplate.interactiveTemplate.label,
         });
-        return;
+      } else if (template) {
+        const fillDataWithEmptyValues = getDefaultValuesByTemplate(
+          template.interactiveTemplate.interactiveTemplate
+        );
+
+        setStates({
+          language: value,
+          type: template.interactiveTemplate.interactiveTemplate.type,
+          interactiveContent: JSON.stringify(fillDataWithEmptyValues),
+        });
       }
+
+      return;
     }
 
     setStates({
       language: value,
       type: template.interactiveTemplate.interactiveTemplate.type,
       interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
-      label: template.interactiveTemplate.interactiveTemplate.label,
     });
   };
 
@@ -409,18 +457,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       component: Input,
-      name: 'label',
-      type: 'text',
-      placeholder: t('Label*'),
-      inputProp: {
-        onBlur: (event: any) => setLabel(event.target.value),
-      },
-    },
-    {
-      component: Input,
       name: 'title',
       type: 'text',
-      placeholder: t('Title'),
+      placeholder: t('Title*'),
       inputProp: {
         onBlur: (event: any) => setTitle(event.target.value),
       },
@@ -515,8 +554,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   ) => {
     const updatedPayload: any = { type: null, interactiveContent: null };
 
-    const { language: selectedLanguage, label: labelVal } = payload;
-    Object.assign(updatedPayload, { label: labelVal });
+    const { language: selectedLanguage } = payload;
+    Object.assign(updatedPayload);
 
     if (selectedLanguage) {
       Object.assign(updatedPayload, { languageId: selectedLanguage.id });
@@ -548,12 +587,18 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     return updatedPayload;
   };
 
+  const isTranslationsPresentForEnglish = (...langIds: any) => {
+    const english = languageOptions.find(({ label }: { label: string }) => label === 'English');
+    return !!english && langIds.includes(english.id);
+  };
+
   const setPayload = (payload: any) => {
     const {
       templateType: templateTypeVal,
       templateButtons: templateButtonVal,
       title: titleVal,
       globalButton: globalButtonVal,
+      language: selectedLanguage,
     } = payload;
 
     const payloadData: any = convertStateDataToJSON(
@@ -568,6 +613,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (translations) {
       translationsCopy = JSON.parse(translations);
       translationsCopy[language.id] = JSON.parse(payloadData.interactiveContent);
+    }
+
+    const langIds = Object.keys(translationsCopy);
+    const isPresent = isTranslationsPresentForEnglish(...langIds);
+
+    // Update label anyway if selected langauge is English
+    if (selectedLanguage.label === 'English') {
+      payloadData.label = titleVal;
+    }
+
+    // Update label if there is no translation present for english
+    if (!isPresent) {
+      payloadData.label = titleVal;
     }
 
     payloadData.translations = JSON.stringify(translationsCopy);
@@ -585,7 +643,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       helperText: warning,
       textFieldProps: {
         variant: 'outlined',
-        label: t('Attachment Type'),
+        label: t('Attachment type'),
       },
       onChange: (event: any) => {
         const val = event || '';
@@ -617,8 +675,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const validation: any = {
     language: Yup.object().nullable().required('Language is required'),
-    label: Yup.string().required(t('Label is required.')),
-    title: Yup.string(),
+    title: Yup.string().required('Title is required'),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message content is required.')),

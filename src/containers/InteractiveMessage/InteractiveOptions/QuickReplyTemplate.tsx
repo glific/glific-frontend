@@ -40,6 +40,10 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
 
   const name = 'Enter button text(20 char.)';
   const defaultValue = inputFields && inputFields[index]?.value;
+  const endAdornmentIcon = inputFields.length > 1 && (
+    <CrossIcon className={styles.RemoveIcon} title="Remove" onClick={onRemoveClick} />
+  );
+
   return (
     <div className={styles.WrapperBackground}>
       <div className={styles.QuickReplyWrapper}>
@@ -51,10 +55,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
             value={defaultValue}
             className={styles.TextField}
             InputProps={{
-              endAdornment:
-                inputFields.length > 1 ? (
-                  <CrossIcon className={styles.RemoveIcon} title="Remove" onClick={onRemoveClick} />
-                ) : null,
+              endAdornment: endAdornmentIcon,
             }}
             error={isError('value')}
           />
