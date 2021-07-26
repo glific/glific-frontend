@@ -55,6 +55,20 @@ import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCol
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];
 
+export const shortenMultipleItems = (multipleItems: Array<string>) => {
+  if (multipleItems.length > 2) {
+    return (
+      <span>
+        {multipleItems.slice(0, 2).join(', ')}
+        <Tooltip title={multipleItems.slice(2).join(', ')} placement="right">
+          <span> +{(multipleItems.length - 2).toString()}</span>
+        </Tooltip>
+      </span>
+    );
+  }
+  return multipleItems.join(', ');
+};
+
 export interface ContactBarProps {
   displayName: string;
   contactId?: string;
@@ -165,24 +179,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   let collectionOptions = [];
   let flowOptions = [];
   let initialSelectedCollectionIds: Array<any> = [];
-  let selectedCollectionsName = [];
+  let selectedCollectionsName;
+  let selectedCollections: any = [];
   let assignedToCollection: any = [];
 
   if (data) {
     initialSelectedCollectionIds = data.contact.contact.groups.map((group: any) => group.id);
-    selectedCollectionsName = data.contact.contact.groups.map((group: any) => group.label);
+    selectedCollections = data.contact.contact.groups.map((group: any) => group.label);
     assignedToCollection = data.contact.contact.groups.map((group: any) =>
       group.users.map((user: any) => user.name)
     );
 
     assignedToCollection = Array.from(new Set([].concat(...assignedToCollection)));
-    if (assignedToCollection.length > 2) {
-      assignedToCollection = `${assignedToCollection.slice(0, 2).join(', ')} +${(
-        assignedToCollection.length - 2
-      ).toString()}`;
-    } else {
-      assignedToCollection = assignedToCollection.join(', ');
-    }
+    selectedCollectionsName = shortenMultipleItems(selectedCollections);
+    assignedToCollection = shortenMultipleItems(assignedToCollection);
   }
 
   if (collectionsData) {
@@ -508,12 +518,12 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   };
 
   let contactCollections: any;
-  if (selectedCollectionsName.length > 0) {
+  if (selectedCollections.length > 0) {
     contactCollections = (
       <div className={styles.ContactCollections}>
         <span className={styles.CollectionHeading}>Collections</span>
         <span className={styles.CollectionsName} data-testid="collectionNames">
-          {selectedCollectionsName.map((collectionName: string) => collectionName).join(', ')}
+          {selectedCollectionsName}
         </span>
       </div>
     );
