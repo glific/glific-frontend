@@ -29,6 +29,17 @@ const regexForShortcode = /^[a-z0-9_]+$/g;
 const HSMValidation = {
   example: Yup.string()
     .transform((current, original) => original.getCurrentContent().getPlainText())
+    .when('body', (messageValue: any, schema: any) =>
+      schema.test({
+        test: (exampleValue: any) => {
+          const finalmessageValue = messageValue.replaceAll(/\{\{[1-9]\}\}/g, '[]');
+          const finalExampleValue = exampleValue.replaceAll(/\[[^\]]*\]/g, '[]');
+          return finalExampleValue === finalmessageValue;
+        },
+        message:
+          'Message and sample look different. Please check for any characters, extra spaces or new lines.',
+      })
+    )
     .required('Example is required.'),
   category: Yup.object().nullable().required('Category is required.'),
   shortcode: Yup.string()
