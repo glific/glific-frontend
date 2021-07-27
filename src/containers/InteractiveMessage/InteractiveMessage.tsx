@@ -227,6 +227,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
+    label: labelVal,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue);
@@ -236,7 +237,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
-    setTitle(data.title);
+    setTitle(labelVal || data.title);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
