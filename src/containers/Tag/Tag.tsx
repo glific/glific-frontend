@@ -24,9 +24,9 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState('');
   const [colorCode, setColorCode] = useState('#0C976D');
-  const [parentId, setParentId] = useState<any>([]);
+  const [parentId, setParentId] = useState<any>(null);
   const [filterLabel, setFilterLabel] = useState('');
-  const [languageId, setLanguageId] = useState('');
+  const [languageId, setLanguageId] = useState<any>(null);
   const { t } = useTranslation();
 
   const states = { label, description, keywords, colorCode, parentId };
@@ -64,12 +64,10 @@ export const Tag: React.SFC<TagProps> = ({ match }) => {
   if (!data) return <Loading />;
 
   let tags = [];
-  if (data) {
-    tags = data.tags;
-    // remove the self tag from list
-    if (data && match && match.params.id) {
-      tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
-    }
+  tags = data.tags;
+  // remove the self tag from list
+  if (match && match.params.id) {
+    tags = data.tags.filter((tag: any) => tag.id !== match.params.id);
   }
 
   const validateTitle = (value: any) => {

@@ -62,6 +62,7 @@ export interface FormLayoutProps {
   copyNotification?: string;
   showPreviewButton?: boolean;
   onPreivewClick?: Function;
+  getQueryFetchPolicy?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -105,6 +106,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   copyNotification = '',
   showPreviewButton = false,
   onPreivewClick = () => {},
+  getQueryFetchPolicy = 'cache-first',
 }: FormLayoutProps) => {
   const client = useApolloClient();
   const [showDialog, setShowDialog] = useState(false);
@@ -154,6 +156,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const { loading, error } = useQuery(getItemQuery, {
     variables,
     skip: !itemId,
+    fetchPolicy: getQueryFetchPolicy,
     onCompleted: (data) => {
       if (data) {
         item = data[listItem] ? data[listItem][listItem] : data[Object.keys(data)[0]][listItem];

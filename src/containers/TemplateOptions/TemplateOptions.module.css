@@ -2,10 +2,6 @@
   width: 100%;
 }
 
-.TextField > div > input {
-  padding: 14.5px ​14px !important;
-}
-
 .Font {
   line-height: 1 !important;
   font-weight: 500 !important;
@@ -14,25 +10,22 @@
   color: #93a29b;
 }
 
-.WrapperBackground {
-  padding: 16px 24px 8px 24px;
-  background: white;
-  border-radius: 16px;
-  margin-bottom: 6px;
-}
-
 .CallToActionWrapper {
   composes: Font;
 }
 
 .CallToActionWrapper > div {
   display: flex;
-  align-items: flex-end;
+  align-items: end;
   justify-content: space-between;
 }
 
 .CallToActionWrapper > div > div:last-child {
   cursor: pointer;
+}
+
+.CallToActionWrapper > div:nth-of-type(3) > div {
+  margin-bottom: 0px;
 }
 
 .QuickReplyWrapper {
@@ -82,4 +75,53 @@
   line-height: 1.2;
   border-radius: 8px;
   font-weight: 400;
+}
+
+.QuickTemplateFields {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.QuickTemplateFields > div:nth-child(3) > div > div {
+  margin-bottom: 0px !important;
+}
+
+.QuickReplyContainer > div > div {
+  margin-bottom: 12px !important;
+}
+
+.QuickReplyAddButton {
+  margin-top: 12px;
+}
+
+.CallToActionAddButton {
+  margin-top: 16px;
+}
+
+.CallToActionContainer {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+}
+
+.RemoveIcon {
+  cursor: pointer;
+}
+
+.RadioGroup > label > span:first-child {
+  padding: 0px 8px !important;
+}
+
+.CallToActionTemplateFields {
+  margin-bottom: 24px;
+}
+
+.CallToActionTemplateFields > div:not(:nth-of-type(1)) {
+  margin-top: 6px;
+}
+
+.CallToActionTemplateFields > div:nth-child(3) > div > div {
+  margin-bottom: 0px !important;
 }

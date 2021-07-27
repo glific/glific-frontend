@@ -332,7 +332,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       messageType: string,
       selectedTemplate: any,
       variableParam: any,
-      interactiveContent: any
+      interactiveTemplateId: any
     ) => {
       const payload: any = {
         body,
@@ -341,7 +341,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         receiverId: contactId,
         type: messageType,
         flow: 'OUTBOUND',
-        interactiveContent,
+        interactiveTemplateId,
       };
       createAndSendMessage({
         variables: { input: updatePayload(payload, selectedTemplate, variableParam) },

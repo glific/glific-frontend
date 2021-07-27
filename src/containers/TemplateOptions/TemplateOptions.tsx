@@ -14,6 +14,7 @@ import { Button } from '../../components/UI/Form/Button/Button';
 import Tooltip from '../../components/UI/Tooltip/Tooltip';
 import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
 import { ReactComponent as InfoIcon } from '../../assets/images/icons/Info.svg';
+import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
 import {
   GUPSHUP_CALL_TO_ACTION,
   GUPSHUP_QUICK_REPLY,
@@ -63,8 +64,15 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
 
   const addButton = (helper: any, type: boolean = false) => {
     const title = templateType ? buttonTitles[templateType] : '';
+    const buttonClass =
+      templateType === QUICK_REPLY ? styles.QuickReplyAddButton : styles.CallToActionAddButton;
     return (
-      <Button variant="outlined" color="primary" onClick={() => handleAddClick(helper, type)}>
+      <Button
+        className={buttonClass}
+        variant="outlined"
+        color="primary"
+        onClick={() => handleAddClick(helper, type)}
+      >
         Add {title}
       </Button>
     );
@@ -84,7 +92,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
 
     if (templateType === CALL_TO_ACTION) {
       template = (
-        <div className={styles.WrapperBackground} key={index.toString()}>
+        <div className={styles.CallToActionContainer} key={index.toString()}>
           <div className={styles.CallToActionWrapper}>
             <div>
               <div className={styles.RadioStyles}>
@@ -95,6 +103,7 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                     row
                     value={type}
                     onChange={(e: any) => onInputChange(e, row, index, 'type')}
+                    className={styles.RadioGroup}
                   >
                     <FormControlLabel
                       value="phone_number"
@@ -190,17 +199,27 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
 
     if (templateType === QUICK_REPLY) {
       template = (
-        <div className={styles.WrapperBackground} key={index.toString()}>
+        <div className={styles.QuickReplyContainer} key={index.toString()}>
           <div className={styles.QuickReplyWrapper}>
             <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
               <TextField
                 title={title}
-                placeholder={buttonTitle}
-                label={buttonTitle}
+                placeholder={`Quick reply ${index + 1} title`}
+                label={`Quick reply ${index + 1} title`}
                 variant="outlined"
                 onBlur={(e: any) => onInputChange(e, row, index, 'value')}
                 className={styles.TextField}
                 error={isError('value')}
+                InputProps={{
+                  endAdornment:
+                    inputFields.length > 1 ? (
+                      <CrossIcon
+                        className={styles.RemoveIcon}
+                        title="Remove"
+                        onClick={() => handleRemoveClick(arrayHelpers, index)}
+                      />
+                    ) : null,
+                }}
               />
               {errors.templateButtons &&
               touched.templateButtons &&
@@ -208,11 +227,6 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
                 <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
               ) : null}
             </FormControl>
-            <div>
-              {inputFields.length > 1 ? (
-                <DeleteIcon onClick={() => handleRemoveClick(arrayHelpers, index)} />
-              ) : null}
-            </div>
           </div>
           <div>
             {inputFields.length === index + 1 && inputFields.length !== 3
@@ -259,14 +273,22 @@ export const TemplateOptions: React.SFC<TemplateOptionsProps> = ({
       </RadioGroup>
 
       {templateType ? (
-        <FieldArray
-          name="templateButtons"
-          render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) =>
-              getButtons(row, index, arrayHelpers)
-            )
+        <div
+          className={
+            templateType === QUICK_REPLY
+              ? styles.QuickTemplateFields
+              : styles.CallToActionTemplateFields
           }
-        />
+        >
+          <FieldArray
+            name="templateButtons"
+            render={(arrayHelpers) =>
+              values.templateButtons.map((row: any, index: any) =>
+                getButtons(row, index, arrayHelpers)
+              )
+            }
+          />
+        </div>
       ) : null}
     </div>
   );

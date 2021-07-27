@@ -76,7 +76,7 @@ test('it renders quick reply button template successfully', async () => {
   fireEvent.blur(value);
   await waitFor(() => {});
 
-  const deleteButtons = screen.getAllByText('Red.svg');
+  const deleteButtons = screen.getAllByText('Cross.svg');
   fireEvent.click(deleteButtons[1]);
   await waitFor(() => {});
 

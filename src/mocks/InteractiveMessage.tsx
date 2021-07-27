@@ -8,6 +8,7 @@ import {
   GET_INTERACTIVE_MESSAGES_COUNT,
   GET_INTERACTIVE_MESSAGE,
 } from '../graphql/queries/InteractiveMessage';
+import { getOrganizationLanguagesQueryByOrder } from './Organization';
 
 const filterInteractiveFunction = (filter: any, opts: any) => ({
   request: {
@@ -24,6 +25,11 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '1',
           label: 'list',
           type: 'LIST',
+          translations: '{}',
+          language: {
+            id: '1',
+            label: 'English',
+          },
           interactiveContent:
             '{"type":"list","title":"Glific","items":[{"title":"Glific Features","subtitle":"first Subtitle","options":[{"type":"text","title":"Custom flows for automating conversation","description":"Flow Editor for creating flows"},{"type":"text","title":"Custom reports for  analytics","description":"DataStudio for report generation"},{"type":"text","title":"ML/AI","description":"Dialogflow for AI/ML"}]},{"title":"Glific Usecases","subtitle":"some usecases of Glific","options":[{"type":"text","title":"Educational programs","description":"Sharing education content with school student"}]},{"title":"Onboarded NGOs","subtitle":"List of NGOs onboarded","options":[{"type":"text","title":"SOL","description":"Slam Out Loud is an Indian for mission, non-profit that envisions that every individual will have a voice that empowers them to change lives."}]}],"globalButtons":[{"type":"text","title":"button text"}],"body":"Glific"}',
         },
@@ -31,6 +37,11 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '2',
           label: 'quick reply document',
           type: 'QUICK_REPLY',
+          translations: '{}',
+          language: {
+            id: '1',
+            label: 'English',
+          },
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"First"},{"type":"text","title":"Second"},{"type":"text","title":"Third"}],"content":{"url":"http://enterprise.smsgupshup.com/doc/GatewayAPIDoc.pdf","type":"file","filename":"Sample file"}}',
         },
@@ -38,6 +49,11 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '3',
           label: 'quick reply image',
           type: 'QUICK_REPLY',
+          translations: '{}',
+          language: {
+            id: '1',
+            label: 'English',
+          },
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"First"},{"type":"text","title":"Second"},{"type":"text","title":"Third"}],"content":{"url":"https://picsum.photos/200/300","type":"image","caption":"body text"}}',
         },
@@ -45,6 +61,11 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '4',
           label: 'quick reply text',
           type: 'QUICK_REPLY',
+          translations: '{}',
+          language: {
+            id: '1',
+            label: 'English',
+          },
           interactiveContent:
             '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
         },
@@ -52,6 +73,11 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '5',
           label: 'quick reply video',
           type: 'QUICK_REPLY',
+          translations: '{}',
+          language: {
+            id: '1',
+            label: 'English',
+          },
           interactiveContent:
             '{"type": "quick_reply", "content": {"url": "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4", "type": "video", "caption": "Sample video"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
         },
@@ -91,11 +117,21 @@ const quickReplyMock = {
     '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
   label: 'A quick reply mock',
   type: 'QUICK_REPLY',
+  translations: '{}',
+  language: {
+    id: '1',
+    label: 'English',
+  },
 };
 
 const listReplyMock = {
   label: 'list',
   type: 'LIST',
+  translations: '{}',
+  language: {
+    id: '1',
+    label: 'English',
+  },
   interactiveContent:
     '{"type":"list","title":"Glific","items":[{"title":"Glific Features","subtitle":"first Subtitle","options":[{"type":"text","title":"Custom flows for automating conversation","description":"Flow Editor for creating flows"},{"type":"text","title":"Custom reports for  analytics","description":"DataStudio for report generation"},{"type":"text","title":"ML/AI","description":"Dialogflow for AI/ML"}]},{"title":"Glific Usecases","subtitle":"some usecases of Glific","options":[{"type":"text","title":"Educational programs","description":"Sharing education content with school student"}]},{"title":"Onboarded NGOs","subtitle":"List of NGOs onboarded","options":[{"type":"text","title":"SOL","description":"Slam Out Loud is an Indian for mission, non-profit that envisions that every individual will have a voice that empowers them to change lives."}]}],"globalButtons":[{"type":"text","title":"button text"}],"body":"Glific"}',
 };
@@ -183,4 +219,5 @@ export const mocks: any = [
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
   deleteMock,
+  getOrganizationLanguagesQueryByOrder,
 ];

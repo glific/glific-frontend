@@ -47,7 +47,7 @@ test('it should render template with error', async () => {
   props.form = errorForm;
   render(<QuickReplyTemplate {...props} />);
 
-  const button = screen.getByText('Red.svg');
+  const button = screen.getByText('Cross.svg');
   expect(button).toBeInTheDocument();
 
   fireEvent.click(button);

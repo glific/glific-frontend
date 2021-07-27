@@ -57,11 +57,12 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     onRemoveClick(idx);
   };
 
-  const getButtons = (row: any, index: number, arrayHelpers: any) => {
+  const getButtons = (index: number, arrayHelpers: any) => {
     let template: any = null;
     if (templateType === LIST) {
       template = (
         <ListReplyTemplate
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}
@@ -79,6 +80,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <QuickReplyTemplate
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}
@@ -157,14 +159,14 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       )}
 
       {templateType && (
-        <FieldArray
-          name="templateButtons"
-          render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) =>
-              getButtons(row, index, arrayHelpers)
-            )
-          }
-        />
+        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
+          <FieldArray
+            name="templateButtons"
+            render={(arrayHelpers) =>
+              values.templateButtons.map((row: any, index: any) => getButtons(index, arrayHelpers))
+            }
+          />
+        </div>
       )}
     </div>
   );

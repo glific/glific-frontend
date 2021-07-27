@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FlowList } from './FlowList';
 import { MockedProvider } from '@apollo/client/testing';
 import {
@@ -7,7 +7,10 @@ import {
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery,
+  importFlow,
+  exportFlow,
 } from '../../../mocks/Flow';
+import testJSON from '../../../mocks/ImportFlow.json';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { setUserSession } from '../../../services/AuthService';
@@ -19,6 +22,8 @@ const mocks = [
   filterFlowNewQuery,
   getFlowCountNewQuery,
   getFlowQuery,
+  importFlow,
+  exportFlow,
 ];
 
 const flowList = (
@@ -80,6 +85,46 @@ describe('<FlowList />', () => {
     const { container } = render(copyFlow({ params: { id: 1 } }));
     await waitFor(() => {
       expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+    });
+  });
+
+  test('should import flow using json file', async () => {
+    render(flowList);
+
+    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+    await waitFor(() => {
+      const importFlowButton = screen.getByText('Import.svg');
+      expect(importFlowButton).toBeInTheDocument();
+      fireEvent.click(importFlowButton);
+    });
+
+    await waitFor(() => {
+      const json = JSON.stringify(testJSON);
+      const file = new File([json], 'test.json', {
+        type: 'application/json',
+      });
+      const input = screen.getByTestId('import');
+      Object.defineProperty(input, 'files', {
+        value: [file],
+      });
+
+      fireEvent.change(input);
+    });
+
+    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  });
+
+  test('should export flow to json file', async () => {
+    global.URL.createObjectURL = jest.fn();
+    render(flowList);
+    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+
+    await waitFor(() => {
+      const exportButton = screen.getByText('Export.svg');
+      expect(exportButton).toBeInTheDocument();
+
+      fireEvent.click(exportButton);
     });
   });
 });

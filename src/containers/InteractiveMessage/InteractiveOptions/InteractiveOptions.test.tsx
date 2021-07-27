@@ -115,7 +115,7 @@ test('it render interactive options for quick reply template', async () => {
   fireEvent.click(addButton);
   await waitFor(() => {});
 
-  const [deleteFirstItem] = screen.getAllByText('Red.svg');
+  const [deleteFirstItem] = screen.getAllByText('Cross.svg');
   expect(deleteFirstItem).toBeInTheDocument();
 
   fireEvent.click(deleteFirstItem);

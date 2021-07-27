@@ -38,6 +38,7 @@ export interface AutocompleteProps {
   selectedOptionsIds?: any;
   selectTextAsOption?: boolean;
   onInputChange?: any;
+  valueElementName?: string;
 }
 
 export const AutoComplete: React.SFC<AutocompleteProps> = ({
@@ -70,6 +71,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
   selectedOptionsIds = [],
   selectTextAsOption = false,
   onInputChange = () => null,
+  valueElementName = 'id',
 }) => {
   const errorText = getIn(errors, field.name);
   const touchedVal = getIn(touched, field.name);
@@ -93,10 +95,14 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   const getValue = (() => {
     if (multiple && asyncSearch) return asyncValues.value;
-    if (multiple)
-      return optionValue.filter((option: any) =>
-        field.value.map((value: any) => value.id).includes(option.id)
-      );
+    if (multiple) {
+      if (optionValue.length > 0 && field.value) {
+        return optionValue.filter((option: any) =>
+          field.value.map((value: any) => value.id).includes(option.id)
+        );
+      }
+      return [];
+    }
     return field.value;
   })();
 
@@ -159,7 +165,7 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
 
   return (
     <div className={styles.Input}>
-      <FormControl fullWidth error={errors && touched && errors[field.name] && touched[field.name]}>
+      <FormControl fullWidth error={hasError}>
         {questionText ? <div className={styles.QuestionText}>{questionText}</div> : null}
         <Autocomplete
           classes={classes}
@@ -171,6 +177,9 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
+          getOptionSelected={(option, value) =>
+            option[valueElementName] === value[valueElementName]
+          }
           onChange={(event, value: any) => {
             if (roleSelection) {
               roleSelection(value);

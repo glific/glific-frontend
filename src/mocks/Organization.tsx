@@ -18,17 +18,17 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '1', label: 'English (United States)' },
+            defaultLanguage: { id: 1, label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '1',
+                id: 1,
                 label: 'English (United States)',
               },
             ],
-            id: '1',
+            id: 1,
             outOfOffice: {
               enabled: true,
-              defaultFlowId: '3',
+              defaultFlowId: 1,
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
@@ -39,7 +39,7 @@ export const getOrganizationQuery = [
                 { enabled: false, id: 7 },
               ],
               endTime: '12:30:27',
-              flowId: '6',
+              flowId: 2,
               startTime: '12:31:27',
             },
             name: 'Glific',
@@ -61,17 +61,17 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '1', label: 'English (United States)' },
+            defaultLanguage: { id: 1, label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '1',
+                id: 1,
                 label: 'English (United States)',
               },
             ],
-            id: '1',
+            id: 1,
             outOfOffice: {
               enabled: true,
-              defaultFlowId: '3',
+              defaultFlowId: 1,
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
@@ -82,7 +82,7 @@ export const getOrganizationQuery = [
                 { enabled: false, id: 7 },
               ],
               endTime: '12:30:27',
-              flowId: '6',
+              flowId: 2,
               startTime: '12:31:27',
             },
             name: 'Glific',
@@ -104,17 +104,17 @@ export const getOrganizationQuery = [
       data: {
         organization: {
           organization: {
-            defaultLanguage: { id: '1', label: 'English (United States)' },
+            defaultLanguage: { id: 1, label: 'English (United States)' },
             activeLanguages: [
               {
-                id: '1',
+                id: 1,
                 label: 'English (United States)',
               },
             ],
-            id: '1',
+            id: 1,
             outOfOffice: {
               enabled: true,
-              defaultFlowId: '3',
+              defaultFlowId: 1,
               enabledDays: [
                 { enabled: true, id: 1 },
                 { enabled: true, id: 2 },
@@ -125,7 +125,7 @@ export const getOrganizationQuery = [
                 { enabled: false, id: 7 },
               ],
               endTime: '12:30:27',
-              flowId: '6',
+              flowId: 2,
               startTime: '12:31:27',
             },
             name: 'Glific',
@@ -148,17 +148,17 @@ export const getOrganisationSettings = {
     data: {
       organization: {
         organization: {
-          defaultLanguage: { id: '1', label: 'English (United States)' },
+          defaultLanguage: { id: 1, label: 'English (United States)' },
           activeLanguages: [
             {
-              id: '1',
+              id: 1,
               label: 'English (United States)',
             },
           ],
           id: '1',
           outOfOffice: {
             enabled: true,
-            defaultFlowId: '3',
+            defaultFlowId: 1,
             enabledDays: [
               { enabled: true, id: 1 },
               { enabled: true, id: 2 },
@@ -169,7 +169,7 @@ export const getOrganisationSettings = {
               { enabled: false, id: 7 },
             ],
             endTime: '12:30:27',
-            flowId: '6',
+            flowId: 2,
             startTime: '12:31:27',
           },
           name: 'Glific',

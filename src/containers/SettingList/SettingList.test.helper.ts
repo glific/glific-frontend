@@ -64,7 +64,7 @@ export const LIST_ITEM_MOCKS = [
             uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
           },
           {
-            id: '10',
+            id: '2',
             name: 'SoL Feedback',
             uuid: '6c21af89-d7de-49ac-9848-c9febbf737a5',
           },
