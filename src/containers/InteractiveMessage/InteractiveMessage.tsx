@@ -25,6 +25,7 @@ import { WhatsAppToDraftEditor } from '../../common/RichEditor';
 import { Simulator } from '../../components/simulator/Simulator';
 import { FLOW_EDITOR_API } from '../../config';
 import { getAuthSession } from '../../services/AuthService';
+import { LanguageBar } from '../../components/UI/LanguageBar/LanguageBar';
 
 export interface FlowProps {
   match: any;
@@ -408,10 +409,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   const handleLanguageChange = (value: any) => {
-    if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
-      updateTranslation(value);
+    const selected = languageOptions.find(({ label }: any) => label === value);
+    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      updateTranslation(selected);
     }
-    if (value) setLanguage(value);
+    if (selected) setLanguage(selected);
   };
 
   const displayWarning = () => {
@@ -443,18 +445,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   ).map((option: string) => ({ id: option, label: option }));
 
   let timer: any = null;
+  const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
+
   const fields = [
     {
-      component: AutoComplete,
-      name: 'language',
-      options: languageOptions,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Language*'),
-      },
-      onChange: handleLanguageChange,
+      component: LanguageBar,
+      options: langOptions || [],
+      selectedLangauge: language && language.label,
+      onLanguageChange: handleLanguageChange,
     },
     {
       component: Input,
@@ -675,7 +673,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
   const validation: any = {
-    language: Yup.object().nullable().required('Language is required'),
     title: Yup.string().required('Title is required'),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
@@ -787,14 +784,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
       />
-      <Simulator
-        setSimulatorId={0}
-        showSimulator
-        isPreviewMessage
-        message={{}}
-        interactiveMessage={previewData}
-        simulatorIcon={false}
-      />
+      <div className={styles.Simulator}>
+        <Simulator
+          setSimulatorId={0}
+          showSimulator
+          isPreviewMessage
+          message={{}}
+          interactiveMessage={previewData}
+          simulatorIcon={false}
+        />
+      </div>
     </>
   );
 };

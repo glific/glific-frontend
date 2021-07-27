@@ -7,3 +7,7 @@
   width: 29px;
   height: 29px;
 }
+
+.Simulator > div {
+  top: 170px !important;
+}

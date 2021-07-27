@@ -73,15 +73,18 @@ test('it renders empty interactive form', async () => {
     fireEvent.blur(attachmentUrl);
   });
 
+  // Changing language to marathi
   await waitFor(() => {
-    const [language, attachmentType] = screen.getAllByTestId('autocomplete-element');
-
+    const language = screen.getByText('Marathi');
     expect(language).toBeInTheDocument();
-    expect(attachmentType).toBeInTheDocument();
 
-    language.focus();
-    fireEvent.keyDown(language, { key: 'ArrowDown' });
-    fireEvent.keyDown(language, { key: 'Enter' });
+    fireEvent.click(language);
+  });
+
+  await waitFor(() => {
+    const [attachmentType] = screen.getAllByTestId('autocomplete-element');
+
+    expect(attachmentType).toBeInTheDocument();
 
     attachmentType.focus();
     fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
@@ -98,7 +101,7 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    const [, , , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
+    const [, , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
     expect(header).toBeInTheDocument();
     expect(listTitle).toBeInTheDocument();
     expect(listItemTitle).toBeInTheDocument();

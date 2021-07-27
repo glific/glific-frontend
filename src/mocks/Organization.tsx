@@ -430,6 +430,12 @@ export const getOrganizationLanguagesQueryByOrder = {
                 localized: true,
                 locale: 'en',
               },
+              {
+                id: '2',
+                label: 'Marathi',
+                localized: true,
+                locale: 'mr',
+              },
             ],
             defaultLanguage: {
               id: '1',
