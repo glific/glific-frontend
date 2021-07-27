@@ -100,7 +100,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
         <div>List {index + 1}</div>
         <div>
           {inputFields.length > 1 && (
-            <DeleteIcon className={styles.ListDeleteIcon} onClick={onListRemoveClick} />
+            <DeleteIcon
+              title="Remove"
+              className={styles.ListDeleteIcon}
+              onClick={onListRemoveClick}
+            />
           )}
         </div>
       </div>
@@ -145,6 +149,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             InputProps={{
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
+                                  title="Remove"
                                   className={styles.ListDeleteIcon}
                                   onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)}
                                 />

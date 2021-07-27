@@ -13,6 +13,11 @@ export const FILTER_INTERACTIVE_MESSAGES = gql`
       label
       interactiveContent
       type
+      translations
+      language {
+        id
+        label
+      }
     }
   }
 `;
@@ -25,6 +30,11 @@ export const GET_INTERACTIVE_MESSAGE = gql`
         label
         interactiveContent
         type
+        translations
+        language {
+          id
+          label
+        }
       }
     }
   }

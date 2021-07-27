@@ -59,12 +59,10 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Get all input elements
-    const [title, quickReply1, quickReply2, attachmentType, attachmentUrl] =
-      screen.getAllByRole('textbox');
+    const [, title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
     expect(title).toBeInTheDocument();
     expect(quickReply1).toBeInTheDocument();
     expect(quickReply2).toBeInTheDocument();
-    expect(attachmentType).toBeInTheDocument();
     expect(attachmentUrl).toBeInTheDocument();
 
     fireEvent.change(title, { target: { value: 'new title' } });
@@ -76,9 +74,18 @@ test('it renders empty interactive form', async () => {
   });
 
   await waitFor(() => {
-    const autoComplete = screen.getByTestId('autocomplete-element');
-    fireEvent.click(autoComplete);
-    fireEvent.keyDown(autoComplete);
+    const [language, attachmentType] = screen.getAllByTestId('autocomplete-element');
+
+    expect(language).toBeInTheDocument();
+    expect(attachmentType).toBeInTheDocument();
+
+    language.focus();
+    fireEvent.keyDown(language, { key: 'ArrowDown' });
+    fireEvent.keyDown(language, { key: 'Enter' });
+
+    attachmentType.focus();
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'Enter' });
   });
 
   // Switiching between radio buttons
@@ -91,15 +98,17 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    const [, header, listTitle, listDesc] = screen.getAllByRole('textbox');
+    const [, , , header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
     expect(header).toBeInTheDocument();
     expect(listTitle).toBeInTheDocument();
-    expect(listDesc).toBeInTheDocument();
+    expect(listItemTitle).toBeInTheDocument();
+    expect(listItemDesc).toBeInTheDocument();
 
     fireEvent.change(header, { target: { value: 'Section 1' } });
     fireEvent.blur(header);
     fireEvent.change(listTitle, { target: { value: 'title' } });
-    fireEvent.change(listDesc, { target: { value: 'desc' } });
+    fireEvent.change(listItemTitle, { target: { value: 'red' } });
+    fireEvent.change(listItemDesc, { target: { value: 'red is color' } });
   });
 
   await waitFor(() => {
@@ -137,12 +146,6 @@ test('it renders empty interactive form', async () => {
     const saveButton = screen.getByText('Save');
     expect(saveButton).toBeInTheDocument();
     fireEvent.click(saveButton);
-  });
-
-  // some of the elements are not filled hence validation errors are shown
-  // validation errors
-  await waitFor(() => {
-    expect(screen.getByText('Title is required.')).toBeInTheDocument();
   });
 
   // TODOS: need to fix below

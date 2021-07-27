@@ -18,10 +18,14 @@
   border: solid 2px;
   color: #073f24;
   margin: 0px;
-  padding: 0px 16px;
+  padding: 0px 12px;
   border-radius: 21px;
   min-height: 42px;
   border-color: #93a29b;
+}
+
+.RadioLabelWrapper > label > span {
+  padding-left: 0px !important;
 }
 
 .RadioLabel > span {
@@ -37,4 +41,10 @@
 
 .GlobalButton {
   padding-bottom: 16px;
+}
+
+.TemplateFields {
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
 }
