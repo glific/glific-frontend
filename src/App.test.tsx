@@ -3,9 +3,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
-import App from './App';
-import { CONVERSATION_MOCKS } from './mocks/Chat';
-import { setAuthSession, setUserSession } from './services/AuthService';
+import App from 'App';
+import { CONVERSATION_MOCKS } from 'mocks/Chat';
+import { setAuthSession, setUserSession } from 'services/AuthService';
 import axios from 'axios';
 const mocks = CONVERSATION_MOCKS;
 
