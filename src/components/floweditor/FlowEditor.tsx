@@ -2,25 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
 import { Prompt, Redirect, useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
-
 import * as Manifest from '@glific/flow-editor/build/asset-manifest.json';
 
+import { ReactComponent as HelpIcon } from 'assets/images/icons/Help.svg';
+import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
+import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
+import { Button } from 'components/UI/Form/Button/Button';
+import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from 'config/index';
+import { Simulator } from 'components/simulator/Simulator';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { setNotification } from 'common/notification';
+import { PUBLISH_FLOW } from 'graphql/mutations/Flow';
+import { EXPORT_FLOW, GET_FLOW_DETAILS } from 'graphql/queries/Flow';
+import { setAuthHeaders } from 'services/AuthService';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { exportFlowMethod } from 'common/utils';
 import styles from './FlowEditor.module.css';
-import { ReactComponent as HelpIcon } from '../../assets/images/icons/Help.svg';
-import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as WarningIcon } from '../../assets/images/icons/Warning.svg';
-import { ReactComponent as ExportIcon } from '../../assets/images/icons/Flow/Export.svg';
-import { Button } from '../UI/Form/Button/Button';
-import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from '../../config/index';
-import { Simulator } from '../simulator/Simulator';
-import { DialogBox } from '../UI/DialogBox/DialogBox';
-import { setNotification } from '../../common/notification';
-import { PUBLISH_FLOW } from '../../graphql/mutations/Flow';
-import { EXPORT_FLOW, GET_FLOW_DETAILS } from '../../graphql/queries/Flow';
-import { setAuthHeaders } from '../../services/AuthService';
-import { GET_ORGANIZATION_SERVICES } from '../../graphql/queries/Organization';
-import { Loading } from '../UI/Layout/Loading/Loading';
-import { exportFlowMethod } from '../../common/utils';
 
 declare function showFlowEditor(node: any, config: any): void;
 

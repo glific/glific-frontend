@@ -1,4 +1,3 @@
-import React from 'react';
 import { FlowEditor } from './FlowEditor';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
@@ -9,13 +8,13 @@ import {
   getFlowWithoutKeyword,
   getOrganisationServicesQuery,
   publishFlow,
-} from '../../mocks/Flow';
-import { conversationQuery } from '../../mocks/Chat';
+} from 'mocks/Flow';
+import { conversationQuery } from 'mocks/Chat';
 import {
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
-} from '../../mocks/Simulator';
+} from 'mocks/Simulator';
 
 const mocks = [
   conversationQuery,
