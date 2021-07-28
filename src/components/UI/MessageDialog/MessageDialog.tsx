@@ -1,9 +1,8 @@
-import React from 'react';
 import { Dialog, DialogContent } from '@material-ui/core';
 
+import { ReactComponent as CrossDarkIcon } from 'assets/images/icons/CrossDark.svg';
+import ChatInput from 'containers/Chat/ChatMessages/ChatInput/ChatInput';
 import styles from './MessageDialog.module.css';
-import { ReactComponent as CrossDarkIcon } from '../../../assets/images/icons/CrossDark.svg';
-import ChatInput from '../../../containers/Chat/ChatMessages/ChatInput/ChatInput';
 
 export interface MessageDialogProps {
   title: string;
