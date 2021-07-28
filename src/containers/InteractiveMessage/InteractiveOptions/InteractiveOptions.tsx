@@ -12,7 +12,6 @@ import { FieldArray } from 'formik';
 import styles from './InteractiveOptions.module.css';
 import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
 import { QUICK_REPLY, LIST } from '../../../common/constants';
-
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';
 

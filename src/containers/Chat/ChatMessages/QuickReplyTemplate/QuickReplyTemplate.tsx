@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
 import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType';
@@ -36,7 +37,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     .map((option: ButtonOption) => {
       if (option.title) {
         return (
-          <div className={styles.ButtonItem} key={`button_${new Date()}`}>
+          <div className={styles.ButtonItem} key={uuidv4()}>
             <Button
               variant="contained"
               color="default"

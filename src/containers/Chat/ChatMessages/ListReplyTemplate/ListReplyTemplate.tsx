@@ -3,6 +3,7 @@ import { Button, Radio } from '@material-ui/core';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import MenuIcon from '@material-ui/icons/Menu';
 import ClearIcon from '@material-ui/icons/Clear';
+import { v4 as uuidv4 } from 'uuid';
 
 import styles from './ListReplyTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -141,7 +142,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
     }
 
     return (
-      <div key={`section_${new Date()}`}>
+      <div key={uuidv4()}>
         <div className={styles.SectionTitle}>{sectionTitle}</div>
         <div className={styles.Options}>
           {options
@@ -149,7 +150,7 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
               if (option.title) {
                 return (
                   <Button
-                    key={`section_item_${new Date()}`}
+                    key={uuidv4()}
                     className={styles.ListItem}
                     onClick={() => setCheckedItem(option.title)}
                   >
