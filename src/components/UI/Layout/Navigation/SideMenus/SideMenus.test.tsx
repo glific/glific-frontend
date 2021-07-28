@@ -1,14 +1,10 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-
 import { fireEvent, render, waitFor } from '@testing-library/react';
-
-import SideMenus from './SideMenus';
-import {
-  getNotificationCountQuery,
-  markAllNotificationAsRead,
-} from '../../../../../mocks/Notifications';
 import { MockedProvider } from '@apollo/client/testing';
-import { setUserSession } from '../../../../../services/AuthService';
+
+import { getNotificationCountQuery, markAllNotificationAsRead } from 'mocks/Notifications';
+import { setUserSession } from 'services/AuthService';
+import SideMenus from './SideMenus';
 
 const mocks = [getNotificationCountQuery, markAllNotificationAsRead];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));

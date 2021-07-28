@@ -15,26 +15,22 @@ import IconButton from '@material-ui/core/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import Menu from 'components/UI/Menu/Menu';
+import * as constants from 'common/constants';
+import InactiveStaffIcon from 'assets/images/icons/StaffManagement/Inactive.svg';
+import ActiveStaffIcon from 'assets/images/icons/StaffManagement/Active.svg';
+import InactiveUserIcon from 'assets/images/icons/User/Inactive.svg';
+import ActiveUserIcon from 'assets/images/icons/User/Active.svg';
+import ActiveIcon from 'assets/images/icons/Settings/Active.svg';
+import InactiveIcon from 'assets/images/icons/Settings/Inactive.svg';
+import GlificLogo from 'assets/images/logo/Logo.svg';
+import { ReactComponent as QuestionIcon } from 'assets/images/icons/Question.svg';
+import { getUserRolePermissions, getUserAccountMenus, getStaffManagementMenus } from 'context/role';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
+import { GLIFIC_DOCS_URL } from 'config/index';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
-import Menu from '../../../Menu/Menu';
-import * as constants from '../../../../../common/constants';
-import InactiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Inactive.svg';
-import ActiveStaffIcon from '../../../../../assets/images/icons/StaffManagement/Active.svg';
-import InactiveUserIcon from '../../../../../assets/images/icons/User/Inactive.svg';
-import ActiveUserIcon from '../../../../../assets/images/icons/User/Active.svg';
-import ActiveIcon from '../../../../../assets/images/icons/Settings/Active.svg';
-import InactiveIcon from '../../../../../assets/images/icons/Settings/Inactive.svg';
-import GlificLogo from '../../../../../assets/images/logo/Logo.svg';
-import { ReactComponent as QuestionIcon } from '../../../../../assets/images/icons/Question.svg';
-import {
-  getUserRolePermissions,
-  getUserAccountMenus,
-  getStaffManagementMenus,
-} from '../../../../../context/role';
-import { Tooltip } from '../../../Tooltip/Tooltip';
-import { WalletBalance } from '../../../../../containers/WalletBalance/WalletBalance';
-import { GLIFIC_DOCS_URL } from '../../../../../config/index';
 
 export interface SideDrawerProps {
   fullOpen: boolean;
