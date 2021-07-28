@@ -228,7 +228,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
-    label: labelVal,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue);
@@ -238,7 +237,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
-    setTitle(labelVal || data.title);
+    setTitle(data.title);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -625,6 +624,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     // Update label if there is no translation present for english
     if (!isPresent) {
       payloadData.label = titleVal;
+    }
+
+    // While editing preserve original langId and content
+    if (template) {
+      /**
+       * Restoring template if language is different
+       */
+      const dataToRestore = template.interactiveTemplate.interactiveTemplate;
+
+      if (selectedLanguage.id !== dataToRestore?.language.id) {
+        payloadData.languageId = dataToRestore?.language.id;
+        payloadData.interactiveContent = dataToRestore.interactiveContent;
+      }
     }
 
     payloadData.translations = JSON.stringify(translationsCopy);
