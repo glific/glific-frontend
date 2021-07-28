@@ -2,8 +2,8 @@ import React from 'react';
 import { Snackbar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import styles from './ToastMessage.module.css';
-import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
 
 // Since attribute severity can only have 5 values,
 type Severity = 'error' | 'success' | 'info' | 'warning' | undefined;
