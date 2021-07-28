@@ -664,7 +664,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
         maxWidth={false}
         data-testid="messageContainer"
       >
-        {showLoadMore && conversationInfo.messages.length > DEFAULT_MESSAGE_LIMIT - 1 ? (
+        {showLoadMore && (
           <div className={styles.LoadMore}>
             {(called && loading) || conversationLoad ? (
               <CircularProgress className={styles.Loading} />
@@ -680,7 +680,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
               </div>
             )}
           </div>
-        ) : null}
+        )}
         {messageList}
       </Container>
     );
