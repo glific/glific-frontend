@@ -1,5 +1,5 @@
-import { FILTER_TAGS_NAME, GET_TAGS, GET_TAGS_COUNT } from '../graphql/queries/Tag';
-import { setVariables } from '../common/constants';
+import { FILTER_TAGS_NAME, GET_TAGS, GET_TAGS_COUNT } from 'graphql/queries/Tag';
+import { setVariables } from 'common/constants';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,

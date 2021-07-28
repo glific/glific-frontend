@@ -6,8 +6,8 @@ import {
   BSPBALANCE,
   FILTER_ORGANIZATIONS,
   GET_ORGANIZATION_COUNT,
-} from '../graphql/queries/Organization';
-import { BSP_BALANCE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
+} from 'graphql/queries/Organization';
+import { BSP_BALANCE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
 export const getOrganizationQuery = [
   {

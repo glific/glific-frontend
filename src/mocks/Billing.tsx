@@ -1,11 +1,11 @@
 import CREATE_BILLING_SUBSCRIPTION, {
   UPDATE_BILLING,
   CREATE_BILLING,
-} from '../graphql/mutations/Billing';
+} from 'graphql/mutations/Billing';
 import GET_ORGANIZATION_BILLING, {
   GET_COUPON_CODE,
   GET_CUSTOMER_PORTAL,
-} from '../graphql/queries/Billing';
+} from 'graphql/queries/Billing';
 
 export const createBillingSubscriptionQuery = {
   request: {

@@ -2,8 +2,8 @@ import {
   GET_CONSULTING_HOURS,
   GET_CONSULTING_HOURS_COUNT,
   GET_CONSULTING_HOURS_BY_ID,
-} from '../graphql/queries/Consulting';
-import { FILTER_ORGANIZATIONS } from '../graphql/queries/Organization';
+} from 'graphql/queries/Consulting';
+import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 
 const mockListDummyData = new Array(10).fill(null).map((val: any, index: number) => ({
   id: `${index}`,

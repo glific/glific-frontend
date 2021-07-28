@@ -3,24 +3,24 @@ import {
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
-} from '../graphql/subscriptions/Chat';
+} from 'graphql/subscriptions/Chat';
 import {
   SAVED_SEARCH_QUERY,
   SEARCH_QUERY,
   SEARCH_MULTI_QUERY,
   SEARCHES_COUNT,
-} from '../graphql/queries/Search';
-import { searchQueryMock as searchQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
-import { searchQueryEmptyMock as searchEmptyQuery } from '../containers/Chat/ChatConversations/ChatConversations.test.helper';
-import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
-import { filterTagsQuery, getTagsQuery } from './Tag';
-import { contactCollectionsQuery } from './Contact';
-import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from '../graphql/mutations/Chat';
+} from 'graphql/queries/Search';
+import { CREATE_AND_SEND_MESSAGE_MUTATION, UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
 import {
   DEFAULT_CONTACT_LIMIT,
   DEFAULT_MESSAGE_LIMIT,
   SEARCH_QUERY_VARIABLES as queryVariables,
-} from '../common/constants';
+} from 'common/constants';
+import { searchQueryMock as searchQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
+import { searchQueryEmptyMock as searchEmptyQuery } from 'containers/Chat/ChatConversations/ChatConversations.test.helper';
+import { addMessageTagSubscription, deleteMessageTagSubscription } from './Tag';
+import { filterTagsQuery, getTagsQuery } from './Tag';
+import { contactCollectionsQuery } from './Contact';
 import { getOrganizationLanguagesQuery } from './Organization';
 
 const getConversationQuery = (data: any) => {

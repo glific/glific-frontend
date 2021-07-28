@@ -5,14 +5,14 @@ import {
   GET_FLOW_DETAILS,
   FILTER_FLOW,
   EXPORT_FLOW,
-} from '../graphql/queries/Flow';
+} from 'graphql/queries/Flow';
 import {
   ADD_FLOW_TO_CONTACT,
   ADD_FLOW_TO_COLLECTION,
   PUBLISH_FLOW,
   IMPORT_FLOW,
-} from '../graphql/mutations/Flow';
-import { GET_ORGANIZATION_SERVICES } from '../graphql/queries/Organization';
+} from 'graphql/mutations/Flow';
+import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import json from './ImportFlow.json';
 
 export const getFlowQuery = {

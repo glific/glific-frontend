@@ -1,4 +1,4 @@
-import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from '../graphql/queries/WebhookLogs';
+import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
 
 export const getWebhookLogsQuery = {
   request: {
