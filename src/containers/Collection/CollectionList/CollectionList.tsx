@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
-
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import styles from './CollectionList.module.css';
-import { ReactComponent as CollectionIcon } from '../../../assets/images/icons/Collection/Dark.svg';
-import { ReactComponent as AddContactIcon } from '../../../assets/images/icons/Contact/Add.svg';
-import {
-  DELETE_COLLECTION,
-  UPDATE_COLLECTION_CONTACTS,
-} from '../../../graphql/mutations/Collection';
+import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
+import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
+import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 import {
   GET_COLLECTIONS_COUNT,
   FILTER_COLLECTIONS,
   GET_COLLECTIONS,
-} from '../../../graphql/queries/Collection';
-
-import { List } from '../../List/List';
-import { setNotification } from '../../../common/notification';
-import { getUserRolePermissions, getUserRole } from '../../../context/role';
-import { SearchDialogBox } from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../graphql/queries/Contact';
-import { setVariables } from '../../../common/constants';
+} from 'graphql/queries/Collection';
+import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
+import { List } from 'containers/List/List';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { getUserRolePermissions, getUserRole } from 'context/role';
+import { setNotification } from 'common/notification';
+import { setVariables } from 'common/constants';
+import styles from './CollectionList.module.css';
 
 export interface CollectionListProps {}
 
