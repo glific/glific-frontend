@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Container } from '@material-ui/core';
 
+import SearchBar from 'components/UI/SearchBar/SearchBar';
 import styles from './CollectionConversations.module.css';
 import { ConversationList } from '../ChatConversations/ConversationList/ConversationList';
-import SearchBar from '../../../components/UI/SearchBar/SearchBar';
 
 export interface CollectionConversationsProps {
   collectionId?: number | null;

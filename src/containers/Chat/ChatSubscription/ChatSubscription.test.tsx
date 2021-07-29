@@ -1,12 +1,12 @@
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-
-import { ChatSubscription } from './ChatSubscription';
-import { setUserSession } from '../../../services/AuthService';
-import { CONVERSATION_MOCKS } from '../../../mocks/Chat';
 import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
+
+import { setUserSession } from 'services/AuthService';
+import { CONVERSATION_MOCKS } from 'mocks/Chat';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { ChatSubscription } from './ChatSubscription';
 
 const mocks: any = CONVERSATION_MOCKS;
 

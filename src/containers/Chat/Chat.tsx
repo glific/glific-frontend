@@ -4,24 +4,23 @@ import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import styles from './Chat.module.css';
-import { Simulator } from '../../components/simulator/Simulator';
-import ChatMessages from './ChatMessages/ChatMessages';
+import { Simulator } from 'components/simulator/Simulator';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { getUserRole } from 'context/role';
+import { setErrorMessage } from 'common/notification';
+import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from 'common/constants';
+import selectedChatIcon from 'assets/images/icons/Chat/SelectedContact.svg';
+import unselectedChatIcon from 'assets/images/icons/Chat/Unselected.svg';
+import collectionIcon from 'assets/images/icons/Chat/Collection.svg';
+import selectedCollectionIcon from 'assets/images/icons/Chat/SelectedCollection.svg';
+import savedSearchIcon from 'assets/images/icons/Chat/SavedSearch.svg';
+import selectedSavedSearchIcon from 'assets/images/icons/Chat/SelectedSavedSearch.svg';
 import ChatConversations from './ChatConversations/ChatConversations';
-import Loading from '../../components/UI/Layout/Loading/Loading';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { setErrorMessage } from '../../common/notification';
-import { getUserRole } from '../../context/role';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import selectedChatIcon from '../../assets/images/icons/Chat/SelectedContact.svg';
-import unselectedChatIcon from '../../assets/images/icons/Chat/Unselected.svg';
-import collectionIcon from '../../assets/images/icons/Chat/Collection.svg';
-import selectedCollectionIcon from '../../assets/images/icons/Chat/SelectedCollection.svg';
-import savedSearchIcon from '../../assets/images/icons/Chat/SavedSearch.svg';
-import selectedSavedSearchIcon from '../../assets/images/icons/Chat/SelectedSavedSearch.svg';
-
+import ChatMessages from './ChatMessages/ChatMessages';
 import CollectionConversations from './CollectionConversations/CollectionConversations';
 import SavedSearches from './SavedSearches/SavedSearches';
+import styles from './Chat.module.css';
 
 export interface ChatProps {
   contactId?: number | string | null;
