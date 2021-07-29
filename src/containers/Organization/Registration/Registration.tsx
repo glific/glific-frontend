@@ -3,14 +3,14 @@ import axios from 'axios';
 import { InputAdornment, Link } from '@material-ui/core';
 import * as Yup from 'yup';
 
-import styles from './Registration.module.css';
-import { Input } from '../../../components/UI/Form/Input/Input';
+import { Input } from 'components/UI/Form/Input/Input';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
+import { ONBOARD_URL } from 'config';
+import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
+import { GUPSHUP_ACCOUNT_CREATION } from 'common/constants';
 import { Organization } from '../Organization';
-import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { ONBOARD_URL } from '../../../config/index';
-import Tooltip from '../../../components/UI/Tooltip/Tooltip';
-import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
-import { GUPSHUP_ACCOUNT_CREATION } from '../../../common/constants';
+import styles from './Registration.module.css';
 
 export interface RegistrationProps {
   title: string;

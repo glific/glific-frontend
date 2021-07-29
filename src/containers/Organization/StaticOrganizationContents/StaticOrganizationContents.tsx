@@ -1,9 +1,9 @@
 import React from 'react';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 
+import GlificLogo from 'assets/images/logo/Logo.svg';
+import { Button } from 'components/UI/Form/Button/Button';
 import styles from './StaticOrganizationContents.module.css';
-import GlificLogo from '../../../assets/images/logo/Logo.svg';
-import { Button } from '../../../components/UI/Form/Button/Button';
 
 export interface StaticOrganizationContetsProps {
   title: string;

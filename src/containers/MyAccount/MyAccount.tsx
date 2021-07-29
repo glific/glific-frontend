@@ -6,17 +6,17 @@ import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as UserIcon } from 'assets/images/icons/Contact/Profile.svg';
+import { UPDATE_CURRENT_USER } from 'graphql/mutations/User';
+import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { Input } from 'components/UI/Form/Input/Input';
+import { Button } from 'components/UI/Form/Button/Button';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { sendOTP } from 'services/AuthService';
 import styles from './MyAccount.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { ReactComponent as UserIcon } from '../../assets/images/icons/Contact/Profile.svg';
-import { UPDATE_CURRENT_USER } from '../../graphql/mutations/User';
-import { GET_CURRENT_USER } from '../../graphql/queries/User';
-import { USER_LANGUAGES } from '../../graphql/queries/Organization';
-import { Button } from '../../components/UI/Form/Button/Button';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { sendOTP } from '../../services/AuthService';
-import { ToastMessage } from '../../components/UI/ToastMessage/ToastMessage';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
 
 export interface MyAccountProps {}
 

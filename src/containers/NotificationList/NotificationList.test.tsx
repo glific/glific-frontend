@@ -2,7 +2,6 @@ import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { NotificationList } from './NotificationList';
 import {
   getUnFitleredNotificationCountQuery,
   getFilteredNotificationsQuery,
@@ -10,8 +9,9 @@ import {
   getCountWithFilter,
   getCountWithEmptyFilter,
   markAllNotificationAsRead,
-} from '../../mocks/Notifications';
-import { setUserSession } from '../../services/AuthService';
+} from 'mocks/Notifications';
+import { setUserSession } from 'services/AuthService';
+import { NotificationList } from './NotificationList';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 
