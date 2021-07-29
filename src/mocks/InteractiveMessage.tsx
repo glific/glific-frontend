@@ -117,7 +117,21 @@ const quickReplyMock = {
     '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
   label: 'A quick reply mock',
   type: 'QUICK_REPLY',
-  translations: '{}',
+  translations:
+    '{"1": {"type": "quick_reply", "content": {"text": "How excited are you for Glific?", "type": "text", "caption": "Glific is a two way communication platform"}, "options": [{"type": "text", "title": "Excited"}, {"type": "text", "title": "Very Excited"}]}, "2": {"type": "quick_reply", "content": {"text": "त्वरित उत्तर पाठ", "type": "text", "caption": "ग्लिफिक एक दोतरफा संचार मंच है"}, "options": [{"type": "text", "title": "उत्साहित"}, {"type": "text", "title": "बहुत उत्साहित"}]}}',
+  language: {
+    id: '1',
+    label: 'English',
+  },
+};
+
+const quickReplyMedia = {
+  interactiveContent:
+    '{"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
+  label: 'A quick reply mock',
+  type: 'QUICK_REPLY',
+  translations:
+    '{"1": {"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}, "2": {"type": "quick_reply", "content": {"url": "https://i.picsum.photos/id/202/200/300.jpg?hmac=KWOdj8XRnO9x8h_I9rIbscSAhD1x-TwkSPPYjWLN2sI", "type": "image", "caption": "यह संदेश है."}, "options": [{"type": "text", "title": "पहला"}, {"type": "text", "title": "दूसरा"}, {"type": "text", "title": "थ्रिड"}]}}',
   language: {
     id: '1',
     label: 'English',
@@ -218,6 +232,7 @@ export const mocks: any = [
   updateMockByType('2', listReplyMock),
   getTemplateByType('1', quickReplyMock),
   getTemplateByType('2', listReplyMock),
+  getTemplateByType('3', quickReplyMedia),
   deleteMock,
   getOrganizationLanguagesQueryByOrder,
 ];
