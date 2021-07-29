@@ -2,14 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useSubscription } from '@apollo/client';
 import { IconButton, Popper, Fade, Paper, ClickAwayListener } from '@material-ui/core';
 
+import { ReactComponent as OptionsIcon } from 'assets/images/icons/MoreOptions/Unselected.svg';
+import { ReactComponent as OptionsIconSelected } from 'assets/images/icons/MoreOptions/Selected.svg';
+import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from 'graphql/queries/Search';
+import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+import { setErrorMessage } from 'common/notification';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { getUserSession } from 'services/AuthService';
 import styles from './SavedSearchToolbar.module.css';
-import { ReactComponent as OptionsIcon } from '../../../assets/images/icons/MoreOptions/Unselected.svg';
-import { ReactComponent as OptionsIconSelected } from '../../../assets/images/icons/MoreOptions/Selected.svg';
-import { SAVED_SEARCH_QUERY, SEARCHES_COUNT } from '../../../graphql/queries/Search';
-import { setErrorMessage } from '../../../common/notification';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { COLLECTION_COUNT_SUBSCRIPTION } from '../../../graphql/subscriptions/PeriodicInfo';
-import { getUserSession } from '../../../services/AuthService';
 
 export interface SavedSearchToolbarProps {
   savedSearchCriteriaCallback: Function;

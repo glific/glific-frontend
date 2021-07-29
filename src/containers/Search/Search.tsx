@@ -5,21 +5,21 @@ import moment from 'moment';
 import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
+import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
+import { GET_SEARCH, SEARCH_LIST_QUERY } from 'graphql/queries/Search';
+import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
+import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { GET_USERS } from 'graphql/queries/User';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Input } from 'components/UI/Form/Input/Input';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Calendar } from 'components/UI/Form/Calendar/Calendar';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from 'common/constants';
+import { getObject } from 'common/utils';
 import styles from './Search.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as SearchIcon } from '../../assets/images/icons/Search/SelectedEdit.svg';
-import { ReactComponent as TagIcon } from '../../assets/images/icons/Tags/Selected.svg';
-import { GET_SEARCH, SEARCH_LIST_QUERY } from '../../graphql/queries/Search';
-import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from '../../graphql/mutations/Search';
-import { FILTER_TAGS_NAME } from '../../graphql/queries/Tag';
-import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
-import { GET_USERS } from '../../graphql/queries/User';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import Loading from '../../components/UI/Layout/Loading/Loading';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT, setVariables } from '../../common/constants';
-import { getObject } from '../../common/utils';
 
 export interface SearchProps {
   match?: any;

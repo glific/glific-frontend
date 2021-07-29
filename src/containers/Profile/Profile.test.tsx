@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
-import { Profile } from './Profile';
-import { LOGGED_IN_USER_MOCK } from '../../mocks/Contact';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
+import { Profile } from './Profile';
 
 const mocks = LOGGED_IN_USER_MOCK;
 
