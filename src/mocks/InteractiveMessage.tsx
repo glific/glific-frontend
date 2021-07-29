@@ -25,13 +25,14 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '1',
           label: 'list',
           type: 'LIST',
-          translations: '{}',
+          translations:
+            '{"1": {"body": "this is message", "type": "list", "items": [{"title": "list header 1", "options": [{"type": "text", "title": "red", "description": ""}, {"type": "text", "title": "blue", "description": ""}], "subtitle": "list header 1"}], "title": "Interactive list in english yay", "globalButtons": [{"type": "text", "title": "list"}]}, "2": {"body": "यह संदेश है ", "type": "list", "items": [{"title": "सूची शीर्षक १", "options": [{"type": "text", "title": "लाल", "description": ""}, {"type": "text", "title": "नीला", "description": ""}], "subtitle": "सूची शीर्षक १"}], "title": "इंटरेक्टिव लिस्ट हिंदी में", "globalButtons": [{"type": "text", "title": "सूची"}]}}',
           language: {
             id: '1',
             label: 'English',
           },
           interactiveContent:
-            '{"type":"list","title":"Glific","items":[{"title":"Glific Features","subtitle":"first Subtitle","options":[{"type":"text","title":"Custom flows for automating conversation","description":"Flow Editor for creating flows"},{"type":"text","title":"Custom reports for  analytics","description":"DataStudio for report generation"},{"type":"text","title":"ML/AI","description":"Dialogflow for AI/ML"}]},{"title":"Glific Usecases","subtitle":"some usecases of Glific","options":[{"type":"text","title":"Educational programs","description":"Sharing education content with school student"}]},{"title":"Onboarded NGOs","subtitle":"List of NGOs onboarded","options":[{"type":"text","title":"SOL","description":"Slam Out Loud is an Indian for mission, non-profit that envisions that every individual will have a voice that empowers them to change lives."}]}],"globalButtons":[{"type":"text","title":"button text"}],"body":"Glific"}',
+            '{"body": "यह संदेश है ", "type": "list", "items": [{"title": "सूची शीर्षक १", "options": [{"type": "text", "title": "लाल", "description": ""}, {"type": "text", "title": "नीला", "description": ""}], "subtitle": "सूची शीर्षक १"}], "title": "इंटरेक्टिव लिस्ट हिंदी में", "globalButtons": [{"type": "text", "title": "सूची"}]}',
         },
         {
           id: '2',
@@ -49,13 +50,14 @@ const filterInteractiveFunction = (filter: any, opts: any) => ({
           id: '3',
           label: 'quick reply image',
           type: 'QUICK_REPLY',
-          translations: '{}',
+          translations:
+            '{"1": {"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}, "2": {"type": "quick_reply", "content": {"url": "https://i.picsum.photos/id/202/200/300.jpg?hmac=KWOdj8XRnO9x8h_I9rIbscSAhD1x-TwkSPPYjWLN2sI", "type": "image", "caption": "यह संदेश है."}, "options": [{"type": "text", "title": "पहला"}, {"type": "text", "title": "दूसरा"}, {"type": "text", "title": "थ्रिड"}]}}',
           language: {
             id: '1',
             label: 'English',
           },
           interactiveContent:
-            '{"type":"quick_reply","options":[{"type":"text","title":"First"},{"type":"text","title":"Second"},{"type":"text","title":"Third"}],"content":{"url":"https://picsum.photos/200/300","type":"image","caption":"body text"}}',
+            '{"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
         },
         {
           id: '4',
