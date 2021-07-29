@@ -29,7 +29,8 @@ const SpeedSendsSessionTemplates = [
     isReserved: false,
     isActive: false,
     updatedAt: '2020-12-01T18:00:28Z',
-    translations: '{}',
+    translations:
+      '{"2":{"status":"approved","languageId":{"localized":true,"locale":"hi","label":"Hindi","id":"2","__typename":"Language"},"label":"आप ग्लिफ़िक के लिए कितने उत्साहित हैं?","isHsm":false,"body":"यह संदेश है\\n","MessageMedia":null}}',
     type: 'TEXT',
     language: {
       id: '1',
@@ -370,4 +371,43 @@ export const TEMPLATE_MOCKS = [
   ...whatsappHsmCategories,
   speedSendOrderWith,
   speedSendOrderWith,
+];
+
+const getHSMTemplate = (id: string, status: string) => ({
+  MessageMedia: null,
+  body: 'You can now view your Account Balance or Mini statement for Account ending with {{1}} simply by selecting one of the options below.',
+  id,
+  isActive: true,
+  isHsm: true,
+  isReserved: false,
+  label: 'Account Balance',
+  language: { id: '1', label: 'English' },
+  shortcode: 'account_balance',
+  status,
+  translations:
+    '{"2":{"number_parameters":1,"language_id":2,"body":" अब आप नीचे दिए विकल्पों में से एक का चयन करके {{1}} के साथ समाप्त होने वाले खाते के लिए अपना खाता शेष या मिनी स्टेटमेंट देख सकते हैं। | [अकाउंट बैलेंस देखें] | [देखें मिनी स्टेटमेंट]"}}',
+  type: 'TEXT',
+  updatedAt: '2021-07-28T08:00:24Z',
+});
+
+export const HSM_LIST = [
+  HSMTemplateCount,
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { isHsm: true },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          getHSMTemplate('1', 'APPROVED'),
+          getHSMTemplate('2', 'PENDING'),
+          getHSMTemplate('3', 'REJECTED'),
+        ],
+      },
+    },
+  },
 ];

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 
 import styles from './QuickReplyTemplate.module.css';
 import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType';
@@ -32,19 +33,26 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     return null;
   }
 
-  const quickReplyButtons = options.map((option: ButtonOption) => (
-    <div className={styles.ButtonItem} key={option.title}>
-      <Button
-        variant="contained"
-        color="default"
-        disabled={disabled}
-        onClick={() => onQuickReplyClick(option.title)}
-        className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}
-      >
-        {option.title}
-      </Button>
-    </div>
-  ));
+  const quickReplyButtons = options
+    .map((option: ButtonOption) => {
+      if (option.title) {
+        return (
+          <div className={styles.ButtonItem} key={uuidv4()}>
+            <Button
+              variant="contained"
+              color="default"
+              disabled={disabled}
+              onClick={() => onQuickReplyClick(option.title)}
+              className={isSimulator ? styles.SimulatorButton : styles.ChatMessageButton}
+            >
+              {option.title}
+            </Button>
+          </div>
+        );
+      }
+      return null;
+    })
+    .filter((a) => a);
 
   const { type, url, caption = '', text = '', filename = '' } = content;
 
