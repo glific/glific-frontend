@@ -18,6 +18,7 @@ import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Simulator } from 'components/simulator/Simulator';
+import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import { WhatsAppToDraftEditor } from 'common/RichEditor';
@@ -25,7 +26,6 @@ import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
-import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 
 export interface FlowProps {
   match: any;
