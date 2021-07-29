@@ -4,8 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import { MockedProvider } from '@apollo/client/testing';
 
+import { getCurrentUserQuery } from 'mocks/User';
 import { Login } from './Login';
-import { getCurrentUserQuery } from '../../../mocks/User';
 
 const mocks = [getCurrentUserQuery];
 
