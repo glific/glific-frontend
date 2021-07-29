@@ -40,6 +40,5 @@ test('Interactive message list renders correctly', async () => {
   expect(listTemplate).toBeInTheDocument();
   expect(imageTemplate).toBeInTheDocument();
   fireEvent.click(listTemplate);
-  fireEvent.click(listTemplate);
   fireEvent.click(imageTemplate);
 });
