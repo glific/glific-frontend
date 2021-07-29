@@ -1,11 +1,12 @@
 import { render, waitFor, within, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { FormLayout } from './FormLayout';
 import { Route } from 'react-router-dom';
-import { TagList } from '../Tag/TagList/TagList';
+
+import { setUserSession } from 'services/AuthService';
+import { TagList } from 'containers/Tag/TagList/TagList';
+import { FormLayout } from './FormLayout';
 import { LIST_ITEM_MOCKS, listItemProps } from './FormLayout.test.helper';
-import { setUserSession } from '../../services/AuthService';
 
 const mocks = LIST_ITEM_MOCKS;
 

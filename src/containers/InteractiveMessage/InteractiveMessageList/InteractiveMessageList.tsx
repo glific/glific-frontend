@@ -1,16 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './InteractiveMessageList.module.css';
-import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
-
-import { List } from '../../List/List';
+import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
+import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
-} from '../../../graphql/queries/InteractiveMessage';
-import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
-import { getInteractiveMessageBody } from '../../../common/utils';
+} from 'graphql/queries/InteractiveMessage';
+import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
+import { getInteractiveMessageBody } from 'common/utils';
+import styles from './InteractiveMessageList.module.css';
 
 export interface InteractiveMessageListProps {}
 

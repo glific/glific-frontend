@@ -2,9 +2,9 @@ import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 
-import { setUserSession } from '../../services/AuthService';
+import { setUserSession } from 'services/AuthService';
+import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
-import { mocks } from '../../mocks/InteractiveMessage';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
