@@ -635,7 +635,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
       if (selectedLanguage.id !== dataToRestore?.language.id) {
         payloadData.languageId = dataToRestore?.language.id;
-        payloadData.interactiveContent = dataToRestore.interactiveContent;
+        payloadData.interactiveContent = dataToRestore?.interactiveContent;
       }
     }
 
