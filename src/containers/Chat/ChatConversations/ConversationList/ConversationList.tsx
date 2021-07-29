@@ -5,15 +5,9 @@ import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import styles from './ConversationList.module.css';
-import ChatConversation from '../ChatConversation/ChatConversation';
-import Loading from '../../../../components/UI/Layout/Loading/Loading';
-import {
-  SEARCH_QUERY,
-  SEARCH_MULTI_QUERY,
-  SCROLL_HEIGHT,
-} from '../../../../graphql/queries/Search';
-import { setErrorMessage } from '../../../../common/notification';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { SEARCH_QUERY, SEARCH_MULTI_QUERY, SCROLL_HEIGHT } from 'graphql/queries/Search';
+import { setErrorMessage } from 'common/notification';
 import {
   COLLECTION_SEARCH_QUERY_VARIABLES,
   SEARCH_QUERY_VARIABLES,
@@ -21,10 +15,12 @@ import {
   DEFAULT_MESSAGE_LIMIT,
   DEFAULT_CONTACT_LOADMORE_LIMIT,
   DEFAULT_MESSAGE_LOADMORE_LIMIT,
-} from '../../../../common/constants';
-import { updateConversations } from '../../../../services/ChatService';
-import { showMessages } from '../../../../common/responsive';
-import { addLogs } from '../../../../common/utils';
+} from 'common/constants';
+import { updateConversations } from 'services/ChatService';
+import { showMessages } from 'common/responsive';
+import { addLogs } from 'common/utils';
+import ChatConversation from '../ChatConversation/ChatConversation';
+import styles from './ConversationList.module.css';
 
 interface ConversationListProps {
   searchVal: string;

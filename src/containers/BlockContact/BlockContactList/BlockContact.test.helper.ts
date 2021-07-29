@@ -1,5 +1,5 @@
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
-import { updateContactStatusQuery } from '../../../mocks/Contact';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
+import { updateContactStatusQuery } from 'mocks/Contact';
 
 const contactSearchQuery = {
   request: {

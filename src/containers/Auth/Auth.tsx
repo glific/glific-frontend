@@ -4,9 +4,9 @@ import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import styles from './Auth.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
+import styles from './Auth.module.css';
 
 export interface AuthProps {
   pageTitle: string;

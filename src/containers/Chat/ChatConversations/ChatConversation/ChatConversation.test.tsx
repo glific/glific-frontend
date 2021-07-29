@@ -2,9 +2,10 @@ import { fireEvent, render } from '@testing-library/react';
 import moment from 'moment';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
-import { MARK_AS_READ } from '../../../../graphql/mutations/Chat';
+
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
+import { DATE_FORMAT } from 'common/constants';
 import ChatConversation from './ChatConversation';
-import { DATE_FORMAT } from '../../../../common/constants';
 
 const mockCallback = jest.fn();
 
