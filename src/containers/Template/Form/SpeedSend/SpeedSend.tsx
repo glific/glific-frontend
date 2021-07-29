@@ -17,6 +17,7 @@ export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => (
     redirectionLink="speed-send"
     icon={speedSendIcon}
     customStyle={styles.AttachmentFields}
+    languageStyle="bar"
   />
 );
 

@@ -28,6 +28,30 @@ const items = [
       },
     ],
   },
+  // if no option title don't render list item
+  {
+    title: 'Second Section',
+    subtitle: '',
+    options: [
+      {
+        type: 'text',
+        title: '',
+        description: '',
+      },
+    ],
+  },
+  // if no list header don't render
+  {
+    title: '',
+    subtitle: '',
+    options: [
+      {
+        type: 'text',
+        title: '',
+        description: '',
+      },
+    ],
+  },
 ];
 
 const globalButtons = [
@@ -53,7 +77,15 @@ test('it renders ListReplyTemplate on ChatScreen', async () => {
   const button = screen.getByRole('button', { name: 'button text' });
   fireEvent.click(button);
 
-  await waitFor(() => {});
+  await waitFor(() => {
+    const item = screen.getByText('section 1 row 1');
+    fireEvent.click(item);
+  });
+
+  await waitFor(() => {
+    const done = screen.getByRole('button', { name: 'Done' });
+    fireEvent.click(done);
+  });
 });
 
 test('it renders ListReplyTemplate on SimulatorScreen', async () => {
