@@ -4,22 +4,22 @@ import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
-import styles from './Consulting.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { DateTimePicker } from '../../components/UI/Form/DateTimePicker/DateTimePicker';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { RadioInput } from '../../components/UI/Form/RadioInput/RadioInput';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as ConsultingIcon } from '../../assets/images/icons/icon-consulting.svg';
-import { GET_CONSULTING_HOURS_BY_ID, GET_CONSULTING_HOURS } from '../../graphql/queries/Consulting';
+import { Input } from 'components/UI/Form/Input/Input';
+import { DateTimePicker } from 'components/UI/Form/DateTimePicker/DateTimePicker';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { RadioInput } from 'components/UI/Form/RadioInput/RadioInput';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
+import { GET_CONSULTING_HOURS_BY_ID, GET_CONSULTING_HOURS } from 'graphql/queries/Consulting';
 import {
   CREATE_CONSULTING_HOUR,
   UPDATE_CONSULTING_HOURS,
   DELETE_CONSULTING_HOURS,
-} from '../../graphql/mutations/Consulting';
-import { FILTER_ORGANIZATIONS } from '../../graphql/queries/Organization';
-import { setVariables } from '../../common/constants';
+} from 'graphql/mutations/Consulting';
+import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
+import { setVariables } from 'common/constants';
+import styles from './Consulting.module.css';
 
 export interface ConsultingProps {
   match: any;
