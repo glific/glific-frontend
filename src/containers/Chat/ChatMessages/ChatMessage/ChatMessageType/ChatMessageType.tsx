@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-
 import Viewer from 'react-viewer';
 import ReactPlayer from 'react-player';
 import { Img } from 'react-image';
 
+import loadingImage from 'assets/images/loading.gif';
+import FallbackImage from 'assets/images/imageError.png';
+import VideoThumbnail from 'assets/images/videothumbnail.jpeg';
+import { ReactComponent as MapIcon } from 'assets/images/map.svg';
+import { ReactComponent as DocumentIconDark } from 'assets/images/icons/Document/Dark.svg';
+import { ReactComponent as DownloadIcon } from 'assets/images/icons/Download.svg';
+import { MessagesWithLinks } from 'containers/Chat/ChatMessages/MessagesWithLinks/MessagesWithLinks';
 import styles from './ChatMessageType.module.css';
-import { MessagesWithLinks } from '../../MessagesWithLinks/MessagesWithLinks';
-import loadingImage from '../../../../../assets/images/loading.gif';
-import FallbackImage from '../../../../../assets/images/imageError.png';
-import VideoThumbnail from '../../../../../assets/images/videothumbnail.jpeg';
-import { ReactComponent as MapIcon } from '../../../../../assets/images/map.svg';
-import { ReactComponent as DocumentIconDark } from '../../../../../assets/images/icons/Document/Dark.svg';
-import { ReactComponent as DownloadIcon } from '../../../../../assets/images/icons/Download.svg';
 
 export interface ChatMessageTypeProps {
   type: string;
