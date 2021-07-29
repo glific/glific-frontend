@@ -23,6 +23,7 @@ import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
 import { validateMedia } from '../../../common/utils';
+import { LanguageBar } from '../../../components/UI/LanguageBar/LanguageBar';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 
@@ -125,6 +126,7 @@ export interface TemplateProps {
   getExample?: any;
   getCategory?: any;
   onExampleChange?: any;
+  languageStyle?: string;
 }
 
 interface CallToActionTemplate {
@@ -152,6 +154,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getExample,
     getCategory,
     onExampleChange,
+    languageStyle = 'dropdown',
   } = props;
 
   const [label, setLabel] = useState('');
@@ -372,11 +375,17 @@ const Template: React.SFC<TemplateProps> = (props) => {
   };
 
   const getLanguageId = (value: any) => {
-    // create translations only while updating
-    if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
-      updateTranslation(value);
+    let result = value;
+    if (languageStyle !== 'dropdown') {
+      const selected = languageOptions.find((option: any) => option.label === value);
+      result = selected;
     }
-    if (value) setLanguageId(value);
+
+    // create translations only while updating
+    if (result && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      updateTranslation(result);
+    }
+    if (result) setLanguageId(result);
   };
 
   const validateURL = (value: string) => {
@@ -466,20 +475,32 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   ];
 
+  const langOptions = languageOptions && languageOptions.map((val: any) => val.label);
+
+  const languageComponent =
+    languageStyle === 'dropdown'
+      ? {
+          component: AutoComplete,
+          name: 'language',
+          options: languageOptions,
+          optionLabel: 'label',
+          multiple: false,
+          textFieldProps: {
+            variant: 'outlined',
+            label: t('Language*'),
+          },
+          disabled: defaultAttribute.isHsm && match.params.id,
+          onChange: getLanguageId,
+        }
+      : {
+          component: LanguageBar,
+          options: langOptions || [],
+          selectedLangauge: language && language.label,
+          onLanguageChange: getLanguageId,
+        };
+
   const formFields = [
-    {
-      component: AutoComplete,
-      name: 'language',
-      options: languageOptions,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Language*'),
-      },
-      disabled: defaultAttribute.isHsm && match.params.id,
-      onChange: getLanguageId,
-    },
+    languageComponent,
     {
       component: Input,
       name: 'label',
