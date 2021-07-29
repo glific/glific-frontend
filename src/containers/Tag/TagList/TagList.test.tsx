@@ -1,9 +1,10 @@
 import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { LIST_MOCKS } from 'containers/List/List.test.helper';
+import { setUserSession } from 'services/AuthService';
 import { TagList } from './TagList';
-import { LIST_MOCKS } from '../../List/List.test.helper';
-import { setUserSession } from '../../../services/AuthService';
 
 const mocks = LIST_MOCKS;
 setUserSession(JSON.stringify({ roles: ['Admin'] }));

@@ -4,17 +4,17 @@ import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import { Input } from '../../../components/UI/Form/Input/Input';
-import { FormLayout } from '../../Form/FormLayout';
-import { GET_PROVIDERS, GET_CREDENTIAL } from '../../../graphql/queries/Organization';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Input } from 'components/UI/Form/Input/Input';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { GET_PROVIDERS, GET_CREDENTIAL } from 'graphql/queries/Organization';
 import {
   DELETE_ORGANIZATION,
   CREATE_CREDENTIAL,
   UPDATE_CREDENTIAL,
-} from '../../../graphql/mutations/Organization';
-import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
+} from 'graphql/mutations/Organization';
+import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
 
 export interface ProvidersProps {
   match: any;

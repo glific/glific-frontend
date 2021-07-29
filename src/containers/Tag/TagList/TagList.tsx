@@ -2,13 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
+import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from 'graphql/queries/Tag';
+import { DELETE_TAG } from 'graphql/mutations/Tag';
+import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Dark.svg';
+import { ReactComponent as FilledTagIcon } from 'assets/images/icons/Tags/Filled.svg';
+import { List } from 'containers/List/List';
+import { DATE_TIME_FORMAT, setVariables } from 'common/constants';
 import styles from './TagList.module.css';
-import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
-import { DELETE_TAG } from '../../../graphql/mutations/Tag';
-import { ReactComponent as TagIcon } from '../../../assets/images/icons/Tags/Dark.svg';
-import { ReactComponent as FilledTagIcon } from '../../../assets/images/icons/Tags/Filled.svg';
-import { List } from '../../List/List';
-import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
 
 export interface TagListProps {}
 

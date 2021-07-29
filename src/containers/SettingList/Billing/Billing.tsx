@@ -10,26 +10,26 @@ import { CircularProgress, IconButton, InputAdornment, Typography } from '@mater
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
-import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
-import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as PendingIcon } from '../../../assets/images/icons/Template/Pending.svg';
-import { Button } from '../../../components/UI/Form/Button/Button';
+import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
+import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import {
   CREATE_BILLING_SUBSCRIPTION,
   UPDATE_BILLING,
   CREATE_BILLING,
-} from '../../../graphql/mutations/Billing';
-import styles from './Billing.module.css';
-import { STRIPE_PUBLISH_KEY } from '../../../config';
-import { setNotification } from '../../../common/notification';
+} from 'graphql/mutations/Billing';
 import {
   GET_CUSTOMER_PORTAL,
   GET_ORGANIZATION_BILLING,
   GET_COUPON_CODE,
-} from '../../../graphql/queries/Billing';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { ReactComponent as BackIcon } from '../../../assets/images/icons/Back.svg';
-import { Input } from '../../../components/UI/Form/Input/Input';
+} from 'graphql/queries/Billing';
+import { Button } from 'components/UI/Form/Button/Button';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { Input } from 'components/UI/Form/Input/Input';
+import { STRIPE_PUBLISH_KEY } from 'config';
+import { setNotification } from 'common/notification';
+import styles from './Billing.module.css';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.

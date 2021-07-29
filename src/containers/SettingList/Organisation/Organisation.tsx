@@ -5,24 +5,24 @@ import { IconButton, InputAdornment } from '@material-ui/core';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
-import { TimePicker } from '../../../components/UI/Form/TimePicker/TimePicker';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-import { Input } from '../../../components/UI/Form/Input/Input';
-import { FormLayout } from '../../Form/FormLayout';
-import { GET_FLOWS } from '../../../graphql/queries/Flow';
-import { GET_ORGANIZATION, USER_LANGUAGES } from '../../../graphql/queries/Organization';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from 'components/UI/Form/Input/Input';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { GET_FLOWS } from 'graphql/queries/Flow';
+import { GET_ORGANIZATION, USER_LANGUAGES } from 'graphql/queries/Organization';
 import {
   CREATE_ORGANIZATION,
   DELETE_ORGANIZATION,
   UPDATE_ORGANIZATION,
-} from '../../../graphql/mutations/Organization';
-import { GET_LANGUAGES } from '../../../graphql/queries/List';
-import { ReactComponent as Settingicon } from '../../../assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as CopyIcon } from '../../../assets/images/icons/Settings/Copy.svg';
-import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../../common/constants';
-import { copyToClipboard } from '../../../common/utils';
+} from 'graphql/mutations/Organization';
+import { GET_LANGUAGES } from 'graphql/queries/List';
+import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import { ReactComponent as CopyIcon } from 'assets/images/icons/Settings/Copy.svg';
+import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import { copyToClipboard } from 'common/utils';
 import styles from './Organisation.module.css';
 
 const SettingIcon = <Settingicon />;
