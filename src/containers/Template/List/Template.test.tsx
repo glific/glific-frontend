@@ -1,9 +1,10 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { setUserSession } from '../../../services/AuthService';
+
+import { setUserSession } from 'services/AuthService';
+import { TEMPLATE_MOCKS, HSM_LIST } from 'containers/Template/Template.test.helper';
 import { Template } from './Template';
-import { TEMPLATE_MOCKS, HSM_LIST } from '../Template.test.helper';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
