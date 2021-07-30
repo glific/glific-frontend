@@ -685,7 +685,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
   const validation: any = {
-    title: Yup.string().required('Title is required'),
+    title: Yup.string().required('Title is required').max(60, 'Title can be at most 60 characters'),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message content is required.')),
@@ -695,23 +695,31 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
-          title: Yup.string().required('Required'),
+          title: Yup.string()
+            .required('Required')
+            .max(24, 'Section title can be at most 24 characters'),
           options: Yup.array().of(
             Yup.object().shape({
-              title: Yup.string().required('Title is required'),
-              description: Yup.string(),
+              title: Yup.string()
+                .required('Title is required')
+                .max(24, 'Title can be at most 24 characters'),
+              description: Yup.string().max(72, 'Description can be at most 72 characters'),
             })
           ),
         })
       )
       .min(1);
 
-    validation.globalButton = Yup.string().required('Required');
+    validation.globalButton = Yup.string()
+      .required('Required')
+      .max(20, 'Button value can be at most 20 characters');
   } else {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
-          value: Yup.string().required('Required'),
+          value: Yup.string()
+            .required('Required')
+            .max(20, 'Button value can be at most 20 characters'),
         })
       )
       .min(1)
