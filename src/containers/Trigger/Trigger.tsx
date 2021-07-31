@@ -6,19 +6,19 @@ import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
+import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { TimePicker } from 'components/UI/Form/TimePicker/TimePicker';
+import { Calendar } from 'components/UI/Form/Calendar/Calendar';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { GET_FLOWS } from 'graphql/queries/Flow';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { GET_TRIGGER } from 'graphql/queries/Trigger';
+import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from 'graphql/mutations/Trigger';
 import styles from './Trigger.module.css';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as TriggerIcon } from '../../assets/images/icons/Trigger/Union.svg';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
-import { TimePicker } from '../../components/UI/Form/TimePicker/TimePicker';
-import { Calendar } from '../../components/UI/Form/Calendar/Calendar';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_FLOWS } from '../../graphql/queries/Flow';
-import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
-import { GET_TRIGGER } from '../../graphql/queries/Trigger';
-import { CREATE_TRIGGER, DELETE_TRIGGER, UPDATE_TRIGGER } from '../../graphql/mutations/Trigger';
 
 export interface TriggerProps {
   match: any;

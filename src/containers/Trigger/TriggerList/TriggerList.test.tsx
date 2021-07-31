@@ -1,9 +1,10 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { TriggerList } from './TriggerList';
 import { MockedProvider } from '@apollo/client/testing';
-import { triggerListQuery, triggerCountQuery } from '../../../mocks/Trigger';
 import { MemoryRouter } from 'react-router-dom';
-import { setUserSession } from '../../../services/AuthService';
+
+import { triggerListQuery, triggerCountQuery } from 'mocks/Trigger';
+import { setUserSession } from 'services/AuthService';
+import { TriggerList } from './TriggerList';
 
 const mocks = [triggerListQuery, triggerCountQuery];
 
