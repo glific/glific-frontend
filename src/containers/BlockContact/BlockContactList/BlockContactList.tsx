@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { useMutation, useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as BlockIcon } from 'assets/images/icons/Block.svg';
+import { ReactComponent as UnblockIcon } from 'assets/images/icons/Unblock.svg';
+import { List } from 'containers/List/List';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { setNotification } from 'common/notification';
+import { SEARCH_QUERY_VARIABLES } from 'common/constants';
+import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
+import { DELETE_CONTACT, UPDATE_CONTACT } from 'graphql/mutations/Contact';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { addLogs } from 'common/utils';
 import styles from './BlockContactList.module.css';
-import { ReactComponent as BlockIcon } from '../../../assets/images/icons/Block.svg';
-import { ReactComponent as UnblockIcon } from '../../../assets/images/icons/Unblock.svg';
-import { List } from '../../List/List';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { setNotification } from '../../../common/notification';
-import { SEARCH_QUERY_VARIABLES } from '../../../common/constants';
-import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from '../../../graphql/queries/Contact';
-import { DELETE_CONTACT, UPDATE_CONTACT } from '../../../graphql/mutations/Contact';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { addLogs } from '../../../common/utils';
 
 export interface BlockContactListProps {}
 

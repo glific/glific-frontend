@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import { RadioInput } from './RadioInput';
 
 describe('<RadioInput />', () => {

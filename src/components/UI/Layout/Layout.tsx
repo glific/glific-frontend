@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
+
+import GlificLogo from 'assets/images/logo/Logo.svg';
 import { SideDrawer } from './Navigation/SideDrawer/SideDrawer';
 import styles from './Layout.module.css';
-import GlificLogo from '../../../assets/images/logo/Logo.svg';
 
 export interface LayoutProps {
   children: any;

@@ -4,9 +4,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import styles from './DialogBox.module.css';
 
-import { Button } from '../Form/Button/Button';
+import { Button } from 'components/UI/Form/Button/Button';
+import styles from './DialogBox.module.css';
 
 export interface DialogProps {
   open?: boolean;

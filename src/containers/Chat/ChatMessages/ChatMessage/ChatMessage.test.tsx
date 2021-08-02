@@ -1,10 +1,10 @@
 import { render, within, fireEvent, waitFor, screen } from '@testing-library/react';
 import moment from 'moment';
-
-import ChatMessage from './ChatMessage';
-import { TIME_FORMAT } from '../../../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
-import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
+
+import { TIME_FORMAT } from 'common/constants';
+import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
+import ChatMessage from './ChatMessage';
 
 let resultReturned = false;
 

@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Formik } from 'formik';
+
 import { TemplateOptions } from './TemplateOptions';
 
 const props = (isAddButtonChecked: any, templateType: any, inputFields: any, form: any) => ({

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useApolloClient, useQuery } from '@apollo/client';
 
-import { setNotification } from '../common/notification';
-import { ToastMessage } from '../components/UI/ToastMessage/ToastMessage';
-import { NOTIFICATION } from '../graphql/queries/Notification';
+import { setNotification } from 'common/notification';
+import { ToastMessage } from 'components/UI/ToastMessage/ToastMessage';
+import { NOTIFICATION } from 'graphql/queries/Notification';
 
 export function useToast() {
   const client = useApolloClient();

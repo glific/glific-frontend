@@ -3,9 +3,9 @@ import { InputBase, IconButton, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTranslation } from 'react-i18next';
 
+import searchIcon from 'assets/images/icons/Search/Desktop.svg';
+import { ReactComponent as AdvancedSearch } from 'assets/images/icons/AdvancedSearch.svg';
 import styles from './SearchBar.module.css';
-import searchIcon from '../../../assets/images/icons/Search/Desktop.svg';
-import { ReactComponent as AdvancedSearch } from '../../../assets/images/icons/AdvancedSearch.svg';
 
 export interface SearchBarProps {
   handleChange?: (event: any) => void;

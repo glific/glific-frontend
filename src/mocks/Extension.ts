@@ -1,5 +1,5 @@
-import { GET_EXTENSION, GET_ORGANIZATION_EXTENSION } from '../graphql/queries/Exntesions';
-import { CREATE_EXTENSION, UPDATE_EXTENSION } from '../graphql/mutations/Extensions';
+import { GET_EXTENSION, GET_ORGANIZATION_EXTENSION } from 'graphql/queries/Exntesions';
+import { CREATE_EXTENSION, UPDATE_EXTENSION } from 'graphql/mutations/Extensions';
 
 export const getExtension = {
   request: {

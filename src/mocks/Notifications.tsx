@@ -1,5 +1,5 @@
-import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../graphql/queries/Notifications';
-import { MARK_NOTIFICATIONS_AS_READ } from '../graphql/mutations/Notifications';
+import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import { MARK_NOTIFICATIONS_AS_READ } from 'graphql/mutations/Notifications';
 
 export const getNotificationsQuery = {
   request: {

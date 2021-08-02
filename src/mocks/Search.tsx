@@ -1,12 +1,12 @@
-import { CREATE_SEARCH } from '../graphql/mutations/Search';
+import { CREATE_SEARCH } from 'graphql/mutations/Search';
 import {
   SEARCH_LIST_QUERY,
   SEARCH_QUERY_COUNT,
   GET_SEARCH,
   SEARCH_MULTI_QUERY,
-} from '../graphql/queries/Search';
-import { COLLECTION_COUNT_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
-import { MARK_AS_READ } from '../graphql/mutations/Chat';
+} from 'graphql/queries/Search';
+import { COLLECTION_COUNT_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+import { MARK_AS_READ } from 'graphql/mutations/Chat';
 
 export const createSearchQuery = {
   request: {

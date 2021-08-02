@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
+import { List } from 'containers/List/List';
+import { WhatsAppToJsx } from 'common/RichEditor';
+import { DATE_TIME_FORMAT, setVariables } from 'common/constants';
+import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import { ReactComponent as RejectedIcon } from 'assets/images/icons/Template/Rejected.svg';
+import { ReactComponent as PendingIcon } from 'assets/images/icons/Template/Pending.svg';
 import styles from './Template.module.css';
-import { List } from '../../List/List';
-import { WhatsAppToJsx } from '../../../common/RichEditor';
-import { DATE_TIME_FORMAT, setVariables } from '../../../common/constants';
-import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
-import { DELETE_TEMPLATE } from '../../../graphql/mutations/Template';
-import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
-import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
-import { ReactComponent as RejectedIcon } from '../../../assets/images/icons/Template/Rejected.svg';
-import { ReactComponent as PendingIcon } from '../../../assets/images/icons/Template/Pending.svg';
 
 const getLabel = (label: string) => <div className={styles.LabelText}>{label}</div>;
 

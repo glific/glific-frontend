@@ -2,10 +2,10 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
+import { GET_COLLECTION } from 'graphql/queries/Collection';
 import styles from './CollectionContact.module.css';
 import { CollectionContactList } from './CollectionContactList/CollectionContactList';
 import { CollectionDescription } from './CollectionDescription/CollectionDescription';
-import { GET_COLLECTION } from '../../../graphql/queries/Collection';
 
 export interface CollectionContactProps {
   match: any;

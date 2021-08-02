@@ -4,12 +4,12 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { RESET_PASSWORD } from '../../../config/index';
+import { RESET_PASSWORD } from 'config';
+import { Input } from 'components/UI/Form/Input/Input';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from 'services/AuthService';
+import setLogs from 'config/logs';
 import { Auth } from '../Auth';
-import { Input } from '../../../components/UI/Form/Input/Input';
-import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { sendOTP } from '../../../services/AuthService';
-import setLogs from '../../../config/logs';
 
 export interface ResetPasswordConfirmOTPProps {
   location: any;

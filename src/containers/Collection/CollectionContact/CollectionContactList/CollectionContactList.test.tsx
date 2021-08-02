@@ -2,12 +2,9 @@ import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
+import { countCollectionContactsQuery, getCollectionContactsQuery } from 'mocks/Contact';
+import { setUserSession } from 'services/AuthService';
 import { CollectionContactList } from './CollectionContactList';
-import {
-  countCollectionContactsQuery,
-  getCollectionContactsQuery,
-} from '../../../../mocks/Contact';
-import { setUserSession } from '../../../../services/AuthService';
 
 const mocks = [
   countCollectionContactsQuery,

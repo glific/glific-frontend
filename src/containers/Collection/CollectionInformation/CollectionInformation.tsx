@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
+import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from 'graphql/queries/Collection';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './CollectionInformation.module.css';
-import { GET_COLLECTION_INFO, GET_COLLECTION_USERS } from '../../../graphql/queries/Collection';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
 
 export interface CollectionInformationProps {
   collectionId: any;

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Menu from './Menu';
 import { BrowserRouter as Router } from 'react-router-dom';
+import Menu from './Menu';
 
 const menuList = [
   {

@@ -1,8 +1,7 @@
-import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
-import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 import { render } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
+
+import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 
 describe('<UnauthenticatedRoute />', () => {
   test('it should render', () => {

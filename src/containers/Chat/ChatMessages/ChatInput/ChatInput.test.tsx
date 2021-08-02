@@ -1,14 +1,15 @@
 import ChatInput from './ChatInput';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
-import '../VoiceRecorder/VoiceRecorder';
+
+import { TEMPLATE_MOCKS } from 'mocks/Template';
 import {
   createMediaMessageMock,
   getAttachmentPermissionMock,
   uploadBlobMock,
-} from '../../../../mocks/Attachment';
-import { searchInteractive } from '../../../../mocks/InteractiveMessage';
+} from 'mocks/Attachment';
+import { searchInteractive } from 'mocks/InteractiveMessage';
+import '../VoiceRecorder/VoiceRecorder';
 
 const mocks = [
   searchInteractive,

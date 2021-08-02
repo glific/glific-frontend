@@ -4,9 +4,9 @@ import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 
+import { FLOW_EDITOR_API } from 'config';
+import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
-import { FLOW_EDITOR_API } from '../../../../config';
-import { responseData, responseData1 } from '../../../../mocks/AddVariables';
 
 jest.mock('axios', () => {
   return {

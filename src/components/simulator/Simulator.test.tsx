@@ -1,15 +1,15 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
-import { Simulator } from './Simulator';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { conversationQuery } from '../../mocks/Chat';
+import { conversationQuery } from 'mocks/Chat';
 import {
   simulatorGetQuery,
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
-} from '../../mocks/Simulator';
+} from 'mocks/Simulator';
+import { Simulator } from './Simulator';
 
 const mockAxios: any = jest.genMockFromModule('axios');
 

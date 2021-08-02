@@ -1,19 +1,19 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import './i18n/config';
+import 'i18n/config';
 import { ClearCacheProvider, useClearCacheCtx } from 'react-clear-cache';
 
-import './assets/fonts/fonts.css';
-import gqlClient from './config/apolloclient';
-import { SessionContext } from './context/session';
-import { ErrorHandler } from './containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService } from './services/AuthService';
-import { UnauthenticatedRoute } from './route/UnauthenticatedRoute/UnauthenticatedRoute';
-import { AuthenticatedRoute } from './route/AuthenticatedRoute/AuthenticatedRoute';
-import { Logout } from './containers/Auth/Logout/Logout';
-import { Loading } from './components/UI/Layout/Loading/Loading';
-import { CLEAR_CACHE_DURATION } from './common/constants';
+import 'assets/fonts/fonts.css';
+import gqlClient from 'config/apolloclient';
+import { SessionContext } from 'context/session';
+import { ErrorHandler } from 'containers/ErrorHandler/ErrorHandler';
+import { checkAuthStatusService } from 'services/AuthService';
+import { UnauthenticatedRoute } from 'route/UnauthenticatedRoute/UnauthenticatedRoute';
+import { AuthenticatedRoute } from 'route/AuthenticatedRoute/AuthenticatedRoute';
+import { Logout } from 'containers/Auth/Logout/Logout';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { CLEAR_CACHE_DURATION } from 'common/constants';
 
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();

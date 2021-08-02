@@ -3,14 +3,14 @@ import { useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import { useTranslation } from 'react-i18next';
 
-import styles from './HSM.module.css';
-import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
+import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
+import { GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from 'components/UI/Form/Input/Input';
+import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { Simulator } from 'components/simulator/Simulator';
 import Template from '../Template';
-import { AutoComplete } from '../../../../components/UI/Form/AutoComplete/AutoComplete';
-import { Input } from '../../../../components/UI/Form/Input/Input';
-import { EmojiInput } from '../../../../components/UI/Form/EmojiInput/EmojiInput';
-import { GET_HSM_CATEGORIES } from '../../../../graphql/queries/Template';
-import { Simulator } from '../../../../components/simulator/Simulator';
+import styles from './HSM.module.css';
 
 export interface HSMProps {
   match: any;

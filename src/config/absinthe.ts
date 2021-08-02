@@ -1,7 +1,7 @@
-import { SOCKET } from '.';
-import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
-import { getAuthSession, renewAuthToken, setAuthSession } from '../services/AuthService';
+import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
+import { getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthService';
 import setLogs from './logs';
+import { SOCKET } from '.';
 
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');

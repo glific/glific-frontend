@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { USER_COUNT, FILTER_USERS } from 'graphql/queries/User';
+import { DELETE_USER } from 'graphql/mutations/User';
+import { ReactComponent as StaffIcon } from 'assets/images/icons/Collection/Dark.svg';
+import { ReactComponent as ChatIcon } from 'assets/images/icons/Chat/UnselectedDark.svg';
+import { List } from 'containers/List/List';
+import { getUserRole } from 'context/role';
 import styles from './StaffManagementList.module.css';
-import { USER_COUNT, FILTER_USERS } from '../../../graphql/queries/User';
-import { DELETE_USER } from '../../../graphql/mutations/User';
-import { ReactComponent as StaffIcon } from '../../../assets/images/icons/Collection/Dark.svg';
-import { ReactComponent as ChatIcon } from '../../../assets/images/icons/Chat/UnselectedDark.svg';
-import { List } from '../../List/List';
-import { getUserRole } from '../../../context/role';
 
 export interface StaffManagementProps {}
 

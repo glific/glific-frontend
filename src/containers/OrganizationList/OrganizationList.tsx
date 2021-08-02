@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { OutlinedInput } from '@material-ui/core';
 import { useMutation, useApolloClient } from '@apollo/client';
 
-import styles from './OrganizationList.module.css';
-import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from '../../graphql/queries/Organization';
+import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 import {
   DELETE_INACTIVE_ORGANIZATIONS,
   UPDATE_ORGANIZATION_STATUS,
-} from '../../graphql/mutations/Organization';
-import { List } from '../List/List';
-import { setVariables } from '../../common/constants';
-
-import { ReactComponent as OrganisationIcon } from '../../assets/images/icons/Organisation.svg';
-import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
-import { ReactComponent as CustomerDetailsIcon } from '../../assets/images/icons/customer_details.svg';
-import { setNotification } from '../../common/notification';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { Extensions } from '../Extensions/Extensions';
-import { OrganizationCustomer } from '../Organization/OrganizationCustomer/OrganizationCustomer';
+} from 'graphql/mutations/Organization';
+import { ReactComponent as OrganisationIcon } from 'assets/images/icons/Organisation.svg';
+import { ReactComponent as ExtensionIcon } from 'assets/images/icons/extension.svg';
+import { ReactComponent as CustomerDetailsIcon } from 'assets/images/icons/customer_details.svg';
+import { setVariables } from 'common/constants';
+import { setNotification } from 'common/notification';
+import { List } from 'containers/List/List';
+import { Extensions } from 'containers/Extensions/Extensions';
+import { OrganizationCustomer } from 'containers/Organization/OrganizationCustomer/OrganizationCustomer';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import styles from './OrganizationList.module.css';
 
 export interface OrganizationListProps {
   match: any;

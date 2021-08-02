@@ -5,17 +5,17 @@ import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { setContext } from '@apollo/link-context';
 
-import absinthe from './absinthe';
-import { GLIFIC_API_URL } from '.';
 import {
   checkAuthStatusService,
   renewAuthToken,
   getAuthSession,
   setAuthSession,
-} from '../services/AuthService';
-import { CONNECTION_RECONNECT_ATTEMPTS } from '../common/constants';
-import { Logout } from '../containers/Auth/Logout/Logout';
+} from 'services/AuthService';
+import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
+import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
+import { GLIFIC_API_URL } from '.';
+import absinthe from './absinthe';
 
 const subscribe = require('@jumpn/utils-graphql');
 

@@ -1,14 +1,14 @@
-import { ListIcon } from './ListIcon';
+import { MemoryRouter } from 'react-router';
 import { render } from '@testing-library/react';
 
-import chatIcon from '../../../assets/images/icons/Chat/Unselected.svg';
-import tagIcon from '../../../assets/images/icons/Tags/Unselected.svg';
-import broadcastIcon from '../../../assets/images/icons/Broadcast/Unselected.svg';
-import flowIcon from '../../../assets/images/icons/Flow/Unselected.svg';
-import searchIcon from '../../../assets/images/icons/Search/Unselected.svg';
-import goalsIcon from '../../../assets/images/icons/Goals/Unselected.svg';
-import analyticsIcon from '../../../assets/images/icons/Analytics/Unselected.svg';
-import { MemoryRouter } from 'react-router';
+import chatIcon from 'assets/images/icons/Chat/Unselected.svg';
+import tagIcon from 'assets/images/icons/Tags/Unselected.svg';
+import broadcastIcon from 'assets/images/icons/Broadcast/Unselected.svg';
+import flowIcon from 'assets/images/icons/Flow/Unselected.svg';
+import searchIcon from 'assets/images/icons/Search/Unselected.svg';
+import goalsIcon from 'assets/images/icons/Goals/Unselected.svg';
+import analyticsIcon from 'assets/images/icons/Analytics/Unselected.svg';
+import { ListIcon } from './ListIcon';
 
 describe('list icon tests', () => {
   const iconList: { [iconName: string]: string } = {

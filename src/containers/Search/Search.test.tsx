@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+
 import { Search } from './Search';
 import { LIST_ITEM_MOCKS } from './Search.test.helper';
 

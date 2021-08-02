@@ -4,12 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { resetRolePermissions } from '../../../context/role';
-import { SessionContext } from '../../../context/session';
-import { clearAuthSession, clearUserSession, getAuthSession } from '../../../services/AuthService';
-import { USER_SESSION } from '../../../config';
-import { clearListSession } from '../../../services/ListService';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
+import { resetRolePermissions } from 'context/role';
+import { SessionContext } from 'context/session';
+import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
+import { USER_SESSION } from 'config';
+import { clearListSession } from 'services/ListService';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
 const divStyle: CSSProperties = {
   fontFamily: 'Heebo',

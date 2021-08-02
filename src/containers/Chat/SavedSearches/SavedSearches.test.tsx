@@ -1,10 +1,11 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import UserEvent from '@testing-library/user-event';
-import SavedSearches from './SavedSearches';
 import { MockedProvider } from '@apollo/client/testing';
-import { savedSearchQuery, savedSearchQueryError } from '../../../mocks/Chat';
-import { setUserSession } from '../../../services/AuthService';
+
+import { savedSearchQuery, savedSearchQueryError } from 'mocks/Chat';
+import { setUserSession } from 'services/AuthService';
+import SavedSearches from './SavedSearches';
 
 const SavedSearch = (
   <MockedProvider mocks={[savedSearchQuery]}>

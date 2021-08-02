@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as ContactOptOutIcon } from '../../../assets/images/icons/ContactOptOut.svg';
+import { ReactComponent as ContactOptOutIcon } from 'assets/images/icons/ContactOptOut.svg';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './Timer.module.css';
-import Tooltip from '../Tooltip/Tooltip';
 
 export interface TimerProps {
   time: any;

@@ -3,15 +3,12 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@material-ui/core';
 
-import styles from './ConsultingList.module.css';
+import { List } from 'containers/List/List';
+import { setVariables } from 'common/constants';
+import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
+import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
 import { Consulting } from '../Consulting';
-import { List } from '../../List/List';
-import { setVariables } from '../../../common/constants';
-import {
-  GET_CONSULTING_HOURS,
-  GET_CONSULTING_HOURS_COUNT,
-} from '../../../graphql/queries/Consulting';
-import { ReactComponent as ConsultingIcon } from '../../../assets/images/icons/icon-consulting.svg';
+import styles from './ConsultingList.module.css';
 
 interface ConsultingListProps {
   match: any;

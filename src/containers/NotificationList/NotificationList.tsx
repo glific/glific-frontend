@@ -6,16 +6,16 @@ import { useApolloClient, useMutation } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as NotificationIcon } from 'assets/images/icons/Notification/Notification-dark-icon.svg';
+import { ReactComponent as ViewIcon } from 'assets/images/icons/View.svg';
+import CopyIcon from 'assets/images/icons/Copy.png';
+import { List } from 'containers/List/List';
+import Menu from 'components/UI/Menu/Menu';
+import { Button } from 'components/UI/Form/Button/Button';
+import { copyToClipboard } from 'common/utils';
+import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import MARK_NOTIFICATIONS_AS_READ from 'graphql/mutations/Notifications';
 import styles from './NotificationList.module.css';
-import { ReactComponent as NotificationIcon } from '../../assets/images/icons/Notification/Notification-dark-icon.svg';
-import { ReactComponent as ViewIcon } from '../../assets/images/icons/View.svg';
-import CopyIcon from '../../assets/images/icons/Copy.png';
-import { List } from '../List/List';
-import { FILTER_NOTIFICATIONS, GET_NOTIFICATIONS_COUNT } from '../../graphql/queries/Notifications';
-import Menu from '../../components/UI/Menu/Menu';
-import { Button } from '../../components/UI/Form/Button/Button';
-import { copyToClipboard } from '../../common/utils';
-import MARK_NOTIFICATIONS_AS_READ from '../../graphql/mutations/Notifications';
 
 export interface NotificationListProps {}
 const getDot = (isRead: boolean) => <div>{!isRead ? <div className={styles.Dot} /> : null}</div>;

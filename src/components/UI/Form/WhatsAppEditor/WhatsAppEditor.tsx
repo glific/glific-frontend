@@ -6,7 +6,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 
-import { convertToWhatsApp } from '../../../../common/RichEditor';
+import { convertToWhatsApp } from 'common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {

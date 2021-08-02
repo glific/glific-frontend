@@ -4,11 +4,11 @@ import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { REACT_APP_GLIFIC_REGISTRATION_API } from '../../../config/index';
+import { REACT_APP_GLIFIC_REGISTRATION_API } from 'config';
+import { Input } from 'components/UI/Form/Input/Input';
+import { sendOTP } from 'services/AuthService';
+import setLogs from 'config/logs';
 import { Auth } from '../Auth';
-import { Input } from '../../../components/UI/Form/Input/Input';
-import { sendOTP } from '../../../services/AuthService';
-import setLogs from '../../../config/logs';
 
 // let's define registration success message
 const successMessage = (

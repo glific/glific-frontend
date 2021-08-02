@@ -5,18 +5,18 @@ import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } fro
 import { Typography, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from 'components/UI/Form/Button/Button';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { setNotification, setErrorMessage } from 'common/notification';
+import { convertToWhatsApp } from 'common/RichEditor';
+import { SEARCH_QUERY_VARIABLES } from 'common/constants';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/White.svg';
+import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
 import styles from './FormLayout.module.css';
-import { Button } from '../../components/UI/Form/Button/Button';
-import { Dropdown } from '../../components/UI/Form/Dropdown/Dropdown';
-import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { setNotification, setErrorMessage } from '../../common/notification';
-import { convertToWhatsApp } from '../../common/RichEditor';
-import { SEARCH_QUERY_VARIABLES } from '../../common/constants';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
-import { USER_LANGUAGES } from '../../graphql/queries/Organization';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/White.svg';
-import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
 
 export interface FormLayoutProps {
   match: any;

@@ -4,20 +4,20 @@ import { useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { GET_USERS_QUERY, GET_USER_ROLES } from '../../graphql/queries/User';
-import { UPDATE_USER, DELETE_USER } from '../../graphql/mutations/User';
-import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
-import { ReactComponent as StaffManagementIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { getUserRole } from '../../context/role';
-import { setVariables } from '../../common/constants';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
+import { ReactComponent as StaffManagementIcon } from 'assets/images/icons/StaffManagement/Active.svg';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Input } from 'components/UI/Form/Input/Input';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { GET_USERS_QUERY, GET_USER_ROLES } from 'graphql/queries/User';
+import { UPDATE_USER, DELETE_USER } from 'graphql/mutations/User';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { getUserRole } from 'context/role';
+import { setVariables } from 'common/constants';
+import { getUserSession } from 'services/AuthService';
 import styles from './StaffManagement.module.css';
-import { getUserSession } from '../../services/AuthService';
 
 export interface StaffManagementProps {
   match: any;

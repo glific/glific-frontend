@@ -1,13 +1,11 @@
 import { AddContactsToCollection } from './AddContactsToCollection';
 import { render, cleanup, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { setUserSession } from '../../../../services/AuthService';
-import {
-  getCollectionContactsQuery,
-  updateCollectionContactsQuery,
-} from '../../../../mocks/Collection';
-import { getContactsQuery } from '../../../../mocks/Contact';
-import * as AutoComplete from '../../../../components/UI/Form/AutoComplete/AutoComplete';
+
+import { setUserSession } from 'services/AuthService';
+import { getCollectionContactsQuery, updateCollectionContactsQuery } from 'mocks/Collection';
+import { getContactsQuery } from 'mocks/Contact';
+import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
 
 const mocks = [
   getCollectionContactsQuery,
