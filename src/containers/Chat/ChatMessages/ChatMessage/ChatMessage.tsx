@@ -365,6 +365,15 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
+                  {/* <Button
+                    className={styles.Popper}
+                    color="primary"
+                    onClick={props.setDialog}
+                    data-testid="dialogButton"
+                  >
+                    {t('Assign tag')}
+                  </Button>
+                  <br /> */}
                   <Button
                     className={styles.Popper}
                     color="primary"
