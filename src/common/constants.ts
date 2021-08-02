@@ -117,6 +117,7 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
 
   const additionalItems: any = {
     flow: { TITLE: 'name' },
+    trigger: { TITLE: 'name' },
     Search: {
       TITLE: 'shortcode',
       DESCRIPTION: 'label',
