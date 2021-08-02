@@ -1,10 +1,11 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { conversationQuery } from 'mocks/Chat';
+import { setUserSession } from 'services/AuthService';
 import { BlockContactList } from './BlockContactList';
 import { CONTACT_LIST_MOCKS } from './BlockContact.test.helper';
-import { conversationQuery } from '../../../mocks/Chat';
-import { setUserSession } from '../../../services/AuthService';
 
 const mocks = [...CONTACT_LIST_MOCKS, conversationQuery];
 

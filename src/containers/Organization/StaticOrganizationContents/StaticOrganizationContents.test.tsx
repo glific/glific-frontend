@@ -1,4 +1,5 @@
 import { fireEvent, render, within } from '@testing-library/react';
+
 import StaticOrganizationContents from './StaticOrganizationContents';
 
 const props = {

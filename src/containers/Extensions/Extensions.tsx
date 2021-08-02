@@ -4,17 +4,13 @@ import Typography from '@material-ui/core/Typography';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
+import { CREATE_EXTENSION, DELETE_EXTENSION, UPDATE_EXTENSION } from 'graphql/mutations/Extensions';
+import { GET_ORGANIZATION_EXTENSION } from 'graphql/queries/Exntesions';
+import { Input } from 'components/UI/Form/Input/Input';
+import { ReactComponent as ExtensionIcon } from 'assets/images/icons/extension.svg';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import styles from './Extensions.module.css';
-import {
-  CREATE_EXTENSION,
-  DELETE_EXTENSION,
-  UPDATE_EXTENSION,
-} from '../../graphql/mutations/Extensions';
-import { GET_ORGANIZATION_EXTENSION } from '../../graphql/queries/Exntesions';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { ReactComponent as ExtensionIcon } from '../../assets/images/icons/extension.svg';
-import { FormLayout } from '../Form/FormLayout';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
 
 export interface ExtensionProps {
   match: any;

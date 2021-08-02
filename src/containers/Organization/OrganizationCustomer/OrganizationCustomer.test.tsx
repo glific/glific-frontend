@@ -1,8 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { setUserSession } from 'services/AuthService';
+import { organizationCustomerMock } from 'mocks/Billing';
 import { OrganizationCustomer } from './OrganizationCustomer';
-import { setUserSession } from '../../../services/AuthService';
-import { organizationCustomerMock } from '../../../mocks/Billing';
 
 const mocks = [...organizationCustomerMock];
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Glific_admin'] }));

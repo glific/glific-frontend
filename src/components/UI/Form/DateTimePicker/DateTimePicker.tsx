@@ -5,8 +5,8 @@ import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from '@material-ui/pi
 import 'date-fns';
 import { getIn } from 'formik';
 
+import { ReactComponent as CalenderIcon } from 'assets/images/icons/Calendar.svg';
 import styles from './DateTimePicker.module.css';
-import { ReactComponent as CalenderIcon } from '../../../../assets/images/icons/Calendar.svg';
 
 export interface DateTimePickerProps {
   variant?: any;

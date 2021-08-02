@@ -2,12 +2,12 @@ import {
   CREATE_INTERACTIVE,
   DELETE_INTERACTIVE,
   UPDATE_INTERACTIVE,
-} from '../graphql/mutations/InteractiveMessage';
+} from 'graphql/mutations/InteractiveMessage';
 import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
   GET_INTERACTIVE_MESSAGE,
-} from '../graphql/queries/InteractiveMessage';
+} from 'graphql/queries/InteractiveMessage';
 import { getOrganizationLanguagesQueryByOrder } from './Organization';
 
 const filterInteractiveFunction = (filter: any, opts: any) => ({

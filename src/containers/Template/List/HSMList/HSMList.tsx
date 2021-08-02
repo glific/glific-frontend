@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as TemplateIcon } from 'assets/images/icons/Template/UnselectedDark.svg';
 import styles from './HSMList.module.css';
-import { ReactComponent as TemplateIcon } from '../../../../assets/images/icons/Template/UnselectedDark.svg';
 import { Template } from '../Template';
 
 export interface HSMListProps {}

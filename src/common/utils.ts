@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { FLOW_EDITOR_API } from '../config';
-import setLogs from '../config/logs';
-import { getAuthSession } from '../services/AuthService';
+import { FLOW_EDITOR_API } from 'config';
+import setLogs from 'config/logs';
+import { getAuthSession } from 'services/AuthService';
 import { setNotification } from './notification';
 
 export const getObject = (arr: any, data: any) => {

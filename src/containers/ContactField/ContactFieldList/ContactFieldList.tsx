@@ -3,21 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, Button } from '@material-ui/core';
 import { useMutation } from '@apollo/client';
 
-import styles from './ContactFieldList.module.css';
-import { List } from '../../List/List';
+import { List } from 'containers/List/List';
+import { InlineInput } from 'components/UI/Form/InlineInput/InlineInput';
+import { setVariables } from 'common/constants';
+import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
+import { DELETE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
+import { ReactComponent as ContactVariableIcon } from 'assets/images/icons/ContactVariableDark.svg';
+import { ReactComponent as EditIcon } from 'assets/images/icons/GreenEdit.svg';
 import { ContactField } from '../ContactField';
-import { InlineInput } from '../../../components/UI/Form/InlineInput/InlineInput';
-import { setVariables } from '../../../common/constants';
-import {
-  COUNT_CONTACT_FIELDS,
-  GET_ALL_CONTACT_FIELDS,
-} from '../../../graphql/queries/ContactFields';
-import {
-  DELETE_CONTACT_FIELDS,
-  UPDATE_CONTACT_FIELDS,
-} from '../../../graphql/mutations/ContactFields';
-import { ReactComponent as ContactVariableIcon } from '../../../assets/images/icons/ContactVariableDark.svg';
-import { ReactComponent as EditIcon } from '../../../assets/images/icons/GreenEdit.svg';
+import styles from './ContactFieldList.module.css';
 
 interface ContactFieldListProps {
   match: any;

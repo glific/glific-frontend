@@ -1,4 +1,5 @@
 import { render, act, fireEvent } from '@testing-library/react';
+
 import RouteSetupSteps from './RouteSetupSteps';
 
 it('it renders component correctly', () => {

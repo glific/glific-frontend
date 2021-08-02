@@ -1,6 +1,5 @@
-import { setVariables } from '../common/constants';
-
-import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from '../graphql/queries/Template';
+import { setVariables } from 'common/constants';
+import { FILTER_TEMPLATES, GET_TEMPLATES_COUNT } from 'graphql/queries/Template';
 
 export const filterTemplatesQuery = (term: any, data: any) => {
   return {

@@ -1,12 +1,12 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-
-import { Trigger } from './Trigger';
-import { getTriggerQuery } from '../../mocks/Trigger';
-import { LIST_ITEM_MOCKS } from '../SettingList/SettingList.test.helper';
-import { LIST_ITEM_MOCKS as SearchMocks } from '../Search/Search.test.helper';
-import * as AutoComplete from '../../components/UI/Form/AutoComplete/AutoComplete';
 import { MemoryRouter } from 'react-router';
+
+import { LIST_ITEM_MOCKS } from 'containers/SettingList/SettingList.test.helper';
+import { LIST_ITEM_MOCKS as SearchMocks } from 'containers/Search/Search.test.helper';
+import * as AutoComplete from 'components/UI/Form/AutoComplete/AutoComplete';
+import { getTriggerQuery } from 'mocks/Trigger';
+import { Trigger } from './Trigger';
 
 describe('trigger with daily frequency', () => {
   const frequencyDailyMocks = [getTriggerQuery('daily'), ...LIST_ITEM_MOCKS, ...SearchMocks];

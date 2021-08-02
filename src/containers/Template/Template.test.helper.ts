@@ -1,13 +1,13 @@
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { FILTER_TEMPLATES, GET_TEMPLATE, GET_HSM_CATEGORIES } from '../../graphql/queries/Template';
-import { DELETE_TEMPLATE, CREATE_TEMPLATE } from '../../graphql/mutations/Template';
+import { GET_LANGUAGES } from 'graphql/queries/List';
+import { FILTER_TEMPLATES, GET_TEMPLATE, GET_HSM_CATEGORIES } from 'graphql/queries/Template';
+import { DELETE_TEMPLATE, CREATE_TEMPLATE } from 'graphql/mutations/Template';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationLanguagesQueryByOrder,
   getOrganizationQuery,
-} from '../../mocks/Organization';
-import { templateCountQuery } from '../../mocks/Template';
-import { CREATE_MEDIA_MESSAGE } from '../../graphql/mutations/Chat';
+} from 'mocks/Organization';
+import { templateCountQuery } from 'mocks/Template';
+import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 
 const count = templateCountQuery(false, 2);
 

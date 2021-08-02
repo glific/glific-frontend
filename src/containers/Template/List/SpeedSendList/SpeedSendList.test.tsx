@@ -1,9 +1,10 @@
 import { render, waitFor, cleanup } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { setUserSession } from 'services/AuthService';
 import { SpeedSendList } from './SpeedSendList';
-import { TEMPLATE_MOCKS } from '../../Template.test.helper';
-import { setUserSession } from '../../../../services/AuthService';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;

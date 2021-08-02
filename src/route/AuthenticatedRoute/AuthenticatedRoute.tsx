@@ -1,71 +1,65 @@
 import React, { lazy, useState } from 'react';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
+import { Layout } from 'components/UI/Layout/Layout';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { getUserRole } from 'context/role';
+import { useToast } from 'services/ToastService';
+import { Chat } from 'containers/Chat/Chat';
+import { ChatSubscription } from 'containers/Chat/ChatSubscription/ChatSubscription';
 import styles from './AuthenticatedRoute.module.css';
-import { Layout } from '../../components/UI/Layout/Layout';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { getUserRole } from '../../context/role';
-import { useToast } from '../../services/ToastService';
-import { Chat } from '../../containers/Chat/Chat';
-import { ChatSubscription } from '../../containers/Chat/ChatSubscription/ChatSubscription';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
-const TagList = lazy(() => import('../../containers/Tag/TagList/TagList'));
-const Tag = lazy(() => import('../../containers/Tag/Tag'));
-const SpeedSendList = lazy(
-  () => import('../../containers/Template/List/SpeedSendList/SpeedSendList')
-);
-const SpeedSend = lazy(() => import('../../containers/Template/Form/SpeedSend/SpeedSend'));
-const FlowList = lazy(() => import('../../containers/Flow/FlowList/FlowList'));
-const Flow = lazy(() => import('../../containers/Flow/Flow'));
-const CollectionList = lazy(
-  () => import('../../containers/Collection/CollectionList/CollectionList')
-);
-const Collection = lazy(() => import('../../containers/Collection/Collection'));
+const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
+const Tag = lazy(() => import('containers/Tag/Tag'));
+const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
+const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
+const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
+const Flow = lazy(() => import('containers/Flow/Flow'));
+const CollectionList = lazy(() => import('containers/Collection/CollectionList/CollectionList'));
+const Collection = lazy(() => import('containers/Collection/Collection'));
 const CollectionContact = lazy(
-  () => import('../../containers/Collection/CollectionContact/CollectionContact')
+  () => import('containers/Collection/CollectionContact/CollectionContact')
 );
-const FlowEditor = lazy(() => import('../../components/floweditor/FlowEditor'));
-const SearchList = lazy(() => import('../../containers/Search/SearchList/SearchList'));
-const Search = lazy(() => import('../../containers/Search/Search'));
+const FlowEditor = lazy(() => import('components/floweditor/FlowEditor'));
+const SearchList = lazy(() => import('containers/Search/SearchList/SearchList'));
+const Search = lazy(() => import('containers/Search/Search'));
 const StaffManagementList = lazy(
-  () => import('../../containers/StaffManagement/StaffManagementList/StaffManagementList')
+  () => import('containers/StaffManagement/StaffManagementList/StaffManagementList')
 );
-const StaffManagement = lazy(() => import('../../containers/StaffManagement/StaffManagement'));
-const ContactProfile = lazy(() => import('../../containers/Profile/Contact/ContactProfile'));
-const UserProfile = lazy(() => import('../../containers/Profile/User/UserProfile'));
-const MyAccount = lazy(() => import('../../containers/MyAccount/MyAccount'));
-const HSMList = lazy(() => import('../../containers/Template/List/HSMList/HSMList'));
-const HSM = lazy(() => import('../../containers/Template/Form/HSM/HSM'));
+const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
+const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
+const UserProfile = lazy(() => import('containers/Profile/User/UserProfile'));
+const MyAccount = lazy(() => import('containers/MyAccount/MyAccount'));
+const HSMList = lazy(() => import('containers/Template/List/HSMList/HSMList'));
+const HSM = lazy(() => import('containers/Template/Form/HSM/HSM'));
 
-const SettingList = lazy(() => import('../../containers/SettingList/SettingList'));
-const Billing = lazy(() => import('../../containers/SettingList/Billing/Billing'));
+const SettingList = lazy(() => import('containers/SettingList/SettingList'));
+const Billing = lazy(() => import('containers/SettingList/Billing/Billing'));
 
-const Providers = lazy(() => import('../../containers/SettingList/Providers/Providers'));
+const Providers = lazy(() => import('containers/SettingList/Providers/Providers'));
 const BlockContactList = lazy(
-  () => import('../../containers/BlockContact/BlockContactList/BlockContactList')
+  () => import('containers/BlockContact/BlockContactList/BlockContactList')
 );
-const Organisation = lazy(() => import('../../containers/SettingList/Organisation/Organisation'));
+const Organisation = lazy(() => import('containers/SettingList/Organisation/Organisation'));
 const WebhookLogsList = lazy(
-  () => import('../../containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
+  () => import('containers/WebhookLogs/WebhookLogsList/WebhookLogsList')
 );
-const TriggerList = lazy(() => import('../../containers/Trigger/TriggerList/TriggerList'));
-const Trigger = lazy(() => import('../../containers/Trigger/Trigger'));
-const NotificationList = lazy(() => import('../../containers/NotificationList/NotificationList'));
-const OrganizationList = lazy(() => import('../../containers/OrganizationList/OrganizationList'));
+const TriggerList = lazy(() => import('containers/Trigger/TriggerList/TriggerList'));
+const Trigger = lazy(() => import('containers/Trigger/Trigger'));
+const NotificationList = lazy(() => import('containers/NotificationList/NotificationList'));
+const OrganizationList = lazy(() => import('containers/OrganizationList/OrganizationList'));
 const ConsultingHourList = lazy(
-  () => import('../../containers/Consulting/ConsultingList/ConsultingList')
+  () => import('containers/Consulting/ConsultingList/ConsultingList')
 );
 const ContactFieldList = lazy(
-  () => import('../../containers/ContactField/ContactFieldList/ContactFieldList')
+  () => import('containers/ContactField/ContactFieldList/ContactFieldList')
 );
 const InteractiveMessageList = lazy(
-  () => import('../../containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList')
+  () => import('containers/InteractiveMessage/InteractiveMessageList/InteractiveMessageList')
 );
-const InteractiveMessage = lazy(
-  () => import('../../containers/InteractiveMessage/InteractiveMessage')
-);
+const InteractiveMessage = lazy(() => import('containers/InteractiveMessage/InteractiveMessage'));
 
 const routeStaff = (
   <Switch>

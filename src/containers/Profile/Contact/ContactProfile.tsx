@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
+import { GET_CONTACT_DETAILS } from 'graphql/queries/Contact';
+import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
+import { UPDATE_CONTACT_TAGS } from 'graphql/mutations/Contact';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { setVariables } from 'common/constants';
+import { ContactDescription } from './ContactDescription/ContactDescription';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
-import { ContactDescription } from './ContactDescription/ContactDescription';
-import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-import { GET_CONTACT_DETAILS } from '../../../graphql/queries/Contact';
-import { FILTER_TAGS_NAME } from '../../../graphql/queries/Tag';
-import { UPDATE_CONTACT_TAGS } from '../../../graphql/mutations/Contact';
-import { setVariables } from '../../../common/constants';
 
 export interface ContactProfileProps {
   match: any;

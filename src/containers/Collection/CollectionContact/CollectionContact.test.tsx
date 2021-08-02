@@ -2,9 +2,9 @@ import { render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router';
 
+import { countCollectionContactsQuery } from 'mocks/Contact';
+import { getCollectionQuery } from 'mocks/Collection';
 import { CollectionContact } from './CollectionContact';
-import { countCollectionContactsQuery } from '../../../mocks/Contact';
-import { getCollectionQuery } from '../../../mocks/Collection';
 
 const mocks = [
   countCollectionContactsQuery,

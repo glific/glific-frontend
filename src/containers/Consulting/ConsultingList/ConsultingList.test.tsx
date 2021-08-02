@@ -1,9 +1,10 @@
 import { render, screen, act } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import ConsultingList from './ConsultingList';
-import { listingMock } from '../../../mocks/Consulting';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { setUserSession } from '../../../services/AuthService';
+
+import { listingMock } from 'mocks/Consulting';
+import { setUserSession } from 'services/AuthService';
+import ConsultingList from './ConsultingList';
 
 const mocks = listingMock;
 const props = {

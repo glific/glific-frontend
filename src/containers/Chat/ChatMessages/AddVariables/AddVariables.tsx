@@ -3,12 +3,11 @@ import { Formik, Form, Field } from 'formik';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { FLOW_EDITOR_API } from '../../../../config/index';
-import { getAuthSession } from '../../../../services/AuthService';
-
-import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
-import { pattern } from '../../../../common/constants';
-import { AutoComplete } from '../../../../components/UI/Form/AutoComplete/AutoComplete';
+import { FLOW_EDITOR_API } from 'config';
+import { getAuthSession } from 'services/AuthService';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { pattern } from 'common/constants';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 export interface AddVariablesPropTypes {
   setVariable: any;

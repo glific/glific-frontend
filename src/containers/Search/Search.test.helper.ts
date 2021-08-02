@@ -1,15 +1,10 @@
-import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
-import { FILTER_TAGS_NAME, GET_TAGS } from '../../graphql/queries/Tag';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { GET_USERS } from '../../graphql/queries/User';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
-import {
-  createSearchQuery,
-  countSearchesQuery,
-  getSearchesQuery,
-  getSearch,
-} from '../../mocks/Search';
-import { setVariables } from '../../common/constants';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { FILTER_TAGS_NAME, GET_TAGS } from 'graphql/queries/Tag';
+import { GET_LANGUAGES } from 'graphql/queries/List';
+import { GET_USERS } from 'graphql/queries/User';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
+import { createSearchQuery, countSearchesQuery, getSearchesQuery, getSearch } from 'mocks/Search';
+import { setVariables } from 'common/constants';
 
 export const LIST_ITEM_MOCKS = [
   createSearchQuery,

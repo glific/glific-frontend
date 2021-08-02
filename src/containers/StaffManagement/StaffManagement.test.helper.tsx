@@ -1,12 +1,7 @@
-import {
-  GET_USERS_QUERY,
-  FILTER_USERS,
-  USER_COUNT,
-  GET_USER_ROLES,
-} from '../../graphql/queries/User';
-import { UPDATE_USER } from '../../graphql/mutations/User';
-import { USER_LANGUAGES } from '../../graphql/queries/Organization';
-import { GET_COLLECTIONS } from '../../graphql/queries/Collection';
+import { GET_USERS_QUERY, FILTER_USERS, USER_COUNT, GET_USER_ROLES } from 'graphql/queries/User';
+import { UPDATE_USER } from 'graphql/mutations/User';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 
 const GET_ROLES_MOCK = {
   request: {

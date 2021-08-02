@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './InteractiveMessageList.module.css';
-import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
-import { ReactComponent as DownArrow } from '../../../assets/images/icons/DownArrow.svg';
-
-import { List } from '../../List/List';
+import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
-} from '../../../graphql/queries/InteractiveMessage';
-import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
-import { getInteractiveMessageBody } from '../../../common/utils';
-import { QUICK_REPLY } from '../../../common/constants';
+} from 'graphql/queries/InteractiveMessage';
+import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
+import { getInteractiveMessageBody } from 'common/utils';
+import { QUICK_REPLY } from 'common/constants';
+import styles from './InteractiveMessageList.module.css';
 
 export interface InteractiveMessageListProps {}
 

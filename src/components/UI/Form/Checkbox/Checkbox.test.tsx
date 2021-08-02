@@ -1,5 +1,6 @@
-import { Checkbox } from './Checkbox';
 import { render, screen, fireEvent } from '@testing-library/react';
+
+import { Checkbox } from './Checkbox';
 
 describe('<Checkbox />', () => {
   const props = {

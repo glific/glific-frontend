@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { FlowList } from './FlowList';
+import { MemoryRouter, Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 import { MockedProvider } from '@apollo/client/testing';
+
 import {
   getFlowCountQuery,
   filterFlowQuery,
@@ -9,11 +11,10 @@ import {
   getFlowQuery,
   importFlow,
   exportFlow,
-} from '../../../mocks/Flow';
-import testJSON from '../../../mocks/ImportFlow.json';
-import { MemoryRouter, Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { setUserSession } from '../../../services/AuthService';
+} from 'mocks/Flow';
+import testJSON from 'mocks/ImportFlow.json';
+import { setUserSession } from 'services/AuthService';
+import { FlowList } from './FlowList';
 import { Flow } from '../Flow';
 
 const mocks = [

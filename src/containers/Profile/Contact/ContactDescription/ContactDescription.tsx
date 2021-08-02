@@ -3,9 +3,9 @@ import { IconButton } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 
+import { Timer } from 'components/UI/Timer/Timer';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './ContactDescription.module.css';
-import { Timer } from '../../../../components/UI/Timer/Timer';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 
 export interface ContactDescriptionProps {
   fields: any;

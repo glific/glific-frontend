@@ -5,27 +5,27 @@ import { EditorState } from 'draft-js';
 import axios from 'axios';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
-import styles from './InteractiveMessage.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as InteractiveMessageIcon } from '../../assets/images/icons/InteractiveMessage/Dark.svg';
+import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
-} from '../../graphql/mutations/InteractiveMessage';
-import { USER_LANGUAGES } from '../../graphql/queries/Organization';
-import { GET_INTERACTIVE_MESSAGE } from '../../graphql/queries/InteractiveMessage';
-import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
+} from 'graphql/mutations/InteractiveMessage';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Input } from 'components/UI/Form/Input/Input';
+import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Simulator } from 'components/simulator/Simulator';
+import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import { validateMedia } from 'common/utils';
+import { WhatsAppToDraftEditor } from 'common/RichEditor';
+import { FLOW_EDITOR_API } from 'config';
+import { getAuthSession } from 'services/AuthService';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
-import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { validateMedia } from '../../common/utils';
-import { WhatsAppToDraftEditor } from '../../common/RichEditor';
-import { Simulator } from '../../components/simulator/Simulator';
-import { FLOW_EDITOR_API } from '../../config';
-import { getAuthSession } from '../../services/AuthService';
-import { LanguageBar } from '../../components/UI/LanguageBar/LanguageBar';
+import styles from './InteractiveMessage.module.css';
 
 export interface FlowProps {
   match: any;

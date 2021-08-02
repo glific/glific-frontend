@@ -1,13 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import InteractiveMessageList from './InteractiveMessageList';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import {
-  filterInteractiveQuery,
-  getInteractiveCountQuery,
-} from '../../../mocks/InteractiveMessage';
-import { setUserSession } from '../../../services/AuthService';
+import { filterInteractiveQuery, getInteractiveCountQuery } from 'mocks/InteractiveMessage';
+import { setUserSession } from 'services/AuthService';
+import InteractiveMessageList from './InteractiveMessageList';
 
 const mocks = [filterInteractiveQuery, filterInteractiveQuery, getInteractiveCountQuery];
 setUserSession(JSON.stringify({ roles: ['Admin'] }));

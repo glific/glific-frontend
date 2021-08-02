@@ -4,15 +4,15 @@ import {
   GET_CONTACT_DETAILS,
   GET_CONTACT_COUNT,
   CONTACT_SEARCH_QUERY,
-} from '../graphql/queries/Contact';
+} from 'graphql/queries/Contact';
+import { addFlowToContactQuery } from 'mocks/Flow';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
+import { UPDATE_CONTACT, UPDATE_CONTACT_TAGS } from 'graphql/mutations/Contact';
+import { UPDATE_CONTACT_COLLECTIONS } from 'graphql/mutations/Collection';
+import { CLEAR_MESSAGES } from 'graphql/mutations/Chat';
+import { setVariables } from 'common/constants';
 import { getCurrentUserQuery } from './User';
 import { filterTagsQuery } from './Tag';
-import { addFlowToContactQuery } from '../mocks/Flow';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../mocks/Organization';
-import { UPDATE_CONTACT, UPDATE_CONTACT_TAGS } from '../graphql/mutations/Contact';
-import { UPDATE_CONTACT_COLLECTIONS } from '../graphql/mutations/Collection';
-import { CLEAR_MESSAGES } from '../graphql/mutations/Chat';
-import { setVariables } from '../common/constants';
 
 export const contactCollectionsQuery = {
   request: {

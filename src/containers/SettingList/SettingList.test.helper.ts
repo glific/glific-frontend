@@ -1,13 +1,13 @@
-import { GET_FLOWS } from '../../graphql/queries/Flow';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
+import { GET_FLOWS } from 'graphql/queries/Flow';
+import { GET_LANGUAGES } from 'graphql/queries/List';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getProvidersQuery,
   getOrganisationSettings,
   getCredential,
-} from '../../mocks/Organization';
-import { FLOW_STATUS_PUBLISHED, setVariables } from '../../common/constants';
+} from 'mocks/Organization';
+import { FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 
 export const LIST_ITEM_MOCKS = [
   {

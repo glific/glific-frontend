@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
 import styles from './QuickReplyTemplate.module.css';
-import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
-import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface QuickReplyTemplateProps {
   index: number;

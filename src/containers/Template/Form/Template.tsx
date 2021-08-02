@@ -5,25 +5,21 @@ import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
 import { useTranslation } from 'react-i18next';
 
+import { FormLayout } from 'containers/Form/FormLayout';
+import { TemplateOptions } from 'containers/TemplateOptions/TemplateOptions';
+import { Input } from 'components/UI/Form/Input/Input';
+import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { GET_TEMPLATE, FILTER_TEMPLATES } from 'graphql/queries/Template';
+import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
+import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from 'common/RichEditor';
+import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
-import { Input } from '../../../components/UI/Form/Input/Input';
-import { EmojiInput } from '../../../components/UI/Form/EmojiInput/EmojiInput';
-import { FormLayout } from '../../Form/FormLayout';
-import { TemplateOptions } from '../../TemplateOptions/TemplateOptions';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../common/RichEditor';
-import { GET_TEMPLATE, FILTER_TEMPLATES } from '../../../graphql/queries/Template';
-import {
-  CREATE_TEMPLATE,
-  UPDATE_TEMPLATE,
-  DELETE_TEMPLATE,
-} from '../../../graphql/mutations/Template';
-import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from '../../../common/constants';
-import { AutoComplete } from '../../../components/UI/Form/AutoComplete/AutoComplete';
-import { CREATE_MEDIA_MESSAGE } from '../../../graphql/mutations/Chat';
-import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox';
-import { USER_LANGUAGES } from '../../../graphql/queries/Organization';
-import { validateMedia } from '../../../common/utils';
-import { LanguageBar } from '../../../components/UI/LanguageBar/LanguageBar';
 
 const regexForShortcode = /^[a-z0-9_]+$/g;
 

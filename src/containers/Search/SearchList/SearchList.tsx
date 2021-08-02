@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/Dark.svg';
+import { List } from 'containers/List/List';
+import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from 'graphql/queries/Search';
+import { DELETE_SEARCH } from 'graphql/mutations/Search';
 import styles from './SearchList.module.css';
-import { ReactComponent as SearchIcon } from '../../../assets/images/icons/Search/Dark.svg';
-import { List } from '../../List/List';
-import { SEARCH_LIST_QUERY, SEARCH_QUERY_COUNT } from '../../../graphql/queries/Search';
-import { DELETE_SEARCH } from '../../../graphql/mutations/Search';
 
 export interface SearchListProps {}
 

@@ -3,29 +3,23 @@ import { Redirect, Link } from 'react-router-dom';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
+import { ListCard } from 'containers/List/ListCard/ListCard';
+import { Button } from 'components/UI/Form/Button/Button';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Pager } from 'components/UI/Pager/Pager';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { SearchBar } from 'components/UI/SearchBar/SearchBar';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
+import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { ReactComponent as BackIcon } from 'assets/images/icons/Back.svg';
+import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { getUserRole, getUserRolePermissions } from 'context/role';
+import { setNotification, setErrorMessage } from 'common/notification';
+import { setColumnToBackendTerms } from 'common/constants';
+import { getUpdatedList, setListSession, getLastListSessionValues } from 'services/ListService';
 import styles from './List.module.css';
-import { Button } from '../../components/UI/Form/Button/Button';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { Pager } from '../../components/UI/Pager/Pager';
-import { DialogBox } from '../../components/UI/DialogBox/DialogBox';
-import { SearchBar } from '../../components/UI/SearchBar/SearchBar';
-import { Tooltip } from '../../components/UI/Tooltip/Tooltip';
-import { ListCard } from './ListCard/ListCard';
-import { ReactComponent as DeleteIcon } from '../../assets/images/icons/Delete/Red.svg';
-import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
-import { ReactComponent as CrossIcon } from '../../assets/images/icons/Cross.svg';
-import { ReactComponent as BackIcon } from '../../assets/images/icons/Back.svg';
-
-import { GET_CURRENT_USER } from '../../graphql/queries/User';
-import { setNotification, setErrorMessage } from '../../common/notification';
-import { getUserRole, getUserRolePermissions } from '../../context/role';
-import { setColumnToBackendTerms } from '../../common/constants';
-
-import {
-  getUpdatedList,
-  setListSession,
-  getLastListSessionValues,
-} from '../../services/ListService';
 
 export interface ListProps {
   columnNames?: Array<string>;
