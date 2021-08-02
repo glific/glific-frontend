@@ -155,7 +155,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     lastChangedAt: getDate(lastChangedAt, t('Nothing in draft')),
   });
 
-  const columnNames = ['NAME', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
+  const columnNames = ['TITLE', 'LAST PUBLISHED', 'LAST SAVED IN DRAFT', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this flow.");
 
   const columnAttributes = {
@@ -181,7 +181,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         {...queries}
         {...columnAttributes}
         searchParameter="nameOrKeyword"
-        removeSortBy={[t('Last Published'), t('Last Saved in Draft')]}
+        removeSortBy={[t('LAST PUBLISHED'), t('LAST SAVED IN DRAFT')]}
         additionalAction={additionalAction}
         button={{ show: true, label: t('+ CREATE FLOW') }}
         secondaryButton={importButton}
