@@ -70,6 +70,7 @@ export const SEARCH_QUERY = gql`
           }
         }
         interactiveContent
+        flowLabel
       }
     }
   }
