@@ -258,6 +258,7 @@ export const searchContactCollection = [
               type: 'TEXT',
               media: null,
               contextMessage: null,
+              flowLabel: null,
             },
           ],
           tags: [
