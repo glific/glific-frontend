@@ -1,5 +1,5 @@
-import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../graphql/queries/Simulator';
-import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../graphql/subscriptions/PeriodicInfo';
+import { GET_SIMULATOR, RELEASE_SIMULATOR } from 'graphql/queries/Simulator';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
 
 export const simulatorReleaseSubscription = {
   request: {

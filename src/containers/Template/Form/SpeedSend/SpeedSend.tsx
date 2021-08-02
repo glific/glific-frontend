@@ -1,8 +1,8 @@
 import React from 'react';
 
-import styles from './SpeedSend.module.css';
-import { ReactComponent as SpeedSendIcon } from '../../../../assets/images/icons/SpeedSend/Selected.svg';
+import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/Selected.svg';
 import Template from '../Template';
+import styles from './SpeedSend.module.css';
 
 export interface SpeedSendProps {
   match: any;
@@ -17,6 +17,7 @@ export const SpeedSend: React.SFC<SpeedSendProps> = ({ match }) => (
     redirectionLink="speed-send"
     icon={speedSendIcon}
     customStyle={styles.AttachmentFields}
+    languageStyle="bar"
   />
 );
 

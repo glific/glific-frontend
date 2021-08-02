@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
 import styles from './ListReplyTemplate.module.css';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
-import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
-import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface ListReplyTemplateProps {
   index: number;

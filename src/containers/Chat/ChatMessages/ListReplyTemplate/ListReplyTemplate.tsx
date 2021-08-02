@@ -3,6 +3,7 @@ import { Button, Radio } from '@material-ui/core';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import MenuIcon from '@material-ui/icons/Menu';
 import ClearIcon from '@material-ui/icons/Clear';
+import { v4 as uuidv4 } from 'uuid';
 
 import styles from './ListReplyTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
@@ -135,31 +136,43 @@ export const ListReplyTemplateDrawer: React.SFC<ListTemplate> = (props) => {
 
   const list = items.map((item: any) => {
     const { options, title: sectionTitle } = item;
+
+    if (!sectionTitle) {
+      return null;
+    }
+
     return (
-      <div key={sectionTitle}>
+      <div key={uuidv4()}>
         <div className={styles.SectionTitle}>{sectionTitle}</div>
         <div className={styles.Options}>
-          {options.map((option: any) => (
-            <Button
-              key={option.title}
-              className={styles.ListItem}
-              onClick={() => setCheckedItem(option.title)}
-            >
-              <div>
-                <div>{option.title}</div>
-                <div>{option.description}</div>
-              </div>
-              <div>
-                <Radio
-                  value={option.title}
-                  name="radio-list-item"
-                  size="small"
-                  checked={option.title === checkedItem}
-                  color="primary"
-                />
-              </div>
-            </Button>
-          ))}
+          {options
+            .map((option: any) => {
+              if (option.title) {
+                return (
+                  <Button
+                    key={uuidv4()}
+                    className={styles.ListItem}
+                    onClick={() => setCheckedItem(option.title)}
+                  >
+                    <div>
+                      <div>{option.title}</div>
+                      <div>{option.description}</div>
+                    </div>
+                    <div>
+                      <Radio
+                        value={option.title}
+                        name="radio-list-item"
+                        size="small"
+                        checked={option.title === checkedItem}
+                        color="primary"
+                      />
+                    </div>
+                  </Button>
+                );
+              }
+              return null;
+            })
+            .filter((a: any) => a)}
         </div>
       </div>
     );

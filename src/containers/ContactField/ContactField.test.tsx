@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { setUserSession } from 'services/AuthService';
 import { ContactField } from './ContactField';
-import { setUserSession } from '../../services/AuthService';
 
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 

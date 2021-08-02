@@ -1,9 +1,10 @@
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { getWebhookLogsQuery, getWebhookLogsCountQuery } from 'mocks/WebhookLogs';
+import { setUserSession } from 'services/AuthService';
 import { WebhookLogsList } from './WebhookLogsList';
-import { getWebhookLogsQuery, getWebhookLogsCountQuery } from '../../../mocks/WebhookLogs';
-import { setUserSession } from '../../../services/AuthService';
 
 setUserSession(JSON.stringify({ roles: ['Admin'] }));
 

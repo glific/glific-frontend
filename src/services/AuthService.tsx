@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from '../config/index';
-import setLogs from '../config/logs';
+import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from 'config';
+import setLogs from 'config/logs';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {

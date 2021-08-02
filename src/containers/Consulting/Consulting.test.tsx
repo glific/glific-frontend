@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen, waitFor, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { getConsultingHour, getOrganizationList } from '../../mocks/Consulting';
-import { setUserSession } from '../../services/AuthService';
+
+import { getConsultingHour, getOrganizationList } from 'mocks/Consulting';
+import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
 
 afterEach(cleanup);

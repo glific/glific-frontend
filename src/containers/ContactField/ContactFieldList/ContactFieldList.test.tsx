@@ -1,10 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import ContactFieldList from './ContactFieldList';
-import { setUserSession } from '../../../services/AuthService';
-import { mocks, contactFieldErrorMock } from '../../../mocks/ContactFields';
 import { BrowserRouter as Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+
+import { setUserSession } from 'services/AuthService';
+import { mocks, contactFieldErrorMock } from 'mocks/ContactFields';
+import ContactFieldList from './ContactFieldList';
 
 const props = {
   match: { params: {} },

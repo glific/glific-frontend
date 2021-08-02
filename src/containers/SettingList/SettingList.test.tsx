@@ -1,8 +1,9 @@
 import { render, waitFor } from '@testing-library/react';
-import { SettingList } from './SettingList';
 import { MockedProvider } from '@apollo/client/testing';
-import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
 import { BrowserRouter as Router } from 'react-router-dom';
+
+import { SettingList } from './SettingList';
+import { LIST_ITEM_MOCKS } from './SettingList.test.helper';
 
 const mocks = LIST_ITEM_MOCKS;
 

@@ -2,15 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
+import { getCollectionQuery, getCollectionsQuery, getCollectionUsersQuery } from 'mocks/Collection';
+import { getUsersQuery } from 'mocks/User';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
+import * as FormLayout from 'containers/Form/FormLayout';
 import { Collection } from './Collection';
-import {
-  getCollectionQuery,
-  getCollectionsQuery,
-  getCollectionUsersQuery,
-} from '../../mocks/Collection';
-import { getUsersQuery } from '../../mocks/User';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
-import * as FormLayout from '../Form/FormLayout';
 
 const mocks = [
   getUsersQuery,

@@ -5,17 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { Input } from 'components/UI/Form/Input/Input';
+import { MessageType } from 'containers/Chat/ChatConversations/MessageType/MessageType';
+import { MEDIA_MESSAGE_TYPES } from 'common/constants';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { validateMedia } from 'common/utils';
+import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
+import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/Red.svg';
 import styles from './AddAttachment.module.css';
-import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
-import { Dropdown } from '../../../../components/UI/Form/Dropdown/Dropdown';
-import { Input } from '../../../../components/UI/Form/Input/Input';
-import { MessageType } from '../../ChatConversations/MessageType/MessageType';
-import { MEDIA_MESSAGE_TYPES } from '../../../../common/constants';
-import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Cross.svg';
-import { validateMedia } from '../../../../common/utils';
-import { UPLOAD_MEDIA } from '../../../../graphql/mutations/Chat';
-import { ReactComponent as UploadIcon } from '../../../../assets/images/icons/Upload.svg';
-import { ReactComponent as AlertIcon } from '../../../../assets/images/icons/Alert/Red.svg';
 
 const options = MEDIA_MESSAGE_TYPES.map((option: string) => ({
   id: option,

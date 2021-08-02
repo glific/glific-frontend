@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { TextField } from '@material-ui/core';
-import { ReactComponent as Icon } from '../../../../assets/images/icons/GreenTick.svg';
 
+import { ReactComponent as Icon } from 'assets/images/icons/GreenTick.svg';
 import styles from './InlineInput.module.css';
 
 export interface InlineInputProps {

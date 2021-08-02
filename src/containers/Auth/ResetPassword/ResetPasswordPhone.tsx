@@ -3,9 +3,9 @@ import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from 'services/AuthService';
 import { Auth } from '../Auth';
-import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { sendOTP } from '../../../services/AuthService';
 
 export interface ResetPasswordPhoneProps {}
 

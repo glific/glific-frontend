@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useApolloClient, useMutation } from '@apollo/client';
 
-import styles from './ChatConversation.module.css';
-import { DATE_FORMAT } from '../../../../common/constants';
-import { WhatsAppToJsx } from '../../../../common/RichEditor';
-import { Timer } from '../../../../components/UI/Timer/Timer';
-
-import { MARK_AS_READ, CONTACT_FRAGMENT } from '../../../../graphql/mutations/Chat';
-import { SEARCH_OFFSET } from '../../../../graphql/queries/Search';
+import { DATE_FORMAT } from 'common/constants';
+import { WhatsAppToJsx } from 'common/RichEditor';
+import { Timer } from 'components/UI/Timer/Timer';
+import { MARK_AS_READ, CONTACT_FRAGMENT } from 'graphql/mutations/Chat';
+import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import { MessageType } from '../MessageType/MessageType';
+import styles from './ChatConversation.module.css';
 
 export interface ChatConversationProps {
   contactId: number;

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './InteractiveMessageList.module.css';
-import { ReactComponent as InteractiveMessageIcon } from '../../../assets/images/icons/InteractiveMessage/Dark.svg';
-
-import { List } from '../../List/List';
+import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
+import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
+import { List } from 'containers/List/List';
 import {
   FILTER_INTERACTIVE_MESSAGES,
   GET_INTERACTIVE_MESSAGES_COUNT,
-} from '../../../graphql/queries/InteractiveMessage';
-import { DELETE_INTERACTIVE } from '../../../graphql/mutations/InteractiveMessage';
-import { getInteractiveMessageBody } from '../../../common/utils';
+} from 'graphql/queries/InteractiveMessage';
+import { DELETE_INTERACTIVE } from 'graphql/mutations/InteractiveMessage';
+import { getInteractiveMessageBody } from 'common/utils';
+import { QUICK_REPLY } from 'common/constants';
+import styles from './InteractiveMessageList.module.css';
 
 export interface InteractiveMessageListProps {}
 
@@ -31,6 +32,25 @@ const getBody = (text: string) => {
   return <div className={styles.TableText}>{message}</div>;
 };
 
+const getTranslations = (type: string, language: any, data: string) => {
+  const dataObj: any = JSON.parse(data);
+  if (Object.prototype.hasOwnProperty.call(dataObj, language.id)) {
+    delete dataObj[language.id];
+  }
+
+  const result = Object.keys(dataObj).reduce((acc: any, langId: string) => {
+    const { content, body } = dataObj[langId];
+    if (type === QUICK_REPLY) {
+      acc[langId] = { body: content?.caption || '' };
+    } else {
+      acc[langId] = { body };
+    }
+    return acc;
+  }, {});
+
+  return JSON.stringify(result);
+};
+
 const columnStyles = [styles.Label, styles.Message, styles.Type, styles.Actions];
 const interactiveMsgIcon = <InteractiveMessageIcon className={styles.FlowIcon} />;
 
@@ -42,11 +62,15 @@ const queries = {
 
 export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = () => {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState('');
 
-  const getColumns = ({ label, interactiveContent, type }: any) => ({
+  const getColumns = ({ id, label, interactiveContent, type, language, translations }: any) => ({
+    id,
     label: getLabel(label),
     message: getBody(interactiveContent),
     type: getType(type),
+    translations: getTranslations(type, language, translations),
   });
 
   const columnNames = ['LABEL', 'MESSAGE', 'TYPE', 'ACTIONS'];
@@ -57,6 +81,24 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
     columns: getColumns,
     columnStyles,
   };
+
+  const setDialog = (id: string) => {
+    if (selectedId !== id) {
+      setSelectedId(id);
+      setOpen(true);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const additionalAction = [
+    {
+      label: t('Show all languages'),
+      icon: <DownArrow />,
+      parameter: 'id',
+      dialog: setDialog,
+    },
+  ];
 
   return (
     <>
@@ -72,6 +114,9 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
         removeSortBy={['TYPE', 'MESSAGE']}
         {...columnAttributes}
         button={{ show: true, label: t('+ ADD NEW') }}
+        additionalAction={additionalAction}
+        collapseOpen={open}
+        collapseRow={selectedId}
       />
     </>
   );

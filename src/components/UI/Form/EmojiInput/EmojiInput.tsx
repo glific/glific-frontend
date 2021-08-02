@@ -7,9 +7,9 @@ import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { useTranslation } from 'react-i18next';
 
+import { convertToWhatsApp } from 'common/RichEditor';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
-import { convertToWhatsApp } from '../../../../common/RichEditor';
 
 export interface EmojiInputProps {
   field: any;

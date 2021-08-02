@@ -7,27 +7,27 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import styles from './ChatMessage.module.css';
-import { ReactComponent as TagIcon } from '../../../../assets/images/icons/Tags/Filled.svg';
-import { ReactComponent as WarningIcon } from '../../../../assets/images/icons/Warning.svg';
-import { ReactComponent as MessageIcon } from '../../../../assets/images/icons/Dropdown.svg';
-import { ReactComponent as CloseIcon } from '../../../../assets/images/icons/Close.svg';
-import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
-import { TemplateButtons } from '../TemplateButtons/TemplateButtons';
+import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Filled.svg';
+import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
+import { ReactComponent as MessageIcon } from 'assets/images/icons/Dropdown.svg';
+import { ReactComponent as CloseIcon } from 'assets/images/icons/Close.svg';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
-} from '../../../../common/constants';
-import { UPDATE_MESSAGE_TAGS } from '../../../../graphql/mutations/Chat';
-import { setNotification } from '../../../../common/notification';
-import { WhatsAppToJsx, WhatsAppTemplateButton } from '../../../../common/RichEditor';
+} from 'common/constants';
+import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
+import { setNotification } from 'common/notification';
+import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { parseTextMethod } from 'common/utils';
+import { AddToMessageTemplate } from '../AddToMessageTemplate/AddToMessageTemplate';
+import { TemplateButtons } from '../TemplateButtons/TemplateButtons';
 import { ChatMessageType } from './ChatMessageType/ChatMessageType';
-import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
-import { parseTextMethod } from '../../../../common/utils';
 import { ListReplyTemplate, ChatTemplate } from '../ListReplyTemplate/ListReplyTemplate';
 import { QuickReplyTemplate } from '../QuickReplyTemplate/QuickReplyTemplate';
+import styles from './ChatMessage.module.css';
 
 export interface ChatMessageProps {
   id: number;

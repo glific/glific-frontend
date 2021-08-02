@@ -1,11 +1,11 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, fireEvent, cleanup, screen } from '@testing-library/react';
-import ChatConversations from './ChatConversations';
-
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from '../../../common/constants';
 import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
+import ChatConversations from './ChatConversations';
 import { ChatConversationMocks } from './ChatConversations.test.helper';
 
 const cache = new InMemoryCache({ addTypename: false });

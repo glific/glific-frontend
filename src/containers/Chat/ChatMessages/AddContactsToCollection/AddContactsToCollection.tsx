@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { setNotification } from '../../../../common/notification';
-import { setVariables } from '../../../../common/constants';
-import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from '../../../../graphql/queries/Contact';
-import { UPDATE_COLLECTION_CONTACTS } from '../../../../graphql/mutations/Collection';
-import { SearchDialogBox } from '../../../../components/UI/SearchDialogBox/SearchDialogBox';
+import { setNotification } from 'common/notification';
+import { setVariables } from 'common/constants';
+import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
+import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
+import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
 
 interface AddContactsToCollectionProps {
   collectionId: string | undefined;

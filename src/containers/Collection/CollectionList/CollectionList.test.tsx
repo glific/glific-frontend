@@ -1,17 +1,18 @@
 import { render, waitFor, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { CollectionList } from './CollectionList';
+import { MemoryRouter } from 'react-router';
+
 import {
   countCollectionQuery,
   filterCollectionQuery,
   getCollectionContactsQuery,
-} from '../../../mocks/Collection';
-import { MemoryRouter } from 'react-router';
-import { getContactsQuery } from '../../../mocks/Contact';
-import { setUserSession } from '../../../services/AuthService';
-import { getCurrentUserQuery } from '../../../mocks/User';
-import * as SearchDialogBox from '../../../components/UI/SearchDialogBox/SearchDialogBox';
-import { getPublishedFlowQuery } from '../../../mocks/Flow';
+} from 'mocks/Collection';
+import { getContactsQuery } from 'mocks/Contact';
+import { getCurrentUserQuery } from 'mocks/User';
+import { getPublishedFlowQuery } from 'mocks/Flow';
+import { setUserSession } from 'services/AuthService';
+import * as SearchDialogBox from 'components/UI/SearchDialogBox/SearchDialogBox';
+import { CollectionList } from './CollectionList';
 
 const mocks = [
   countCollectionQuery,

@@ -1,4 +1,4 @@
-import { GET_COLLECTION_CONTACTS } from '../graphql/queries/Contact';
+import { GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import {
   FILTER_COLLECTIONS,
   GET_COLLECTION,
@@ -6,8 +6,8 @@ import {
   GET_COLLECTIONS_COUNT,
   GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
-} from '../graphql/queries/Collection';
-import { UPDATE_COLLECTION_CONTACTS } from '../graphql/mutations/Collection';
+} from 'graphql/queries/Collection';
+import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 
 export const getCollectionQuery = {
   request: {

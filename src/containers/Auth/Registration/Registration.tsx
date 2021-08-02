@@ -3,12 +3,12 @@ import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import styles from './Registration.module.css';
-import { Input } from '../../../components/UI/Form/Input/Input';
+import { Input } from 'components/UI/Form/Input/Input';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { sendOTP } from 'services/AuthService';
+import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
 import { Auth } from '../Auth';
-import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { sendOTP } from '../../../services/AuthService';
-import { ReactComponent as InfoIcon } from '../../../assets/images/icons/Info.svg';
+import styles from './Registration.module.css';
 
 export interface RegistrationProps {}
 

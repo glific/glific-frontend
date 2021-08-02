@@ -5,26 +5,27 @@ import { EditorState } from 'draft-js';
 import axios from 'axios';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
-import styles from './InteractiveMessage.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as InteractiveMessageIcon } from '../../assets/images/icons/InteractiveMessage/Dark.svg';
+import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
-} from '../../graphql/mutations/InteractiveMessage';
-import { USER_LANGUAGES } from '../../graphql/queries/Organization';
-import { GET_INTERACTIVE_MESSAGE } from '../../graphql/queries/InteractiveMessage';
-import { EmojiInput } from '../../components/UI/Form/EmojiInput/EmojiInput';
+} from 'graphql/mutations/InteractiveMessage';
+import { USER_LANGUAGES } from 'graphql/queries/Organization';
+import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Input } from 'components/UI/Form/Input/Input';
+import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Simulator } from 'components/simulator/Simulator';
+import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
+import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
+import { validateMedia } from 'common/utils';
+import { WhatsAppToDraftEditor } from 'common/RichEditor';
+import { FLOW_EDITOR_API } from 'config';
+import { getAuthSession } from 'services/AuthService';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
-import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from '../../common/constants';
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { validateMedia } from '../../common/utils';
-import { WhatsAppToDraftEditor } from '../../common/RichEditor';
-import { Simulator } from '../../components/simulator/Simulator';
-import { FLOW_EDITOR_API } from '../../config';
-import { getAuthSession } from '../../services/AuthService';
+import styles from './InteractiveMessage.module.css';
 
 export interface FlowProps {
   match: any;
@@ -227,7 +228,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
-    label: labelVal,
   }: any) => {
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue);
@@ -237,7 +237,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
-    setTitle(labelVal || data.title);
+    setTitle(data.title);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -408,10 +408,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   const handleLanguageChange = (value: any) => {
-    if (value && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
-      updateTranslation(value);
+    const selected = languageOptions.find(({ label }: any) => label === value);
+    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      updateTranslation(selected);
     }
-    if (value) setLanguage(value);
+    if (selected) setLanguage(selected);
   };
 
   const displayWarning = () => {
@@ -443,18 +444,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   ).map((option: string) => ({ id: option, label: option }));
 
   let timer: any = null;
+  const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
+
   const fields = [
     {
-      component: AutoComplete,
-      name: 'language',
-      options: languageOptions,
-      optionLabel: 'label',
-      multiple: false,
-      textFieldProps: {
-        variant: 'outlined',
-        label: t('Language*'),
-      },
-      onChange: handleLanguageChange,
+      component: LanguageBar,
+      options: langOptions || [],
+      selectedLangauge: language && language.label,
+      onLanguageChange: handleLanguageChange,
     },
     {
       component: Input,
@@ -629,6 +626,19 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       payloadData.label = titleVal;
     }
 
+    // While editing preserve original langId and content
+    if (template) {
+      /**
+       * Restoring template if language is different
+       */
+      const dataToRestore = template.interactiveTemplate.interactiveTemplate;
+
+      if (selectedLanguage.id !== dataToRestore?.language.id) {
+        payloadData.languageId = dataToRestore?.language.id;
+        payloadData.interactiveContent = dataToRestore?.interactiveContent;
+      }
+    }
+
     payloadData.translations = JSON.stringify(translationsCopy);
 
     return payloadData;
@@ -675,7 +685,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
   const validation: any = {
-    language: Yup.object().nullable().required('Language is required'),
     title: Yup.string().required('Title is required'),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
@@ -787,14 +796,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
       />
-      <Simulator
-        setSimulatorId={0}
-        showSimulator
-        isPreviewMessage
-        message={{}}
-        interactiveMessage={previewData}
-        simulatorIcon={false}
-      />
+      <div className={styles.Simulator}>
+        <Simulator
+          setSimulatorId={0}
+          showSimulator
+          isPreviewMessage
+          message={{}}
+          interactiveMessage={previewData}
+          simulatorIcon={false}
+        />
+      </div>
     </>
   );
 };

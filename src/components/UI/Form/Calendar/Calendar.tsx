@@ -4,6 +4,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import 'date-fns';
 import { getIn } from 'formik';
+
 import styles from './Calendar.module.css';
 
 export interface CalendarProps {

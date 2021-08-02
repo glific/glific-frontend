@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CollectionInformation } from '../../CollectionInformation/CollectionInformation';
+import { CollectionInformation } from 'containers/Collection/CollectionInformation/CollectionInformation';
 import styles from './CollectionDescription.module.css';
 
 export interface CollectionDescriptionProps {

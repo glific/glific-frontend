@@ -1,9 +1,9 @@
 import React from 'react';
 import { Checkbox as CheckboxElement, FormControlLabel } from '@material-ui/core';
-import { ReactComponent as InfoIcon } from '../../../../assets/images/icons/Info.svg';
+import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
 
+import Tooltip from 'components/UI/Tooltip/Tooltip';
 import styles from './Checkbox.module.css';
-import Tooltip from '../../Tooltip/Tooltip';
 
 export interface CheckboxProps {
   field: any;

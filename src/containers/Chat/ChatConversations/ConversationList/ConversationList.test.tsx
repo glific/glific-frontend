@@ -1,11 +1,15 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-
-import ConversationList from './ConversationList';
-import { contact, collection, collectionWithLoadMore } from '../../ChatMessages/ChatMessages.test';
-import { searchContactCollection } from '../../../../mocks/Search';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { searchContactCollection } from 'mocks/Search';
+import ConversationList from './ConversationList';
+import {
+  contact,
+  collection,
+  collectionWithLoadMore,
+} from 'containers/Chat/ChatMessages/ChatMessages.test';
 
 const contactCache = new InMemoryCache({ addTypename: false });
 contactCache.writeQuery(contact);

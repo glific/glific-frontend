@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FormControl } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import styles from './SearchDialogBox.module.css';
-import { DialogBox } from '../DialogBox/DialogBox';
-import { AutoComplete } from '../Form/AutoComplete/AutoComplete';
 
 export interface SearchDialogBoxProps {
   title: string;

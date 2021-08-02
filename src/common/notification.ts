@@ -1,4 +1,4 @@
-import { NOTIFICATION, ERROR_MESSAGE } from '../graphql/queries/Notification';
+import { NOTIFICATION, ERROR_MESSAGE } from 'graphql/queries/Notification';
 
 export const setNotification = (
   client: any,

@@ -4,9 +4,9 @@ import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router';
 
+import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
+import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
-import { getCurrentUserQuery, updateUserQuery } from '../../mocks/User';
-import { getOrganizationLanguagesQuery } from '../../mocks/Organization';
 
 const mocks = [getCurrentUserQuery, ...updateUserQuery, getOrganizationLanguagesQuery];
 
