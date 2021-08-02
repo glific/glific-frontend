@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { termsOfUse } from 'containers/Organization/Organization';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import styles from './Auth.module.css';
@@ -180,7 +181,10 @@ export const Auth: React.SFC<AuthProps> = (props) => {
         <div>
           <img src={GlificLogo} className={styles.GlificLogo} alt="Glific" />
         </div>
-        <div className={boxClass.join(' ')}>{formElements}</div>
+        <div className={boxClass.join(' ')}>
+          {formElements}
+          {mode === 'registration' && termsOfUse}
+        </div>
         {alternateText ? (
           <>
             <div className={styles.Or}>
