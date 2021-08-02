@@ -5,11 +5,11 @@ import Typography from '@material-ui/core/Typography/Typography';
 import { Card, CardContent, CardActions, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { GET_PROVIDERS } from 'graphql/queries/Organization';
+import { ReactComponent as Settingicon } from 'assets/images/icons/Settings/Settings.svg';
+import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import styles from './SettingList.module.css';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
-import { GET_PROVIDERS } from '../../graphql/queries/Organization';
-import { ReactComponent as Settingicon } from '../../assets/images/icons/Settings/Settings.svg';
-import { ReactComponent as EditIcon } from '../../assets/images/icons/Edit.svg';
 
 export const SettingList: React.SFC = () => {
   const { t } = useTranslation();

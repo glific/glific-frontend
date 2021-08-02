@@ -1,10 +1,11 @@
-import { GET_TAG, GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from '../../graphql/queries/Tag';
-import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from '../../graphql/mutations/Tag';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { getTagsQuery } from '../../mocks/Tag';
-import { getOrganizationLanguagesQuery, getOrganizationQuery } from '../../mocks/Organization';
-import { setVariables } from '../../common/constants';
 import * as Yup from 'yup';
+
+import { GET_TAG, GET_TAGS, GET_TAGS_COUNT, FILTER_TAGS } from 'graphql/queries/Tag';
+import { CREATE_TAG, DELETE_TAG, UPDATE_TAG } from 'graphql/mutations/Tag';
+import { Input } from 'components/UI/Form/Input/Input';
+import { getTagsQuery } from 'mocks/Tag';
+import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
+import { setVariables } from 'common/constants';
 
 const FormSchema = Yup.object();
 

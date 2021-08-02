@@ -5,21 +5,21 @@ import * as Yup from 'yup';
 import { useLazyQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { USER_SESSION } from '../../../config/index';
-import { SessionContext } from '../../../context/session';
-import { Auth } from '../Auth';
-import { PhoneInput } from '../../../components/UI/Form/PhoneInput/PhoneInput';
-import { Input } from '../../../components/UI/Form/Input/Input';
+import { USER_SESSION } from 'config';
+import { SessionContext } from 'context/session';
+import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
+import { Input } from 'components/UI/Form/Input/Input';
 import {
   setAuthSession,
   clearAuthSession,
   getAuthSession,
   setUserSession,
   clearUserSession,
-} from '../../../services/AuthService';
-import { GET_CURRENT_USER } from '../../../graphql/queries/User';
-import { setUserRolePermissions } from '../../../context/role';
-import setLogs from '../../../config/logs';
+} from 'services/AuthService';
+import { GET_CURRENT_USER } from 'graphql/queries/User';
+import { setUserRolePermissions } from 'context/role';
+import setLogs from 'config/logs';
+import { Auth } from '../Auth';
 
 const notApprovedMsg = 'Your account is not approved yet. Please contact your organisation admin.';
 

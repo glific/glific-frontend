@@ -1,8 +1,8 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
+import { LIST_ITEM_MOCKS } from 'containers/Form/FormLayout.test.helper';
 import { Tag } from './Tag';
-import { LIST_ITEM_MOCKS } from '../Form/FormLayout.test.helper';
 
 jest.mock('axios');
 const mocks = LIST_ITEM_MOCKS;

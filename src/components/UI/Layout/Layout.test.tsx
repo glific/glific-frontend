@@ -1,9 +1,9 @@
 import { render, waitFor } from '@testing-library/react';
-
-import { Layout } from './Layout';
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
-import { walletBalanceQuery, walletBalanceSubscription } from '../../../mocks/Organization';
+
+import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
+import { Layout } from './Layout';
 
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
 

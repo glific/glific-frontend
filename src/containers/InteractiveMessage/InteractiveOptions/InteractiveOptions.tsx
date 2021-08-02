@@ -9,12 +9,11 @@ import {
 } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
-import styles from './InteractiveOptions.module.css';
-import { ReactComponent as ApprovedIcon } from '../../../assets/images/icons/Template/Approved.svg';
-import { QUICK_REPLY, LIST } from '../../../common/constants';
-
+import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
+import { QUICK_REPLY, LIST } from 'common/constants';
 import { QuickReplyTemplate } from './QuickReplyTemplate';
 import { ListReplyTemplate } from './ListReplyTemplate';
+import styles from './InteractiveOptions.module.css';
 
 export interface InteractiveOptionsProps {
   isAddButtonChecked: boolean;
@@ -59,11 +58,10 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
 
   const getButtons = (index: number, arrayHelpers: any) => {
     let template: any = null;
-    const uniqueKey = `button_${index}_${new Date().getTime()}`;
     if (templateType === LIST) {
       template = (
         <ListReplyTemplate
-          key={uniqueKey}
+          key={index}
           index={index}
           inputFields={inputFields}
           form={form}
@@ -160,12 +158,14 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       )}
 
       {templateType && (
-        <FieldArray
-          name="templateButtons"
-          render={(arrayHelpers) =>
-            values.templateButtons.map((row: any, index: any) => getButtons(index, arrayHelpers))
-          }
-        />
+        <div className={templateType === QUICK_REPLY ? styles.TemplateFields : ''}>
+          <FieldArray
+            name="templateButtons"
+            render={(arrayHelpers) =>
+              values.templateButtons.map((row: any, index: any) => getButtons(index, arrayHelpers))
+            }
+          />
+        </div>
       )}
     </div>
   );

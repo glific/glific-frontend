@@ -1,4 +1,4 @@
-import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from '../graphql/queries/Trigger';
+import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT, GET_TRIGGER } from 'graphql/queries/Trigger';
 
 export const triggerListQuery = {
   request: {

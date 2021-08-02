@@ -4,16 +4,16 @@ import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import { useApolloClient, useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './ChatConversations.module.css';
-import SearchBar from '../../../components/UI/SearchBar/SearchBar';
+import SearchBar from 'components/UI/SearchBar/SearchBar';
+import SavedSearchToolbar from 'containers/SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
+import { Button } from 'components/UI/Form/Button/Button';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+import { Search } from 'containers/Search/Search';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
+import { getUserRolePermissions } from 'context/role';
+import { SEARCH_OFFSET } from 'graphql/queries/Search';
 import ConversationList from './ConversationList/ConversationList';
-import SavedSearchToolbar from '../../SavedSearch/SavedSearchToolbar/SavedSearchToolbar';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { DialogBox } from '../../../components/UI/DialogBox/DialogBox';
-import { Search } from '../../Search/Search';
-import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
-import { getUserRolePermissions } from '../../../context/role';
-import { SEARCH_OFFSET } from '../../../graphql/queries/Search';
+import styles from './ChatConversations.module.css';
 
 export interface ChatConversationsProps {
   contactId?: number | string;

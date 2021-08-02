@@ -1,8 +1,9 @@
-import AddToMessageTemplate from './AddToMessageTemplate';
 import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { SAVE_MESSAGE_TEMPLATE_MUTATION } from '../../../../graphql/mutations/MessageTemplate';
-import { TEMPLATE_MOCKS } from '../../../../mocks/Template';
+
+import { SAVE_MESSAGE_TEMPLATE_MUTATION } from 'graphql/mutations/MessageTemplate';
+import { TEMPLATE_MOCKS } from 'mocks/Template';
+import AddToMessageTemplate from './AddToMessageTemplate';
 
 let resultReturned = false;
 

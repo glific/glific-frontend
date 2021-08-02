@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-
 import { useLocation } from 'react-router-dom';
 
+import { FormLayout } from 'containers/Form/FormLayout';
+import { Input } from 'components/UI/Form/Input/Input';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
+import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Selected.svg';
+import { CREATE_FLOW, UPDATE_FLOW, DELETE_FLOW, CREATE_FLOW_COPY } from 'graphql/mutations/Flow';
+import { GET_FLOW } from 'graphql/queries/Flow';
+import { setErrorMessage } from 'common/notification';
 import styles from './Flow.module.css';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import { ReactComponent as FlowIcon } from '../../assets/images/icons/Flow/Selected.svg';
-import {
-  CREATE_FLOW,
-  UPDATE_FLOW,
-  DELETE_FLOW,
-  CREATE_FLOW_COPY,
-} from '../../graphql/mutations/Flow';
-import { Checkbox } from '../../components/UI/Form/Checkbox/Checkbox';
-import { GET_FLOW } from '../../graphql/queries/Flow';
-import { setErrorMessage } from '../../common/notification';
 
 export interface FlowProps {
   match: any;

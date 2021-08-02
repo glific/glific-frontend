@@ -2,7 +2,7 @@ import { render, waitFor, within, fireEvent, cleanup } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 
 import { HSM } from './HSM';
-import { TEMPLATE_MOCKS } from '../../Template.test.helper';
+import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;

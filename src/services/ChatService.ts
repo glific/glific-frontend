@@ -1,6 +1,6 @@
 // This service includes all the actions related to conversations storing
 
-import { SEARCH_QUERY } from '../graphql/queries/Search';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 
 // read the conversation from cache
 export const getCachedConverations = (client: any, queryVariables: any) => {

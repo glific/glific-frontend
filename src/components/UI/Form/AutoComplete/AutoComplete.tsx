@@ -4,8 +4,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Chip, FormHelperText, FormControl, Checkbox } from '@material-ui/core';
 import { getIn } from 'formik';
 
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Close.svg';
 import styles from './AutoComplete.module.css';
-import { ReactComponent as DeleteIcon } from '../../../../assets/images/icons/Close.svg';
 
 export interface AutocompleteProps {
   options: any;

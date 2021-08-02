@@ -1,10 +1,9 @@
 import { render, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
+import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
-
-import * as FormLayout from '../../Form/FormLayout';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;

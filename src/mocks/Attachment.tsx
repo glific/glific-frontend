@@ -1,5 +1,5 @@
-import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA, UPLOAD_MEDIA_BLOB } from '../graphql/mutations/Chat';
-import GET_ATTACHMENT_PERMISSION from '../graphql/queries/Settings';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA, UPLOAD_MEDIA_BLOB } from 'graphql/mutations/Chat';
+import GET_ATTACHMENT_PERMISSION from 'graphql/queries/Settings';
 
 export const getAttachmentPermissionMock = {
   request: {

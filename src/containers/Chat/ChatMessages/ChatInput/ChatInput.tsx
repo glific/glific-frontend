@@ -6,26 +6,25 @@ import clsx from 'clsx';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 
-import { ReactComponent as AttachmentIcon } from '../../../../assets/images/icons/Attachment/Unselected.svg';
-import { ReactComponent as AttachmentIconSelected } from '../../../../assets/images/icons/Attachment/Selected.svg';
-import { ReactComponent as VariableIcon } from '../../../../assets/images/icons/Template/Variable.svg';
-import { ReactComponent as CrossIcon } from '../../../../assets/images/icons/Clear.svg';
-
-import styles from './ChatInput.module.css';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from '../../../../common/RichEditor';
-import { ReactComponent as SendMessageIcon } from '../../../../assets/images/icons/SendMessage.svg';
-import SearchBar from '../../../../components/UI/SearchBar/SearchBar';
-import ChatTemplates from '../ChatTemplates/ChatTemplates';
-import WhatsAppEditor from '../../../../components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import { ReactComponent as AttachmentIcon } from 'assets/images/icons/Attachment/Unselected.svg';
+import { ReactComponent as AttachmentIconSelected } from 'assets/images/icons/Attachment/Selected.svg';
+import { ReactComponent as VariableIcon } from 'assets/images/icons/Template/Variable.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Clear.svg';
+import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessage.svg';
+import { convertToWhatsApp, WhatsAppToDraftEditor } from 'common/RichEditor';
+import { is24HourWindowOver, pattern } from 'common/constants';
+import SearchBar from 'components/UI/SearchBar/SearchBar';
+import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
+import Tooltip from 'components/UI/Tooltip/Tooltip';
+import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from 'graphql/mutations/Chat';
+import { GET_ATTACHMENT_PERMISSION } from 'graphql/queries/Settings';
+import { setNotification } from 'common/notification';
+import { getInteractiveMessageBody } from 'common/utils';
+import { AddVariables } from '../AddVariables/AddVariables';
 import { AddAttachment } from '../AddAttachment/AddAttachment';
 import { VoiceRecorder } from '../VoiceRecorder/VoiceRecorder';
-import { CREATE_MEDIA_MESSAGE, UPLOAD_MEDIA_BLOB } from '../../../../graphql/mutations/Chat';
-import { is24HourWindowOver, pattern } from '../../../../common/constants';
-import { AddVariables } from '../AddVariables/AddVariables';
-import Tooltip from '../../../../components/UI/Tooltip/Tooltip';
-import { GET_ATTACHMENT_PERMISSION } from '../../../../graphql/queries/Settings';
-import { setNotification } from '../../../../common/notification';
-import { getInteractiveMessageBody } from '../../../../common/utils';
+import ChatTemplates from '../ChatTemplates/ChatTemplates';
+import styles from './ChatInput.module.css';
 
 export interface ChatInputProps {
   onSendMessage(
@@ -34,7 +33,7 @@ export interface ChatInputProps {
     messageType: string,
     selectedTemplate: any,
     variableParam: any,
-    interactiveContent?: any
+    interactiveTemplateId?: any
   ): any;
   handleHeightChange(newHeight: number): void;
   contactStatus?: string;
@@ -174,7 +173,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         interactiveMessageContent.type.toUpperCase(),
         null,
         null,
-        JSON.stringify(interactiveMessageContent)
+        Number(selectedTemplate.id)
       );
       // else the type will by default be text
     } else {
@@ -221,9 +220,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       const interactiveContent = JSON.parse(obj.interactiveContent);
       messageBody = getInteractiveMessageBody(interactiveContent);
       setInteractiveMessageContent(interactiveContent);
-    } else {
-      setSelectedTemplate(obj);
     }
+
+    setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
     setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(messageBody)));
 

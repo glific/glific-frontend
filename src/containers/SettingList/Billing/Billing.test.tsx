@@ -1,7 +1,7 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import { Billing } from './Billing';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
+
 import {
   createBillingSubscriptionQuery,
   getBillingQuery,
@@ -12,7 +12,8 @@ import {
   getCustomerPortalQuery,
   getPendingBillingQuery,
   updateBillingQuery,
-} from '../../../mocks/Billing';
+} from 'mocks/Billing';
+import { Billing } from './Billing';
 
 const mocks = [createBillingSubscriptionQuery, getBillingQuery];
 

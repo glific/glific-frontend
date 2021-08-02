@@ -4,15 +4,15 @@ import { useApolloClient } from '@apollo/client';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as WebhookLogIcon } from 'assets/images/icons/Webhook/WebhookDark.svg';
+import { ReactComponent as ViewIcon } from 'assets/images/icons/View.svg';
+import CopyIcon from 'assets/images/icons/Copy.png';
+import { List } from 'containers/List/List';
+import Menu from 'components/UI/Menu/Menu';
+import { Button } from 'components/UI/Form/Button/Button';
+import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from 'graphql/queries/WebhookLogs';
+import { copyToClipboard } from 'common/utils';
 import styles from './WebhookLogsList.module.css';
-import { ReactComponent as WebhookLogIcon } from '../../../assets/images/icons/Webhook/WebhookDark.svg';
-import { ReactComponent as ViewIcon } from '../../../assets/images/icons/View.svg';
-import CopyIcon from '../../../assets/images/icons/Copy.png';
-import { List } from '../../List/List';
-import { FILTER_WEBHOOK_LOGS, GET_WEBHOOK_LOGS_COUNT } from '../../../graphql/queries/WebhookLogs';
-import Menu from '../../../components/UI/Menu/Menu';
-import { Button } from '../../../components/UI/Form/Button/Button';
-import { copyToClipboard } from '../../../common/utils';
 
 export interface WebhookLogsListProps {}
 

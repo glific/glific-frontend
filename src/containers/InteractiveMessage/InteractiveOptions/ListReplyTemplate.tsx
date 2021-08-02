@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, TextField, FormHelperText, FormControl } from '@material-ui/core';
 import { FieldArray } from 'formik';
 
+import { ReactComponent as DeleteIcon } from 'assets/images/icons/Delete/Red.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
+import { ReactComponent as AddIcon } from 'assets/images/icons/SquareAdd.svg';
 import styles from './ListReplyTemplate.module.css';
-import { ReactComponent as DeleteIcon } from '../../../assets/images/icons/Delete/Red.svg';
-import { ReactComponent as CrossIcon } from '../../../assets/images/icons/Cross.svg';
-import { ReactComponent as AddIcon } from '../../../assets/images/icons/SquareAdd.svg';
 
 export interface ListReplyTemplateProps {
   index: number;
@@ -100,7 +100,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
         <div>List {index + 1}</div>
         <div>
           {inputFields.length > 1 && (
-            <DeleteIcon className={styles.ListDeleteIcon} onClick={onListRemoveClick} />
+            <DeleteIcon
+              title="Remove"
+              className={styles.ListDeleteIcon}
+              onClick={onListRemoveClick}
+            />
           )}
         </div>
       </div>
@@ -145,6 +149,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                             InputProps={{
                               endAdornment: itemIndex !== 0 && showDeleteIcon && (
                                 <CrossIcon
+                                  title="Remove"
                                   className={styles.ListDeleteIcon}
                                   onClick={() => handleRemoveListItem(arrayHelpers, itemIndex)}
                                 />

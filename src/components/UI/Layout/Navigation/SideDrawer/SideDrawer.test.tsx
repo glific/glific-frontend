@@ -4,10 +4,10 @@ import { render, fireEvent } from '@testing-library/react';
 import { waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
-import { getMenus } from '../../../../../config/menu';
-import { getCurrentUserQuery } from '../../../../../mocks/User';
-import { setUserSession } from '../../../../../services/AuthService';
-import { walletBalanceQuery, walletBalanceSubscription } from '../../../../../mocks/Organization';
+import { getMenus } from 'config/menu';
+import { getCurrentUserQuery } from 'mocks/User';
+import { setUserSession } from 'services/AuthService';
+import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
 
 const mocks = [getCurrentUserQuery, ...walletBalanceQuery, ...walletBalanceSubscription];
 

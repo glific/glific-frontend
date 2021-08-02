@@ -3,26 +3,22 @@ import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { AutoComplete } from '../../components/UI/Form/AutoComplete/AutoComplete';
-import { Input } from '../../components/UI/Form/Input/Input';
-import { FormLayout } from '../Form/FormLayout';
-import {
-  GET_COLLECTION,
-  GET_COLLECTION_USERS,
-  GET_COLLECTIONS,
-} from '../../graphql/queries/Collection';
-import { GET_USERS } from '../../graphql/queries/User';
+import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { Input } from 'components/UI/Form/Input/Input';
+import { FormLayout } from 'containers/Form/FormLayout';
+import { GET_COLLECTION, GET_COLLECTION_USERS, GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { GET_USERS } from 'graphql/queries/User';
 import {
   UPDATE_COLLECTION,
   CREATE_COLLECTION,
   DELETE_COLLECTION,
   UPDATE_COLLECTION_USERS,
-} from '../../graphql/mutations/Collection';
+} from 'graphql/mutations/Collection';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
+import { ReactComponent as CollectionIcon } from 'assets/images/icons/StaffManagement/Active.svg';
+import { ReactComponent as ContactIcon } from 'assets/images/icons/Contact/View.svg';
+import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from 'common/constants';
 import styles from './Collection.module.css';
-import { ReactComponent as CollectionIcon } from '../../assets/images/icons/StaffManagement/Active.svg';
-import { ReactComponent as ContactIcon } from '../../assets/images/icons/Contact/View.svg';
-import { COLLECTION_SEARCH_QUERY_VARIABLES, setVariables } from '../../common/constants';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
 
 export interface CollectionProps {
   match: any;

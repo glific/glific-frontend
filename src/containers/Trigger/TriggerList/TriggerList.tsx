@@ -3,16 +3,16 @@ import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
+import { ReactComponent as ClockIcon } from 'assets/images/icons/Trigger/Clock.svg';
+import { ReactComponent as ClockInactiveIcon } from 'assets/images/icons/Trigger/Inactive.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
+import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
+import { setVariables, FULL_DATE_FORMAT, dayList } from 'common/constants';
+import { List } from 'containers/List/List';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
-import { ReactComponent as TriggerIcon } from '../../../assets/images/icons/Trigger/Union.svg';
-import { ReactComponent as ClockIcon } from '../../../assets/images/icons/Trigger/Clock.svg';
-import { ReactComponent as ClockInactiveIcon } from '../../../assets/images/icons/Trigger/Inactive.svg';
-import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
-import { List } from '../../List/List';
-import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from '../../../graphql/queries/Trigger';
-import { DELETE_TRIGGER } from '../../../graphql/mutations/Trigger';
-import { setVariables, FULL_DATE_FORMAT, dayList } from '../../../common/constants';
-import { Tooltip } from '../../../components/UI/Tooltip/Tooltip';
 
 export interface TriggerListProps {}
 

@@ -11,8 +11,8 @@ import {
   Checkbox,
 } from '@material-ui/core';
 
+import { setColumnToBackendTerms } from 'common/constants';
 import styles from './Pager.module.css';
-import { setColumnToBackendTerms } from '../../../common/constants';
 
 interface PagerProps {
   columnNames: Array<any>;

@@ -5,10 +5,10 @@ import { useLazyQuery } from '@apollo/client';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 
-import { GET_NOTIFICATIONS_COUNT } from '../../../../../graphql/queries/Notifications';
+import { GET_NOTIFICATIONS_COUNT } from 'graphql/queries/Notifications';
+import ListIcon from 'components/UI/ListIcon/ListIcon';
+import { getSideDrawerMenus } from 'context/role';
 import styles from './SideMenus.module.css';
-import ListIcon from '../../../ListIcon/ListIcon';
-import { getSideDrawerMenus } from '../../../../../context/role';
 
 export interface SideMenusProps {
   opened: boolean;

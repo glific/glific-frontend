@@ -2,9 +2,9 @@ import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/re
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 
-import { setUserSession } from '../../services/AuthService';
+import { setUserSession } from 'services/AuthService';
+import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
-import { mocks } from '../../mocks/InteractiveMessage';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -23,6 +23,10 @@ const responseMock1 = {
 
 const responseMock2 = {
   types: [{ name: 'contact', properties: [{ key: 'key 1' }, { key: 'key 2' }] }],
+};
+
+const responseMock3 = {
+  data: { is_valid: true },
 };
 
 const axiosApiCall = async () => {
@@ -59,12 +63,10 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Get all input elements
-    const [title, quickReply1, quickReply2, attachmentType, attachmentUrl] =
-      screen.getAllByRole('textbox');
+    const [title, quickReply1, quickReply2, , attachmentUrl] = screen.getAllByRole('textbox');
     expect(title).toBeInTheDocument();
     expect(quickReply1).toBeInTheDocument();
     expect(quickReply2).toBeInTheDocument();
-    expect(attachmentType).toBeInTheDocument();
     expect(attachmentUrl).toBeInTheDocument();
 
     fireEvent.change(title, { target: { value: 'new title' } });
@@ -75,10 +77,22 @@ test('it renders empty interactive form', async () => {
     fireEvent.blur(attachmentUrl);
   });
 
+  // Changing language to marathi
   await waitFor(() => {
-    const autoComplete = screen.getByTestId('autocomplete-element');
-    fireEvent.click(autoComplete);
-    fireEvent.keyDown(autoComplete);
+    const language = screen.getByText('Marathi');
+    expect(language).toBeInTheDocument();
+
+    fireEvent.click(language);
+  });
+
+  await waitFor(() => {
+    const [attachmentType] = screen.getAllByTestId('autocomplete-element');
+
+    expect(attachmentType).toBeInTheDocument();
+
+    attachmentType.focus();
+    fireEvent.keyDown(attachmentType, { key: 'ArrowDown' });
+    fireEvent.keyDown(attachmentType, { key: 'Enter' });
   });
 
   // Switiching between radio buttons
@@ -91,15 +105,17 @@ test('it renders empty interactive form', async () => {
 
   await waitFor(() => {
     // Adding list data
-    const [, header, listTitle, listDesc] = screen.getAllByRole('textbox');
+    const [, header, listTitle, listItemTitle, listItemDesc] = screen.getAllByRole('textbox');
     expect(header).toBeInTheDocument();
     expect(listTitle).toBeInTheDocument();
-    expect(listDesc).toBeInTheDocument();
+    expect(listItemTitle).toBeInTheDocument();
+    expect(listItemDesc).toBeInTheDocument();
 
     fireEvent.change(header, { target: { value: 'Section 1' } });
     fireEvent.blur(header);
     fireEvent.change(listTitle, { target: { value: 'title' } });
-    fireEvent.change(listDesc, { target: { value: 'desc' } });
+    fireEvent.change(listItemTitle, { target: { value: 'red' } });
+    fireEvent.change(listItemDesc, { target: { value: 'red is color' } });
   });
 
   await waitFor(() => {
@@ -139,12 +155,6 @@ test('it renders empty interactive form', async () => {
     fireEvent.click(saveButton);
   });
 
-  // some of the elements are not filled hence validation errors are shown
-  // validation errors
-  await waitFor(() => {
-    expect(screen.getByText('Title is required.')).toBeInTheDocument();
-  });
-
   // TODOS: need to fix below
   // // succesful save
   // await waitFor(() => {
@@ -152,7 +162,38 @@ test('it renders empty interactive form', async () => {
   // });
 });
 
-test('it renders empty interactive form in edit mode', async () => {
+test('it renders interactive quick reply in edit mode', async () => {
+  axiosApiCall();
+
+  const { container } = render(
+    <MockedProvider mocks={[...mocks]} addTypename={false}>
+      <InteractiveMessage match={{ params: { id: '1' } }} />
+    </MockedProvider>
+  );
+
+  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock1);
+  await whenStable();
+
+  await waitFor(() => {
+    // Changing language to marathi to see translations
+    const marathi = screen.getByText('Marathi');
+    fireEvent.click(marathi);
+  });
+
+  await waitFor(() => {
+    // Changing back to English
+    const english = screen.getByText('English');
+    fireEvent.click(english);
+  });
+
+  await waitFor(() => {
+    const saveButton = screen.getByText('Save');
+    expect(saveButton).toBeInTheDocument();
+    fireEvent.click(saveButton);
+  });
+});
+
+test('it renders interactive list in edit mode', async () => {
   axiosApiCall();
 
   render(
@@ -169,4 +210,17 @@ test('it renders empty interactive form in edit mode', async () => {
     expect(saveButton).toBeInTheDocument();
     fireEvent.click(saveButton);
   });
+});
+
+test('it renders interactive quick reply with media in edit mode', async () => {
+  axiosApiCall();
+
+  render(
+    <MockedProvider mocks={[...mocks]} addTypename={false}>
+      <InteractiveMessage match={{ params: { id: '3' } }} />
+    </MockedProvider>
+  );
+
+  jest.spyOn(axios, 'get').mockResolvedValueOnce(responseMock3);
+  await whenStable();
 });

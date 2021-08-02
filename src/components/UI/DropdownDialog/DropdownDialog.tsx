@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { DialogBox } from '../DialogBox/DialogBox';
-import { Dropdown } from '../Form/Dropdown/Dropdown';
 
+import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
+import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import styles from './DropdownDialog.module.css';
 
 export interface DropdownDialogProps {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './SpeedSendList.module.css';
-import { ReactComponent as SpeedSendIcon } from '../../../../assets/images/icons/SpeedSend/Dark.svg';
+import { ReactComponent as SpeedSendIcon } from 'assets/images/icons/SpeedSend/Dark.svg';
 import Template from '../Template';
+import styles from './SpeedSendList.module.css';
 
 export interface SpeedSendListProps {}
 

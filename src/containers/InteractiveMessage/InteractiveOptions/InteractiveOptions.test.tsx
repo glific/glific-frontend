@@ -25,7 +25,11 @@ const props: any = {
   isAddButtonChecked: true,
   templateType: templateType[0],
   inputFields,
-  form: { touched: {}, errors: {}, values: { templateButtons: inputFields } },
+  form: {
+    touched: { globalButton: true },
+    errors: { globalButton: 'Required' },
+    values: { templateButtons: inputFields },
+  },
   onAddClick: jest.fn(),
   onRemoveClick: jest.fn(),
   onInputChange: jest.fn(),
@@ -115,7 +119,7 @@ test('it render interactive options for quick reply template', async () => {
   fireEvent.click(addButton);
   await waitFor(() => {});
 
-  const [deleteFirstItem] = screen.getAllByText('Red.svg');
+  const [deleteFirstItem] = screen.getAllByText('Cross.svg');
   expect(deleteFirstItem).toBeInTheDocument();
 
   fireEvent.click(deleteFirstItem);

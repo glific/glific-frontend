@@ -1,5 +1,5 @@
-import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from '../graphql/queries/ContactFields';
-import { UPDATE_CONTACT_FIELDS } from '../graphql/mutations/ContactFields';
+import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
+import { UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 
 const contactFieldsListMock = [
   {

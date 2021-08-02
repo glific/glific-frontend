@@ -17,35 +17,35 @@ import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
-import styles from './Simulator.module.css';
-import { Button as FormButton } from '../UI/Form/Button/Button';
-import DefaultWhatsappImage from '../../assets/images/whatsappDefault.jpg';
-import { ReactComponent as SimulatorIcon } from '../../assets/images/icons/Simulator.svg';
-import { SEARCH_QUERY } from '../../graphql/queries/Search';
+import { Button as FormButton } from 'components/UI/Form/Button/Button';
+import DefaultWhatsappImage from 'assets/images/whatsappDefault.jpg';
+import { ReactComponent as SimulatorIcon } from 'assets/images/icons/Simulator.svg';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
   SEARCH_QUERY_VARIABLES,
   TIME_FORMAT,
   SAMPLE_MEDIA_FOR_SIMULATOR,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
-} from '../../common/constants';
-import { GUPSHUP_CALLBACK_URL } from '../../config';
-import { ChatMessageType } from '../../containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
-import { TemplateButtons } from '../../containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
-import { GET_SIMULATOR, RELEASE_SIMULATOR } from '../../graphql/queries/Simulator';
-import { SIMULATOR_RELEASE_SUBSCRIPTION } from '../../graphql/subscriptions/PeriodicInfo';
-import { getUserSession } from '../../services/AuthService';
-import { setNotification } from '../../common/notification';
-import setLogs from '../../config/logs';
-import { WhatsAppTemplateButton } from '../../common/RichEditor';
-import { MessageType } from '../../containers/Chat/ChatConversations/MessageType/MessageType';
+} from 'common/constants';
+import { GUPSHUP_CALLBACK_URL } from 'config';
+import { ChatMessageType } from 'containers/Chat/ChatMessages/ChatMessage/ChatMessageType/ChatMessageType';
+import { TemplateButtons } from 'containers/Chat/ChatMessages/TemplateButtons/TemplateButtons';
+import { GET_SIMULATOR, RELEASE_SIMULATOR } from 'graphql/queries/Simulator';
+import { SIMULATOR_RELEASE_SUBSCRIPTION } from 'graphql/subscriptions/PeriodicInfo';
+import { getUserSession } from 'services/AuthService';
+import { setNotification } from 'common/notification';
+import setLogs from 'config/logs';
+import { WhatsAppTemplateButton } from 'common/RichEditor';
+import { MessageType } from 'containers/Chat/ChatConversations/MessageType/MessageType';
 import {
   ListReplyTemplate,
   SimulatorTemplate,
   ListReplyTemplateDrawer,
-} from '../../containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
+} from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
 
-import { QuickReplyTemplate } from '../../containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
+import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
+import styles from './Simulator.module.css';
 
 export interface SimulatorProps {
   showSimulator: boolean;
@@ -189,11 +189,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
       if (isInteractiveContentPresent && type === INTERACTIVE_LIST) {
         template = (
-          <ListReplyTemplate
-            {...content}
-            component={SimulatorTemplate}
-            onGlobalButtonClick={handleOpenListReplyDrawer}
-          />
+          <>
+            <ListReplyTemplate
+              {...content}
+              component={SimulatorTemplate}
+              onGlobalButtonClick={handleOpenListReplyDrawer}
+            />
+            <TimeComponent />
+          </>
         );
       }
 
@@ -215,16 +218,17 @@ export const Simulator: React.FC<SimulatorProps> = ({
           {isInteractiveContentPresent && direction !== 'send' ? (
             template
           ) : (
-            <ChatMessageType
-              type={type}
-              media={media}
-              body={body}
-              location={location}
-              isSimulatedMessage={isSimulatedMessage}
-            />
+            <>
+              <ChatMessageType
+                type={type}
+                media={media}
+                body={body}
+                location={location}
+                isSimulatedMessage={isSimulatedMessage}
+              />
+              <TimeComponent />
+            </>
           )}
-
-          <TimeComponent />
         </div>
         <div className={styles.TemplateButtons}>
           <TemplateButtons

@@ -4,21 +4,21 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation, useApolloClient } from '@apollo/client';
 
+import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
+import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
+import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
+import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.svg';
+import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
+import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
+import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
+import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from 'graphql/queries/Flow';
+import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
+import { List } from 'containers/List/List';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { setVariables, DATE_TIME_FORMAT } from 'common/constants';
+import { exportFlowMethod } from 'common/utils';
+import { setNotification } from 'common/notification';
 import styles from './FlowList.module.css';
-import { ReactComponent as FlowIcon } from '../../../assets/images/icons/Flow/Dark.svg';
-import { ReactComponent as DuplicateIcon } from '../../../assets/images/icons/Flow/Duplicate.svg';
-import { ReactComponent as ExportIcon } from '../../../assets/images/icons/Flow/Export.svg';
-import { ReactComponent as ImportIcon } from '../../../assets/images/icons/Flow/Import.svg';
-import { ReactComponent as ConfigureIcon } from '../../../assets/images/icons/Configure/UnselectedDark.svg';
-import { ReactComponent as ContactVariable } from '../../../assets/images/icons/ContactVariable.svg';
-import { ReactComponent as WebhookLogsIcon } from '../../../assets/images/icons/Webhook/WebhookLight.svg';
-import { List } from '../../List/List';
-import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from '../../../graphql/queries/Flow';
-import { DELETE_FLOW, IMPORT_FLOW } from '../../../graphql/mutations/Flow';
-import { setVariables, DATE_TIME_FORMAT } from '../../../common/constants';
-import { exportFlowMethod } from '../../../common/utils';
-import Loading from '../../../components/UI/Layout/Loading/Loading';
-import { setNotification } from '../../../common/notification';
 
 export interface FlowListProps {}
 

@@ -1,15 +1,15 @@
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { Tag } from '../Tag/Tag';
-import { List } from './List';
-
 import { Switch, Route } from 'react-router-dom';
 import { within, fireEvent } from '@testing-library/dom';
+
+import { Tag } from 'containers/Tag/Tag';
+import { setUserSession } from 'services/AuthService';
+import { ReactComponent as ActivateIcon } from 'assets/images/icons/Activate.svg';
+import { ReactComponent as ApprovedIcon } from 'assets/images/icons/Template/Approved.svg';
 import { LIST_MOCKS, defaultProps, ORG_LIST_MOCK, orgProps } from './List.test.helper';
-import { setUserSession } from '../../services/AuthService';
-import { ReactComponent as ActivateIcon } from '../../assets/images/icons/Activate.svg';
-import { ReactComponent as ApprovedIcon } from '../../assets/images/icons/Template/Approved.svg';
+import { List } from './List';
 
 const mocks = LIST_MOCKS;
 

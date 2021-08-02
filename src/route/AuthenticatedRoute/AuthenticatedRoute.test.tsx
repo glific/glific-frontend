@@ -1,15 +1,15 @@
 import { Suspense } from 'react';
-
-import AuthenticatedRoute from './AuthenticatedRoute';
 import { render, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { walletBalanceQuery, walletBalanceSubscription } from '../../mocks/Organization';
-import { setUserSession } from '../../services/AuthService';
-import { CONVERSATION_MOCKS } from '../../mocks/Chat';
-import * as Chat from '../../containers/Chat/Chat';
-import * as ChatSubscription from '../../containers/Chat/ChatSubscription/ChatSubscription';
-import { Loading } from '../../components/UI/Layout/Loading/Loading';
+
+import { walletBalanceQuery, walletBalanceSubscription } from 'mocks/Organization';
+import { setUserSession } from 'services/AuthService';
+import { CONVERSATION_MOCKS } from 'mocks/Chat';
+import * as Chat from 'containers/Chat/Chat';
+import * as ChatSubscription from 'containers/Chat/ChatSubscription/ChatSubscription';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
+import AuthenticatedRoute from './AuthenticatedRoute';
 
 jest.mock('axios');
 

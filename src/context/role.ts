@@ -1,5 +1,5 @@
-import { getMenus } from '../config/menu';
-import { getUserSession } from '../services/AuthService';
+import { getMenus } from 'config/menu';
+import { getUserSession } from 'services/AuthService';
 
 let role: any[] = [];
 let sideDrawerMenu: any = [];

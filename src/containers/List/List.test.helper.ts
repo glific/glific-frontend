@@ -1,14 +1,14 @@
-import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from '../../graphql/queries/Tag';
-import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from '../../graphql/queries/Organization';
-import { GET_LANGUAGES } from '../../graphql/queries/List';
-import { DELETE_TAG } from '../../graphql/mutations/Tag';
-import { DELETE_INACTIVE_ORGANIZATIONS } from '../../graphql/mutations/Organization';
+import { GET_TAGS_COUNT, FILTER_TAGS, GET_TAGS } from 'graphql/queries/Tag';
+import { FILTER_ORGANIZATIONS, GET_ORGANIZATION_COUNT } from 'graphql/queries/Organization';
+import { GET_LANGUAGES } from 'graphql/queries/List';
+import { DELETE_TAG } from 'graphql/mutations/Tag';
+import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
 import {
   getOrganizationLanguagesQuery,
   getOrganizationQuery,
   getAllOrganizations,
-} from '../../mocks/Organization';
-import { setVariables } from '../../common/constants';
+} from 'mocks/Organization';
+import { setVariables } from 'common/constants';
 
 export const defaultProps = {
   columnNames: ['LABEL', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'],

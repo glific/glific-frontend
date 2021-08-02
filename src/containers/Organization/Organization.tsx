@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 
-import { Captcha } from '../../components/UI/Form/Captcha/Captcha';
+import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import { Button } from 'components/UI/Form/Button/Button';
+import GlificLogo from 'assets/images/logo/Logo.svg';
 import styles from './Organization.module.css';
-import { Button } from '../../components/UI/Form/Button/Button';
-import GlificLogo from '../../assets/images/logo/Logo.svg';
 
 export interface OrganizationProps {
   pageTitle: string;

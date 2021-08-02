@@ -1,13 +1,10 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { render, waitFor, fireEvent } from '@testing-library/react';
+
+import { collectionCountQuery, savedSearchQueryError, savedSearchStatusQuery } from 'mocks/Chat';
+import { collectionCountSubscription } from 'mocks/Search';
+import { setUserSession } from 'services/AuthService';
 import SavedSearchToolbar from './SavedSearchToolbar';
-import {
-  collectionCountQuery,
-  savedSearchQueryError,
-  savedSearchStatusQuery,
-} from '../../../mocks/Chat';
-import { collectionCountSubscription } from '../../../mocks/Search';
-import { setUserSession } from '../../../services/AuthService';
 
 const mocks = [savedSearchStatusQuery, collectionCountSubscription, collectionCountQuery];
 

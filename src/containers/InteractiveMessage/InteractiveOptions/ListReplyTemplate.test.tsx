@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ListReplyTemplate } from './ListReplyTemplate';
 import { Formik } from 'formik';
+
+import { ListReplyTemplate } from './ListReplyTemplate';
 
 const inputFields = [
   { title: '', options: [{ title: '', description: '' }] },

@@ -1,10 +1,11 @@
 import { render, cleanup, fireEvent, act, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import UserEvent from '@testing-library/user-event';
-import OrganizationList from './OrganizationList';
-import { getAllOrganizations } from '../../mocks/Organization';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { setUserSession } from '../../services/AuthService';
+
+import { getAllOrganizations } from 'mocks/Organization';
+import { setUserSession } from 'services/AuthService';
+import OrganizationList from './OrganizationList';
 
 afterEach(cleanup);
 const mocks = getAllOrganizations;

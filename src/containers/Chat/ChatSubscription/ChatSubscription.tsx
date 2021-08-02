@@ -10,23 +10,23 @@ import {
   SEARCH_QUERY_VARIABLES,
   SUBSCRIPTION_ALLOWED_DURATION,
   SUBSCRIPTION_ALLOWED_NUMBER,
-} from '../../../common/constants';
-import { SEARCH_QUERY } from '../../../graphql/queries/Search';
-import { saveConversation } from '../../../services/ChatService';
-import { getUserSession } from '../../../services/AuthService';
+} from 'common/constants';
+import { setErrorMessage } from 'common/notification';
+import { randomIntFromInterval, addLogs } from 'common/utils';
+import { saveConversation } from 'services/ChatService';
+import { getUserSession } from 'services/AuthService';
+import { SEARCH_QUERY } from 'graphql/queries/Search';
 import {
   COLLECTION_SENT_SUBSCRIPTION,
   MESSAGE_RECEIVED_SUBSCRIPTION,
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
-} from '../../../graphql/subscriptions/Chat';
+} from 'graphql/subscriptions/Chat';
 import {
   ADD_MESSAGE_TAG_SUBSCRIPTION,
   DELETE_MESSAGE_TAG_SUBSCRIPTION,
-} from '../../../graphql/subscriptions/Tag';
-import { Loading } from '../../../components/UI/Layout/Loading/Loading';
-import { setErrorMessage } from '../../../common/notification';
-import { randomIntFromInterval, addLogs } from '../../../common/utils';
+} from 'graphql/subscriptions/Tag';
+import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export interface ChatSubscriptionProps {
   setDataLoaded: any;
