@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
-import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
+// import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
 import { GET_SEARCH, SEARCH_LIST_QUERY } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
@@ -231,17 +231,17 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       type: 'text',
       placeholder: t('Enter name, tag, keyword'),
     },
-    {
-      component: AutoComplete,
-      name: 'includeTags',
-      label: t('Includes tags'),
-      options: dataT.tags,
-      optionLabel: 'label',
-      textFieldProps: {
-        variant: 'outlined',
-      },
-      icon: <TagIcon className={styles.TagIcon} />,
-    },
+    // {
+    //   component: AutoComplete,
+    //   name: 'includeTags',
+    //   label: t('Includes tags'),
+    //   options: dataT.tags,
+    //   optionLabel: 'label',
+    //   textFieldProps: {
+    //     variant: 'outlined',
+    //   },
+    //   icon: <TagIcon className={styles.TagIcon} />,
+    // },
     {
       component: AutoComplete,
       name: 'includeGroups',
