@@ -102,7 +102,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const changeHandler = (event: any) => {
     const fileReader: any = new FileReader();
-    fileReader.onload = function () {
+    fileReader.onload = function setImport() {
       importFlow({ variables: { flow: fileReader.result } });
     };
     setImporting(true);
