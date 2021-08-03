@@ -1,4 +1,4 @@
-import { render, within, screen, act } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';

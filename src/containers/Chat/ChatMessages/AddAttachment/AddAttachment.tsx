@@ -64,17 +64,19 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
       setVerifying(true);
       setErrors(null);
 
-      validateMedia(attachmentURL, attachmentType).then((response: any) => {
-        if (!response.data.is_valid) {
-          setVerifying(false);
-          setErrors(response.data.message);
-        } else if (response.data.is_valid) {
-          setVerifying(false);
-          setAttachmentAdded(true);
+      validateMedia(attachmentURL, attachmentType)
+        .then((response: any) => {
+          if (!response.data.is_valid) {
+            setVerifying(false);
+            setErrors(response.data.message);
+          } else if (response.data.is_valid) {
+            setVerifying(false);
+            setAttachmentAdded(true);
 
-          setErrors(null);
-        }
-      });
+            setErrors(null);
+          }
+        })
+        .catch((error) => console.log(error));
     }
   };
 

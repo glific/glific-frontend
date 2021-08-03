@@ -6,12 +6,13 @@ import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/SelectedEdit.svg';
-// import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
+import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
 import { GET_SEARCH, SEARCH_LIST_QUERY } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
 import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_USERS } from 'graphql/queries/User';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -50,6 +51,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
   const [includeUsers, setIncludeUsers] = useState([]);
+  const [includeLabels, setIncludeLabels] = useState([]);
   const [dateFrom, setdateFrom] = useState(null);
   const [dateTo, setdateTo] = useState(null);
   const [formFields, setFormFields] = useState<any>([]);
@@ -70,6 +72,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     includeTags,
     includeGroups,
     includeUsers,
+    includeLabels,
     dateFrom,
     dateTo,
   };
@@ -83,6 +86,10 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   });
 
   const { data: dataUser } = useQuery(GET_USERS, {
+    variables: setVariables(),
+  });
+
+  const { data: dataLabels } = useQuery(GET_ALL_FLOW_LABELS, {
     variables: setVariables(),
   });
 
@@ -118,6 +125,12 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
         case 'term':
           setTerm(filters.filter.term);
           break;
+        case 'includeLabels':
+          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeLabels'))
+            if (dataLabels) {
+              setIncludeLabels(getObject(dataLabels.flowLabels, filters.filter.includeLabels));
+            }
+          break;
         default:
           break;
       }
@@ -147,6 +160,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           : [],
         includeUsers: props.searchParam.includeUsers
           ? props.searchParam.includeUsers.map((option: any) => option.id)
+          : [],
+        includeLabels: props.searchParam.includeLabels
+          ? props.searchParam.includeLabels.map((option: any) => option.id)
           : [],
       },
       messageOpts: {
@@ -184,7 +200,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     variables: setVariables({}, 100, 0, 'ASC'),
   });
 
-  if (!data || !dataT || !dataUser) return <Loading />;
+  if (!data || !dataT || !dataUser || !dataLabels) return <Loading />;
 
   const validateTitle = (value: any) => {
     let error;
@@ -244,6 +260,17 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     // },
     {
       component: AutoComplete,
+      name: 'includeLabels',
+      label: t('Includes labels'),
+      options: dataLabels.flowLabels,
+      optionLabel: 'name',
+      textFieldProps: {
+        variant: 'outlined',
+      },
+      icon: <TagIcon stroke="#073f24" />,
+    },
+    {
+      component: AutoComplete,
       name: 'includeGroups',
       placeholder: t('Includes collections'),
       label: t('Includes collections'),
@@ -296,6 +323,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
           : [],
         includeUsers: payload.includeUsers
           ? payload.includeUsers.map((option: any) => option.id)
+          : [],
+        includeLabels: payload.includeLabels
+          ? payload.includeLabels.map((option: any) => option.id)
           : [],
       },
       messageOpts: {
