@@ -29,18 +29,4 @@ describe('<Logout />', () => {
       fireEvent.click(button);
     });
   });
-
-  test('it should render component and click cancel', async () => {
-    render(
-      <MockedProvider>
-        <MemoryRouter>
-          <Logout match={{ params: { mode: '' } }} />
-        </MemoryRouter>
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      fireEvent.click(document);
-    });
-  });
 });
