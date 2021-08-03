@@ -410,4 +410,22 @@ export const HSM_LIST = [
       },
     },
   },
+  {
+    request: {
+      query: FILTER_TEMPLATES,
+      variables: {
+        filter: { isHsm: true, status: 'APPROVED' },
+        opts: { limit: 50, offset: 0, order: 'ASC', orderWith: 'status' },
+      },
+    },
+    result: {
+      data: {
+        sessionTemplates: [
+          getHSMTemplate('1', 'APPROVED'),
+          getHSMTemplate('2', 'PENDING'),
+          getHSMTemplate('3', 'REJECTED'),
+        ],
+      },
+    },
+  },
 ];
