@@ -2,9 +2,7 @@ import React from 'react';
 
 export const SessionContext = React.createContext({
   authenticated: false,
-  setAuthenticated: (value: any) => {
-    console.log(value);
-  },
+  setAuthenticated: (value: any) => value,
 });
 
 export default SessionContext;
