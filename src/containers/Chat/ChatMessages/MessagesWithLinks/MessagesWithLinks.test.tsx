@@ -7,3 +7,7 @@ test('it renders correctly', () => {
   const { getByText } = render(messagesWithLinks);
   expect(getByText('hey there google.com')).toBeInTheDocument();
 });
+
+test('it renders links message', () => {
+  render(<MessagesWithLinks message="https://www.google.com" />);
+});
