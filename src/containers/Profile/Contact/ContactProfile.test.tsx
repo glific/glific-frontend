@@ -60,8 +60,8 @@ test('it renders contact profile and update tags', async () => {
   // fireEvent.keyDown(autocomplete, { key: 'Enter' });
   // await waitFor(() => {});
 
-  const save = screen.getByRole('button', { name: 'Save' });
-  fireEvent.click(save);
-
-  await waitFor(() => {});
+  await waitFor(() => {
+    const save = screen.getByRole('button', { name: 'Save' });
+    fireEvent.click(save);
+  });
 });
