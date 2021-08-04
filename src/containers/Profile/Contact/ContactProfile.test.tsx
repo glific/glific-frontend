@@ -54,10 +54,10 @@ test('it renders contact profile and update tags', async () => {
 
   // select the first item
   fireEvent.keyDown(autocomplete, { key: 'Enter' });
-  await waitFor(() => {});
-
-  const save = screen.getByRole('button', { name: 'Save' });
-  fireEvent.click(save);
+  await waitFor(() => {
+    const save = screen.getByRole('button', { name: 'Save' });
+    fireEvent.click(save);
+  });
 
   await waitFor(() => {});
 });
