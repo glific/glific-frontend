@@ -98,4 +98,18 @@ export const updateUserQuery = [
       },
     },
   },
+  {
+    request: {
+      query: UPDATE_CURRENT_USER,
+      variables: { input: { languageId: '2' } },
+    },
+    result: {
+      data: {
+        updateCurrentUser: {
+          errors: null,
+          user: {},
+        },
+      },
+    },
+  },
 ];

@@ -431,6 +431,12 @@ export const getOrganizationLanguagesQuery = {
                 localized: true,
                 locale: 'en',
               },
+              {
+                id: '2',
+                label: 'Hindi',
+                localized: true,
+                locale: 'hi',
+              },
             ],
             defaultLanguage: {
               id: '1',
