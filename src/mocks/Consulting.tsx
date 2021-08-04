@@ -3,6 +3,7 @@ import {
   GET_CONSULTING_HOURS_COUNT,
   GET_CONSULTING_HOURS_BY_ID,
 } from 'graphql/queries/Consulting';
+import { CREATE_CONSULTING_HOUR, UPDATE_CONSULTING_HOURS } from 'graphql/mutations/Consulting';
 import { FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 
 const mockListDummyData = new Array(10).fill(null).map((val: any, index: number) => ({
@@ -54,21 +55,23 @@ export const listingMock = [
 export const getConsultingHour = {
   request: {
     query: GET_CONSULTING_HOURS_BY_ID,
-    variables: { id: '0' },
+    variables: { id: '1' },
   },
   result: {
     data: {
       consultingHour: {
-        id: '0',
-        content: 'Testing',
-        isBillable: true,
-        duration: 30,
-        insertedAt: '2021-05-13T05:17:31Z',
-        participants: 'John Doe',
-        staff: `Gfific team`,
-        organizationName: 'Foogle',
-        updatedAt: '2021-05-13T05:35:51Z',
-        when: '2021-05-06T10:30:00Z',
+        consultingHour: {
+          content: 'test',
+          duration: 15,
+          id: '1',
+          insertedAt: '2021-08-04T14:13:24Z',
+          isBillable: false,
+          organizationName: 'Glific',
+          participants: 'John Doe',
+          staff: 'Glific test',
+          updatedAt: '2021-08-04T14:16:01Z',
+          when: '2021-08-04T14:13:09Z',
+        },
       },
     },
   },
@@ -108,6 +111,79 @@ export const getOrganizationList = {
           name: 'Test',
         },
       ],
+    },
+  },
+};
+
+export const createConsultingHour = {
+  request: {
+    query: CREATE_CONSULTING_HOUR,
+    variables: {
+      input: {
+        clientId: 1,
+        content: 'test',
+        duration: 15,
+        isBillable: false,
+        organizationName: 'Glific',
+        participants: 'John Doe',
+        staff: 'Glific staff',
+        when: '2021-08-04T14:13:09.784Z',
+      },
+    },
+  },
+  result: {
+    data: {
+      createConsultingHour: {
+        consultingHour: {
+          content: 'test',
+          duration: 15,
+          insertedAt: '2021-08-04T14:13:24Z',
+          isBillable: false,
+          organizationName: 'Glific',
+          participants: 'John Doe',
+          staff: 'Glific staff',
+          updatedAt: '2021-08-04T14:13:24Z',
+          when: '2021-08-04T14:13:09Z',
+        },
+        errors: null,
+      },
+    },
+  },
+};
+
+export const updateConsultingHour = {
+  request: {
+    query: UPDATE_CONSULTING_HOURS,
+    variables: {
+      id: '1',
+      input: {
+        clientId: 1,
+        content: 'test',
+        duration: 15,
+        isBillable: false,
+        organizationName: 'Glific',
+        participants: 'John Doe',
+        staff: 'Glific staff',
+        when: '2021-08-04T14:13:09.784Z',
+      },
+    },
+  },
+  result: {
+    data: {
+      updateConsultingHour: {
+        consultingHour: {
+          content: 'test',
+          duration: 15,
+          insertedAt: '2021-08-04T14:13:24Z',
+          isBillable: false,
+          organizationName: 'Glific',
+          participants: 'John Doe',
+          staff: 'Glific staff',
+          updatedAt: '2021-08-04T14:13:24Z',
+          when: '2021-08-04T14:13:09Z',
+        },
+        errors: null,
+      },
     },
   },
 };
