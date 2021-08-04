@@ -184,7 +184,7 @@ export const setAuthHeaders = () => {
   const xmlSend = XMLHttpRequest.prototype.send;
 
   ((send) => {
-    XMLHttpRequest.prototype.send = async function (body) {
+    XMLHttpRequest.prototype.send = async function authCheck(body) {
       this.addEventListener('loadend', () => {
         if (this.status === 401) {
           window.location.href = '/logout/user';

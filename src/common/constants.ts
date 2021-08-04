@@ -217,3 +217,5 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
 
 export const INTERACTIVE_QUICK_REPLY = 'QUICK_REPLY';
 export const INTERACTIVE_LIST = 'LIST';
+
+export const TERMS_OF_USE_LINK = 'https://tides.coloredcow.com/terms-of-use';

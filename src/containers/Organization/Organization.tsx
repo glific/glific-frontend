@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { Typography } from '@material-ui/core';
 
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
+import { TERMS_OF_USE_LINK } from 'common/constants';
 import { Button } from 'components/UI/Form/Button/Button';
 import GlificLogo from 'assets/images/logo/Logo.svg';
 import styles from './Organization.module.css';
@@ -21,6 +22,14 @@ export interface OrganizationProps {
   titleSubText?: string;
   errorMessage?: any;
 }
+
+export const termsOfUse = (
+  <div className={styles.TermsOfUse}>
+    <a href={TERMS_OF_USE_LINK} target="_blank" rel="noreferrer">
+      Read the applied terms of use
+    </a>
+  </div>
+);
 
 export const Organization: React.SFC<OrganizationProps> = (props) => {
   const {
@@ -114,6 +123,7 @@ export const Organization: React.SFC<OrganizationProps> = (props) => {
               <input className={styles.SubmitAction} type="submit" />
             </Form>
             {displayErrorMessage}
+            {termsOfUse}
           </div>
         )}
       </Formik>
