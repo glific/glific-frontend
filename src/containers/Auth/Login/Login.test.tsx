@@ -4,12 +4,26 @@ import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { getCurrentUserQuery } from 'mocks/User';
+import {
+  getCurrentUserQuery,
+  getCurrentUserErrorQuery,
+  getCurrentUserInvalidRoleQuery,
+} from 'mocks/User';
 import { Login } from './Login';
 
 const mocks = [getCurrentUserQuery];
 
 jest.mock('axios');
+jest.mock('react-i18next', () => ({
+  useTranslation: () => {
+    return {
+      t: (str: any) => str,
+      i18n: {
+        changeLanguage: jest.fn(),
+      },
+    };
+  },
+}));
 
 const wrapper = (
   <MockedProvider mocks={mocks}>
@@ -77,6 +91,102 @@ describe('<Login />', () => {
 
     await waitFor(() => {
       expect(rejectPromise).toHaveBeenCalled();
+    });
+  });
+
+  it('test the login form submission with error', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserErrorQuery]}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on login
+    const loginButton = screen.getByText('Login');
+    UserEvent.click(loginButton);
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = jest.fn(() => Promise.resolve(responseData));
+
+    act(() => {
+      axios.post.mockImplementationOnce(() => successPromise());
+    });
+
+    await waitFor(() => {
+      expect(successPromise).toHaveBeenCalled();
+    });
+  });
+
+  it('test the login form submission with error(server error)', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserErrorQuery]}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on login
+    const loginButton = screen.getByText('Login');
+    UserEvent.click(loginButton);
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = jest.fn(() => Promise.resolve(responseData));
+
+    act(() => {
+      axios.post.mockImplementationOnce(() => successPromise());
+    });
+
+    await waitFor(() => {
+      expect(successPromise).toHaveBeenCalled();
+    });
+  });
+
+  it('test the login form submission with error(invalid role)', async () => {
+    const { container } = render(
+      <MockedProvider mocks={[getCurrentUserInvalidRoleQuery]}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+    const phone = container.querySelector('input[type="tel"]');
+    fireEvent.change(phone, { target: { value: '+919978776554' } });
+
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
+    // click on login
+    const loginButton = screen.getByText('Login');
+    UserEvent.click(loginButton);
+
+    // let's mock successful registration submission
+    const responseData = { data: { data: { data: {} } } };
+
+    const successPromise = jest.fn(() => Promise.resolve(responseData));
+
+    act(() => {
+      axios.post.mockImplementationOnce(() => successPromise());
+    });
+
+    await waitFor(() => {
+      expect(successPromise).toHaveBeenCalled();
     });
   });
 });
