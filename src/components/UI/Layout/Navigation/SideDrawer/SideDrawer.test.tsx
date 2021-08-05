@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { waitFor } from '@testing-library/react';
 
 import SideDrawer from './SideDrawer';
@@ -25,6 +25,9 @@ describe('side drawer testing', () => {
     await waitFor(() => {
       expect(getByTestId('navbar')).toBeInTheDocument();
     });
+    // open menu
+    const button = screen.getByRole('button');
+    fireEvent.click(button);
   });
 
   it('should open bottom menus', async () => {
@@ -50,5 +53,22 @@ describe('side drawer testing', () => {
     const { getByTestId } = render(component);
     await waitFor(() => {});
     expect(getByTestId('helpButton')).toBeInTheDocument();
+  });
+
+  it('it should render component in normal mode', async () => {
+    const { getByTestId } = render(
+      <MockedProvider mocks={mocks}>
+        <Router>
+          <SideDrawer fullOpen={false} setFullOpen={jest.fn()} />
+        </Router>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('navbar')).toBeInTheDocument();
+    });
+    // open menu
+    const [, drawer] = screen.getAllByRole('button');
+    fireEvent.click(drawer);
   });
 });

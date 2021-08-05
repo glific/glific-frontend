@@ -18,14 +18,14 @@ const sidemenus = (
 );
 
 test('it should be initialized properly', async () => {
-  const { container, getByTestId } = render(sidemenus);
+  const { getByTestId } = render(sidemenus);
   await waitFor(() => {
     expect(getByTestId('list')).toBeInTheDocument();
   });
 });
 
 test('it should mark notification as read on notification click', async () => {
-  const { container, getAllByTestId } = render(sidemenus);
+  const { getAllByTestId } = render(sidemenus);
   await waitFor(async () => {
     await new Promise((resolve) => setTimeout(resolve, 1));
   });
