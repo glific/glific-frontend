@@ -67,6 +67,7 @@ const body = {
     },
   },
   interactiveContent: '{}',
+  sendBy: 'test',
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -202,6 +203,7 @@ export const collection = {
               },
             },
             interactiveContent: '{}',
+            sendBy: 'test',
           },
         ],
       },
