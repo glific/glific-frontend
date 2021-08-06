@@ -5,6 +5,7 @@ import { GET_USERS } from 'graphql/queries/User';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
 import { createSearchQuery, countSearchesQuery, getSearchesQuery, getSearch } from 'mocks/Search';
 import { setVariables } from 'common/constants';
+import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
 
 export const LIST_ITEM_MOCKS = [
   createSearchQuery,
@@ -92,6 +93,26 @@ export const LIST_ITEM_MOCKS = [
     result: {
       data: {
         users: [{ __typename: 'User', id: '1', name: 'Glific Admin' }],
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_ALL_FLOW_LABELS,
+      variables: setVariables(),
+    },
+    result: {
+      data: {
+        flowLabels: [
+          {
+            id: '1',
+            name: 'Label 1',
+          },
+          {
+            id: '2',
+            name: 'Label 2',
+          },
+        ],
       },
     },
   },

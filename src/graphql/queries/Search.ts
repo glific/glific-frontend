@@ -71,6 +71,7 @@ export const SEARCH_QUERY = gql`
         }
         interactiveContent
         sendBy
+        flowLabel
       }
     }
   }
@@ -192,6 +193,63 @@ export const SEARCH_MULTI_QUERY = gql`
         media {
           url
           caption
+        }
+      }
+      labels {
+        id
+        body
+        messageNumber
+        insertedAt
+        contact {
+          id
+          name
+          phone
+          maskedPhone
+          lastMessageAt
+          status
+          bspStatus
+        }
+        receiver {
+          id
+        }
+        sender {
+          id
+        }
+        tags {
+          id
+          label
+          colorCode
+        }
+        type
+        media {
+          url
+          caption
+        }
+        contextMessage {
+          body
+          contextId
+          messageNumber
+          errors
+          media {
+            caption
+            sourceUrl
+            id
+            url
+          }
+          type
+          insertedAt
+          location {
+            id
+            latitude
+            longitude
+          }
+          receiver {
+            id
+          }
+          sender {
+            id
+            name
+          }
         }
       }
     }

@@ -192,7 +192,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         refetchQueries={refetchQueries}
         title={t('Collections')}
         listItem="groups"
-        columnNames={['LABEL']}
+        columnNames={['TITLE']}
         listItemName="collection"
         displayListType="card"
         button={{ show: userRolePermissions.manageCollections, label: t('+ CREATE COLLECTION') }}

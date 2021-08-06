@@ -94,7 +94,7 @@ export const CONNECTION_RECONNECT_ATTEMPTS = 5;
 export const MEDIA_MESSAGE_TYPES = ['IMAGE', 'AUDIO', 'VIDEO', 'DOCUMENT', 'STICKER'];
 
 export const setColumnToBackendTerms: any = (listName: string, columnName: string) => {
-  const backendTerms: any = {
+  let backendTerms: any = {
     'LAST MODIFIED': 'updated_at',
     'END DATE': 'updated_at',
     NAME: 'name',
@@ -115,30 +115,34 @@ export const setColumnToBackendTerms: any = (listName: string, columnName: strin
     'RESPONSE JSON': 'response_json',
   };
 
-  if (listName === 'Search') {
-    backendTerms.TITLE = 'shortcode';
-    backendTerms.DESCRIPTION = 'label';
-  }
+  const additionalItems: any = {
+    flow: { TITLE: 'name' },
+    trigger: { TITLE: 'name' },
+    Search: {
+      TITLE: 'shortcode',
+      DESCRIPTION: 'label',
+    },
+    consultingHour: {
+      NAME: 'organization_name',
+      MINUTES: 'duration',
+      DATE: 'when',
+      TYPE: 'is_billable',
+    },
+    notification: {
+      TIMESTAMP: 'updated_at',
+      SEVERITY: 'severity',
+      CATEGORY: 'category',
+      ENTITY: 'entity',
+      MESSAGE: 'message',
+    },
+    contactField: {
+      'VARIABLE NAME': 'name',
+      'INPUT NAME': 'name',
+    },
+  };
 
-  if (listName === 'consultingHour') {
-    backendTerms.NAME = 'organization_name';
-    backendTerms.MINUTES = 'duration';
-    backendTerms.DATE = 'when';
-    backendTerms.TYPE = 'is_billable';
-  }
+  backendTerms = { ...backendTerms, ...additionalItems[listName] };
 
-  if (listName === 'notification') {
-    backendTerms.TIMESTAMP = 'updated_at';
-    backendTerms.SEVERITY = 'severity';
-    backendTerms.CATEGORY = 'category';
-    backendTerms.ENTITY = 'entity';
-    backendTerms.MESSAGE = 'message';
-  }
-
-  if (listName === 'contactField') {
-    backendTerms['VARIABLE NAME'] = 'name';
-    backendTerms['INPUT NAME'] = 'name';
-  }
   return backendTerms[columnName];
 };
 

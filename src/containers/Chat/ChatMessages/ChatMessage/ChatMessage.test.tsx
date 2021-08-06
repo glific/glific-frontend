@@ -1,4 +1,4 @@
-import { render, within, fireEvent, waitFor, screen } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import moment from 'moment';
 import { MockedProvider } from '@apollo/client/testing';
 
@@ -113,11 +113,14 @@ describe('<ChatMessage />', () => {
     expect(container.querySelector('.Other')).toBeInTheDocument();
   });
 
-  test('it should render the tags correctly', () => {
-    const { getByTestId } = render(chatMessageText);
-    const tags = within(getByTestId('tags'));
-    expect(tags.getByText('important')).toBeInTheDocument();
-  });
+  /**
+   * Commenting tags got replaced by labels..
+   */
+  // test('it should render the tags correctly', () => {
+  //   const { getByTestId } = render(chatMessageText);
+  //   const tags = within(getByTestId('tags'));
+  //   expect(tags.getByText('important')).toBeInTheDocument();
+  // });
 
   test('it should render the down arrow icon', () => {
     const { getAllByTestId } = render(chatMessageText);
@@ -128,14 +131,16 @@ describe('<ChatMessage />', () => {
     const { getAllByTestId } = render(chatMessageText);
     expect(getAllByTestId('popup')[0]).toBeInTheDocument();
   });
-
-  test('click on delete icon should call the delete query', async () => {
-    const { getAllByTestId } = render(chatMessageText);
-    fireEvent.click(getAllByTestId('deleteIcon')[0]);
-    await waitFor(() => {
-      expect(resultReturned).toBe(true);
-    });
-  });
+  /**
+   * Since removal of tags from chat screen, we don't have delete option now
+   */
+  // test('click on delete icon should call the delete query', async () => {
+  //   const { getAllByTestId } = render(chatMessageText);
+  //   fireEvent.click(getAllByTestId('deleteIcon')[0]);
+  //   await waitFor(() => {
+  //     expect(resultReturned).toBe(true);
+  //   });
+  // });
 
   test('it should detect a link in message', async () => {
     const { getAllByTestId } = render(chatMessageText);
@@ -286,6 +291,7 @@ describe('<ChatMessage />', () => {
     showMessage: true,
     interactiveContent: '{}',
     sendBy: 'test',
+    flowLabel: 'test1, test2',
   };
 
   test('it should render with image', async () => {

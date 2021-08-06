@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
@@ -8,7 +8,13 @@ import { getCurrentUserQuery, updateUserQuery } from 'mocks/User';
 import { getOrganizationLanguagesQuery } from 'mocks/Organization';
 import { MyAccount } from './MyAccount';
 
-const mocks = [getCurrentUserQuery, ...updateUserQuery, getOrganizationLanguagesQuery];
+const mocks = [
+  getCurrentUserQuery,
+  ...updateUserQuery,
+  getCurrentUserQuery,
+  getOrganizationLanguagesQuery,
+  getOrganizationLanguagesQuery,
+];
 
 jest.mock('axios');
 const wrapper = (
@@ -67,15 +73,22 @@ describe('<MyAccount />', () => {
       expect(screen.getAllByText('Input required')).toHaveLength(2);
     });
 
+    const dropdown = screen.getByTestId('dropdown');
+    const { getByRole } = within(dropdown);
+    const inputDropdown = getByRole('button');
+    fireEvent.mouseDown(inputDropdown);
+    const [english, hindi] = screen.getAllByRole('option');
+    hindi.click();
+
+    // enter otp
+    const input = container.querySelector('input[type="text"]');
+    UserEvent.type(input, '76554');
+
+    // enter password
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
     await waitFor(() => {
-      // enter otp
-      const input = container.querySelector('input[type="text"]');
-      UserEvent.type(input, '76554');
-
-      // enter password
-      const password = container.querySelector('input[type="password"]');
-      UserEvent.type(password, 'pass123456');
-
       // view password
       const passwordToggle = screen.getByTestId('passwordToggle');
       UserEvent.click(passwordToggle);
@@ -140,15 +153,14 @@ describe('<MyAccount />', () => {
       UserEvent.click(generateOTPButton);
     });
 
+    // enter otp
+    const input = container.querySelector('input[type="text"]');
+    UserEvent.type(input, '1234');
+
+    // enter password
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
     await waitFor(() => {
-      // enter otp
-      const input = container.querySelector('input[type="text"]');
-      UserEvent.type(input, '1234');
-
-      // enter password
-      const password = container.querySelector('input[type="password"]');
-      UserEvent.type(password, 'pass123456');
-
       // click on save button
       const saveButton = screen.getByText('Save');
       UserEvent.click(saveButton);
@@ -173,15 +185,15 @@ describe('<MyAccount />', () => {
       UserEvent.click(generateOTPButton);
     });
 
+    // enter otp
+    const input = container.querySelector('input[type="text"]');
+    UserEvent.type(input, '4567');
+
+    // enter password
+    const password = container.querySelector('input[type="password"]');
+    UserEvent.type(password, 'pass123456');
+
     await waitFor(() => {
-      // enter otp
-      const input = container.querySelector('input[type="text"]');
-      UserEvent.type(input, '4567');
-
-      // enter password
-      const password = container.querySelector('input[type="password"]');
-      UserEvent.type(password, 'pass123456');
-
       // click on save button
       const saveButton = screen.getByText('Save');
       UserEvent.click(saveButton);

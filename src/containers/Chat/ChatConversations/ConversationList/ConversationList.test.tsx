@@ -136,7 +136,7 @@ test('It render contact collection with multi-search', async () => {
 
   await waitFor(() => {
     const listItems = screen.getAllByTestId('list');
-    expect(listItems.length).toBe(34);
+    expect(listItems.length).toBe(35);
     fireEvent.click(listItems[0]);
   });
 });

@@ -1,4 +1,4 @@
-import { render, within, screen, act } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChatMessages } from './ChatMessages';
 import { fireEvent, waitFor } from '@testing-library/dom';
@@ -68,6 +68,7 @@ const body = {
   },
   interactiveContent: '{}',
   sendBy: 'test',
+  flowLabel: null,
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -204,6 +205,7 @@ export const collection = {
             },
             interactiveContent: '{}',
             sendBy: 'test',
+            flowLabel: null,
           },
         ],
       },
@@ -262,34 +264,37 @@ it('should contain the mock message', async () => {
   });
 });
 
-test('click on assign tag should open a dialog box with already assigned tags', async () => {
-  const { getByTestId } = render(chatMessages);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('messageOptions'));
-  });
+/**
+ * Removing tags related test cases for now
+ */
+// test('click on assign tag should open a dialog box with already assigned tags', async () => {
+//   const { getByTestId } = render(chatMessages);
+//   await waitFor(() => {
+//     fireEvent.click(getByTestId('messageOptions'));
+//   });
 
-  fireEvent.click(getByTestId('dialogButton'));
+//   fireEvent.click(getByTestId('dialogButton'));
 
-  await waitFor(() => {
-    expect(getByTestId('dialogBox')).toHaveTextContent('Assign tag to message');
-  });
-});
+//   await waitFor(() => {
+//     expect(getByTestId('dialogBox')).toHaveTextContent('Assign tag to message');
+//   });
+// });
 
 // need to check how to mock these
 
-test('assigned tags should be shown in searchbox', async () => {
-  const { getByTestId } = render(chatMessages);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('messageOptions'));
-  });
+// test('assigned tags should be shown in searchbox', async () => {
+//   const { getByTestId } = render(chatMessages);
+//   await waitFor(() => {
+//     fireEvent.click(getByTestId('messageOptions'));
+//   });
 
-  fireEvent.click(getByTestId('dialogButton'));
+//   fireEvent.click(getByTestId('dialogButton'));
 
-  await waitFor(() => {
-    const searchBox = within(getByTestId('AutocompleteInput'));
-    expect(searchBox.getAllByText('Search'));
-  });
-});
+//   await waitFor(() => {
+//     const searchBox = within(getByTestId('AutocompleteInput'));
+//     expect(searchBox.getAllByText('Search'));
+//   });
+// });
 
 // test('remove already assigned tags', async () => {
 //   const { getByTestId } = render(chatMessages);
@@ -313,15 +318,15 @@ test('focus on the latest message', async () => {
   });
 });
 
-test('cancel after dialog box open', async () => {
-  const { getByText, getByTestId } = render(chatMessages);
-  await waitFor(() => {
-    fireEvent.click(getByTestId('messageOptions'));
-    fireEvent.click(getByTestId('dialogButton'));
-  });
+// test('cancel after dialog box open', async () => {
+//   const { getByText, getByTestId } = render(chatMessages);
+//   await waitFor(() => {
+//     fireEvent.click(getByTestId('messageOptions'));
+//     fireEvent.click(getByTestId('dialogButton'));
+//   });
 
-  fireEvent.click(getByText('Cancel'));
-});
+//   fireEvent.click(getByText('Cancel'));
+// });
 
 // Need to first scroll up
 
