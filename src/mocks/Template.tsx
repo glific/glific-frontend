@@ -155,6 +155,19 @@ export const templateCountQuery = (isHsm: boolean, count: number = 3) => {
   };
 };
 
-export const getHSMTemplateCountQuery = templateCountQuery(true);
-
-export const getTemplateCountQuery = templateCountQuery(false);
+export const hsmTemplatesCountQuery = {
+  request: {
+    query: GET_TEMPLATES_COUNT,
+    variables: {
+      filter: {
+        isHsm: true,
+        status: 'APPROVED',
+      },
+    },
+  },
+  result: {
+    data: {
+      countSessionTemplates: 2,
+    },
+  },
+};

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
@@ -46,11 +47,27 @@ export interface TemplateProps {
   isHSM?: boolean;
 }
 
+const statusFilter = {
+  APPROVED: false,
+  PENDING: false,
+  REJECTED: false,
+};
+
 export const Template: React.SFC<TemplateProps> = (props) => {
-  const { title, listItem, listItemName, pageLink, listIcon, filters, buttonLabel, isHSM } = props;
+  const {
+    title,
+    listItem,
+    listItemName,
+    pageLink,
+    listIcon,
+    filters: templateFilters,
+    buttonLabel,
+    isHSM,
+  } = props;
   const [open, setOpen] = useState(false);
   const [Id, setId] = useState('');
   const { t } = useTranslation();
+  const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
 
   const getStatus = (status: string) => {
     let statusValue;
@@ -140,12 +157,52 @@ export const Template: React.SFC<TemplateProps> = (props) => {
 
   let defaultSortBy;
 
+  const dialogMessage = t('It will stop showing when you draft a customized message');
+
+  let filterValue: any = '';
+  const statusList = ['Approved', 'Pending', 'Rejected'];
+  const handleCheckedBox = (event: any) => {
+    setFilters({ ...statusFilter, [event.target.name.toUpperCase()]: event.target.checked });
+  };
+
+  const filterStatusName = Object.keys(filters).filter((status) => filters[status] === true);
+  if (filterStatusName.length === 1) {
+    [filterValue] = filterStatusName;
+  }
+
+  const filterTemplateStatus = (
+    <div className={styles.Filters}>
+      {statusList.map((label, index) => {
+        const key = index;
+        const checked = filters[label.toUpperCase()];
+        return (
+          <FormControlLabel
+            key={key}
+            control={
+              <Checkbox
+                checked={checked}
+                color="primary"
+                onChange={handleCheckedBox}
+                name={statusList[index]}
+              />
+            }
+            label={statusList[index]}
+            classes={{
+              label: styles.FilterLabel,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+
+  let appliedFilters = templateFilters;
+
   if (isHSM) {
     additionalAction = [];
     defaultSortBy = 'STATUS';
+    appliedFilters = { ...templateFilters, status: filterValue };
   }
-
-  const dialogMessage = t('It will stop showing when you draft a customized message');
 
   return (
     <List
@@ -156,7 +213,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       listIcon={listIcon}
       additionalAction={additionalAction}
       dialogMessage={dialogMessage}
-      filters={filters}
+      filters={appliedFilters}
       refetchQueries={{
         query: FILTER_TEMPLATES,
         variables: setVariables({ term: '' }),
@@ -165,6 +222,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
       {...queries}
+      filterList={isHSM && filterTemplateStatus}
       collapseOpen={open}
       collapseRow={Id}
     />
