@@ -88,7 +88,7 @@ export const Template: React.SFC<TemplateProps> = (props) => {
     return <span className={styles.Status}>{statusValue}</span>;
   };
 
-  let columnNames = ['LABEL', 'BODY'];
+  let columnNames = ['TITLE', 'BODY'];
   columnNames = isHSM
     ? [...columnNames, 'STATUS', 'ACTIONS']
     : [...columnNames, 'LAST MODIFIED', 'ACTIONS'];

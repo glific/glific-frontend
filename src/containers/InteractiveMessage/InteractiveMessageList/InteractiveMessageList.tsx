@@ -73,7 +73,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
     translations: getTranslations(type, language, translations),
   });
 
-  const columnNames = ['LABEL', 'MESSAGE', 'TYPE', 'ACTIONS'];
+  const columnNames = ['TITLE', 'MESSAGE', 'TYPE', 'ACTIONS'];
   const dialogMessage = t("You won't be able to use this interactive message.");
 
   const columnAttributes = {
