@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useMutation, useApolloClient } from '@apollo/client';
+// import { useApolloClient } from '@apollo/client';
 import Popper from '@material-ui/core/Popper';
 import { Button } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
@@ -10,15 +10,15 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Filled.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as MessageIcon } from 'assets/images/icons/Dropdown.svg';
-import { ReactComponent as CloseIcon } from 'assets/images/icons/Close.svg';
+// import { ReactComponent as CloseIcon } from 'assets/images/icons/Close.svg';
 import {
   DATE_FORMAT,
   TIME_FORMAT,
   INTERACTIVE_LIST,
   INTERACTIVE_QUICK_REPLY,
 } from 'common/constants';
-import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
-import { setNotification } from 'common/notification';
+// import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
+// import { setNotification } from 'common/notification';
 import { WhatsAppToJsx, WhatsAppTemplateButton } from 'common/RichEditor';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { parseTextMethod } from 'common/utils';
@@ -54,10 +54,11 @@ export interface ChatMessageProps {
   contextMessage: any;
   jumpToMessage: any;
   interactiveContent: string;
+  flowLabel: string | null;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const [showSaveMessageDialog, setShowSaveMessageDialog] = useState(false);
   const Ref = useRef(null);
   const messageRef = useRef<null | HTMLDivElement>(null);
@@ -66,14 +67,14 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
 
   const open = Boolean(anchorEl);
   const popperId = open ? 'simple-popper' : undefined;
-  let displayTag: any;
-  let deleteId: string | number;
+  // let displayTag: any;
+  // let deleteId: string | number;
   const {
     popup,
     focus,
     sender,
     contactId,
-    tags,
+    // tags,
     showMessage,
     insertedAt,
     onClick,
@@ -86,6 +87,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     contextMessage,
     jumpToMessage,
     interactiveContent,
+    flowLabel,
   } = props;
 
   useEffect(() => {
@@ -103,11 +105,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   }, []);
 
   // tagging delete mutation
-  const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
-    onCompleted: () => {
-      setNotification(client, t('Tag deleted successfully.'));
-    },
-  });
+  // const [deleteTag] = useMutation(UPDATE_MESSAGE_TAGS, {
+  //   onCompleted: () => {
+  //     setNotification(client, t('Tag deleted successfully.'));
+  //   },
+  // });
 
   let iconLeft = false;
   let placement: any = 'bottom-end';
@@ -115,8 +117,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   let mineColor: string | null = styles.MineColor;
   let iconPlacement = styles.ButtonLeft;
   let datePlacement: string | null = styles.DateLeft;
-  let tagContainer: string | null = styles.TagContainerSender;
-  let tagMargin: string | null = styles.TagMargin;
+  // let tagContainer: string | null = styles.TagContainerSender;
+  let labelContainer: string | null = styles.LabelContainerSender;
+  // let tagMargin: string | null = styles.TagMargin;
+  let labelMargin: string | null = styles.LabelMargin;
   let messageDetails = styles.MessageDetails;
   const messageError = errors ? parseTextMethod(errors) : {};
   let messageErrorStatus: any = false;
@@ -158,8 +162,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     placement = 'bottom-start';
     iconPlacement = styles.ButtonRight;
     datePlacement = null;
-    tagContainer = null;
-    tagMargin = null;
+    // tagContainer = null;
+    labelContainer = null;
+    // tagMargin = null;
+    labelMargin = null;
     messageDetails = styles.MessageDetailsSender;
   }
 
@@ -207,37 +213,37 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     );
   }
 
-  const deleteTagHandler = (event: any) => {
-    deleteId = event.currentTarget.getAttribute('data-id');
-    deleteTag({
-      variables: {
-        input: {
-          messageId: props.id,
-          addTagIds: [],
-          deleteTagIds: [deleteId],
-        },
-      },
-    });
-  };
+  // const deleteTagHandler = (event: any) => {
+  //   deleteId = event.currentTarget.getAttribute('data-id');
+  //   deleteTag({
+  //     variables: {
+  //       input: {
+  //         messageId: props.id,
+  //         addTagIds: [],
+  //         deleteTagIds: [deleteId],
+  //       },
+  //     },
+  //   });
+  // };
 
-  if (tags && tags.length > 0)
-    displayTag = tags.map((tag: any) => (
-      <div
-        key={tag.id}
-        className={`${styles.Tag} ${tagMargin}`}
-        style={{ color: tag.colorCode }}
-        data-testid="tags"
-      >
-        <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
-        {tag.label}
-        <CloseIcon
-          className={styles.CloseIcon}
-          onClick={deleteTagHandler}
-          data-id={tag.id}
-          data-testid="deleteIcon"
-        />
-      </div>
-    ));
+  // if (tags && tags.length > 0)
+  //   displayTag = tags.map((tag: any) => (
+  //     <div
+  //       key={tag.id}
+  //       className={`${styles.Tag} ${tagMargin}`}
+  //       style={{ color: tag.colorCode }}
+  //       data-testid="tags"
+  //     >
+  //       <TagIcon className={styles.TagIcon} stroke={tag.colorCode ? tag.colorCode : '#0C976D'} />
+  //       {tag.label}
+  //       <CloseIcon
+  //         className={styles.CloseIcon}
+  //         onClick={deleteTagHandler}
+  //         data-id={tag.id}
+  //         data-testid="deleteIcon"
+  //       />
+  //     </div>
+  //   ));
 
   const date = showMessage ? (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
@@ -291,6 +297,18 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     template = <QuickReplyTemplate {...content} disabled />;
   }
 
+  let displayLabel;
+  if (flowLabel) {
+    const labels = flowLabel.split(',');
+    if (labels.length > 0) {
+      displayLabel = labels.map((label: string) => (
+        <div key={label} className={`${styles.Label} ${labelMargin}`} data-testid="labels">
+          <TagIcon className={styles.LabelIcon} stroke="#073f24" />
+          {label}
+        </div>
+      ));
+    }
+  }
   return (
     <div
       className={additionalClass}
@@ -366,7 +384,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
                 <Paper elevation={3}>
-                  <Button
+                  {/* <Button
                     className={styles.Popper}
                     color="primary"
                     onClick={props.setDialog}
@@ -374,7 +392,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                   >
                     {t('Assign tag')}
                   </Button>
-                  <br />
+                  <br /> */}
                   <Button
                     className={styles.Popper}
                     color="primary"
@@ -410,8 +428,11 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
           <TemplateButtons template={templateButtons} />
         </div>
         {date}
-        {displayTag ? (
+        {/* {displayTag ? (
           <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
+        ) : null} */}
+        {displayLabel ? (
+          <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
         ) : null}
       </div>
     </div>

@@ -41,6 +41,8 @@ describe('<Providers />', () => {
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
+      const checkbox = screen.getByRole('checkbox');
+      UserEvent.click(checkbox);
       // click on SAVE
       const saveButton = screen.getByText('Save');
       UserEvent.click(saveButton);

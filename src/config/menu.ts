@@ -7,13 +7,13 @@ const menus = [
     type: 'sideDrawer',
     roles: ['Staff', 'Manager', 'Admin'],
   },
-  {
-    title: 'Tags',
-    path: '/tag',
-    icon: 'tag',
-    type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
-  },
+  // {
+  //   title: 'Tags',
+  //   path: '/tag',
+  //   icon: 'tag',
+  //   type: 'sideDrawer',
+  //   roles: ['Manager', 'Admin'],
+  // },
   {
     title: 'Speed Sends',
     path: '/speed-send',

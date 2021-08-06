@@ -317,7 +317,7 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
   if (searchVal && searchMultiData && Object.keys(searchParam).length === 0) {
     conversations = searchMultiData.searchMulti;
     // to set search response sequence
-    const searchArray = { contacts: [], tags: [], messages: [] };
+    const searchArray = { contacts: [], tags: [], messages: [], labels: [] };
     let conversationsData;
     Object.keys(searchArray).forEach((dataArray: any) => {
       const header = (

@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { ContactDescription } from './ContactDescription';
 
 const defaultProps = {
-  fields: '{"Age":"14"}',
+  fields:
+    '{"name":{"value":"hey","type":"string","label":"Name","inserted_at":"2021-08-04T11:00:33.693233Z"}}',
   phone: '9987399299',
   maskedPhone: '9987399299',
   settings: '{"Status":"Active"}',
@@ -26,8 +27,12 @@ const propsWithMultipleCollections = {
 const wrapper = <ContactDescription {...defaultProps}></ContactDescription>;
 
 it('should render ContactDescription', () => {
-  const { getByTestId } = render(wrapper);
+  const { getByTestId, container } = render(wrapper);
   expect(getByTestId('contactDescription')).toBeInTheDocument();
+  // toggle phone visibility
+
+  const togglePhone = screen.getByRole('button');
+  fireEvent.click(togglePhone);
 });
 
 test('it should display contact number', () => {

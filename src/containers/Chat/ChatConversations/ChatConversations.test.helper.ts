@@ -58,6 +58,7 @@ const withResult = {
               },
             },
             interactiveContent: '{}',
+            flowLabel: null,
           },
         ],
       },
@@ -168,6 +169,7 @@ export const searchMultiQuery = (
                 },
               ],
               type: 'TEXT',
+              flowLabel: null,
             },
           ],
           tags: [

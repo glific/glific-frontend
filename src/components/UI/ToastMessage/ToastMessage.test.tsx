@@ -25,6 +25,12 @@ describe('<ToastMessage />', () => {
     expect(mockCallback).toHaveBeenCalled();
   });
 
+  it('it should rendre with default props', () => {
+    const { getByTestId } = render(<ToastMessage message={'Saved.'} handleClose={mockCallback} />);
+    fireEvent.click(getByTestId('crossIcon'));
+    expect(mockCallback).toHaveBeenCalled();
+  });
+
   // To do: how to check timer in test cases
 
   // it('should check if the callback method is called after 1 second', async () => {

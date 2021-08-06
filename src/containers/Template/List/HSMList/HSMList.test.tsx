@@ -4,8 +4,9 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
 import { HSMList } from './HSMList';
+import { hsmTemplatesCountQuery } from 'mocks/Template';
 
-const mocks = TEMPLATE_MOCKS;
+const mocks = [...TEMPLATE_MOCKS, hsmTemplatesCountQuery];
 
 const template = (
   <MockedProvider mocks={mocks} addTypename={false}>

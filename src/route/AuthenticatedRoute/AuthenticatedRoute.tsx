@@ -11,8 +11,8 @@ import styles from './AuthenticatedRoute.module.css';
 
 const defaultRedirect = () => <Redirect to="/chat" />;
 
-const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
-const Tag = lazy(() => import('containers/Tag/Tag'));
+// const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
+// const Tag = lazy(() => import('containers/Tag/Tag'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
 const FlowList = lazy(() => import('containers/Flow/FlowList/FlowList'));
@@ -102,9 +102,9 @@ const routeStaff = (
 const routeAdmin = (
   <Switch>
     <Route path="/chat" exact component={Chat} />
-    <Route path="/tag" exact component={TagList} />
+    {/* <Route path="/tag" exact component={TagList} />
     <Route path="/tag/add" exact component={Tag} />
-    <Route path="/tag/:id/edit" exact component={Tag} />
+    <Route path="/tag/:id/edit" exact component={Tag} /> */}
     <Route path="/speed-send" exact component={SpeedSendList} />
     <Route path="/speed-send/add" exact component={SpeedSend} />
     <Route path="/speed-send/:id/edit" exact component={SpeedSend} />
