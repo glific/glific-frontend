@@ -3,8 +3,6 @@ import { getAuthSession, renewAuthToken, setAuthSession } from 'services/AuthSer
 import setLogs from './logs';
 import { SOCKET } from '.';
 
-console.log(SOCKET);
-
 const AbsintheSocket = require('@absinthe/socket');
 const SocketApolloLink = require('@absinthe/socket-apollo-link');
 const PhoenixSocket = require('phoenix');
