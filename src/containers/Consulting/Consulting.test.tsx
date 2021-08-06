@@ -1,13 +1,18 @@
 import { act, fireEvent, render, screen, waitFor, cleanup } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { getConsultingHour, getOrganizationList } from 'mocks/Consulting';
+import {
+  getConsultingHour,
+  getOrganizationList,
+  createConsultingHour,
+  updateConsultingHour,
+} from 'mocks/Consulting';
 import { setUserSession } from 'services/AuthService';
 import { Consulting } from './Consulting';
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-const mocks = [getOrganizationList, getConsultingHour];
+const mocks = [getOrganizationList, getConsultingHour, createConsultingHour, updateConsultingHour];
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Consulting match={{ params: {} }} />
@@ -55,4 +60,14 @@ test('Render component correctly with empty form', async () => {
     expect(submitButton).toBeInTheDocument();
     fireEvent.click(submitButton);
   });
+});
+
+test('it renders consulting hours in edit mode', async () => {
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Consulting match={{ params: { id: '1' } }} />
+    </MockedProvider>
+  );
+
+  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 100)));
 });

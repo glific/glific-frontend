@@ -68,6 +68,7 @@ const body = {
     },
   },
   interactiveContent: '{}',
+  flowLabel: null,
 };
 
 const cache = new InMemoryCache({ addTypename: false });
@@ -151,6 +152,7 @@ cache.writeQuery({
               },
             },
             interactiveContent: '{}',
+            flowLabel: null,
           },
         ],
       },

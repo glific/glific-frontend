@@ -1,3 +1,4 @@
+import { UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import {
   GET_ORGANIZATION,
   USER_LANGUAGES,
@@ -282,6 +283,35 @@ export const getProvidersQuery = [
       },
     },
   },
+  {
+    request: {
+      query: UPDATE_CREDENTIAL,
+      variables: {
+        id: '1',
+        input: {
+          shortcode: 'gupshup',
+          isActive: true,
+          keys: '{"worker":"Glific.Providers.Gupshup.Worker","url":"https://gupshup.io/","handler":"Glific.Providers.Gupshup.Message","api_end_point":"https://api.gupshup.io/sm/api/v1"}',
+          secrets:
+            '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+        },
+      },
+    },
+    result: {
+      data: {
+        updateCredential: {
+          credential: {
+            id: '1',
+            keys: '{"worker":{"view_only":true,"type":"string","label":"Outbound Message Worker","default":"Glific.Providers.Gupshup.Worker"},"url":{"view_only":true,"type":"string","label":"BSP Home Page","default":"https://gupshup.io/"},"handler":{"view_only":true,"type":"string","label":"Inbound Message Handler","default":"Glific.Providers.Gupshup.Message"},"api_end_point":{"view_only":false,"type":"string","label":"API End Point","default":"https://api.gupshup.io/sm/api/v1"}}',
+            provider: { shortcode: 'gupshup' },
+            secrets:
+              '{"app_name":"Please enter your App Name here","api_key":"Please enter your key here"}',
+          },
+          errors: null,
+        },
+      },
+    },
+  },
 ];
 
 export const getCredential = [
@@ -400,6 +430,12 @@ export const getOrganizationLanguagesQuery = {
                 label: 'English',
                 localized: true,
                 locale: 'en',
+              },
+              {
+                id: '2',
+                label: 'Hindi',
+                localized: true,
+                locale: 'hi',
               },
             ],
             defaultLanguage: {

@@ -252,3 +252,35 @@
 .InteractiveContent {
   padding: 0px !important;
 }
+
+.Label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #073f24;
+  display: flex;
+  align-items: center;
+  margin-right: 13px;
+}
+
+.LabelIcon {
+  margin-right: 4.27px;
+  font-weight: bold;
+  width: 11px;
+  vertical-align: text-top;
+}
+
+.LabelMargin {
+  margin-right: 0px !important;
+  margin-left: 8px;
+}
+
+.LabelContainer {
+  display: flex;
+  line-height: 12px;
+  margin-bottom: 11px;
+  flex-wrap: wrap;
+}
+
+.LabelContainerSender {
+  justify-content: flex-end;
+}
