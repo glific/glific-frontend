@@ -9,6 +9,7 @@ import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Input } from 'components/UI/Form/Input/Input';
 import { EmojiInput } from 'components/UI/Form/EmojiInput/EmojiInput';
 import { Simulator } from 'components/simulator/Simulator';
+import { WhatsAppToDraftEditor } from 'common/RichEditor';
 import Template from '../Template';
 import styles from './HSM.module.css';
 
@@ -126,10 +127,9 @@ export const HSM: React.SFC<HSMProps> = ({ match }) => {
       helperText:
         'Replace variables eg. {{1}} with actual values enclosed in [ ] eg. [12345] to show a complete message with meaningful word/statement/numbers/ special characters.',
       handleChange: getSimulatorMessage,
-      inputProp: {
-        onBlur: (editorState: any) => {
-          setExample(editorState);
-        },
+      handleBlur: (event: any) => {
+        const { textContent } = event.target;
+        setExample(EditorState.createWithContent(WhatsAppToDraftEditor(textContent)));
       },
     },
     {
