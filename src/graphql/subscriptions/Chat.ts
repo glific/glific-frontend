@@ -59,6 +59,7 @@ export const MESSAGE_RECEIVED_SUBSCRIPTION = gql`
         }
       }
       interactiveContent
+      flowLabel
     }
   }
 `;
@@ -122,6 +123,7 @@ export const MESSAGE_SENT_SUBSCRIPTION = gql`
         }
       }
       interactiveContent
+      flowLabel
     }
   }
 `;
@@ -197,6 +199,7 @@ export const COLLECTION_SENT_SUBSCRIPTION = gql`
         }
       }
       interactiveContent
+      flowLabel
     }
   }
 `;
