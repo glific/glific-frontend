@@ -43,7 +43,6 @@ import {
   SimulatorTemplate,
   ListReplyTemplateDrawer,
 } from 'containers/Chat/ChatMessages/ListReplyTemplate/ListReplyTemplate';
-
 import { QuickReplyTemplate } from 'containers/Chat/ChatMessages/QuickReplyTemplate/QuickReplyTemplate';
 import styles from './Simulator.module.css';
 
@@ -438,6 +437,14 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const handleAttachmentClick = (media: any) => {
     const { name: type, payload } = media;
+
+    const mediaUrl = document.querySelector('#media');
+    if (mediaUrl) {
+      const url = mediaUrl.getAttribute('data-url');
+      if (url) {
+        payload.url = url;
+      }
+    }
     sendMediaMessage(type, payload);
     setIsOpen(false);
   };
@@ -454,7 +461,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
   const dropdown = (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-      <div className={styles.Dropdown}>
+      <div className={styles.Dropdown} id="media">
         {SAMPLE_MEDIA_FOR_SIMULATOR.map((media: any) => (
           <Button onClick={() => handleAttachmentClick(media)} key={media.id}>
             <MessageType type={media.id} color="dark" />
