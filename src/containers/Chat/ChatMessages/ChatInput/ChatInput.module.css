@@ -22,6 +22,11 @@
   padding-right: 5px;
 }
 
+.InputErrorStyle {
+  composes: ChatInputElements;
+  border: 2px solid red;
+}
+
 .Rounded {
   border-radius: 15px;
 }
@@ -238,6 +243,11 @@
 
 svg.SendIcon {
   margin-top: 2px;
+}
+
+.ErrorMessage {
+  color: red;
+  padding-left: 10px;
 }
 
 @media only screen and (max-width: 768px) {

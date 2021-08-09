@@ -68,6 +68,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   const [recordedAudio, setRecordedAudio] = useState<any>('');
   const [clearAudio, setClearAudio] = useState<any>(false);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(false);
 
   const { t } = useTranslation();
   const speedSends = 'Speed sends';
@@ -153,6 +154,11 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
     // check for an empty message or message with just spaces
     if ((!message || /^\s*$/.test(message)) && !attachmentAdded) return;
+
+    if (message.length > 4096) {
+      setError(true);
+      return;
+    }
 
     // check if there is any attachment
     if (attachmentAdded) {
@@ -358,6 +364,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     };
     dialog = <AddAttachment {...dialogProps} />;
   }
+
+  const inputContainerStyle = error ? styles.InputErrorStyle : styles.ChatInputElements;
   return (
     <Container
       className={`${styles.ChatInput} ${additionalStyle}`}
@@ -389,7 +397,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
       </ClickAwayListener>
 
       <div
-        className={clsx(styles.ChatInputElements, {
+        className={clsx(inputContainerStyle, {
           [styles.Unrounded]: selectedTab !== '',
           [styles.Rounded]: selectedTab === '',
         })}
@@ -468,6 +476,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
           </Button>
         </div>
       </div>
+      {error && (
+        <div className={styles.ErrorMessage}>Message too long. Max size 4096 characters</div>
+      )}
     </Container>
   );
 };
