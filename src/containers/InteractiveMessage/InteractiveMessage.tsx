@@ -470,10 +470,11 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       convertToWhatsApp: true,
       textArea: true,
       helperText: 'You can also use variables in message enter @ to see the available list',
+      handleBlur: (event: any) => {
+        const { textContent } = event.target;
+        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(textContent)));
+      },
       inputProp: {
-        onBlur: (editorState: any) => {
-          setBody(editorState);
-        },
         suggestions: contactVariables,
       },
     },
