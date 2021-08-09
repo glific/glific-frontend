@@ -643,10 +643,11 @@ export const List: React.SFC<ListProps> = ({
         </div>
       </div>
 
-      {backLink}
-      {/* Rendering list of items */}
-
-      {itemList.length > 0 ? displayList : noItemsText}
+      <div className={styles.Body}>
+        {backLink}
+        {/* Rendering list of items */}
+        {itemList.length > 0 ? displayList : noItemsText}
+      </div>
     </>
   );
 };

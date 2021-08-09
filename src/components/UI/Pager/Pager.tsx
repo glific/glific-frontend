@@ -226,7 +226,9 @@ export const Pager: React.SFC<PagerProps> = (props) => {
         <TableHead className={styles.TagListHeader} data-testid="tableHead">
           {tableHead}
         </TableHead>
-        <TableBody data-testid="tableBody">{rows}</TableBody>
+        <TableBody data-testid="tableBody" className={styles.TableBody}>
+          {rows}
+        </TableBody>
         <TableFooter className={styles.TableFooter} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>

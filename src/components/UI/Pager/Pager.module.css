@@ -15,11 +15,23 @@
 }
 
 .TableHeadRow {
+  position: fixed;
+  top: 80px;
+  margin-top: 20px;
+  width: calc(100% - 280px);
+  z-index: 1000;
+  background-color: #fafafa;
   display: flex !important;
   margin-bottom: 4px !important;
   padding: 0px 16px;
   padding-right: 5px;
   line-height: 1 !important;
+}
+
+.TableBody {
+  display: block;
+
+  padding-top: 40px;
 }
 
 .TableCell {
