@@ -81,7 +81,6 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
   };
 
   useEffect(() => {
-    console.log(attachmentURL, attachmentType);
     validateURL();
   }, [attachmentURL, attachmentType]);
 
