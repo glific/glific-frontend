@@ -347,6 +347,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     body={contextMessage.body}
                     insertedAt={contextMessage.insertedAt}
                     location={contextMessage.location}
+                    isContextMessage
                   />
                 </div>
               </div>

@@ -8,12 +8,13 @@ import { CORS_PROXY_URL } from '../../../../config';
 
 export interface MessagesWithLinksProps {
   message: any;
+  showPreview?: boolean;
 }
 
 export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
   props: MessagesWithLinksProps
 ) => {
-  const { message } = props;
+  const { message, showPreview = true } = props;
   let linkPreview = null;
   const messagebody: any = WhatsAppToJsx(message);
   const regexForLink =
@@ -38,7 +39,7 @@ export const MessagesWithLinks: React.FC<MessagesWithLinksProps> = (
 
   return (
     <>
-      {linkPreview}
+      {showPreview && linkPreview}
       {messagebody}
     </>
   );

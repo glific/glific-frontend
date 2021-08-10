@@ -18,6 +18,7 @@ export interface EmojiInputProps {
   placeholder: string;
   rows: number;
   handleChange?: any;
+  handleBlur?: any;
   inputProp?: any;
 }
 
@@ -77,6 +78,7 @@ const DraftField = (inputProps: any) => {
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
   handleChange,
+  handleBlur,
   ...props
 }: EmojiInputProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -112,16 +114,6 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       handleChange(convertToWhatsApp(props.form.values.example));
     }
     props.form.setFieldValue(rest.name, editorState);
-  };
-
-  const handleBlur = (event: any) => {
-    props.form.handleBlur(event);
-    /**
-     * To get callback on parent since we don't have callback on form
-     */
-    if (props.inputProp?.onBlur) {
-      props.inputProp.onBlur(props.form.values[rest.name]);
-    }
   };
 
   const mentions = props.inputProp?.suggestions || [];
