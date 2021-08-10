@@ -87,8 +87,6 @@ export const BlockContactList: React.SFC<BlockContactListProps> = () => {
       },
     };
 
-    addLogs(`Unblock contact-${contactId}`, variables);
-
     unblockContact({
       variables,
     });

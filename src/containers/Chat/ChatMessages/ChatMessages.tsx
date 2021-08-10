@@ -336,8 +336,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
       input: updatePayload(payload, selectedTemplate, variableParam),
     };
 
-    addLogs(`send Message To Collection-${collectionId}`, variables);
-
     setCollectionVariables({
       groupId: collectionId,
       input: updatePayload(payload, selectedTemplate, variableParam),

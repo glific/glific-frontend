@@ -308,7 +308,6 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
   }
 
   const handleBlock = () => {
-    addLogs(`refetch after block Contact`, SEARCH_QUERY_VARIABLES);
     blockContact({
       variables: {
         id: contactId,

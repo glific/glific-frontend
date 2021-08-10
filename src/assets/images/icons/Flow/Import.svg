@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="28px" height="28px" viewBox="5 6 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Btn/Primary</title>
     <g id="Flows" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Desktop/Flows" transform="translate(-1216.000000, -20.000000)">
             <g id="Btn/Primary" transform="translate(1216.000000, 20.000000)">
-                <rect id="Rectangle-Copy-15" fill="#119656" x="0" y="0" width="40" height="40" rx="20"></rect>
                 <g id="Group" transform="translate(11.000000, 13.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-width="2">
                     <g>
                         <path d="M13.9697904,1 L14.0170012,1 C15.6738555,1 17.0170012,2.34314575 17.0170012,4 L17.0170012,10 C17.0170012,11.6568542 15.6738555,13 14.0170012,13 L12.2484404,13 L12.2484404,13 L12.2484404,15.7759202 C12.2484404,16.3282049 11.8007251,16.7759202 11.2484404,16.7759202 C11.0038462,16.7759202 10.7677337,16.6862758 10.5847709,16.5239461 L6.61290944,13 L6.61290944,13 L3.99429466,13 C2.33744041,13 0.994294662,11.6568542 0.994294662,10 L0.994294662,10 L0.994294662,10 L0.994294662,3.98924101 C0.994294662,2.33832878 2.33262345,1 3.98353567,1 L3.98353567,1 L3.98353567,1" id="Chat/Icon" transform="translate(9.005648, 9.500000) scale(-1, 1) translate(-9.005648, -9.500000) "></path>
