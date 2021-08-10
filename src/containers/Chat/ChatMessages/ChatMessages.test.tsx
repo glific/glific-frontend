@@ -67,6 +67,7 @@ const body = {
     },
   },
   interactiveContent: '{}',
+  sendBy: 'test',
   flowLabel: null,
 };
 
@@ -203,6 +204,7 @@ export const collection = {
               },
             },
             interactiveContent: '{}',
+            sendBy: 'test',
             flowLabel: null,
           },
         ],

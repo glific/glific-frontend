@@ -54,6 +54,7 @@ export interface ChatMessageProps {
   contextMessage: any;
   jumpToMessage: any;
   interactiveContent: string;
+  sendBy: string;
   flowLabel: string | null;
 }
 
@@ -87,6 +88,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     contextMessage,
     jumpToMessage,
     interactiveContent,
+    sendBy,
     flowLabel,
   } = props;
 
@@ -245,11 +247,20 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   //     </div>
   //   ));
 
-  const date = showMessage ? (
+  const sendByLabel = !isSender && sendBy;
+  let messageFooter;
+  if (showMessage && sendByLabel) {
+    messageFooter = `${sendBy} | ${moment(insertedAt).format(TIME_FORMAT)}`;
+  } else if (sendByLabel) {
+    messageFooter = sendBy;
+  } else if (showMessage) {
+    messageFooter = moment(insertedAt).format(TIME_FORMAT);
+  }
+  const dateAndSendBy = (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
-      {moment(insertedAt).format(TIME_FORMAT)}
+      {messageFooter}
     </div>
-  ) : null;
+  );
 
   const icon = (
     <MessageIcon
@@ -427,7 +438,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
         <div className={`${messageErrorStatus && styles.TemplateButtonOnError}`}>
           <TemplateButtons template={templateButtons} />
         </div>
-        {date}
+        {dateAndSendBy}
         {/* {displayTag ? (
           <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
         ) : null} */}

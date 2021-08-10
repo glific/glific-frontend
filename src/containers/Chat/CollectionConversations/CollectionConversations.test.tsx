@@ -64,7 +64,8 @@ cache.writeQuery({
               },
             },
             interactiveContent: '{}',
-            flowLabel: null
+            sendBy: 'test',
+            flowLabel: null,
           },
         ],
       },

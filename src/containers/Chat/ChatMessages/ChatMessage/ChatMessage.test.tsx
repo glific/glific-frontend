@@ -76,6 +76,7 @@ const Props: any = (link: any) => {
     jumpToMessage: Function,
     focus: true,
     interactiveContent: '{}',
+    sendBy: 'test',
   };
 };
 
@@ -289,11 +290,12 @@ describe('<ChatMessage />', () => {
     focus: true,
     showMessage: true,
     interactiveContent: '{}',
+    sendBy: 'test',
     flowLabel: 'test1, test2',
   };
 
   test('it should render with image', async () => {
-    render(
+    const { rerender } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ChatMessage {...receivedProps} />
       </MockedProvider>
@@ -306,6 +308,14 @@ describe('<ChatMessage />', () => {
     await waitFor(() => {
       fireEvent.mouseDown(messageMenu);
     });
+
+    const newProps = { ...receivedProps };
+    newProps.showMessage = false;
+    rerender(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ChatMessage {...newProps} />
+      </MockedProvider>
+    );
   });
 
   const quickReplyTemplate = {
