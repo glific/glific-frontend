@@ -18,6 +18,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { setVariables, DATE_TIME_FORMAT } from 'common/constants';
 import { exportFlowMethod } from 'common/utils';
 import { setNotification } from 'common/notification';
+import { Button } from 'components/UI/Form/Button/Button';
 import styles from './FlowList.module.css';
 
 export interface FlowListProps {}
@@ -119,12 +120,16 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         onChange={changeHandler}
         data-testid="import"
       />
-      <ImportIcon
-        className={styles.ImportIcon}
+      <Button
         onClick={() => {
           if (inputRef.current) inputRef.current.click();
         }}
-      />
+        variant="contained"
+        color="primary"
+      >
+        Import flow
+        <ImportIcon />
+      </Button>
     </span>
   );
 
