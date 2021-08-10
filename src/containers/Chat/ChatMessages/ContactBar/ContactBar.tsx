@@ -50,7 +50,6 @@ import { Tooltip } from '../../../../components/UI/Tooltip/Tooltip';
 import { CLEAR_MESSAGES } from '../../../../graphql/mutations/Chat';
 import { showChats } from '../../../../common/responsive';
 import { CollectionInformation } from '../../../Collection/CollectionInformation/CollectionInformation';
-import { addLogs } from '../../../../common/utils';
 import AddContactsToCollection from '../AddContactsToCollection/AddContactsToCollection';
 
 const status = ['SESSION', 'SESSION_AND_HSM', 'HSM'];

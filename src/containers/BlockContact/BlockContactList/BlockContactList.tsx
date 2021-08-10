@@ -11,7 +11,6 @@ import { SEARCH_QUERY_VARIABLES } from 'common/constants';
 import { CONTACT_SEARCH_QUERY, GET_CONTACT_COUNT } from 'graphql/queries/Contact';
 import { DELETE_CONTACT, UPDATE_CONTACT } from 'graphql/mutations/Contact';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
-import { addLogs } from 'common/utils';
 import styles from './BlockContactList.module.css';
 
 export interface BlockContactListProps {}
