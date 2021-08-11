@@ -33,38 +33,38 @@ const notifications = (
   </MockedProvider>
 );
 
-// test('It should load notifications', async () => {
-//   const { getByText } = render(notifications);
+test('It should load notifications', async () => {
+  const { getByText } = render(notifications);
 
-//   expect(getByText('Loading...')).toBeInTheDocument();
+  expect(getByText('Loading...')).toBeInTheDocument();
 
-//   await waitFor(() => {});
-//   await waitFor(() => {});
+  await waitFor(() => {});
+  await waitFor(() => {});
 
-//   await waitFor(() => {
-//     expect(getByText('Notifications')).toBeInTheDocument();
-//   });
+  await waitFor(() => {
+    expect(getByText('Notifications')).toBeInTheDocument();
+  });
 
-//   const time = await screen.findByText('TIMESTAMP');
-//   const category = await screen.findByText('CATEGORY');
-//   const severity = await screen.findByText('SEVERITY');
-//   const entity = await screen.findByText('ENTITY');
-//   const message = await screen.findByText('MESSAGE');
+  const time = await screen.findByText('TIMESTAMP');
+  const category = await screen.findByText('CATEGORY');
+  const severity = await screen.findByText('SEVERITY');
+  const entity = await screen.findByText('ENTITY');
+  const message = await screen.findByText('MESSAGE');
 
-//   expect(time).toBeInTheDocument();
-//   expect(category).toBeInTheDocument();
-//   expect(severity).toBeInTheDocument();
-//   expect(entity).toBeInTheDocument();
-//   expect(message).toBeInTheDocument();
-// });
+  expect(time).toBeInTheDocument();
+  expect(category).toBeInTheDocument();
+  expect(severity).toBeInTheDocument();
+  expect(entity).toBeInTheDocument();
+  expect(message).toBeInTheDocument();
+});
 
-// test('click on forward arrrow', async () => {
-//   render(notifications);
-//   await waitFor(() => {
-//     const arrow = screen.getAllByTestId('tooltip');
-//     fireEvent.click(arrow[0]);
-//   });
-// });
+test('click on forward arrrow', async () => {
+  render(notifications);
+  await waitFor(() => {
+    const arrow = screen.getAllByTestId('tooltip');
+    fireEvent.click(arrow[0]);
+  });
+});
 
 test('it should show copy text and view option on clicking entity ', async () => {
   const { getByTestId, getByText } = render(notifications);
@@ -95,9 +95,9 @@ test('it should show copy text and view option on clicking entity ', async () =>
   });
 });
 
-// test('it should show filter checkboxes', async () => {
-//   render(notifications);
-//   await waitFor(() => {});
-//   const checkboxInput = screen.getAllByRole('checkbox');
-//   fireEvent.click(checkboxInput[0]);
-// });
+test('it should show filter checkboxes', async () => {
+  render(notifications);
+  await waitFor(() => {});
+  const checkboxInput = screen.getAllByRole('checkbox');
+  fireEvent.click(checkboxInput[0]);
+});
