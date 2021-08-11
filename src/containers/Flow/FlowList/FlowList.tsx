@@ -11,7 +11,13 @@ import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.sv
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
-import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from 'graphql/queries/Flow';
+import {
+  FILTER_FLOW,
+  GET_FLOWS,
+  GET_FLOW_COUNT,
+  EXPORT_FLOW,
+  GET_FREE_FLOW,
+} from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -67,6 +73,12 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
+
+  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
+    onCompleted: ({ flowGet }) => {
+      window.location.href = `/flow/configure/${flowGet.uuid}`;
+    },
+  });
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
     onCompleted: (result: any) => {
@@ -133,12 +145,16 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     </span>
   );
 
+  const getFlow = (id: any) => {
+    getFreeFlow({ variables: { id } });
+  };
+
   const additionalAction = [
     {
       label: t('Configure'),
       icon: configureIcon,
-      parameter: 'uuid',
-      link: '/flow/configure',
+      parameter: 'id',
+      dialog: getFlow,
     },
     {
       label: t('Make a copy'),
