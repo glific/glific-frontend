@@ -1,12 +1,11 @@
 import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render, waitFor } from '@testing-library/react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
 
 import { setUserSession } from 'services/AuthService';
 import { SEARCH_QUERY } from 'graphql/queries/Search';
 import { DEFAULT_CONTACT_LIMIT, DEFAULT_MESSAGE_LIMIT } from 'common/constants';
-import { CONVERSATION_MOCKS, mocksWithConversation } from 'mocks/Chat';
+
 import { Chat } from './Chat';
 
 // add mock for the resize observer
