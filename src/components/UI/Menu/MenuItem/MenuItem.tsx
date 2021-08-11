@@ -22,8 +22,17 @@ const MenuItem: React.SFC<MenuItemProps> = (props) => {
     menuItemClass = styles.Danger;
   }
 
+  let link = {};
+
+  if (path) {
+    link = {
+      component: Link,
+      to: path,
+    };
+  }
+
   return (
-    <MenuItemElement onClick={onClickHandler} component={Link} to={path} data-testid="MenuItem">
+    <MenuItemElement onClick={onClickHandler} {...link} data-testid="MenuItem">
       {icon}
       <div className={`${menuItemClass} ${icon ? styles.Spacing : ''}`}>{t(title)}</div>
     </MenuItemElement>

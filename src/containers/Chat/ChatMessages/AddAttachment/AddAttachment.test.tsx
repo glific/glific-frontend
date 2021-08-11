@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 
 import { uploadMediaMock } from 'mocks/Attachment';
 import { AddAttachment } from './AddAttachment';
+import axios from 'axios';
 
 jest.mock('axios');
 
@@ -32,6 +33,11 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
     </MockedProvider>
   );
 };
+
+beforeEach(() => {
+  const responseData = { data: {} };
+  axios.get.mockImplementation(() => Promise.resolve(responseData));
+});
 
 test('it should render', () => {
   const { getByTestId } = render(addAttachment());
@@ -100,11 +106,12 @@ test('cancel button', () => {
 
 test('show warnings if attachment type is audio', async () => {
   const { getByText } = render(addAttachment('AUDIO', 'https://glific.com'));
-
   expect(getByText('Captions along with audio are not supported.')).toBeInTheDocument();
+  await waitFor(() => {});
 });
 
 test('show warnings if attachment type is sticker', async () => {
   const { getByText } = render(addAttachment('STICKER', 'https://glific.com'));
   expect(getByText('Animated stickers are not supported.')).toBeInTheDocument();
+  await waitFor(() => {});
 });
