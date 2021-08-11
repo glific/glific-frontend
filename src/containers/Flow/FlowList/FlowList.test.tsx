@@ -35,17 +35,7 @@ const flowList = (
   </MockedProvider>
 );
 
-const mockResponse = jest.fn();
-Object.defineProperty(window, 'location', {
-  value: {
-    hash: {
-      endsWith: mockResponse,
-      includes: mockResponse,
-    },
-    assign: mockResponse,
-  },
-  writable: true,
-});
+HTMLAnchorElement.prototype.click = jest.fn();
 
 // console warning fix - react-i18next:: You will need to pass in an i18next instance by using initReactI18next
 // https://github.com/i18next/react-i18next/issues/876
