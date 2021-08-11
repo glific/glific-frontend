@@ -35,6 +35,7 @@ const flowList = (
   </MockedProvider>
 );
 
+
 // console warning fix - react-i18next:: You will need to pass in an i18next instance by using initReactI18next
 // https://github.com/i18next/react-i18next/issues/876
 jest.mock('react-i18next', () => ({
@@ -114,6 +115,7 @@ describe('<FlowList />', () => {
     });
 
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+    await waitFor(() => {});
   });
 
   test('should export flow to json file', async () => {

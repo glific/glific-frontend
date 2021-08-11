@@ -539,24 +539,26 @@ export const List: React.SFC<ListProps> = ({
     displayList = (
       <>
         <ListCard data={itemList} link={cardLink} />
-        <TableFooter className={styles.TableFooter} data-testid="tableFooter">
-          <TableRow>
-            <TablePagination
-              className={styles.FooterRow}
-              colSpan={columnNames.length}
-              count={itemCount}
-              onChangePage={(event, newPage) => {
-                handleTableChange('pageNum', newPage);
-              }}
-              onChangeRowsPerPage={(event) => {
-                handleTableChange('pageRows', parseInt(event.target.value, 10));
-              }}
-              page={tableVals.pageNum}
-              rowsPerPage={tableVals.pageRows}
-              rowsPerPageOptions={[50, 75, 100, 150, 200]}
-            />
-          </TableRow>
-        </TableFooter>
+        <table>
+          <TableFooter className={styles.TableFooter} data-testid="tableFooter">
+            <TableRow>
+              <TablePagination
+                className={styles.FooterRow}
+                colSpan={columnNames.length}
+                count={itemCount}
+                onChangePage={(event, newPage) => {
+                  handleTableChange('pageNum', newPage);
+                }}
+                onChangeRowsPerPage={(event) => {
+                  handleTableChange('pageRows', parseInt(event.target.value, 10));
+                }}
+                page={tableVals.pageNum}
+                rowsPerPage={tableVals.pageRows}
+                rowsPerPageOptions={[50, 75, 100, 150, 200]}
+              />
+            </TableRow>
+          </TableFooter>
+        </table>
       </>
     );
   }

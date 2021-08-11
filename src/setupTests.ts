@@ -21,3 +21,15 @@ jest.mock('react-i18next', () => {
     initReactI18next: reactI18next.initReactI18next,
   };
 });
+
+const mockResponse = jest.fn();
+Object.defineProperty(window, 'location', {
+  value: {
+    hash: {
+      endsWith: mockResponse,
+      includes: mockResponse,
+    },
+    assign: mockResponse,
+  },
+  writable: true,
+});
