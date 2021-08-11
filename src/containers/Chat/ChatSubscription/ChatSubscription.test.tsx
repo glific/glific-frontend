@@ -68,6 +68,7 @@ const body = {
     },
   },
   interactiveContent: '{}',
+  sendBy: 'test',
   flowLabel: null,
 };
 
@@ -152,6 +153,7 @@ cache.writeQuery({
               },
             },
             interactiveContent: '{}',
+            sendBy: 'test',
             flowLabel: null,
           },
         ],

@@ -84,28 +84,18 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
     validateURL();
   }, [attachmentURL, attachmentType]);
 
-  const validate = (value: any) => {
-    if (value !== attachmentURL) {
-      setAttachmentURL(value);
-    } else if (!value) {
-      setErrors(null);
-    }
-  };
-
   const helperText = (
     <div className={styles.HelperText}>
       {t('Please wait for the attachment URL verification')}
       <CircularProgress className={styles.ProgressIcon} />
     </div>
   );
-
   let timer: any = null;
   const input = {
     component: Input,
     name: 'attachmentURL',
     type: 'text',
     placeholder: t('Attachment URL'),
-    validate,
     helperText: verifying && helperText,
     disabled: fileName !== null,
     inputProp: {

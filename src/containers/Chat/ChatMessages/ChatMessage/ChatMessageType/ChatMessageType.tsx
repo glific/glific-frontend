@@ -19,6 +19,7 @@ export interface ChatMessageTypeProps {
   body: string;
   location: any;
   isSimulatedMessage?: boolean;
+  isContextMessage?: boolean;
 }
 
 export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
@@ -27,21 +28,26 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
   body,
   location,
   isSimulatedMessage,
+  isContextMessage = false,
 }) => {
   const [showViewer, setShowViewer] = useState(false);
-
   let messageBody;
   // manage validation if there is no media
   if (type !== 'LOCATION' && !media) {
-    return <MessagesWithLinks message={body} />;
+    return (
+      <div className={`${isContextMessage && styles.ContentMessageMaxWidth}`}>
+        <MessagesWithLinks message={body} showPreview={!isContextMessage} />
+      </div>
+    );
   }
 
   switch (type) {
-    case 'IMAGE':
+    case 'IMAGE': {
+      const imageStyle = isContextMessage ? styles.ContextMessageImage : styles.Image;
       messageBody = (
-        <>
+        <div className={`${isContextMessage && styles.ContentMessageContainer}`}>
           <div
-            className={isSimulatedMessage ? styles.SimulatorImage : styles.Image}
+            className={isSimulatedMessage ? styles.SimulatorImage : imageStyle}
             data-testid="imageMessage"
           >
             <Img
@@ -59,10 +65,11 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             />
           </div>
           <MessagesWithLinks message={media.caption} />
-        </>
+        </div>
       );
 
       break;
+    }
 
     case 'STICKER':
       messageBody = (
@@ -93,12 +100,13 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
       );
       break;
 
-    case 'VIDEO':
+    case 'VIDEO': {
+      const videoStyles = isContextMessage ? styles.ContextMessageVideo : styles.Video;
       messageBody = (
-        <div>
-          <div className={styles.Image} data-testid="videoMessage">
+        <div className={`${isContextMessage && styles.ContentMessageContainer}`}>
+          <div data-testid="videoMessage">
             <ReactPlayer
-              className={isSimulatedMessage ? styles.SimulatorVideo : styles.Video}
+              className={isSimulatedMessage ? styles.SimulatorVideo : videoStyles}
               url={media.url}
               controls
               light={VideoThumbnail}
@@ -109,6 +117,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
         </div>
       );
       break;
+    }
 
     case 'DOCUMENT':
       messageBody = (
@@ -124,7 +133,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
             target="_blank"
             rel="noreferrer"
           >
-            <DownloadIcon className={styles.DownloadIcon} />
+            {!isContextMessage && <DownloadIcon className={styles.DownloadIcon} />}
           </a>
         </div>
       );

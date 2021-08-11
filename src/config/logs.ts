@@ -33,11 +33,15 @@ export const setLogs = (message: any, type: string) => {
       stream
     );
 
-    const logMessage = JSON.stringify(message);
+    let logMessage = message;
+    if (typeof message === 'object') {
+      logMessage = JSON.stringify(message);
+    }
+
     // log some events
     switch (type) {
       case 'info':
-        logger.info({ event: message }, logMessage);
+        logger.info(logMessage);
         break;
       case 'error':
         logger.error(logMessage);

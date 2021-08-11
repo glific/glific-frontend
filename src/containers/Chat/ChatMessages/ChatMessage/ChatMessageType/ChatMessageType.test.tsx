@@ -13,6 +13,7 @@ const defaultProps: any = (type: string) => {
     },
     insertedAt: '2020-06-25T13:36:43Z',
     location: null,
+    isContextMessage: true,
   };
 };
 
@@ -60,7 +61,8 @@ test('it loads document when type of message is location', () => {
 });
 
 test('check condition if no media object is present', () => {
-  const props = defaultProps('IMAGE');
+  const props: any = defaultProps('IMAGE');
+  delete props.isContextMessage;
   props.media = null;
   const { getByText } = render(<ChatMessageType {...props} />);
   expect(getByText('Default body')).toBeInTheDocument();

@@ -78,3 +78,33 @@
 .DownloadIcon {
   margin-left: auto;
 }
+
+.ContentMessageMaxWidth {
+  max-width: 372px;
+}
+
+.ContentMessageContainer {
+  display: flex;
+}
+
+.ContentMessageContainer > div:first-child {
+  padding-right: 12px;
+}
+
+.ContextMessageImage {
+  cursor: pointer;
+  background-size: cover !important;
+  text-align: center;
+}
+
+.ContextMessageImage img {
+  max-width: 95px;
+  max-height: 77px;
+  cursor: pointer;
+  background-size: cover !important;
+}
+
+.ContextMessageVideo {
+  max-width: 95px !important;
+  max-height: 77px !important;
+}
