@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ import {
   GET_FLOWS,
   GET_FLOW_COUNT,
   EXPORT_FLOW,
-  GET_FREE_FLOW,
+  RELEASE_FLOW,
 } from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
@@ -74,11 +74,11 @@ export const FlowList: React.SFC<FlowListProps> = () => {
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
 
-  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
-    onCompleted: ({ flowGet }) => {
-      window.location.href = `/flow/configure/${flowGet.uuid}`;
-    },
-  });
+  const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
+
+  useEffect(() => {
+    releaseFlow();
+  }, []);
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
     onCompleted: (result: any) => {
@@ -145,16 +145,12 @@ export const FlowList: React.SFC<FlowListProps> = () => {
     </span>
   );
 
-  const getFlow = (id: any) => {
-    getFreeFlow({ variables: { id } });
-  };
-
   const additionalAction = [
     {
       label: t('Configure'),
       icon: configureIcon,
-      parameter: 'id',
-      dialog: getFlow,
+      parameter: 'uuid',
+      link: '/flow/configure',
     },
     {
       label: t('Make a copy'),

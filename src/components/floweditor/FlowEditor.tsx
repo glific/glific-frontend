@@ -14,7 +14,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
 import { PUBLISH_FLOW } from 'graphql/mutations/Flow';
-import { EXPORT_FLOW, GET_FLOW_DETAILS } from 'graphql/queries/Flow';
+import { EXPORT_FLOW, GET_FLOW_DETAILS, GET_FREE_FLOW } from 'graphql/queries/Flow';
 import { setAuthHeaders } from 'services/AuthService';
 import { GET_ORGANIZATION_SERVICES } from 'graphql/queries/Organization';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -167,6 +167,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
+  const [editDialog, setEditDialog] = useState(false);
 
   let modal = null;
   let dialog = null;
@@ -184,6 +185,18 @@ export const FlowEditor = (props: FlowEditorProps) => {
       }
       showFlowEditor(document.getElementById('flow'), config);
       setLoading(false);
+    },
+  });
+
+  const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
+    fetchPolicy: 'network-only',
+    onCompleted: ({ flowGet }) => {
+      console.log(flowGet);
+      if (flowGet) {
+        getOrganizationServices();
+      } else {
+        setEditDialog(true);
+      }
     },
   });
 
@@ -266,26 +279,33 @@ export const FlowEditor = (props: FlowEditorProps) => {
   }, [flowName]);
 
   useEffect(() => {
-    const { fetch, xmlSend } = setAuthHeaders();
-    const files = loadfiles(() => {
-      getOrganizationServices();
-    });
-
-    return () => {
-      Object.keys(files).forEach((node: any) => {
-        if (files[node]) {
-          document.body.removeChild(files[node]);
-        }
+    if (flowId) {
+      const { fetch, xmlSend } = setAuthHeaders();
+      const files = loadfiles(() => {
+        getFreeFlow({ variables: { id: flowId } });
       });
-      // clearing all timeouts when component unmounts
-      const highestTimeoutId: any = setTimeout(() => {});
-      for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
-        clearTimeout(timeoutId);
-      }
-      XMLHttpRequest.prototype.send = xmlSend;
-      window.fetch = fetch;
-    };
-  }, []);
+
+      window.onfocus = function () {
+        getFreeFlow({ variables: { id: flowId } });
+      };
+
+      return () => {
+        Object.keys(files).forEach((node: any) => {
+          if (files[node]) {
+            document.body.removeChild(files[node]);
+          }
+        });
+        // clearing all timeouts when component unmounts
+        const highestTimeoutId: any = setTimeout(() => {});
+        for (let timeoutId = 0; timeoutId < highestTimeoutId; timeoutId += 1) {
+          clearTimeout(timeoutId);
+        }
+        XMLHttpRequest.prototype.send = xmlSend;
+        window.fetch = fetch;
+      };
+    }
+    return () => {};
+  }, [flowId]);
 
   const handlePublishFlow = () => {
     publishFlow({ variables: { uuid: props.match.params.uuid } });
@@ -310,6 +330,21 @@ export const FlowEditor = (props: FlowEditorProps) => {
       </div>
     </div>
   );
+
+  if (editDialog) {
+    dialog = (
+      <DialogBox
+        title="The flow is currently being edited by someone else."
+        alignButtons="center"
+        skipCancel
+        buttonOk="Okay"
+        handleOk={() => {
+          setConfirmedNavigation(true);
+          history.push('/flow');
+        }}
+      />
+    );
+  }
 
   if (publishDialog) {
     dialog = (
