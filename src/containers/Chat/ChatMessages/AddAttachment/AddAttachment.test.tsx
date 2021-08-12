@@ -35,8 +35,7 @@ const addAttachment = (attachmentType = '', attachmentURL = '') => {
 };
 
 beforeEach(() => {
-  const responseData = { data: {} };
-  axios.get.mockImplementation(() => Promise.resolve(responseData));
+  axios.get.mockImplementation(() => Promise.resolve({ data: {} }));
 });
 
 test('it should render', () => {

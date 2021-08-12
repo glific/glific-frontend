@@ -23,7 +23,7 @@ const MenuItem: React.SFC<MenuItemProps> = (props) => {
   }
 
   let link = {};
-
+  // check if we have a path to another page and add Link component
   if (path) {
     link = {
       component: Link,

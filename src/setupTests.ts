@@ -21,5 +21,3 @@ jest.mock('react-i18next', () => {
     initReactI18next: reactI18next.initReactI18next,
   };
 });
-
-

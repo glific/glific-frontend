@@ -15,7 +15,6 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
 } from 'mocks/Simulator';
-
 import axios from 'axios';
 
 jest.mock('axios');
@@ -137,8 +136,7 @@ test('publish flow which has error', async () => {
 // });
 
 test('start with a keyword message if the simulator opens in floweditor screen', async () => {
-  const responseData = { data: {} };
-  axios.post.mockImplementation(() => Promise.resolve(responseData));
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(defaultWrapper);
 
   await waitFor(() => {
@@ -153,8 +151,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
 });
 
 test('if the flow the inactive', async () => {
-  const responseData = { data: {} };
-  axios.post.mockImplementation(() => Promise.resolve(responseData));
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(inActiveFlowMocks));
 
   await waitFor(() => {
@@ -169,8 +166,7 @@ test('if the flow the inactive', async () => {
 });
 
 test('flow with no keywords', async () => {
-  const responseData = { data: {} };
-  axios.post.mockImplementation(() => Promise.resolve(responseData));
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
   await waitFor(() => {

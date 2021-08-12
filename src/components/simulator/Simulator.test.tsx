@@ -72,8 +72,7 @@ test('send a message/media from the simulator', async () => {
       <Simulator {...defaultProps} />
     </MockedProvider>
   );
-  const responseData = { data: {} };
-  axios.post.mockImplementation(() => Promise.resolve(responseData));
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   const input = getByTestId('simulatorInput');
   fireEvent.change(input, { target: { value: 'something' } });

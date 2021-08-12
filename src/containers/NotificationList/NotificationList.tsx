@@ -54,7 +54,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     Warning: false,
   });
 
-  const reff = useRef(null);
+  const menuRef = useRef(null);
   let filterValue: any = '';
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
@@ -128,7 +128,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
 
     return (
       <Menu menus={Menus}>
-        <div className={styles.CroppedText} data-testid="menu" ref={reff} aria-hidden="true">
+        <div className={styles.CroppedText} data-testid="menu" ref={menuRef} aria-hidden="true">
           {entityObj.name ? (
             <span>
               Contact: {entityObj.name}
@@ -165,7 +165,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   };
 
   const popover = (
-    <Popover open={open} anchorEl={reff.current} onClose={handleClose}>
+    <Popover open={open} anchorEl={menuRef.current} onClose={handleClose}>
       <div className={styles.PopoverText}>
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>
