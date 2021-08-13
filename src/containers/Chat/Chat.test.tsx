@@ -119,11 +119,10 @@ describe('<Chat />', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      // check if chat conversations are displayed
-      const ChatConversation = await findByTestId('beneficiaryName');
-      expect(ChatConversation).toHaveTextContent('Effie Cormier');
-    });
+
+    // check if chat conversations are displayed
+    const ChatConversation = await findByTestId('beneficiaryName');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
 
     // check if tags are displayed in the ChatMessages
     /**
@@ -137,10 +136,9 @@ describe('<Chat />', () => {
     const { getByText, findByTestId } = render(wrapper);
 
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {
-      const ChatConversation = await findByTestId('beneficiaryName');
-      expect(ChatConversation).toHaveTextContent('Effie Cormier');
-    });
+
+    const ChatConversation = await findByTestId('beneficiaryName');
+    expect(ChatConversation).toHaveTextContent('Effie Cormier');
   });
 });
 
