@@ -95,6 +95,8 @@ test('click on preview button should open simulator', async () => {
 });
 
 test('check if someone else is using a flow', async () => {
+
+  // onload is not defined for script element in jest so we need to trigger it manually
   const mockCreateElement = document.createElement.bind(document);
   let scriptElements: any = [];
   document.createElement = function (tags: any, options) {

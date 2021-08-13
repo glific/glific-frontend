@@ -167,7 +167,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [flowValidation, setFlowValidation] = useState<any>();
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
-  const [editDialog, setEditDialog] = useState(false);
+  const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
 
   let modal = null;
   let dialog = null;
@@ -194,7 +194,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       if (flowGet) {
         getOrganizationServices();
       } else {
-        setEditDialog(true);
+        setCurrentEditDialogBox(true);
       }
     },
   });
@@ -284,6 +284,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
         getFreeFlow({ variables: { id: flowId } });
       });
 
+      // when switching tabs we need to check if the flow is still active for the user
       window.onfocus = function () {
         getFreeFlow({ variables: { id: flowId } });
       };
@@ -330,7 +331,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
     </div>
   );
 
-  if (editDialog) {
+  if (currentEditDialogBox) {
     dialog = (
       <DialogBox
         title="The flow is currently being edited by someone else."
