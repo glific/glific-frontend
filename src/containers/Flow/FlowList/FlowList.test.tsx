@@ -11,6 +11,7 @@ import {
   getFlowQuery,
   importFlow,
   exportFlow,
+  releaseFlow,
 } from 'mocks/Flow';
 import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
@@ -24,6 +25,7 @@ const mocks = [
   getFlowCountNewQuery,
   getFlowQuery,
   importFlow,
+  releaseFlow,
   exportFlow,
 ];
 

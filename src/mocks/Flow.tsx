@@ -5,6 +5,7 @@ import {
   GET_FLOW_DETAILS,
   FILTER_FLOW,
   EXPORT_FLOW,
+  RELEASE_FLOW,
 } from 'graphql/queries/Flow';
 import {
   ADD_FLOW_TO_CONTACT,
@@ -278,6 +279,20 @@ export const exportFlow = {
     data: {
       exportFlow: {
         exportData: JSON.stringify(json),
+      },
+    },
+  },
+};
+
+export const releaseFlow = {
+  request: {
+    query: RELEASE_FLOW,
+  },
+  result: {
+    data: {
+      flowRelease: {
+        id: '1',
+        uuid: 'sdsds',
       },
     },
   },

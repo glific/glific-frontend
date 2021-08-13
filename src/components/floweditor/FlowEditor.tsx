@@ -191,7 +191,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
-      console.log(flowGet);
       if (flowGet) {
         getOrganizationServices();
       } else {
