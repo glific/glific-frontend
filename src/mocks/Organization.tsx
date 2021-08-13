@@ -194,7 +194,7 @@ export const getProvidersQuery = [
             keys: '{"worker":{"view_only":true,"type":"string","label":"Outbound Message Worker","default":"Glific.Providers.Gupshup.Worker"},"url":{"view_only":true,"type":"string","label":"BSP Home Page","default":"https://gupshup.io/"},"handler":{"view_only":true,"type":"string","label":"Inbound Message Handler","default":"Glific.Providers.Gupshup.Message"},"api_end_point":{"view_only":false,"type":"string","label":"API End Point","default":"https://api.gupshup.io/sm/api/v1"}}',
             name: 'Gupshup',
             secrets:
-              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
+              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":"Glific"},"api_key":{"view_only":false,"type":"string","label":"API Key","default":"Glific"}}',
             shortcode: 'gupshup',
             description: 'sample description',
           },
@@ -227,7 +227,7 @@ export const getProvidersQuery = [
             keys: '{"worker":{"view_only":true,"type":"string","label":"Outbound Message Worker","default":"Glific.Providers.Gupshup.Worker"},"url":{"view_only":true,"type":"string","label":"BSP Home Page","default":"https://gupshup.io/"},"handler":{"view_only":true,"type":"string","label":"Inbound Message Handler","default":"Glific.Providers.Gupshup.Message"},"api_end_point":{"view_only":false,"type":"string","label":"API End Point","default":"https://api.gupshup.io/sm/api/v1"}}',
             name: 'Gupshup',
             secrets:
-              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
+              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":"Glific"},"api_key":{"view_only":false,"type":"string","label":"API Key","default":"Glific"}}',
             shortcode: 'gupshup',
             description: 'sample description',
           },
@@ -260,7 +260,7 @@ export const getProvidersQuery = [
             keys: '{"worker":{"view_only":true,"type":"string","label":"Outbound Message Worker","default":"Glific.Providers.Gupshup.Worker"},"url":{"view_only":true,"type":"string","label":"BSP Home Page","default":"https://gupshup.io/"},"handler":{"view_only":true,"type":"string","label":"Inbound Message Handler","default":"Glific.Providers.Gupshup.Message"},"api_end_point":{"view_only":false,"type":"string","label":"API End Point","default":"https://api.gupshup.io/sm/api/v1"}}',
             name: 'Gupshup',
             secrets:
-              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":null},"api_key":{"view_only":false,"type":"string","label":"API Key","default":null}}',
+              '{"app_name":{"view_only":false,"type":"string","label":"App Name","default":"Glific"},"api_key":{"view_only":false,"type":"string","label":"API Key","default":"Glific"}}',
             shortcode: 'gupshup',
             description: 'sample description',
           },

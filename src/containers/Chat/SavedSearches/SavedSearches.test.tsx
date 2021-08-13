@@ -49,7 +49,7 @@ describe('<SavedSearches />', () => {
       const autocompleteInput = getByTestId('AutocompleteInput');
       fireEvent.click(autocompleteInput);
       const input = container.querySelector('input[type="text"]');
-      UserEvent.type(input, null);
+      UserEvent.type(input, 'hi');
     });
   });
 

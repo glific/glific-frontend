@@ -104,8 +104,9 @@ describe('trigger with weekly frequency', () => {
       const { form, onChange, options } = props;
 
       return (
-        <div>
+        <div key={form}>
           <select
+            key={form}
             data-testid="autoComplete"
             onChange={(event) => {
               onChange({ value: event.target.value });
@@ -113,7 +114,7 @@ describe('trigger with weekly frequency', () => {
             }}
           >
             {options.map((option: any) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.id ? option.id : option.label} value={option.value}>
                 {option.label}
               </option>
             ))}

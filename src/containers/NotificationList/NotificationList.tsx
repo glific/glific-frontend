@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Checkbox, Popover, FormControlLabel } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -45,7 +45,6 @@ const restrictedAction = () => ({ delete: false, edit: false });
 
 export const NotificationList: React.SFC<NotificationListProps> = () => {
   const client = useApolloClient();
-  const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [text, setText] = useState<any>();
   const { t } = useTranslation();
@@ -54,11 +53,9 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
     Critical: true,
     Warning: false,
   });
-  let filterValue: any = '';
 
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const menuRef = useRef(null);
+  let filterValue: any = '';
 
   const [markNotificationAsRead] = useMutation(MARK_NOTIFICATIONS_AS_READ, {
     onCompleted: (data) => {
@@ -128,14 +125,10 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
         },
       },
     ];
+
     return (
       <Menu menus={Menus}>
-        <div
-          className={styles.CroppedText}
-          onClick={handleClick}
-          onKeyDown={handleClick}
-          aria-hidden="true"
-        >
+        <div className={styles.CroppedText} data-testid="menu" ref={menuRef} aria-hidden="true">
           {entityObj.name ? (
             <span>
               Contact: {entityObj.name}
@@ -161,7 +154,6 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setAnchorEl(null);
   };
 
   const columnNames = ['', 'TIMESTAMP', 'CATEGORY', 'SEVERITY', 'ENTITY', 'MESSAGE'];
@@ -173,7 +165,7 @@ export const NotificationList: React.SFC<NotificationListProps> = () => {
   };
 
   const popover = (
-    <Popover open={open} anchorEl={anchorEl} onClose={handleClose}>
+    <Popover open={open} anchorEl={menuRef.current} onClose={handleClose}>
       <div className={styles.PopoverText}>
         <pre>{JSON.stringify(text ? JSON.parse(text) : '', null, 2)}</pre>
       </div>

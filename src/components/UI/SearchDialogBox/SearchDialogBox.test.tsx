@@ -19,6 +19,7 @@ const asyncSearchProps = {
   ...defaultProps,
   icon: null,
   optionLabel: 'label',
+  options: ['1'],
   asyncSearch: true,
 };
 

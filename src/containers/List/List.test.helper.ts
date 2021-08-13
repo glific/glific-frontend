@@ -9,6 +9,7 @@ import {
   getAllOrganizations,
 } from 'mocks/Organization';
 import { setVariables } from 'common/constants';
+import { getCurrentUserQuery } from 'mocks/User';
 
 export const defaultProps = {
   columnNames: ['LABEL', 'DESCRIPTION', 'KEYWORDS', 'ACTIONS'],
@@ -160,6 +161,9 @@ const getTags = {
 };
 
 export const LIST_MOCKS = [
+  getCurrentUserQuery,
+
+  getCurrentUserQuery,
   {
     request: {
       query: DELETE_TAG,

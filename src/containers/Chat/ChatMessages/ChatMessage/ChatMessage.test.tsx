@@ -6,6 +6,8 @@ import { TIME_FORMAT } from 'common/constants';
 import { UPDATE_MESSAGE_TAGS } from 'graphql/mutations/Chat';
 import ChatMessage from './ChatMessage';
 
+HTMLAnchorElement.prototype.click = jest.fn();
+
 let resultReturned = false;
 
 const mocks = [

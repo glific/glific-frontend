@@ -121,9 +121,9 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
           <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
         ) : null}
         {helperText ? (
-          <FormHelperText id="helper-text" className={styles.HelperText}>
+          <div id="helper-text" className={styles.HelperText}>
             {helperText}
-          </FormHelperText>
+          </div>
         ) : null}
       </FormControl>
     </div>
