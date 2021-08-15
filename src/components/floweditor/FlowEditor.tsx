@@ -285,7 +285,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       });
 
       // when switching tabs we need to check if the flow is still active for the user
-      window.onfocus = function () {
+      window.onfocus = () => {
         getFreeFlow({ variables: { id: flowId } });
       };
 
