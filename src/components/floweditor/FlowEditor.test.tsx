@@ -8,6 +8,7 @@ import {
   getFlowWithoutKeyword,
   getOrganisationServicesQuery,
   publishFlow,
+  getFreeFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -26,6 +27,8 @@ const mocks = [
   simulatorGetQuery,
   publishFlow,
   getOrganisationServicesQuery,
+  getFreeFlow,
+  getFreeFlow,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -92,6 +95,35 @@ test('click on preview button should open simulator', async () => {
   await waitFor(() => {
     expect(getByTestId('beneficiaryName')).toHaveTextContent('Beneficiary');
   });
+});
+
+test('check if someone else is using a flow', async () => {
+
+  // onload is not defined for script element in jest so we need to trigger it manually
+  const mockCreateElement = document.createElement.bind(document);
+  let scriptElements: any = [];
+  document.createElement = function (tags: any, options) {
+    if (tags === 'script') {
+      const mockScriptElement = mockCreateElement('script');
+      scriptElements.push(mockScriptElement);
+      return mockScriptElement;
+    } else return mockCreateElement(tags, options);
+  };
+
+  const { getByText } = render(defaultWrapper);
+  await waitFor(() => {
+    getByText('Loading...');
+  });
+
+  await waitFor(() => {
+    scriptElements[1].onload();
+  });
+
+  await waitFor(() => {
+    expect(getByText('The flow is currently being edited by someone else.')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Okay'));
 });
 
 test('publish flow which has error', async () => {
