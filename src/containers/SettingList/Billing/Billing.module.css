@@ -12,7 +12,6 @@
 .Description {
   border: 1px solid #d8d8d8;
   border-radius: 12px;
-  padding: 16px;
   background-color: white;
   margin-bottom: 20px;
 }
@@ -30,7 +29,7 @@
 }
 
 .Additional {
-  color: #979797;
+  color: #93a29b;
   font-size: 14px;
 }
 .Additional div {
@@ -38,7 +37,7 @@
 }
 
 .Heading {
-  color: #979797;
+  color: #cacaca;
   font-weight: 500;
   font-size: 16px;
   margin-bottom: 10px !important;
@@ -196,4 +195,31 @@
   composes: Description;
   border: 1px solid #dd1f1f;
   border-left: 12px solid #dd1f1f;
+}
+
+.Amount {
+  color: #073f24;
+  font-weight: 500;
+}
+
+.UpperSection {
+  padding: 16px;
+}
+
+.BottomSection {
+  padding: 10px 16px;
+}
+
+.DottedSpaced {
+  background-image: linear-gradient(to right, #eaedec 50%, rgba(255, 255, 255, 0) 0%);
+  background-position: top;
+  background-size: 8px 4px;
+  background-repeat: repeat-x;
+  height: 1px;
+}
+
+.InactiveHeading {
+  color: #cacaca;
+  font-weight: 500;
+  font-size: 16px;
 }
