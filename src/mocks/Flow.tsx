@@ -5,6 +5,8 @@ import {
   GET_FLOW_DETAILS,
   FILTER_FLOW,
   EXPORT_FLOW,
+  RELEASE_FLOW,
+  GET_FREE_FLOW,
 } from 'graphql/queries/Flow';
 import {
   ADD_FLOW_TO_CONTACT,
@@ -279,6 +281,32 @@ export const exportFlow = {
       exportFlow: {
         exportData: JSON.stringify(json),
       },
+    },
+  },
+};
+
+export const releaseFlow = {
+  request: {
+    query: RELEASE_FLOW,
+  },
+  result: {
+    data: {
+      flowRelease: {
+        id: '1',
+        uuid: '3fa22108-f464-41e5-81d9-d8a298854429',
+      },
+    },
+  },
+};
+
+export const getFreeFlow = {
+  request: {
+    query: GET_FREE_FLOW,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      flowGet: null,
     },
   },
 };

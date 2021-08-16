@@ -8,6 +8,7 @@ import {
   getFlowWithoutKeyword,
   getOrganisationServicesQuery,
   publishFlow,
+  getFreeFlow,
 } from 'mocks/Flow';
 import { conversationQuery } from 'mocks/Chat';
 import {
@@ -15,6 +16,9 @@ import {
   simulatorReleaseQuery,
   simulatorReleaseSubscription,
 } from 'mocks/Simulator';
+import axios from 'axios';
+
+jest.mock('axios');
 
 const mocks = [
   conversationQuery,
@@ -23,6 +27,8 @@ const mocks = [
   simulatorGetQuery,
   publishFlow,
   getOrganisationServicesQuery,
+  getFreeFlow,
+  getFreeFlow,
 ];
 
 const activeFlowMocks = [...mocks, getActiveFlow];
@@ -91,6 +97,35 @@ test('click on preview button should open simulator', async () => {
   });
 });
 
+test('check if someone else is using a flow', async () => {
+
+  // onload is not defined for script element in jest so we need to trigger it manually
+  const mockCreateElement = document.createElement.bind(document);
+  let scriptElements: any = [];
+  document.createElement = function (tags: any, options) {
+    if (tags === 'script') {
+      const mockScriptElement = mockCreateElement('script');
+      scriptElements.push(mockScriptElement);
+      return mockScriptElement;
+    } else return mockCreateElement(tags, options);
+  };
+
+  const { getByText } = render(defaultWrapper);
+  await waitFor(() => {
+    getByText('Loading...');
+  });
+
+  await waitFor(() => {
+    scriptElements[1].onload();
+  });
+
+  await waitFor(() => {
+    expect(getByText('The flow is currently being edited by someone else.')).toBeInTheDocument();
+  });
+
+  fireEvent.click(getByText('Okay'));
+});
+
 test('publish flow which has error', async () => {
   const { getByTestId } = render(defaultWrapper);
 
@@ -133,6 +168,7 @@ test('publish flow which has error', async () => {
 // });
 
 test('start with a keyword message if the simulator opens in floweditor screen', async () => {
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(defaultWrapper);
 
   await waitFor(() => {
@@ -147,6 +183,7 @@ test('start with a keyword message if the simulator opens in floweditor screen',
 });
 
 test('if the flow the inactive', async () => {
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(inActiveFlowMocks));
 
   await waitFor(() => {
@@ -161,6 +198,7 @@ test('if the flow the inactive', async () => {
 });
 
 test('flow with no keywords', async () => {
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
   const { getByTestId, getByText } = render(wrapperFunction(noKeywordMocks));
 
   await waitFor(() => {

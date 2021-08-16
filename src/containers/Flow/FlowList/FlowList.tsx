@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,13 @@ import { ReactComponent as ImportIcon } from 'assets/images/icons/Flow/Import.sv
 import { ReactComponent as ConfigureIcon } from 'assets/images/icons/Configure/UnselectedDark.svg';
 import { ReactComponent as ContactVariable } from 'assets/images/icons/ContactVariable.svg';
 import { ReactComponent as WebhookLogsIcon } from 'assets/images/icons/Webhook/WebhookLight.svg';
-import { FILTER_FLOW, GET_FLOWS, GET_FLOW_COUNT, EXPORT_FLOW } from 'graphql/queries/Flow';
+import {
+  FILTER_FLOW,
+  GET_FLOWS,
+  GET_FLOW_COUNT,
+  EXPORT_FLOW,
+  RELEASE_FLOW,
+} from 'graphql/queries/Flow';
 import { DELETE_FLOW, IMPORT_FLOW } from 'graphql/mutations/Flow';
 import { List } from 'containers/List/List';
 import Loading from 'components/UI/Layout/Loading/Loading';
@@ -67,6 +73,12 @@ export const FlowList: React.SFC<FlowListProps> = () => {
 
   const [flowName, setFlowName] = useState('');
   const [importing, setImporting] = useState(false);
+
+  const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
+
+  useEffect(() => {
+    releaseFlow();
+  }, []);
 
   const [importFlow] = useMutation(IMPORT_FLOW, {
     onCompleted: (result: any) => {

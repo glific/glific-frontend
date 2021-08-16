@@ -14,6 +14,8 @@ const mocks = [
   updateCollectionContactsQuery,
 ];
 
+setUserSession(JSON.stringify({ roles: ['Admin'] }));
+
 const setDialogMock = jest.fn();
 const defaultProps = {
   collectionId: '1',
@@ -29,7 +31,6 @@ const addContacts = (
 );
 
 test('it should have add contact to collection dialog box ', async () => {
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
   const { getByText } = render(addContacts);
 
   expect(getByText('Add contacts to the collection')).toBeInTheDocument();
@@ -39,7 +40,6 @@ test('it should have add contact to collection dialog box ', async () => {
 });
 
 test('click on cancel button ', async () => {
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
   const { getByText } = render(addContacts);
 
   fireEvent.click(getByText('Cancel'));
@@ -48,7 +48,6 @@ test('click on cancel button ', async () => {
 });
 
 test('save without changing anything', async () => {
-  setUserSession(JSON.stringify({ roles: ['Admin'] }));
   const { getByText, getByTestId } = render(addContacts);
 
   await waitFor(() => {

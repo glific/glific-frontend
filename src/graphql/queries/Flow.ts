@@ -64,3 +64,21 @@ export const EXPORT_FLOW = gql`
     }
   }
 `;
+
+export const GET_FREE_FLOW = gql`
+  query flowGet($id: ID!) {
+    flowGet(id: $id) {
+      id
+      uuid
+    }
+  }
+`;
+
+export const RELEASE_FLOW = gql`
+  query flowRelease {
+    flowRelease {
+      id
+      uuid
+    }
+  }
+`;

@@ -10,11 +10,9 @@ import {
   simulatorReleaseSubscription,
 } from 'mocks/Simulator';
 import { Simulator } from './Simulator';
+import axios from 'axios';
 
-const mockAxios: any = jest.genMockFromModule('axios');
-
-// this is the key to fix the axios.create() undefined error!
-mockAxios.create = jest.fn(() => mockAxios);
+jest.mock('axios');
 
 const mockSetShowSimulator = jest.fn();
 
@@ -68,13 +66,13 @@ test('opened simulator should close when click of simulator icon', async () => {
 
 test('send a message/media from the simulator', async () => {
   defaultProps.showSimulator = true;
+
   const { getByTestId } = render(
     <MockedProvider mocks={mocks}>
       <Simulator {...defaultProps} />
     </MockedProvider>
   );
-
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  axios.post.mockImplementation(() => Promise.resolve({ data: {} }));
 
   const input = getByTestId('simulatorInput');
   fireEvent.change(input, { target: { value: 'something' } });
@@ -83,8 +81,6 @@ test('send a message/media from the simulator', async () => {
     fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
   });
 
-  const responseData = { data: {} };
-  mockAxios.post.mockImplementationOnce(() => Promise.resolve(responseData));
   await waitFor(() => {
     expect(input).toHaveTextContent('');
   });
@@ -157,6 +153,7 @@ const body = {
   },
   interactiveContent: '{}',
   sendBy: 'test',
+  flowLabel: null,
 };
 const cache = new InMemoryCache({ addTypename: false });
 export const searchQuery = {

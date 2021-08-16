@@ -272,10 +272,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
   };
 
   const sendMediaMessage = (type: string, payload: any) => {
-    axios({
-      method: 'POST',
-      url: GUPSHUP_CALLBACK_URL,
-      data: {
+    axios
+      .post(GUPSHUP_CALLBACK_URL, {
         type: 'message',
         payload: {
           id: uuidv4(),
@@ -287,12 +285,12 @@ export const Simulator: React.FC<SimulatorProps> = ({
             name: data ? data.simulatorGet?.name : '',
           },
         },
-      },
-    }).catch((error) => {
-      // add log's
-      setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-      setLogs(error, 'error');
-    });
+      })
+      .catch((error) => {
+        // add log's
+        setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
+        setLogs(error, 'error');
+      });
     getChatMessage();
   };
   const sendMessage = (quickReplyText?: string) => {
@@ -306,10 +304,8 @@ export const Simulator: React.FC<SimulatorProps> = ({
 
       if (quickReplyText) payload.text = quickReplyText;
 
-      axios({
-        method: 'POST',
-        url: GUPSHUP_CALLBACK_URL,
-        data: {
+      axios
+        .post(GUPSHUP_CALLBACK_URL, {
           type: 'message',
           payload: {
             id: uuidv4(),
@@ -321,15 +317,15 @@ export const Simulator: React.FC<SimulatorProps> = ({
               name: data ? data.simulatorGet?.name : '',
             },
           },
-        },
-      }).catch((error) => {
-        // add log's
-        setLogs(
-          `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-          'info'
-        );
-        setLogs(error, 'error');
-      });
+        })
+        .catch((error) => {
+          // add log's
+          setLogs(
+            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+            'info'
+          );
+          setLogs(error, 'error');
+        });
       setInputMessage('');
       // reset the message from floweditor for the next time
       if (resetMessage) {

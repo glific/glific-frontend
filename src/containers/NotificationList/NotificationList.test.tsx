@@ -70,21 +70,25 @@ test('it should show copy text and view option on clicking entity ', async () =>
   const { getByTestId, getByText } = render(notifications);
   await waitFor(() => {
     const entityMenu = screen.getAllByTestId('Menu');
+
     fireEvent.click(entityMenu[0]);
 
     const viewButton = screen.getAllByTestId('MenuItem');
-    // view option
+    // copy text option
+
     expect(viewButton[0]).toBeInTheDocument();
     fireEvent.click(viewButton[0]);
 
-    // copy text option
+    // view option
     expect(viewButton[1]).toBeInTheDocument();
     fireEvent.click(viewButton[1]);
+  });
 
+  await waitFor(() => {
+    expect(getByTestId('copyToClipboard')).toBeInTheDocument();
     // after clicking on view it should show copy text option
     const copyText = getByTestId('copyToClipboard');
     fireEvent.click(copyText);
-
     // after view it should show Done button
     const doneButton = getByText('Done');
     fireEvent.click(doneButton);

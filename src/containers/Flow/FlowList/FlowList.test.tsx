@@ -11,6 +11,7 @@ import {
   getFlowQuery,
   importFlow,
   exportFlow,
+  releaseFlow,
 } from 'mocks/Flow';
 import testJSON from 'mocks/ImportFlow.json';
 import { setUserSession } from 'services/AuthService';
@@ -24,6 +25,7 @@ const mocks = [
   getFlowCountNewQuery,
   getFlowQuery,
   importFlow,
+  releaseFlow,
   exportFlow,
 ];
 
@@ -34,6 +36,8 @@ const flowList = (
     </MemoryRouter>
   </MockedProvider>
 );
+
+HTMLAnchorElement.prototype.click = jest.fn();
 
 // console warning fix - react-i18next:: You will need to pass in an i18next instance by using initReactI18next
 // https://github.com/i18next/react-i18next/issues/876
@@ -114,6 +118,7 @@ describe('<FlowList />', () => {
     });
 
     await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+    await waitFor(() => {});
   });
 
   test('should export flow to json file', async () => {
