@@ -56,7 +56,6 @@ const menus = [
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
-
   {
     title: 'Notifications',
     path: '/notifications',
@@ -65,6 +64,14 @@ const menus = [
     badge: true,
     roles: ['Manager', 'Admin'],
   },
+  {
+    title: 'Help',
+    path: '',
+    icon: 'help',
+    type: 'sideDrawer',
+    roles: ['Manager', 'Admin'],
+  },
+
   {
     title: 'Collections',
     path: '/collection',
