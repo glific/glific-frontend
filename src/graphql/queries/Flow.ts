@@ -68,8 +68,14 @@ export const EXPORT_FLOW = gql`
 export const GET_FREE_FLOW = gql`
   query flowGet($id: ID!) {
     flowGet(id: $id) {
-      id
-      uuid
+      flow {
+        id
+        uuid
+      }
+      errors {
+        key
+        message
+      }
     }
   }
 `;
