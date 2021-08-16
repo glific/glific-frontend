@@ -10,9 +10,10 @@ import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import { Input } from 'components/UI/Form/Input/Input';
 import { MessageType } from 'containers/Chat/ChatConversations/MessageType/MessageType';
 import { MEDIA_MESSAGE_TYPES } from 'common/constants';
-import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { validateMedia } from 'common/utils';
+import setLogs from 'config/logs';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
 import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/Red.svg';
 import styles from './AddAttachment.module.css';
@@ -76,7 +77,9 @@ export const AddAttachment: React.FC<AddAttachmentPropTypes> = ({
             setErrors(null);
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          setLogs(error, 'error');
+        });
     }
   };
 
