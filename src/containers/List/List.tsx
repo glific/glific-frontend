@@ -421,7 +421,7 @@ export const List: React.SFC<ListProps> = ({
 
             if (action.link) {
               return (
-                <a href={`${action.link}/${additionalActionParameter}`} key={key}>
+                <Link to={`${action.link}/${additionalActionParameter}`} key={key}>
                   <IconButton
                     color="default"
                     className={styles.additonalButton}
@@ -431,7 +431,7 @@ export const List: React.SFC<ListProps> = ({
                       {action.icon}
                     </Tooltip>
                   </IconButton>
-                </a>
+                </Link>
               );
             }
             if (action.dialog) {
