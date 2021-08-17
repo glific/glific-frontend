@@ -49,7 +49,7 @@
 
 .Header {
   position: fixed;
-  background-color: #fafafa;
+  background-color: #f9f7f3;
   top: 0;
   width: calc(100% - 233px);
   display: flex;
@@ -61,6 +61,11 @@
   align-items: center;
   border-radius: 10px;
   height: 100px;
+}
+
+.ContactHeader {
+  composes: Header;
+  width: calc(100% - 619px);
 }
 
 .Icon {

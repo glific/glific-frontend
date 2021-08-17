@@ -28,6 +28,10 @@
   line-height: 1 !important;
 }
 
+.ContactHeader {
+  composes: TableHeadRow;
+  width: calc(100% - 666px);
+}
 .TableBody {
   display: block;
   padding-top: 40px;

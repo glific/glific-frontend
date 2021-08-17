@@ -611,9 +611,15 @@ export const List: React.SFC<ListProps> = ({
     </div>
   );
 
+  let headerSize = styles.Header;
+
+  if (listItemName === 'contact') {
+    headerSize = styles.ContactHeader;
+  }
+
   return (
     <>
-      <div className={styles.Header} data-testid="listHeader">
+      <div className={headerSize} data-testid="listHeader">
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}

@@ -135,8 +135,12 @@ const tableHeadColumns = (
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
+  let headerSize = styles.TableHeadRow;
+  if (listName === 'contact') {
+    headerSize = styles.ContactHeader;
+  }
   return (
-    <TableRow className={styles.TableHeadRow}>
+    <TableRow className={headerSize}>
       {batchAction}
       {columnNames.map((name: string, i: number) => (
         <TableCell
