@@ -72,6 +72,7 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         key={menu.icon}
         component={NavLink}
         to={redirectPath}
+        {...(menu.url ? { target: '_blank', url: menu.url } : {})}
       >
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon
