@@ -189,6 +189,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [IsError, setIsError] = useState(false);
   const [flowKeyword, setFlowKeyword] = useState('');
   const [currentEditDialogBox, setCurrentEditDialogBox] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
 
   let modal = null;
   let dialog = null;
@@ -213,9 +214,10 @@ export const FlowEditor = (props: FlowEditorProps) => {
   const [getFreeFlow] = useLazyQuery(GET_FREE_FLOW, {
     fetchPolicy: 'network-only',
     onCompleted: ({ flowGet }) => {
-      if (flowGet) {
+      if (flowGet.flow) {
         getOrganizationServices();
-      } else {
+      } else if (flowGet.errors && flowGet.errors.length) {
+        setDialogMessage(flowGet.errors[0].message);
         setCurrentEditDialogBox(true);
       }
     },
@@ -356,7 +358,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   if (currentEditDialogBox) {
     dialog = (
       <DialogBox
-        title="The flow is currently being edited by someone else."
+        title={dialogMessage}
         alignButtons="center"
         skipCancel
         buttonOk="Okay"

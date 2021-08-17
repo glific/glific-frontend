@@ -364,35 +364,44 @@ export const BillingForm: React.FC<BillingProps> = () => {
       </Typography>
       {backLink}
       <div className={styles.Description}>
-        <div className={styles.Setup}>
-          <div>
-            <div className={styles.Heading}>One time setup</div>
-            <div className={styles.Pricing}>
-              <span>INR 15000</span> ($220)
+        <div className={styles.UpperSection}>
+          <div className={styles.Setup}>
+            <div>
+              <div className={styles.Heading}>One time setup</div>
+              <div className={styles.Pricing}>
+                <span>INR 15000</span> ($220)
+              </div>
+              <div className={styles.Pricing}>+ taxes</div>
+              <ul className={styles.List}>
+                <li>5hr consulting</li>
+                <li>1 hr onboarding session</li>
+              </ul>
             </div>
-            <div className={styles.Pricing}>+ taxes</div>
-            <ul className={styles.List}>
-              <li>5hr consulting</li>
-              <li>1 hr onboarding session</li>
-            </ul>
+            <div>
+              <div className={styles.Heading}>Monthly Recurring</div>
+              <div className={styles.Pricing}>
+                <span>INR 7,500</span> ($110)
+              </div>
+              <div className={styles.Pricing}>+ taxes</div>
+              <ul className={styles.List}>
+                <li>upto 250k messages</li>
+                <li>1-10 users</li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <div className={styles.Heading}>Monthly Recurring</div>
-            <div className={styles.Pricing}>
-              <span>INR 7,500</span> ($110)
-            </div>
-            <div className={styles.Pricing}>+ taxes</div>
-            <ul className={styles.List}>
-              <li>upto 250k messages</li>
-              <li>1-10 users</li>
-            </ul>
+          <div className={styles.Additional}>
+            <div className={styles.Heading}>Variable charges as usage increases</div>
+            <div>For every staff member over 10 users – INR 150 ($2)</div>
+            <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14)</div>
+            <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
           </div>
         </div>
-        <div className={styles.Additional}>
-          <div className={styles.Heading}>Variable charges as usage increases</div>
-          <div>For every staff member over 10 users – INR 150 ($2)</div>
-          <div>For every 1K messages upto 1Mn messages – INR 10 ($0.14)</div>
-          <div>For every 1K messages over 1Mn messages – INR 5 ($0.07)</div>
+        <div className={styles.DottedSpaced} />
+        <div className={styles.BottomSection}>
+          <div className={styles.InactiveHeading}>
+            Suspended or inactive accounts:{' '}
+            <span className={styles.Amount}> INR 4,500/mo + taxes</span>
+          </div>
         </div>
       </div>
 

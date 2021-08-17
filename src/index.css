@@ -119,6 +119,7 @@ temba-select:focus {
 body {
   margin: 0;
   font-family: 'heebo' !important;
+  background-color: #f9f7f4 !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
