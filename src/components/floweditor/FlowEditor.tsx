@@ -23,11 +23,11 @@ import styles from './FlowEditor.module.css';
 
 declare function showFlowEditor(node: any, config: any): void;
 
-function safeDecorator(fn: any) {
-  // eslint-disable-next-line func-names
-  return function (...args: any) {
+// function to suppress the error for custom registery in floweditor
+
+const safeDecorator = (fn: any) =>
+  function (...args: any) {
     try {
-      // eslint-disable-next-line
       // @ts-ignore
       return fn.apply(this, args);
     } catch (error) {
@@ -40,7 +40,6 @@ function safeDecorator(fn: any) {
       throw error;
     }
   };
-}
 
 customElements.define = safeDecorator(customElements.define);
 
