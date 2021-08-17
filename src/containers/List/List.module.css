@@ -65,7 +65,7 @@
 
 .ContactHeader {
   composes: Header;
-  width: calc(100% - 619px);
+  width: calc(100% - 623px);
 }
 
 .Icon {
@@ -100,6 +100,8 @@
 }
 
 .BackLink {
+  position: fixed;
+  z-index: 1001;
   font-weight: 800;
   font-size: 16px;
   margin: 24px;
@@ -140,9 +142,9 @@
   color: #93a29b;
   font-size: 16px;
   margin: 0 auto;
-  margin-top: 100px;
+  margin-top: 200px;
   text-align: center;
-  width: 204px;
+  width: 230px;
 }
 
 .ButtonGroup {

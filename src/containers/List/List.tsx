@@ -604,7 +604,7 @@ export const List: React.SFC<ListProps> = ({
         <div>Sorry, no results found! Please try a different search.</div>
       ) : (
         <div>
-          There are no {noItemText || listItemName}s right now.
+          There are no {noItemText || listItemName}s right now.{' '}
           {button.show && 'Please create one.'}
         </div>
       )}
