@@ -306,7 +306,15 @@ export const getFreeFlow = {
   },
   result: {
     data: {
-      flowGet: null,
+      flowGet: {
+        flow: null,
+        errors: [
+          {
+            key: 'error',
+            message: 'The flow is being edited by NGO Main Account',
+          },
+        ],
+      },
     },
   },
 };

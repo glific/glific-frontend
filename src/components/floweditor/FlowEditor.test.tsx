@@ -98,7 +98,6 @@ test('click on preview button should open simulator', async () => {
 });
 
 test('check if someone else is using a flow', async () => {
-
   // onload is not defined for script element in jest so we need to trigger it manually
   const mockCreateElement = document.createElement.bind(document);
   let scriptElements: any = [];
@@ -120,7 +119,7 @@ test('check if someone else is using a flow', async () => {
   });
 
   await waitFor(() => {
-    expect(getByText('The flow is currently being edited by someone else.')).toBeInTheDocument();
+    expect(getByText('The flow is being edited by NGO Main Account')).toBeInTheDocument();
   });
 
   fireEvent.click(getByText('Okay'));
