@@ -72,7 +72,7 @@ const menus = [
     url: GLIFIC_DOCS_URL,
     icon: 'help',
     type: 'sideDrawer',
-    roles: ['Manager', 'Admin'],
+    roles: ['Staff', 'Manager', 'Admin'],
   },
 
   {
