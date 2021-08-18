@@ -28,6 +28,7 @@ export const ChatTemplates: React.SFC<ChatTemplatesProps> = (props) => {
   });
 
   const { data: interactives } = useQuery<any>(FILTER_INTERACTIVE_MESSAGES, {
+    fetchPolicy: 'network-only',
     variables: {
       filter: {
         label: searchVal,
