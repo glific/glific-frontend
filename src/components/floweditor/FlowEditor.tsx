@@ -344,7 +344,9 @@ export const FlowEditor = (props: FlowEditorProps) => {
           setConfirmedNavigation(true);
           history.push('/flow');
         }}
-      />
+      >
+        <p className={styles.DialogDescription}>Please try again later or contact the user.</p>
+      </DialogBox>
     );
   }
 
