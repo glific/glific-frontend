@@ -1,3 +1,5 @@
+import { GLIFIC_DOCS_URL } from 'config';
+
 // define all the menus in the system
 const menus = [
   {
@@ -56,7 +58,6 @@ const menus = [
     type: 'sideDrawer',
     roles: ['Manager', 'Admin'],
   },
-
   {
     title: 'Notifications',
     path: '/notifications',
@@ -65,6 +66,15 @@ const menus = [
     badge: true,
     roles: ['Manager', 'Admin'],
   },
+  {
+    title: 'Help',
+    path: '/help',
+    url: GLIFIC_DOCS_URL,
+    icon: 'help',
+    type: 'sideDrawer',
+    roles: ['Staff', 'Manager', 'Admin'],
+  },
+
   {
     title: 'Collections',
     path: '/collection',

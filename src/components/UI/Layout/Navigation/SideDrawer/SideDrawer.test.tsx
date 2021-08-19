@@ -48,13 +48,6 @@ describe('side drawer testing', () => {
     }
   });
 
-  it('should contain a help button', async () => {
-    setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
-    const { getByTestId } = render(component);
-    await waitFor(() => {});
-    expect(getByTestId('helpButton')).toBeInTheDocument();
-  });
-
   it('it should render component in normal mode', async () => {
     const { getByTestId } = render(
       <MockedProvider mocks={mocks}>
