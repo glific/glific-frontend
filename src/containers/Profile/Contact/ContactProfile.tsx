@@ -3,13 +3,14 @@ import { useQuery } from '@apollo/client';
 // import { useTranslation } from 'react-i18next';
 
 import { GET_CONTACT_DETAILS } from 'graphql/queries/Contact';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { ContactDescription } from './ContactDescription/ContactDescription';
+import styles from './ContactProfile.module.css';
+import { Profile } from '../Profile';
 // import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 // import { UPDATE_CONTACT_TAGS } from 'graphql/mutations/Contact';
 // import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 // import { setVariables } from 'common/constants';
-import { ContactDescription } from './ContactDescription/ContactDescription';
-import styles from './ContactProfile.module.css';
-import { Profile } from '../Profile';
 
 export interface ContactProfileProps {
   match: any;
@@ -18,7 +19,7 @@ export interface ContactProfileProps {
 export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   const { match } = props;
 
-  const { data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });
+  const { loading, data } = useQuery(GET_CONTACT_DETAILS, { variables: { id: match.params.id } });
   // const { data: tagsData } = useQuery(FILTER_TAGS_NAME, {
   //   variables: setVariables(),
   // });
@@ -69,25 +70,27 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   //   },
   // };
 
-  let phone = '';
-  let maskedPhone = '';
-  let collections = [];
-  let lastMessage = '';
-  let fields = {};
-  let settings = {};
-  if (data) {
-    const { contact } = data;
-    const contactData = contact.contact;
-    phone = contactData.phone;
-    maskedPhone = contactData.maskedPhone;
-    collections = contactData.groups;
-    lastMessage = contactData.lastMessageAt;
-    fields = contactData.fields;
-    settings = contactData.settings;
+  if (loading) {
+    return <Loading />;
+  }
+
+  let optin = false;
+  let optout = false;
+
+  const { contact } = data;
+  const contactData = contact.contact;
+  const { phone, maskedPhone, status, groups, lastMessage, fields, settings } = contactData;
+  optin = typeof contactData.optinTime === 'string';
+  optout = typeof contactData.optoutTime === 'string';
+
+  let OptinStatus = 'No optin or optout';
+  if (optout && status === 'INVALID') {
+    OptinStatus = 'Optout';
+  } else if (optin) {
+    OptinStatus = 'Optin';
   }
 
   // const additonalStates = { name: 'tags', state: tags, setState: setTags };
-
   // const setSelectedTags = (selectedTags: any) => {
   //   setSelected(selectedTags);
   // };
@@ -109,11 +112,12 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
       </div>
       <div className={styles.ContactDescription}>
         <ContactDescription
+          optinStatus={OptinStatus}
           phone={phone}
           maskedPhone={maskedPhone}
           fields={fields}
           settings={settings}
-          collections={collections}
+          collections={groups}
           lastMessage={lastMessage}
         />
       </div>

@@ -98,6 +98,7 @@ export const GET_CONTACT_DETAILS = gql`
       contact {
         phone
         maskedPhone
+        status
         lastMessageAt
         groups {
           id
@@ -107,6 +108,8 @@ export const GET_CONTACT_DETAILS = gql`
           }
         }
         fields
+        optinTime
+        optoutTime
         settings
       }
     }
