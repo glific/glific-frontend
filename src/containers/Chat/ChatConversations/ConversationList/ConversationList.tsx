@@ -116,12 +116,14 @@ export const ConversationList: React.SFC<ConversationListProps> = (props) => {
     }
     const params = props.searchParam;
     if (params) {
-      if (params.includeTags && params.includeTags.length > 0)
-        filter.includeTags = params.includeTags.map((obj: any) => obj.id);
+      // if (params.includeTags && params.includeTags.length > 0)
+      //   filter.includeTags = params.includeTags.map((obj: any) => obj.id);
       if (params.includeGroups && params.includeGroups.length > 0)
         filter.includeGroups = params.includeGroups.map((obj: any) => obj.id);
       if (params.includeUsers && params.includeUsers.length > 0)
         filter.includeUsers = params.includeUsers.map((obj: any) => obj.id);
+      if (params.includeLabels && params.includeLabels.length > 0)
+        filter.includeLabels = params.includeLabels.map((obj: any) => obj.id);
       if (params.dateFrom) {
         filter.dateRange = {
           from: moment(params.dateFrom).format('YYYY-MM-DD'),

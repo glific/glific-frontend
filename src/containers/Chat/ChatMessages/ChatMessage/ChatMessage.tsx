@@ -256,7 +256,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   } else if (showMessage) {
     messageFooter = moment(insertedAt).format(TIME_FORMAT);
   }
-  const dateAndSendBy = (
+
+  const dateAndSendBy = messageFooter && (
     <div className={`${styles.Date} ${datePlacement}`} data-testid="date">
       {messageFooter}
     </div>
@@ -435,8 +436,8 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
       {saveTemplateMessage}
 
       <div className={messageDetails}>
-        <div className={`${messageErrorStatus && styles.TemplateButtonOnError}`}>
-          <TemplateButtons template={templateButtons} />
+        <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
+          {templateButtons && <TemplateButtons template={templateButtons} />}
         </div>
         {dateAndSendBy}
         {/* {displayTag ? (

@@ -9,7 +9,7 @@ import { ReactComponent as SearchIcon } from 'assets/images/icons/Search/Selecte
 import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Selected.svg';
 import { GET_SEARCH, SEARCH_LIST_QUERY } from 'graphql/queries/Search';
 import { CREATE_SEARCH, UPDATE_SEARCH, DELETE_SEARCH } from 'graphql/mutations/Search';
-import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
+// import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import { GET_USERS } from 'graphql/queries/User';
 import { GET_ALL_FLOW_LABELS } from 'graphql/queries/FlowLabel';
@@ -48,7 +48,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   const [shortcode, setShortcode] = useState('');
   const [label, setLabel] = useState('');
   const [term, setTerm] = useState('');
-  const [includeTags, setIncludeTags] = useState([]);
+  // const [includeTags, setIncludeTags] = useState([]);
   const [includeGroups, setIncludeGroups] = useState([]);
   const [includeUsers, setIncludeUsers] = useState([]);
   const [includeLabels, setIncludeLabels] = useState([]);
@@ -69,7 +69,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     shortcode,
     label,
     term,
-    includeTags,
+    // includeTags,
     includeGroups,
     includeUsers,
     includeLabels,
@@ -77,9 +77,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     dateTo,
   };
 
-  const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
-    variables: setVariables(),
-  });
+  // const { data: dataT } = useQuery(FILTER_TAGS_NAME, {
+  //   variables: setVariables(),
+  // });
 
   const { data } = useQuery(GET_COLLECTIONS, {
     variables: setVariables(),
@@ -98,12 +98,12 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     const filters = JSON.parse(args);
     Object.keys(filters.filter).map((key) => {
       switch (key) {
-        case 'includeTags':
-          if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
-            if (dataT) {
-              setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
-            }
-          break;
+        // case 'includeTags':
+        //   if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeTags'))
+        //     if (dataT) {
+        //       setIncludeTags(getObject(dataT.tags, filters.filter.includeTags));
+        //     }
+        //   break;
         case 'includeGroups':
           if (Object.prototype.hasOwnProperty.call(filters.filter, 'includeGroups'))
             if (data) {
@@ -152,9 +152,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
       },
       filter: {
         term: props.searchParam.term,
-        includeTags: props.searchParam.includeTags
-          ? props.searchParam.includeTags.map((option: any) => option.id)
-          : [],
+        // includeTags: props.searchParam.includeTags
+        //   ? props.searchParam.includeTags.map((option: any) => option.id)
+        //   : [],
         includeGroups: props.searchParam.includeGroups
           ? props.searchParam.includeGroups.map((option: any) => option.id)
           : [],
@@ -200,7 +200,7 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
     variables: setVariables({}, 100, 0, 'ASC'),
   });
 
-  if (!data || !dataT || !dataUser || !dataLabels) return <Loading />;
+  if (!data || !dataUser || !dataLabels) return <Loading />;
 
   const validateTitle = (value: any) => {
     let error;
