@@ -281,7 +281,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   useEffect(() => {
     if (flowId) {
-      const { fetch, xmlSend } = setAuthHeaders();
+      const { fetch, xmlSend } = setAuthHeaders(client);
       const files = loadfiles(() => {
         getFreeFlow({ variables: { id: flowId } });
       });

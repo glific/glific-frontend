@@ -10,7 +10,9 @@ import {
   renewAuthToken,
   getAuthSession,
   setAuthSession,
+  getUserSession,
 } from 'services/AuthService';
+import { addLogs } from 'common/utils';
 import { CONNECTION_RECONNECT_ATTEMPTS } from 'common/constants';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import setLogs from './logs';
@@ -46,7 +48,9 @@ const gqlClient = (history: any) => {
       console.warn('Your refresh token is invalid. Try to relogin');
       console.error(err);
       // logged error in logflare
-      setLogs(err, 'error');
+      addLogs('Refresh token is invalid', err);
+      addLogs('User session', getUserSession());
+
       /* eslint-enable */
       // gracefully logout
       return Logout;

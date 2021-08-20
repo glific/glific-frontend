@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { addLogs } from 'common/utils';
 
 import { RENEW_TOKEN, REACT_APP_GLIFIC_AUTHENTICATION_API } from 'config';
 import setLogs from 'config/logs';
+import { LOGOUT_SESSION } from 'graphql/queries/Notification';
 
 // get the current authentication session
 export const getAuthSession = (element?: string) => {
@@ -144,7 +146,7 @@ export const getUserSession = (element?: string) => {
   return returnValue;
 };
 
-export const setAuthHeaders = () => {
+export const setAuthHeaders = (client: any) => {
   // // add authorization header in all calls
   let renewTokenCalled = false;
   let tokenRenewed = false;
@@ -187,7 +189,11 @@ export const setAuthHeaders = () => {
     XMLHttpRequest.prototype.send = async function authCheck(body) {
       this.addEventListener('loadend', () => {
         if (this.status === 401) {
-          window.location.href = '/logout/user';
+          addLogs('Redirected from floweditor auth', getUserSession());
+          client.writeQuery({
+            query: LOGOUT_SESSION,
+            data: { sessionExpired: true },
+          });
         }
       });
       if (checkAuthStatusService()) {

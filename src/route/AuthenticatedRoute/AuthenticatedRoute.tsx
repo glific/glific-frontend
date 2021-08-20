@@ -4,6 +4,7 @@ import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Layout } from 'components/UI/Layout/Layout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { getUserRole } from 'context/role';
+import useLogout from 'services/LogoutService';
 import { useToast } from 'services/ToastService';
 import { Chat } from 'containers/Chat/Chat';
 import { ChatSubscription } from 'containers/Chat/ChatSubscription/ChatSubscription';
@@ -204,6 +205,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const toastMessage = useToast();
+  const logoutSession = useLogout();
   let userRole: any[] = [];
   let route;
 
@@ -229,6 +231,7 @@ export const AuthenticatedRoute: React.SFC = () => {
   // on chat screen, for eg: send message to collection
   return (
     <div className={styles.App} data-testid="app">
+      {logoutSession}
       {toastMessage}
       {userRole.length > 0 ? (
         <ChatSubscription setDataLoaded={setDataLoaded} setLoading={setLoading} />
