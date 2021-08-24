@@ -532,9 +532,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       helperText: defaultAttribute.isHsm
         ? 'You can also use variable and interactive actions. Variable format: {{1}}, Button format: [Button text,Value] Value can be a URL or a phone number.'
         : null,
-      handleBlur: (event: any) => {
-        const { textContent } = event.target;
-        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(textContent)));
+      getEditorValue: (value: any) => {
+        setBody(value);
       },
     },
   ];

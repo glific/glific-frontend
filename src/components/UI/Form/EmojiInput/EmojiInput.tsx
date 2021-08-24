@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { RichUtils, Modifier, EditorState } from 'draft-js';
+import { RichUtils, Modifier, EditorState, ContentState } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin from '@draft-js-plugins/mention';
 import { InputAdornment, IconButton, ClickAwayListener } from '@material-ui/core';
@@ -19,6 +19,7 @@ export interface EmojiInputProps {
   rows: number;
   handleChange?: any;
   handleBlur?: any;
+  getEditorValue?: any;
   inputProp?: any;
 }
 
@@ -78,6 +79,7 @@ const DraftField = (inputProps: any) => {
 export const EmojiInput: React.FC<EmojiInputProps> = ({
   field: { onChange, ...rest },
   handleChange,
+  getEditorValue,
   handleBlur,
   ...props
 }: EmojiInputProps) => {
@@ -113,6 +115,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     if (handleChange) {
       handleChange(convertToWhatsApp(props.form.values.example));
     }
+    if (getEditorValue) {
+      getEditorValue(editorState);
+    }
     props.form.setFieldValue(rest.name, editorState);
   };
 
@@ -138,6 +143,17 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     suggestions,
     onOpenChange,
     onSearchChange,
+    handlePastedText: (text: string, html: string, editorState: EditorState) => {
+      const pastedBlocks = ContentState.createFromText(text).getBlockMap();
+      const newState = Modifier.replaceWithFragment(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        pastedBlocks
+      );
+      const newEditorState = EditorState.push(editorState, newState, 'insert-fragment');
+      draftJsChange(newEditorState);
+      return 'handled';
+    },
     handleKeyCommand,
     onBlur: handleBlur,
     onChange: draftJsChange,
