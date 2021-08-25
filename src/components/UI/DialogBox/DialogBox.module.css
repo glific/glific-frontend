@@ -17,6 +17,10 @@
   max-height: 90% !important;
 }
 
+.DialogboxRoot {
+  z-index: 1501 !important; /* greater than tooltip */
+}
+
 .Dialogbox Form {
   max-height: 500px;
 }
