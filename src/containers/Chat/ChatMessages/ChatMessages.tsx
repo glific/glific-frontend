@@ -605,7 +605,12 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             : true
         }
         jumpToMessage={jumpToMessage}
-        daySeparator="26/08/2021"
+        daySeparator={
+          reverseConversation[index + 1]
+            ? moment(reverseConversation[index].insertedAt).format('YYYY-MM-DD') <
+              moment(reverseConversation[index + 1].insertedAt).format('YYYY-MM-DD')
+            : false
+        }
       />
     ));
 

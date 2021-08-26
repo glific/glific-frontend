@@ -268,9 +268,10 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   // show day separator if the message is sent on the next day
   let daySeparatorContent = null;
   if (daySeparator) {
+    console.log('daySeparator', daySeparator);
     daySeparatorContent = (
       <div className={styles.DaySeparator} data-testid="daySeparator">
-        {daySeparator}
+        {moment(insertedAt).format(DATE_FORMAT)}
       </div>
     );
   }
