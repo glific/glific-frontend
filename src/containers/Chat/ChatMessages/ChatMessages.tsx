@@ -605,6 +605,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             : true
         }
         jumpToMessage={jumpToMessage}
+        daySeparator="26/08/2021"
       />
     ));
 

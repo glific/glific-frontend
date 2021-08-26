@@ -284,3 +284,8 @@
 .LabelContainerSender {
   justify-content: flex-end;
 }
+
+.DaySeparator {
+  text-align: center;
+  clear: both;
+}
