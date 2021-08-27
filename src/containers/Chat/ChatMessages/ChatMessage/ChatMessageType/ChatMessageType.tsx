@@ -62,6 +62,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
                 setShowViewer(false);
               }}
               images={[{ src: media.url, alt: '' }]}
+              zIndex={1501} // greater than tooltips
             />
           </div>
           <MessagesWithLinks message={media.caption} />

@@ -25,6 +25,7 @@ export interface DialogProps {
   skipOk?: boolean;
   contentText?: string;
   disableOk?: boolean;
+  alwaysOntop?: boolean;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -44,6 +45,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   skipOk = false,
   contentText,
   disableOk = false,
+  alwaysOntop = false,
 }) => {
   const handleCancelButton = () => {
     handleCancel();
@@ -103,6 +105,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         container: styles.Dialogbox,
         paper: styles.DialogboxPaper,
         scrollPaper: styles.ScrollPaper,
+        root: alwaysOntop ? styles.DialogboxRoot : '',
       }}
       onClose={handleCancelButton}
       aria-labelledby="alert-dialog-title"
