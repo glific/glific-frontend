@@ -270,7 +270,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
   if (daySeparator) {
     daySeparatorContent = (
       <div className={styles.DaySeparator} data-testid="daySeparator">
-        {moment(insertedAt).format(DATE_FORMAT)}
+        <p className={styles.DaySeparatorContent}>{moment(insertedAt).format(DATE_FORMAT)}</p>
       </div>
     );
   }

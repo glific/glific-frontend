@@ -286,6 +286,18 @@
 }
 
 .DaySeparator {
-  text-align: center;
   clear: both;
+  display: flex;
+  justify-content: center;
+}
+
+.DaySeparatorContent {
+  text-align: center;
+  width: 54px;
+  height: 20px;
+  background-color: #edf6f2;
+  color: #073f24;
+  font-size: 10px;
+  padding-top: 4px;
+  border-radius: 8px;
 }
