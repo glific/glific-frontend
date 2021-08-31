@@ -21,6 +21,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { WhatsAppToDraftEditor } from 'common/RichEditor';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
@@ -784,6 +785,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type,
     attachmentURL,
   ]);
+
+  if (languageOptions.length < 1) {
+    return <Loading />;
+  }
 
   return (
     <>
