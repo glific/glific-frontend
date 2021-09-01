@@ -284,3 +284,21 @@
 .LabelContainerSender {
   justify-content: flex-end;
 }
+
+.DaySeparator {
+  clear: both;
+  display: flex;
+  justify-content: center;
+}
+
+.DaySeparatorContent {
+  text-align: center;
+  width: 54px;
+  height: 20px;
+  background-color: #edf6f2;
+  color: #073f24;
+  font-size: 10px;
+  padding-top: 4px;
+  border-radius: 8px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+}

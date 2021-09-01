@@ -56,6 +56,7 @@ export interface ChatMessageProps {
   interactiveContent: string;
   sendBy: string;
   flowLabel: string | null;
+  daySeparator: string | null;
 }
 
 export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
@@ -90,6 +91,7 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     interactiveContent,
     sendBy,
     flowLabel,
+    daySeparator,
   } = props;
 
   useEffect(() => {
@@ -263,6 +265,16 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     </div>
   );
 
+  // show day separator if the message is sent on the next day
+  let daySeparatorContent = null;
+  if (daySeparator) {
+    daySeparatorContent = (
+      <div className={styles.DaySeparator} data-testid="daySeparator">
+        <p className={styles.DaySeparatorContent}>{moment(insertedAt).format(DATE_FORMAT)}</p>
+      </div>
+    );
+  }
+
   const icon = (
     <MessageIcon
       onClick={onClick}
@@ -322,81 +334,83 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
     }
   }
   return (
-    <div
-      className={additionalClass}
-      ref={messageRef}
-      data-testid="message"
-      id={`search${messageNumber}`}
-    >
-      {contextMessage ? (
-        <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
-          <div
-            className={styles.ReplyMessage}
-            onClick={() => jumpToMessage(contextMessage.messageNumber)}
-            aria-hidden="true"
-            data-testid="reply-message"
-          >
-            <div className={styles.ReplyMainWrap}>
-              <div>
-                <div className={styles.ReplyContact}>
-                  {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+    <div>
+      {daySeparatorContent}
+      <div
+        className={additionalClass}
+        ref={messageRef}
+        data-testid="message"
+        id={`search${messageNumber}`}
+      >
+        {contextMessage ? (
+          <Tooltip title={moment(contextMessage.insertedAt).format(DATE_FORMAT)} placement="right">
+            <div
+              className={styles.ReplyMessage}
+              onClick={() => jumpToMessage(contextMessage.messageNumber)}
+              aria-hidden="true"
+              data-testid="reply-message"
+            >
+              <div className={styles.ReplyMainWrap}>
+                <div>
+                  <div className={styles.ReplyContact}>
+                    {contextMessage.sender.id === contactId ? contextMessage.sender.name : 'You'}
+                  </div>
+                  <div className={styles.ReplyMessageBody}>
+                    <ChatMessageType
+                      type={contextMessage.type}
+                      media={contextMessage.media}
+                      body={contextMessage.body}
+                      insertedAt={contextMessage.insertedAt}
+                      location={contextMessage.location}
+                      isContextMessage
+                    />
+                  </div>
                 </div>
-                <div className={styles.ReplyMessageBody}>
-                  <ChatMessageType
-                    type={contextMessage.type}
-                    media={contextMessage.media}
-                    body={contextMessage.body}
-                    insertedAt={contextMessage.insertedAt}
-                    location={contextMessage.location}
-                    isContextMessage
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Tooltip>
-      ) : null}
-
-      <div className={styles.Inline}>
-        {iconLeft ? icon : null}
-        {ErrorIcon}
-        <div className={chatMessageClasses.join(' ')}>
-          <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
-            <div>
-              <div className={chatMessageContent.join(' ')} data-testid="content">
-                {isInteractiveContentPresent && !isSender ? (
-                  template
-                ) : (
-                  <ChatMessageType
-                    type={type}
-                    media={media}
-                    body={bodyText}
-                    insertedAt={insertedAt}
-                    location={location}
-                  />
-                )}
               </div>
             </div>
           </Tooltip>
+        ) : null}
 
-          <Popper
-            id={popperId}
-            open={open}
-            modifiers={{
-              preventOverflow: {
-                enabled: true,
-                boundariesElement: 'scrollParent',
-              },
-            }}
-            anchorEl={anchorEl}
-            placement={placement}
-            transition
-            data-testid="popup"
-          >
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper elevation={3}>
-                  {/* <Button
+        <div className={styles.Inline}>
+          {iconLeft ? icon : null}
+          {ErrorIcon}
+          <div className={chatMessageClasses.join(' ')}>
+            <Tooltip title={tooltipTitle} placement={isSender ? 'right' : 'left'}>
+              <div>
+                <div className={chatMessageContent.join(' ')} data-testid="content">
+                  {isInteractiveContentPresent && !isSender ? (
+                    template
+                  ) : (
+                    <ChatMessageType
+                      type={type}
+                      media={media}
+                      body={bodyText}
+                      insertedAt={insertedAt}
+                      location={location}
+                    />
+                  )}
+                </div>
+              </div>
+            </Tooltip>
+
+            <Popper
+              id={popperId}
+              open={open}
+              modifiers={{
+                preventOverflow: {
+                  enabled: true,
+                  boundariesElement: 'scrollParent',
+                },
+              }}
+              anchorEl={anchorEl}
+              placement={placement}
+              transition
+              data-testid="popup"
+            >
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <Paper elevation={3}>
+                    {/* <Button
                     className={styles.Popper}
                     color="primary"
                     onClick={props.setDialog}
@@ -405,47 +419,48 @@ export const ChatMessage: React.SFC<ChatMessageProps> = (props) => {
                     {t('Assign tag')}
                   </Button>
                   <br /> */}
-                  <Button
-                    className={styles.Popper}
-                    color="primary"
-                    onClick={() => setShowSaveMessageDialog(true)}
-                  >
-                    {t('Add to speed sends')}
-                  </Button>
-                  {props.type !== 'TEXT' && (
-                    <span>
-                      <br />
-                      <Button
-                        className={styles.Popper}
-                        color="primary"
-                        onClick={() => downloadMedia()}
-                        data-testid="downloadMedia"
-                      >
-                        {t('Download media')}
-                      </Button>
-                    </span>
-                  )}
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
+                    <Button
+                      className={styles.Popper}
+                      color="primary"
+                      onClick={() => setShowSaveMessageDialog(true)}
+                    >
+                      {t('Add to speed sends')}
+                    </Button>
+                    {props.type !== 'TEXT' && (
+                      <span>
+                        <br />
+                        <Button
+                          className={styles.Popper}
+                          color="primary"
+                          onClick={() => downloadMedia()}
+                          data-testid="downloadMedia"
+                        >
+                          {t('Download media')}
+                        </Button>
+                      </span>
+                    )}
+                  </Paper>
+                </Fade>
+              )}
+            </Popper>
+          </div>
+          {iconLeft ? null : icon}
         </div>
-        {iconLeft ? null : icon}
-      </div>
 
-      {saveTemplateMessage}
+        {saveTemplateMessage}
 
-      <div className={messageDetails}>
-        <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
-          {templateButtons && <TemplateButtons template={templateButtons} />}
-        </div>
-        {dateAndSendBy}
-        {/* {displayTag ? (
+        <div className={messageDetails}>
+          <div className={`${messageErrorStatus ? styles.TemplateButtonOnError : ''}`}>
+            {templateButtons && <TemplateButtons template={templateButtons} />}
+          </div>
+          {dateAndSendBy}
+          {/* {displayTag ? (
           <div className={`${styles.TagContainer} ${tagContainer}`}>{displayTag}</div>
         ) : null} */}
-        {displayLabel ? (
-          <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
-        ) : null}
+          {displayLabel ? (
+            <div className={`${styles.LabelContainer} ${labelContainer}`}>{displayLabel}</div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
