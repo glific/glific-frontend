@@ -99,6 +99,7 @@ const ChatConversation: React.SFC<ChatConversationProps> = (props) => {
   const BoldedText = (text: string, highlight: any) => {
     const texts = highlight || '';
     // Split on highlight term and include term into strings, ignore case
+    // eslint-disable-next-line
     const strings = typeof text === 'string' ? text.split(new RegExp(`(${texts})`, 'gi')) : null;
 
     if (strings) {
