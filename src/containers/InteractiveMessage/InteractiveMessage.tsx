@@ -46,16 +46,16 @@ const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
   const { title, body, items, content, options, globalButtons } = data;
 
   if (interactiveType === QUICK_REPLY) {
-    const { type, caption, url, text } = content;
+    const { type, header, url, text } = content;
     const result: any = {};
     result.templateButtons = options.map((option: any) => ({ value: option.title }));
-    result.title = text || '';
+    result.title = header || '';
     switch (type) {
       case 'image':
       case 'video':
         result.type = `${type.toUpperCase()}`;
         result.attachmentURL = url;
-        result.body = caption;
+        result.body = text;
         break;
       case 'file':
         result.type = 'DOCUMENT';
@@ -63,7 +63,7 @@ const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
         break;
       default:
         result.type = null;
-        result.body = caption || '';
+        result.body = text || '';
     }
     return result;
   }
@@ -507,7 +507,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       case 'VIDEO':
         result.type = `${mediaType.toLowerCase()}`;
         result.url = payload.attachmentURL;
-        result.caption = payload.body.getCurrentContent().getPlainText();
+        result.text = payload.body.getCurrentContent().getPlainText();
         break;
       case 'DOCUMENT':
         result.type = 'file';
@@ -516,8 +516,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         break;
       default:
         result.type = 'text';
-        result.text = payload.title;
-        result.caption = payload.body.getCurrentContent().getPlainText();
+        result.header = payload.title;
+        result.text = payload.body.getCurrentContent().getPlainText();
         break;
     }
 
