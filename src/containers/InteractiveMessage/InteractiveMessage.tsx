@@ -225,6 +225,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   const setStates = ({
+    label: labelValue,
     language: languageVal,
     type: typeValue,
     interactiveContent: interactiveContentValue,
@@ -238,7 +239,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
-    setTitle(data.title);
+    setTitle(data.title || labelValue);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -573,7 +574,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const { caption: bodyText } = getPayloadByMediaType(type?.id, payload);
+      const bodyText = payload.body.getCurrentContent().getPlainText();
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 

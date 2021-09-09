@@ -29,7 +29,8 @@ const HSMValidation = {
     .when('body', (messageValue: any, schema: any) =>
       schema.test({
         test: (exampleValue: any) => {
-          const finalmessageValue = messageValue && messageValue.replaceAll(/\{\{[1-9]\}\}/g, '[]');
+          const finalmessageValue =
+            messageValue && messageValue.replaceAll(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
           const finalExampleValue = exampleValue && exampleValue.replaceAll(/\[[^\]]*\]/g, '[]');
           return finalExampleValue === finalmessageValue;
         },
