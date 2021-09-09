@@ -31,7 +31,7 @@ const menus = [
     roles: ['Manager', 'Admin'],
   },
   {
-    title: 'Triggers (Beta)',
+    title: 'Triggers',
     path: '/trigger',
     icon: 'trigger',
     type: 'sideDrawer',
