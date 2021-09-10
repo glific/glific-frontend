@@ -18,6 +18,7 @@ import { CLEAR_CACHE_DURATION } from 'common/constants';
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
   const history = useHistory();
+  const [GQLClient, setGqlClient] = useState<any>();
   // by default, do not assign any value to assume login or logout
   // let's checkAuthStatusService allocate it on useEffect
   const [authenticated, setAuthenticated] = useState<any>();
@@ -56,16 +57,26 @@ const App = () => {
     );
   }
 
-  return (
-    <SessionContext.Provider value={values}>
-      <ApolloProvider client={gqlClient(history)}>
-        <ErrorHandler />
-        <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
-          <Suspense fallback={<Loading />}>{routes}</Suspense>
-        </ClearCacheProvider>
-      </ApolloProvider>
-    </SessionContext.Provider>
-  );
+  useEffect(() => {
+    gqlClient(history).then((value) => {
+      setGqlClient(value);
+    });
+  }, []);
+
+  if (GQLClient) {
+    return (
+      <SessionContext.Provider value={values}>
+        <ApolloProvider client={GQLClient}>
+          <ErrorHandler />
+          <ClearCacheProvider duration={CLEAR_CACHE_DURATION}>
+            <Suspense fallback={<Loading />}>{routes}</Suspense>
+          </ClearCacheProvider>
+        </ApolloProvider>
+      </SessionContext.Provider>
+    );
+  }
+
+  return null;
 };
 
 export default App;

@@ -4,6 +4,7 @@ import { onError } from '@apollo/link-error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { setContext } from '@apollo/link-context';
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
 import {
   checkAuthStatusService,
@@ -19,7 +20,7 @@ import absinthe from './absinthe';
 
 const subscribe = require('@jumpn/utils-graphql');
 
-const gqlClient = (history: any) => {
+const gqlClient = async (history: any) => {
   const refreshTokenLink = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
@@ -118,9 +119,17 @@ const gqlClient = (history: any) => {
     refreshTokenLink.concat(errorLink.concat(authLink.concat(httpLink)))
   );
 
+  const cache = new InMemoryCache();
+
+  // await before instantiating ApolloClient, else queries might run before the cache is persisted
+  await persistCache({
+    cache,
+    storage: new LocalStorageWrapper(window.localStorage),
+  });
+
   return new ApolloClient({
     link,
-    cache: new InMemoryCache(),
+    cache,
   });
 };
 export default gqlClient;

@@ -2995,6 +2995,11 @@ apollo-utilities@^1.0.0:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
+apollo3-cache-persist@^0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/apollo3-cache-persist/-/apollo3-cache-persist-0.12.1.tgz#6641e398cb3285dbc8c6cbdd9ecea3e25bff79c7"
+  integrity sha512-bYh/OzhzR70URRRf0OkzkpTLB7+fwx1Ftiw8/MWW8NhEgF+K9u3FO786DSUcE6X2NqSObYKF0+CpM9K8vrJNxw==
+
 append-buffer@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/append-buffer/-/append-buffer-1.0.2.tgz#d8220cf466081525efea50614f3de6514dfa58f1"
