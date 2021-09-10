@@ -30,15 +30,17 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
   const [name, setName] = useState('');
   const [keywords, setKeywords] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [isBackground, setIsBackground] = useState(false);
   const [ignoreKeywords, setIgnoreKeywords] = useState(false);
   const { t } = useTranslation();
 
-  const states = { isActive, name, keywords, ignoreKeywords };
+  const states = { isActive, isBackground, name, keywords, ignoreKeywords };
 
   const setStates = ({
     name: nameValue,
     keywords: keywordsValue,
     isActive: isActiveValue,
+    isBackground: isBackgroundValue,
     ignoreKeywords: ignoreKeywordsValue,
   }: any) => {
     // Override name & keywords when creating Flow Copy
@@ -51,6 +53,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
 
     setName(fieldName);
     setIsActive(isActiveValue);
+    setIsBackground(isBackgroundValue);
 
     // we are receiving keywords as an array object
     if (fieldKeywords.length > 0) {
@@ -101,6 +104,12 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
       component: Checkbox,
       name: 'isActive',
       title: t('Is active?'),
+      darkCheckbox: true,
+    },
+    {
+      component: Checkbox,
+      name: 'isBackground',
+      title: t('Is background flow?'),
       darkCheckbox: true,
     },
   ];
