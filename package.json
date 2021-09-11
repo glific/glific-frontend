@@ -74,7 +74,7 @@
     "moment": "^2.27.0",
     "phoenix": "^1.5.7",
     "pino": "^6.11.1",
-    "pino-logflare": "^0.3.7",
+    "pino-logflare": "^0.3.12",
     "react": "^17.0.1",
     "react-clear-cache": "^1.4.12",
     "react-color": "^2.18.1",
