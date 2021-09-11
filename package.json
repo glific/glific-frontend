@@ -82,7 +82,7 @@
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
     "react-google-recaptcha": "^2.1.0",
-    "react-i18next": "^11.8.12",
+    "react-i18next": "^11.11.4",
     "react-image": "^4.0.3",
     "react-linkify": "^1.0.0-alpha",
     "react-media-recorder": "^1.4.0",
