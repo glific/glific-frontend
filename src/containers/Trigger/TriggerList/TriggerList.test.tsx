@@ -23,7 +23,7 @@ test('should load the trigger list', async () => {
 
   expect(getByText('Loading...')).toBeInTheDocument();
   await waitFor(() => {
-    expect(getByText('Triggers (Beta)')).toBeInTheDocument();
+    expect(getByText('Triggers')).toBeInTheDocument();
   });
 });
 

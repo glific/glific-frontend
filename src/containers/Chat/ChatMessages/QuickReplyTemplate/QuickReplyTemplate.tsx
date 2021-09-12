@@ -55,7 +55,6 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     .filter((a) => a);
 
   const { type, url, header = '', text = '', filename = '' } = content;
-
   const media = type === 'text' ? {} : { url, text };
   const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
