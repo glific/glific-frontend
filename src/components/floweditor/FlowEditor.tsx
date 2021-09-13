@@ -217,7 +217,6 @@ export const FlowEditor = (props: FlowEditorProps) => {
         setIsError(true);
       } else if (data.publishFlow.success) {
         setPublished(true);
-        console.log('published');
       }
     },
   });
