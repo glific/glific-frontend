@@ -139,7 +139,6 @@ const setConfig = (uuid: any) => ({
     activity: `${glificBase}activity`,
     flows: `${glificBase}flows`,
     revisions: `${glificBase}revisions/${uuid}`,
-    functions: `${glificBase}functions`,
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
     interactives: `${glificBase}interactive-templates`,
