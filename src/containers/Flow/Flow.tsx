@@ -109,7 +109,7 @@ export const Flow: React.SFC<FlowProps> = ({ match }) => {
     {
       component: Checkbox,
       name: 'isBackground',
-      title: t('Is background flow?'),
+      title: t('Run this flow in the background'),
       darkCheckbox: true,
     },
   ];
