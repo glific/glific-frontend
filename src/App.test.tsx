@@ -1,7 +1,6 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor, render } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
