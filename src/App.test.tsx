@@ -7,6 +7,7 @@ import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 import axios from 'axios';
+import P from 'pino';
 const mocks = CONVERSATION_MOCKS;
 
 jest.mock('axios');
@@ -20,14 +21,6 @@ const app = (
 );
 
 describe('<App /> ', () => {
-  test('it should render <App /> component correctly', async () => {
-    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
-    const { container } = render(app);
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
-    });
-  });
-
   test('it should render <Login /> component by default', async () => {
     axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
     const { getByTestId } = render(app);
@@ -42,6 +35,8 @@ describe('<App /> ', () => {
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() + 1);
 
+    axios.get.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+
     setAuthSession(
       '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
         tokenExpiryDate +
@@ -50,10 +45,18 @@ describe('<App /> ', () => {
 
     setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Staff'] }));
 
-    act(() => {
-      render(app);
-    });
+    const { getByTestId } = render(app);
 
-    expect(document.querySelector('.MuiToolbar-root')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByTestId('navbar')).toBeInTheDocument();
+    });
+  });
+
+  test('it should render <App /> component correctly', async () => {
+    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
+    const { container } = render(app);
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
+    });
   });
 });
