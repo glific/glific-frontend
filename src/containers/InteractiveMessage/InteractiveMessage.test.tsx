@@ -22,7 +22,9 @@ const responseMock1 = {
 };
 
 const responseMock2 = {
-  types: [{ name: 'contact', properties: [{ key: 'key 1' }, { key: 'key 2' }] }],
+  context: {
+    types: [{ name: 'contact', properties: [{ key: 'key 1' }, { key: 'key 2' }] }],
+  },
 };
 
 const responseMock3 = {
