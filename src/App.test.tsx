@@ -7,7 +7,6 @@ import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 import axios from 'axios';
-import P from 'pino';
 const mocks = CONVERSATION_MOCKS;
 
 jest.mock('axios');
