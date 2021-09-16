@@ -53,6 +53,7 @@
 .DialogDescription {
   text-align: center;
   margin: 0;
+  margin-bottom: 16px;
   font-size: 14px;
   font-weight: 400;
   color: #073f24;
@@ -102,4 +103,20 @@
   cursor: pointer;
   border-radius: 50%;
   border: 2px solid #073f24;
+}
+
+.DialogContent {
+  max-width: 331px;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: #073f24;
+}
+
+.DialogTitle > h2 {
+  font-size: 24px;
+}
+
+.PublishDialogTitle {
+  max-width: none !important;
 }
