@@ -6,9 +6,34 @@ import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
 import axios from 'axios';
+import reactClearCache from 'react-clear-cache';
+
+jest.mock('react-clear-cache', () => {
+  return {
+    ClearCacheProvider: ({ duration, children }: any) => {
+      return <div>{children}</div>;
+    },
+    useClearCacheCtx: () => ({
+      isLatestVersion: true,
+      emptyCacheStorage: jest.fn(),
+    }),
+  };
+});
+
 const mocks = CONVERSATION_MOCKS;
 
-jest.mock('axios');
+jest.mock('axios', () => {
+  return {
+    defaults: { headers: { common: {} } },
+    get: jest.fn(),
+    delete: jest.fn(),
+  };
+});
+
+global.fetch = () =>
+  Promise.resolve({
+    json: () => Promise.resolve([]),
+  });
 
 const app = (
   <MockedProvider mocks={mocks} addTypename={false}>
@@ -20,7 +45,6 @@ const app = (
 
 describe('<App /> ', () => {
   test('it should render <Login /> component by default', async () => {
-    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
     const { getByTestId } = render(app);
 
     await waitFor(() => {
@@ -28,12 +52,18 @@ describe('<App /> ', () => {
     });
   });
 
+  test('it should render <App /> component correctly', async () => {
+    const { container } = render(app);
+    await waitFor(() => {
+      expect(container).toBeInTheDocument();
+    });
+  });
+
   test('it should render <Chat /> component if session is active', async () => {
     // let's create token expiry date for tomorrow
+
     const tokenExpiryDate = new Date();
     tokenExpiryDate.setDate(new Date().getDate() + 1);
-
-    axios.get.mockImplementationOnce(() => Promise.resolve({ data: {} }));
 
     setAuthSession(
       '{"access_token":"access","renewal_token":"renew", "token_expiry_time":"' +
@@ -47,14 +77,6 @@ describe('<App /> ', () => {
 
     await waitFor(() => {
       expect(getByTestId('navbar')).toBeInTheDocument();
-    });
-  });
-
-  test('it should render <App /> component correctly', async () => {
-    axios.delete.mockImplementationOnce(() => Promise.resolve({ data: {} }));
-    const { container } = render(app);
-    await waitFor(() => {
-      expect(container).toBeInTheDocument();
     });
   });
 });
