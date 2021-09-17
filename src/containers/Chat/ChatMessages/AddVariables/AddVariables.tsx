@@ -53,7 +53,8 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
       const contactData = await axios.get(`${glificBase}completion`, {
         headers,
       });
-      const properties = contactData.data.types[5];
+
+      const properties = contactData.data.context.types[5];
       contacts = properties.properties
         .map((i: any) => contactVariablesprefix.concat(i.key))
         .concat(fields)

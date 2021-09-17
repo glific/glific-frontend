@@ -18,6 +18,7 @@ export const GET_FLOW = gql`
         name
         uuid
         isActive
+        isBackground
         keywords
         ignoreKeywords
       }
@@ -39,6 +40,7 @@ export const FILTER_FLOW = gql`
       uuid
       keywords
       lastChangedAt
+      isBackground
       lastPublishedAt
       ignoreKeywords
       updatedAt

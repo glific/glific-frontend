@@ -8,12 +8,13 @@ import 'assets/fonts/fonts.css';
 import gqlClient from 'config/apolloclient';
 import { SessionContext } from 'context/session';
 import { ErrorHandler } from 'containers/ErrorHandler/ErrorHandler';
-import { checkAuthStatusService } from 'services/AuthService';
+import { checkAuthStatusService, getUserSession } from 'services/AuthService';
 import { UnauthenticatedRoute } from 'route/UnauthenticatedRoute/UnauthenticatedRoute';
 import { AuthenticatedRoute } from 'route/AuthenticatedRoute/AuthenticatedRoute';
 import { Logout } from 'containers/Auth/Logout/Logout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { CLEAR_CACHE_DURATION } from 'common/constants';
+import setLogs from 'config/logs';
 
 const App = () => {
   const { isLatestVersion, emptyCacheStorage } = useClearCacheCtx();
@@ -24,6 +25,7 @@ const App = () => {
 
   // if not the latest version empty cache
   if (!isLatestVersion && emptyCacheStorage) {
+    setLogs(`Empty cache storage for user id -${getUserSession('id')}`, 'info');
     emptyCacheStorage();
   }
 
