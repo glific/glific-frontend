@@ -5,8 +5,7 @@ import { waitFor, render } from '@testing-library/react';
 import App from 'App';
 import { CONVERSATION_MOCKS } from 'mocks/Chat';
 import { setAuthSession, setUserSession } from 'services/AuthService';
-import axios from 'axios';
-import reactClearCache from 'react-clear-cache';
+
 
 jest.mock('react-clear-cache', () => {
   return {
