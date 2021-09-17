@@ -180,7 +180,7 @@ const pagination = (
     className={styles.FooterRow}
     colSpan={columnNames.length}
     count={totalRows}
-    onChangePage={(e, newPage) => {
+    onPageChange={(e, newPage) => {
       handleTableChange('pageNum', newPage);
     }}
     onChangeRowsPerPage={(e) => {
