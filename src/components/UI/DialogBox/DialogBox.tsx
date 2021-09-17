@@ -13,6 +13,7 @@ export interface DialogProps {
   title: string;
   handleOk?: Function;
   handleCancel?: Function;
+  handleMiddle?: Function;
   children?: ReactNode;
   buttonOk?: string;
   buttonCancel?: string;
@@ -26,6 +27,8 @@ export interface DialogProps {
   contentText?: string;
   disableOk?: boolean;
   alwaysOntop?: boolean;
+  buttonMiddle?: string | null;
+  additionalTitleStyles?: string | null;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -33,7 +36,9 @@ export const DialogBox: React.SFC<DialogProps> = ({
   title,
   handleOk = () => {},
   handleCancel = () => {},
+  handleMiddle = () => {},
   children,
+  additionalTitleStyles,
   buttonOk = 'Confirm',
   buttonCancel = 'Cancel',
   colorOk = 'primary',
@@ -46,21 +51,14 @@ export const DialogBox: React.SFC<DialogProps> = ({
   contentText,
   disableOk = false,
   alwaysOntop = false,
+  buttonMiddle,
 }) => {
-  const handleCancelButton = () => {
-    handleCancel();
-  };
-
-  const handleOKButton = () => {
-    handleOk();
-  };
-
   let cancelButtonDisplay = null;
   if (!skipCancel) {
     cancelButtonDisplay = (
       <Button
         variant="contained"
-        onClick={handleCancelButton}
+        onClick={() => handleCancel()}
         color={colorCancel}
         data-testid="cancel-button"
       >
@@ -74,16 +72,30 @@ export const DialogBox: React.SFC<DialogProps> = ({
     titleStyle = styles.DialogTitleLeft;
   }
 
+  if (additionalTitleStyles) {
+    titleStyle = [titleStyle, additionalTitleStyles].join(' ');
+  }
+
   let contentStyle = styles.DialogContentLeft;
   if (contentAlign === 'center') {
     contentStyle = styles.DialogContentCenter;
+  }
+
+  let middleButtonDisplay;
+
+  if (buttonMiddle) {
+    middleButtonDisplay = (
+      <Button onClick={() => handleMiddle()} color="primary" variant="outlined">
+        {buttonMiddle}
+      </Button>
+    );
   }
 
   let okButtonDisplay = null;
   if (!skipOk) {
     okButtonDisplay = (
       <Button
-        onClick={handleOKButton}
+        onClick={() => handleOk()}
         disabled={disableOk}
         color={colorOk}
         variant="contained"
@@ -107,7 +119,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         scrollPaper: styles.ScrollPaper,
         root: alwaysOntop ? styles.DialogboxRoot : '',
       }}
-      onClose={handleCancelButton}
+      onClose={() => handleCancel()}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
@@ -122,6 +134,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
       </DialogContent>
       <DialogActions className={dialogActionStyle}>
         {okButtonDisplay}
+        {middleButtonDisplay}
         {cancelButtonDisplay}
       </DialogActions>
     </Dialog>

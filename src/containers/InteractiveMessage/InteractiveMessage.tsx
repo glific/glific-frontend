@@ -169,7 +169,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         headers,
       });
 
-      const properties = contactData.data.types.find(
+      const properties = contactData.data.context.types.find(
         ({ name }: { name: string }) => name === 'contact'
       );
 
