@@ -546,7 +546,7 @@ export const List: React.SFC<ListProps> = ({
                 className={styles.FooterRow}
                 colSpan={columnNames.length}
                 count={itemCount}
-                onChangePage={(event, newPage) => {
+                onPageChange={(event, newPage) => {
                   handleTableChange('pageNum', newPage);
                 }}
                 onChangeRowsPerPage={(event) => {
