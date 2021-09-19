@@ -20,7 +20,7 @@ import absinthe from './absinthe';
 const subscribe = require('@jumpn/utils-graphql');
 
 const gqlClient = (history: any) => {
-  const refreshTokenLink = new TokenRefreshLink({
+  const refreshTokenLink: any = new TokenRefreshLink({
     accessTokenField: 'access_token',
     isTokenValidOrUndefined: () => checkAuthStatusService(),
     fetchAccessToken: async () => renewAuthToken(),
