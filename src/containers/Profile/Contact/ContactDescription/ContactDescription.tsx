@@ -14,10 +14,11 @@ export interface ContactDescriptionProps {
   maskedPhone: string;
   collections: any;
   lastMessage: string;
+  optinStatus: string;
 }
 
 export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => {
-  const { phone, maskedPhone, collections, lastMessage } = props;
+  const { phone, maskedPhone, collections, lastMessage, optinStatus } = props;
   let { fields, settings } = props;
 
   const [showPlainPhone, setShowPlainPhone] = useState(false);
@@ -125,6 +126,10 @@ export const ContactDescription: React.FC<ContactDescriptionProps> = (props) => 
       </div>
 
       <div className={styles.DetailBlock}>
+        <div>
+          <div className={styles.DescriptionItem}>Status</div>
+          <div className={styles.DescriptionItemValue}>{optinStatus}</div>
+        </div>
         {settings &&
           typeof settings === 'object' &&
           Object.keys(settings).map((key) => (

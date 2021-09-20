@@ -139,7 +139,6 @@ const setConfig = (uuid: any) => ({
     activity: `${glificBase}activity`,
     flows: `${glificBase}flows`,
     revisions: `${glificBase}revisions/${uuid}`,
-    functions: `${glificBase}functions`,
     editor: FLOW_EDITOR_CONFIGURE_LINK,
     validateMedia: `${glificBase}validate-media`,
     interactives: `${glificBase}interactive-templates`,
@@ -161,6 +160,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   const config = setConfig(uuid);
   const [published, setPublished] = useState(false);
+  const [stayOnPublish, setStayOnPublish] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [lastLocation, setLastLocation] = useState<Location | null>(null);
   const [confirmedNavigation, setConfirmedNavigation] = useState(false);
@@ -244,12 +244,20 @@ export const FlowEditor = (props: FlowEditorProps) => {
   if (modalVisible) {
     modal = (
       <DialogBox
-        title="Do you want to navigate away without saving your changes?"
+        title="Unsaved changes!"
         handleOk={handleConfirmNavigationClick}
         handleCancel={closeModal}
         colorOk="secondary"
+        buttonOk="Ignore & leave"
+        buttonCancel="Stay & recheck"
         alignButtons="center"
-      />
+        contentAlign="center"
+        additionalTitleStyles={styles.DialogTitle}
+      >
+        <div className={styles.DialogContent}>
+          Your changes will not be saved if you navigate away. Please save as draft or publish.
+        </div>
+      </DialogBox>
     );
   }
 
@@ -344,19 +352,31 @@ export const FlowEditor = (props: FlowEditorProps) => {
           setConfirmedNavigation(true);
           history.push('/flow');
         }}
-      />
+      >
+        <p className={styles.DialogDescription}>Please try again later or contact the user.</p>
+      </DialogBox>
     );
   }
 
   if (publishDialog) {
     dialog = (
       <DialogBox
-        title="Are you ready to publish the flow?"
-        buttonOk="Publish"
-        handleOk={() => handlePublishFlow()}
+        title="Ready to publish?"
+        buttonOk="Publish & Stay"
+        titleAlign="center"
+        buttonMiddle="Publish & go back"
+        handleOk={() => {
+          setStayOnPublish(true);
+          handlePublishFlow();
+        }}
         handleCancel={() => handleCancelFlow()}
+        handleMiddle={() => {
+          setStayOnPublish(false);
+          handlePublishFlow();
+        }}
         alignButtons="center"
         buttonCancel="Cancel"
+        additionalTitleStyles={styles.PublishDialogTitle}
       >
         <p className={styles.DialogDescription}>New changes will be activated for the users</p>
       </DialogBox>
@@ -384,7 +404,11 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   if (published && !IsError) {
     setNotification(client, 'The flow has been published');
-    return <Redirect to="/flow" />;
+    if (!stayOnPublish) {
+      return <Redirect to="/flow" />;
+    }
+    setPublishDialog(false);
+    setPublished(false);
   }
 
   const resetMessage = () => {
@@ -443,9 +467,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           data-testid="saveDraftButton"
           className={simulatorId === 0 ? styles.Draft : styles.SimulatorDraft}
           onClick={() => {
-            setConfirmedNavigation(true);
             setNotification(client, 'The flow has been saved as draft');
-            history.push('/flow');
           }}
         >
           Save as draft

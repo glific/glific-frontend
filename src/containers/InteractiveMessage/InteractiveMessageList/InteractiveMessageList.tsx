@@ -41,7 +41,7 @@ const getTranslations = (type: string, language: any, data: string) => {
   const result = Object.keys(dataObj).reduce((acc: any, langId: string) => {
     const { content, body } = dataObj[langId];
     if (type === QUICK_REPLY) {
-      acc[langId] = { body: content?.caption || '' };
+      acc[langId] = { body: content?.text || '' };
     } else {
       acc[langId] = { body };
     }

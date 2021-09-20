@@ -24,11 +24,9 @@ import ActiveUserIcon from 'assets/images/icons/User/Active.svg';
 import ActiveIcon from 'assets/images/icons/Settings/Active.svg';
 import InactiveIcon from 'assets/images/icons/Settings/Inactive.svg';
 import GlificLogo from 'assets/images/logo/Logo.svg';
-import { ReactComponent as QuestionIcon } from 'assets/images/icons/Question.svg';
 import { getUserRolePermissions, getUserAccountMenus, getStaffManagementMenus } from 'context/role';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { WalletBalance } from 'containers/WalletBalance/WalletBalance';
-import { GLIFIC_DOCS_URL } from 'config/index';
 import SideMenus from '../SideMenus/SideMenus';
 import styles from './SideDrawer.module.css';
 
@@ -187,9 +185,7 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
 
   // set the appropriate classes to display bottom menus correctly
   const bottonMenuClasses = [classes.BottomMenus];
-  let helpButtonStyle = styles.HelpButton;
   if (!fullOpen) {
-    helpButtonStyle = styles.HelpButtonHide;
     bottonMenuClasses.unshift(classes.BottomMenusVertical);
   }
 
@@ -234,17 +230,6 @@ export const SideDrawer: React.SFC<SideDrawerProps> = ({ fullOpen, setFullOpen }
         }}
         variant="permanent"
       >
-        <div
-          data-testid="helpButton"
-          aria-hidden="true"
-          className={helpButtonStyle}
-          onClick={() => {
-            window.open(GLIFIC_DOCS_URL, '_blank');
-          }}
-        >
-          {t('Help Documents')}
-          <QuestionIcon />
-        </div>
         <div className={bottonMenuClasses.join(' ')}>
           {settingMenu}
           <div data-testid="bottom-menu" aria-hidden="true">

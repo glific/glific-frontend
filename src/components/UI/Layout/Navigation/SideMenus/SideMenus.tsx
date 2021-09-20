@@ -51,6 +51,11 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
 
   const menuList = menuObj.map((menu) => {
     const isSelected = location.pathname.startsWith(menu.path);
+    let redirectPath = menu.path;
+    if (menu.url) {
+      redirectPath = { pathname: menu.url };
+    }
+
     return (
       <ListItem
         button
@@ -66,7 +71,8 @@ const SideMenus: React.SFC<SideMenusProps> = (props) => {
         }}
         key={menu.icon}
         component={NavLink}
-        to={menu.path}
+        to={redirectPath}
+        {...(menu.url ? { target: '_blank', url: menu.url } : {})}
       >
         <ListItemIcon className={styles.ListItemIcon}>
           <ListIcon

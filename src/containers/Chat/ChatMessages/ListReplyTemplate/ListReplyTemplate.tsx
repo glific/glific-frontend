@@ -79,6 +79,7 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
         handleOk={() => setShowDialog(false)}
         buttonOk="Done"
         skipCancel
+        alwaysOntop
       >
         <div className={styles.DialogContent}> {list}</div>
       </DialogBox>

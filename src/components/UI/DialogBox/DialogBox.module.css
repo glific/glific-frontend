@@ -17,6 +17,10 @@
   max-height: 90% !important;
 }
 
+.DialogboxRoot {
+  z-index: 1501 !important; /* greater than tooltip */
+}
+
 .Dialogbox Form {
   max-height: 500px;
 }
@@ -32,9 +36,14 @@
 }
 
 .DialogTitle {
+  white-space: pre-line;
   color: #073f24;
   padding-top: 24px !important;
   padding-bottom: 8px !important;
+}
+
+.DialogTitle h2 {
+  line-height: 1.1 !important;
 }
 
 .DialogTitleCenter {

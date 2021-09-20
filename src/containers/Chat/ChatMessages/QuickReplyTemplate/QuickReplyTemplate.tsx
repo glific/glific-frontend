@@ -8,7 +8,7 @@ import { ChatMessageType } from '../ChatMessage/ChatMessageType/ChatMessageType'
 interface Content {
   type: string;
   url?: string;
-  caption?: string;
+  header?: string;
   text?: string;
   filename?: string;
 }
@@ -54,18 +54,17 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     })
     .filter((a) => a);
 
-  const { type, url, caption = '', text = '', filename = '' } = content;
-
-  const media = type === 'text' ? {} : { url, caption };
+  const { type, url, header = '', text = '', filename = '' } = content;
+  const media = type === 'text' ? {} : { url, text };
   const contentType = type === 'file' ? 'DOCUMENT' : type.toUpperCase();
   return (
     <div>
       <div className={styles.MessageContent}>
-        {text && (
+        {header && (
           <div className={styles.TitleText}>
             <ChatMessageType
               type={contentType}
-              body={text}
+              body={header}
               media={{}}
               location={{}}
               isSimulatedMessage={isSimulator}
@@ -74,7 +73,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
         )}
         <ChatMessageType
           type={contentType}
-          body={caption || filename}
+          body={text || filename}
           media={media}
           location={{}}
           isSimulatedMessage={isSimulator}
