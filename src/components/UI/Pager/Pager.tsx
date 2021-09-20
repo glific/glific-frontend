@@ -135,12 +135,8 @@ const tableHeadColumns = (
   if (showCheckbox) {
     batchAction = <Checkbox />;
   }
-  let headerSize = styles.TableHeadRow;
-  if (listName === 'contact') {
-    headerSize = styles.ContactHeader;
-  }
   return (
-    <TableRow className={headerSize}>
+    <TableRow className={styles.TableHeadRow}>
       {batchAction}
       {columnNames.map((name: string, i: number) => (
         <TableCell
@@ -230,9 +226,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
         <TableHead className={styles.TagListHeader} data-testid="tableHead">
           {tableHead}
         </TableHead>
-        <TableBody data-testid="tableBody" className={styles.TableBody}>
-          {rows}
-        </TableBody>
+        <TableBody data-testid="tableBody">{rows}</TableBody>
         <TableFooter className={styles.TableFooter} data-testid="tableFooter">
           <TableRow>{tablePagination}</TableRow>
         </TableFooter>
