@@ -63,9 +63,9 @@
   height: 100px;
 }
 
-.ContactHeader {
+.DetailsPageHeader {
   composes: Header;
-  width: calc(100% - 623px);
+  width: calc(68% - 200px);
 }
 
 .Icon {

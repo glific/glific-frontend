@@ -73,6 +73,7 @@ export interface ListProps {
   defaultSortBy?: string | null;
   removeSortBy?: Array<any> | null;
   noItemText?: string | null;
+  isDetailsPage?: boolean;
 }
 
 interface TableVals {
@@ -119,6 +120,7 @@ export const List: React.SFC<ListProps> = ({
   collapseRow = undefined,
   defaultSortBy,
   noItemText = null,
+  isDetailsPage = false,
 }: ListProps) => {
   const client = useApolloClient();
   // DialogBox states
@@ -613,8 +615,8 @@ export const List: React.SFC<ListProps> = ({
 
   let headerSize = styles.Header;
 
-  if (listItemName === 'contact') {
-    headerSize = styles.ContactHeader;
+  if (isDetailsPage) {
+    headerSize = styles.DetailsPageHeader;
   }
 
   return (

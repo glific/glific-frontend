@@ -75,6 +75,7 @@ export const CollectionContactList: React.SFC<CollectionContactListProps> = (pro
       button={{ show: false, label: '' }}
       pageLink="contact"
       listIcon={collectionIcon}
+      isDetailsPage
       deleteModifier={{
         icon: 'cross',
         variables: getDeleteQueryVariables,
