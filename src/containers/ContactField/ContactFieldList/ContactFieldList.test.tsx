@@ -25,17 +25,17 @@ const list = (
 test('it renders list successfully', async () => {
   render(list);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  await waitFor(() => {
+    const variableNameLabel = screen.getByText('VARIABLE NAME');
+    const inputNameLabel = screen.getByText('INPUT NAME');
+    const shortcodeLabel = screen.getByText('SHORTCODE');
+    const actionLabel = screen.getByText('ACTIONS');
 
-  const variableNameLabel = screen.getByText('VARIABLE NAME');
-  const inputNameLabel = screen.getByText('INPUT NAME');
-  const shortcodeLabel = screen.getByText('SHORTCODE');
-  const actionLabel = screen.getByText('ACTIONS');
-
-  expect(variableNameLabel).toBeInTheDocument();
-  expect(inputNameLabel).toBeInTheDocument();
-  expect(shortcodeLabel).toBeInTheDocument();
-  expect(actionLabel).toBeInTheDocument();
+    expect(variableNameLabel).toBeInTheDocument();
+    expect(inputNameLabel).toBeInTheDocument();
+    expect(shortcodeLabel).toBeInTheDocument();
+    expect(actionLabel).toBeInTheDocument();
+  });
 
   const editButtons = screen.getAllByRole('button', {
     name: 'GreenEdit.svg',
@@ -76,13 +76,14 @@ const listError = (
 test('it renders component, edits field, saves and error occurs', async () => {
   render(listError);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
-  const editButtons = screen.getAllByRole('button', {
-    name: 'GreenEdit.svg',
+  await waitFor(() => {
+    const editButtons = screen.getAllByRole('button', {
+      name: 'GreenEdit.svg',
+    });
+    expect(editButtons[3]).toBeInTheDocument();
+    fireEvent.click(editButtons[3]);
   });
-  expect(editButtons[3]).toBeInTheDocument();
-  fireEvent.click(editButtons[3]);
 
   await waitFor(() => {});
   // Edit, clears value and click save

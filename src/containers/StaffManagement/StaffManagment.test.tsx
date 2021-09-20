@@ -15,12 +15,13 @@ const staffManagement = (
 test('should load the staff user edit form', async () => {
   render(staffManagement);
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 10)));
+  await waitFor(() => {
+    const submitButton = screen.getByRole('button', { name: 'Save' });
+    expect(submitButton).toBeInTheDocument();
 
-  const submitButton = screen.getByRole('button', { name: 'Save' });
-  expect(submitButton).toBeInTheDocument();
+    fireEvent.click(submitButton);
+  });
 
-  fireEvent.click(submitButton);
   await waitFor(() => {});
 });
 

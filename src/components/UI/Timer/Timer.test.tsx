@@ -1,18 +1,11 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { Timer } from './Timer';
 
 const timer = (time: Date) => <Timer time={time} />;
 
-beforeEach(() => {
-  jest.useFakeTimers();
-});
-
 test('it should render timer component', async () => {
   render(timer(new Date()));
-  await waitFor(() => {
-    jest.advanceTimersByTime(60001);
-  });
   expect(screen.getByTestId('timerCount')).toBeInTheDocument();
 });
 
