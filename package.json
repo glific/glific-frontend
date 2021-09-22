@@ -72,7 +72,7 @@
     "i18next-browser-languagedetector": "^6.1.0",
     "markdown-draft-js": "^2.2.1",
     "moment": "^2.27.0",
-    "phoenix": "1.6.0-rc.0",
+    "phoenix": "1.5.13",
     "pino": "^6.13.2",
     "pino-logflare": "^0.3.12",
     "react": "^17.0.2",
