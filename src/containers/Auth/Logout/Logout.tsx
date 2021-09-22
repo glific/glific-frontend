@@ -34,7 +34,7 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
   const userLogout = () => {
     // get the auth token from session
     axios.defaults.headers.common.Authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION, {}).then(() => {});
+    axios.delete(USER_SESSION);
   };
 
   const handleLogout = () => {
