@@ -21,3 +21,11 @@ jest.mock('react-i18next', () => {
     initReactI18next: reactI18next.initReactI18next,
   };
 });
+
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+window.ResizeObserver = ResizeObserver;

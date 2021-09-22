@@ -19,13 +19,6 @@ const mocks = [
   createMediaMessageMock,
 ];
 
-// add mock for the resize observer
-class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
 const blob = () => new Blob();
 
 jest.mock('../VoiceRecorder/VoiceRecorder', () => {
@@ -52,8 +45,6 @@ jest.mock('../VoiceRecorder/VoiceRecorder', () => {
     },
   };
 });
-
-window.ResizeObserver = ResizeObserver;
 
 describe('<ChatInput />', () => {
   let inputSubmitted = false;

@@ -25,15 +25,6 @@ const mocks = [
   getCurrentUserQuery,
 ];
 
-// add mock for the resize observer
-class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
-window.ResizeObserver = ResizeObserver;
-
 const wrapper = (
   <MemoryRouter>
     <MockedProvider mocks={mocks} addTypename={false}>

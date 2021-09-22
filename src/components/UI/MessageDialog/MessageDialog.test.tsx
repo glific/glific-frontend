@@ -3,15 +3,6 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { MessageDialog } from './MessageDialog';
 
-// add mock for the resize observer
-class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
-window.ResizeObserver = ResizeObserver;
-
 const handleClose = jest.fn();
 
 const defaultProps = {
