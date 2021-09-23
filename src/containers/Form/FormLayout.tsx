@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect, Link, useHistory } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
@@ -63,6 +63,7 @@ export interface FormLayoutProps {
   showPreviewButton?: boolean;
   onPreivewClick?: Function;
   getQueryFetchPolicy?: any;
+  handleLanguageChange?: any;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -107,8 +108,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   showPreviewButton = false,
   onPreivewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
+  handleLanguageChange,
 }: FormLayoutProps) => {
   const client = useApolloClient();
+  const history = useHistory();
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
@@ -119,6 +122,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+  const [remainHere, setRemainHere] = useState<any>(false);
+  const [newLanguage, setNewLanguage] = useState<any>('');
+
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
@@ -195,12 +201,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (additionalQuery) {
           additionalQuery(itemId);
         }
-        setFormSubmitted(true);
-        // emit data after save
-        if (afterSave) {
-          afterSave(data);
+
+        if (remainHere) {
+          handleLanguageChange(newLanguage);
+        } else {
+          setFormSubmitted(true);
+          // emit data after save
+          if (afterSave) {
+            afterSave(data);
+          }
+          // display successful message after update
         }
-        // display successful message after update
         let message = `${capitalListItemName} edited successfully!`;
         if (type === 'copy') {
           message = copyNotification;
@@ -229,6 +240,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       let itemCreatedObject: any = `create${camelCaseItem}`;
       itemCreatedObject = data[itemCreatedObject];
       const itemCreated = itemCreatedObject[listItem];
+      console.log('inside');
 
       const { errors } = itemCreatedObject;
       if (errors) {
@@ -247,7 +259,11 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemCreated.id);
         }
         if (!itemId) setLink(itemCreated[linkParameter]);
-        setFormSubmitted(true);
+        if (remainHere) {
+          history.push(`/interactive-message/${itemCreated.id}/edit`);
+        } else {
+          setFormSubmitted(true);
+        }
         // emit data after save
         if (afterSave) {
           afterSave(data.createSavedSearch);
@@ -378,10 +394,16 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setFormCancelled(true);
   };
 
+  console.log(formSubmitted);
+
   if (formSubmitted && redirect) {
+    console.log('here');
     if (action && link) {
       window.location.href = `${additionalAction.link}/${link}`;
     }
+
+    // setFormSubmitted(false);
+
     return <Redirect to={`/${redirectionLink}`} />;
   }
 
@@ -449,17 +471,37 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           onSaveClick(true);
         }}
       >
-        {({ submitForm }) => (
+        {({ submitForm, values }: any) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
+
+              if (field.field === 'languageBar') {
+                const { onLanguageChange, ...prop } = field;
+                return (
+                  <Field
+                    key={key}
+                    onLanguageChange={(selected: any) => {
+                      console.log(values);
+                      if (values.title || values.body.getCurrentContent().getPlainText()) {
+                        setNewLanguage(selected);
+                        setRemainHere(true);
+                        submitForm();
+                      } else {
+                        handleLanguageChange(selected);
+                      }
+                    }}
+                    {...prop}
+                  />
+                );
+              }
               return (
                 <React.Fragment key={key}>
-                  {field.label ? (
+                  {field.label && (
                     <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
-                  ) : null}
+                  )}
                   <Field key={key} {...field} />
                 </React.Fragment>
               );

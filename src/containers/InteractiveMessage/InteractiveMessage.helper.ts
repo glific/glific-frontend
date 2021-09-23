@@ -67,7 +67,7 @@ export const validator = (templateType: any, t: any) => {
   return validation;
 };
 
-export const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
+export const convertJSONtoStateData = (JSONData: any, interactiveType: string, label: string) => {
   const data = { ...JSONData };
   const { title, body, items, content, options, globalButtons } = data;
 
@@ -79,9 +79,10 @@ export const convertJSONtoStateData = (JSONData: any, interactiveType: string) =
     switch (type) {
       case 'image':
       case 'video':
-        result.type = `${type.toUpperCase()}`;
+        result.type = type.toUpperCase();
         result.attachmentURL = url;
         result.body = text;
+        result.title = label;
         break;
       case 'file':
         result.type = 'DOCUMENT';

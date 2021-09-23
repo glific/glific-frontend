@@ -46,17 +46,19 @@ const queries = {
 };
 
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
+  console.log('match', match.params);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
-  const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
+  const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  const [language, setLanguage] = useState<any>(null);
+  const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
 
   const [translations, setTranslations] = useState<any>('{}');
@@ -82,7 +84,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguage(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+        setLanguage(lang[0]);
+      }
     }
   }, [languages]);
 
@@ -112,15 +116,24 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
   }: any) => {
-    const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue);
+    const content = language.id
+      ? JSON.parse(translationsVal)[language.id]
+      : JSON.parse(interactiveContentValue);
+
+    console.log(content, typeValue, labelValue);
+    const data = convertJSONtoStateData(content, typeValue, labelValue);
+    setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
       const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
-      setTimeout(() => setLanguage(selectedLangauge), 150);
+      if (!language.id) {
+        setLanguage(selectedLangauge);
+      } else {
+        setLanguage(language);
+      }
     }
 
-    setTitle(data.title || labelValue);
+    setTitle(data.title);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -136,6 +149,34 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     if (translationsVal) {
       setTranslations(translationsVal);
+    }
+  };
+
+  const updateStates = ({
+    language: languageVal,
+    type: typeValue,
+    interactiveContent: interactiveContentValue,
+  }: any) => {
+    const content = JSON.parse(interactiveContentValue);
+    const data = convertJSONtoStateData(content, typeValue, title);
+
+    if (languageOptions.length > 0 && languageVal) {
+      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+
+      setLanguage(selectedLangauge);
+    }
+    setTitle(data.title);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+    setTemplateType(typeValue);
+    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+
+    if (typeValue === LIST) {
+      setGlobalButton(data.globalButton);
+    }
+
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
+      setType({ id: data.type, label: data.type });
+      setAttachmentURL(data.attachmentURL);
     }
   };
 
@@ -263,7 +304,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(translationsCopy[Id]),
@@ -273,7 +314,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           template.interactiveTemplate.interactiveTemplate
         );
 
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(fillDataWithEmptyValues),
@@ -283,7 +324,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       return;
     }
 
-    setStates({
+    updateStates({
       language: value,
       type: template.interactiveTemplate.interactiveTemplate.type,
       interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
@@ -294,8 +335,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
     if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
       updateTranslation(selected);
+    } else if (selected) {
+      setLanguage(selected);
     }
-    if (selected) setLanguage(selected);
   };
 
   const displayWarning = () => {
@@ -329,14 +371,53 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
+  const getTranslation = (interactiveType: string, attribute: any) => {
+    if (defaultLanguage.id) {
+      const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
+
+      if (interactiveType === QUICK_REPLY) {
+        switch (attribute) {
+          case 'title':
+            return defaultTemplate.content.header;
+          case 'body':
+            return defaultTemplate.content.text;
+          case 'options':
+            return defaultTemplate.options.map((option: any) => option.title);
+          default:
+            return null;
+        }
+      }
+
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.title;
+        case 'body':
+          return defaultTemplate.body;
+        case 'options':
+          return {
+            items: defaultTemplate.items,
+            globalButton: defaultTemplate.globalButtons[0].title,
+          };
+        default:
+          return null;
+      }
+    }
+    return null;
+  };
+
   const fields = [
     {
+      field: 'languageBar',
       component: LanguageBar,
       options: langOptions || [],
       selectedLangauge: language && language.label,
       onLanguageChange: handleLanguageChange,
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'title'),
       component: Input,
       name: 'title',
       type: 'text',
@@ -346,6 +427,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'body'),
       component: EmojiInput,
       name: 'body',
       placeholder: t('Message*'),
@@ -361,6 +446,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'options'),
       component: InteractiveOptions,
       isAddButtonChecked: true,
       templateType,
@@ -610,6 +699,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         icon={interactiveMessageIcon}
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
+        handleLanguageChange={handleLanguageChange}
       />
       <div className={styles.Simulator}>
         <Simulator

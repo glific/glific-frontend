@@ -16,6 +16,7 @@ export interface ListReplyTemplateProps {
   onListItemAddClick: any;
   onListItemRemoveClick: any;
   onInputChange: any;
+  translation?: any;
 }
 
 export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
@@ -28,6 +29,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     onListItemAddClick,
     onListItemRemoveClick,
     onInputChange,
+    translation,
   } = props;
 
   const isError = (key: string, itemIdx: number) => {
@@ -108,6 +110,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
           )}
         </div>
       </div>
+      {translation && <div className={styles.Translation}>{translation.title}</div>}
       <div className={styles.ListReplyWrapper}>
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
@@ -133,6 +136,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
+                        {translation && (
+                          <div className={styles.Translation}>
+                            {translation.options[itemIndex].title}
+                          </div>
+                        )}
                         <FormControl
                           fullWidth
                           error={isError('title', itemIndex)}
@@ -165,6 +173,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       </div>
 
                       <div className={styles.TextFieldWrapper}>
+                        {translation && (
+                          <div className={styles.Translation}>
+                            {translation.options[itemIndex].description}
+                          </div>
+                        )}
                         <FormControl
                           fullWidth
                           error={isError('description', itemIndex)}

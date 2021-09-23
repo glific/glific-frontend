@@ -54,3 +54,11 @@
 .RemoveIcon {
   cursor: pointer;
 }
+
+.Translation {
+  background-color: #F7F0E5;
+  padding: 6px 16px;
+  border-radius: 10px;
+  color: #aa9677;
+  margin-bottom: 6px;
+}

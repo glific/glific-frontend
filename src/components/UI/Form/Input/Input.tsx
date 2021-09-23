@@ -30,6 +30,7 @@ export interface InputProps {
   validate?: any;
   endAdornment?: any;
   inputProp?: any;
+  translation?: string;
 }
 
 export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = false, ...props }) => {
@@ -46,6 +47,7 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
     rows,
     endAdornment,
     inputProp,
+    translation,
   } = props;
 
   let fieldType = type;
@@ -96,36 +98,39 @@ export const Input: React.SFC<InputProps> = ({ textArea = false, disabled = fals
   }
 
   return (
-    <div className={styles.Input} data-testid="input">
-      <FormControl fullWidth error={showError}>
-        <InputLabel variant="outlined" className={styles.Label} data-testid="inputLabel">
-          {placeholder}
-        </InputLabel>
-        <OutlinedInput
-          data-testid="outlinedInput"
-          inputComponent={editor ? editor.inputComponent : undefined}
-          inputProps={editor ? editor.inputProps : inputProp}
-          type={fieldType}
-          classes={{ multiline: styles.Multiline }}
-          disabled={disabled}
-          error={showError}
-          multiline={textArea}
-          rows={rows}
-          className={styles.OutlineInput}
-          label={placeholder}
-          fullWidth
-          {...field}
-          endAdornment={endAdornment || fieldEndAdorment}
-        />
-        {form && form.errors[field.name] && form.touched[field.name] ? (
-          <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
-        ) : null}
-        {helperText ? (
-          <div id="helper-text" className={styles.HelperText}>
-            {helperText}
-          </div>
-        ) : null}
-      </FormControl>
-    </div>
+    <>
+      {translation && <div className={styles.Translation}>{translation}</div>}
+      <div className={styles.Input} data-testid="input">
+        <FormControl fullWidth error={showError}>
+          <InputLabel variant="outlined" className={styles.Label} data-testid="inputLabel">
+            {placeholder}
+          </InputLabel>
+          <OutlinedInput
+            data-testid="outlinedInput"
+            inputComponent={editor ? editor.inputComponent : undefined}
+            inputProps={editor ? editor.inputProps : inputProp}
+            type={fieldType}
+            classes={{ multiline: styles.Multiline }}
+            disabled={disabled}
+            error={showError}
+            multiline={textArea}
+            rows={rows}
+            className={styles.OutlineInput}
+            label={placeholder}
+            fullWidth
+            {...field}
+            endAdornment={endAdornment || fieldEndAdorment}
+          />
+          {form && form.errors[field.name] && form.touched[field.name] ? (
+            <FormHelperText className={styles.DangerText}>{form.errors[field.name]}</FormHelperText>
+          ) : null}
+          {helperText ? (
+            <div id="helper-text" className={styles.HelperText}>
+              {helperText}
+            </div>
+          ) : null}
+        </FormControl>
+      </div>
+    </>
   );
 };

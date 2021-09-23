@@ -4,9 +4,11 @@ export const CREATE_INTERACTIVE = gql`
   mutation createInteractiveTemplate($input: interactiveTemplateInput!) {
     createInteractiveTemplate(input: $input) {
       interactiveTemplate {
-        type
+        id
         label
         interactiveContent
+        type
+        translations
         language {
           id
           label
@@ -24,12 +26,11 @@ export const UPDATE_INTERACTIVE = gql`
   mutation updateInteractiveTemplate($id: ID!, $input: interactiveTemplateInput!) {
     updateInteractiveTemplate(id: $id, input: $input) {
       interactiveTemplate {
-        insertedAt
-        interactiveContent
-        label
-        type
-        updatedAt
         id
+        label
+        interactiveContent
+        type
+        translations
         language {
           id
           label
