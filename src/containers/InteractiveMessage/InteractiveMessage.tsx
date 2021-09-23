@@ -119,7 +119,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const content = language.id
       ? JSON.parse(translationsVal)[language.id]
       : JSON.parse(interactiveContentValue);
-
+    console.log(translationsVal, interactiveContentValue);
     console.log(content, typeValue, labelValue);
     const data = convertJSONtoStateData(content, typeValue, labelValue);
     setDefaultLanguage(languageVal);
