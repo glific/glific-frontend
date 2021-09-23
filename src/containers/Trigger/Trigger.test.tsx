@@ -91,8 +91,9 @@ describe('trigger with weekly frequency', () => {
 
     // loading is show initially
     expect(getByText('Loading...')).toBeInTheDocument();
-    await waitFor(() => {});
-    const autoComplete = await getAllByTestId('autocomplete-element');
+    await waitFor(() => {
+      const autoComplete = getAllByTestId('autocomplete-element');
+    });
 
     fireEvent.click(getByText('Save'));
     await waitFor(() => {});
