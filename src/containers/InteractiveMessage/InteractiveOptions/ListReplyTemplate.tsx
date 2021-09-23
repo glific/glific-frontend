@@ -66,7 +66,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     return null;
   }
 
-  const showDeleteIcon = inputFields[index]?.options.length > 1;
+  const showDeleteIcon = inputFields[index]?.options && inputFields[index]?.options.length > 1;
   const defaultTitle = inputFields[index]?.title;
 
   const isAddMoreOptionAllowed = inputFields.reduce((result: number, field: any) => {
@@ -110,8 +110,9 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
           )}
         </div>
       </div>
-      {translation && <div className={styles.Translation}>{translation.title}</div>}
+
       <div className={styles.ListReplyWrapper}>
+        {translation && <div className={styles.Translation}>{translation.title}</div>}
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
@@ -136,7 +137,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
-                        {translation && (
+                        {translation?.options && translation.options.length > itemIndex && (
                           <div className={styles.Translation}>
                             {translation.options[itemIndex].title}
                           </div>
@@ -173,7 +174,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       </div>
 
                       <div className={styles.TextFieldWrapper}>
-                        {translation && (
+                        {translation?.options && translation.options.length > itemIndex && (
                           <div className={styles.Translation}>
                             {translation.options[itemIndex].description}
                           </div>

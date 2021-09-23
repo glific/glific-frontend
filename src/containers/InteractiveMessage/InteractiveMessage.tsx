@@ -372,7 +372,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
   const getTranslation = (interactiveType: string, attribute: any) => {
-    if (defaultLanguage.id) {
+    if (language.id) {
       const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
 
       if (interactiveType === QUICK_REPLY) {

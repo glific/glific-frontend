@@ -57,5 +57,6 @@
   background-color: #f7f0e5;
   padding: 6px 16px;
   border-radius: 10px;
+  white-space: pre-line;
   color: #aa9677;
 }
