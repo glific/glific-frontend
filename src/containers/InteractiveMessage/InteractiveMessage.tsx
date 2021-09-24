@@ -160,10 +160,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         content =
           JSON.parse(translationsVal)[language.id || languageVal.id] ||
           JSON.parse(interactiveContentValue);
-
-        console.log(content);
       } else if (template) {
-        console.log(template);
         content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
       }
     }

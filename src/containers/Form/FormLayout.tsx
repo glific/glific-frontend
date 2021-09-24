@@ -204,6 +204,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
         if (remainHere) {
           handleLanguageChange(newLanguage);
+          setNotification(client, 'Your changes have been autosaved');
         } else {
           setFormSubmitted(true);
           // emit data after save
@@ -211,12 +212,12 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
             afterSave(data);
           }
           // display successful message after update
+          let message = `${capitalListItemName} edited successfully!`;
+          if (type === 'copy') {
+            message = copyNotification;
+          }
+          setNotification(client, message);
         }
-        let message = `${capitalListItemName} edited successfully!`;
-        if (type === 'copy') {
-          message = copyNotification;
-        }
-        setNotification(client, message);
       }
       onSaveClick(false);
     },
@@ -262,15 +263,16 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           history.push(`/interactive-message/${itemCreated.id}/edit`, {
             language: newLanguage,
           });
+          setNotification(client, 'Your changes have been autosaved');
         } else {
           setFormSubmitted(true);
+          if (afterSave) {
+            afterSave(data.createSavedSearch);
+          }
+          // display successful message after create
+          setNotification(client, `${capitalListItemName} created successfully!`);
         }
         // emit data after save
-        if (afterSave) {
-          afterSave(data.createSavedSearch);
-        }
-        // display successful message after create
-        setNotification(client, `${capitalListItemName} created successfully!`);
       }
       setIsLoadedData(true);
       onSaveClick(false);
@@ -469,7 +471,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           onSaveClick(true);
         }}
       >
-        {({ submitForm, values }: any) => (
+        {({ submitForm, values, errors }: any) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
@@ -480,9 +482,25 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                   <Field
                     key={key}
                     onLanguageChange={(selected: any) => {
-                      if (values.title || values.body.getCurrentContent().getPlainText()) {
+                      if (values.type.label === 'TEXT') {
+                        if (values.title || values.body.getCurrentContent().getPlainText()) {
+                          setNewLanguage(selected);
+                          setRemainHere(true);
+
+                          if (errors) {
+                            setNotification(client, 'Please check the errors', 'warning');
+                          }
+                          submitForm();
+                        } else {
+                          handleLanguageChange(selected);
+                        }
+                      } else if (values.body.getCurrentContent().getPlainText()) {
                         setNewLanguage(selected);
                         setRemainHere(true);
+
+                        if (Object.keys(errors).length !== 0) {
+                          setNotification(client, 'Please check the errors', 'warning');
+                        }
                         submitForm();
                       } else {
                         handleLanguageChange(selected);
