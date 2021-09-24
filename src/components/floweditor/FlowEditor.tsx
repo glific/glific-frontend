@@ -86,7 +86,6 @@ const setConfig = (uuid: any) => ({
   ],
 
   excludeOperators: [
-    'has_beginning',
     'has_text',
     'has_number_lt',
     'has_number_lte',
@@ -112,7 +111,6 @@ const setConfig = (uuid: any) => ({
     'has_ward',
     'has_error',
     'has_value',
-    'has_pattern',
   ],
   help: {
     legacy_extra: 'help.html',
