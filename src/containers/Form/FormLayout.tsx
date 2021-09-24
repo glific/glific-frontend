@@ -507,7 +507,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={submitForm}
+                onClick={() => {
+                  setRemainHere(false);
+                  submitForm();
+                }}
                 className={styles.Button}
                 data-testid="submitActionButton"
                 loading={saveClick}

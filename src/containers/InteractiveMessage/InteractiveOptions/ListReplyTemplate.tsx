@@ -174,11 +174,13 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       </div>
 
                       <div className={styles.TextFieldWrapper}>
-                        {translation?.options && translation.options.length > itemIndex && (
-                          <div className={styles.Translation}>
-                            {translation.options[itemIndex].description}
-                          </div>
-                        )}
+                        {translation?.options &&
+                          translation.options.length > itemIndex &&
+                          translation.options[itemIndex].description && (
+                            <div className={styles.Translation}>
+                              {translation.options[itemIndex].description}
+                            </div>
+                          )}
                         <FormControl
                           fullWidth
                           error={isError('description', itemIndex)}
