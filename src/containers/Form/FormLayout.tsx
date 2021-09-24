@@ -482,7 +482,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                   <Field
                     key={key}
                     onLanguageChange={(selected: any) => {
-                      if (values.type.label === 'TEXT') {
+                      if (values?.type?.label === 'TEXT') {
                         if (values.title || values.body.getCurrentContent().getPlainText()) {
                           setNewLanguage(selected);
                           setRemainHere(true);

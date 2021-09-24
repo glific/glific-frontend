@@ -71,10 +71,6 @@
 }
 
 .Translation {
-  background-color: #f7f0e5;
-  padding: 6px 16px;
-  border-radius: 10px;
-  font-weight: 400;
-  color: #aa9677;
+  composes: Translation from 'App.module.css';
   margin-bottom: 8px;
 }
