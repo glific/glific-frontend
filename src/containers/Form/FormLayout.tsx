@@ -240,7 +240,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       let itemCreatedObject: any = `create${camelCaseItem}`;
       itemCreatedObject = data[itemCreatedObject];
       const itemCreated = itemCreatedObject[listItem];
-      console.log('inside');
 
       const { errors } = itemCreatedObject;
       if (errors) {
@@ -260,7 +259,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }
         if (!itemId) setLink(itemCreated[linkParameter]);
         if (remainHere) {
-          history.push(`/interactive-message/${itemCreated.id}/edit`);
+          history.push(`/interactive-message/${itemCreated.id}/edit`, {
+            language: newLanguage,
+          });
         } else {
           setFormSubmitted(true);
         }
@@ -394,10 +395,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     setFormCancelled(true);
   };
 
-  console.log(formSubmitted);
-
   if (formSubmitted && redirect) {
-    console.log('here');
     if (action && link) {
       window.location.href = `${additionalAction.link}/${link}`;
     }
@@ -482,7 +480,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                   <Field
                     key={key}
                     onLanguageChange={(selected: any) => {
-                      console.log(values);
                       if (values.title || values.body.getCurrentContent().getPlainText()) {
                         setNewLanguage(selected);
                         setRemainHere(true);

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
@@ -46,7 +47,8 @@ const queries = {
 };
 
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
-  console.log('match', match.params);
+  const location: any = useLocation();
+  const history = useHistory();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
   const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
@@ -70,7 +72,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getInteractiveTemplateById, { data: template }] =
+  const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
 
   useEffect(() => {
@@ -114,7 +116,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
   }: any) => {
-    console.log(interactiveContentValue);
     const content = JSON.parse(interactiveContentValue);
     const data = convertJSONtoStateData(content, typeValue, title);
 
@@ -146,18 +147,23 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     translations: translationsVal,
   }: any) => {
     let content;
-    console.log(translationsVal);
+
     if (translationsVal) {
       const translationsCopy = JSON.parse(translationsVal);
-      console.log(translationsCopy);
+
       // restore if translations present for selected language
       if (
         Object.keys(translationsCopy).length > 0 &&
-        translationsCopy[language.id || languageVal.id]
+        translationsCopy[language.id || languageVal.id] &&
+        !location.state
       ) {
-        content = JSON.parse(translationsVal)[language.id] || JSON.parse(interactiveContentValue);
+        content =
+          JSON.parse(translationsVal)[language.id || languageVal.id] ||
+          JSON.parse(interactiveContentValue);
+
         console.log(content);
       } else if (template) {
+        console.log(template);
         content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
       }
     }
@@ -166,8 +172,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     setDefaultLanguage(languageVal);
 
     if (languageOptions.length > 0 && languageVal) {
-      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
-      if (!language.id) {
+      if (location.state) {
+        const selectedLangauge = languageOptions.find(
+          (lang: any) => lang.label === location.state.language
+        );
+        history.replace(location.pathname, null);
+        setLanguage(selectedLangauge);
+      } else if (!language.id) {
+        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
         setLanguage(selectedLangauge);
       } else {
         setLanguage(language);
@@ -691,7 +703,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1) {
+  if (languageOptions.length < 1 || loadingTemplate) {
     return <Loading />;
   }
 
