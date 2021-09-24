@@ -109,6 +109,35 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   };
 
+  const updateStates = ({
+    language: languageVal,
+    type: typeValue,
+    interactiveContent: interactiveContentValue,
+  }: any) => {
+    console.log(interactiveContentValue);
+    const content = JSON.parse(interactiveContentValue);
+    const data = convertJSONtoStateData(content, typeValue, title);
+
+    if (languageOptions.length > 0 && languageVal) {
+      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+
+      setLanguage(selectedLangauge);
+    }
+    setTitle(data.title);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+    setTemplateType(typeValue);
+    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+
+    if (typeValue === LIST) {
+      setGlobalButton(data.globalButton);
+    }
+
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
+      setType({ id: data.type, label: data.type });
+      setAttachmentURL(data.attachmentURL);
+    }
+  };
+
   const setStates = ({
     label: labelValue,
     language: languageVal,
@@ -116,11 +145,23 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
   }: any) => {
-    const content = language.id
-      ? JSON.parse(translationsVal)[language.id]
-      : JSON.parse(interactiveContentValue);
-    console.log(translationsVal, interactiveContentValue);
-    console.log(content, typeValue, labelValue);
+    let content;
+    console.log(translationsVal);
+    if (translationsVal) {
+      const translationsCopy = JSON.parse(translationsVal);
+      console.log(translationsCopy);
+      // restore if translations present for selected language
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[language.id || languageVal.id]
+      ) {
+        content = JSON.parse(translationsVal)[language.id] || JSON.parse(interactiveContentValue);
+        console.log(content);
+      } else if (template) {
+        content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
+      }
+    }
+
     const data = convertJSONtoStateData(content, typeValue, labelValue);
     setDefaultLanguage(languageVal);
 
@@ -149,34 +190,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
     if (translationsVal) {
       setTranslations(translationsVal);
-    }
-  };
-
-  const updateStates = ({
-    language: languageVal,
-    type: typeValue,
-    interactiveContent: interactiveContentValue,
-  }: any) => {
-    const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue, title);
-
-    if (languageOptions.length > 0 && languageVal) {
-      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
-
-      setLanguage(selectedLangauge);
-    }
-    setTitle(data.title);
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
-    setTemplateType(typeValue);
-    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
-
-    if (typeValue === LIST) {
-      setGlobalButton(data.globalButton);
-    }
-
-    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
-      setType({ id: data.type, label: data.type });
-      setAttachmentURL(data.attachmentURL);
     }
   };
 
@@ -372,7 +385,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
   const getTranslation = (interactiveType: string, attribute: any) => {
-    if (language.id) {
+    if (defaultLanguage.id) {
       const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
 
       if (interactiveType === QUICK_REPLY) {
@@ -455,6 +468,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       templateType,
       inputFields: templateButtons,
       disabled: false,
+      disabledType: match.params.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,

@@ -29,6 +29,7 @@ export interface InteractiveOptionsProps {
   onGlobalButtonInputChange: any;
   disabled: any;
   translation?: any;
+  disabledType?: any;
 }
 export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   isAddButtonChecked,
@@ -44,6 +45,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onGlobalButtonInputChange,
   disabled = false,
   translation,
+  disabledType,
 }) => {
   const { values, errors, touched } = form;
 
@@ -112,6 +114,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             value={QUICK_REPLY}
             control={
               <Radio
+                disabled={disabledType}
                 color="primary"
                 checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
                 size="small"
@@ -127,6 +130,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             value={LIST}
             control={
               <Radio
+                disabled={disabledType}
                 color="primary"
                 checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
                 size="small"
