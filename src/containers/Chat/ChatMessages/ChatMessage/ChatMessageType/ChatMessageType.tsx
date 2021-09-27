@@ -62,9 +62,10 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
                 setShowViewer(false);
               }}
               images={[{ src: media.url, alt: '' }]}
+              zIndex={1501} // greater than tooltips
             />
           </div>
-          <MessagesWithLinks message={media.caption} />
+          <MessagesWithLinks message={media.caption || media.text} />
         </div>
       );
 
@@ -113,7 +114,7 @@ export const ChatMessageType: React.SFC<ChatMessageTypeProps> = ({
               config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             />
           </div>
-          <MessagesWithLinks message={media.caption} />
+          <MessagesWithLinks message={media.caption || media.text} />
         </div>
       );
       break;

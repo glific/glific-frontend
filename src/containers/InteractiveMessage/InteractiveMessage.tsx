@@ -21,6 +21,7 @@ import { Simulator } from 'components/simulator/Simulator';
 import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { WhatsAppToDraftEditor } from 'common/RichEditor';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
@@ -45,16 +46,16 @@ const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
   const { title, body, items, content, options, globalButtons } = data;
 
   if (interactiveType === QUICK_REPLY) {
-    const { type, caption, url, text } = content;
+    const { type, header, url, text } = content;
     const result: any = {};
     result.templateButtons = options.map((option: any) => ({ value: option.title }));
-    result.title = text || '';
+    result.title = header || '';
     switch (type) {
       case 'image':
       case 'video':
         result.type = `${type.toUpperCase()}`;
         result.attachmentURL = url;
-        result.body = caption;
+        result.body = text;
         break;
       case 'file':
         result.type = 'DOCUMENT';
@@ -62,7 +63,7 @@ const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
         break;
       default:
         result.type = null;
-        result.body = caption || '';
+        result.body = text || '';
     }
     return result;
   }
@@ -168,7 +169,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         headers,
       });
 
-      const properties = contactData.data.types.find(
+      const properties = contactData.data.context.types.find(
         ({ name }: { name: string }) => name === 'contact'
       );
 
@@ -224,6 +225,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   };
 
   const setStates = ({
+    label: labelValue,
     language: languageVal,
     type: typeValue,
     interactiveContent: interactiveContentValue,
@@ -237,7 +239,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       setTimeout(() => setLanguage(selectedLangauge), 150);
     }
 
-    setTitle(data.title);
+    setTitle(data.title || labelValue);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -469,10 +471,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       rows: 5,
       convertToWhatsApp: true,
       textArea: true,
-      helperText: 'You can also use variables in message enter @ to see the available list',
-      handleBlur: (event: any) => {
-        const { textContent } = event.target;
-        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(textContent)));
+      helperText: t('You can also use variables in message enter @ to see the available list'),
+      getEditorValue: (value: any) => {
+        setBody(value);
       },
       inputProp: {
         suggestions: contactVariables,
@@ -507,7 +508,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       case 'VIDEO':
         result.type = `${mediaType.toLowerCase()}`;
         result.url = payload.attachmentURL;
-        result.caption = payload.body.getCurrentContent().getPlainText();
+        result.text = payload.body.getCurrentContent().getPlainText();
         break;
       case 'DOCUMENT':
         result.type = 'file';
@@ -516,8 +517,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         break;
       default:
         result.type = 'text';
-        result.text = payload.title;
-        result.caption = payload.body.getCurrentContent().getPlainText();
+        result.header = payload.title;
+        result.text = payload.body.getCurrentContent().getPlainText();
         break;
     }
 
@@ -573,7 +574,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const { caption: bodyText } = getPayloadByMediaType(type?.id, payload);
+      const bodyText = payload.body.getCurrentContent().getPlainText();
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -686,7 +687,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
   const validation: any = {
-    title: Yup.string().required('Title is required').max(60, 'Title can be at most 60 characters'),
+    title: Yup.string()
+      .required(t('Title is required'))
+      .max(60, t('Title can be at most 60 characters')),
     body: Yup.string()
       .transform((current, original) => original.getCurrentContent().getPlainText())
       .required(t('Message content is required.')),
@@ -697,14 +700,14 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       .of(
         Yup.object().shape({
           title: Yup.string()
-            .required('Required')
-            .max(24, 'Section title can be at most 24 characters'),
+            .required(t('Required'))
+            .max(24, t('Section title can be at most 24 characters')),
           options: Yup.array().of(
             Yup.object().shape({
               title: Yup.string()
-                .required('Title is required')
-                .max(24, 'Title can be at most 24 characters'),
-              description: Yup.string().max(72, 'Description can be at most 72 characters'),
+                .required(t('Title is required'))
+                .max(24, t('Title can be at most 24 characters')),
+              description: Yup.string().max(72, t('Description can be at most 72 characters')),
             })
           ),
         })
@@ -712,15 +715,15 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       .min(1);
 
     validation.globalButton = Yup.string()
-      .required('Required')
-      .max(20, 'Button value can be at most 20 characters');
+      .required(t('Required'))
+      .max(20, t('Button value can be at most 20 characters'));
   } else {
     validation.templateButtons = Yup.array()
       .of(
         Yup.object().shape({
           value: Yup.string()
-            .required('Required')
-            .max(20, 'Button value can be at most 20 characters'),
+            .required(t('Required'))
+            .max(20, t('Button value can be at most 20 characters')),
         })
       )
       .min(1)
@@ -785,6 +788,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type,
     attachmentURL,
   ]);
+
+  if (languageOptions.length < 1) {
+    return <Loading />;
+  }
 
   return (
     <>

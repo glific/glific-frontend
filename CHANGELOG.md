@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.1.0](https://github.com/glific/glific-frontend/compare/v2.0.4...v2.1.0)
+
+- Updated footer color [`#1598`](https://github.com/glific/glific-frontend/pull/1598)
+- Added name of the person who is updating flows in the dialog message description [`#1594`](https://github.com/glific/glific-frontend/pull/1594)
+- Added suspended account fee details on the billing details page [`#1592`](https://github.com/glific/glific-frontend/pull/1592)
+- Added functionality for Locking flows while editing  [`#1588`](https://github.com/glific/glific-frontend/pull/1588)
+- Log errors [`#1591`](https://github.com/glific/glific-frontend/pull/1591)
+- Test case cleanups [`#1589`](https://github.com/glific/glific-frontend/pull/1589)
+- Now chat message will show sendBy label for received message, fixed [`#1577`](https://github.com/glific/glific-frontend/pull/1577)
+- Removed unnecessary logs and added import flow text [`#1586`](https://github.com/glific/glific-frontend/pull/1586)
+- Enhancement context messages [`#1575`](https://github.com/glific/glific-frontend/pull/1575)
+- Fixed label subscription cache issue [`#1579`](https://github.com/glific/glific-frontend/pull/1579)
+- Fixed focus issue for interactive messages and hsm [`#1578`](https://github.com/glific/glific-frontend/pull/1578)
+- Added filter for template status [`#1571`](https://github.com/glific/glific-frontend/pull/1571)
+- Updated label to title in list screens [`#1570`](https://github.com/glific/glific-frontend/pull/1570)
+- Label tag fixes [`#1557`](https://github.com/glific/glific-frontend/pull/1557)
+- Added template validation for same message and sample message [`#1556`](https://github.com/glific/glific-frontend/pull/1556)
+- Test cases warning cleanups [`#1574`](https://github.com/glific/glific-frontend/pull/1574)
+
+#### [v2.0.4](https://github.com/glific/glific-frontend/compare/v2.0.3...v2.0.4)
+
+> 9 August 2021
+
+- Added dynamic media url [`#1576`](https://github.com/glific/glific-frontend/pull/1576)
+
+#### [v2.0.3](https://github.com/glific/glific-frontend/compare/v2.0.2...v2.0.3)
+
+> 3 August 2021
+
+- Fixed subflow router expression issue in floweditor [`#1572`](https://github.com/glific/glific-frontend/pull/1572)
+- Read more bug fixed [`#1560`](https://github.com/glific/glific-frontend/pull/1560)
+- Added terms of use link on registration pages [`#1569`](https://github.com/glific/glific-frontend/pull/1569)
+- Added max length validations for interactive messages [`#1564`](https://github.com/glific/glific-frontend/pull/1564)
+- Code improvements [`#1561`](https://github.com/glific/glific-frontend/pull/1561)
+
+#### [v2.0.2](https://github.com/glific/glific-frontend/compare/v2.0.1...v2.0.2)
+
+> 30 July 2021
+
+- Interactive list translations [`#1563`](https://github.com/glific/glific-frontend/pull/1563)
+- language UI redesign [`#1559`](https://github.com/glific/glific-frontend/pull/1559)
+- Added expression support in Enter another flow node [`#1558`](https://github.com/glific/glific-frontend/pull/1558)
+- Fixed jump to latest alignment and added tooltip for showing all collections [`#1555`](https://github.com/glific/glific-frontend/pull/1555)
+- Feature/add language support [`#1548`](https://github.com/glific/glific-frontend/pull/1548)
+- Deepscan fixes [`#1552`](https://github.com/glific/glific-frontend/pull/1552)
+- Added import flows functionality [`#1533`](https://github.com/glific/glific-frontend/pull/1533)
+- fixes for autocomplete implementation [`#1521`](https://github.com/glific/glific-frontend/pull/1521)
+
+#### [v2.0.1](https://github.com/glific/glific-frontend/compare/v2.0.0...v2.0.1)
+
+> 16 July 2021
+
+- Updated body for quick replies [`#1539`](https://github.com/glific/glific-frontend/pull/1539)
+- List realtime update simulator [`#1542`](https://github.com/glific/glific-frontend/pull/1542)
+- Interactive desc [`#1541`](https://github.com/glific/glific-frontend/pull/1541)
+
 #### [v2.0.0](https://github.com/glific/glific-frontend/compare/v1.8.1...v2.0.0)
 
 > 15 July 2021

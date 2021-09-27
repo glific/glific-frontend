@@ -22,4 +22,5 @@
 
 .Paper {
   margin-top: 55px;
+  max-height: 400px !important;
 }

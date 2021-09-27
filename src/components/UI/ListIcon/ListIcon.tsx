@@ -26,6 +26,7 @@ import triggerSelectedIcon from 'assets/images/icons/Trigger/Selected.svg';
 import triggerIcon from 'assets/images/icons/Trigger/Unselected.svg';
 import notificationIcon from 'assets/images/icons/Notification/Unselected.svg';
 import notificationSelectedIcon from 'assets/images/icons/Notification/Selected.svg';
+import helpIcon from 'assets/images/icons/Help.svg';
 import styles from './ListIcon.module.css';
 
 export interface ListIconProps {
@@ -51,6 +52,7 @@ export const ListIcon: React.SFC<ListIconProps> = (props) => {
     trigger: triggerIcon,
     notification: notificationIcon,
     'interactive-message': interactiveMessageIcon,
+    help: helpIcon,
   };
 
   const stringsToSelectedIcons: { [iconName: string]: string } = {

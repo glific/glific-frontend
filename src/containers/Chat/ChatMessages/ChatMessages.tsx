@@ -574,6 +574,23 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     }
   };
 
+  const showDaySeparator = (currentDate: string, nextDate: string) => {
+    // if it's last message and its date is greater than current date then show day separator
+    if (!nextDate && moment(currentDate).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
+      return true;
+    }
+
+    // if the day is changed then show day separator
+    if (
+      nextDate &&
+      moment(currentDate).format('YYYY-MM-DD') > moment(nextDate).format('YYYY-MM-DD')
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
   if (conversationInfo && conversationInfo.messages && conversationInfo.messages.length > 0) {
     let reverseConversation = [...conversationInfo.messages];
     reverseConversation = reverseConversation.map((message: any, index: number) => (
@@ -605,6 +622,10 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
             : true
         }
         jumpToMessage={jumpToMessage}
+        daySeparator={showDaySeparator(
+          reverseConversation[index].insertedAt,
+          reverseConversation[index + 1] ? reverseConversation[index + 1].insertedAt : null
+        )}
       />
     ));
 
