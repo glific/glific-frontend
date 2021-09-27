@@ -24,7 +24,6 @@ import styles from './FlowEditor.module.css';
 declare function showFlowEditor(node: any, config: any): void;
 
 // function to suppress the error for custom registery in floweditor
-
 const safeDecorator = (fn: any) =>
   function (...args: any) {
     try {
