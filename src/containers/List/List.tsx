@@ -549,7 +549,7 @@ export const List: React.SFC<ListProps> = ({
                 onPageChange={(event, newPage) => {
                   handleTableChange('pageNum', newPage);
                 }}
-                onChangeRowsPerPage={(event) => {
+                onRowsPerPageChange={(event) => {
                   handleTableChange('pageRows', parseInt(event.target.value, 10));
                 }}
                 page={tableVals.pageNum}
