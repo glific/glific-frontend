@@ -23,6 +23,25 @@ import styles from './FlowEditor.module.css';
 
 declare function showFlowEditor(node: any, config: any): void;
 
+// function to suppress the error for custom registery in floweditor
+const safeDecorator = (fn: any) =>
+  function (...args: any) {
+    try {
+      // @ts-ignore
+      return fn.apply(this, args);
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.message.includes('has already been used with this registry')
+      ) {
+        return false;
+      }
+      throw error;
+    }
+  };
+
+customElements.define = safeDecorator(customElements.define);
+
 const loadfiles = (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
@@ -173,6 +192,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let flowTitle: any;
 
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
+    fetchPolicy: 'network-only',
     onCompleted: (services) => {
       const { dialogflow, googleCloudStorage } = services.organizationServices;
 
