@@ -365,14 +365,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   };
 
-  const afterSave = (data: any) => {
-    if (match.params.id) {
-      handleLanguageChange(nextLanguage);
-    } else {
-      const { interactiveTemplate } = data.createInteractiveTemplate;
-      history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
-        language: nextLanguage,
-      });
+  const afterSave = (data: any, saveClick: boolean) => {
+    if (!saveClick) {
+      if (match.params.id) {
+        handleLanguageChange(nextLanguage);
+      } else {
+        const { interactiveTemplate } = data.createInteractiveTemplate;
+        history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
+          language: nextLanguage,
+        });
+      }
     }
   };
 

@@ -213,7 +213,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data, saveClick);
         }
       }
       onSaveClick(false);
@@ -265,7 +265,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         }
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data, saveClick);
         }
       }
       setIsLoadedData(true);
