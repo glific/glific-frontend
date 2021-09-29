@@ -3,8 +3,8 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useLazyQuery, useQuery } from '@apollo/client';
-
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
@@ -66,7 +66,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [translations, setTranslations] = useState<any>('{}');
 
   const [previousState, setPreviousState] = useState<any>({});
+  const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
+
+  const client = useApolloClient();
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
@@ -362,6 +365,17 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   };
 
+  const afterSave = (data: any) => {
+    if (match.params.id) {
+      handleLanguageChange(nextLanguage);
+    } else {
+      const { interactiveTemplate } = data.createInteractiveTemplate;
+      history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
+        language: nextLanguage,
+      });
+    }
+  };
+
   const displayWarning = () => {
     if (type && type.id === 'DOCUMENT') {
       setWarning(
@@ -427,13 +441,34 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     return null;
   };
 
+  const onLanguageChange = (option: string, form: any) => {
+    setNextLanguage(option);
+    const { values, errors } = form;
+    if (values?.type?.label === 'TEXT') {
+      if (values.title || values.body.getCurrentContent().getPlainText()) {
+        if (errors) {
+          setNotification(client, 'Please check the errors', 'warning');
+        }
+      } else {
+        handleLanguageChange(option);
+      }
+    }
+    if (values.body.getCurrentContent().getPlainText()) {
+      if (Object.keys(errors).length !== 0) {
+        setNotification(client, 'Please check the errors', 'warning');
+      }
+    } else {
+      handleLanguageChange(option);
+    }
+  };
+
   const fields = [
     {
       field: 'languageBar',
       component: LanguageBar,
       options: langOptions || [],
       selectedLangauge: language && language.label,
-      onLanguageChange: handleLanguageChange,
+      onLanguageChange,
     },
     {
       translation:
@@ -722,7 +757,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         icon={interactiveMessageIcon}
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
-        handleLanguageChange={handleLanguageChange}
+        afterSave={afterSave}
+        changePageOnSave={false}
       />
       <div className={styles.Simulator}>
         <Simulator

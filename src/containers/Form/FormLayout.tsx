@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, Link, useHistory } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useApolloClient, DocumentNode, ApolloError, useQuery, useMutation } from '@apollo/client';
 import { Typography, IconButton } from '@material-ui/core';
@@ -63,7 +63,7 @@ export interface FormLayoutProps {
   showPreviewButton?: boolean;
   onPreivewClick?: Function;
   getQueryFetchPolicy?: any;
-  handleLanguageChange?: any;
+  changePageOnSave?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -108,10 +108,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   showPreviewButton = false,
   onPreivewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
-  handleLanguageChange,
+  changePageOnSave = true,
 }: FormLayoutProps) => {
   const client = useApolloClient();
-  const history = useHistory();
+
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
@@ -122,8 +122,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
-  const [remainHere, setRemainHere] = useState<any>(false);
-  const [newLanguage, setNewLanguage] = useState<any>('');
 
   const { t } = useTranslation();
 
@@ -202,21 +200,21 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemId);
         }
 
-        if (remainHere) {
-          handleLanguageChange(newLanguage);
-          setNotification(client, 'Your changes have been autosaved');
-        } else {
+        if (changePageOnSave || saveClick) {
           setFormSubmitted(true);
           // emit data after save
-          if (afterSave) {
-            afterSave(data);
-          }
+
           // display successful message after update
           let message = `${capitalListItemName} edited successfully!`;
           if (type === 'copy') {
             message = copyNotification;
           }
           setNotification(client, message);
+        } else {
+          setNotification(client, 'Your changes have been autosaved');
+        }
+        if (afterSave) {
+          afterSave(data);
         }
       }
       onSaveClick(false);
@@ -259,18 +257,15 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemCreated.id);
         }
         if (!itemId) setLink(itemCreated[linkParameter]);
-        if (remainHere) {
-          history.push(`/interactive-message/${itemCreated.id}/edit`, {
-            language: newLanguage,
-          });
-          setNotification(client, 'Your changes have been autosaved');
-        } else {
+        if (changePageOnSave || saveClick) {
           setFormSubmitted(true);
-          if (afterSave) {
-            afterSave(data.createSavedSearch);
-          }
           // display successful message after create
           setNotification(client, `${capitalListItemName} created successfully!`);
+        } else {
+          setNotification(client, 'Your changes have been autosaved');
+        }
+        if (afterSave) {
+          afterSave(data);
         }
         // emit data after save
       }
@@ -466,50 +461,14 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         onSubmit={(itemData, { setErrors }) => {
           // when you want to show custom error on form field and error message is not coming from api
           setCustomError({ setErrors });
-
           saveHandler(itemData);
-          onSaveClick(true);
         }}
       >
-        {({ submitForm, values, errors }: any) => (
+        {({ submitForm }: any) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
 
-              if (field.field === 'languageBar') {
-                const { onLanguageChange, ...prop } = field;
-                return (
-                  <Field
-                    key={key}
-                    onLanguageChange={(selected: any) => {
-                      if (values?.type?.label === 'TEXT') {
-                        if (values.title || values.body.getCurrentContent().getPlainText()) {
-                          setNewLanguage(selected);
-                          setRemainHere(true);
-
-                          if (errors) {
-                            setNotification(client, 'Please check the errors', 'warning');
-                          }
-                          submitForm();
-                        } else {
-                          handleLanguageChange(selected);
-                        }
-                      } else if (values.body.getCurrentContent().getPlainText()) {
-                        setNewLanguage(selected);
-                        setRemainHere(true);
-
-                        if (Object.keys(errors).length !== 0) {
-                          setNotification(client, 'Please check the errors', 'warning');
-                        }
-                        submitForm();
-                      } else {
-                        handleLanguageChange(selected);
-                      }
-                    }}
-                    {...prop}
-                  />
-                );
-              }
               return (
                 <React.Fragment key={key}>
                   {field.label && (
@@ -517,7 +476,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                       {field.label}
                     </Typography>
                   )}
-                  <Field key={key} {...field} />
+                  <Field key={key} {...field} onSubmit={submitForm} />
                 </React.Fragment>
               );
             })}
@@ -526,7 +485,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  setRemainHere(false);
+                  onSaveClick(true);
                   submitForm();
                 }}
                 className={styles.Button}
