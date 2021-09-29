@@ -202,8 +202,6 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
 
         if (changePageOnSave || saveClick) {
           setFormSubmitted(true);
-          // emit data after save
-
           // display successful message after update
           let message = `${capitalListItemName} edited successfully!`;
           if (type === 'copy') {
@@ -213,6 +211,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setNotification(client, 'Your changes have been autosaved');
         }
+        // emit data after save
         if (afterSave) {
           afterSave(data);
         }
@@ -264,10 +263,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         } else {
           setNotification(client, 'Your changes have been autosaved');
         }
+        // emit data after save
         if (afterSave) {
           afterSave(data);
         }
-        // emit data after save
       }
       setIsLoadedData(true);
       onSaveClick(false);
