@@ -444,7 +444,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values, errors } = form;
-    if (values?.type?.label === 'TEXT') {
+    if (values.type?.label === 'TEXT') {
       if (values.title || values.body.getCurrentContent().getPlainText()) {
         if (errors) {
           setNotification(client, 'Please check the errors', 'warning');
