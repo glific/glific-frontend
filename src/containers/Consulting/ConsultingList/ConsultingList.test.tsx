@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -25,19 +25,17 @@ it('Renders ConsultingList component successfully', async () => {
   render(list);
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0));
+  await waitFor(() => {
+    const nameLabel = screen.getByText('NAME');
+    const dateLabel = screen.getByText('DATE');
+    const minutesLabel = screen.getByText('MINUTES');
+    const typeLabel = screen.getByText('TYPE');
+    const actionLabel = screen.getByText('ACTIONS');
+
+    expect(nameLabel).toBeInTheDocument();
+    expect(dateLabel).toBeInTheDocument();
+    expect(minutesLabel).toBeInTheDocument();
+    expect(typeLabel).toBeInTheDocument();
+    expect(actionLabel).toBeInTheDocument();
   });
-
-  const nameLabel = screen.getByText('NAME');
-  const dateLabel = screen.getByText('DATE');
-  const minutesLabel = screen.getByText('MINUTES');
-  const typeLabel = screen.getByText('TYPE');
-  const actionLabel = screen.getByText('ACTIONS');
-
-  expect(nameLabel).toBeInTheDocument();
-  expect(dateLabel).toBeInTheDocument();
-  expect(minutesLabel).toBeInTheDocument();
-  expect(typeLabel).toBeInTheDocument();
-  expect(actionLabel).toBeInTheDocument();
 });

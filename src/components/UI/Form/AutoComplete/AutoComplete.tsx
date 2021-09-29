@@ -177,9 +177,12 @@ export const AutoComplete: React.SFC<AutocompleteProps> = ({
           disableClearable={disableClearable}
           getOptionLabel={(option: any) => (option[optionLabel] ? option[optionLabel] : option)}
           getOptionDisabled={getOptionDisabled}
-          getOptionSelected={(option, value) =>
-            option[valueElementName] === value[valueElementName]
-          }
+          getOptionSelected={(option, value) => {
+            if (value) {
+              return option[valueElementName] === value[valueElementName];
+            }
+            return false;
+          }}
           onChange={(event, value: any) => {
             if (roleSelection) {
               roleSelection(value);

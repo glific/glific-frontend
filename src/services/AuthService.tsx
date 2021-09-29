@@ -157,7 +157,7 @@ export const setAuthHeaders = () => {
         if (parametersCopy[1]) {
           parametersCopy[1].headers = {
             ...parametersCopy[1].headers,
-            Authorization: getAuthSession('access_token'),
+            authorization: getAuthSession('access_token'),
           };
         }
         const result = await fetch(...parametersCopy);

@@ -20,14 +20,15 @@ test('StaffManagementList is rendered correctly', async () => {
   setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Manager'] }));
   render(staffManagement);
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-  const nameLabel = screen.getByText('NAME');
-  const phoneLabel = screen.getByText('PHONE NO');
-  const assignedToLabel = screen.getByText('ASSIGNED TO');
-  const actionLabel = screen.getByText('ACTIONS');
+  await waitFor(() => {
+    const nameLabel = screen.getByText('NAME');
+    const phoneLabel = screen.getByText('PHONE NO');
+    const assignedToLabel = screen.getByText('ASSIGNED TO');
+    const actionLabel = screen.getByText('ACTIONS');
 
-  expect(nameLabel).toBeInTheDocument();
-  expect(phoneLabel).toBeInTheDocument();
-  expect(assignedToLabel).toBeInTheDocument();
-  expect(actionLabel).toBeInTheDocument();
+    expect(nameLabel).toBeInTheDocument();
+    expect(phoneLabel).toBeInTheDocument();
+    expect(assignedToLabel).toBeInTheDocument();
+    expect(actionLabel).toBeInTheDocument();
+  });
 });
