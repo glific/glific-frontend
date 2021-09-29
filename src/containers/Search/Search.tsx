@@ -404,7 +404,6 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
   };
 
   const saveHandler = (saveData: any) => {
-    console.log(saveData);
     if (props.handleSave && saveData.updateSavedSearch)
       props.handleSave(saveData.updateSavedSearch);
   };

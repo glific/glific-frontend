@@ -458,7 +458,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           saveHandler(itemData);
         }}
       >
-        {({ submitForm }: any) => (
+        {({ submitForm }) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
