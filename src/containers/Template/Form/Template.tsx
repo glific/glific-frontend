@@ -30,8 +30,8 @@ const HSMValidation = {
       schema.test({
         test: (exampleValue: any) => {
           const finalmessageValue =
-            messageValue && messageValue.replaceAll(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
-          const finalExampleValue = exampleValue && exampleValue.replaceAll(/\[[^\]]*\]/g, '[]');
+            messageValue && messageValue.replace(/\{\{([1-9]|1[0-9])\}\}/g, '[]');
+          const finalExampleValue = exampleValue && exampleValue.replace(/\[[^\]]*\]/g, '[]');
           return finalExampleValue === finalmessageValue;
         },
         message:
@@ -161,7 +161,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     getShortcode,
     getExample,
     getCategory,
-    onExampleChange,
+    onExampleChange = () => {},
     languageStyle = 'dropdown',
   } = props;
 

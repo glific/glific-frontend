@@ -546,10 +546,10 @@ export const List: React.SFC<ListProps> = ({
                 className={styles.FooterRow}
                 colSpan={columnNames.length}
                 count={itemCount}
-                onChangePage={(event, newPage) => {
+                onPageChange={(event, newPage) => {
                   handleTableChange('pageNum', newPage);
                 }}
-                onChangeRowsPerPage={(event) => {
+                onRowsPerPageChange={(event) => {
                   handleTableChange('pageRows', parseInt(event.target.value, 10));
                 }}
                 page={tableVals.pageNum}

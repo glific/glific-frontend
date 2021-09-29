@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
@@ -41,13 +41,11 @@ test('contact should have a name or number', async () => {
  * commenting tag cases for now. we'll visit sometime later.
  */
 test('it renders contact profile and update tags', async () => {
-  const { container } = render(
+  const { getByRole } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
       <ContactProfile {...defaultProps} />
     </MockedProvider>
   );
-
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
 
   // const autocomplete = screen.getByTestId('autocomplete-element');
   // expect(autocomplete).toBeInTheDocument();
@@ -61,7 +59,7 @@ test('it renders contact profile and update tags', async () => {
   // await waitFor(() => {});
 
   await waitFor(() => {
-    const save = screen.getByRole('button', { name: 'Save' });
+    const save = getByRole('button', { name: 'Save' });
     fireEvent.click(save);
   });
 });

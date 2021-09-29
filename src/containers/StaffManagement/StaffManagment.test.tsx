@@ -15,12 +15,13 @@ const staffManagement = (
 test('should load the staff user edit form', async () => {
   render(staffManagement);
 
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 10)));
+  await waitFor(() => {
+    const submitButton = screen.getByRole('button', { name: 'Save' });
+    expect(submitButton).toBeInTheDocument();
 
-  const submitButton = screen.getByRole('button', { name: 'Save' });
-  expect(submitButton).toBeInTheDocument();
+    fireEvent.click(submitButton);
+  });
 
-  fireEvent.click(submitButton);
   await waitFor(() => {});
 });
 
@@ -29,9 +30,10 @@ test('it should have a help link', async () => {
 
   // loading is show initially
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 10)));
-  const helpButton = screen.getByTestId('helpButton');
-  fireEvent.click(helpButton);
+  await waitFor(() => {
+    const helpButton = screen.getByTestId('helpButton');
+    fireEvent.click(helpButton);
+  });
 
   expect(screen.getByText('User roles')).toBeInTheDocument();
 
