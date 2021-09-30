@@ -2,6 +2,7 @@ import React, { lazy, useState } from 'react';
 import { Switch, Route, RouteComponentProps, Redirect } from 'react-router-dom';
 
 import { Loading } from 'components/UI/Layout/Loading/Loading';
+import { Chat } from 'containers/Chat/Chat';
 import { getUserRole } from 'context/role';
 import { useToast } from 'services/ToastService';
 import styles from './AuthenticatedRoute.module.css';
@@ -11,7 +12,6 @@ const defaultRedirect = () => <Redirect to="/chat" />;
 // const TagList = lazy(() => import('containers/Tag/TagList/TagList'));
 // const Tag = lazy(() => import('containers/Tag/Tag'));
 const Layout = lazy(() => import('components/UI/Layout/Layout'));
-const Chat = lazy(() => import('containers/Chat/Chat'));
 const ChatSubscription = lazy(() => import('containers/Chat/ChatSubscription/ChatSubscription'));
 const SpeedSendList = lazy(() => import('containers/Template/List/SpeedSendList/SpeedSendList'));
 const SpeedSend = lazy(() => import('containers/Template/Form/SpeedSend/SpeedSend'));
