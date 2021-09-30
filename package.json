@@ -95,7 +95,7 @@
     "react-tiny-link": "^3.6.1",
     "react-viewer": "^3.2.2",
     "styled-components": "^5.1.1",
-    "subscriptions-transport-ws": "^0.9.16",
+    "subscriptions-transport-ws": "^0.10.0",
     "typescript": "~4.4.3",
     "uuid": "^8.3.2",
     "winston-logflare": "^0.1.1",
