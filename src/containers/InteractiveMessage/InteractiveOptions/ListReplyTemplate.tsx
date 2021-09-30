@@ -16,6 +16,7 @@ export interface ListReplyTemplateProps {
   onListItemAddClick: any;
   onListItemRemoveClick: any;
   onInputChange: any;
+  translation?: any;
 }
 
 export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
@@ -28,6 +29,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     onListItemAddClick,
     onListItemRemoveClick,
     onInputChange,
+    translation,
   } = props;
 
   const isError = (key: string, itemIdx: number) => {
@@ -64,7 +66,7 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
     return null;
   }
 
-  const showDeleteIcon = inputFields[index]?.options.length > 1;
+  const showDeleteIcon = inputFields[index]?.options && inputFields[index]?.options.length > 1;
   const defaultTitle = inputFields[index]?.title;
 
   const isAddMoreOptionAllowed = inputFields.reduce((result: number, field: any) => {
@@ -108,7 +110,9 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
           )}
         </div>
       </div>
+
       <div className={styles.ListReplyWrapper}>
+        {translation && <div className={styles.Translation}>{translation.title}</div>}
         <FormControl fullWidth error={isListTitleError} className={styles.FormControl}>
           <TextField
             label={sectionLabel}
@@ -133,6 +137,11 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                   <div className={styles.ListReplyItemWrapper}>
                     <div className={styles.ListReplyItemContent}>
                       <div className={styles.TextFieldWrapper}>
+                        {translation?.options && translation.options.length > itemIndex && (
+                          <div className={styles.Translation}>
+                            {translation.options[itemIndex].title}
+                          </div>
+                        )}
                         <FormControl
                           fullWidth
                           error={isError('title', itemIndex)}
@@ -165,6 +174,13 @@ export const ListReplyTemplate: React.SFC<ListReplyTemplateProps> = (props) => {
                       </div>
 
                       <div className={styles.TextFieldWrapper}>
+                        {translation?.options &&
+                          translation.options.length > itemIndex &&
+                          translation.options[itemIndex].description && (
+                            <div className={styles.Translation}>
+                              {translation.options[itemIndex].description}
+                            </div>
+                          )}
                         <FormControl
                           fullWidth
                           error={isError('description', itemIndex)}

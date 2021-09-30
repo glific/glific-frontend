@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
-import { useLazyQuery, useQuery } from '@apollo/client';
-
+import { useLocation, useHistory } from 'react-router-dom';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
@@ -46,29 +47,35 @@ const queries = {
 };
 
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
+  const location: any = useLocation();
+  const history = useHistory();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
-  const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
+  const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  const [language, setLanguage] = useState<any>(null);
+  const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
 
   const [translations, setTranslations] = useState<any>('{}');
 
   const [previousState, setPreviousState] = useState<any>({});
+  const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
+
+  const client = useApolloClient();
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getInteractiveTemplateById, { data: template }] =
+  const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
 
   useEffect(() => {
@@ -82,7 +89,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguage(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+        setLanguage(lang[0]);
+      }
     }
   }, [languages]);
 
@@ -105,6 +114,34 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   };
 
+  const updateStates = ({
+    language: languageVal,
+    type: typeValue,
+    interactiveContent: interactiveContentValue,
+  }: any) => {
+    const content = JSON.parse(interactiveContentValue);
+    const data = convertJSONtoStateData(content, typeValue, title);
+
+    if (languageOptions.length > 0 && languageVal) {
+      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+
+      setLanguage(selectedLangauge);
+    }
+    setTitle(data.title);
+    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+    setTemplateType(typeValue);
+    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+
+    if (typeValue === LIST) {
+      setGlobalButton(data.globalButton);
+    }
+
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
+      setType({ id: data.type, label: data.type });
+      setAttachmentURL(data.attachmentURL);
+    }
+  };
+
   const setStates = ({
     label: labelValue,
     language: languageVal,
@@ -112,15 +149,44 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
   }: any) => {
-    const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue);
+    let content;
 
-    if (languageOptions.length > 0 && languageVal) {
-      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
-      setTimeout(() => setLanguage(selectedLangauge), 150);
+    if (translationsVal) {
+      const translationsCopy = JSON.parse(translationsVal);
+
+      // restore if translations present for selected language
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[language.id || languageVal.id] &&
+        !location.state
+      ) {
+        content =
+          JSON.parse(translationsVal)[language.id || languageVal.id] ||
+          JSON.parse(interactiveContentValue);
+      } else if (template) {
+        content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
+      }
     }
 
-    setTitle(data.title || labelValue);
+    const data = convertJSONtoStateData(content, typeValue, labelValue);
+    setDefaultLanguage(languageVal);
+
+    if (languageOptions.length > 0 && languageVal) {
+      if (location.state) {
+        const selectedLangauge = languageOptions.find(
+          (lang: any) => lang.label === location.state.language
+        );
+        history.replace(location.pathname, null);
+        setLanguage(selectedLangauge);
+      } else if (!language.id) {
+        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+        setLanguage(selectedLangauge);
+      } else {
+        setLanguage(language);
+      }
+    }
+
+    setTitle(data.title);
     setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
@@ -263,7 +329,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(translationsCopy[Id]),
@@ -273,7 +339,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           template.interactiveTemplate.interactiveTemplate
         );
 
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(fillDataWithEmptyValues),
@@ -283,7 +349,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       return;
     }
 
-    setStates({
+    updateStates({
       language: value,
       type: template.interactiveTemplate.interactiveTemplate.type,
       interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
@@ -294,8 +360,22 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
     if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
       updateTranslation(selected);
+    } else if (selected) {
+      setLanguage(selected);
     }
-    if (selected) setLanguage(selected);
+  };
+
+  const afterSave = (data: any, saveClick: boolean) => {
+    if (!saveClick) {
+      if (match.params.id) {
+        handleLanguageChange(nextLanguage);
+      } else {
+        const { interactiveTemplate } = data.createInteractiveTemplate;
+        history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
+          language: nextLanguage,
+        });
+      }
+    }
   };
 
   const displayWarning = () => {
@@ -329,14 +409,74 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
+  const getTranslation = (interactiveType: string, attribute: any) => {
+    if (defaultLanguage.id) {
+      const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
+
+      if (interactiveType === QUICK_REPLY) {
+        switch (attribute) {
+          case 'title':
+            return defaultTemplate.content.header;
+          case 'body':
+            return defaultTemplate.content.text;
+          case 'options':
+            return defaultTemplate.options.map((option: any) => option.title);
+          default:
+            return null;
+        }
+      }
+
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.title;
+        case 'body':
+          return defaultTemplate.body;
+        case 'options':
+          return {
+            items: defaultTemplate.items,
+            globalButton: defaultTemplate.globalButtons[0].title,
+          };
+        default:
+          return null;
+      }
+    }
+    return null;
+  };
+
+  const onLanguageChange = (option: string, form: any) => {
+    setNextLanguage(option);
+    const { values, errors } = form;
+    if (values.type?.label === 'TEXT') {
+      if (values.title || values.body.getCurrentContent().getPlainText()) {
+        if (errors) {
+          setNotification(client, 'Please check the errors', 'warning');
+        }
+      } else {
+        handleLanguageChange(option);
+      }
+    }
+    if (values.body.getCurrentContent().getPlainText()) {
+      if (Object.keys(errors).length !== 0) {
+        setNotification(client, 'Please check the errors', 'warning');
+      }
+    } else {
+      handleLanguageChange(option);
+    }
+  };
+
   const fields = [
     {
+      field: 'languageBar',
       component: LanguageBar,
       options: langOptions || [],
       selectedLangauge: language && language.label,
-      onLanguageChange: handleLanguageChange,
+      onLanguageChange,
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'title'),
       component: Input,
       name: 'title',
       type: 'text',
@@ -346,6 +486,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'body'),
       component: EmojiInput,
       name: 'body',
       placeholder: t('Message*'),
@@ -361,11 +505,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'options'),
       component: InteractiveOptions,
       isAddButtonChecked: true,
       templateType,
       inputFields: templateButtons,
       disabled: false,
+      disabledType: match.params.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,
@@ -588,7 +737,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1) {
+  if (languageOptions.length < 1 || loadingTemplate) {
     return <Loading />;
   }
 
@@ -610,6 +759,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         icon={interactiveMessageIcon}
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
+        afterSave={afterSave}
+        saveOnPageChange={false}
       />
       <div className={styles.Simulator}>
         <Simulator

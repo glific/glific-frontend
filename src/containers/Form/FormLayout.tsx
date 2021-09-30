@@ -63,6 +63,7 @@ export interface FormLayoutProps {
   showPreviewButton?: boolean;
   onPreivewClick?: Function;
   getQueryFetchPolicy?: any;
+  saveOnPageChange?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -107,8 +108,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   showPreviewButton = false,
   onPreivewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
+  saveOnPageChange = true,
 }: FormLayoutProps) => {
   const client = useApolloClient();
+
   const [showDialog, setShowDialog] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [languageId, setLanguageId] = useState('');
@@ -119,6 +122,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   const [saveClick, onSaveClick] = useState(false);
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [customError, setCustomError] = useState<any>(null);
+
   const { t } = useTranslation();
 
   const capitalListItemName = listItemName[0].toUpperCase() + listItemName.slice(1);
@@ -195,17 +199,22 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         if (additionalQuery) {
           additionalQuery(itemId);
         }
-        setFormSubmitted(true);
+
+        if (saveOnPageChange || saveClick) {
+          setFormSubmitted(true);
+          // display successful message after update
+          let message = `${capitalListItemName} edited successfully!`;
+          if (type === 'copy') {
+            message = copyNotification;
+          }
+          setNotification(client, message);
+        } else {
+          setNotification(client, 'Your changes have been autosaved');
+        }
         // emit data after save
         if (afterSave) {
-          afterSave(data);
+          afterSave(data, saveClick);
         }
-        // display successful message after update
-        let message = `${capitalListItemName} edited successfully!`;
-        if (type === 'copy') {
-          message = copyNotification;
-        }
-        setNotification(client, message);
       }
       onSaveClick(false);
     },
@@ -247,13 +256,17 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemCreated.id);
         }
         if (!itemId) setLink(itemCreated[linkParameter]);
-        setFormSubmitted(true);
+        if (saveOnPageChange || saveClick) {
+          setFormSubmitted(true);
+          // display successful message after create
+          setNotification(client, `${capitalListItemName} created successfully!`);
+        } else {
+          setNotification(client, 'Your changes have been autosaved');
+        }
         // emit data after save
         if (afterSave) {
-          afterSave(data.createSavedSearch);
+          afterSave(data, saveClick);
         }
-        // display successful message after create
-        setNotification(client, `${capitalListItemName} created successfully!`);
       }
       setIsLoadedData(true);
       onSaveClick(false);
@@ -441,23 +454,22 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
         onSubmit={(itemData, { setErrors }) => {
           // when you want to show custom error on form field and error message is not coming from api
           setCustomError({ setErrors });
-
           saveHandler(itemData);
-          onSaveClick(true);
         }}
       >
         {({ submitForm }) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
+
               return (
                 <React.Fragment key={key}>
-                  {field.label ? (
+                  {field.label && (
                     <Typography variant="h5" className={styles.FieldLabel}>
                       {field.label}
                     </Typography>
-                  ) : null}
-                  <Field key={key} {...field} />
+                  )}
+                  <Field key={key} {...field} onSubmit={submitForm} />
                 </React.Fragment>
               );
             })}
@@ -465,7 +477,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
               <Button
                 variant="contained"
                 color="primary"
-                onClick={submitForm}
+                onClick={() => {
+                  onSaveClick(true);
+                  submitForm();
+                }}
                 className={styles.Button}
                 data-testid="submitActionButton"
                 loading={saveClick}

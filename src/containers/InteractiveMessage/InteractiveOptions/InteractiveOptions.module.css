@@ -48,3 +48,8 @@
   background: white;
   border-radius: 12px;
 }
+
+.Translation {
+  composes: Translation from 'App.module.css';
+  margin-bottom: 8px;
+}

@@ -52,3 +52,7 @@
 .DangerText {
   margin-left: 16px !important;
 }
+
+.Translation {
+  composes: Translation from 'App.module.css';
+}
