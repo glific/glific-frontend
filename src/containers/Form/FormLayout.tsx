@@ -442,6 +442,13 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
       </Button>
     ) : null;
 
+  const onSaveButtonClick = (errors: any) => {
+    if (errors) {
+      return;
+    }
+    onSaveClick(true);
+  };
+
   const form = (
     <>
       <Formik
@@ -457,7 +464,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           saveHandler(itemData);
         }}
       >
-        {({ submitForm }) => (
+        {({ errors, submitForm }) => (
           <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
             {formFieldItems.map((field, index) => {
               const key = index;
@@ -478,7 +485,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  onSaveClick(true);
+                  onSaveButtonClick(errors);
                   submitForm();
                 }}
                 className={styles.Button}
