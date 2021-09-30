@@ -760,7 +760,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
         afterSave={afterSave}
-        changePageOnSave={false}
+        saveOnPageChange={false}
       />
       <div className={styles.Simulator}>
         <Simulator

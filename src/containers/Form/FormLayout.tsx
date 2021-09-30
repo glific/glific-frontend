@@ -63,7 +63,7 @@ export interface FormLayoutProps {
   showPreviewButton?: boolean;
   onPreivewClick?: Function;
   getQueryFetchPolicy?: any;
-  changePageOnSave?: boolean;
+  saveOnPageChange?: boolean;
 }
 
 export const FormLayout: React.SFC<FormLayoutProps> = ({
@@ -108,7 +108,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   showPreviewButton = false,
   onPreivewClick = () => {},
   getQueryFetchPolicy = 'cache-first',
-  changePageOnSave = true,
+  saveOnPageChange = true,
 }: FormLayoutProps) => {
   const client = useApolloClient();
 
@@ -200,7 +200,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemId);
         }
 
-        if (changePageOnSave || saveClick) {
+        if (saveOnPageChange || saveClick) {
           setFormSubmitted(true);
           // display successful message after update
           let message = `${capitalListItemName} edited successfully!`;
@@ -256,7 +256,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
           additionalQuery(itemCreated.id);
         }
         if (!itemId) setLink(itemCreated[linkParameter]);
-        if (changePageOnSave || saveClick) {
+        if (saveOnPageChange || saveClick) {
           setFormSubmitted(true);
           // display successful message after create
           setNotification(client, `${capitalListItemName} created successfully!`);
