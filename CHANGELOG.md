@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. Dates are d
 
 > 30 September 2021
 
+- Fixed interactive message save issue on changing the language [`#1666`](https://github.com/glific/glific-frontend/pull/1666)
 - Snyk Upgrade subscriptions-transport-ws from 0.9.19 to 0.10.0 [`#1675`](https://github.com/glific/glific-frontend/pull/1675)
 - Fixed custom element error in floweditor [`#1597`](https://github.com/glific/glific-frontend/pull/1597)
 - Fixed formatting issue with interactive messages body [`#1665`](https://github.com/glific/glific-frontend/pull/1665)
