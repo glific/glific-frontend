@@ -443,7 +443,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     ) : null;
 
   const onSaveButtonClick = (errors: any) => {
-    if (errors) {
+    if (Object.keys(errors).length > 0) {
       return;
     }
     onSaveClick(true);
