@@ -2,7 +2,69 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.2.1](https://github.com/glific/glific-frontend/compare/v2.2.0...v2.2.1)
+
+> 30 September 2021
+
+- Snyk Upgrade subscriptions-transport-ws from 0.9.19 to 0.10.0 [`#1675`](https://github.com/glific/glific-frontend/pull/1675)
+- Fixed custom element error in floweditor [`#1597`](https://github.com/glific/glific-frontend/pull/1597)
+- Fixed formatting issue with interactive messages body [`#1665`](https://github.com/glific/glific-frontend/pull/1665)
+- Enabled new FE options [`#1670`](https://github.com/glific/glific-frontend/pull/1670)
+- Added lazy loading for chat components [`#1641`](https://github.com/glific/glific-frontend/pull/1641)
+- Changes required in dialogboxes in floweditor [`#1653`](https://github.com/glific/glific-frontend/pull/1653)
+
+#### [v2.2.0](https://github.com/glific/glific-frontend/compare/v2.1.4...v2.2.0)
+
+> 14 September 2021
+
+- Fixed bug for updated completion.json file [`#1657`](https://github.com/glific/glific-frontend/pull/1657)
+- Added is background option in flows [`#1642`](https://github.com/glific/glific-frontend/pull/1642)
+- Updated floweditor with latest nyaruka changes [`#1654`](https://github.com/glific/glific-frontend/pull/1654)
+- [Snyk] Security upgrade node from 12.18.3-alpine to 12.22.6-alpine [`#1645`](https://github.com/glific/glific-frontend/pull/1645)
+- Lokalise: Translations update [`#1652`](https://github.com/glific/glific-frontend/pull/1652)
+- Language update [`#1638`](https://github.com/glific/glific-frontend/pull/1638)
+- Adding logs to check functionality of the latest version checker [`#1640`](https://github.com/glific/glific-frontend/pull/1640)
+
+
+#### [v2.1.4](https://github.com/glific/glific-frontend/compare/v2.1.3...v2.1.4)
+
+> 9 September 2021
+
+- Removed beta from triggers and updated translations [`#1637`](https://github.com/glific/glific-frontend/pull/1637)
+- Updated floweditor with the interactive message fix [`#1636`](https://github.com/glific/glific-frontend/pull/1636)
+
+
+#### [v2.1.3](https://github.com/glific/glific-frontend/compare/v2.1.2...v2.1.3)
+
+> 7 September 2021
+
+- Fixed interactive message api difference [`#1633`](https://github.com/glific/glific-frontend/pull/1633)
+
+#### [v2.1.2](https://github.com/glific/glific-frontend/compare/v2.1.1...v2.1.2)
+
+> 6 September 2021
+
+- Fixed floweditor validation bug [`#1630`](https://github.com/glific/glific-frontend/pull/1630)
+- Restrict the number of results displayed for dropdown [`#1627`](https://github.com/glific/glific-frontend/pull/1627)
+- Added validation for result variables in floweditor [`#1625`](https://github.com/glific/glific-frontend/pull/1625)
+- Date display [`#1621`](https://github.com/glific/glific-frontend/pull/1621)
+- Tooltip fixes for image viewer [`#1617`](https://github.com/glific/glific-frontend/pull/1617)
+
+
+#### [v2.1.1](https://github.com/glific/glific-frontend/compare/v2.1.0...v2.1.1)
+
+> 25 August 2021
+
+- Fixed draft-js bug for new line not working [`#1615`](https://github.com/glific/glific-frontend/pull/1615)
+- Added Optin status in contact profile [`#1611`](https://github.com/glific/glific-frontend/pull/1611)
+- Removed tags code in advanced search and removed unnecessary margins [`#1609`](https://github.com/glific/glific-frontend/pull/1609)
+- Help menu [`#1602`](https://github.com/glific/glific-frontend/pull/1602)
+- Bug fixed for interactive messages cached on chat screen [`#1604`](https://github.com/glific/glific-frontend/pull/1604)
+- Added description for flow lock error [`#1603`](https://github.com/glific/glific-frontend/pull/1603)
+
 #### [v2.1.0](https://github.com/glific/glific-frontend/compare/v2.0.4...v2.1.0)
+
+> 17 August 2021
 
 - Updated footer color [`#1598`](https://github.com/glific/glific-frontend/pull/1598)
 - Added name of the person who is updating flows in the dialog message description [`#1594`](https://github.com/glific/glific-frontend/pull/1594)
