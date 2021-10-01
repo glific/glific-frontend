@@ -16,10 +16,23 @@ export const CREATE_TEMPLATE = gql`
     createSessionTemplate(input: $input) {
       sessionTemplate {
         id
-        body
         label
+        body
+        isActive
+        language {
+          label
+          id
+        }
         translations
         type
+        MessageMedia {
+          id
+          caption
+          sourceUrl
+        }
+        category
+        shortcode
+        example
         hasButtons
         buttons
         buttonType
@@ -39,10 +52,24 @@ export const UPDATE_TEMPLATE = gql`
         id
         label
         body
+        isActive
         language {
-          id
           label
+          id
         }
+        translations
+        type
+        MessageMedia {
+          id
+          caption
+          sourceUrl
+        }
+        category
+        shortcode
+        example
+        hasButtons
+        buttons
+        buttonType
       }
     }
   }
