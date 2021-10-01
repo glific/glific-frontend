@@ -970,7 +970,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
       saveOnPageChange={false}
-      afterSave={afterSave}
+      afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
     />
   );
 };
