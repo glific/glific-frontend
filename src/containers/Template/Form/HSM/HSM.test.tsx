@@ -3,6 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { HSM } from './HSM';
 import { TEMPLATE_MOCKS } from 'containers/Template/Template.test.helper';
+import { BrowserRouter } from 'react-router-dom';
 
 afterEach(cleanup);
 const mocks = TEMPLATE_MOCKS;
@@ -10,7 +11,9 @@ const mocks = TEMPLATE_MOCKS;
 test('HSM form is loaded correctly in edit mode', async () => {
   const { getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <HSM match={{ params: { id: 1 } }} />
+      <BrowserRouter>
+        <HSM match={{ params: { id: 1 } }} />
+      </BrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
@@ -21,7 +24,9 @@ test('HSM form is loaded correctly in edit mode', async () => {
 test('check for validations for the HSM form', async () => {
   const { getByText, container } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <HSM match={{ params: { id: null } }} />
+      <wBrowserRouter>
+        <HSM match={{ params: { id: null } }} />
+      </wBrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
