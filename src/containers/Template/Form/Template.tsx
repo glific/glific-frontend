@@ -270,7 +270,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
     } else {
       setType('');
     }
-    if (translationsValue) setTranslations(translationsValue);
+    if (translationsValue) {
+      const translationsCopy = JSON.parse(translationsValue);
+      const currentLanguage = language.id || languageIdValue.id;
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[currentLanguage] &&
+        !location.state
+      ) {
+        const content = translationsCopy[currentLanguage];
+        setLabel(content.label);
+        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(content.body)));
+      }
+      setTranslations(translationsValue);
+    }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
