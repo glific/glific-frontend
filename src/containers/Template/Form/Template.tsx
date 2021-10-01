@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { EditorState } from 'draft-js';
 import Typography from '@material-ui/core/Typography';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -18,6 +19,7 @@ import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
 import { convertToWhatsApp, WhatsAppToDraftEditor } from 'common/RichEditor';
+import Loading from 'components/UI/Layout/Loading/Loading';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
 
@@ -170,7 +172,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const [example, setExample] = useState(EditorState.createEmpty());
   const [filterLabel, setFilterLabel] = useState('');
   const [shortcode, setShortcode] = useState('');
-  const [language, setLanguageId] = useState<any>(null);
+  const [language, setLanguageId] = useState<any>({});
   const [type, setType] = useState<any>(null);
   const [translations, setTranslations] = useState<any>();
   const [attachmentURL, setAttachmentURL] = useState<any>();
@@ -184,7 +186,10 @@ const Template: React.SFC<TemplateProps> = (props) => {
     Array<CallToActionTemplate | QuickReplyTemplate>
   >([]);
   const [isAddButtonChecked, setIsAddButtonChecked] = useState(false);
+  const [nextLanguage, setNextLanguage] = useState<any>('');
   const { t } = useTranslation();
+  const history = useHistory();
+  const location: any = useLocation();
 
   const states = {
     language,
@@ -215,8 +220,21 @@ const Template: React.SFC<TemplateProps> = (props) => {
     buttons,
     hasButtons,
   }: any) => {
-    if (languageIdValue) {
-      setLanguageId(languageIdValue);
+    if (languageOptions.length > 0 && languageIdValue) {
+      if (location.state) {
+        const selectedLangauge = languageOptions.find(
+          (lang: any) => lang.label === location.state.language
+        );
+        history.replace(location.pathname, null);
+        setLanguageId(selectedLangauge);
+      } else if (!language.id) {
+        const selectedLangauge = languageOptions.find(
+          (lang: any) => lang.id === languageIdValue.id
+        );
+        setLanguageId(selectedLangauge);
+      } else {
+        setLanguageId(language);
+      }
     }
 
     setLabel(labelValue);
@@ -252,7 +270,20 @@ const Template: React.SFC<TemplateProps> = (props) => {
     } else {
       setType('');
     }
-    if (translationsValue) setTranslations(translationsValue);
+    if (translationsValue) {
+      const translationsCopy = JSON.parse(translationsValue);
+      const currentLanguage = language.id || languageIdValue.id;
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[currentLanguage] &&
+        !location.state
+      ) {
+        const content = translationsCopy[currentLanguage];
+        setLabel(content.label);
+        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(content.body)));
+      }
+      setTranslations(translationsValue);
+    }
     if (MessageMediaValue) {
       setAttachmentURL(MessageMediaValue.sourceUrl);
     } else {
@@ -265,6 +296,37 @@ const Template: React.SFC<TemplateProps> = (props) => {
       setCategory({ label: categoryValue, id: categoryValue });
     }
   };
+
+  const updateStates = ({
+    language: languageIdValue,
+    label: labelValue,
+    body: bodyValue,
+    type: typeValue,
+    MessageMedia: MessageMediaValue,
+  }: any) => {
+    if (languageIdValue) {
+      setLanguageId(languageIdValue);
+    }
+
+    setLabel(labelValue);
+
+    if (typeof bodyValue === 'string') {
+      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+    }
+
+    if (typeValue && typeValue !== 'TEXT') {
+      setType({ id: typeValue, label: typeValue });
+    } else {
+      setType('');
+    }
+
+    if (MessageMediaValue) {
+      setAttachmentURL(MessageMediaValue.sourceUrl);
+    } else {
+      setAttachmentURL('');
+    }
+  };
+
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
@@ -280,7 +342,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     },
   });
 
-  const [getSessionTemplate, { data: template }] = useLazyQuery<any>(GET_TEMPLATE);
+  const [getSessionTemplate, { data: template, loading: templateLoading }] =
+    useLazyQuery<any>(GET_TEMPLATE);
 
   // create media for attachment
   const [createMediaMessage] = useMutation(CREATE_MEDIA_MESSAGE);
@@ -350,7 +413,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     const translationId = value.id;
     // restore if selected language is same as template
     if (template && template.sessionTemplate.sessionTemplate.language.id === value.id) {
-      setStates({
+      updateStates({
         language: value,
         label: template.sessionTemplate.sessionTemplate.label,
         body: template.sessionTemplate.sessionTemplate.body,
@@ -361,7 +424,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (translationsCopy[translationId]) {
-        setStates({
+        updateStates({
           language: value,
           label: translationsCopy[translationId].label,
           body: translationsCopy[translationId].body,
@@ -371,7 +434,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
           MessageMedia: translationsCopy[translationId].MessageMedia,
         });
       } else {
-        setStates({
+        updateStates({
           language: value,
           label: '',
           body: '',
@@ -379,6 +442,17 @@ const Template: React.SFC<TemplateProps> = (props) => {
           MessageMedia: null,
         });
       }
+    }
+  };
+
+  const handleLanguageChange = (value: any) => {
+    const selected = languageOptions.find(
+      ({ label: languageLabel }: any) => languageLabel === value
+    );
+    if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+      updateTranslation(selected);
+    } else if (selected) {
+      setLanguageId(selected);
     }
   };
 
@@ -485,6 +559,15 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
   const langOptions = languageOptions && languageOptions.map((val: any) => val.label);
 
+  const onLanguageChange = (option: string, form: any) => {
+    setNextLanguage(option);
+    const { values } = form;
+    if (values.label || values.body.getCurrentContent().getPlainText()) {
+      return;
+    }
+    handleLanguageChange(option);
+  };
+
   const languageComponent =
     languageStyle === 'dropdown'
       ? {
@@ -504,7 +587,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
           component: LanguageBar,
           options: langOptions || [],
           selectedLangauge: language && language.label,
-          onLanguageChange: getLanguageId,
+          onLanguageChange,
         };
 
   const formFields = [
@@ -859,6 +942,24 @@ const Template: React.SFC<TemplateProps> = (props) => {
   const validationObj = defaultAttribute.isHsm ? { ...validation, ...HSMValidation } : validation;
   const FormSchema = Yup.object().shape(validationObj, [['type', 'attachmentURL']]);
 
+  const afterSave = (data: any, saveClick: boolean) => {
+    if (saveClick) {
+      return;
+    }
+    if (match.params?.id) {
+      handleLanguageChange(nextLanguage);
+    } else {
+      const { sessionTemplate } = data.createSessionTemplate;
+      history.push(`/speed-send/${sessionTemplate.id}/edit`, {
+        language: nextLanguage,
+      });
+    }
+  };
+
+  if (languageOptions.length < 1 || templateLoading) {
+    return <Loading />;
+  }
+
   return (
     <FormLayout
       {...queries}
@@ -878,8 +979,11 @@ const Template: React.SFC<TemplateProps> = (props) => {
       languageSupport={false}
       isAttachment
       getMediaId={getMediaId}
+      getQueryFetchPolicy="cache-and-network"
       button={defaultAttribute.isHsm && !match.params.id ? t('Submit for Approval') : t('Save')}
       customStyles={customStyle}
+      saveOnPageChange={false}
+      afterSave={!defaultAttribute.isHsm ? afterSave : undefined}
     />
   );
 };
