@@ -24,9 +24,9 @@ test('HSM form is loaded correctly in edit mode', async () => {
 test('check for validations for the HSM form', async () => {
   const { getByText, container } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <wBrowserRouter>
+      <BrowserRouter>
         <HSM match={{ params: { id: null } }} />
-      </wBrowserRouter>
+      </BrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
