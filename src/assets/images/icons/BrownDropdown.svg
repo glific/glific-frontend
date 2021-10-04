@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
-    <title>Icon/Dropdown 2</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Icon/Dropdown-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g>
-            <circle id="Oval" fill="#EFE8DD" cx="9" cy="9" r="9"></circle>
-            <path d="M6,11.796875 L8.21536525,8.99305335 C8.55775878,8.55971155 9.18661651,8.4859834 9.61995832,8.82837692 C9.68107678,8.87666805 9.73634361,8.93193489 9.78463475,8.99305335 L12,11.796875 L12,11.796875" id="Triangle" stroke="#A69375" stroke-width="3" stroke-linecap="round" transform="translate(9.000000, 9.898438) scale(1, -1) translate(-9.000000, -9.898438) "></path>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Actions</title>
+    <g id="Chat" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop/Chat" transform="translate(-265.000000, -17.000000)">
+            <g id="Group-3" transform="translate(265.000000, 17.000000)">
+                <circle id="Oval" fill="#E1CCAC" cx="9" cy="9" r="9"></circle>
+                <path
+                    d="M6,11.796875 L8.21536525,8.99305335 C8.55775878,8.55971155 9.18661651,8.4859834 9.61995832,8.82837692 C9.68107678,8.87666805 9.73634361,8.93193489 9.78463475,8.99305335 L12,11.796875 L12,11.796875"
+                    id="Triangle" stroke="#AC8952" stroke-width="3" stroke-linecap="round"
+                    transform="translate(9.000000, 9.898438) scale(1, -1) translate(-9.000000, -9.898438) "></path>
+            </g>
         </g>
     </g>
 </svg>
