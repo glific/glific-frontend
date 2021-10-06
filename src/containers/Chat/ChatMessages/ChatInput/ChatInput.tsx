@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EditorState, ContentState } from 'draft-js';
+import { EditorState, ContentState, CompositeDecorator } from 'draft-js';
 import { Container, Button, ClickAwayListener, Fade, IconButton } from '@material-ui/core';
 import 'emoji-mart/css/emoji-mart.css';
 import clsx from 'clsx';
@@ -11,7 +11,11 @@ import { ReactComponent as AttachmentIconSelected } from 'assets/images/icons/At
 import { ReactComponent as VariableIcon } from 'assets/images/icons/Template/Variable.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Clear.svg';
 import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessage.svg';
-import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
+import {
+  getPlainTextFromEditor,
+  getEditorFromContent,
+  formattingDecorators,
+} from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
@@ -52,7 +56,9 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
     isCollection,
     lastMessageTime,
   } = props;
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(
+    EditorState.createEmpty(new CompositeDecorator(formattingDecorators()))
+  );
   const [selectedTab, setSelectedTab] = useState('');
   const [open, setOpen] = React.useState(false);
   const [searchVal, setSearchVal] = useState('');

@@ -26,6 +26,26 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     setEditorState(editorStateChange);
   };
 
+  const updateValue = (input: any, isEmoji: boolean = false) => {
+    const editorContentState = editorState.getCurrentContent();
+    const editorSelectionState: any = editorState.getSelection();
+    const ModifiedContent = Modifier.insertText(
+      editorContentState,
+      editorSelectionState,
+      isEmoji ? input.native : input
+    );
+    let updatedEditorState = EditorState.push(editorState, ModifiedContent, 'insert-characters');
+    if (!isEmoji) {
+      const editorSelectionStateMod = updatedEditorState.getSelection();
+      const updatedSelection = editorSelectionStateMod.merge({
+        anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
+        focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
+      });
+      updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
+    }
+    setEditorState(updatedEditorState);
+  };
+
   const handleKeyCommand = (command: string, editorStateChange: any) => {
     // On enter, submit. Otherwise, deal with commands like normal.
     if (command === 'enter') {
@@ -33,14 +53,21 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
       sendMessage(getPlainTextFromEditor(editorStateChange));
       return 'handled';
     }
+
     if (command === 'underline') {
       return 'handled';
     }
 
-    const newState = RichUtils.handleKeyCommand(editorStateChange, command);
-    if (newState) {
-      setEditorState(newState);
-      return 'handled';
+    if (command === 'bold') {
+      updateValue('**');
+    } else if (command === 'italic') {
+      updateValue('__');
+    } else {
+      const newState = RichUtils.handleKeyCommand(editorStateChange, command);
+      if (newState) {
+        setEditorState(newState);
+        return 'handled';
+      }
     }
     return 'not-handled';
   };
@@ -55,14 +82,6 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
 
   const handleClickAway = () => {
     setShowEmojiPicker(false);
-  };
-
-  const handleEmoji = (emoji: any) => {
-    const contentState = editorState.getCurrentContent();
-    const selectionState = editorState.getSelection();
-    const ModifiedContent = Modifier.insertText(contentState, selectionState, emoji.native);
-    const editorStateCopy = EditorState.createWithContent(ModifiedContent);
-    setEditorState(editorStateCopy);
   };
 
   const emojiStyles: any = {
@@ -116,7 +135,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
               title={t('Pick your emoji…')}
               emoji="point_up"
               style={emojiStyles}
-              onSelect={handleEmoji}
+              onSelect={(emoji) => updateValue(emoji, true)}
             />
           ) : null}
         </div>
