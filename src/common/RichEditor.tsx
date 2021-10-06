@@ -41,15 +41,15 @@ export const TextReplacements: any = [
 // Finds double asterisks in text with a regular expression.
 
 // Convert Draft.js to WhatsApp message format.
-export const convertToWhatsApp = (editorState: any) =>
+export const getPlainTextFromEditor = (editorState: any) =>
   editorState.getCurrentContent().getPlainText();
 
 export const getEditorFromContent = (text: string) =>
   EditorState.createWithContent(ContentState.createFromText(text));
 
-// Converts WhatsApp message formatting into HTML elements.
 export const formattingDecorators = () => {
   const regexforBold = /[*][^*]+[*]/gi;
+  const regexforItalic = /[_][^_]+[_]/gi;
 
   function findWithRegex(regex: any, contentBlock: any, callback: any) {
     const text = contentBlock.getText();
@@ -63,19 +63,30 @@ export const formattingDecorators = () => {
       callback(start, start + matchArr[0].length);
     }
   }
-  function hashtagStrategy(contentBlock: any, callback: any) {
+  function boldStrategy(contentBlock: any, callback: any) {
     findWithRegex(regexforBold, contentBlock, callback);
   }
-  const HashtagSpan = ({ children }: any) => <b>{children}</b>;
 
-  const onlyHashtags = [
+  function italicStrategy(contentBlock: any, callback: any, ...anythin: any) {
+    console.log(anythin);
+    findWithRegex(regexforItalic, contentBlock, callback);
+  }
+  const BoldComponent = ({ children }: any) => <b>{children}</b>;
+
+  const ItalicComponent = ({ children }: any) => <em>{children}</em>;
+
+  const decorators = [
     {
-      strategy: hashtagStrategy,
-      component: HashtagSpan,
+      strategy: boldStrategy,
+      component: BoldComponent,
+    },
+    {
+      strategy: italicStrategy,
+      component: ItalicComponent,
     },
   ];
 
-  return onlyHashtags;
+  return decorators;
 };
 
 export const WhatsAppToJsx = (text: any) => {

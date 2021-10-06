@@ -7,7 +7,7 @@ import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { useTranslation } from 'react-i18next';
 
-import { convertToWhatsApp, formattingDecorators } from 'common/RichEditor';
+import { getPlainTextFromEditor, formattingDecorators } from 'common/RichEditor';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
 
@@ -126,7 +126,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
   const draftJsChange = (editorState: any) => {
     if (handleChange) {
-      handleChange(convertToWhatsApp(props.form.values.example));
+      handleChange(getPlainTextFromEditor(props.form.values.example));
     }
     if (getEditorValue) {
       getEditorValue(editorState);

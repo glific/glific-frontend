@@ -6,7 +6,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import ReactResizeDetector from 'react-resize-detector';
 import { useTranslation } from 'react-i18next';
 
-import { convertToWhatsApp } from 'common/RichEditor';
+import { getPlainTextFromEditor } from 'common/RichEditor';
 import styles from './WhatsAppEditor.module.css';
 
 interface WhatsAppEditorProps {
@@ -30,7 +30,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
     // On enter, submit. Otherwise, deal with commands like normal.
     if (command === 'enter') {
       // Convert Draft.js to WhatsApp
-      sendMessage(convertToWhatsApp(editorStateChange));
+      sendMessage(getPlainTextFromEditor(editorStateChange));
       return 'handled';
     }
     if (command === 'underline') {

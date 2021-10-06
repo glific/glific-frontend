@@ -22,7 +22,7 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { convertToWhatsApp, getEditorFromContent } from 'common/RichEditor';
+import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
 import {
@@ -579,7 +579,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = convertToWhatsApp(payload.body);
+      const bodyText = getPlainTextFromEditor(payload.body);
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 

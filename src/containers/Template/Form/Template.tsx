@@ -18,7 +18,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
-import { convertToWhatsApp, getEditorFromContent } from 'common/RichEditor';
+import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -668,7 +668,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
   // Removing buttons when checkbox is checked or unchecked
   useEffect(() => {
     if (getExample) {
-      const { message }: any = getTemplateAndButton(convertToWhatsApp(getExample));
+      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(getExample));
       onExampleChange(message || '');
     }
   }, [isAddButtonChecked]);
@@ -680,7 +680,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
 
       const parsedText = parse.length ? `| ${parse.join(' | ')}` : null;
 
-      const { message }: any = getTemplateAndButton(convertToWhatsApp(example));
+      const { message }: any = getTemplateAndButton(getPlainTextFromEditor(example));
 
       const sampleText: any = parsedText && message + parsedText;
 
@@ -755,8 +755,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
     }, []);
 
     // get template body
-    const templateBody = getTemplateAndButton(convertToWhatsApp(body));
-    const templateExample = getTemplateAndButton(convertToWhatsApp(example));
+    const templateBody = getTemplateAndButton(getPlainTextFromEditor(body));
+    const templateExample = getTemplateAndButton(getPlainTextFromEditor(example));
 
     return {
       hasButtons: true,
@@ -819,7 +819,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
             status: 'approved',
             languageId: language,
             label: payloadCopy.label,
-            body: convertToWhatsApp(payloadCopy.body),
+            body: getPlainTextFromEditor(payloadCopy.body),
             MessageMedia: messageMedia,
             ...defaultAttribute,
           };
