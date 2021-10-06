@@ -1,9 +1,6 @@
 import React from 'react';
 import reactStringReplace from 'react-string-replace';
-import {
-  EditorState,
-  ContentState,
-} from 'draft-js';
+import { EditorState, ContentState } from 'draft-js';
 import CallIcon from '@material-ui/icons/Call';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
