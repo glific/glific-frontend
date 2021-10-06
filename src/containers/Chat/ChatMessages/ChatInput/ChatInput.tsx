@@ -11,7 +11,7 @@ import { ReactComponent as AttachmentIconSelected } from 'assets/images/icons/At
 import { ReactComponent as VariableIcon } from 'assets/images/icons/Template/Variable.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Clear.svg';
 import { ReactComponent as SendMessageIcon } from 'assets/images/icons/SendMessage.svg';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from 'common/RichEditor';
+import { convertToWhatsApp, getEditorFromContent } from 'common/RichEditor';
 import { is24HourWindowOver, pattern } from 'common/constants';
 import SearchBar from 'components/UI/SearchBar/SearchBar';
 import WhatsAppEditor from 'components/UI/Form/WhatsAppEditor/WhatsAppEditor';
@@ -224,7 +224,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
     setSelectedTemplate(obj);
     // Conversion from HTML text to EditorState
-    setEditorState(EditorState.createWithContent(WhatsAppToDraftEditor(messageBody)));
+    setEditorState(getEditorFromContent(messageBody));
 
     // Add attachment if present
     if (Object.prototype.hasOwnProperty.call(obj, 'MessageMedia') && obj.MessageMedia) {
@@ -395,11 +395,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
         })}
       >
         <WhatsAppEditor
-          editorState={
-            updatedEditorState
-              ? EditorState.createWithContent(WhatsAppToDraftEditor(updatedEditorState))
-              : editorState
-          }
+          editorState={updatedEditorState ? getEditorFromContent(updatedEditorState) : editorState}
           setEditorState={setEditorState}
           sendMessage={submitMessage}
           handleHeightChange={handleHeightChange}
@@ -450,11 +446,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
             disableElevation
             onClick={() => {
               if (updatedEditorState) {
-                submitMessage(
-                  convertToWhatsApp(
-                    EditorState.createWithContent(WhatsAppToDraftEditor(updatedEditorState))
-                  )
-                );
+                submitMessage(convertToWhatsApp(getEditorFromContent(updatedEditorState)));
               } else {
                 submitMessage(convertToWhatsApp(editorState));
               }

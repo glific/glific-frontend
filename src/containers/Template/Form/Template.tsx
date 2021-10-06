@@ -18,7 +18,7 @@ import { CREATE_MEDIA_MESSAGE } from 'graphql/mutations/Chat';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { CREATE_TEMPLATE, UPDATE_TEMPLATE, DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { MEDIA_MESSAGE_TYPES, CALL_TO_ACTION, QUICK_REPLY } from 'common/constants';
-import { convertToWhatsApp, WhatsAppToDraftEditor } from 'common/RichEditor';
+import { convertToWhatsApp, getEditorFromContent } from 'common/RichEditor';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { validateMedia } from 'common/utils';
 import styles from './Template.module.css';
@@ -241,7 +241,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     setIsActive(isActiveValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+      setBody(getEditorFromContent(bodyValue));
     }
 
     if (exampleValue) {
@@ -257,7 +257,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       } else {
         exampleBody = exampleValue;
       }
-      const editorStateBody = EditorState.createWithContent(WhatsAppToDraftEditor(exampleValue));
+      const editorStateBody = getEditorFromContent(exampleValue);
+
       setTimeout(() => setExample(editorStateBody), 0);
       setTimeout(() => onExampleChange(exampleBody), 10);
     }
@@ -280,7 +281,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
       ) {
         const content = translationsCopy[currentLanguage];
         setLabel(content.label);
-        setBody(EditorState.createWithContent(WhatsAppToDraftEditor(content.body)));
+        setBody(getEditorFromContent(content.body));
       }
       setTranslations(translationsValue);
     }
@@ -311,7 +312,7 @@ const Template: React.SFC<TemplateProps> = (props) => {
     setLabel(labelValue);
 
     if (typeof bodyValue === 'string') {
-      setBody(EditorState.createWithContent(WhatsAppToDraftEditor(bodyValue)));
+      setBody(getEditorFromContent(bodyValue));
     }
 
     if (typeValue && typeValue !== 'TEXT') {
@@ -761,8 +762,8 @@ const Template: React.SFC<TemplateProps> = (props) => {
       hasButtons: true,
       buttons: JSON.stringify(buttons),
       buttonType: templateType,
-      body: EditorState.createWithContent(WhatsAppToDraftEditor(templateBody.message)),
-      example: EditorState.createWithContent(WhatsAppToDraftEditor(templateExample.message)),
+      body: getEditorFromContent(templateBody.message),
+      example: getEditorFromContent(templateExample.message),
     };
   };
 
