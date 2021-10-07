@@ -130,8 +130,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     }
     if (getEditorValue) {
       getEditorValue(editorState);
+    } else {
+      props.form.setFieldValue(name, editorState);
     }
-    props.form.setFieldValue(name, editorState);
   };
 
   const mentions = props.inputProp?.suggestions || [];
