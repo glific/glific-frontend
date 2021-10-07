@@ -67,8 +67,7 @@ export const formattingDecorators = () => {
     findWithRegex(regexforBold, contentBlock, callback);
   }
 
-  function italicStrategy(contentBlock: any, callback: any, ...anythin: any) {
-    console.log(anythin);
+  function italicStrategy(contentBlock: any, callback: any) {
     findWithRegex(regexforItalic, contentBlock, callback);
   }
   const BoldComponent = ({ children }: any) => <b>{children}</b>;
