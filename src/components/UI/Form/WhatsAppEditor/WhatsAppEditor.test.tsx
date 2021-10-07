@@ -1,7 +1,5 @@
 import { render, fireEvent } from '@testing-library/react';
 import { ContentState, EditorState } from 'draft-js';
-
-import { WhatsAppToDraftEditor } from 'common/RichEditor';
 import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = jest.fn();
