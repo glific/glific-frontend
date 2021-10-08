@@ -47,47 +47,6 @@ export const getPlainTextFromEditor = (editorState: any) =>
 export const getEditorFromContent = (text: string) =>
   EditorState.createWithContent(ContentState.createFromText(text));
 
-export const formattingDecorators = () => {
-  const regexforBold = /[*][^*]+[*]/gi;
-  const regexforItalic = /[_][^_]+[_]/gi;
-
-  function findWithRegex(regex: any, contentBlock: any, callback: any) {
-    const text = contentBlock.getText();
-    let matchArr;
-    let start;
-
-    while (true) {
-      matchArr = regex.exec(text);
-      if (!matchArr) break;
-      start = matchArr.index;
-      callback(start, start + matchArr[0].length);
-    }
-  }
-  function boldStrategy(contentBlock: any, callback: any) {
-    findWithRegex(regexforBold, contentBlock, callback);
-  }
-
-  function italicStrategy(contentBlock: any, callback: any) {
-    findWithRegex(regexforItalic, contentBlock, callback);
-  }
-  const BoldComponent = ({ children }: any) => <b>{children}</b>;
-
-  const ItalicComponent = ({ children }: any) => <em>{children}</em>;
-
-  const decorators = [
-    {
-      strategy: boldStrategy,
-      component: BoldComponent,
-    },
-    {
-      strategy: italicStrategy,
-      component: ItalicComponent,
-    },
-  ];
-
-  return decorators;
-};
-
 export const WhatsAppToJsx = (text: any) => {
   const replacements = TextReplacements;
   let modifiedText = text;

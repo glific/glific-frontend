@@ -7,7 +7,7 @@ import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { useTranslation } from 'react-i18next';
 
-import { getPlainTextFromEditor, formattingDecorators } from 'common/RichEditor';
+import { getPlainTextFromEditor } from 'common/RichEditor';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
 
@@ -171,7 +171,6 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     handleKeyCommand,
     onBlur: handleBlur,
     onChange: draftJsChange,
-    decorators: formattingDecorators(),
   };
 
   const editor = { inputComponent: DraftField, inputProps };
