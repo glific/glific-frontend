@@ -89,7 +89,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const updateValue = (input: any, isEmoji = false) => {
     const editorContentState = value.getCurrentContent();
     const editorSelectionState: any = value.getSelection();
-    const ModifiedContent = Modifier.insertText(
+    const ModifiedContent = Modifier.replaceText(
       editorContentState,
       editorSelectionState,
       isEmoji ? input.native : input

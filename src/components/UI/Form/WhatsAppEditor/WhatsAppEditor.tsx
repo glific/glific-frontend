@@ -29,7 +29,7 @@ export const WhatsAppEditor: React.SFC<WhatsAppEditorProps> = (props) => {
   const updateValue = (input: any, isEmoji: boolean = false) => {
     const editorContentState = editorState.getCurrentContent();
     const editorSelectionState: any = editorState.getSelection();
-    const ModifiedContent = Modifier.insertText(
+    const ModifiedContent = Modifier.replaceText(
       editorContentState,
       editorSelectionState,
       isEmoji ? input.native : input
