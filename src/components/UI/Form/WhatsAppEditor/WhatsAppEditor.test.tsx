@@ -1,7 +1,5 @@
 import { render, fireEvent } from '@testing-library/react';
-import { EditorState } from 'draft-js';
-
-import { WhatsAppToDraftEditor } from 'common/RichEditor';
+import { ContentState, EditorState } from 'draft-js';
 import WhatsAppEditor from './WhatsAppEditor';
 
 const mockHandleKeyCommand = jest.fn();
@@ -50,7 +48,7 @@ describe('<WhatsAppEditor/>', () => {
     };
   };
 
-  const editorContent = EditorState.createWithContent(WhatsAppToDraftEditor('Hello'));
+  const editorContent = EditorState.createWithContent(ContentState.createFromText('Hello'));
 
   test('it should have editor and emoji components', () => {
     const { container, getByTestId } = render(<WhatsAppEditor {...defaultProps(editorContent)} />);
@@ -83,7 +81,9 @@ describe('<WhatsAppEditor/>', () => {
     const { container, getByTestId } = render(
       <WhatsAppEditor
         {...defaultProps(
-          EditorState.createWithContent(WhatsAppToDraftEditor('*this is bold* _this is italic_'))
+          EditorState.createWithContent(
+            ContentState.createFromText('*this is bold* _this is italic_')
+          )
         )}
       />
     );

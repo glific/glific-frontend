@@ -7,7 +7,7 @@ import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { useTranslation } from 'react-i18next';
 
-import { convertToWhatsApp } from 'common/RichEditor';
+import { getPlainTextFromEditor } from 'common/RichEditor';
 import { Input } from '../Input/Input';
 import Styles from './EmojiInput.module.css';
 
@@ -77,7 +77,7 @@ const DraftField = (inputProps: any) => {
 };
 
 export const EmojiInput: React.FC<EmojiInputProps> = ({
-  field: { onChange, ...rest },
+  field: { value, name, onBlur },
   handleChange,
   getEditorValue,
   handleBlur,
@@ -86,39 +86,52 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { t } = useTranslation();
 
+  const updateValue = (input: any, isEmoji = false) => {
+    const editorContentState = value.getCurrentContent();
+    const editorSelectionState: any = value.getSelection();
+    const ModifiedContent = Modifier.replaceText(
+      editorContentState,
+      editorSelectionState,
+      isEmoji ? input.native : input
+    );
+    let updatedEditorState = EditorState.push(value, ModifiedContent, 'insert-characters');
+    if (!isEmoji) {
+      const editorSelectionStateMod = updatedEditorState.getSelection();
+      const updatedSelection = editorSelectionStateMod.merge({
+        anchorOffset: editorSelectionStateMod.getAnchorOffset() - 1,
+        focusOffset: editorSelectionStateMod.getFocusOffset() - 1,
+      });
+      updatedEditorState = EditorState.forceSelection(updatedEditorState, updatedSelection);
+    }
+    props.form.setFieldValue(name, updatedEditorState);
+  };
+
   const handleKeyCommand = (command: any, editorState: any) => {
     if (command === 'underline') {
       return 'handled';
     }
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      props.form.setFieldValue(rest.name, newState);
-      return 'handled';
+    if (command === 'bold') {
+      updateValue('**');
+    } else if (command === 'italic') {
+      updateValue('__');
+    } else {
+      const newState = RichUtils.handleKeyCommand(editorState, command);
+      if (newState) {
+        props.form.setFieldValue(name, newState);
+        return 'handled';
+      }
     }
     return 'not-handled';
   };
 
-  const updateValue = (emoji: any) => {
-    const editorContentState = props.form.values[rest.name].getCurrentContent();
-    const editorSelectionState: any = props.form.values[rest.name].getSelection();
-    const ModifiedContent = Modifier.insertText(
-      editorContentState,
-      editorSelectionState,
-      emoji.native
-    );
-    let updatedEditorState = EditorState.createWithContent(ModifiedContent);
-    updatedEditorState = EditorState.moveFocusToEnd(updatedEditorState);
-    props.form.setFieldValue(rest.name, updatedEditorState);
-  };
-
   const draftJsChange = (editorState: any) => {
     if (handleChange) {
-      handleChange(convertToWhatsApp(props.form.values.example));
+      handleChange(getPlainTextFromEditor(props.form.values.example));
     }
     if (getEditorValue) {
       getEditorValue(editorState);
     } else {
-      props.form.setFieldValue(rest.name, editorState);
+      props.form.setFieldValue(name, editorState);
     }
   };
 
@@ -133,13 +146,13 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
 
   const getSuggestions = useCallback(customSuggestionsFilter, []);
 
-  const onSearchChange = ({ value }: { value: string }) => {
-    setSuggestions(getSuggestions(value, mentions));
+  const onSearchChange = ({ value: searchValue }: { value: string }) => {
+    setSuggestions(getSuggestions(searchValue, mentions));
   };
 
   const inputProps = {
     component: Editor,
-    editorState: props.form.values[rest.name],
+    editorState: value,
     open,
     suggestions,
     onOpenChange,
@@ -168,7 +181,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       title={t('Pick your emoji…')}
       emoji="point_up"
       style={{ position: 'absolute', top: '10px', right: '0px', zIndex: 2 }}
-      onSelect={updateValue}
+      onSelect={(emojiValue) => updateValue(emojiValue, true)}
     />
   ) : (
     <></>
@@ -199,7 +212,9 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
     </ClickAwayListener>
   );
 
-  const input = <Input field={{ ...rest }} {...props} editor={editor} emojiPicker={picker} />;
+  const input = (
+    <Input field={{ name, value, onBlur }} {...props} editor={editor} emojiPicker={picker} />
+  );
 
   return input;
 };

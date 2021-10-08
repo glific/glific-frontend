@@ -12,7 +12,7 @@ const wrapper = (
       values: { input: EditorState.createEmpty() },
       setFieldValue: setFieldValueMock,
     }}
-    field={{ name: 'input', value: '', onChange: jest.fn() }}
+    field={{ name: 'input', value: EditorState.createEmpty(), onChange: jest.fn() }}
     placeholder="Title"
   />
 );

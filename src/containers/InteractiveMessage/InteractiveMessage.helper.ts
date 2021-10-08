@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { LIST, QUICK_REPLY } from 'common/constants';
-import { convertToWhatsApp } from 'common/RichEditor';
+import { getPlainTextFromEditor } from 'common/RichEditor';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import * as Yup from 'yup';
@@ -199,7 +199,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     case 'VIDEO':
       result.type = `${mediaType.toLowerCase()}`;
       result.url = payload.attachmentURL;
-      result.text = convertToWhatsApp(payload.body);
+      result.text = getPlainTextFromEditor(payload.body);
       break;
     case 'DOCUMENT':
       result.type = 'file';
@@ -209,7 +209,7 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
     default:
       result.type = 'text';
       result.header = payload.title;
-      result.text = convertToWhatsApp(payload.body);
+      result.text = getPlainTextFromEditor(payload.body);
       break;
   }
 
