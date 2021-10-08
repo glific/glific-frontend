@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.2.5](https://github.com/glific/glific-frontend/compare/v2.2.4...v2.2.5)
+
+> 8 October 2021
+
+- Fixed draft js formatting issues [`#1690`](https://github.com/glific/glific-frontend/pull/1690)
+
+#### [v2.2.4](https://github.com/glific/glific-frontend/compare/v2.2.3...v2.2.4)
+
+> 7 October 2021
+
+- Interactive message issue fix [`#1692`](https://github.com/glific/glific-frontend/pull/1692)
+- UI fixes for contact profile [`#1691`](https://github.com/glific/glific-frontend/pull/1691)
+- Column display fixes [`#1689`](https://github.com/glific/glific-frontend/pull/1689)
+- Updated dropdown icon [`#1686`](https://github.com/glific/glific-frontend/pull/1686)
+
+#### [v2.2.3](https://github.com/glific/glific-frontend/compare/v2.2.2...v2.2.3)
+
+> 1 October 2021
+
+- Fixed speed send issue [`#1681`](https://github.com/glific/glific-frontend/pull/1681)
+- Fixes for save error [`#1680`](https://github.com/glific/glific-frontend/pull/1680)
+
+#### [v2.2.2](https://github.com/glific/glific-frontend/compare/v2.2.1...v2.2.2)
+
+> 1 October 2021
+
+- Fixed chat UI [`#1677`](https://github.com/glific/glific-frontend/pull/1677)
+
 #### [v2.2.1](https://github.com/glific/glific-frontend/compare/v2.2.0...v2.2.1)
 
 > 30 September 2021
