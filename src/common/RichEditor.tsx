@@ -12,28 +12,28 @@ export const TextReplacements: any = [
     bold: {
       char: '*',
       tag: 'b',
-      replace: (text: string) => <b key={text}>{text}</b>,
+      replace: (text: string) => <b key={text}>{text.slice(1, text.length - 1)}</b>,
     },
   },
   {
     italics: {
       char: '_',
       tag: 'i',
-      replace: (text: string) => <i>{text}</i>,
+      replace: (text: string) => <i>{text.slice(1, text.length - 1)}</i>,
     },
   },
   {
     strikethrough: {
       char: '~',
       tag: 's',
-      replace: (text: string) => <s>{text}</s>,
+      replace: (text: string) => <s>{text.slice(1, text.length - 1)}</s>,
     },
   },
   {
     codeBlock: {
-      char: '``',
+      char: '`',
       tag: 'code',
-      replace: (text: string) => <code>{text}</code>,
+      replace: (text: string) => <code>{text.slice(1, text.length - 1)}</code>,
     },
   },
 ];
@@ -91,7 +91,7 @@ export const WhatsAppToJsx = (text: any) => {
     const type = Object.keys(replacement)[0];
     const character: any = replacement[type].char;
     const replaceFunc: any = replacement[type].replace;
-    const regexStr = `\\${character}{${character.length}}(.+?)\\${character}{${character.length}}`;
+    const regexStr = `(\\${character}{${character.length}}[^${character}\\s][^${character}]*[^${character}\\s]\\${character}{${character.length}})`;
     modifiedText = reactStringReplace(modifiedText, new RegExp(regexStr, 'g'), (match: any) =>
       replaceFunc(match)
     );
