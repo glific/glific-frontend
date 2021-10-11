@@ -92,8 +92,14 @@ export const WhatsAppToJsx = (text: any) => {
     const character: any = replacement[type].char;
     const replaceFunc: any = replacement[type].replace;
     const regexStr = `(\\${character}{${character.length}}[^${character}\\s][^${character}]*[^${character}\\s]\\${character}{${character.length}})`;
+    const regexforSingleCharacter = `(\\${character}{${character.length}}[^${character}]\\${character}{${character.length}})`;
     modifiedText = reactStringReplace(modifiedText, new RegExp(regexStr, 'g'), (match: any) =>
       replaceFunc(match)
+    );
+    modifiedText = reactStringReplace(
+      modifiedText,
+      new RegExp(regexforSingleCharacter, 'g'),
+      (match: any) => replaceFunc(match)
     );
   });
 
