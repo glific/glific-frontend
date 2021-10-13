@@ -29,6 +29,11 @@ export const CONTACT_STATUS = [
   { id: 'FAILED', label: 'Failed' },
 ];
 
+export const dateList: any = Array.from(Array(31), (_, i) => ({
+  id: i + 1,
+  label: (i + 1).toString(),
+}));
+
 export const dayList: any = [
   { id: 1, label: 'Monday' },
   { id: 2, label: 'Tuesday' },

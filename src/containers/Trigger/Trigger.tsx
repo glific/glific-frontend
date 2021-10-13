@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
-import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import { dateList, dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -49,6 +49,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
+  const [monthly, setMonthly] = useState<any>('');
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -68,6 +69,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     { label: t('Does not repeat'), value: 'none' },
     { label: t('Daily'), value: 'daily' },
     { label: t('Weekly'), value: 'weekly' },
+    { label: t('Monthly'), value: 'monthly' },
   ];
 
   const FormSchema = Yup.object().shape({
@@ -136,6 +138,8 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   if (!flow || !collections) return <Loading />;
 
+  // console.log(frequency);
+
   const formFields = [
     {
       component: Checkbox,
@@ -192,8 +196,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       onChange: (value: any) => {
         if (value && value.value === 'weekly') {
           setDaysDisabled(false);
+        } else if (value && value.value === 'monthly') {
+          setDaysDisabled(false);
+          setMonthly(true);
         } else {
           setDaysDisabled(true);
+          setMonthly(false);
           setDays([]);
         }
       },
@@ -201,12 +209,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     {
       component: AutoComplete,
       name: 'days',
-      placeholder: t('Select days'),
-      options: dayList,
+      placeholder: monthly ? t('Select date') : t('Select days'),
+      options: monthly ? dateList : dayList,
       disabled: daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: t('Select days'),
+        label: monthly ? t('Select date') : t('Select days'),
         variant: 'outlined',
       },
     },
