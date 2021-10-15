@@ -90,7 +90,7 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       listItem="triggers"
       listItemName="trigger"
       pageLink="trigger"
-      button={{ show: true, label: t('+ CREATE TRIGGER') }}
+      button={{ show: true, label: t('+ Create Trigger') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
       refetchQueries={{ query: TRIGGER_LIST_QUERY, variables: setVariables() }}
