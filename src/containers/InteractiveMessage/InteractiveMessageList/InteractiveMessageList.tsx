@@ -113,7 +113,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
         {...queries}
         removeSortBy={['TYPE', 'MESSAGE']}
         {...columnAttributes}
-        button={{ show: true, label: t('+ ADD NEW') }}
+        button={{ show: true, label: t('+ Add New') }}
         additionalAction={additionalAction}
         collapseOpen={open}
         collapseRow={selectedId}

@@ -200,9 +200,9 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         {...queries}
         {...columnAttributes}
         searchParameter="nameOrKeyword"
-        removeSortBy={[t('LAST PUBLISHED'), t('LAST SAVED IN DRAFT')]}
+        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('+ CREATE FLOW') }}
+        button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
       />
 

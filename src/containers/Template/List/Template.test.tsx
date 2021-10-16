@@ -16,7 +16,7 @@ const speedSendProps: any = {
   pageLink: 'speed-send',
   listIcon: <div></div>,
   filters: { isHsm: false },
-  buttonLabel: 'CREATE SPEED SEND',
+  buttonLabel: 'Create Speed Send',
 };
 
 test('it renders speed-send list component', async () => {
