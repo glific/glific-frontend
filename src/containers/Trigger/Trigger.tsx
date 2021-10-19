@@ -49,7 +49,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
-  const [monthly, setMonthly] = useState<any>('');
+  const [monthly, setMonthly] = useState(false);
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -137,8 +137,6 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   });
 
   if (!flow || !collections) return <Loading />;
-
-  // console.log(frequency);
 
   const formFields = [
     {
