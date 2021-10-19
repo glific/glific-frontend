@@ -196,14 +196,15 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       onChange: (value: any) => {
         if (value && value.value === 'weekly') {
           setDaysDisabled(false);
+          setMonthly(false);
         } else if (value && value.value === 'monthly') {
           setDaysDisabled(false);
           setMonthly(true);
         } else {
           setDaysDisabled(true);
           setMonthly(false);
-          setDays([]);
         }
+        setDays([]);
       },
     },
     {
@@ -217,6 +218,11 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         label: monthly ? t('Select date') : t('Select days'),
         variant: 'outlined',
       },
+      helperText: monthly
+        ? t(
+            'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+          )
+        : '',
     },
     {
       component: AutoComplete,
@@ -253,7 +259,8 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     }
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
-    setDaysDisabled(frequencyValue !== 'weekly');
+    setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
+    setMonthly(frequencyValue === 'monthly');
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
