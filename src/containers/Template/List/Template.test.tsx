@@ -49,7 +49,7 @@ const hsmProps: any = {
   listIcon: <div></div>,
   filters: { isHsm: true },
   isHSM: true,
-  buttonLabel: 'CREATE HSM TEMPLATE',
+  buttonLabel: 'Create HSM Template',
 };
 
 test('it renders hsm list component', async () => {
