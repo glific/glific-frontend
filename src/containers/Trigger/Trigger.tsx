@@ -254,7 +254,12 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
-    setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
+    let savedDays = dayList.filter((day: any) => daysValue.includes(day.id));
+    if (frequencyValue === 'monthly') {
+      setMonthly(true);
+      savedDays = dateList.filter((day: any) => daysValue.includes(day.id));
+    }
+    setDays(savedDays);
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
     // If a user wants to update the trigger
     if (moment(new Date()).isAfter(startAtValue, 'days')) {
@@ -263,7 +268,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
     setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
-    setMonthly(frequencyValue === 'monthly');
+
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
