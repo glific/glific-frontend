@@ -9,7 +9,7 @@
     "@apollo/link-context": "^2.0.0-beta.3",
     "@apollo/link-error": "^2.0.0-beta.3",
     "@apollo/link-ws": "^2.0.0-beta.3",
-    "@appsignal/javascript": "^1.3.16",
+    "@appsignal/javascript": "^1.3.17",
     "@appsignal/plugin-breadcrumbs-network": "^1.1.16",
     "@appsignal/plugin-path-decorator": "^1.0.10",
     "@appsignal/plugin-window-events": "^1.0.11",

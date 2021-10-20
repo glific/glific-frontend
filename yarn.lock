@@ -87,22 +87,22 @@
     "@apollo/client" "^3.0.0-beta.23"
     tslib "^1.9.3"
 
-"@appsignal/core@=1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.11.tgz#dd361b1130ec6b0f4516beabd98813bd045ea9a6"
-  integrity sha512-k3/JXDm8W7Uvz9Jr+esnxZyrDmHeHY6BiivFpIBndxTQd9eGoXHGyws3o+POoNjyFIruZ8mPijsvJ+w8XtZdVg==
+"@appsignal/core@=1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.14.tgz#b3245ff034e7ae71d20ff8eb7ab54b5547aa1073"
+  integrity sha512-of8KQQm9WSTjLjvjZ8bB7uY3Yfl37E7CNTdYOR+DPwyrxxCQDAg/FWD9Hfx3xmCFL8zvgAMt+jROsy2d6hmDNQ==
   dependencies:
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/types" "=2.1.6"
     isomorphic-unfetch "^3.1.0"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.16":
-  version "1.3.16"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.16.tgz#9b7c3b2a1204bfcae3588329d4b689649088e960"
-  integrity sha512-g8RD9Bm3wadmMuZon74VAViRpRDEwDaPYRmqXqEKs/W7DvoQvIYxOpfxY7ao4W1NTmiqHKg+C0VE3Oqs9AErHw==
+"@appsignal/javascript@^1.3.17":
+  version "1.3.19"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.19.tgz#8c8e4e8aad3036f54056961d076df3f2fb16c4b2"
+  integrity sha512-nQ9WH1vjBKgcLlQ+YRXxCgF6mrwL+uhmXZFOHVMRhSlK+AYsZZXlx/+B6uTnInUHpJHQtOeMp2IMRht0FolJiw==
   dependencies:
-    "@appsignal/core" "=1.1.11"
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/core" "=1.1.14"
+    "@appsignal/types" "=2.1.6"
     tslib "^2.3.0"
 
 "@appsignal/plugin-breadcrumbs-network@^1.1.16":
@@ -137,6 +137,11 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.3.tgz#55cae78de1c79957f73090f494abf5ef59959f57"
   integrity sha512-slMFN+nhFr8jnhTbE+vNsHKd4VrUrtv7RCuYnHn5ataGI8BD75YMWBcwqwQD/0NZlVUuvbDlS0G6M+JzZUN/AA==
+
+"@appsignal/types@=2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.6.tgz#5bcb6b77dc489b60ef9f2158d7ef55ebd06ac829"
+  integrity sha512-5iyjYG6wsSW8kI8uFpjsaABBB6ENEutQ3esWXQmibEwiKNxVzDRHh/IRw7F6xwSBfA8XvJkeGEu6OtwcLdRrLA==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
