@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.3.0](https://github.com/glific/glific-frontend/compare/v2.2.5...v.2.3.0)
+
+- Added labels support in send message and interactive message nodes [`#1709`](https://github.com/glific/glific-frontend/pull/1709)
+- Check single character for bold and italics [`#1698`](https://github.com/glific/glific-frontend/pull/1698)
+
 #### [v2.2.5](https://github.com/glific/glific-frontend/compare/v2.2.4...v2.2.5)
 
 > 8 October 2021
