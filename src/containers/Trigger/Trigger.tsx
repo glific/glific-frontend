@@ -65,7 +65,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     isActive,
   };
 
-  const triggerFrequency = [
+  const triggerFrequencyOptions = [
     { label: t('Does not repeat'), value: 'none' },
     { label: t('Daily'), value: 'daily' },
     { label: t('Weekly'), value: 'weekly' },
@@ -138,6 +138,23 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   if (!flow || !collections) return <Loading />;
 
+  const handleFrequencyChange = (triggerFrequency: any) => {
+    if (!triggerFrequency) return;
+
+    const { value } = triggerFrequency;
+    if (value === 'weekly') {
+      setDaysDisabled(false);
+      setMonthly(false);
+    } else if (value === 'monthly') {
+      setDaysDisabled(false);
+      setMonthly(true);
+    } else {
+      setDaysDisabled(true);
+      setMonthly(false);
+    }
+    setDays([]);
+  };
+
   const formFields = [
     {
       component: Checkbox,
@@ -183,7 +200,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: AutoComplete,
       name: 'frequency',
       placeholder: t('Repeat'),
-      options: triggerFrequency,
+      options: triggerFrequencyOptions,
       optionLabel: 'label',
       valueElementName: 'value',
       multiple: false,
@@ -191,19 +208,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         label: t('Repeat'),
         variant: 'outlined',
       },
-      onChange: (value: any) => {
-        if (value && value.value === 'weekly') {
-          setDaysDisabled(false);
-          setMonthly(false);
-        } else if (value && value.value === 'monthly') {
-          setDaysDisabled(false);
-          setMonthly(true);
-        } else {
-          setDaysDisabled(true);
-          setMonthly(false);
-        }
-        setDays([]);
-      },
+      onChange: handleFrequencyChange,
     },
     {
       component: AutoComplete,
@@ -213,14 +218,14 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       disabled: daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: monthly ? t('Select date') : t('Select days'),
+        label: monthly ? t('Select dates') : t('Select days'),
         variant: 'outlined',
       },
       helperText: monthly
         ? t(
             'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
           )
-        : '',
+        : null,
     },
     {
       component: AutoComplete,
@@ -256,7 +261,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       setMinDate(moment(startAtValue).format('yyyy-MM-DD'));
     }
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
-    setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
+    setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
     setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
     setMonthly(frequencyValue === 'monthly');
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
