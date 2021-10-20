@@ -105,12 +105,12 @@
     "@appsignal/types" "=2.1.3"
     tslib "^2.3.0"
 
-"@appsignal/plugin-breadcrumbs-network@^1.1.16":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@appsignal/plugin-breadcrumbs-network/-/plugin-breadcrumbs-network-1.1.16.tgz#583f543da6785ee2b059b28ce79ad64f0723aafd"
-  integrity sha512-Cfl5BLWqBTIYOvuz1JJ7ns35Jmcr7gGS7/roUtKLnrQndlZ1ff6XezXzXCFjSr5nmxp9GHnSc/J0s/WfqSlTtQ==
+"@appsignal/plugin-breadcrumbs-network@^1.1.17":
+  version "1.1.19"
+  resolved "https://registry.yarnpkg.com/@appsignal/plugin-breadcrumbs-network/-/plugin-breadcrumbs-network-1.1.19.tgz#ca7372ff71985845387e44000f3c563a2ba0594d"
+  integrity sha512-VCGbLDxl1NV0MN1HsfjeTRtN8fUbBzA57IilNeF+quKCIQQqwXA0opdQA8L70CFFCYfSbYPpm2tF8O+BBQKbLA==
   dependencies:
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/types" "=2.1.6"
 
 "@appsignal/plugin-path-decorator@^1.0.10":
   version "1.0.10"
@@ -137,6 +137,11 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.3.tgz#55cae78de1c79957f73090f494abf5ef59959f57"
   integrity sha512-slMFN+nhFr8jnhTbE+vNsHKd4VrUrtv7RCuYnHn5ataGI8BD75YMWBcwqwQD/0NZlVUuvbDlS0G6M+JzZUN/AA==
+
+"@appsignal/types@=2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.6.tgz#5bcb6b77dc489b60ef9f2158d7ef55ebd06ac829"
+  integrity sha512-5iyjYG6wsSW8kI8uFpjsaABBB6ENEutQ3esWXQmibEwiKNxVzDRHh/IRw7F6xwSBfA8XvJkeGEu6OtwcLdRrLA==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
