@@ -27,10 +27,10 @@
     core-js "2.6.0"
     zen-observable "0.8.11"
 
-"@apollo/client@3.4.14":
-  version "3.4.14"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.14.tgz#069adcaef53d96c84eea5c0022efeace5cd09afb"
-  integrity sha512-9yrxbPwQbQ3n/+TeOGtalrf8mT4XyOcBBDlRPWC1E5JJp5exrl9n2GIgrUvd2KsVZLUT876kUJY3zfyyjW5Udg==
+"@apollo/client@3.4.15":
+  version "3.4.15"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.15.tgz#0aa05ff2bb54092919b501ef348ade6330911670"
+  integrity sha512-CnlT9i7TgHagkKQNvti81A9KcbIMqgpUPGJJL6bg5spTsB2R/5J6E7qiPcMvXuuXwR2xe4FmE4Ey4HizStb8Hg==
   dependencies:
     "@graphql-typed-document-node/core" "^3.0.0"
     "@wry/context" "^0.6.0"
@@ -87,22 +87,22 @@
     "@apollo/client" "^3.0.0-beta.23"
     tslib "^1.9.3"
 
-"@appsignal/core@=1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.11.tgz#dd361b1130ec6b0f4516beabd98813bd045ea9a6"
-  integrity sha512-k3/JXDm8W7Uvz9Jr+esnxZyrDmHeHY6BiivFpIBndxTQd9eGoXHGyws3o+POoNjyFIruZ8mPijsvJ+w8XtZdVg==
+"@appsignal/core@=1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.14.tgz#b3245ff034e7ae71d20ff8eb7ab54b5547aa1073"
+  integrity sha512-of8KQQm9WSTjLjvjZ8bB7uY3Yfl37E7CNTdYOR+DPwyrxxCQDAg/FWD9Hfx3xmCFL8zvgAMt+jROsy2d6hmDNQ==
   dependencies:
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/types" "=2.1.6"
     isomorphic-unfetch "^3.1.0"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.16":
-  version "1.3.16"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.16.tgz#9b7c3b2a1204bfcae3588329d4b689649088e960"
-  integrity sha512-g8RD9Bm3wadmMuZon74VAViRpRDEwDaPYRmqXqEKs/W7DvoQvIYxOpfxY7ao4W1NTmiqHKg+C0VE3Oqs9AErHw==
+"@appsignal/javascript@^1.3.17":
+  version "1.3.19"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.19.tgz#8c8e4e8aad3036f54056961d076df3f2fb16c4b2"
+  integrity sha512-nQ9WH1vjBKgcLlQ+YRXxCgF6mrwL+uhmXZFOHVMRhSlK+AYsZZXlx/+B6uTnInUHpJHQtOeMp2IMRht0FolJiw==
   dependencies:
-    "@appsignal/core" "=1.1.11"
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/core" "=1.1.14"
+    "@appsignal/types" "=2.1.6"
     tslib "^2.3.0"
 
 "@appsignal/plugin-breadcrumbs-network@^1.1.17":
@@ -126,12 +126,12 @@
   dependencies:
     "@appsignal/types" "=2.1.3"
 
-"@appsignal/react@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@appsignal/react/-/react-1.0.11.tgz#c4fa95c61c9c48196d72ae68c13b560d307b4029"
-  integrity sha512-Uy0cp0p2NdhakFMPC5oiPjGwBMmIGdUL0zZ2gXGyGNrltx/zAcBT8nMbulvKUeaDn/6juii3uFwRGN3Mj6yqsA==
+"@appsignal/react@^1.0.12":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@appsignal/react/-/react-1.0.14.tgz#d12c1e00ebfd55a1d023cf7c201586c0d9cfefef"
+  integrity sha512-Uq1OK4jS62KHnF0DmSTr65vfDQ06o6FbBG3CVGqrpXtM0XUmelasMiBoycAgGDou3HTifT3ujDtzTKB2GwwJBQ==
   dependencies:
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/types" "=2.1.6"
 
 "@appsignal/types@=2.1.3":
   version "2.1.3"
