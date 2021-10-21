@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as TriggerIcon } from 'assets/images/icons/Trigger/Union.svg';
-import { dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
+import { dateList, dayList, FLOW_STATUS_PUBLISHED, setVariables } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -49,6 +49,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
   const [daysDisabled, setDaysDisabled] = useState(true);
   const [groupId, setGroupId] = useState<any>(null);
   const [minDate, setMinDate] = useState<any>(new Date());
+  const [monthly, setMonthly] = useState(false);
 
   const location = useLocation();
   const { t } = useTranslation();
@@ -64,10 +65,11 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     isActive,
   };
 
-  const triggerFrequency = [
+  const triggerFrequencyOptions = [
     { label: t('Does not repeat'), value: 'none' },
     { label: t('Daily'), value: 'daily' },
     { label: t('Weekly'), value: 'weekly' },
+    { label: t('Monthly'), value: 'monthly' },
   ];
 
   const FormSchema = Yup.object().shape({
@@ -136,6 +138,23 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
 
   if (!flow || !collections) return <Loading />;
 
+  const handleFrequencyChange = (triggerFrequency: any) => {
+    if (!triggerFrequency) return;
+
+    const { value } = triggerFrequency;
+    if (value === 'weekly') {
+      setDaysDisabled(false);
+      setMonthly(false);
+    } else if (value === 'monthly') {
+      setDaysDisabled(false);
+      setMonthly(true);
+    } else {
+      setDaysDisabled(true);
+      setMonthly(false);
+    }
+    setDays([]);
+  };
+
   const formFields = [
     {
       component: Checkbox,
@@ -181,7 +200,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: AutoComplete,
       name: 'frequency',
       placeholder: t('Repeat'),
-      options: triggerFrequency,
+      options: triggerFrequencyOptions,
       optionLabel: 'label',
       valueElementName: 'value',
       multiple: false,
@@ -189,26 +208,24 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
         label: t('Repeat'),
         variant: 'outlined',
       },
-      onChange: (value: any) => {
-        if (value && value.value === 'weekly') {
-          setDaysDisabled(false);
-        } else {
-          setDaysDisabled(true);
-          setDays([]);
-        }
-      },
+      onChange: handleFrequencyChange,
     },
     {
       component: AutoComplete,
       name: 'days',
-      placeholder: t('Select days'),
-      options: dayList,
+      placeholder: monthly ? t('Select date') : t('Select days'),
+      options: monthly ? dateList : dayList,
       disabled: daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
-        label: t('Select days'),
+        label: monthly ? t('Select dates') : t('Select days'),
         variant: 'outlined',
       },
+      helperText: monthly
+        ? t(
+            'If you are selecting end of the month dates, then for the ones not present i.e. 30, 31, the selection will default to the last day of that month.'
+          )
+        : null,
     },
     {
       component: AutoComplete,
@@ -237,15 +254,21 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
     setIsRepeating(isRepeatingValue);
     setIsActive(isActiveValue);
     setEndDate(moment(endDateValue).format('yyyy-MM-DD'));
-    setDays(dayList.filter((day: any) => daysValue.includes(day.id)));
+    let savedDays = dayList.filter((day: any) => daysValue.includes(day.id));
+    if (frequencyValue === 'monthly') {
+      setMonthly(true);
+      savedDays = dateList.filter((day: any) => daysValue.includes(day.id));
+    }
+    setDays(savedDays);
     setStartDate(moment(startAtValue).format('yyyy-MM-DD'));
     // If a user wants to update the trigger
     if (moment(new Date()).isAfter(startAtValue, 'days')) {
       setMinDate(moment(startAtValue).format('yyyy-MM-DD'));
     }
     setStartTime(moment(startAtValue).format('THH:mm:ss'));
-    setfrequency(triggerFrequency.filter((trigger) => trigger.value === frequencyValue)[0]);
-    setDaysDisabled(frequencyValue !== 'weekly');
+    setfrequency(triggerFrequencyOptions.filter((trigger) => trigger.value === frequencyValue)[0]);
+    setDaysDisabled(frequencyValue !== 'weekly' && frequencyValue !== 'monthly');
+
     const getFlowId = flow.flows.filter((flows: any) => flows.id === flowValue.id);
     const getcollectionId = collections.groups.filter(
       (collection: any) => collection.id === groupValue.id
