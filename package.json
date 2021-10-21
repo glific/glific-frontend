@@ -13,7 +13,7 @@
     "@appsignal/plugin-breadcrumbs-network": "^1.1.16",
     "@appsignal/plugin-path-decorator": "^1.0.10",
     "@appsignal/plugin-window-events": "^1.0.11",
-    "@appsignal/react": "^1.0.11",
+    "@appsignal/react": "^1.0.12",
     "@date-io/date-fns": "^1.x",
     "@draft-js-plugins/editor": "^4.1.0",
     "@draft-js-plugins/mention": "^4.5.2",
