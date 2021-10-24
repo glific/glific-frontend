@@ -147,7 +147,7 @@ export const getUserSession = (element?: string) => {
 export const setAuthHeaders = () => {
   // // add authorization header in all calls
   let renewTokenCalled = false;
-  let tokenRenewed = false;
+  let renewCallInProgress = false;
 
   const { fetch } = window;
   window.fetch = (...args) =>
@@ -169,12 +169,11 @@ export const setAuthHeaders = () => {
         // update localstore
         setAuthSession(JSON.stringify(authToken.data.data));
         renewTokenCalled = false;
-        tokenRenewed = false;
       }
       if (parametersCopy[1]) {
         parametersCopy[1].headers = {
           ...parametersCopy[1].headers,
-          Authorization: getAuthSession('access_token'),
+          authorization: getAuthSession('access_token'),
         };
       }
       const result = await fetch(...parametersCopy);
@@ -182,20 +181,50 @@ export const setAuthHeaders = () => {
     })(args);
 
   const xmlSend = XMLHttpRequest.prototype.send;
+  const xmlOpen = XMLHttpRequest.prototype.open;
+
+  ((open) => {
+    // @ts-ignore
+    XMLHttpRequest.prototype.open = function authOpen(
+      method: string,
+      url: string | URL,
+      async: boolean,
+      username?: string | null,
+      password?: string | null
+    ) {
+      if (url.toString().endsWith('renew')) {
+        // @ts-ignore
+        this.renewCall = true;
+      }
+      open.call(this, method, url, async, username, password);
+    };
+  })(XMLHttpRequest.prototype.open);
 
   ((send) => {
     XMLHttpRequest.prototype.send = async function authCheck(body) {
       this.addEventListener('loadend', () => {
+        // @ts-ignore
+        if (this.renewCall) {
+          renewCallInProgress = false;
+        }
         if (this.status === 401) {
           window.location.href = '/logout/user';
         }
       });
-      if (checkAuthStatusService()) {
-        this.setRequestHeader('Authorization', getAuthSession('access_token'));
+
+      // @ts-ignore
+      if (this.renewCall && !renewCallInProgress) {
+        renewCallInProgress = true;
         send.call(this, body);
-      } else if (renewTokenCalled && !tokenRenewed) {
+      }
+      // @ts-ignore
+      else if (this.renewCall) {
+        this.abort();
+      }
+      // @ts-ignore
+      else if (checkAuthStatusService()) {
+        this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
-        tokenRenewed = true;
       } else if (!renewTokenCalled) {
         renewTokenCalled = true;
         const authToken = await renewAuthToken();
@@ -203,13 +232,12 @@ export const setAuthHeaders = () => {
           // update localstore
           setAuthSession(JSON.stringify(authToken.data.data));
           renewTokenCalled = false;
-          tokenRenewed = false;
         }
-        this.setRequestHeader('Authorization', getAuthSession('access_token'));
+        this.setRequestHeader('authorization', getAuthSession('access_token'));
         send.call(this, body);
       }
     };
   })(XMLHttpRequest.prototype.send);
 
-  return { xmlSend, fetch };
+  return { xmlSend, fetch, xmlOpen };
 };

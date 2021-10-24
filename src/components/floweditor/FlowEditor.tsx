@@ -307,7 +307,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   useEffect(() => {
     if (flowId) {
-      const { fetch, xmlSend } = setAuthHeaders();
+      const { fetch, xmlSend, xmlOpen } = setAuthHeaders();
       const files = loadfiles(() => {
         getFreeFlow({ variables: { id: flowId } });
       });
@@ -329,6 +329,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           clearTimeout(timeoutId);
         }
         XMLHttpRequest.prototype.send = xmlSend;
+        XMLHttpRequest.prototype.open = xmlOpen;
         window.fetch = fetch;
       };
     }
