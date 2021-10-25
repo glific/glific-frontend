@@ -30,7 +30,7 @@ const validateMediaMethod = (URL: string, attachmentType: string) =>
   new Promise((resolve) => {
     axios
       .get(`${FLOW_EDITOR_API}validate-media?url=${URL}&type=${attachmentType.toLowerCase()}`, {
-        headers: { Authorization: getAuthSession('access_token') },
+        headers: { authorization: getAuthSession('access_token') },
       })
       .then((response: any) => {
         resolve(response);

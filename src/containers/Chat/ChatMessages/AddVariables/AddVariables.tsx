@@ -38,7 +38,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   const glificBase = FLOW_EDITOR_API;
   const contactFieldsprefix = '@contact.fields.';
   const contactVariablesprefix = '@contact.';
-  const headers = { Authorization: getAuthSession('access_token') };
+  const headers = { authorization: getAuthSession('access_token') };
 
   useEffect(() => {
     const getVariableOptions = async () => {

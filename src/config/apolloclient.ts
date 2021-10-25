@@ -61,7 +61,7 @@ const gqlClient = (history: any) => {
     return {
       headers: {
         ...headers,
-        Authorization: accessToken || '',
+        authorization: accessToken || '',
       },
     };
   });

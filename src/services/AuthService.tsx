@@ -35,7 +35,7 @@ export const renewAuthToken = () => {
     return new Error('Error');
   }
   // get the renewal token from session
-  axios.defaults.headers.common.Authorization = renewalToken;
+  axios.defaults.headers.common.authorization = renewalToken;
 
   return axios
     .post(RENEW_TOKEN)
@@ -194,7 +194,7 @@ export const setAuthHeaders = () => {
     ) {
       if (url.toString().endsWith('renew')) {
         // @ts-ignore
-        this.renewCall = true;
+        this.renewGlificCall = true;
       }
       open.call(this, method, url, async, username, password);
     };
@@ -204,7 +204,7 @@ export const setAuthHeaders = () => {
     XMLHttpRequest.prototype.send = async function authCheck(body) {
       this.addEventListener('loadend', () => {
         // @ts-ignore
-        if (this.renewCall) {
+        if (this.renewGlificCall) {
           renewCallInProgress = false;
         } else if (this.status === 401) {
           window.location.href = '/logout/user';
@@ -212,12 +212,12 @@ export const setAuthHeaders = () => {
       });
 
       // @ts-ignore
-      if (this.renewCall && !renewCallInProgress) {
+      if (this.renewGlificCall && !renewCallInProgress) {
         renewCallInProgress = true;
         send.call(this, body);
       }
       // @ts-ignore
-      else if (this.renewCall) {
+      else if (this.renewGlificCall) {
         this.abort();
       }
       // @ts-ignore
