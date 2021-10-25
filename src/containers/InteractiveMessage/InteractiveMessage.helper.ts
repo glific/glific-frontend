@@ -163,7 +163,7 @@ export const getVariableOptions = async (setContactVariables: any) => {
 
   const contactFieldsprefix = '@contact.fields.';
   const contactVariablesprefix = '@contact.';
-  const headers = { Authorization: getAuthSession('access_token') };
+  const headers = { authorization: getAuthSession('access_token') };
   // get fields keys
   const fieldsData = await axios.get(`${glificBase}fields`, {
     headers,
