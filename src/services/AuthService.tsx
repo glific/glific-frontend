@@ -206,8 +206,7 @@ export const setAuthHeaders = () => {
         // @ts-ignore
         if (this.renewCall) {
           renewCallInProgress = false;
-        }
-        if (this.status === 401) {
+        } else if (this.status === 401) {
           window.location.href = '/logout/user';
         }
       });
