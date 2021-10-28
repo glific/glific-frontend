@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, DocumentNode, useLazyQuery, useApolloClient } from '@apollo/client';
 import { IconButton, TableFooter, TablePagination, TableRow, Typography } from '@material-ui/core';
 
@@ -120,6 +121,7 @@ export const List: React.SFC<ListProps> = ({
   defaultSortBy,
   noItemText = null,
 }: ListProps) => {
+  const { t } = useTranslation();
   const client = useApolloClient();
   // DialogBox states
   const [deleteItemID, setDeleteItemID] = useState<number | null>(null);
@@ -383,8 +385,8 @@ export const List: React.SFC<ListProps> = ({
     if (editSupport) {
       editButton = allowedAction.edit ? (
         <Link to={`/${pageLink}/${id}/edit`}>
-          <IconButton aria-label="Edit" color="default" data-testid="EditIcon">
-            <Tooltip title="Edit" placement="top">
+          <IconButton aria-label={t('Edit')} color="default" data-testid="EditIcon">
+            <Tooltip title={t('Edit')} placement="top">
               <EditIcon />
             </Tooltip>
           </IconButton>
@@ -395,7 +397,7 @@ export const List: React.SFC<ListProps> = ({
     const deleteButton = (Id: any, text: string) =>
       allowedAction.delete ? (
         <IconButton
-          aria-label="Delete"
+          aria-label={t('Delete')}
           color="default"
           data-testid="DeleteIcon"
           onClick={() => showDialogHandler(Id, text)}
@@ -601,11 +603,11 @@ export const List: React.SFC<ListProps> = ({
   const noItemsText = (
     <div className={styles.NoResults}>
       {searchVal ? (
-        <div>Sorry, no results found! Please try a different search.</div>
+        <div>{t('Sorry, no results found! Please try a different search.')}</div>
       ) : (
         <div>
-          There are no {noItemText || listItemName}s right now.
-          {button.show && 'Please create one.'}
+          There are no {noItemText || listItemName}s right now.{' '}
+          {button.show && t('Please create one.')}
         </div>
       )}
     </div>

@@ -449,7 +449,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (values.type?.label === 'TEXT') {
       if (values.title || values.body.getCurrentContent().getPlainText()) {
         if (errors) {
-          setNotification(client, 'Please check the errors', 'warning');
+          setNotification(client, t('Please check the errors'), 'warning');
         }
       } else {
         handleLanguageChange(option);
@@ -457,7 +457,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
     if (values.body.getCurrentContent().getPlainText()) {
       if (Object.keys(errors).length !== 0) {
-        setNotification(client, 'Please check the errors', 'warning');
+        setNotification(client, t('Please check the errors'), 'warning');
       }
     } else {
       handleLanguageChange(option);

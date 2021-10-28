@@ -195,7 +195,7 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
         columnNames={['TITLE']}
         listItemName="collection"
         displayListType="card"
-        button={{ show: userRolePermissions.manageCollections, label: t('+ CREATE COLLECTION') }}
+        button={{ show: userRolePermissions.manageCollections, label: t('+ Create Collection') }}
         pageLink="collection"
         listIcon={collectionIcon}
         dialogMessage={dialogMessage}
