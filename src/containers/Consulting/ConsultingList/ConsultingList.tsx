@@ -61,7 +61,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
     when: getOtherColumn(when, true),
     duration: getOtherColumn(duration),
     isBillable: getBillableColumn(isBillable),
-    participants: getStaffColumn(staff),
+    staff: getStaffColumn(staff),
   });
 
   const columnAttributes = {
