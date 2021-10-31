@@ -83,11 +83,21 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   optin = typeof contactData.optinTime === 'string';
   optout = typeof contactData.optoutTime === 'string';
 
-  let OptinStatus = 'No optin or optout';
+  let optinMethod = '';
+  if (contactData.optinMethod) {
+    optinMethod = `via ${contactData.optinMethod} at ${contactData.optinTime}`;
+  }
+
+  let optoutMethod = '';
+  if (contactData.optoutMethod) {
+    optoutMethod = `via ${contactData.optoutMethod} at ${contactData.optoutTime}`;
+  }
+
+  let statusMessage = 'No optin or optout';
   if (optout && status === 'INVALID') {
-    OptinStatus = 'Optout';
+    statusMessage = `Optout ${optoutMethod}`;
   } else if (optin) {
-    OptinStatus = 'Optin';
+    statusMessage = `Optin ${optinMethod}`;
   }
 
   // const additonalStates = { name: 'tags', state: tags, setState: setTags };
@@ -112,7 +122,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
       </div>
       <div className={styles.ContactDescription}>
         <ContactDescription
-          optinStatus={OptinStatus}
+          statusMessage={statusMessage}
           phone={phone}
           maskedPhone={maskedPhone}
           fields={fields}
