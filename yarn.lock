@@ -112,12 +112,12 @@
   dependencies:
     "@appsignal/types" "=2.1.6"
 
-"@appsignal/plugin-path-decorator@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@appsignal/plugin-path-decorator/-/plugin-path-decorator-1.0.10.tgz#6c7c3a32f656fcacd1e1f621523a1dff6ac6fed3"
-  integrity sha512-F8sPE6g4hpu/l7QuAvGIQbKg21MFHmsbp9Zb0ln6cWDM9BxIJDbhBBD1DxqEa5aA7C70Nai7LJSgdtYJtUaaaw==
+"@appsignal/plugin-path-decorator@^1.0.12":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@appsignal/plugin-path-decorator/-/plugin-path-decorator-1.0.13.tgz#9cd6e75a56e5fa63e5c3c905bf06bf114a7f81f5"
+  integrity sha512-3v2CqcimKO2d6wfRQv5NEhl6UAwYzNhjFdD3ZFBsY7skHf9OJ/3JXQpMQkJg7GB4b6W+kbk5FyjNBMY0TptJMA==
   dependencies:
-    "@appsignal/types" "=2.1.3"
+    "@appsignal/types" "=2.1.6"
 
 "@appsignal/plugin-window-events@^1.0.11":
   version "1.0.11"
