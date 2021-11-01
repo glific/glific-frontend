@@ -130,6 +130,8 @@ export const getContactDetailsQuery = {
           status: 'VALID',
           optinTime: '2021-08-19T09:28:01Z',
           optoutTime: null,
+          optinMethod: 'BSP',
+          optoutMethod: null,
           settings: {},
         },
       },
