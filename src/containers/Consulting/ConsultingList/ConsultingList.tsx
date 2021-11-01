@@ -24,7 +24,7 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
     deleteItemQuery: null,
   };
 
-  const columnNames = ['NAME', 'DATE', 'MINUTES', 'TYPE', 'ACTIONS'];
+  const columnNames = ['NAME', 'DATE', 'MINUTES', 'TYPE', 'TEAM', 'ACTIONS'];
 
   const getName = (label: string) => (
     <div className={styles.LabelContainer}>
@@ -50,17 +50,31 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
     );
   };
 
-  const getColumns = ({ organizationName, duration, when, isBillable }: any) => ({
+  const getStaffColumn = (staff: any) => (
+    <div>
+      <p className={styles.StatusText}>{staff}</p>
+    </div>
+  );
+
+  const getColumns = ({ organizationName, duration, when, isBillable, staff }: any) => ({
     organizationName: getName(organizationName),
     when: getOtherColumn(when, true),
     duration: getOtherColumn(duration),
     isBillable: getBillableColumn(isBillable),
+    staff: getStaffColumn(staff),
   });
 
   const columnAttributes = {
     columnNames,
     columns: getColumns,
-    columnStyles: [styles.Label, styles.Status, styles.Status, styles.Status, styles.Actions],
+    columnStyles: [
+      styles.Label,
+      styles.Status,
+      styles.Status,
+      styles.Status,
+      styles.Status,
+      styles.Actions,
+    ],
   };
 
   const listIcon = <ConsultingIcon className={styles.ConsultingHoursIcon} />;
