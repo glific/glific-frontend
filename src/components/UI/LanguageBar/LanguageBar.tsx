@@ -5,14 +5,18 @@ import styles from './LanguageBar.module.css';
 
 export interface LanguageBarProps {
   options: Array<string>;
+  form: any;
   selectedLangauge: string | null;
   onLanguageChange: Function;
+  onSubmit?: Function;
 }
 
 export const LanguageBar: React.SFC<LanguageBarProps> = ({
   options,
   selectedLangauge,
   onLanguageChange,
+  onSubmit = () => {},
+  form,
 }) => {
   const isSelected = (option: string) => selectedLangauge && selectedLangauge === option;
 
@@ -22,7 +26,10 @@ export const LanguageBar: React.SFC<LanguageBarProps> = ({
         <Button
           key={option}
           color="primary"
-          onClick={() => onLanguageChange(option)}
+          onClick={() => {
+            onLanguageChange(option, form);
+            onSubmit();
+          }}
           className={`${isSelected(option) && styles.Selected} `}
         >
           {option}

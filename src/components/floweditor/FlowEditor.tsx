@@ -23,6 +23,25 @@ import styles from './FlowEditor.module.css';
 
 declare function showFlowEditor(node: any, config: any): void;
 
+// function to suppress the error for custom registery in floweditor
+const safeDecorator = (fn: any) =>
+  function (...args: any) {
+    try {
+      // @ts-ignore
+      return fn.apply(this, args);
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.message.includes('has already been used with this registry')
+      ) {
+        return false;
+      }
+      throw error;
+    }
+  };
+
+customElements.define = safeDecorator(customElements.define);
+
 const loadfiles = (startFlowEditor: any) => {
   const files: Array<HTMLScriptElement | HTMLLinkElement> = [];
   const filesToLoad: any = Manifest.files;
@@ -86,7 +105,6 @@ const setConfig = (uuid: any) => ({
   ],
 
   excludeOperators: [
-    'has_beginning',
     'has_text',
     'has_number_lt',
     'has_number_lte',
@@ -112,7 +130,6 @@ const setConfig = (uuid: any) => ({
     'has_ward',
     'has_error',
     'has_value',
-    'has_pattern',
   ],
   help: {
     legacy_extra: 'help.html',
@@ -175,6 +192,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
   let flowTitle: any;
 
   const [getOrganizationServices] = useLazyQuery(GET_ORGANIZATION_SERVICES, {
+    fetchPolicy: 'network-only',
     onCompleted: (services) => {
       const { dialogflow, googleCloudStorage } = services.organizationServices;
 
@@ -289,7 +307,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
 
   useEffect(() => {
     if (flowId) {
-      const { fetch, xmlSend } = setAuthHeaders();
+      const { fetch, xmlSend, xmlOpen } = setAuthHeaders();
       const files = loadfiles(() => {
         getFreeFlow({ variables: { id: flowId } });
       });
@@ -311,6 +329,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
           clearTimeout(timeoutId);
         }
         XMLHttpRequest.prototype.send = xmlSend;
+        XMLHttpRequest.prototype.open = xmlOpen;
         window.fetch = fetch;
       };
     }

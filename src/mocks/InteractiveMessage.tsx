@@ -116,11 +116,11 @@ export const getInteractiveCountQuery = {
 
 const quickReplyMock = {
   interactiveContent:
-    '{"type":"quick_reply","options":[{"type":"text","title":"Excited"},{"type":"text","title":"Very Excited"}],"content":{"type":"text","text":"How excited are you for Glific?"}}',
-  label: 'A quick reply mock',
-  type: 'QUICK_REPLY',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}',
+  label: 'Continue',
   translations:
-    '{"1": {"type": "quick_reply", "content": {"text": "How excited are you for Glific?", "type": "text", "caption": "Glific is a two way communication platform"}, "options": [{"type": "text", "title": "Excited"}, {"type": "text", "title": "Very Excited"}]}, "2": {"type": "quick_reply", "content": {"text": "त्वरित उत्तर पाठ", "type": "text", "caption": "ग्लिफिक एक दोतरफा संचार मंच है"}, "options": [{"type": "text", "title": "उत्साहित"}, {"type": "text", "title": "बहुत उत्साहित"}]}}',
+    '{"1":{"type":"quick_reply","options":[{"type":"text","title":"Yes"},{"type":"text","title":"No"}],"content":{"type":"text","text":"Do you want to continue?","header":"Continue"}}}',
+  type: 'QUICK_REPLY',
   language: {
     id: '1',
     label: 'English',
@@ -129,11 +129,14 @@ const quickReplyMock = {
 
 const quickReplyMedia = {
   interactiveContent:
-    '{"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}',
+    '{"type":"quick_reply","options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}],"content":{"url":"https://storage.glific.png","type":"image","text":"What activity would you like?\\n"}}',
+
   label: 'A quick reply mock',
   type: 'QUICK_REPLY',
   translations:
-    '{"1": {"type": "quick_reply", "content": {"url": "https://picsum.photos/200/300", "type": "image", "caption": "body text"}, "options": [{"type": "text", "title": "First"}, {"type": "text", "title": "Second"}, {"type": "text", "title": "Third"}]}, "2": {"type": "quick_reply", "content": {"url": "https://i.picsum.photos/id/202/200/300.jpg?hmac=KWOdj8XRnO9x8h_I9rIbscSAhD1x-TwkSPPYjWLN2sI", "type": "image", "caption": "यह संदेश है."}, "options": [{"type": "text", "title": "पहला"}, {"type": "text", "title": "दूसरा"}, {"type": "text", "title": "थ्रिड"}]}}',
+    '{"1":{"type":"quick_reply","options":[{"type":"text","title":"Visual Arts"},{"type":"text","title":"Poetry"},{"type":"text","title":"Theatre"}],"content":{"url":"https://storage.glific.png","type":"image","text":"What activity would you like?\\n"}}}',
+
+  __typename: 'InteractiveTemplateResult',
   language: {
     id: '1',
     label: 'English',

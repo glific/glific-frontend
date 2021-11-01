@@ -31,7 +31,6 @@ describe('SpeedSend', () => {
       fireEvent.click(button);
     });
 
-    expect(getByText('Loading...')).toBeInTheDocument();
     await waitFor(() => {
       expect(getByText('Speed sends')).toBeInTheDocument();
     });

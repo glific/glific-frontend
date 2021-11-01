@@ -54,3 +54,8 @@
 .RemoveIcon {
   cursor: pointer;
 }
+
+.Translation {
+  composes: Translation from 'App.module.css';
+  margin-bottom: 8px;
+}

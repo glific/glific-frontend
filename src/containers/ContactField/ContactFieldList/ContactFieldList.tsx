@@ -123,8 +123,8 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
   };
 
   const listIcon = <ContactVariableIcon className={styles.ContactFieldIcon} color="primary.dark" />;
-  const dialogMessage = 'This action cannot be undone.';
-  const dialogTitle = 'Are you sure you want to delete this contact field record?';
+  const dialogMessage = t('This action cannot be undone.');
+  const dialogTitle = t('Are you sure you want to delete this contact field record?');
 
   return (
     <div className={styles.Container}>

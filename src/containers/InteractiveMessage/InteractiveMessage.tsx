@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { EditorState } from 'draft-js';
-import axios from 'axios';
-import { useLazyQuery, useQuery } from '@apollo/client';
-
+import { useLocation, useHistory } from 'react-router-dom';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
+import { setNotification } from 'common/notification';
 import { ReactComponent as InteractiveMessageIcon } from 'assets/images/icons/InteractiveMessage/Dark.svg';
 import {
   CREATE_INTERACTIVE,
@@ -22,11 +22,16 @@ import { LanguageBar } from 'components/UI/LanguageBar/LanguageBar';
 import { LIST, MEDIA_MESSAGE_TYPES, QUICK_REPLY } from 'common/constants';
 import { validateMedia } from 'common/utils';
 import Loading from 'components/UI/Layout/Loading/Loading';
-import { WhatsAppToDraftEditor } from 'common/RichEditor';
-import { FLOW_EDITOR_API } from 'config';
-import { getAuthSession } from 'services/AuthService';
+import { getPlainTextFromEditor, getEditorFromContent } from 'common/RichEditor';
 import { InteractiveOptions } from './InteractiveOptions/InteractiveOptions';
 import styles from './InteractiveMessage.module.css';
+import {
+  convertJSONtoStateData,
+  getDefaultValuesByTemplate,
+  getPayloadByMediaType,
+  getVariableOptions,
+  validator,
+} from './InteractiveMessage.helper';
 
 export interface FlowProps {
   match: any;
@@ -41,158 +46,41 @@ const queries = {
   deleteItemQuery: DELETE_INTERACTIVE,
 };
 
-const convertJSONtoStateData = (JSONData: any, interactiveType: string) => {
-  const data = { ...JSONData };
-  const { title, body, items, content, options, globalButtons } = data;
-
-  if (interactiveType === QUICK_REPLY) {
-    const { type, header, url, text } = content;
-    const result: any = {};
-    result.templateButtons = options.map((option: any) => ({ value: option.title }));
-    result.title = header || '';
-    switch (type) {
-      case 'image':
-      case 'video':
-        result.type = `${type.toUpperCase()}`;
-        result.attachmentURL = url;
-        result.body = text;
-        break;
-      case 'file':
-        result.type = 'DOCUMENT';
-        result.attachmentURL = url;
-        break;
-      default:
-        result.type = null;
-        result.body = text || '';
-    }
-    return result;
-  }
-
-  const result: any = {};
-  result.templateButtons = items.map((item: any) => {
-    const itemOptions = item.options.map((option: any) => ({
-      title: option.title,
-      description: option.description,
-    }));
-    return {
-      title: item.title,
-      options: itemOptions,
-    };
-  });
-  result.body = body;
-  result.title = title;
-  result.globalButton = globalButtons[0].title;
-  return result;
-};
-
-const getDefaultValuesByTemplate = (templateData: any) => {
-  const { type: templateType, interactiveContent } = templateData;
-  const data = JSON.parse(interactiveContent);
-
-  let result: any = {};
-  if (templateType === QUICK_REPLY) {
-    const { type, content, options } = data;
-    const updatedOptions = options.map(() => ({ type: 'text', title: '' }));
-    const updatedContent = Object.keys(content).reduce((res: any, key: string) => {
-      if (['type', 'url'].includes(key)) res[key] = content[key];
-      else res[key] = '';
-      return res;
-    }, {});
-
-    result.type = type;
-    result.content = updatedContent;
-    result.options = updatedOptions;
-  }
-
-  if (templateType === LIST) {
-    result = Object.keys(data).reduce((res: any, key: string) => {
-      const dataVal = data[key];
-      if (typeof dataVal === 'string') {
-        res[key] = '';
-      }
-
-      if (key === 'items') {
-        const items: any = dataVal.map((item: any) => {
-          const optionVal = { type: 'text', title: '', description: '' };
-          const { options } = item;
-          const updatedOptions = options.map(() => optionVal);
-          return { title: '', subtitle: '', options: updatedOptions };
-        });
-        res[key] = items;
-      }
-
-      if (key === 'globalButtons') {
-        res[key] = dataVal.map(() => ({ type: 'text', title: '' }));
-      }
-
-      return res;
-    }, {});
-  }
-  return result;
-};
-
 export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
+  const location: any = useLocation();
+  const history = useHistory();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState(EditorState.createEmpty());
-  const [templateType, setTemplateType] = useState<string>('QUICK_REPLY');
+  const [templateType, setTemplateType] = useState<string>(QUICK_REPLY);
   const [templateButtons, setTemplateButtons] = useState<Array<any>>([{ value: '' }]);
   const [globalButton, setGlobalButton] = useState('');
   const [isUrlValid, setIsUrlValid] = useState<any>();
   const [type, setType] = useState<any>(null);
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
+  const [defaultLanguage, setDefaultLanguage] = useState<any>({});
 
-  const [language, setLanguage] = useState<any>(null);
+  const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
 
   const [translations, setTranslations] = useState<any>('{}');
 
   const [previousState, setPreviousState] = useState<any>({});
+  const [nextLanguage, setNextLanguage] = useState<any>('');
   const [warning, setWarning] = useState<any>();
 
-  useEffect(() => {
-    const glificBase = FLOW_EDITOR_API;
-    const contactFieldsprefix = '@contact.fields.';
-    const contactVariablesprefix = '@contact.';
-    const headers = { Authorization: getAuthSession('access_token') };
-
-    const getVariableOptions = async () => {
-      // get fields keys
-      const fieldsData = await axios.get(`${glificBase}fields`, {
-        headers,
-      });
-
-      const fields = fieldsData.data.results.map((i: any) => contactFieldsprefix.concat(i.key));
-
-      // get contact keys
-      const contactData = await axios.get(`${glificBase}completion`, {
-        headers,
-      });
-
-      const properties = contactData.data.context.types.find(
-        ({ name }: { name: string }) => name === 'contact'
-      );
-
-      const contacts =
-        properties &&
-        properties.properties
-          .map((i: any) => contactVariablesprefix.concat(i.key))
-          .concat(fields)
-          .map((val: string) => ({ name: val }))
-          .slice(1);
-
-      setContactVariables(contacts);
-    };
-
-    getVariableOptions();
-  }, []);
+  const client = useApolloClient();
 
   const { data: languages } = useQuery(USER_LANGUAGES, {
     variables: { opts: { order: 'ASC' } },
   });
 
-  const [getInteractiveTemplateById, { data: template }] =
+  const [getInteractiveTemplateById, { data: template, loading: loadingTemplate }] =
     useLazyQuery<any>(GET_INTERACTIVE_MESSAGE);
+
+  useEffect(() => {
+    getVariableOptions(setContactVariables);
+  }, []);
 
   useEffect(() => {
     if (languages) {
@@ -201,7 +89,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       lang.sort((first: any, second: any) => (first.label > second.label ? 1 : -1));
 
       setLanguageOptions(lang);
-      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) setLanguage(lang[0]);
+      if (!Object.prototype.hasOwnProperty.call(match.params, 'id')) {
+        setLanguage(lang[0]);
+      }
     }
   }, [languages]);
 
@@ -224,6 +114,34 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   };
 
+  const updateStates = ({
+    language: languageVal,
+    type: typeValue,
+    interactiveContent: interactiveContentValue,
+  }: any) => {
+    const content = JSON.parse(interactiveContentValue);
+    const data = convertJSONtoStateData(content, typeValue, title);
+
+    if (languageOptions.length > 0 && languageVal) {
+      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+
+      setLanguage(selectedLangauge);
+    }
+    setTitle(data.title);
+    setBody(getEditorFromContent(data.body));
+    setTemplateType(typeValue);
+    setTimeout(() => setTemplateButtons(data.templateButtons), 100);
+
+    if (typeValue === LIST) {
+      setGlobalButton(data.globalButton);
+    }
+
+    if (typeValue === QUICK_REPLY && data.type && data.attachmentURL) {
+      setType({ id: data.type, label: data.type });
+      setAttachmentURL(data.attachmentURL);
+    }
+  };
+
   const setStates = ({
     label: labelValue,
     language: languageVal,
@@ -231,16 +149,45 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
   }: any) => {
-    const content = JSON.parse(interactiveContentValue);
-    const data = convertJSONtoStateData(content, typeValue);
+    let content;
 
-    if (languageOptions.length > 0 && languageVal) {
-      const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
-      setTimeout(() => setLanguage(selectedLangauge), 150);
+    if (translationsVal) {
+      const translationsCopy = JSON.parse(translationsVal);
+
+      // restore if translations present for selected language
+      if (
+        Object.keys(translationsCopy).length > 0 &&
+        translationsCopy[language.id || languageVal.id] &&
+        !location.state
+      ) {
+        content =
+          JSON.parse(translationsVal)[language.id || languageVal.id] ||
+          JSON.parse(interactiveContentValue);
+      } else if (template) {
+        content = getDefaultValuesByTemplate(template.interactiveTemplate.interactiveTemplate);
+      }
     }
 
-    setTitle(data.title || labelValue);
-    setBody(EditorState.createWithContent(WhatsAppToDraftEditor(data.body)));
+    const data = convertJSONtoStateData(content, typeValue, labelValue);
+    setDefaultLanguage(languageVal);
+
+    if (languageOptions.length > 0 && languageVal) {
+      if (location.state) {
+        const selectedLangauge = languageOptions.find(
+          (lang: any) => lang.label === location.state.language
+        );
+        history.replace(location.pathname, null);
+        setLanguage(selectedLangauge);
+      } else if (!language.id) {
+        const selectedLangauge = languageOptions.find((lang: any) => lang.id === languageVal.id);
+        setLanguage(selectedLangauge);
+      } else {
+        setLanguage(language);
+      }
+    }
+
+    setTitle(data.title);
+    setBody(getEditorFromContent(data.body));
     setTemplateType(typeValue);
     setTimeout(() => setTemplateButtons(data.templateButtons), 100);
 
@@ -382,7 +329,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       const translationsCopy = JSON.parse(translations);
       // restore if translations present for selected language
       if (Object.keys(translationsCopy).length > 0 && translationsCopy[Id]) {
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(translationsCopy[Id]),
@@ -392,7 +339,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           template.interactiveTemplate.interactiveTemplate
         );
 
-        setStates({
+        updateStates({
           language: value,
           type: template.interactiveTemplate.interactiveTemplate.type,
           interactiveContent: JSON.stringify(fillDataWithEmptyValues),
@@ -402,7 +349,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       return;
     }
 
-    setStates({
+    updateStates({
       language: value,
       type: template.interactiveTemplate.interactiveTemplate.type,
       interactiveContent: template.interactiveTemplate.interactiveTemplate.interactiveContent,
@@ -413,8 +360,22 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     const selected = languageOptions.find(({ label }: any) => label === value);
     if (selected && Object.prototype.hasOwnProperty.call(match.params, 'id')) {
       updateTranslation(selected);
+    } else if (selected) {
+      setLanguage(selected);
     }
-    if (selected) setLanguage(selected);
+  };
+
+  const afterSave = (data: any, saveClick: boolean) => {
+    if (!saveClick) {
+      if (match.params.id) {
+        handleLanguageChange(nextLanguage);
+      } else {
+        const { interactiveTemplate } = data.createInteractiveTemplate;
+        history.push(`/interactive-message/${interactiveTemplate.id}/edit`, {
+          language: nextLanguage,
+        });
+      }
+    }
   };
 
   const displayWarning = () => {
@@ -448,14 +409,74 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
+  const getTranslation = (interactiveType: string, attribute: any) => {
+    if (defaultLanguage.id) {
+      const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
+
+      if (interactiveType === QUICK_REPLY) {
+        switch (attribute) {
+          case 'title':
+            return defaultTemplate.content.header;
+          case 'body':
+            return defaultTemplate.content.text;
+          case 'options':
+            return defaultTemplate.options.map((option: any) => option.title);
+          default:
+            return null;
+        }
+      }
+
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.title;
+        case 'body':
+          return defaultTemplate.body;
+        case 'options':
+          return {
+            items: defaultTemplate.items,
+            globalButton: defaultTemplate.globalButtons[0].title,
+          };
+        default:
+          return null;
+      }
+    }
+    return null;
+  };
+
+  const onLanguageChange = (option: string, form: any) => {
+    setNextLanguage(option);
+    const { values, errors } = form;
+    if (values.type?.label === 'TEXT') {
+      if (values.title || values.body.getCurrentContent().getPlainText()) {
+        if (errors) {
+          setNotification(client, t('Please check the errors'), 'warning');
+        }
+      } else {
+        handleLanguageChange(option);
+      }
+    }
+    if (values.body.getCurrentContent().getPlainText()) {
+      if (Object.keys(errors).length !== 0) {
+        setNotification(client, t('Please check the errors'), 'warning');
+      }
+    } else {
+      handleLanguageChange(option);
+    }
+  };
+
   const fields = [
     {
+      field: 'languageBar',
       component: LanguageBar,
       options: langOptions || [],
       selectedLangauge: language && language.label,
-      onLanguageChange: handleLanguageChange,
+      onLanguageChange,
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'title'),
       component: Input,
       name: 'title',
       type: 'text',
@@ -465,6 +486,10 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'body'),
       component: EmojiInput,
       name: 'body',
       placeholder: t('Message*'),
@@ -480,11 +505,16 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      translation:
+        match.params?.id &&
+        defaultLanguage?.id !== language?.id &&
+        getTranslation(templateType, 'options'),
       component: InteractiveOptions,
       isAddButtonChecked: true,
       templateType,
       inputFields: templateButtons,
       disabled: false,
+      disabledType: match.params.id !== undefined,
       onAddClick: handleAddInteractiveTemplate,
       onRemoveClick: handleRemoveInteractiveTemplate,
       onInputChange: handleInputChange,
@@ -499,31 +529,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       onGlobalButtonInputChange: (value: string) => setGlobalButton(value),
     },
   ];
-
-  const getPayloadByMediaType = (mediaType: string, payload: any) => {
-    const result: any = {};
-
-    switch (mediaType) {
-      case 'IMAGE':
-      case 'VIDEO':
-        result.type = `${mediaType.toLowerCase()}`;
-        result.url = payload.attachmentURL;
-        result.text = payload.body.getCurrentContent().getPlainText();
-        break;
-      case 'DOCUMENT':
-        result.type = 'file';
-        result.url = payload.attachmentURL;
-        result.filename = 'file';
-        break;
-      default:
-        result.type = 'text';
-        result.header = payload.title;
-        result.text = payload.body.getCurrentContent().getPlainText();
-        break;
-    }
-
-    return result;
-  };
 
   const getTemplateButtonPayload = (typeVal: string, buttons: Array<any>) => {
     if (typeVal === QUICK_REPLY) {
@@ -574,7 +579,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
 
     if (templateTypeVal === LIST) {
-      const bodyText = payload.body.getCurrentContent().getPlainText();
+      const bodyText = getPlainTextFromEditor(payload.body);
       const items = getTemplateButtonPayload(templateTypeVal, templateButtonVal);
       const globalButtons = [{ type: 'text', title: globalButtonVal }];
 
@@ -686,64 +691,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
 
   const formFields = templateType === LIST ? [...fields] : [...fields, ...attachmentInputs];
 
-  const validation: any = {
-    title: Yup.string()
-      .required(t('Title is required'))
-      .max(60, t('Title can be at most 60 characters')),
-    body: Yup.string()
-      .transform((current, original) => original.getCurrentContent().getPlainText())
-      .required(t('Message content is required.')),
-  };
-
-  if (templateType === LIST) {
-    validation.templateButtons = Yup.array()
-      .of(
-        Yup.object().shape({
-          title: Yup.string()
-            .required(t('Required'))
-            .max(24, t('Section title can be at most 24 characters')),
-          options: Yup.array().of(
-            Yup.object().shape({
-              title: Yup.string()
-                .required(t('Title is required'))
-                .max(24, t('Title can be at most 24 characters')),
-              description: Yup.string().max(72, t('Description can be at most 72 characters')),
-            })
-          ),
-        })
-      )
-      .min(1);
-
-    validation.globalButton = Yup.string()
-      .required(t('Required'))
-      .max(20, t('Button value can be at most 20 characters'));
-  } else {
-    validation.templateButtons = Yup.array()
-      .of(
-        Yup.object().shape({
-          value: Yup.string()
-            .required(t('Required'))
-            .max(20, t('Button value can be at most 20 characters')),
-        })
-      )
-      .min(1)
-      .max(3);
-
-    validation.type = Yup.object()
-      .nullable()
-      .when('attachmentURL', {
-        is: (val: string) => val && val !== '',
-        then: Yup.object().nullable().required(t('Type is required.')),
-      });
-
-    validation.attachmentURL = Yup.string()
-      .nullable()
-      .when('type', {
-        is: (val: any) => val && val.id,
-        then: Yup.string().required(t('Attachment URL is required.')),
-      });
-  }
-
+  const validation = validator(templateType, t);
   const validationScheme = Yup.object().shape(validation, [['type', 'attachmentURL']]);
 
   const getPreviewData = () => {
@@ -789,7 +737,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     attachmentURL,
   ]);
 
-  if (languageOptions.length < 1) {
+  if (languageOptions.length < 1 || loadingTemplate) {
     return <Loading />;
   }
 
@@ -811,6 +759,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         icon={interactiveMessageIcon}
         languageSupport={false}
         getQueryFetchPolicy="cache-and-network"
+        afterSave={afterSave}
+        saveOnPageChange={false}
       />
       <div className={styles.Simulator}>
         <Simulator

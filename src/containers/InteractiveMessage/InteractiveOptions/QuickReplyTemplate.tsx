@@ -12,6 +12,7 @@ export interface QuickReplyTemplateProps {
   onAddClick: any;
   onRemoveClick: any;
   onInputChange: any;
+  translation?: any;
 }
 
 export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
@@ -22,6 +23,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
     onAddClick,
     onRemoveClick,
     onInputChange,
+    translation,
   } = props;
 
   const isError = (key: string) =>
@@ -45,37 +47,40 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   );
 
   return (
-    <div className={styles.WrapperBackground}>
-      <div className={styles.QuickReplyWrapper}>
-        <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
-          <TextField
-            placeholder={name}
-            variant="outlined"
-            onChange={(e: any) => handleInputChange(e, 'value')}
-            value={defaultValue}
-            className={styles.TextField}
-            InputProps={{
-              endAdornment: endAdornmentIcon,
-            }}
-            error={isError('value')}
-          />
-          {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
-            <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
+    <>
+      {translation && <div className={styles.Translation}>{translation}</div>}
+      <div className={styles.WrapperBackground}>
+        <div className={styles.QuickReplyWrapper}>
+          <FormControl fullWidth error={isError('value')} className={styles.FormControl}>
+            <TextField
+              placeholder={name}
+              variant="outlined"
+              onChange={(e: any) => handleInputChange(e, 'value')}
+              value={defaultValue}
+              className={styles.TextField}
+              InputProps={{
+                endAdornment: endAdornmentIcon,
+              }}
+              error={isError('value')}
+            />
+            {errors.templateButtons && touched.templateButtons && touched.templateButtons[index] ? (
+              <FormHelperText>{errors.templateButtons[index]?.value}</FormHelperText>
+            ) : null}
+          </FormControl>
+        </div>
+        <div>
+          {inputFields.length === index + 1 && inputFields.length !== 3 ? (
+            <Button
+              color="primary"
+              onClick={onAddClick}
+              className={styles.AddButton}
+              startIcon={<AddIcon className={styles.AddIcon} />}
+            >
+              Add quick reply
+            </Button>
           ) : null}
-        </FormControl>
+        </div>
       </div>
-      <div>
-        {inputFields.length === index + 1 && inputFields.length !== 3 ? (
-          <Button
-            color="primary"
-            onClick={onAddClick}
-            className={styles.AddButton}
-            startIcon={<AddIcon className={styles.AddIcon} />}
-          >
-            Add quick reply
-          </Button>
-        ) : null}
-      </div>
-    </div>
+    </>
   );
 };

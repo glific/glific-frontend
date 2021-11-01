@@ -33,8 +33,8 @@ export const Logout: React.SFC<LogoutProps> = (props: any) => {
   // let's notify the backend when user logs out
   const userLogout = () => {
     // get the auth token from session
-    axios.defaults.headers.common.Authorization = getAuthSession('access_token');
-    axios.delete(USER_SESSION, {}).then(() => {});
+    axios.defaults.headers.common.authorization = getAuthSession('access_token');
+    axios.delete(USER_SESSION);
   };
 
   const handleLogout = () => {

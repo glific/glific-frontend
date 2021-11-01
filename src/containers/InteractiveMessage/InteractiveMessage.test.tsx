@@ -1,10 +1,13 @@
 import { render, cleanup, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { setUserSession } from 'services/AuthService';
 import { mocks } from 'mocks/InteractiveMessage';
 import { InteractiveMessage } from './InteractiveMessage';
+
+const mockData = [...mocks, ...mocks];
 
 afterEach(cleanup);
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
@@ -47,8 +50,10 @@ test('it renders empty interactive form', async () => {
   axiosApiCall();
 
   render(
-    <MockedProvider mocks={[...mocks]} addTypename={false}>
-      <InteractiveMessage match={{ params: {} }} />
+    <MockedProvider mocks={mockData} addTypename={false}>
+      <Router>
+        <InteractiveMessage match={{ params: {} }} />
+      </Router>
     </MockedProvider>
   );
 
@@ -168,8 +173,10 @@ test('it renders interactive quick reply in edit mode', async () => {
   axiosApiCall();
 
   const { container } = render(
-    <MockedProvider mocks={[...mocks]} addTypename={false}>
-      <InteractiveMessage match={{ params: { id: '1' } }} />
+    <MockedProvider mocks={mockData} addTypename={false}>
+      <Router>
+        <InteractiveMessage match={{ params: { id: '1' } }} />
+      </Router>
     </MockedProvider>
   );
 
@@ -199,8 +206,10 @@ test('it renders interactive list in edit mode', async () => {
   axiosApiCall();
 
   render(
-    <MockedProvider mocks={[...mocks]} addTypename={false}>
-      <InteractiveMessage match={{ params: { id: '2' } }} />
+    <MockedProvider mocks={mockData} addTypename={false}>
+      <Router>
+        <InteractiveMessage match={{ params: { id: '2' } }} />
+      </Router>
     </MockedProvider>
   );
 
@@ -218,8 +227,10 @@ test('it renders interactive quick reply with media in edit mode', async () => {
   axiosApiCall();
 
   render(
-    <MockedProvider mocks={[...mocks]} addTypename={false}>
-      <InteractiveMessage match={{ params: { id: '3' } }} />
+    <MockedProvider mocks={mockData} addTypename={false}>
+      <Router>
+        <InteractiveMessage match={{ params: { id: '3' } }} />
+      </Router>
     </MockedProvider>
   );
 

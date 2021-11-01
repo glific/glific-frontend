@@ -64,8 +64,8 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
   };
 
   const listIcon = <ConsultingIcon className={styles.ConsultingHoursIcon} />;
-  const dialogMessage = 'This action cannot be undone.';
-  const dialogTitle = 'Are you sure you want to delete this consulting record?';
+  const dialogMessage = t('This action cannot be undone.');
+  const dialogTitle = t('Are you sure you want to delete this consulting record?');
 
   const restrictedAction = () => ({ delete: false, edit: true });
 

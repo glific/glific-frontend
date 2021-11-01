@@ -9,13 +9,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { CONVERSATION_MOCKS, mocksWithConversation } from '../../../mocks/Chat';
 import * as ChatInput from '../ChatMessages/ChatInput/ChatInput';
 
-// add mock for the resize observer
-class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
 const defineUrl = (url: string) => {
   Object.defineProperty(window, 'location', {
     value: {
@@ -24,8 +17,6 @@ const defineUrl = (url: string) => {
     writable: true,
   });
 };
-
-window.ResizeObserver = ResizeObserver;
 
 const body = {
   id: '1',

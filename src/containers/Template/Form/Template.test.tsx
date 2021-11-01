@@ -4,9 +4,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import * as FormLayout from 'containers/Form/FormLayout';
 import Template from './Template';
 import { TEMPLATE_MOCKS } from '../Template.test.helper';
+import { BrowserRouter } from 'react-router-dom';
 
 afterEach(cleanup);
-const mocks = TEMPLATE_MOCKS;
+const mocks = [...TEMPLATE_MOCKS, ...TEMPLATE_MOCKS];
 
 const defaultProps = {
   match: { params: { id: 1 } },
@@ -19,7 +20,9 @@ const defaultProps = {
 test('HSM form is loaded correctly in edit mode', async () => {
   const { getByText } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Template {...defaultProps} />
+      <BrowserRouter>
+        <Template {...defaultProps} />
+      </BrowserRouter>
     </MockedProvider>
   );
   await waitFor(() => {
@@ -42,11 +45,12 @@ test('save media in template', async () => {
   });
   const { getByTestId } = render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <Template {...defaultProps} />
+      <BrowserRouter>
+        <Template {...defaultProps} />
+      </BrowserRouter>
     </MockedProvider>
   );
-
-  fireEvent.click(getByTestId('getMedia'));
-
-  await waitFor(() => {});
+  await waitFor(() => {
+    fireEvent.click(getByTestId('getMedia'));
+  });
 });

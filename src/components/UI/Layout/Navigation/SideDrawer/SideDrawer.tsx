@@ -8,7 +8,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
@@ -37,7 +37,7 @@ export interface SideDrawerProps {
 
 const drawerWidth = constants.SIDE_DRAWER_WIDTH;
 
-const themeUI = createMuiTheme({
+const themeUI = createTheme({
   typography: {
     h6: {
       fontSize: 24,

@@ -124,7 +124,7 @@ export const WebhookLogsList: React.SFC<WebhookLogsListProps> = () => {
           onKeyDown={handleClick}
           aria-hidden="true"
         >
-          {newtext.length > 25 ? `${newtext.slice(0, 25)}...` : newtext}
+          {newtext.length > 21 ? `${newtext.slice(0, 21)}...` : newtext}
         </div>
       </Menu>
     );

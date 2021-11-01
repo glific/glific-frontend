@@ -19,7 +19,7 @@ export const SpeedSendList: React.SFC<SpeedSendListProps> = () => {
       pageLink="speed-send"
       listIcon={speedSendIcon}
       filters={{ isHsm: false }}
-      buttonLabel={t('+ CREATE SPEED SEND')}
+      buttonLabel={t('+ Create Speed Send')}
     />
   );
 };

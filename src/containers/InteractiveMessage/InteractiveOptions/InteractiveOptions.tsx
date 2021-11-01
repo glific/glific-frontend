@@ -28,6 +28,8 @@ export interface InteractiveOptionsProps {
   onListItemRemoveClick: any;
   onGlobalButtonInputChange: any;
   disabled: any;
+  translation?: any;
+  disabledType?: any;
 }
 export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   isAddButtonChecked,
@@ -42,6 +44,8 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onListItemRemoveClick,
   onGlobalButtonInputChange,
   disabled = false,
+  translation,
+  disabledType,
 }) => {
   const { values, errors, touched } = form;
 
@@ -61,6 +65,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === LIST) {
       template = (
         <ListReplyTemplate
+          translation={translation && translation.items[index]}
           key={index}
           index={index}
           inputFields={inputFields}
@@ -79,6 +84,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
     if (templateType === QUICK_REPLY) {
       template = (
         <QuickReplyTemplate
+          translation={translation && translation[index]}
           key={index}
           index={index}
           inputFields={inputFields}
@@ -108,6 +114,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             value={QUICK_REPLY}
             control={
               <Radio
+                disabled={disabledType}
                 color="primary"
                 checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
                 size="small"
@@ -123,6 +130,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
             value={LIST}
             control={
               <Radio
+                disabled={disabledType}
                 color="primary"
                 checkedIcon={<ApprovedIcon className={styles.CheckedIcon} />}
                 size="small"
@@ -136,6 +144,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
       </RadioGroup>
       {templateType && templateType === LIST && (
         <div className={styles.GlobalButton}>
+          {translation && <div className={styles.Translation}>{translation.globalButton}</div>}
           <FormControl
             fullWidth
             error={!!(errors.globalButton && touched.globalButton)}

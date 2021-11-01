@@ -79,8 +79,10 @@ it('should create copy of flow', async () => {
   );
 
   const { container, getByTestId } = render(copyFlow({ params: { id: 1 } }));
-  await waitFor(() => {});
-  expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+  await waitFor(() => {
+    expect(container.querySelector('input[name="name"]')?.value).toBe('Copy of Help');
+  });
+
   fireEvent.change(container.querySelector('input[name="keywords"]'), {
     target: { value: 'help, activity' },
   });
