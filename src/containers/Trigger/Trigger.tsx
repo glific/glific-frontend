@@ -225,7 +225,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       name: 'days',
       placeholder: monthly ? t('Select date') : t('Select days'),
       options: monthly ? dateList : dayList,
-      disabled: daysDisabled,
+      disabled: isEditing || daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
         label: monthly ? t('Select dates') : t('Select days'),
