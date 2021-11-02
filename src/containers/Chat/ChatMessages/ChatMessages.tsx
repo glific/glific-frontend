@@ -823,7 +823,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   );
 
   return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+    <Container
+      className={styles.ChatMessages}
+      style={{
+        height: `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`,
+      }}
+      maxWidth={false}
+      disableGutters
+    >
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation
