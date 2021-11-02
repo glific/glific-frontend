@@ -71,6 +71,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
+  const [someHeight] = useState(window.innerHeight);
   const { t } = useTranslation();
 
   let dialogBox;
@@ -826,7 +827,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     <Container
       className={styles.ChatMessages}
       style={{
-        height: `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`,
+        height: `${window.innerWidth < 768 ? someHeight - 46 : someHeight}px`,
       }}
       maxWidth={false}
       disableGutters
