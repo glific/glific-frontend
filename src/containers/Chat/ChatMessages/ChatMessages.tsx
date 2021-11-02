@@ -37,9 +37,14 @@ import { CollectionInformation } from '../../Collection/CollectionInformation/Co
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
+  startingHeight?: string;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collectionId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  collectionId,
+  startingHeight,
+}) => {
   // create an instance of apollo client
   const client = useApolloClient();
   // const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -71,7 +76,6 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [conversationInfo, setConversationInfo] = useState<any>({});
   const [collectionVariables, setCollectionVariables] = useState<any>({});
-  const [someHeight] = useState(window.innerHeight);
   const { t } = useTranslation();
 
   let dialogBox;
@@ -827,7 +831,7 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
     <Container
       className={styles.ChatMessages}
       style={{
-        height: `${window.innerWidth < 768 ? someHeight - 46 : someHeight}px`,
+        height: startingHeight,
       }}
       maxWidth={false}
       disableGutters
