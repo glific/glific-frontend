@@ -38,7 +38,11 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
-  const isEditing = match.params.id !== null;
+  let isEditing = false;
+  if (match.params.id) {
+    isEditing = true;
+  }
+
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
