@@ -74,6 +74,7 @@ export interface ListProps {
   defaultSortBy?: string | null;
   removeSortBy?: Array<any> | null;
   noItemText?: string | null;
+  isDetailsPage?: boolean;
 }
 
 interface TableVals {
@@ -120,6 +121,7 @@ export const List: React.SFC<ListProps> = ({
   collapseRow = undefined,
   defaultSortBy,
   noItemText = null,
+  isDetailsPage = false,
 }: ListProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
@@ -613,9 +615,15 @@ export const List: React.SFC<ListProps> = ({
     </div>
   );
 
+  let headerSize = styles.Header;
+
+  if (isDetailsPage) {
+    headerSize = styles.DetailsPageHeader;
+  }
+
   return (
     <>
-      <div className={styles.Header} data-testid="listHeader">
+      <div className={headerSize} data-testid="listHeader">
         <Typography variant="h5" className={styles.Title}>
           <IconButton disabled className={styles.Icon}>
             {listIcon}
@@ -647,10 +655,11 @@ export const List: React.SFC<ListProps> = ({
         </div>
       </div>
 
-      {backLink}
-      {/* Rendering list of items */}
-
-      {itemList.length > 0 ? displayList : noItemsText}
+      <div className={styles.Body}>
+        {backLink}
+        {/* Rendering list of items */}
+        {itemList.length > 0 ? displayList : noItemsText}
+      </div>
     </>
   );
 };
