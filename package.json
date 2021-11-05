@@ -28,7 +28,7 @@
     "@stripe/stripe-js": "^1.18.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^12.1.1",
-    "@testing-library/user-event": "^13.1.9",
+    "@testing-library/user-event": "^13.4.1",
     "@types/draft-js": "^0.11.3",
     "@types/emoji-mart": "^3.0.6",
     "@types/jest": "^27.0.2",
