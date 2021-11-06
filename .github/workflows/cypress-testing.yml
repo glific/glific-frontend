@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix: # build matrix for the job
         elixir: [1.12.3]
-        otp: [24.0.5]
+        otp: [24.1.4]
         node-version: [15.11.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -70,7 +70,7 @@ jobs:
           echo done. start dev.secret.exs config
           cd priv
           mkdir cert
-          cd cert 
+          cd cert
           echo "${{ secrets.TEST_CERTIFICATE }}" > glific.test+1.pem
           echo "${{ secrets.TEST_CERTIFICATE_KEY }}" > glific.test+1-key.pem
           cd ../../
@@ -102,7 +102,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
-          yarn add cypress 
+          yarn add cypress
           yarn add @cypress/code-coverage
           yarn add @cypress/instrument-cra
           cp cypress-testing/cypress.json.example cypress.json
@@ -128,4 +128,3 @@ jobs:
       - name: Cypress run
         run: |
           yarn run cypress run --record --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
-
