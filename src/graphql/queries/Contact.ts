@@ -110,6 +110,8 @@ export const GET_CONTACT_DETAILS = gql`
         fields
         optinTime
         optoutTime
+        optinMethod
+        optoutMethod
         settings
       }
     }
