@@ -43,15 +43,29 @@
   text-decoration: none;
 }
 
+.Body {
+  margin-top: 100px;
+}
+
 .Header {
+  position: fixed;
+  background-color: #f9f7f3;
+  top: 0;
+  width: calc(100% - 233px);
   display: flex;
   padding: 10px;
+  padding-top: 6px;
+  z-index: 1000;
   padding-right: 24px;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
-  margin-top: 6px;
-  height: 70px;
+  height: 100px;
+}
+
+.DetailsPageHeader {
+  composes: Header;
+  width: calc(68% - 200px);
 }
 
 .Icon {
@@ -126,9 +140,9 @@
   color: #93a29b;
   font-size: 16px;
   margin: 0 auto;
-  margin-top: 100px;
+  margin-top: 200px;
   text-align: center;
-  width: 204px;
+  width: 230px;
 }
 
 .ButtonGroup {
