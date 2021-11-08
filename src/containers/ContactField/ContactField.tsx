@@ -31,7 +31,7 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
   const FormSchema = Yup.object().shape({
     name: Yup.string().required(t('name is required.')),
     shortcode: Yup.string()
-      .matches(/^[a-z_]+$/g, 'Only lowercase alphabets and underscore is allowed.')
+      .matches(/^[a-z_]+$/g, t('Only lowercase alphabets and underscore is allowed.'))
       .required(t('Shortcode is required.')),
   });
 
@@ -63,7 +63,7 @@ export const ContactField: React.SFC<ConsultingProps> = ({ match }) => {
     },
   ];
 
-  const dialogMessage = 'This action cannot be undone.';
+  const dialogMessage = t('This action cannot be undone.');
   const consultHourIcon = <ContactVariableIcon className={styles.ContactFieldIcon} />;
 
   return (

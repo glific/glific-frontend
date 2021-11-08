@@ -79,7 +79,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       .when('startDate', (startDateValue: any, schema: any) =>
         schema.test({
           test: (startAtValue: any) => checkDateTimeValidation(startAtValue, startDateValue),
-          message: 'Start time should be greater than current time',
+          message: t('Start time should be greater than current time'),
         })
       ),
     startDate: Yup.string().nullable().required(t('Start date is required')),

@@ -86,11 +86,13 @@ export const FlowList: React.SFC<FlowListProps> = () => {
       if (!success) {
         setNotification(
           client,
-          'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.',
+          t(
+            'Sorry! An error occurred! This could happen if the flow is already present or error in the import file.'
+          ),
           'error'
         );
       } else {
-        setNotification(client, 'The flow has been imported successfully.');
+        setNotification(client, t('The flow has been imported successfully.'));
       }
       setImporting(false);
     },
@@ -139,7 +141,7 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         variant="contained"
         color="primary"
       >
-        Import flow
+        {t('Import flow')}
         <ImportIcon />
       </Button>
     </span>
@@ -198,9 +200,9 @@ export const FlowList: React.SFC<FlowListProps> = () => {
         {...queries}
         {...columnAttributes}
         searchParameter="nameOrKeyword"
-        removeSortBy={[t('LAST PUBLISHED'), t('LAST SAVED IN DRAFT')]}
+        removeSortBy={['LAST PUBLISHED', 'LAST SAVED IN DRAFT']}
         additionalAction={additionalAction}
-        button={{ show: true, label: t('+ CREATE FLOW') }}
+        button={{ show: true, label: t('+ Create Flow') }}
         secondaryButton={importButton}
       />
 

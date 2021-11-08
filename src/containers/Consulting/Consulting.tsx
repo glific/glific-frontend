@@ -91,8 +91,8 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     when: Yup.date().nullable().required(t('Date is required and should be valid.')),
     duration: Yup.number()
       .nullable()
-      .moreThan(0, 'Duration should be greater than 0')
-      .test('is duration valid?', 'Duration should be in multiple of 15', isDurationValid)
+      .moreThan(0, t('Duration should be greater than 0'))
+      .test('is duration valid?', t('Duration should be in multiple of 15'), isDurationValid)
       .required(t('Duration is required')),
     isBillable: Yup.boolean().nullable().required('Required'),
     organization: Yup.object().nullable().required('Organization is required'),
@@ -172,7 +172,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match }) => {
     },
   ];
 
-  const dialogMessage = 'This action cannot be undone.';
+  const dialogMessage = t('This action cannot be undone.');
   const consultHourIcon = <ConsultingIcon className={styles.ConsultingIcon} />;
 
   const setPayload = (payload: any) => {

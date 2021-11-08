@@ -71,7 +71,7 @@ export const TagList: React.SFC<TagListProps> = () => {
       listItemName="tag"
       pageLink="tag"
       listIcon={tagIcon}
-      button={{ show: true, label: t('+ CREATE TAG') }}
+      button={{ show: true, label: t('+ Create Tag') }}
       dialogMessage={dialogMessage}
       refetchQueries={{
         query: FILTER_TAGS_NAME,

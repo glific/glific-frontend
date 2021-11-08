@@ -46,7 +46,7 @@ export const SearchList: React.SFC<SearchListProps> = () => {
       listItem="savedSearches"
       listItemName="Search"
       pageLink="search"
-      button={{ show: true, label: t('+ CREATE SEARCH') }}
+      button={{ show: true, label: t('+ Create Search') }}
       listIcon={searchIcon}
       dialogMessage={dialogMessage}
       {...queries}
