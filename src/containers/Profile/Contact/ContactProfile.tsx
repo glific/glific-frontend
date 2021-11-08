@@ -1,7 +1,9 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
+import moment from 'moment';
 // import { useTranslation } from 'react-i18next';
 
+import { DATE_TIME_FORMAT } from 'common/constants';
 import { GET_CONTACT_DETAILS } from 'graphql/queries/Contact';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
@@ -83,11 +85,25 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
   optin = typeof contactData.optinTime === 'string';
   optout = typeof contactData.optoutTime === 'string';
 
-  let OptinStatus = 'No optin or optout';
+  let optinMethod = '';
+  if (contactData.optinMethod) {
+    optinMethod = `via ${contactData.optinMethod} on ${moment(contactData.optinTime).format(
+      DATE_TIME_FORMAT
+    )}`;
+  }
+
+  let optoutMethod = '';
+  if (contactData.optoutMethod) {
+    optoutMethod = `via ${contactData.optoutMethod} on ${moment(contactData.optoutTime).format(
+      DATE_TIME_FORMAT
+    )}`;
+  }
+
+  let statusMessage = 'No optin or optout';
   if (optout && status === 'INVALID') {
-    OptinStatus = 'Optout';
+    statusMessage = `Optout ${optoutMethod}`;
   } else if (optin) {
-    OptinStatus = 'Optin';
+    statusMessage = `Optin ${optinMethod}`;
   }
 
   // const additonalStates = { name: 'tags', state: tags, setState: setTags };
@@ -112,7 +128,7 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
       </div>
       <div className={styles.ContactDescription}>
         <ContactDescription
-          optinStatus={OptinStatus}
+          statusMessage={statusMessage}
           phone={phone}
           maskedPhone={maskedPhone}
           fields={fields}
