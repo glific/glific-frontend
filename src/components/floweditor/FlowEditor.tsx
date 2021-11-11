@@ -9,7 +9,12 @@ import { ReactComponent as FlowIcon } from 'assets/images/icons/Flow/Dark.svg';
 import { ReactComponent as WarningIcon } from 'assets/images/icons/Warning.svg';
 import { ReactComponent as ExportIcon } from 'assets/images/icons/Flow/Export.svg';
 import { Button } from 'components/UI/Form/Button/Button';
-import { APP_NAME, FLOW_EDITOR_CONFIGURE_LINK, FLOW_EDITOR_API } from 'config/index';
+import {
+  APP_NAME,
+  FLOW_EDITOR_CONFIGURE_LINK,
+  FLOW_EDITOR_API,
+  FLOWS_HELP_LINK,
+} from 'config/index';
 import { Simulator } from 'components/simulator/Simulator';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { setNotification } from 'common/notification';
@@ -452,7 +457,7 @@ export const FlowEditor = (props: FlowEditorProps) => {
       {dialog}
       <div className={styles.ButtonContainer}>
         <a
-          href="https://glific.slab.com/public/3-flows-e2mlrud4"
+          href={FLOWS_HELP_LINK}
           className={styles.Link}
           target="_blank"
           rel="noopener noreferrer"
