@@ -109,7 +109,7 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
         pageLink="interactive-message"
         listIcon={interactiveMsgIcon}
         dialogMessage={dialogMessage}
-        noItemText="interactive messages"
+        noItemText="interactive message"
         {...queries}
         removeSortBy={['TYPE', 'MESSAGE']}
         {...columnAttributes}
