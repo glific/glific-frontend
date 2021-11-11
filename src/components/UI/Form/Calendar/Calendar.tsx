@@ -12,6 +12,7 @@ export interface CalendarProps {
   inputVariant?: any;
   format?: string;
   field: any;
+  disabled?: boolean;
   form: { dirty: any; touched: any; errors: any; setFieldValue: any };
   placeholder: string;
   minDate?: any;
@@ -22,6 +23,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
   inputVariant = 'outlined',
   format = 'MM/dd/yyyy',
   field,
+  disabled = false,
   form: { touched, errors, setFieldValue },
   placeholder,
   minDate,
@@ -48,6 +50,7 @@ export const Calendar: React.SFC<CalendarProps> = ({
           variant={variant}
           inputVariant={inputVariant}
           format={format}
+          disabled={disabled}
           data-testid="date-picker-inline"
           label={placeholder}
           value={dateValue}
