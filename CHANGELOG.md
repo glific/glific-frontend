@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.4.0](https://github.com/glific/glific-frontend/compare/v2.3.1...v2.4.0)
+
+> 11 November 2021
+
+- Updated floweditor with template expression support [`#1723`](https://github.com/glific/glific-frontend/pull/1723)
+- Disabled editing triggers [`#1727`](https://github.com/glific/glific-frontend/pull/1727)
+- Updated help link in flow editor screen [`#1726`](https://github.com/glific/glific-frontend/pull/1726)
+- Optout fixes [`#1736`](https://github.com/glific/glific-frontend/pull/1736)
+- [Snyk] Upgrade eslint-plugin-import from 2.24.2 to 2.25.2 [`#1744`](https://github.com/glific/glific-frontend/pull/1744)
+- workflow fixes [`#1743`](https://github.com/glific/glific-frontend/pull/1743)
+- [Snyk] Upgrade @appsignal/plugin-window-events from 1.0.11 to 1.0.14 [`#1742`](https://github.com/glific/glific-frontend/pull/1742)
+- [Snyk] Upgrade @testing-library/user-event from 13.2.1 to 13.4.1 [`#1741`](https://github.com/glific/glific-frontend/pull/1741)
+- [Snyk] Upgrade react-data-table-component from 7.3.1 to 7.4.3 [`#1730`](https://github.com/glific/glific-frontend/pull/1730)
+- [Snyk] Upgrade @types/react from 17.0.24 to 17.0.27 [`#1731`](https://github.com/glific/glific-frontend/pull/1731)
+- [Snyk] Upgrade @appsignal/plugin-path-decorator from 1.0.10 to 1.0.12 [`#1732`](https://github.com/glific/glific-frontend/pull/1732)
+- [Snyk] Upgrade i18next from 21.1.1 to 21.2.6 [`#1729`](https://github.com/glific/glific-frontend/pull/1729)
+- Changed headers position to fixed [`#1583`](https://github.com/glific/glific-frontend/pull/1583)
+- Added team member in consulting hours [`#1724`](https://github.com/glific/glific-frontend/pull/1724)
+- Updated floweditor fonts [`#1722`](https://github.com/glific/glific-frontend/pull/1722)
+- Localization fixes [`#1703`](https://github.com/glific/glific-frontend/pull/1703)
+
+
+#### [v2.3.1](https://github.com/glific/glific-frontend/compare/v2.3.0...v2.3.1)
+
+> 25 October 2021
+
+- Fixed renew call issues [`#1716`](https://github.com/glific/glific-frontend/pull/1716)
+- [Snyk] Upgrade @appsignal/plugin-breadcrumbs-network from 1.1.16 to 1.1.17 [`#1713`](https://github.com/glific/glific-frontend/pull/1713)
+- Added monthly trigger support [`#1702`](https://github.com/glific/glific-frontend/pull/1702)
+- [Snyk] Upgrade @appsignal/react from 1.0.11 to 1.0.12 [`#1714`](https://github.com/glific/glific-frontend/pull/1714)
+- [Snyk] Upgrade @appsignal/javascript from 1.3.16 to 1.3.17 [`#1712`](https://github.com/glific/glific-frontend/pull/1712)
+- [Snyk] Upgrade @apollo/client from 3.4.14 to 3.4.15 [`#1706`](https://github.com/glific/glific-frontend/pull/1706)
+
 #### [v2.3.0](https://github.com/glific/glific-frontend/compare/v2.2.5...v.2.3.0)
 
 - Added labels support in send message and interactive message nodes [`#1709`](https://github.com/glific/glific-frontend/pull/1709)
