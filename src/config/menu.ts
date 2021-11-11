@@ -88,6 +88,12 @@ const menus = [
     roles: ['Manager', 'Admin'],
   },
   {
+    title: 'Contact management',
+    path: '/contact-management',
+    type: 'staffManagement',
+    roles: ['Glific_admin'],
+  },
+  {
     title: 'Organizations',
     path: '/organizations',
     type: 'staffManagement',
@@ -99,6 +105,7 @@ const menus = [
     type: 'staffManagement',
     roles: ['Glific_admin'],
   },
+
   {
     title: 'Blocked Contacts',
     path: '/blocked-contacts',

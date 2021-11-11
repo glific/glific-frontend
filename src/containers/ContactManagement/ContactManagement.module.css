@@ -1,0 +1,83 @@
+.OrgIcon {
+    width: 29px;
+    height: 29px;
+  }
+  
+  .Label {
+    width: 40%;
+  }
+  
+  .LabelText {
+    font-weight: 500;
+    font-size: 20px;
+    color: #073f24;
+    line-height: 1;
+  }
+  
+  .SubLabelText {
+    font-weight: 500;
+    font-size: 12px;
+    margin-top: 4px;
+    color: #cacaca;
+    line-height: 1;
+  }
+  
+  .StatusText {
+    font-weight: 400;
+    font-size: 16px;
+    color: #93a29b;
+    line-height: 1.25;
+  }
+  
+  .LabelContainer {
+    height: fit-content;
+    align-items: baseline;
+    align-content: center;
+  }
+  
+  .Status {
+    display: flex;
+    align-content: center;
+    width: 20%;
+  }
+  
+  .Actions {
+    width: 20%;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+  
+  .additonalButton {
+    width: 42px;
+    height: 42px;
+  }
+  
+  /* 
+   Organization specific css
+    DialogSubText -> Sub-text style for delete modal
+    DialogSubInput -> Input confirmation styles
+  */
+  .DialogSubText {
+    font-size: 16px;
+    line-height: 1.25;
+    color: #073f24;
+    margin: 0px !important;
+  }
+  
+  .DialogSubInput {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .ExtensionIcon {
+    width: 18px;
+  }
+  
+  .Delete {
+    color: #dd1f1f;
+  }
+  
+  .Inactive {
+    color: #93a29b;
+  }
+  

@@ -28,6 +28,7 @@ const Search = lazy(() => import('containers/Search/Search'));
 const StaffManagementList = lazy(
   () => import('containers/StaffManagement/StaffManagementList/StaffManagementList')
 );
+const ContactManagement = lazy(() => import('containers/ContactManagement/ContactManagement'));
 const StaffManagement = lazy(() => import('containers/StaffManagement/StaffManagement'));
 const ContactProfile = lazy(() => import('containers/Profile/Contact/ContactProfile'));
 const UserProfile = lazy(() => import('containers/Profile/User/UserProfile'));
@@ -126,6 +127,7 @@ const routeAdmin = (
     <Route path="/trigger/:id/edit" exact component={Trigger} />
 
     <Route path="/staff-management" exact component={StaffManagementList} />
+    <Route path="/contact-management" exact component={ContactManagement} />
     <Route path="/staff-management/:id/edit" exact component={StaffManagement} />
     <Route path="/contact-profile/:id" exact component={ContactProfile} />
     <Route path="/user-profile" exact component={UserProfile} />
