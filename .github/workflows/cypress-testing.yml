@@ -80,10 +80,6 @@ jobs:
           sed -i 's/:max_rate_limit_request, 60/:max_rate_limit_request, 300/g' config.exs
           echo copy done. start setup
           cd ../
-          cd assets
-          rm -rf package-lock.json
-          npm install
-          cd ../
           echo install mix dependencies if not Cached
           mix local.rebar --force
           mix local.hex --force
