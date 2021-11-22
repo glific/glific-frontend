@@ -38,6 +38,11 @@ const checkDateTimeValidation = (startAtValue: string, startDateValue: string) =
 };
 
 export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
+  let isEditing = false;
+  if (match.params.id) {
+    isEditing = true;
+  }
+
   const [flowId, setFlowId] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const [startTime, setStartTime] = useState('');
@@ -171,6 +176,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       name: 'flowId',
       options: flow.flows,
       optionLabel: 'name',
+      disabled: isEditing,
       multiple: false,
       textFieldProps: {
         variant: 'outlined',
@@ -181,6 +187,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: Calendar,
       type: 'date',
       name: 'startDate',
+      disabled: isEditing,
       placeholder: t('Start date'),
       minDate,
     },
@@ -188,12 +195,14 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       component: Calendar,
       type: 'date',
       name: 'endDate',
+      disabled: isEditing,
       placeholder: t('End date'),
       minDate,
     },
     {
       component: TimePicker,
       name: 'startTime',
+      disabled: isEditing,
       placeholder: t('Time'),
     },
     {
@@ -202,6 +211,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       placeholder: t('Repeat'),
       options: triggerFrequencyOptions,
       optionLabel: 'label',
+      disabled: isEditing,
       valueElementName: 'value',
       multiple: false,
       textFieldProps: {
@@ -215,7 +225,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       name: 'days',
       placeholder: monthly ? t('Select date') : t('Select days'),
       options: monthly ? dateList : dayList,
-      disabled: daysDisabled,
+      disabled: isEditing || daysDisabled,
       optionLabel: 'label',
       textFieldProps: {
         label: monthly ? t('Select dates') : t('Select days'),
@@ -233,6 +243,7 @@ export const Trigger: React.SFC<TriggerProps> = ({ match }) => {
       placeholder: t('Select collection'),
       options: collections.groups,
       multiple: false,
+      disabled: isEditing,
       optionLabel: 'label',
       textFieldProps: {
         label: t('Select collection'),
