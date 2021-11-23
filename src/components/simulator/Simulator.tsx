@@ -71,7 +71,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
-  const [reply, setReply] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
   // Template listing
@@ -156,6 +155,70 @@ export const Simulator: React.FC<SimulatorProps> = ({
     setIsDrawerOpen(true);
   };
 
+  const sendMediaMessage = (type: string, payload: any) => {
+    axios
+      .post(GUPSHUP_CALLBACK_URL, {
+        type: 'message',
+        payload: {
+          id: uuidv4(),
+          type,
+          payload,
+          sender: {
+            // this number will be the simulated contact number
+            phone: data ? data.simulatorGet?.phone : '',
+            name: data ? data.simulatorGet?.name : '',
+          },
+        },
+      })
+      .catch((error) => {
+        // add log's
+        setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
+        setLogs(error, 'error');
+      });
+  };
+
+  const sendMessage = (quickReplyText?: string) => {
+    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
+    // check if send message text is not empty
+
+    if (sendMessageText || quickReplyText) {
+      const payload: any = {
+        text: sendMessageText,
+      };
+
+      if (quickReplyText) payload.text = quickReplyText;
+
+      axios
+        .post(GUPSHUP_CALLBACK_URL, {
+          type: 'message',
+          payload: {
+            id: uuidv4(),
+            type: 'text',
+            payload,
+            sender: {
+              // this number will be the simulated contact number
+              phone: data ? data.simulatorGet?.phone : '',
+              name: data ? data.simulatorGet?.name : '',
+            },
+          },
+        })
+        .catch((error) => {
+          // add log's
+          setLogs(
+            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
+            'info'
+          );
+          setLogs(error, 'error');
+        });
+      setInputMessage('');
+      // reset the message from floweditor for the next time
+      if (resetMessage) {
+        resetMessage();
+      }
+      // after post update render messages
+    }
+  };
+
   const renderMessage = (
     text: string,
     direction: string,
@@ -205,7 +268,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
             {...content}
             isSimulator
             disabled={disableButtons}
-            onQuickReplyClick={(value: string) => setReply(value)}
+            onQuickReplyClick={(value: string) => sendMessage(value)}
           />
         );
       }
@@ -232,7 +295,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
         <div className={styles.TemplateButtons}>
           <TemplateButtons
             template={buttons}
-            callbackTemplateButtonClick={(value: string) => setReply(value)}
+            callbackTemplateButtonClick={(value: string) => sendMessage(value)}
             isSimulator
           />
         </div>
@@ -269,71 +332,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       })
       .reverse();
     setSimulatedMessage(chatMessage);
-  };
-
-  const sendMediaMessage = (type: string, payload: any) => {
-    axios
-      .post(GUPSHUP_CALLBACK_URL, {
-        type: 'message',
-        payload: {
-          id: uuidv4(),
-          type,
-          payload,
-          sender: {
-            // this number will be the simulated contact number
-            phone: data ? data.simulatorGet?.phone : '',
-            name: data ? data.simulatorGet?.name : '',
-          },
-        },
-      })
-      .catch((error) => {
-        // add log's
-        setLogs(`sendMediaMessage:${type} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`, 'info');
-        setLogs(error, 'error');
-      });
-    getChatMessage();
-  };
-  const sendMessage = (quickReplyText?: string) => {
-    const sendMessageText = inputMessage === '' && message ? message : inputMessage;
-    // check if send message text is not empty
-
-    if (sendMessageText || quickReplyText) {
-      const payload: any = {
-        text: sendMessageText,
-      };
-
-      if (quickReplyText) payload.text = quickReplyText;
-
-      axios
-        .post(GUPSHUP_CALLBACK_URL, {
-          type: 'message',
-          payload: {
-            id: uuidv4(),
-            type: 'text',
-            payload,
-            sender: {
-              // this number will be the simulated contact number
-              phone: data ? data.simulatorGet?.phone : '',
-              name: data ? data.simulatorGet?.name : '',
-            },
-          },
-        })
-        .catch((error) => {
-          // add log's
-          setLogs(
-            `sendMessageText:${sendMessageText} GUPSHUP_CALLBACK_URL:${GUPSHUP_CALLBACK_URL}`,
-            'info'
-          );
-          setLogs(error, 'error');
-        });
-      setInputMessage('');
-      // reset the message from floweditor for the next time
-      if (resetMessage) {
-        resetMessage();
-      }
-      // after post update render messages
-      getChatMessage();
-    }
   };
 
   const getPreviewMessage = () => {
@@ -402,10 +400,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       sendMessage();
     }
   }, [message, data]);
-
-  useEffect(() => {
-    if (reply) sendMessage(reply);
-  }, [reply]);
 
   useEffect(() => {
     if (isPreviewMessage && interactiveMessage) {
