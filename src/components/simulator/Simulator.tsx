@@ -215,7 +215,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
       if (resetMessage) {
         resetMessage();
       }
-      // after post update render messages
     }
   };
 
