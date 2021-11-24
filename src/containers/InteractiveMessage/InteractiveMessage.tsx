@@ -11,6 +11,7 @@ import {
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -59,6 +60,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
+  const [sendInteractiveTitle, setSendInteractiveTitle] = useState<boolean>(true);
 
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -109,6 +111,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     body,
     globalButton,
     templateButtons,
+    sendInteractiveTitle,
     templateType,
     type,
     attachmentURL,
@@ -148,6 +151,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
+    sendInteractiveTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
 
@@ -203,6 +207,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (translationsVal) {
       setTranslations(translationsVal);
     }
+    setSendInteractiveTitle(sendInteractiveTitleValue);
   };
 
   const validateURL = (value: string) => {
@@ -486,6 +491,13 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       },
     },
     {
+      component: Checkbox,
+      name: 'sendInteractiveTitle',
+      title: t('Show title in message'),
+      handleChange: (value: boolean) => setSendInteractiveTitle(value),
+      darkCheckbox: true,
+    },
+    {
       translation:
         match.params?.id &&
         defaultLanguage?.id !== language?.id &&
@@ -646,6 +658,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       }
     }
 
+    payloadData.sendInteractiveTitle = sendInteractiveTitle;
     payloadData.translations = JSON.stringify(translationsCopy);
 
     return payloadData;
@@ -768,6 +781,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           showSimulator
           isPreviewMessage
           message={{}}
+          showHeader={sendInteractiveTitle}
           interactiveMessage={previewData}
           simulatorIcon={false}
         />

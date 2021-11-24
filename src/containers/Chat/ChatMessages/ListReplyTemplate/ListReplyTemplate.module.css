@@ -137,7 +137,7 @@
   padding: 8px 10px;
 }
 
-.SimulatorContent > p:first-child {
+.ListHeader {
   font-weight: 500;
 }
 

@@ -56,6 +56,7 @@ export interface SimulatorProps {
   resetMessage?: Function;
   getFlowKeyword?: Function;
   interactiveMessage?: any;
+  showHeader?: boolean;
 }
 
 export const Simulator: React.FC<SimulatorProps> = ({
@@ -68,6 +69,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
   resetMessage,
   getFlowKeyword,
   interactiveMessage,
+  showHeader = true,
 }: SimulatorProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [simulatedMessages, setSimulatedMessage] = useState<any>();
@@ -191,6 +193,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <>
             <ListReplyTemplate
               {...content}
+              showHeader={showHeader}
               component={SimulatorTemplate}
               onGlobalButtonClick={handleOpenListReplyDrawer}
             />
@@ -204,6 +207,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
           <QuickReplyTemplate
             {...content}
             isSimulator
+            showHeader={showHeader}
             disabled={disableButtons}
             onQuickReplyClick={(value: string) => setReply(value)}
           />
