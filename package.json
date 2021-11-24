@@ -1,6 +1,6 @@
 {
   "name": "glific-frontend",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
@@ -17,7 +17,7 @@
     "@date-io/date-fns": "^1.x",
     "@draft-js-plugins/editor": "^4.1.0",
     "@draft-js-plugins/mention": "^4.5.2",
-    "@glific/flow-editor": "^1.14.0-3",
+    "@glific/flow-editor": "^1.14.0-4",
     "@jumpn/utils-graphql": "^0.6.0",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -33,7 +33,7 @@
     "@types/emoji-mart": "^3.0.6",
     "@types/jest": "^27.0.2",
     "@types/markdown-draft-js": "^2.2.1",
-    "@types/node": "^16.10.1",
+    "@types/node": "^16.11.0",
     "@types/pino": "^6.3.6",
     "@types/react": "^17.0.27",
     "@types/react-color": "^3.0.4",
@@ -67,7 +67,7 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "formik": "^2.2.6",
     "formik-material-ui": "^4.0.0-alpha.1",
-    "graphql": "^15.6.0",
+    "graphql": "^15.7.2",
     "i18next": "^21.2.6",
     "i18next-browser-languagedetector": "^6.1.0",
     "markdown-draft-js": "^2.2.1",
@@ -99,7 +99,7 @@
     "typescript": "~4.4.3",
     "uuid": "^8.3.2",
     "winston-logflare": "^0.1.1",
-    "yup": "^0.32.9"
+    "yup": "^0.32.11"
   },
   "scripts": {
     "setup": "yarn cache clean && yarn install --force && yarn run floweditor",
