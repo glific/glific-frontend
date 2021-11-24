@@ -42,7 +42,7 @@
     "@types/react-i18next": "^8.1.0",
     "@types/react-linkify": "^1.0.0",
     "@types/react-router": "^5.1.11",
-    "@types/react-router-dom": "^5.3.0",
+    "@types/react-router-dom": "^5.3.2",
     "@types/styled-components": "^5.1.7",
     "@types/uuid": "^8.3.0",
     "@types/yup": "^0.29.11",
