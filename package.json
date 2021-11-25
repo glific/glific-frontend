@@ -85,7 +85,7 @@
     "react-i18next": "^11.12.0",
     "react-image": "^4.0.3",
     "react-linkify": "^1.0.0-alpha",
-    "react-media-recorder": "^1.4.0",
+    "react-media-recorder": "^1.6.2",
     "react-phone-input-2": "^2.13.7",
     "react-player": "^2.9.0",
     "react-resize-detector": "^6.6.0",
