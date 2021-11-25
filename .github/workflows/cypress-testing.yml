@@ -98,7 +98,7 @@ jobs:
           git clone https://github.com/glific/cypress-testing.git
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
-          yarn add cypress@7.3.0
+          yarn add cypress
           cp cypress-testing/cypress.json.example cypress.json
           echo Copy Cypress.json from example
 
