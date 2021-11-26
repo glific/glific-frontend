@@ -8,7 +8,7 @@ import styles from './Checkbox.module.css';
 export interface CheckboxProps {
   field: any;
   title: string;
-  form: any;
+  form?: any;
   handleChange?: Function;
   info?: { title: string };
   darkCheckbox?: boolean;
