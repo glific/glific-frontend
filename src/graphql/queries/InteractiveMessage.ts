@@ -14,7 +14,7 @@ export const FILTER_INTERACTIVE_MESSAGES = gql`
       interactiveContent
       type
       translations
-      sendInteractiveTitle
+      sendWithTitle
       language {
         id
         label
@@ -30,7 +30,7 @@ export const GET_INTERACTIVE_MESSAGE = gql`
         id
         label
         interactiveContent
-        sendInteractiveTitle
+        sendWithTitle
         type
         translations
         language {

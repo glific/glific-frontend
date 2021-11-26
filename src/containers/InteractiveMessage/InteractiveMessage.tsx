@@ -60,7 +60,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
-  const [sendInteractiveTitle, setSendInteractiveTitle] = useState<boolean>(true);
+  const [sendWithTitle, setSendInteractiveTitle] = useState<boolean>(true);
 
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -111,7 +111,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     body,
     globalButton,
     templateButtons,
-    sendInteractiveTitle,
+    sendWithTitle,
     templateType,
     type,
     attachmentURL,
@@ -151,7 +151,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
-    sendInteractiveTitle: sendInteractiveTitleValue,
+    sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
 
@@ -492,7 +492,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       component: Checkbox,
-      name: 'sendInteractiveTitle',
+      name: 'sendWithTitle',
       title: t('Show title in message'),
       handleChange: (value: boolean) => setSendInteractiveTitle(value),
       darkCheckbox: true,
@@ -658,7 +658,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       }
     }
 
-    payloadData.sendInteractiveTitle = sendInteractiveTitle;
+    payloadData.sendWithTitle = sendWithTitle;
     payloadData.translations = JSON.stringify(translationsCopy);
 
     return payloadData;
@@ -781,7 +781,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           showSimulator
           isPreviewMessage
           message={{}}
-          showHeader={sendInteractiveTitle}
+          showHeader={sendWithTitle}
           interactiveMessage={previewData}
           simulatorIcon={false}
         />
