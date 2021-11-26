@@ -60,7 +60,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
-  const [sendWithTitle, setSendInteractiveTitle] = useState<boolean>(true);
+  const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
 
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -207,7 +207,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (translationsVal) {
       setTranslations(translationsVal);
     }
-    setSendInteractiveTitle(sendInteractiveTitleValue);
+    setSendWithTitle(sendInteractiveTitleValue);
   };
 
   const validateURL = (value: string) => {
@@ -494,7 +494,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       component: Checkbox,
       name: 'sendWithTitle',
       title: t('Show title in message'),
-      handleChange: (value: boolean) => setSendInteractiveTitle(value),
+      handleChange: (value: boolean) => setSendWithTitle(value),
       addLabelStyle: false,
     },
     {
