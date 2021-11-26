@@ -93,7 +93,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
         type: 'URL',
         data: uploadedURL,
         groupLabel: details.collection.label,
-        importContactsId: parseInt(organizationDetails.id),
+        importContactsId: organizationDetails.id,
       },
     });
   };
