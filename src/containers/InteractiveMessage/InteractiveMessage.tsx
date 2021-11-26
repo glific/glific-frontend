@@ -495,7 +495,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       name: 'sendWithTitle',
       title: t('Show title in message'),
       handleChange: (value: boolean) => setSendInteractiveTitle(value),
-      darkCheckbox: true,
+      addLabelStyle: false,
     },
     {
       translation:
