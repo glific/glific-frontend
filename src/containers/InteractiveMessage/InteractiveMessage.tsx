@@ -490,7 +490,9 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         onBlur: (event: any) => setTitle(event.target.value),
       },
     },
+    // checkbox is not needed in media types
     {
+      skip: type && type.label,
       component: Checkbox,
       name: 'sendWithTitle',
       title: t('Show title in message'),
