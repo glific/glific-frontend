@@ -91,7 +91,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
     importContacts({
       variables: {
         type: 'URL',
-        data: uploadedURL,
+        data: encodeURI(uploadedURL),
         groupLabel: details.collection.label,
         importContactsId: organizationDetails.id,
       },
