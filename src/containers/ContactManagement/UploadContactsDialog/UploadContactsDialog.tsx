@@ -13,7 +13,6 @@ import { Field, Form, Formik } from 'formik';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
 import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
-import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
 import { setNotification } from 'common/notification';
 import styles from './UploadContactsDialog.module.css';
@@ -29,9 +28,8 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
 }) => {
   const client = useApolloClient();
   const [error, setError] = useState<any>(false);
-  const [uploadingFile, setUploadingFile] = useState(false);
+  const [csvContent, setCsvContent] = useState<String | null | ArrayBuffer>('');
   const [uploadingContacts, setUploadingContacts] = useState(false);
-  const [uploadedURL, setUploadedURL] = useState('');
   const [fileName, setFileName] = useState<string>('');
 
   const { t } = useTranslation();
@@ -42,18 +40,6 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
     variables: setVariables(),
   });
 
-  const [uploadMedia] = useMutation(UPLOAD_MEDIA, {
-    onCompleted: (data: any) => {
-      if (data.uploadMedia) {
-        setUploadedURL(data.uploadMedia);
-      }
-      setUploadingFile(false);
-    },
-    onError: () => {
-      setNotification(client, 'Error while uploading file', 'warning');
-      setUploadingFile(false);
-    },
-  });
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
       if (data.errors) {
@@ -71,8 +57,10 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
 
   const addAttachment = (event: any) => {
     const media = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(media);
 
-    if (media) {
+    reader.onload = () => {
       const mediaName = media.name;
       const extension = mediaName.slice((Math.max(0, mediaName.lastIndexOf('.')) || Infinity) + 1);
       if (extension !== 'csv') {
@@ -80,22 +68,16 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
       } else {
         const shortenedName = mediaName.length > 15 ? `${mediaName.slice(0, 15)}...` : mediaName;
         setFileName(shortenedName);
-        setUploadingFile(true);
-        uploadMedia({
-          variables: {
-            media,
-            extension,
-          },
-        });
+        setCsvContent(reader.result);
       }
-    }
+    };
   };
 
   const uploadContacts = (details: any) => {
     importContacts({
       variables: {
-        type: 'URL',
-        data: encodeURI(uploadedURL),
+        type: 'DATA',
+        data: csvContent,
         groupLabel: details.collection.label,
         importContactsId: organizationDetails.id,
       },
@@ -177,14 +159,13 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
                         onClick={(event) => {
                           event.preventDefault();
                           setFileName('');
-                          setUploadedURL('');
                         }}
                       />
                     </>
                   ) : (
                     <>
-                      <UploadIcon className={styles.UploadIcon} />{' '}
-                      {uploadingFile ? 'Uploading...' : 'Select .csv'}
+                      <UploadIcon className={styles.UploadIcon} />
+                      Select .csv
                     </>
                   )}
 
