@@ -51,7 +51,6 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
-      console.log(data);
       if (data.errors) {
         setNotification(client, data.errors[0].message, 'warning');
       } else {
@@ -93,8 +92,6 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
       },
     });
   };
-
-  console.log(collections);
 
   if (loading || !collections) {
     return <Loading />;
