@@ -58,7 +58,7 @@ export const IMPORT_CONTACTS = gql`
     $data: String!
     $groupLabel: String!
     $importContactsId: ID!
-    $type: UploadContactsTypeEnum
+    $type: ImportContactsTypeEnum
   ) {
     importContacts(data: $data, groupLabel: $groupLabel, id: $importContactsId, type: $type) {
       status

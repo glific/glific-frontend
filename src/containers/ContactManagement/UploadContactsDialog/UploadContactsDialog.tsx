@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
-import { useApolloClient, useMutation, useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useMutation } from '@apollo/client';
 
-import { setVariables } from 'common/constants';
 import { useTranslation } from 'react-i18next';
-import { GET_COLLECTIONS } from 'graphql/queries/Collection';
+import { GET_ORGANIZATION_COLLECTIONS } from 'graphql/queries/Collection';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
@@ -36,12 +35,23 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
   const [collection] = useState();
   const [optedIn] = useState(false);
 
-  const { data: collections, loading } = useQuery(GET_COLLECTIONS, {
-    variables: setVariables(),
-  });
+  const [getCollections, { data: collections, loading }] = useLazyQuery(
+    GET_ORGANIZATION_COLLECTIONS
+  );
+
+  useEffect(() => {
+    if (organizationDetails.id) {
+      getCollections({
+        variables: {
+          organizationGroupsId: organizationDetails.id,
+        },
+      });
+    }
+  }, [organizationDetails]);
 
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
+      console.log(data);
       if (data.errors) {
         setNotification(client, data.errors[0].message, 'warning');
       } else {
@@ -84,7 +94,9 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
     });
   };
 
-  if (loading || !organizationDetails) {
+  console.log(collections);
+
+  if (loading || !collections) {
     return <Loading />;
   }
 
@@ -97,7 +109,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
       component: AutoComplete,
       name: 'collection',
       placeholder: t('Select collection'),
-      options: collections.groups,
+      options: collections.organizationGroups,
       multiple: false,
       optionLabel: 'label',
       textFieldProps: {
