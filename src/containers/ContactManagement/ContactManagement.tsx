@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
-import { DELETE_INACTIVE_ORGANIZATIONS } from 'graphql/mutations/Organization';
+
 import { ReactComponent as OrganisationIcon } from 'assets/images/icons/Organisation.svg';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload/Dark.svg';
 
@@ -18,12 +18,12 @@ export interface ContactManagementProps {
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
   filterItemsQuery: FILTER_ORGANIZATIONS,
-  deleteItemQuery: DELETE_INACTIVE_ORGANIZATIONS,
+  deleteItemQuery: null,
 };
 
 export const ContactManagement: React.SFC<ContactManagementProps> = () => {
   const { t } = useTranslation();
-  //   const client = useApolloClient();
+
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [organizationDetails, setOrganizationDetails] = useState({});
 
@@ -66,8 +66,6 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
     setShowUploadDialog(true);
   };
 
-  const dialogMessage = "Don't delete";
-
   const restrictedAction = () => ({ delete: false, edit: false });
 
   const additionalActions = [
@@ -89,7 +87,6 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
         listItemName="organization"
         pageLink="organization"
         listIcon={listIcon}
-        dialogMessage={dialogMessage}
         restrictedAction={restrictedAction}
         refetchQueries={{
           query: FILTER_ORGANIZATIONS,

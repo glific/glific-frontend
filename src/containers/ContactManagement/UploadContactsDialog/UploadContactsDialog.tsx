@@ -1,7 +1,5 @@
-// @ts-ignore
-/* eslint-disable */
 import React, { useState } from 'react';
-
+import * as Yup from 'yup';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { useApolloClient, useMutation, useQuery } from '@apollo/client';
@@ -12,12 +10,12 @@ import { GET_COLLECTIONS } from 'graphql/queries/Collection';
 import Loading from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
-import styles from './UploadContactsDialog.module.css';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
 import { setNotification } from 'common/notification';
+import styles from './UploadContactsDialog.module.css';
 
 export interface UploadContactsDialogProps {
   organizationDetails: any;
@@ -51,14 +49,19 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
       setUploadingFile(false);
     },
     onError: () => {
+      setNotification(client, 'Error while uploading file', 'warning');
       setUploadingFile(false);
     },
   });
   const [importContacts] = useMutation(IMPORT_CONTACTS, {
     onCompleted: (data: any) => {
-      setUploadingContacts(false);
-      setDialog(false);
-      setNotification(client, 'Contacts have been uploaded');
+      if (data.errors) {
+        setNotification(client, data.errors[0].message, 'warning');
+      } else {
+        setUploadingContacts(false);
+        setDialog(false);
+        setNotification(client, t('Contacts have been uploaded'));
+      }
     },
     onError: () => {
       setUploadingContacts(false);
@@ -102,6 +105,10 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
     return <Loading />;
   }
 
+  const validationSchema = Yup.object().shape({
+    collection: Yup.object().nullable().required(t('Collection is required')),
+  });
+
   const formFieldItems: any = [
     {
       component: AutoComplete,
@@ -126,6 +133,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
   const form = (
     <Formik
       enableReinitialize
+      validationSchema={validationSchema}
       initialValues={{ collection, optedIn }}
       onSubmit={(itemData) => {
         uploadContacts(itemData);
@@ -164,7 +172,8 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
                     fileName
                   ) : (
                     <>
-                      <UploadIcon className={styles.UploadIcon} /> Select .csv
+                      <UploadIcon className={styles.UploadIcon} />{' '}
+                      {uploadingFile ? 'Uploading...' : 'Select .csv'}
                     </>
                   )}
 
