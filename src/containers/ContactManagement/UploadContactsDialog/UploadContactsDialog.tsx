@@ -11,6 +11,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { Field, Form, Formik } from 'formik';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload.svg';
+import { ReactComponent as CrossIcon } from 'assets/images/icons/Cross.svg';
 import { UPLOAD_CONTACTS_SAMPLE } from 'config';
 import { UPLOAD_MEDIA } from 'graphql/mutations/Chat';
 import { IMPORT_CONTACTS } from 'graphql/mutations/Contact';
@@ -31,7 +32,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
   const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadingContacts, setUploadingContacts] = useState(false);
   const [uploadedURL, setUploadedURL] = useState('');
-  const [fileName, setFileName] = useState<null | string>(null);
+  const [fileName, setFileName] = useState<string>('');
 
   const { t } = useTranslation();
   const [collection] = useState();
@@ -168,8 +169,18 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
                 htmlFor="uploadFile"
               >
                 <span>
-                  {fileName !== null ? (
-                    fileName
+                  {fileName !== '' ? (
+                    <>
+                      <span>{fileName}</span>
+                      <CrossIcon
+                        className={styles.CrossIcon}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setFileName('');
+                          setUploadedURL('');
+                        }}
+                      />
+                    </>
                   ) : (
                     <>
                       <UploadIcon className={styles.UploadIcon} />{' '}
@@ -180,6 +191,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
                   <input
                     type="file"
                     id="uploadFile"
+                    disabled={fileName !== ''}
                     data-testid="uploadFile"
                     onChange={(event) => {
                       setError(false);

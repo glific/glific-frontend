@@ -4,6 +4,7 @@
 }
 
 .Uploaded {
+  cursor: unset;
   border: 2px solid #073f24 !important;
 }
 .Uploaded span {
@@ -11,7 +12,6 @@
 }
 
 .UploadEnabled span {
-  padding-left: 32px;
   display: flex;
   align-items: center;
 }
@@ -23,7 +23,7 @@
 .Upload {
   display: flex;
   align-items: center;
-
+  position: relative;
   width: 200px;
   border: 2px solid #93a29b;
   border-radius: 27px;
@@ -32,6 +32,7 @@
   color: #93a29b;
   font-weight: 500;
   font-size: 16px;
+  justify-content: center;
 }
 
 .UploadEnabled {
@@ -71,4 +72,9 @@
   font-weight: 500;
   margin-top: 16px;
   color: #dd1f1f;
+}
+
+.CrossIcon {
+  position: absolute;
+  right: 12px;
 }
