@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Organization';
 
-import { ReactComponent as OrganisationIcon } from 'assets/images/icons/Organisation.svg';
+import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload/Dark.svg';
 
 import { setVariables } from 'common/constants';
@@ -58,7 +58,7 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
     columnStyles,
   };
 
-  const listIcon = <OrganisationIcon className={styles.OrgIcon} />;
+  const listIcon = <CollectionIcon className={styles.OrgIcon} />;
   const extensionIcon = <UploadIcon className={styles.UploadIcon} />;
 
   const uploadContacts = (_: any, details: any) => {
@@ -82,7 +82,7 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
     <>
       {dialog}
       <List
-        title={t('Organizations')}
+        title={t('Contact management')}
         listItem="organizations"
         listItemName="organization"
         pageLink="organization"
