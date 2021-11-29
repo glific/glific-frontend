@@ -6,9 +6,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { getAllOrganizations } from 'mocks/Organization';
 
 import UploadContactsDialog from './UploadContactsDialog';
-import { getCollectionsQuery } from 'mocks/Collection';
+import { getOrganizationCollections } from 'mocks/Collection';
 
-const mocks = [...getAllOrganizations, ...getCollectionsQuery];
+const mocks = [...getAllOrganizations, getOrganizationCollections];
 
 const setDialogMock = jest.fn();
 const props = {
