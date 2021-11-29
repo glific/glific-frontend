@@ -69,5 +69,6 @@
 
 .Error {
   font-weight: 500;
+  margin-top: 16px;
   color: #dd1f1f;
 }

@@ -105,7 +105,6 @@ const menus = [
     type: 'staffManagement',
     roles: ['Glific_admin'],
   },
-
   {
     title: 'Blocked Contacts',
     path: '/blocked-contacts',

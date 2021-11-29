@@ -182,6 +182,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
                     id="uploadFile"
                     data-testid="uploadFile"
                     onChange={(event) => {
+                      setError(false);
                       addAttachment(event);
                     }}
                   />
@@ -194,7 +195,7 @@ export const UploadContactsDialog: React.FC<UploadContactsDialogProps> = ({
 
             {error && (
               <div className={styles.Error}>
-                Please make sure the file format matches the sample
+                1. Please make sure the file format matches the sample
               </div>
             )}
           </DialogBox>
