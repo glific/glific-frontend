@@ -61,3 +61,12 @@ export const GET_COLLECTION_INFO = gql`
     groupInfo(id: $id)
   }
 `;
+
+export const GET_ORGANIZATION_COLLECTIONS = gql`
+  query OrganizationGroups($organizationGroupsId: ID!, $filter: GroupFilter, $opts: Opts) {
+    organizationGroups(id: $organizationGroupsId, filter: $filter, opts: $opts) {
+      label
+      id
+    }
+  }
+`;

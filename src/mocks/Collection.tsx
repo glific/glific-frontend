@@ -6,6 +6,7 @@ import {
   GET_COLLECTIONS_COUNT,
   GET_COLLECTION_INFO,
   GET_COLLECTION_USERS,
+  GET_ORGANIZATION_COLLECTIONS,
 } from 'graphql/queries/Collection';
 import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 
@@ -72,6 +73,27 @@ export const getCollectionsQuery = [
     },
   },
 ];
+
+export const getOrganizationCollections = {
+  request: {
+    query: GET_ORGANIZATION_COLLECTIONS,
+    variables: { organizationGroupsId: '1' },
+  },
+  result: {
+    data: {
+      organizationGroups: [
+        {
+          id: '1',
+          label: 'Default group',
+        },
+        {
+          id: '2',
+          label: 'Optin group',
+        },
+      ],
+    },
+  },
+};
 
 export const getCollectionUsersQuery = {
   request: {

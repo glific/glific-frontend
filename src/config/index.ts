@@ -39,3 +39,4 @@ export const FLOWS_HELP_LINK = 'https://app.rapidpro.io/video/';
 export const STRIPE_PUBLISH_KEY = envVariables.REACT_APP_STRIPE_PUBLISH_KEY;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.REACT_APP_RECAPTCHA_CLIENT_KEY;
+export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import.csv';

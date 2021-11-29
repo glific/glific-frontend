@@ -29,6 +29,7 @@ export interface DialogProps {
   alwaysOntop?: boolean;
   buttonMiddle?: string | null;
   additionalTitleStyles?: string | null;
+  buttonOkLoading?: boolean;
 }
 
 export const DialogBox: React.SFC<DialogProps> = ({
@@ -52,6 +53,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
   disableOk = false,
   alwaysOntop = false,
   buttonMiddle,
+  buttonOkLoading = false,
 }) => {
   let cancelButtonDisplay = null;
   if (!skipCancel) {
@@ -100,6 +102,7 @@ export const DialogBox: React.SFC<DialogProps> = ({
         color={colorOk}
         variant="contained"
         data-testid="ok-button"
+        loading={buttonOkLoading}
       >
         {buttonOk}
       </Button>
