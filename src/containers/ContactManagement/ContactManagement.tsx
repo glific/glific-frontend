@@ -11,9 +11,7 @@ import { List } from 'containers/List/List';
 import styles from './ContactManagement.module.css';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
 
-export interface ContactManagementProps {
-  match: any;
-}
+export interface ContactManagementProps {}
 
 const queries = {
   countQuery: GET_ORGANIZATION_COUNT,
