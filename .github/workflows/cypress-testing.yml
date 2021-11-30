@@ -103,13 +103,15 @@ jobs:
           echo done. go to dir.
           cp -r cypress-testing/cypress cypress
           yarn add cypress@7.3.0
+          yarn add @cypress/code-coverage
+          yarn add @cypress/instrument-cra
           cp cypress-testing/cypress.json.example cypress.json
           echo Copy Cypress.json from example
 
         # Run frontend
       - name: Run glific frontend
         run: |
-          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start &
+          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn run react-scripts -r @cypress/instrument-cra start &
 
         # Run backend
       - name: Run glific backend
