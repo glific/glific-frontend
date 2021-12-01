@@ -52,3 +52,19 @@ export const UPDATE_CONTACT_TAGS = gql`
     }
   }
 `;
+
+export const IMPORT_CONTACTS = gql`
+  mutation ImportContacts(
+    $data: String!
+    $groupLabel: String!
+    $importContactsId: ID!
+    $type: ImportContactsTypeEnum
+  ) {
+    importContacts(data: $data, groupLabel: $groupLabel, id: $importContactsId, type: $type) {
+      status
+      errors {
+        message
+      }
+    }
+  }
+`;

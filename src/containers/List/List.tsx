@@ -29,7 +29,7 @@ export interface ListProps {
   filterItemsQuery: DocumentNode;
   deleteItemQuery: DocumentNode | null;
   listItemName: string;
-  dialogMessage: string | any;
+  dialogMessage?: string | any;
   pageLink: string;
   columns: Function;
   listIcon: Object;
@@ -92,7 +92,7 @@ export const List: React.SFC<ListProps> = ({
   filterItemsQuery,
   deleteItemQuery,
   listItemName,
-  dialogMessage,
+  dialogMessage = '',
   secondaryButton,
   pageLink,
   columns,
