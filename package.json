@@ -64,7 +64,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.0",
-    "eslint-plugin-react-hooks": "4.2.0",
+    "eslint-plugin-react-hooks": "4.3.0",
     "formik": "^2.2.6",
     "formik-material-ui": "^4.0.0-alpha.1",
     "graphql": "^15.7.2",
