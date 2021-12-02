@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import styles from './ListReplyTemplate.module.css';
 import { DialogBox } from '../../../../components/UI/DialogBox/DialogBox';
+import ChatMessageType from '../ChatMessage/ChatMessageType/ChatMessageType';
 
 interface ListReplyTemplateProps {
   title: string;
@@ -25,6 +26,7 @@ interface TemplateProps {
   items: Array<any>;
   onGlobalButtonClick: any;
   disabled?: boolean;
+  showHeader?: boolean;
 }
 
 interface ListTemplate {
@@ -109,11 +111,19 @@ export const ChatTemplate: React.SFC<TemplateProps> = (props) => {
 };
 
 export const SimulatorTemplate: React.SFC<TemplateProps> = (props) => {
-  const { title, body, globalButtonTitle, items, onGlobalButtonClick, disabled } = props;
+  const {
+    title,
+    body,
+    globalButtonTitle,
+    items,
+    onGlobalButtonClick,
+    disabled,
+    showHeader = true,
+  } = props;
   return (
     <div className={styles.SimulatorContent}>
-      <p>{title}</p>
-      <p>{body}</p>
+      {showHeader && <p className={styles.ListHeader}>{title}</p>}
+      <ChatMessageType type="TEXT" body={body} isSimulatedMessage />
       <Button
         color="default"
         disabled={disabled}

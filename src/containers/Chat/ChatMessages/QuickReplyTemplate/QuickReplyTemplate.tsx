@@ -24,10 +24,18 @@ export interface QuickReplyTemplateProps {
   disabled?: boolean;
   onQuickReplyClick: any;
   isSimulator: boolean;
+  showHeader?: boolean;
 }
 
 export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) => {
-  const { content, options, disabled = false, onQuickReplyClick, isSimulator = false } = props;
+  const {
+    content,
+    options,
+    disabled = false,
+    onQuickReplyClick,
+    isSimulator = false,
+    showHeader = true,
+  } = props;
 
   if (!content && !options) {
     return null;
@@ -60,17 +68,7 @@ export const QuickReplyTemplate: React.SFC<QuickReplyTemplateProps> = (props) =>
   return (
     <div>
       <div className={styles.MessageContent}>
-        {header && (
-          <div className={styles.TitleText}>
-            <ChatMessageType
-              type={contentType}
-              body={header}
-              media={{}}
-              location={{}}
-              isSimulatedMessage={isSimulator}
-            />
-          </div>
-        )}
+        {header && showHeader && <div className={styles.TitleText}>{header}</div>}
         <ChatMessageType
           type={contentType}
           body={text || filename}

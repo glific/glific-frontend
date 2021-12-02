@@ -470,6 +470,10 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
             {formFieldItems.map((field, index) => {
               const key = index;
 
+              if (field.skip) {
+                return null;
+              }
+
               return (
                 <React.Fragment key={key}>
                   {field.label && (

@@ -14,10 +14,10 @@ import styles from './ChatMessageType.module.css';
 
 export interface ChatMessageTypeProps {
   type: string;
-  media: any;
+  media?: any;
   insertedAt?: string;
   body: string;
-  location: any;
+  location?: any;
   isSimulatedMessage?: boolean;
   isContextMessage?: boolean;
 }
