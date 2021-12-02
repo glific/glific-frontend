@@ -11,3 +11,9 @@
   width: 30px;
   margin-right: 6px;
 }
+
+.DocumentationLink {
+  color: #edf6f2 !important;
+  text-decoration: underline !important;
+  font-size: 14px !important;
+}
