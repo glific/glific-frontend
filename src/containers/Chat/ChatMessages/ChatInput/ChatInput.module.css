@@ -265,13 +265,13 @@ svg.SendIcon {
 
   .AttachmentIcon {
     position: absolute !important;
-    bottom: -5%;
+    bottom: 0px;
     right: 30%;
   }
 
   .SendButtonContainer {
     position: absolute;
-    bottom: 0px;
+    bottom: 5px;
     right: 10%;
   }
 

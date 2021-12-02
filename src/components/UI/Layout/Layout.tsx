@@ -11,7 +11,7 @@ export interface LayoutProps {
 
 export const Layout: React.SFC<LayoutProps> = (props) => {
   const { children } = props;
-  const [fullOpen, setFullOpen] = useState(window.screen.width > 768);
+  const [fullOpen, setFullOpen] = useState(window.innerWidth > 768);
   let mainStyle = styles.Main;
   if (!fullOpen) {
     mainStyle = styles.MainFullWidth;

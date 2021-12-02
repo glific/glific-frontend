@@ -1,6 +1,5 @@
 .Chat {
   width: 100%;
-  height: 100vh;
   display: flex;
 }
 
@@ -23,9 +22,6 @@
     display: flex !important;
     width: 100% !important;
     justify-content: center;
-  }
-  .Chat {
-    height: calc(100vh - 46px) !important;
   }
   .ToolBar {
     padding: 24px 16px 0 16px !important;
