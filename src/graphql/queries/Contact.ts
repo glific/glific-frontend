@@ -117,3 +117,21 @@ export const GET_CONTACT_DETAILS = gql`
     }
   }
 `;
+
+export const GET_CONTACT_HISTORY = gql`
+  query getContact($id: ID!) {
+    contact(id: $id) {
+      contact {
+        history {
+          eventDatetime
+          eventLabel
+          eventMeta
+          eventType
+          id
+          insertedAt
+          updatedAt
+        }
+      }
+    }
+  }
+`;
