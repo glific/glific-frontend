@@ -4,7 +4,7 @@ import setLogs from 'config/logs';
 import { getAuthSession } from 'services/AuthService';
 import { setNotification } from './notification';
 
-export const getObject = (arr: any, data: any) => {
+const getObject = (arr: any, data: any) => {
   const result: any = [];
   if (arr && data) {
     arr.forEach((obj: any) => {
@@ -103,4 +103,4 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   return messageBody;
 };
 
-export { getObject as default };
+export { getObject };

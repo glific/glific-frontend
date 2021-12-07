@@ -184,9 +184,8 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
       onSelect={(emojiValue) => updateValue(emojiValue, true)}
     />
   ) : (
-    <></>
+    ''
   );
-
   const handleClickAway = () => {
     setShowEmojiPicker(false);
   };
