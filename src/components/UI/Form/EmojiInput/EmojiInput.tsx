@@ -186,6 +186,7 @@ export const EmojiInput: React.FC<EmojiInputProps> = ({
   ) : (
     ''
   );
+
   const handleClickAway = () => {
     setShowEmojiPicker(false);
   };
