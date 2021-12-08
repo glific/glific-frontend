@@ -4,6 +4,8 @@ import {
   GET_CONTACT_DETAILS,
   GET_CONTACT_COUNT,
   CONTACT_SEARCH_QUERY,
+  GET_CONTACT_HISTORY,
+  COUNT_CONTACT_HISTORY,
 } from 'graphql/queries/Contact';
 import { addFlowToContactQuery } from 'mocks/Flow';
 import { getOrganizationLanguagesQuery, getOrganizationQuery } from 'mocks/Organization';
@@ -305,6 +307,50 @@ export const blockContactQuery = {
         phone: '99399393303',
         language: null,
       },
+    },
+  },
+};
+
+export const contactHistoryQuery = {
+  request: {
+    query: GET_CONTACT_HISTORY,
+    variables: {
+      filter: { contactId: '1' },
+      opts: {
+        limit: 10,
+        offset: 0,
+        order: 'DESC',
+      },
+    },
+  },
+  result: {
+    data: {
+      contactHistory: [
+        {
+          eventDatetime: '2021-12-08T06:50:32Z',
+          eventLabel: 'Removed from collection: "Optout contacts"',
+          eventMeta:
+            '{"group":{"uuid":"2","name":"Optout contacts","id":2},"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          eventType: 'contact_groups_updated',
+          id: '1',
+          insertedAt: '2021-12-08T06:50:33.000000Z',
+          updatedAt: '2021-12-08T06:50:33.000000Z',
+        },
+      ],
+    },
+  },
+};
+
+export const countContactHistoryQuery = {
+  request: {
+    query: COUNT_CONTACT_HISTORY,
+    variables: {
+      filter: { contactId: '1' },
+    },
+  },
+  result: {
+    data: {
+      countContactHistory: 12,
     },
   },
 };

@@ -1,16 +1,27 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
 
 import { ContactHistory } from './ContactHistory';
+import { contactHistoryQuery, countContactHistoryQuery } from 'mocks/Contact';
 
+const mocks = [contactHistoryQuery, countContactHistoryQuery];
 const defaultProps = {
   contactId: '1',
 };
 
-const wrapper = <ContactHistory {...defaultProps} />;
+const wrapper = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <ContactHistory {...defaultProps} />
+  </MockedProvider>
+);
 
-it('should render ContactDescription', () => {
-  const { getByTestId, container } = render(wrapper);
-  expect(getByTestId('ContactHistory')).toBeInTheDocument();
+it('should render ContactDescription', async () => {
+  const { getByTestId, getByText } = render(wrapper);
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('ContactHistory')).toBeInTheDocument();
+  });
+
   // toggle phone visibility
 
   //   const togglePhone = screen.getByRole('button');
