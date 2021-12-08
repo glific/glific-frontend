@@ -224,7 +224,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   }, [type, attachmentURL]);
 
   const handleAddInteractiveTemplate = (
-    addFromTemplate: boolean = true,
+    addFromTemplate: boolean,
     templateTypeVal: string,
     stateToRestore: any = null
   ) => {
