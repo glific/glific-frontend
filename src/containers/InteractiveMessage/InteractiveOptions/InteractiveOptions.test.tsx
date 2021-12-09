@@ -29,6 +29,7 @@ const props: any = {
     touched: { globalButton: true },
     errors: { globalButton: 'Required' },
     values: { templateButtons: inputFields },
+    setFieldValue: jest.fn(),
   },
   onAddClick: jest.fn(),
   onRemoveClick: jest.fn(),

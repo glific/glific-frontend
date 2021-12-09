@@ -48,7 +48,6 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   disabledType,
 }) => {
   const { values, errors, touched, setFieldValue } = form;
-  console.log(form);
 
   const handleAddClick = (helper: any, type: string) => {
     const obj = type === LIST ? { title: '', options: [] } : { value: '' };
