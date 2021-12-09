@@ -2,10 +2,36 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.5.0](https://github.com/glific/glific-frontend/compare/v2.4.1...v2.5.0)
+
+> 06 December 2021
+
+- Safari mobile browser does not show the header part [`#1737`](https://github.com/glific/glific-frontend/pull/1737)
+- Made header optional for interactive messages [`#1758`](https://github.com/glific/glific-frontend/pull/1758)
+- Updated success message for starting a collection flow [`#1769`](https://github.com/glific/glific-frontend/pull/1769)
+- [Snyk] Upgrade @types/react-dom from 17.0.9 to 17.0.11 [`#1761`](https://github.com/glific/glific-frontend/pull/1761)
+- Fixed cypress CI not updating videos [`#1768`](https://github.com/glific/glific-frontend/pull/1768)
+
+
+#### [v2.4.1](https://github.com/glific/glific-frontend/compare/v2.4.0...v2.4.1)
+
+> 29 November 2021
+
+- Added upload contacts screen [`#1764`](https://github.com/glific/glific-frontend/pull/1764)
+- [Snyk] Upgrade react-media-recorder from 1.5.0 to 1.6.2 [`#1753`](https://github.com/glific/glific-frontend/pull/1753)
+- [Snyk] Upgrade @types/emoji-mart from 3.0.6 to 3.0.8 [`#1760`](https://github.com/glific/glific-frontend/pull/1760)
+- Fixed simulator interactive message bug [`#1754`](https://github.com/glific/glific-frontend/pull/1754)
+- [Snyk] Upgrade @types/react-router-dom from 5.3.0 to 5.3.2 [`#1757`](https://github.com/glific/glific-frontend/pull/1757)
+- [Snyk] Upgrade graphql from 15.6.0 to 15.7.2 [`#1752`](https://github.com/glific/glific-frontend/pull/1752)
+- [Snyk] Upgrade yup from 0.32.9 to 0.32.11 [`#1746`](https://github.com/glific/glific-frontend/pull/1746)
+- Bump tmpl from 1.0.4 to 1.0.5 [`#1738`](https://github.com/glific/glific-frontend/pull/1738)
+- [Snyk] Upgrade @types/node from 16.10.1 to 16.11.0 [`#1739`](https://github.com/glific/glific-frontend/pull/1739)
+
 #### [v2.4.0](https://github.com/glific/glific-frontend/compare/v2.3.1...v2.4.0)
 
 > 11 November 2021
 
+- Fixed issue with wrong spelling for messages [`#1747`](https://github.com/glific/glific-frontend/pull/1747)
 - Updated floweditor with template expression support [`#1723`](https://github.com/glific/glific-frontend/pull/1723)
 - Disabled editing triggers [`#1727`](https://github.com/glific/glific-frontend/pull/1727)
 - Updated help link in flow editor screen [`#1726`](https://github.com/glific/glific-frontend/pull/1726)
