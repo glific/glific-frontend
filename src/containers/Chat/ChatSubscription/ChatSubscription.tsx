@@ -22,10 +22,6 @@ import {
   MESSAGE_SENT_SUBSCRIPTION,
   MESSAGE_STATUS_SUBSCRIPTION,
 } from 'graphql/subscriptions/Chat';
-import {
-  ADD_MESSAGE_TAG_SUBSCRIPTION,
-  DELETE_MESSAGE_TAG_SUBSCRIPTION,
-} from 'graphql/subscriptions/Tag';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 
 export interface ChatSubscriptionProps {
