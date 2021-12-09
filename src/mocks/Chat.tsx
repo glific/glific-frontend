@@ -86,6 +86,7 @@ const conversationMessageQuery = (
                   parent: null,
                 },
               ],
+              groupId: '2',
               type: 'TEXT',
               media: null,
               location: null,
@@ -250,6 +251,7 @@ export const messageReceivedSubscription = {
         },
         location: null,
         errors: '{}',
+        groupId: '2',
         contextMessage: {
           body: 'All good',
           contextId: 1,
@@ -347,6 +349,7 @@ const messageSubscriptionData = {
     },
     tags: [],
     type: 'TEXT',
+    groupId: '2',
     media: {
       caption: null,
       url: 'https://filemanager.gupshup.io/fm/wamedia/demobot1/36623b99-5844-4195-b872-61ef34c9ce11',
@@ -900,6 +903,7 @@ const createAndSendMessageMutation = {
               label: 'critical',
             },
           ],
+          media: null,
         },
       },
     },

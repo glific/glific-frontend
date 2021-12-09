@@ -354,21 +354,23 @@ export const ChatSubscription: React.SFC<ChatSubscriptionProps> = ({
             onError: () => {},
           });
 
-          // tag added subscription
-          subscribeToMore({
-            document: ADD_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_ADDED'),
-          });
+          // We are not using tags anymore in Glific. We will come back to this when required
 
-          // tag delete subscription
-          subscribeToMore({
-            document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
-            variables: subscriptionVariables,
-            updateQuery: (prev, { subscriptionData }) =>
-              updateConversations(prev, subscriptionData, 'TAG_DELETED'),
-          });
+          // tag added subscription
+          // subscribeToMore({
+          //   document: ADD_MESSAGE_TAG_SUBSCRIPTION,
+          //   variables: subscriptionVariables,
+          //   updateQuery: (prev, { subscriptionData }) =>
+          //     updateConversations(prev, subscriptionData, 'TAG_ADDED'),
+          // });
+
+          // // tag delete subscription
+          // subscribeToMore({
+          //   document: DELETE_MESSAGE_TAG_SUBSCRIPTION,
+          //   variables: subscriptionVariables,
+          //   updateQuery: (prev, { subscriptionData }) =>
+          //     updateConversations(prev, subscriptionData, 'TAG_DELETED'),
+          // });
         }
       },
     }
