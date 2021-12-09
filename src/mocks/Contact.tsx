@@ -68,7 +68,7 @@ export const updateContactCollectionQuery = {
 export const getContactQuery = {
   request: {
     query: GET_CONTACT,
-    variables: { id: 1 },
+    variables: { id: '1' },
   },
   result: {
     data: {
@@ -112,7 +112,7 @@ const date = new Date();
 export const getContactDetailsQuery = {
   request: {
     query: GET_CONTACT_DETAILS,
-    variables: { id: 1 },
+    variables: { id: '1' },
   },
   result: {
     data: {
@@ -145,7 +145,7 @@ export const updateContact = {
   request: {
     query: UPDATE_CONTACT,
     variables: {
-      id: 1,
+      id: '1',
       input: {
         name: 'Default User',
         phone: '+919820198765',
