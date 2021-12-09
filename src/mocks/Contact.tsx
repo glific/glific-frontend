@@ -341,6 +341,36 @@ export const contactHistoryQuery = {
   },
 };
 
+export const contactHistoryQueryUpdatedOffset = {
+  request: {
+    query: GET_CONTACT_HISTORY,
+    variables: {
+      filter: { contactId: '1' },
+      opts: {
+        limit: 10,
+        offset: 1,
+        order: 'DESC',
+      },
+    },
+  },
+  result: {
+    data: {
+      contactHistory: [
+        {
+          eventDatetime: '2021-12-08T06:50:32Z',
+          eventLabel: 'Flow started: "Optout contacts"',
+          eventMeta:
+            '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          eventType: 'contact_flow_started',
+          id: '2',
+          insertedAt: '2021-12-08T06:50:33.000000Z',
+          updatedAt: '2021-12-08T06:50:33.000000Z',
+        },
+      ],
+    },
+  },
+};
+
 export const countContactHistoryQuery = {
   request: {
     query: COUNT_CONTACT_HISTORY,
@@ -350,7 +380,7 @@ export const countContactHistoryQuery = {
   },
   result: {
     data: {
-      countContactHistory: 12,
+      countContactHistory: 2,
     },
   },
 };

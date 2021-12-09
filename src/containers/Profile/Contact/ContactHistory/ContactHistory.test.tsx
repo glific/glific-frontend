@@ -2,9 +2,13 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ContactHistory } from './ContactHistory';
-import { contactHistoryQuery, countContactHistoryQuery } from 'mocks/Contact';
+import {
+  contactHistoryQuery,
+  countContactHistoryQuery,
+  contactHistoryQueryUpdatedOffset,
+} from 'mocks/Contact';
 
-const mocks = [contactHistoryQuery, countContactHistoryQuery];
+const mocks = [contactHistoryQuery, countContactHistoryQuery, contactHistoryQueryUpdatedOffset];
 const defaultProps = {
   contactId: '1',
 };
@@ -22,8 +26,17 @@ it('should render ContactDescription', async () => {
     expect(getByTestId('ContactHistory')).toBeInTheDocument();
   });
 
-  // toggle phone visibility
+  expect(getByText('Removed from collection: "Optout contacts"')).toBeInTheDocument();
+});
 
-  //   const togglePhone = screen.getByRole('button');
-  //   fireEvent.click(togglePhone);
+it('should load more details when we click on show more button', async () => {
+  const { getByTestId, getByText } = render(wrapper);
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(getByTestId('ContactHistory')).toBeInTheDocument();
+  });
+  fireEvent.click(getByText('Show more'));
+  await waitFor(() => {
+    expect(getByText('Removed from collection: "Optout contacts"')).toBeInTheDocument();
+  });
 });

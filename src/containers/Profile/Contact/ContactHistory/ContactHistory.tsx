@@ -1,12 +1,10 @@
-// @ts-ignore
-/* eslint-disable */
-
 import { useQuery } from '@apollo/client';
 import { Button } from 'components/UI/Form/Button/Button';
 import Loading from 'components/UI/Layout/Loading/Loading';
+import setLogs from 'config/logs';
 import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './ContactHistory.module.css';
@@ -62,6 +60,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
                 opts: {
                   limit: 10,
                   offset: data.contactHistory.length,
+                  order: 'DESC',
                 },
               },
             });
@@ -75,8 +74,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
 
   const flowEvents = (eventLabel: string, eventMeta: string) => {
     try {
-      let eventMetaObject = JSON.parse(eventMeta);
-      console.log(eventMetaObject);
+      const eventMetaObject = JSON.parse(eventMeta);
       return (
         <div>
           <span>{eventLabel}: </span>
@@ -90,7 +88,10 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
           </a>
         </div>
       );
-    } catch (e) {}
+    } catch (error) {
+      setLogs(error, 'error');
+    }
+    return null;
   };
 
   const items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
@@ -103,7 +104,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
         label = eventLabel;
     }
     return (
-      <div className={styles.DetailBlock}>
+      <div className={styles.DetailBlock} key={insertedAt}>
         <div className={styles.LineItem}>{label}</div>
         <div className={styles.LineItemDate}>{moment(insertedAt).format('D/MM/YYYY')}</div>
       </div>
@@ -113,7 +114,6 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
       <h2 className={styles.Title}>{t('Contact History')}</h2>
-
       {items}
       {showMoreButton}
     </div>
