@@ -37,9 +37,14 @@ import { CollectionInformation } from '../../Collection/CollectionInformation/Co
 export interface ChatMessagesProps {
   contactId?: number | string | null;
   collectionId?: number | string | null;
+  startingHeight?: string;
 }
 
-export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collectionId }) => {
+export const ChatMessages: React.SFC<ChatMessagesProps> = ({
+  contactId,
+  collectionId,
+  startingHeight,
+}) => {
   // create an instance of apollo client
   const client = useApolloClient();
   // const [loadAllTags, allTags] = useLazyQuery(FILTER_TAGS_NAME, {
@@ -823,7 +828,14 @@ export const ChatMessages: React.SFC<ChatMessagesProps> = ({ contactId, collecti
   );
 
   return (
-    <Container className={styles.ChatMessages} maxWidth={false} disableGutters>
+    <Container
+      className={styles.ChatMessages}
+      style={{
+        height: startingHeight,
+      }}
+      maxWidth={false}
+      disableGutters
+    >
       {dialogBox}
       {dialog === 'collection' ? (
         <CollectionInformation
