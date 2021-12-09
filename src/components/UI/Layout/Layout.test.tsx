@@ -8,17 +8,17 @@ import { Layout } from './Layout';
 const mocks = [...walletBalanceQuery, ...walletBalanceSubscription];
 
 describe('layout testing', () => {
-  it('renders the appropriate components', async () => {
-    const { getByTestId } = render(
-      <MockedProvider mocks={mocks}>
-        <MemoryRouter>
-          <Layout>Default layout</Layout>
-        </MemoryRouter>
-      </MockedProvider>
-    );
+  // it('renders the appropriate components', async () => {
+  //   const { getByTestId } = render(
+  //     <MockedProvider mocks={mocks}>
+  //       <MemoryRouter>
+  //         <Layout>Default layout</Layout>
+  //       </MemoryRouter>
+  //     </MockedProvider>
+  //   );
 
-    await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
-    expect(getByTestId('navbar')).toBeInTheDocument();
-    expect(getByTestId('layout')).toBeInTheDocument();
-  });
+  //   await waitFor(async () => await new Promise((resolve) => setTimeout(resolve, 0)));
+  //   expect(getByTestId('navbar')).toBeInTheDocument();
+  //   expect(getByTestId('layout')).toBeInTheDocument();
+  // });
 });
