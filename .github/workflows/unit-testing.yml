@@ -20,7 +20,7 @@ jobs:
         run: yarn install
 
       - name: Run test and generate coverage report
-        run: yarn test --coverage --watchAll=false
+        run: yarn test --coverage --watchAll=false --silent
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
