@@ -40,3 +40,5 @@ export const STRIPE_PUBLISH_KEY = envVariables.REACT_APP_STRIPE_PUBLISH_KEY;
 export const ONBOARD_URL = `${GLIFIC_API_URL}/v1/onboard/setup`;
 export const RECAPTCHA_CLIENT_KEY = envVariables.REACT_APP_RECAPTCHA_CLIENT_KEY;
 export const UPLOAD_CONTACTS_SAMPLE = 'https://storage.googleapis.com/cc-tides/sample_import.csv';
+export const REGISTRATION_HELP_LINK =
+  'https://glific.slab.com/public/posts/02-managing-staff-members-creating-account-on-glific-gg6fkw8h';
