@@ -279,7 +279,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveMessageType: string,
     index: number,
     value: string,
-    payload: any
+    payload: any,
+    setFieldValue: any
   ) => {
     const { key, itemIndex, isOption } = payload;
     const buttons = [...templateButtons];
@@ -323,7 +324,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         return row;
       });
     }
-
+    setFieldValue('templateButtons', result);
     setTemplateButtons(result);
   };
 

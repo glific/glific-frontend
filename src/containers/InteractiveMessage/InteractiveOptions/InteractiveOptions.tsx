@@ -19,7 +19,7 @@ export interface InteractiveOptionsProps {
   isAddButtonChecked: boolean;
   templateType: string | null;
   inputFields: Array<any>;
-  form: { touched: any; errors: any; values: any };
+  form: { touched: any; errors: any; values: any; setFieldValue: any };
   onAddClick: any;
   onRemoveClick: any;
   onInputChange: any;
@@ -40,14 +40,14 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
   onRemoveClick,
   onTemplateTypeChange,
   onInputChange,
+  onGlobalButtonInputChange,
   onListItemAddClick,
   onListItemRemoveClick,
-  onGlobalButtonInputChange,
   disabled = false,
   translation,
   disabledType,
 }) => {
-  const { values, errors, touched } = form;
+  const { values, errors, touched, setFieldValue } = form;
 
   const handleAddClick = (helper: any, type: string) => {
     const obj = type === LIST ? { title: '', options: [] } : { value: '' };
@@ -75,7 +75,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
           onListItemAddClick={(options: Array<any>) => onListItemAddClick(index, options)}
           onListItemRemoveClick={(itemIndex: number) => onListItemRemoveClick(index, itemIndex)}
           onInputChange={(value: string, payload: any) =>
-            onInputChange(LIST, index, value, payload)
+            onInputChange(LIST, index, value, payload, setFieldValue)
           }
         />
       );
@@ -90,7 +90,7 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
           inputFields={inputFields}
           form={form}
           onInputChange={(value: string, payload: any) =>
-            onInputChange(QUICK_REPLY, index, value, payload)
+            onInputChange(QUICK_REPLY, index, value, payload, setFieldValue)
           }
           onAddClick={() => handleAddClick(arrayHelpers, QUICK_REPLY)}
           onRemoveClick={() => handleRemoveClick(arrayHelpers, index)}
@@ -155,7 +155,10 @@ export const InteractiveOptions: React.SFC<InteractiveOptionsProps> = ({
               variant="outlined"
               label="List header"
               className={styles.TextField}
-              onChange={(e: any) => onGlobalButtonInputChange(e.target.value)}
+              onChange={(e: any) => {
+                setFieldValue('globalButton', e.target.value);
+                onGlobalButtonInputChange(e.target.value);
+              }}
               value={values.globalButton}
               error={!!errors.globalButton && touched.globalButton}
             />
