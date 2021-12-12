@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import 'i18n/config';
@@ -33,12 +33,15 @@ const App = () => {
     setAuthenticated(checkAuthStatusService());
   }, []);
 
-  const values = {
-    authenticated,
-    setAuthenticated: (value: any) => {
-      setAuthenticated(value);
-    },
-  };
+  const values = useMemo(
+    () => ({
+      authenticated,
+      setAuthenticated: (value: any) => {
+        setAuthenticated(value);
+      },
+    }),
+    [authenticated]
+  );
 
   let routes;
 
