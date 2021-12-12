@@ -59,6 +59,15 @@ export interface SimulatorProps {
   showHeader?: boolean;
 }
 
+const TimeComponent = (direction: string, insertedAt: string) => (
+  <>
+    <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
+      {moment(insertedAt).format(TIME_FORMAT)}
+    </span>
+    {direction === 'send' && <DoneAllIcon />}
+  </>
+);
+
 export const Simulator: React.FC<SimulatorProps> = ({
   showSimulator,
   setSimulatorId,
@@ -238,15 +247,6 @@ export const Simulator: React.FC<SimulatorProps> = ({
     let isInteractiveContentPresent = false;
     let template = {};
 
-    const TimeComponent = () => (
-      <>
-        <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
-          {moment(insertedAt).format(TIME_FORMAT)}
-        </span>
-        {direction === 'send' && <DoneAllIcon />}
-      </>
-    );
-
     if (content) {
       isInteractiveContentPresent = !!Object.entries(content).length;
 
@@ -259,7 +259,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
               component={SimulatorTemplate}
               onGlobalButtonClick={handleOpenListReplyDrawer}
             />
-            <TimeComponent />
+            <TimeComponent direction={direction} insertedAt={insertedAt} />
           </>
         );
       }
@@ -291,7 +291,7 @@ export const Simulator: React.FC<SimulatorProps> = ({
                 location={location}
                 isSimulatedMessage={isSimulatedMessage}
               />
-              <TimeComponent />
+              <TimeComponent direction={direction} insertedAt={insertedAt} />
             </>
           )}
         </div>
