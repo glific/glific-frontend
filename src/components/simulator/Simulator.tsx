@@ -59,7 +59,7 @@ export interface SimulatorProps {
   showHeader?: boolean;
 }
 
-const TimeComponent = (direction: string, insertedAt: string) => (
+const TimeComponent = (direction: any, insertedAt: any) => (
   <>
     <span className={direction === 'received' ? styles.TimeSent : styles.TimeReceived}>
       {moment(insertedAt).format(TIME_FORMAT)}
