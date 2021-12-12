@@ -1,12 +1,12 @@
-import { useQuery } from '@apollo/client';
-import { Button } from 'components/UI/Form/Button/Button';
-import Loading from 'components/UI/Layout/Loading/Loading';
-import setLogs from 'config/logs';
-import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
-import moment from 'moment';
 import React from 'react';
+import { useQuery } from '@apollo/client';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from 'components/UI/Form/Button/Button';
+import Loading from 'components/UI/Layout/Loading/Loading';
+import { COUNT_CONTACT_HISTORY, GET_CONTACT_HISTORY } from 'graphql/queries/Contact';
+import setLogs from 'config/logs';
 import styles from './ContactHistory.module.css';
 
 export interface ContactHistoryProps {
@@ -94,7 +94,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
     return null;
   };
 
-  const items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
+  let items = data.contactHistory.map(({ eventLabel, eventType, insertedAt, eventMeta }: any) => {
     let label;
     switch (eventType) {
       case 'contact_flow_started':
@@ -110,6 +110,10 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
       </div>
     );
   });
+
+  if (!items.length) {
+    items = <div>{t('No history')}</div>;
+  }
 
   return (
     <div className={styles.HistoryContainer} data-testid="ContactHistory">
