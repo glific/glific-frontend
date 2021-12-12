@@ -179,56 +179,52 @@ export const MyAccount: React.SFC<MyAccountProps> = () => {
 
   // form component
   const form = (
-    <>
-      <Formik
-        enableReinitialize
-        initialValues={{ otp: '', password: '' }}
-        validationSchema={FormSchema}
-        onSubmit={(values, { resetForm }) => {
-          saveHandler(values);
-          resetForm();
-        }}
-      >
-        {({ submitForm }) => (
-          <Form className={styles.Form}>
-            {displayToastMessage}
-            {formFieldLayout}
-            <div className={styles.Buttons}>
-              {showOTPButton ? (
-                <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={sendOTPHandler}
-                    className={styles.Button}
-                    data-testid="generateOTP"
-                  >
-                    {t('Generate OTP')}
-                  </Button>
-                  <div className={styles.HelperText}>
-                    {t('To change first please generate OTP')}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={submitForm}
-                    className={styles.Button}
-                  >
-                    {t('Save')}
-                  </Button>
-                  <Button variant="contained" color="default" onClick={cancelHandler}>
-                    {t('Cancel')}
-                  </Button>
-                </>
-              )}
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </>
+    <Formik
+      enableReinitialize
+      initialValues={{ otp: '', password: '' }}
+      validationSchema={FormSchema}
+      onSubmit={(values, { resetForm }) => {
+        saveHandler(values);
+        resetForm();
+      }}
+    >
+      {({ submitForm }) => (
+        <Form className={styles.Form}>
+          {displayToastMessage}
+          {formFieldLayout}
+          <div className={styles.Buttons}>
+            {showOTPButton ? (
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={sendOTPHandler}
+                  className={styles.Button}
+                  data-testid="generateOTP"
+                >
+                  {t('Generate OTP')}
+                </Button>
+                <div className={styles.HelperText}>{t('To change first please generate OTP')}</div>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                  className={styles.Button}
+                >
+                  {t('Save')}
+                </Button>
+                <Button variant="contained" color="default" onClick={cancelHandler}>
+                  {t('Cancel')}
+                </Button>
+              </>
+            )}
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 
   // set only for the first time

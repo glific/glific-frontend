@@ -450,93 +450,91 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   };
 
   const form = (
-    <>
-      <Formik
-        enableReinitialize
-        validateOnMount
-        initialValues={{
-          ...states,
-          languageId,
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(itemData, { setErrors }) => {
-          // when you want to show custom error on form field and error message is not coming from api
-          setCustomError({ setErrors });
-          saveHandler(itemData);
-        }}
-      >
-        {({ errors, submitForm }) => (
-          <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
-            {formFieldItems.map((field, index) => {
-              const key = index;
+    <Formik
+      enableReinitialize
+      validateOnMount
+      initialValues={{
+        ...states,
+        languageId,
+      }}
+      validationSchema={validationSchema}
+      onSubmit={(itemData, { setErrors }) => {
+        // when you want to show custom error on form field and error message is not coming from api
+        setCustomError({ setErrors });
+        saveHandler(itemData);
+      }}
+    >
+      {({ errors, submitForm }) => (
+        <Form className={[styles.Form, customStyles].join(' ')} data-testid="formLayout">
+          {formFieldItems.map((field, index) => {
+            const key = index;
 
-              if (field.skip) {
-                return null;
-              }
+            if (field.skip) {
+              return null;
+            }
 
-              return (
-                <React.Fragment key={key}>
-                  {field.label && (
-                    <Typography variant="h5" className={styles.FieldLabel}>
-                      {field.label}
-                    </Typography>
-                  )}
-                  <Field key={key} {...field} onSubmit={submitForm} />
-                </React.Fragment>
-              );
-            })}
-            <div className={styles.Buttons}>
+            return (
+              <React.Fragment key={key}>
+                {field.label && (
+                  <Typography variant="h5" className={styles.FieldLabel}>
+                    {field.label}
+                  </Typography>
+                )}
+                <Field key={key} {...field} onSubmit={submitForm} />
+              </React.Fragment>
+            );
+          })}
+          <div className={styles.Buttons}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                onSaveButtonClick(errors);
+                submitForm();
+              }}
+              className={styles.Button}
+              data-testid="submitActionButton"
+              loading={saveClick}
+            >
+              {button}
+            </Button>
+            {additionalAction ? (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  submitForm();
+                  setAction(true);
+                }}
+                data-testid="additionalActionButton"
+              >
+                {additionalAction.label}
+              </Button>
+            ) : null}
+            <Button
+              variant="contained"
+              color="default"
+              onClick={cancelHandler}
+              data-testid="cancelActionButton"
+            >
+              {t('Cancel')}
+            </Button>
+            {showPreviewButton && (
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  onSaveButtonClick(errors);
-                  submitForm();
-                }}
+                onClick={onPreivewClick}
                 className={styles.Button}
-                data-testid="submitActionButton"
-                loading={saveClick}
+                data-testid="previewButton"
               >
-                {button}
+                Preview
               </Button>
-              {additionalAction ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    submitForm();
-                    setAction(true);
-                  }}
-                  data-testid="additionalActionButton"
-                >
-                  {additionalAction.label}
-                </Button>
-              ) : null}
-              <Button
-                variant="contained"
-                color="default"
-                onClick={cancelHandler}
-                data-testid="cancelActionButton"
-              >
-                {t('Cancel')}
-              </Button>
-              {showPreviewButton && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={onPreivewClick}
-                  className={styles.Button}
-                  data-testid="previewButton"
-                >
-                  Preview
-                </Button>
-              )}
-              {deleteButton}
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </>
+            )}
+            {deleteButton}
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 
   const handleDeleteItem = () => {
