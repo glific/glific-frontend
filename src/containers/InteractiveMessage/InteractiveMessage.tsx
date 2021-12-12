@@ -11,6 +11,7 @@ import {
   UPDATE_INTERACTIVE,
   DELETE_INTERACTIVE,
 } from 'graphql/mutations/InteractiveMessage';
+import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { USER_LANGUAGES } from 'graphql/queries/Organization';
 import { GET_INTERACTIVE_MESSAGE } from 'graphql/queries/InteractiveMessage';
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -59,6 +60,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   const [attachmentURL, setAttachmentURL] = useState<any>();
   const [contactVariables, setContactVariables] = useState([]);
   const [defaultLanguage, setDefaultLanguage] = useState<any>({});
+  const [sendWithTitle, setSendWithTitle] = useState<boolean>(true);
 
   const [language, setLanguage] = useState<any>({});
   const [languageOptions, setLanguageOptions] = useState<any>([]);
@@ -109,6 +111,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     body,
     globalButton,
     templateButtons,
+    sendWithTitle,
     templateType,
     type,
     attachmentURL,
@@ -148,6 +151,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     type: typeValue,
     interactiveContent: interactiveContentValue,
     translations: translationsVal,
+    sendWithTitle: sendInteractiveTitleValue,
   }: any) => {
     let content;
 
@@ -203,6 +207,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     if (translationsVal) {
       setTranslations(translationsVal);
     }
+    setSendWithTitle(sendInteractiveTitleValue);
   };
 
   const validateURL = (value: string) => {
@@ -274,7 +279,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     interactiveMessageType: string,
     index: number,
     value: string,
-    payload: any
+    payload: any,
+    setFieldValue: any
   ) => {
     const { key, itemIndex, isOption } = payload;
     const buttons = [...templateButtons];
@@ -318,7 +324,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         return row;
       });
     }
-
+    setFieldValue('templateButtons', result);
     setTemplateButtons(result);
   };
 
@@ -485,6 +491,15 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
         onBlur: (event: any) => setTitle(event.target.value),
       },
     },
+    // checkbox is not needed in media types
+    {
+      skip: type && type.label,
+      component: Checkbox,
+      name: 'sendWithTitle',
+      title: t('Show title in message'),
+      handleChange: (value: boolean) => setSendWithTitle(value),
+      addLabelStyle: false,
+    },
     {
       translation:
         match.params?.id &&
@@ -646,6 +661,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
       }
     }
 
+    payloadData.sendWithTitle = sendWithTitle;
     payloadData.translations = JSON.stringify(translationsCopy);
 
     return payloadData;
@@ -768,6 +784,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
           showSimulator
           isPreviewMessage
           message={{}}
+          showHeader={sendWithTitle}
           interactiveMessage={previewData}
           simulatorIcon={false}
         />

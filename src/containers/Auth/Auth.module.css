@@ -164,6 +164,11 @@
   margin-right: 0px !important;
 }
 
+.AuthRegistrationButton {
+  composes: AuthButton;
+  border: 0px !important;
+}
+
 .ErrorMessage {
   margin-top: 5px;
   color: red;

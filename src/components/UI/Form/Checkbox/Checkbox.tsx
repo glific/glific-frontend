@@ -8,15 +8,23 @@ import styles from './Checkbox.module.css';
 export interface CheckboxProps {
   field: any;
   title: string;
-  form: any;
+  form?: any;
   handleChange?: Function;
   info?: { title: string };
   darkCheckbox?: boolean;
   disabled?: boolean;
+  addLabelStyle?: boolean;
 }
 
 export const Checkbox: React.SFC<CheckboxProps> = (props) => {
-  const { field, title, info = false, darkCheckbox, disabled = false } = props;
+  const {
+    field,
+    title,
+    info = false,
+    darkCheckbox,
+    disabled = false,
+    addLabelStyle = true,
+  } = props;
   const handleChange = () => {
     props.form.setFieldValue(props.field.name, !props.field.value);
     if (props.handleChange) props.handleChange(!props.field.value);
@@ -39,7 +47,7 @@ export const Checkbox: React.SFC<CheckboxProps> = (props) => {
         labelPlacement="end"
         label={title}
         classes={{
-          label: styles.Label,
+          label: addLabelStyle ? styles.Label : '',
           root: styles.Root,
         }}
       />

@@ -56,6 +56,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
 
   const boxClass = [styles.Box];
   const boxTitleClass = [styles.BoxTitle];
+  let buttonClass = styles.AuthButton;
   let buttonContainedVariant = true;
   switch (mode) {
     case 'login':
@@ -66,6 +67,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
     case 'registration':
       boxClass.push(styles.RegistrationBox);
       boxTitleClass.push(styles.RegistrationBoxTitle);
+      buttonClass = styles.AuthRegistrationButton;
       break;
     case 'confirmotp':
       boxClass.push(styles.OTPBox);
@@ -152,7 +154,7 @@ export const Auth: React.SFC<AuthProps> = (props) => {
                     variant={buttonContainedVariant ? 'contained' : 'outlined'}
                     color="primary"
                     onClick={submitForm}
-                    className={styles.AuthButton}
+                    className={buttonClass}
                     data-testid="SubmitButton"
                     loading={loading}
                   >

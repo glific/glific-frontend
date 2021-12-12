@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-
+import { REGISTRATION_HELP_LINK } from 'config';
 import { Input } from 'components/UI/Form/Input/Input';
 import { PhoneInput } from 'components/UI/Form/PhoneInput/PhoneInput';
 import { sendOTP } from 'services/AuthService';
-import { ReactComponent as InfoIcon } from 'assets/images/icons/Info.svg';
+import { ReactComponent as AlertIcon } from 'assets/images/icons/Alert/White.svg';
 import { Auth } from '../Auth';
 import styles from './Registration.module.css';
 
@@ -46,8 +46,18 @@ export const Registration: React.SFC<RegistrationProps> = () => {
 
   const staffInstructions = (
     <div className={styles.Instructions}>
-      <InfoIcon />
-      <div>{t('Please make sure to optin to your org number before creating your account.')}</div>
+      <AlertIcon />
+      <div>
+        {t('Make sure to optin to your org chatbot number before creating your account. ')}
+        <a
+          href={REGISTRATION_HELP_LINK}
+          rel="noreferrer"
+          target="_blank"
+          className={styles.DocumentationLink}
+        >
+          {t('Here’s how.')}
+        </a>
+      </div>
     </div>
   );
 

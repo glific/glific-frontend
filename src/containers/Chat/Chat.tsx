@@ -32,6 +32,9 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
   const [simulatorAccess, setSimulatorAccess] = useState(true);
   const [simulatorId, setSimulatorId] = useState(0);
   const { t } = useTranslation();
+  const [startingHeight] = useState(
+    `${window.innerWidth < 768 ? window.innerHeight - 46 : window.innerHeight}px`
+  );
 
   let selectedContactId = contactId;
   let selectedCollectionId = collectionId;
@@ -121,6 +124,7 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
       <>
         <div className={`${styles.ChatMessages} chatMessages`}>
           <ChatMessages
+            startingHeight={startingHeight}
             contactId={simulatorId > 0 ? simulatorId : selectedContactId}
             collectionId={selectedCollectionId}
           />
@@ -221,7 +225,13 @@ export const Chat: React.SFC<ChatProps> = ({ contactId, collectionId, savedSearc
 
   return (
     <Paper>
-      <div className={styles.Chat} data-testid="chatContainer">
+      <div
+        className={styles.Chat}
+        style={{
+          height: startingHeight,
+        }}
+        data-testid="chatContainer"
+      >
         {chatInterface}
       </div>
       {simulatorAccess && !selectedCollectionId ? (
