@@ -25,6 +25,7 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
   });
   const { data, loading, fetchMore } = useQuery(GET_CONTACT_HISTORY, {
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'network-only',
     variables: {
       filter: {
         contactId,
@@ -100,11 +101,16 @@ export const ContactHistory: React.FC<ContactHistoryProps> = ({ contactId }) => 
       case 'contact_flow_started':
         label = flowEvents(eventLabel, eventMeta);
         break;
+      case 'contact_flow_ended':
+        label = flowEvents(eventLabel, eventMeta);
+        break;
       default:
         label = eventLabel;
     }
+
+    const key = `${insertedAt}-${Math.random()}`;
     return (
-      <div className={styles.DetailBlock} key={insertedAt}>
+      <div className={styles.DetailBlock} key={key}>
         <div className={styles.LineItem}>{label}</div>
         <div className={styles.LineItemDate}>{moment(insertedAt).format('D/MM/YYYY')}</div>
       </div>
