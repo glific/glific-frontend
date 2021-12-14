@@ -215,3 +215,46 @@ export const getPayloadByMediaType = (mediaType: string, payload: any) => {
 
   return result;
 };
+
+export const getTranslation = (
+  interactiveType: string,
+  attribute: any,
+  translations: any,
+  defaultLanguage: any
+) => {
+  if (defaultLanguage.id) {
+    const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
+
+    if (!defaultTemplate) {
+      return null;
+    }
+
+    if (interactiveType === QUICK_REPLY) {
+      switch (attribute) {
+        case 'title':
+          return defaultTemplate.content.header;
+        case 'body':
+          return defaultTemplate.content.text;
+        case 'options':
+          return defaultTemplate.options.map((option: any) => option.title);
+        default:
+          return null;
+      }
+    }
+
+    switch (attribute) {
+      case 'title':
+        return defaultTemplate.title;
+      case 'body':
+        return defaultTemplate.body;
+      case 'options':
+        return {
+          items: defaultTemplate.items,
+          globalButton: defaultTemplate.globalButtons[0].title,
+        };
+      default:
+        return null;
+    }
+  }
+  return null;
+};
