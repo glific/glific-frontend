@@ -120,7 +120,24 @@ const gqlClient = (history: any) => {
 
   return new ApolloClient({
     link,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            contactHistory: {
+              keyArgs: false,
+
+              merge(existing = [], incoming, { args }: any) {
+                if (args.opts.offset === 0) {
+                  return incoming;
+                }
+                return [...existing, ...incoming];
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 };
 export default gqlClient;

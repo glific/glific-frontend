@@ -9,6 +9,7 @@ import Loading from 'components/UI/Layout/Loading/Loading';
 import { ContactDescription } from './ContactDescription/ContactDescription';
 import styles from './ContactProfile.module.css';
 import { Profile } from '../Profile';
+import { ContactHistory } from './ContactHistory/ContactHistory';
 // import { FILTER_TAGS_NAME } from 'graphql/queries/Tag';
 // import { UPDATE_CONTACT_TAGS } from 'graphql/mutations/Contact';
 // import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -125,7 +126,9 @@ export const ContactProfile: React.SFC<ContactProfileProps> = (props) => {
           afterDelete={{ link: '/chat' }}
           removePhoneField
         />
+        <ContactHistory contactId={match.params.id} />
       </div>
+
       <div className={styles.ContactDescription}>
         <ContactDescription
           statusMessage={statusMessage}

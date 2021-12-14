@@ -1,0 +1,41 @@
+.HistoryContainer {
+  padding-left: 36px;
+  margin-bottom: 36px;
+  width: 500px;
+}
+
+.Title {
+  color: #073f24;
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eaedec;
+}
+
+.LineItem {
+  font-size: 16px;
+  max-width: 400px;
+  font-weight: 400;
+  color: #073f24;
+}
+
+.DetailBlock {
+  padding: 8px 0px;
+  display: flex;
+}
+.Link {
+  text-decoration: none;
+  color: #119656;
+  border-bottom: 1px dashed #119656;
+}
+
+.LineItemDate {
+  margin-left: auto;
+  color: #93a29b;
+}
+
+.Button {
+  text-align: center;
+  margin: 24px;
+}
