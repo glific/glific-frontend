@@ -89,7 +89,8 @@ const conversationMessageQuery = (
               type: 'TEXT',
               media: null,
               location: null,
-              error: null,
+              errors: null,
+              messageNumber: 2,
               contextMessage: {
                 body: 'All good',
                 contextId: 1,
@@ -107,6 +108,7 @@ const conversationMessageQuery = (
                   name: 'User',
                 },
               },
+              sendBy: 'Glific User',
               interactiveContent: '{}',
               flowLabel: null,
             },
@@ -117,7 +119,7 @@ const conversationMessageQuery = (
   },
 });
 
-const conversationCollectionQuery = (
+export const conversationCollectionQuery = (
   collectionId: any,
   collectionName: string,
   filter: object = { searchGroup: true },
@@ -155,6 +157,7 @@ const conversationCollectionQuery = (
               receiver: { id: '1' },
               sender: { id: '1' },
               tags: [],
+              sendBy: 'Glific User',
               type: 'TEXT',
               contextMessage: {
                 body: 'All good',

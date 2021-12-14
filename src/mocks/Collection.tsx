@@ -13,7 +13,7 @@ import { UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
 export const getCollectionQuery = {
   request: {
     query: GET_COLLECTION,
-    variables: { id: 1 },
+    variables: { id: '1' },
   },
   result: {
     data: {

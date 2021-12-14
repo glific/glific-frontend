@@ -1,4 +1,6 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
+import { getCollectionInfo, getCollectionUsersQuery } from 'mocks/Collection';
 
 import { CollectionDescription } from './CollectionDescription';
 
@@ -7,7 +9,13 @@ const defaultProps = {
   description: 'Default collection',
 };
 
-const wrapper = <CollectionDescription {...defaultProps}></CollectionDescription>;
+const mocks = [getCollectionInfo, getCollectionUsersQuery];
+
+const wrapper = (
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <CollectionDescription {...defaultProps}></CollectionDescription>
+  </MockedProvider>
+);
 
 it('should render CollectionDescription', () => {
   const { getByTestId } = render(wrapper);

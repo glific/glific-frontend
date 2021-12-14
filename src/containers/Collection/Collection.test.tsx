@@ -28,7 +28,7 @@ jest.mock('react-i18next', () => ({
 
 const wrapper = (
   <MockedProvider mocks={mocks} addTypename={false}>
-    <Collection match={{ params: { id: 1 } }} />
+    <Collection match={{ params: { id: '1' } }} />
   </MockedProvider>
 );
 
@@ -41,6 +41,10 @@ describe('<Collection />', () => {
 
     await waitFor(() => {
       expect(getByText('Edit collection')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(getByText('John Doe')).toBeInTheDocument();
     });
 
     // remove first user
