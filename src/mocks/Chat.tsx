@@ -157,7 +157,6 @@ export const conversationCollectionQuery = (
               receiver: { id: '1' },
               sender: { id: '1' },
               tags: [],
-              sendBy: 'Glific User',
               type: 'TEXT',
               contextMessage: {
                 body: 'All good',
