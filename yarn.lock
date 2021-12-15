@@ -1986,10 +1986,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stripe/react-stripe-js@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.6.0.tgz#e3adf6a6ea6d839193164fa3cfe73cf52db3a080"
-  integrity sha512-tMmsPD+wkpiiVJZgQ1E06tklG5MZHG462s6OWja9abpxq76kerAxMFN+KdhUg0LIEY79THbzvH3s/WGHasnV3w==
+"@stripe/react-stripe-js@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.7.0.tgz#83c993a09a903703205d556617f9729784a896c3"
+  integrity sha512-L20v8Jq0TDZFL2+y+uXD751t6q9SalSFkSYZpmZ2VWrGZGK7HAGfRQ804dzYSSr5fGenW6iz6y7U0YKfC/TK3g==
   dependencies:
     prop-types "^15.7.2"
 
@@ -2347,10 +2347,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.7.10.tgz#7aa732cc47341c12a16b7d562f519c2383b6d4fc"
   integrity sha512-S63Dlv4zIPb8x6MMTgDq5WWRJQe56iBEY0O3SOFA9JrRienkOVDXSXBjjJw6HTNQYSE2JI6GMCR6LVbIMHJVvA==
 
-"@types/node@^16.11.12":
-  version "16.11.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.12.tgz#ac7fb693ac587ee182c3780c26eb65546a1a3c10"
-  integrity sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==
+"@types/node@^17.0.0":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.0.tgz#62797cee3b8b497f6547503b2312254d4fe3c2bb"
+  integrity sha512-eMhwJXc931Ihh4tkU+Y7GiLzT/y/DBNpNtr4yU9O2w3SYBsr9NaOPhQlLKRmoWtI54uNwuo0IOUFQjVOTZYRvw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -2503,10 +2503,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
-"@types/styled-components@^5.1.17":
-  version "5.1.17"
-  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.17.tgz#0b5ecf748eb5fb81db4b4115b168a162379c181b"
-  integrity sha512-niMaIan3C2LYCGEPntljGrkxLBfz1RZf4WTTv7w9GJygMsCOl226/UoSwXC8dIHCHs4sQKFQUs5JtdL2hj7k0g==
+"@types/styled-components@^5.1.18":
+  version "5.1.18"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.18.tgz#1c361130f76a52f1cb4851c2a32aa328267e5b78"
+  integrity sha512-xPTYmWP7Mxk5TAD3pYsqjwA9G5fAI8e/S51QUJEl7EQD1siKCdiYXIWiH2lzoHRl+QqbQCJMcGv3YTF3OmyPdQ==
   dependencies:
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
@@ -11191,10 +11191,10 @@ react-i18next@*:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
 
-react-i18next@^11.15.0:
-  version "11.15.0"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.15.0.tgz#66c6304547518a8df8e29d367e2445fa11c8a1b2"
-  integrity sha512-7JOIO7KkKSxB7Ycof6ilx9aQ/tviInTqN2sqHyKrjd5MKHyFyKyXVkYrb7KmG/ISFPA4ugWwor5Qsq8IVyQ/Cg==
+react-i18next@^11.15.1:
+  version "11.15.1"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.15.1.tgz#1dec5f2bf2cf7bc5043e9fcb391c9d6e24bb9bfe"
+  integrity sha512-lnje1uKu5XeM5MLvfbt1oygF+nEIZnpOM4Iu8bkx5ECD4XRYgi3SJDmolrp0EDxDHeK2GgFb+vEEK0hsZ9sjeA==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-escaper "^2.0.2"
@@ -13312,10 +13312,10 @@ typescript@^4.2.4:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
   integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
 
-typescript@~4.5.3:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
-  integrity sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==
+typescript@~4.5.4:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.4.tgz#a17d3a0263bf5c8723b9c52f43c5084edf13c2e8"
+  integrity sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==
 
 ua-parser-js@^0.7.18:
   version "0.7.31"
