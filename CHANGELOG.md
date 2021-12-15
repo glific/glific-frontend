@@ -2,9 +2,19 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [v2.6.0](https://github.com/glific/glific-frontend/compare/v2.5.0...v2.6.0)
+
+- Fixed unit test issue on node 16 [`#1782`](https://github.com/glific/glific-frontend/pull/1782)
+- Fixed template ui [`#1781`](https://github.com/glific/glific-frontend/pull/1781)
+- Created contact history section in contact profile [`#1774`](https://github.com/glific/glific-frontend/pull/1774)
+- Fixed bug for English to Hindi translations in some input fields [`#1772`](https://github.com/glific/glific-frontend/pull/1772)
+- Changed optin instructions on the registration page [`#1771`](https://github.com/glific/glific-frontend/pull/1771)
+- Test cases failing in node 16 so switched back to node 14  [`#1776`](https://github.com/glific/glific-frontend/pull/1776)
+
+
 #### [v2.5.0](https://github.com/glific/glific-frontend/compare/v2.4.1...v2.5.0)
 
-> 06 December 2021
+> 6 December 2021
 
 - Safari mobile browser does not show the header part [`#1737`](https://github.com/glific/glific-frontend/pull/1737)
 - Made header optional for interactive messages [`#1758`](https://github.com/glific/glific-frontend/pull/1758)
