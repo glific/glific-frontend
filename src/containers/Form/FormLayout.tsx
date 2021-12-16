@@ -50,6 +50,7 @@ export interface FormLayoutProps {
   refetchQueries?: Array<any>;
   redirect?: boolean;
   title?: string;
+  cancelAction?: Function;
   getLanguageId?: Function;
   backLinkButton?: {
     text: string;
@@ -92,6 +93,7 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
   languageSupport = true,
   setPayload,
   advanceSearch,
+  cancelAction,
   button = 'Save',
   type,
   afterSave,
@@ -387,6 +389,9 @@ export const FormLayout: React.SFC<FormLayoutProps> = ({
     if (type === 'search' || type === 'saveSearch') {
       advanceSearch('cancel');
       return;
+    }
+    if (cancelAction) {
+      cancelAction();
     }
     setFormCancelled(true);
   };

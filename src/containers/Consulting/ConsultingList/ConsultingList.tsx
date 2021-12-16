@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@material-ui/core';
-
+import { ReactComponent as EditIcon } from 'assets/images/icons/Edit.svg';
 import { List } from 'containers/List/List';
 import { setVariables } from 'common/constants';
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
@@ -10,13 +10,33 @@ import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consu
 import { Consulting } from '../Consulting';
 import styles from './ConsultingList.module.css';
 
-interface ConsultingListProps {
-  match: any;
-  openDialog?: boolean;
-}
+interface ConsultingListProps {}
 
-const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: any) => {
+const ConsultingList: React.SFC<ConsultingListProps> = () => {
   const { t } = useTranslation();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedConsulting, setSelectedConsulting] = useState('');
+
+  let dialog;
+
+  if (openDialog) {
+    dialog = (
+      <Dialog
+        open
+        classes={{
+          paper: styles.Dialogbox,
+        }}
+      >
+        <DialogContent classes={{ root: styles.DialogContent }}>
+          <Consulting
+            match={{ params: { id: selectedConsulting } }}
+            setOpenDialog={setOpenDialog}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   const queries = {
     countQuery: GET_CONSULTING_HOURS_COUNT,
@@ -77,23 +97,49 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
     ],
   };
 
+  const editConsulting = (id: string) => {
+    setSelectedConsulting(id);
+    setOpenDialog(true);
+  };
+
   const listIcon = <ConsultingIcon className={styles.ConsultingHoursIcon} />;
   const dialogMessage = t('This action cannot be undone.');
   const dialogTitle = t('Are you sure you want to delete this consulting record?');
 
-  const restrictedAction = () => ({ delete: false, edit: true });
+  const restrictedAction = () => ({ delete: false, edit: false });
+
+  const additionalActions = [
+    {
+      icon: <EditIcon />,
+      parameter: 'id',
+      label: t('Edit'),
+      dialog: editConsulting,
+    },
+  ];
 
   return (
     <>
+      {dialog}
       <List
+        defaultSortBy="DATE"
+        listOrder="desc"
         title={t('Consulting')}
         listItem="consultingHours"
         listItemName="consultingHour"
         pageLink="consulting-hours"
         listIcon={listIcon}
+        additionalAction={additionalActions}
         refetchQueries={{
           query: GET_CONSULTING_HOURS,
           variables: setVariables(),
+        }}
+        button={{
+          show: true,
+          label: t('Add Consulting Hours'),
+          action: () => {
+            setOpenDialog(true);
+            setSelectedConsulting('');
+          },
         }}
         restrictedAction={restrictedAction}
         searchParameter="organizationName"
@@ -103,16 +149,6 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
         {...queries}
         {...columnAttributes}
       />
-      <Dialog
-        open={!!openDialog}
-        classes={{
-          paper: styles.Dialogbox,
-        }}
-      >
-        <DialogContent classes={{ root: styles.DialogContent }}>
-          <Consulting match={match} />
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

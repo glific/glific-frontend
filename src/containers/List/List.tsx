@@ -40,6 +40,7 @@ export interface ListProps {
     show: boolean;
     label?: string;
     link?: string;
+    action?: Function;
   };
   showCheckbox?: boolean;
   searchParameter?: string;
@@ -385,7 +386,7 @@ export const List: React.SFC<ListProps> = ({
     }
     let editButton = null;
     if (editSupport) {
-      editButton = allowedAction.edit ? (
+      editButton = allowedAction.edit && (
         <Link to={`/${pageLink}/${id}/edit`}>
           <IconButton aria-label={t('Edit')} color="default" data-testid="EditIcon">
             <Tooltip title={t('Edit')} placement="top">
@@ -393,7 +394,7 @@ export const List: React.SFC<ListProps> = ({
             </Tooltip>
           </IconButton>
         </Link>
-      ) : null;
+      );
     }
 
     const deleteButton = (Id: any, text: string) =>
@@ -579,7 +580,17 @@ export const List: React.SFC<ListProps> = ({
   let buttonDisplay;
   if (button.show) {
     let buttonContent;
-    if (!button.link) {
+    if (button.action) {
+      buttonContent = (
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => button.action && button.action()}
+        >
+          {button.label}
+        </Button>
+      );
+    } else if (!button.link) {
       buttonContent = (
         <Button
           color="primary"
