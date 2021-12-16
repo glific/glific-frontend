@@ -7,16 +7,13 @@ import { setUserSession } from 'services/AuthService';
 import ConsultingList from './ConsultingList';
 
 const mocks = listingMock;
-const props = {
-  match: { params: {} },
-  openDialog: false,
-};
+
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ConsultingList {...props} />
+      <ConsultingList />
     </Router>
   </MockedProvider>
 );
