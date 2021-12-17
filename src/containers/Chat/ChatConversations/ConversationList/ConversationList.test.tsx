@@ -10,6 +10,7 @@ import {
   collection,
   collectionWithLoadMore,
 } from 'containers/Chat/ChatMessages/ChatMessages.test';
+import { conversationCollectionQuery } from 'mocks/Chat';
 
 const contactCache = new InMemoryCache({ addTypename: false });
 contactCache.writeQuery(contact);
@@ -87,27 +88,34 @@ test('it should render conversation collection list with readMore', async () => 
 const collectionCacheWithSearch = new InMemoryCache({ addTypename: false });
 collectionCacheWithSearch.writeQuery(collection);
 
-const clientForCacheWithSearch = new ApolloClient({
-  cache: collectionCacheWithSearch,
-  assumeImmutableResults: true,
-});
+const searchCollectionMocks = [
+  conversationCollectionQuery('2', 'Test collection', {
+    searchGroup: true,
+    groupLabel: 'test',
+  }),
+];
 
 test('it should render conversation collection list with searched value', async () => {
   props.searchVal = 'test';
   props.savedSearchCriteriaId = '2';
 
   const { container } = render(
-    <ApolloProvider client={clientForCacheWithSearch}>
+    <MockedProvider
+      cache={collectionCacheWithSearch}
+      addTypename={false}
+      mocks={searchCollectionMocks}
+    >
       <Router>
         <ConversationList {...props} />
       </Router>
-    </ApolloProvider>
+    </MockedProvider>
   );
 
   await waitFor(() => {
     expect(container).toBeInTheDocument();
     const listItems = screen.getAllByTestId('list');
-    expect(listItems.length).toBe(31);
+    expect(listItems.length).toBe(1);
+    expect(screen.getByText('Test collection')).toBeInTheDocument();
     fireEvent.click(listItems[0]);
   });
 });

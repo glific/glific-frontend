@@ -30,6 +30,7 @@ import {
   convertJSONtoStateData,
   getDefaultValuesByTemplate,
   getPayloadByMediaType,
+  getTranslation,
   getVariableOptions,
   validator,
 } from './InteractiveMessage.helper';
@@ -229,7 +230,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   }, [type, attachmentURL]);
 
   const handleAddInteractiveTemplate = (
-    addFromTemplate: boolean = true,
+    addFromTemplate: boolean,
     templateTypeVal: string,
     stateToRestore: any = null
   ) => {
@@ -415,40 +416,6 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
   let timer: any = null;
   const langOptions = languageOptions && languageOptions.map(({ label }: any) => label);
 
-  const getTranslation = (interactiveType: string, attribute: any) => {
-    if (defaultLanguage.id) {
-      const defaultTemplate = JSON.parse(translations)[defaultLanguage.id];
-
-      if (interactiveType === QUICK_REPLY) {
-        switch (attribute) {
-          case 'title':
-            return defaultTemplate.content.header;
-          case 'body':
-            return defaultTemplate.content.text;
-          case 'options':
-            return defaultTemplate.options.map((option: any) => option.title);
-          default:
-            return null;
-        }
-      }
-
-      switch (attribute) {
-        case 'title':
-          return defaultTemplate.title;
-        case 'body':
-          return defaultTemplate.body;
-        case 'options':
-          return {
-            items: defaultTemplate.items,
-            globalButton: defaultTemplate.globalButtons[0].title,
-          };
-        default:
-          return null;
-      }
-    }
-    return null;
-  };
-
   const onLanguageChange = (option: string, form: any) => {
     setNextLanguage(option);
     const { values, errors } = form;
@@ -470,6 +437,8 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     }
   };
 
+  const hasTranslations = match.params?.id && defaultLanguage?.id !== language?.id;
+
   const fields = [
     {
       field: 'languageBar',
@@ -480,9 +449,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       translation:
-        match.params?.id &&
-        defaultLanguage?.id !== language?.id &&
-        getTranslation(templateType, 'title'),
+        hasTranslations && getTranslation(templateType, 'title', translations, defaultLanguage),
       component: Input,
       name: 'title',
       type: 'text',
@@ -502,9 +469,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       translation:
-        match.params?.id &&
-        defaultLanguage?.id !== language?.id &&
-        getTranslation(templateType, 'body'),
+        hasTranslations && getTranslation(templateType, 'body', translations, defaultLanguage),
       component: EmojiInput,
       name: 'body',
       placeholder: t('Message*'),
@@ -521,9 +486,7 @@ export const InteractiveMessage: React.SFC<FlowProps> = ({ match }) => {
     },
     {
       translation:
-        match.params?.id &&
-        defaultLanguage?.id !== language?.id &&
-        getTranslation(templateType, 'options'),
+        hasTranslations && getTranslation(templateType, 'options', translations, defaultLanguage),
       component: InteractiveOptions,
       isAddButtonChecked: true,
       templateType,

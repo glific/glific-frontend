@@ -103,4 +103,4 @@ export const getInteractiveMessageBody = (interactiveJSON: any) => {
   return messageBody;
 };
 
-export { getObject as default };
+export default getObject;

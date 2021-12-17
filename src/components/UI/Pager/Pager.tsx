@@ -76,8 +76,8 @@ const createRows = (
   data: any,
   columnStyles: any,
   showCheckbox?: boolean,
-  collapseOpen: boolean = false,
-  collapseRow?: string
+  collapseRow?: string,
+  collapseOpen: boolean = false
 ) => {
   const createRow = (entry: any) => {
     let stylesIndex = -1;
@@ -207,7 +207,7 @@ export const Pager: React.SFC<PagerProps> = (props) => {
     removeSortBy = [],
   } = props;
 
-  const rows = createRows(data, columnStyles, showCheckbox, collapseOpen, collapseRow);
+  const rows = createRows(data, columnStyles, showCheckbox, collapseRow, collapseOpen);
   const tableHead = tableHeadColumns(
     columnNames,
     columnStyles,

@@ -101,24 +101,22 @@ export const InteractiveMessageList: React.SFC<InteractiveMessageListProps> = ()
   ];
 
   return (
-    <>
-      <List
-        title={t('Interactive msg')}
-        listItem="interactiveTemplates"
-        listItemName="interactive"
-        pageLink="interactive-message"
-        listIcon={interactiveMsgIcon}
-        dialogMessage={dialogMessage}
-        noItemText="interactive message"
-        {...queries}
-        removeSortBy={['TYPE', 'MESSAGE']}
-        {...columnAttributes}
-        button={{ show: true, label: t('+ Add New') }}
-        additionalAction={additionalAction}
-        collapseOpen={open}
-        collapseRow={selectedId}
-      />
-    </>
+    <List
+      title={t('Interactive msg')}
+      listItem="interactiveTemplates"
+      listItemName="interactive"
+      pageLink="interactive-message"
+      listIcon={interactiveMsgIcon}
+      dialogMessage={dialogMessage}
+      noItemText="interactive message"
+      {...queries}
+      removeSortBy={['TYPE', 'MESSAGE']}
+      {...columnAttributes}
+      button={{ show: true, label: t('+ Add New') }}
+      additionalAction={additionalAction}
+      collapseOpen={open}
+      collapseRow={selectedId}
+    />
   );
 };
 
