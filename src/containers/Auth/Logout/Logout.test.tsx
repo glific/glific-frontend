@@ -4,6 +4,14 @@ import { MemoryRouter } from 'react-router';
 import { Logout } from './Logout';
 import { MockedProvider } from '@apollo/client/testing';
 
+jest.mock('axios', () => {
+  return {
+    defaults: { headers: { common: {} } },
+    get: jest.fn(),
+    delete: jest.fn(),
+  };
+});
+
 describe('<Logout />', () => {
   test('it should logout user', async () => {
     render(

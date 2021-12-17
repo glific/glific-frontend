@@ -1,7 +1,6 @@
 /* flow editor css */
 
 html {
-  overflow: hidden;
   --font-family: 'Roboto', Helvetica, Arial, sans-serif;
   --primary-rgb: 35, 135, 202;
   --secondary-rgb: 140, 51, 140;
@@ -118,10 +117,8 @@ temba-select:focus {
 /* flow editor css */
 
 body {
-  height: 100%;
   width: 100%;
   overflow-y: scroll;
-  position: fixed;
   margin: 0;
   font-family: 'heebo' !important;
   background-color: #f9f7f4 !important;

@@ -3,11 +3,12 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { LOGGED_IN_USER_MOCK } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
+import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 
-const mocks = LOGGED_IN_USER_MOCK;
+const mocks = [...LOGGED_IN_USER_MOCK, ...historyMock];
 
 const defaultProps = {
-  match: { params: { id: 1 } },
+  match: { params: { id: '1' } },
 };
 
 test('contact profile should render', async () => {
@@ -56,7 +57,7 @@ test('it renders contact profile and update tags', async () => {
 
   // // select the first item
   // fireEvent.keyDown(autocomplete, { key: 'Enter' });
-  // await waitFor(() => {});
+  await waitFor(() => {});
 
   await waitFor(() => {
     const save = getByRole('button', { name: 'Save' });
