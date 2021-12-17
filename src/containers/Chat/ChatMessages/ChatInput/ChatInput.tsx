@@ -213,6 +213,7 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
 
   const handleSelectText = (obj: any, isInteractiveMsg: boolean = false) => {
     resetVariable();
+
     // set selected template
 
     let messageBody = obj.body;
@@ -258,9 +259,8 @@ export const ChatInput: React.SFC<ChatInputProps> = (props) => {
   };
 
   if (variable) {
-    const bodyText = selectedTemplate ? selectedTemplate.body : '';
     const dialogProps = {
-      bodyText,
+      template: selectedTemplate,
       setVariable,
       handleCancel,
       updateEditorState,

@@ -6,13 +6,12 @@ import axios from 'axios';
 import { FLOW_EDITOR_API } from 'config';
 import { getAuthSession } from 'services/AuthService';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import { pattern } from 'common/constants';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 
 export interface AddVariablesPropTypes {
   setVariable: any;
   handleCancel: any;
-  bodyText: any;
+  template: any;
   updateEditorState: any;
   variableParams: any;
   variableParam: any;
@@ -21,7 +20,7 @@ export interface AddVariablesPropTypes {
 export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   setVariable,
   handleCancel,
-  bodyText,
+  template,
   updateEditorState,
   variableParams,
   variableParam,
@@ -73,12 +72,12 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   };
 
   useEffect(() => {
-    const isVariable = bodyText.match(pattern);
+    const isVariable = template?.numberParameters > 0;
 
     if (isVariable) {
       const formFieldItem: any = [];
 
-      for (let index = 1; index <= isVariable.length; index += 1) {
+      for (let index = 1; index <= template.numberParameters; index += 1) {
         formFieldItem.push({
           component: AutoComplete,
           name: `variable${index}`,
@@ -100,7 +99,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
 
       setFormFieldItems(formFieldItem);
     }
-  }, [bodyText, contactVariables, initialValues]);
+  }, [template, contactVariables, initialValues]);
 
   useEffect(() => {
     const initialValue: any = {};
@@ -111,7 +110,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   }, [variableParam]);
 
   const updateText = (variable: any) => {
-    let body = bodyText;
+    let body = template?.body;
     Object.keys(variable).forEach((element: string, index: number) => {
       body = body.replace(
         `{{${index + 1}}}`,
@@ -138,7 +137,7 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
           <DialogBox
             titleAlign="left"
             title={t('Select variables for the message')}
-            contentText={bodyText}
+            contentText={template?.body}
             handleOk={() => {
               submitForm();
             }}
