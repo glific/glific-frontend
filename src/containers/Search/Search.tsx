@@ -377,11 +377,9 @@ export const Search: React.SFC<SearchProps> = ({ match, type, search, ...props }
 
     if (type === 'saveSearch') {
       heading = (
-        <>
-          <Typography variant="h5" className={styles.Title}>
-            {t('Save Search')}
-          </Typography>
-        </>
+        <Typography variant="h5" className={styles.Title}>
+          {t('Save Search')}
+        </Typography>
       );
       addFieldsValidation(validation);
     }

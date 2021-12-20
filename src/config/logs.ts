@@ -2,7 +2,7 @@ import pino from 'pino';
 import { createPinoBrowserSend, createWriteStream } from 'pino-logflare';
 import { LOGFLARE_API, LOGFLARE_SOURCE } from '.';
 
-export const setLogs = (message: any, type: string) => {
+const setLogs = (message: any, type: string) => {
   let logger: any;
 
   if (LOGFLARE_API && LOGFLARE_SOURCE) {
@@ -52,4 +52,4 @@ export const setLogs = (message: any, type: string) => {
   }
 };
 
-export { setLogs as default };
+export default setLogs;

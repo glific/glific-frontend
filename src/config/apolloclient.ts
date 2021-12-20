@@ -127,7 +127,7 @@ const gqlClient = (history: any) => {
             contactHistory: {
               keyArgs: false,
 
-              merge(existing = [], incoming, { args }: any) {
+              merge(existing, incoming, { args }: any) {
                 if (args.opts.offset === 0) {
                   return incoming;
                 }
@@ -140,4 +140,5 @@ const gqlClient = (history: any) => {
     }),
   });
 };
+
 export default gqlClient;

@@ -25,7 +25,7 @@ jobs:
       matrix: # build matrix for the job
         elixir: [1.12.3]
         otp: [24.1.4]
-        node-version: [15.11.0]
+        node-version: [16.13.0]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # frontend setup
@@ -80,10 +80,6 @@ jobs:
           sed -i 's/:max_rate_limit_request, 60/:max_rate_limit_request, 300/g' config.exs
           echo copy done. start setup
           cd ../
-          cd assets
-          rm -rf package-lock.json
-          npm install
-          cd ../
           echo install mix dependencies if not Cached
           mix local.rebar --force
           mix local.hex --force
@@ -111,7 +107,7 @@ jobs:
         # Run frontend
       - name: Run glific frontend
         run: |
-          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn run react-scripts -r @cypress/instrument-cra start &
+          HOST=glific.test HTTPS=true SSL_CRT_FILE=../glific/priv/cert/glific.test+1.pem SSL_KEY_FILE=../glific/priv/cert/glific.test+1-key.pem yarn start &
 
         # Run backend
       - name: Run glific backend

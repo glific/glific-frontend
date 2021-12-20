@@ -451,18 +451,16 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
       </Button>
     </>
   ) : (
-    <>
-      <Button
-        data-testid="collectionButton"
-        className={styles.ListButtonPrimary}
-        onClick={() => {
-          setAddContactsDialogShow(true);
-        }}
-      >
-        <AddContactIcon className={styles.Icon} />
-        Add contact
-      </Button>
-    </>
+    <Button
+      data-testid="collectionButton"
+      className={styles.ListButtonPrimary}
+      onClick={() => {
+        setAddContactsDialogShow(true);
+      }}
+    >
+      <AddContactIcon className={styles.Icon} />
+      Add contact
+    </Button>
   );
 
   if (addContactsDialogShow) {
@@ -486,22 +484,20 @@ export const ContactBar: React.SFC<ContactBarProps> = (props) => {
             {flowButton}
             {addMember}
             {contactId ? (
-              <>
-                <Button
-                  data-testid="blockButton"
-                  className={styles.ListButtonDanger}
-                  color="secondary"
-                  disabled={isSimulator}
-                  onClick={() => setShowBlockDialog(true)}
-                >
-                  {isSimulator ? (
-                    <BlockDisabledIcon className={styles.Icon} />
-                  ) : (
-                    <BlockIcon className={styles.Icon} />
-                  )}
-                  Block Contact
-                </Button>
-              </>
+              <Button
+                data-testid="blockButton"
+                className={styles.ListButtonDanger}
+                color="secondary"
+                disabled={isSimulator}
+                onClick={() => setShowBlockDialog(true)}
+              >
+                {isSimulator ? (
+                  <BlockDisabledIcon className={styles.Icon} />
+                ) : (
+                  <BlockIcon className={styles.Icon} />
+                )}
+                Block Contact
+              </Button>
             ) : (
               ''
             )}
