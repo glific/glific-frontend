@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -34,5 +34,20 @@ it('Renders ConsultingList component successfully', async () => {
     expect(minutesLabel).toBeInTheDocument();
     expect(typeLabel).toBeInTheDocument();
     expect(actionLabel).toBeInTheDocument();
+  });
+});
+
+it('Renders dialog box on clicking add new button', async () => {
+  const { getByText } = render(list);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    fireEvent.click(getByText('Add Consulting Hours'));
+  });
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.getByText('Add consulting record')).toBeInTheDocument();
   });
 });

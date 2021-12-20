@@ -19,64 +19,6 @@ const mockListDummyData = new Array(10).fill(null).map((val: any, index: number)
   when: '2021-05-06T10:30:00Z',
 }));
 
-export const listingMock = [
-  {
-    request: {
-      query: GET_CONSULTING_HOURS_COUNT,
-      variables: { filter: {} },
-    },
-    result: {
-      data: {
-        countConsultingHours: 10,
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_CONSULTING_HOURS,
-      variables: {
-        filter: {},
-        opts: {
-          limit: 50,
-          offset: 0,
-          order: 'DESC',
-          orderWith: 'when',
-        },
-      },
-    },
-    result: {
-      data: {
-        consultingHours: mockListDummyData,
-      },
-    },
-  },
-];
-
-export const getConsultingHour = {
-  request: {
-    query: GET_CONSULTING_HOURS_BY_ID,
-    variables: { id: '1' },
-  },
-  result: {
-    data: {
-      consultingHour: {
-        consultingHour: {
-          content: 'test',
-          duration: 15,
-          id: '1',
-          insertedAt: '2021-08-04T14:13:24Z',
-          isBillable: false,
-          organizationName: 'Glific',
-          participants: 'John Doe',
-          staff: 'Glific test',
-          updatedAt: '2021-08-04T14:16:01Z',
-          when: '2021-08-04T14:13:09Z',
-        },
-      },
-    },
-  },
-};
-
 export const getOrganizationList = {
   request: {
     query: FILTER_ORGANIZATIONS,
@@ -111,6 +53,65 @@ export const getOrganizationList = {
           name: 'Test',
         },
       ],
+    },
+  },
+};
+
+export const listingMock = [
+  {
+    request: {
+      query: GET_CONSULTING_HOURS_COUNT,
+      variables: { filter: {} },
+    },
+    result: {
+      data: {
+        countConsultingHours: 10,
+      },
+    },
+  },
+  {
+    request: {
+      query: GET_CONSULTING_HOURS,
+      variables: {
+        filter: {},
+        opts: {
+          limit: 50,
+          offset: 0,
+          order: 'DESC',
+          orderWith: 'when',
+        },
+      },
+    },
+    result: {
+      data: {
+        consultingHours: mockListDummyData,
+      },
+    },
+  },
+  getOrganizationList,
+];
+
+export const getConsultingHour = {
+  request: {
+    query: GET_CONSULTING_HOURS_BY_ID,
+    variables: { id: '1' },
+  },
+  result: {
+    data: {
+      consultingHour: {
+        consultingHour: {
+          content: 'test',
+          duration: 15,
+          id: '1',
+          insertedAt: '2021-08-04T14:13:24Z',
+          isBillable: false,
+          organizationName: 'Glific',
+          participants: 'John Doe',
+          staff: 'Glific test',
+          updatedAt: '2021-08-04T14:16:01Z',
+          when: '2021-08-04T14:13:09Z',
+        },
+      },
     },
   },
 };
