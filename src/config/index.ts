@@ -12,11 +12,14 @@ let HOSTNAME =
     ? `${API_PREFIX}.${window.location.hostname}`
     : window.location.hostname;
 
-if (BACKEND_URL) HOSTNAME = BACKEND_URL;
-
-const GLIFIC_BACKEND_URL = API_PORT
+let GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
+
+if (BACKEND_URL) {
+  GLIFIC_BACKEND_URL = `${PROTOCOL}//${HOSTNAME}`;
+  HOSTNAME = BACKEND_URL;
+}
 
 const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HOSTNAME}`;
 
