@@ -18,17 +18,17 @@ let GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-let SOCKET = API_PORT
+let SOCKET_URL = API_PORT
   ? `${SOCKET_PROTOCOL}://${HOSTNAME}:${API_PORT}/socket`
   : `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
 
 if (BACKEND_URL) {
   HOSTNAME = BACKEND_URL;
   GLIFIC_BACKEND_URL = `${PROTOCOL}//${HOSTNAME}`;
-  SOCKET = `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
+  SOCKET_URL = `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
 }
 
-export { SOCKET };
+export const SOCKET = SOCKET_URL;
 export const FLOW_EDITOR_API = `${GLIFIC_BACKEND_URL}/flow-editor/`;
 export const GLIFIC_API_URL = `${GLIFIC_BACKEND_URL}/api`;
 export const REACT_APP_GLIFIC_REGISTRATION_API = `${GLIFIC_API_URL}/v1/registration`;
