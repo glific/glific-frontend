@@ -1,4 +1,4 @@
-FROM node:12.22.6-alpine AS builder
+FROM node:12-alpine AS builder
 
 # Any env variables will be passed as arg here to make these available at build time.
 ARG REACT_APP_GLIFIC_API_PORT
@@ -12,7 +12,7 @@ RUN npm install react-scripts -g --silent
 RUN yarn install
 RUN yarn run build
 
-FROM node:12.22.6-alpine
+FROM node:12-alpine
 RUN yarn global add serve
 WORKDIR /app
 COPY --from=builder /app/build .
