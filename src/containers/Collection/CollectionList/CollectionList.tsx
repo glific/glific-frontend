@@ -5,11 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as AddContactIcon } from 'assets/images/icons/Contact/Add.svg';
 import { DELETE_COLLECTION, UPDATE_COLLECTION_CONTACTS } from 'graphql/mutations/Collection';
-import {
-  GET_COLLECTIONS_COUNT,
-  FILTER_COLLECTIONS,
-  GET_COLLECTIONS,
-} from 'graphql/queries/Collection';
+import { GET_COLLECTIONS_COUNT, FILTER_COLLECTIONS } from 'graphql/queries/Collection';
 import { CONTACT_SEARCH_QUERY, GET_COLLECTION_CONTACTS } from 'graphql/queries/Contact';
 import { List } from 'containers/List/List';
 import { SearchDialogBox } from 'components/UI/SearchDialogBox/SearchDialogBox';
@@ -167,11 +163,6 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     },
   ];
 
-  const refetchQueries = {
-    query: GET_COLLECTIONS,
-    variables: setVariables(),
-  };
-
   const getRestrictedAction = () => {
     const action: any = { edit: true, delete: true };
     if (getUserRole().includes('Staff')) {
@@ -189,7 +180,6 @@ export const CollectionList: React.SFC<CollectionListProps> = () => {
     <>
       <List
         restrictedAction={getRestrictedAction}
-        refetchQueries={refetchQueries}
         title={t('Collections')}
         listItem="groups"
         columnNames={['TITLE']}

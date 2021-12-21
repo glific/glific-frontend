@@ -5,7 +5,6 @@ import { useMutation } from '@apollo/client';
 
 import { List } from 'containers/List/List';
 import { InlineInput } from 'components/UI/Form/InlineInput/InlineInput';
-import { setVariables } from 'common/constants';
 import { COUNT_CONTACT_FIELDS, GET_ALL_CONTACT_FIELDS } from 'graphql/queries/ContactFields';
 import { DELETE_CONTACT_FIELDS, UPDATE_CONTACT_FIELDS } from 'graphql/mutations/ContactFields';
 import { ReactComponent as ContactVariableIcon } from 'assets/images/icons/ContactVariableDark.svg';
@@ -134,10 +133,6 @@ const ContactFieldList: React.SFC<ContactFieldListProps> = ({ match, openDialog 
         listItemName="contactField"
         pageLink="contact-fields"
         listIcon={listIcon}
-        refetchQueries={{
-          query: GET_ALL_CONTACT_FIELDS,
-          variables: setVariables(),
-        }}
         searchParameter="name"
         dialogMessage={dialogMessage}
         dialogTitle={dialogTitle}
