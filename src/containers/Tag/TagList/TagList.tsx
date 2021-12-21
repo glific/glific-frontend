@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { GET_TAGS_COUNT, FILTER_TAGS, FILTER_TAGS_NAME } from 'graphql/queries/Tag';
+import { GET_TAGS_COUNT, FILTER_TAGS } from 'graphql/queries/Tag';
 import { DELETE_TAG } from 'graphql/mutations/Tag';
 import { ReactComponent as TagIcon } from 'assets/images/icons/Tags/Dark.svg';
 import { ReactComponent as FilledTagIcon } from 'assets/images/icons/Tags/Filled.svg';
