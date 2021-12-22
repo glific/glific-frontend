@@ -6,7 +6,6 @@ import { GET_ORGANIZATION_COUNT, FILTER_ORGANIZATIONS } from 'graphql/queries/Or
 import { ReactComponent as CollectionIcon } from 'assets/images/icons/Collection/Dark.svg';
 import { ReactComponent as UploadIcon } from 'assets/images/icons/Upload/Dark.svg';
 
-import { setVariables } from 'common/constants';
 import { List } from 'containers/List/List';
 import styles from './ContactManagement.module.css';
 import UploadContactsDialog from './UploadContactsDialog/UploadContactsDialog';
@@ -86,10 +85,6 @@ export const ContactManagement: React.SFC<ContactManagementProps> = () => {
         pageLink="organization"
         listIcon={listIcon}
         restrictedAction={restrictedAction}
-        refetchQueries={{
-          query: FILTER_ORGANIZATIONS,
-          variables: setVariables(),
-        }}
         additionalAction={additionalActions}
         button={addNewButton}
         searchParameter="name"

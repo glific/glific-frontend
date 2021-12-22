@@ -13,7 +13,6 @@ import {
 import { ReactComponent as OrganisationIcon } from 'assets/images/icons/Organisation.svg';
 import { ReactComponent as ExtensionIcon } from 'assets/images/icons/extension.svg';
 import { ReactComponent as CustomerDetailsIcon } from 'assets/images/icons/customer_details.svg';
-import { setVariables } from 'common/constants';
 import { setNotification } from 'common/notification';
 import { List } from 'containers/List/List';
 import { Extensions } from 'containers/Extensions/Extensions';
@@ -180,10 +179,6 @@ export const OrganizationList: React.SFC<OrganizationListProps> = ({
         pageLink="organization"
         listIcon={listIcon}
         dialogMessage={dialogMessage}
-        refetchQueries={{
-          query: FILTER_ORGANIZATIONS,
-          variables: setVariables(),
-        }}
         additionalAction={additionalActions}
         button={addNewButton}
         restrictedAction={restrictedAction}

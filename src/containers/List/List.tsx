@@ -63,7 +63,6 @@ export interface ListProps {
     variables: any;
     label?: string;
   };
-  refetchQueries?: any;
   dialogTitle?: string;
   backLinkButton?: {
     text: string;
@@ -115,7 +114,6 @@ export const List: React.SFC<ListProps> = ({
   displayListType = 'list',
   cardLink = null,
   additionalAction = [],
-  refetchQueries,
   backLinkButton,
   restrictedAction,
   collapseOpen = false,
@@ -238,10 +236,13 @@ export const List: React.SFC<ListProps> = ({
   });
 
   // Get item data here
-  const [fetchQuery, { loading, error, data }] = useLazyQuery(filterItemsQuery, {
-    variables: filterPayload(),
-    fetchPolicy: 'cache-and-network',
-  });
+  const [fetchQuery, { loading, error, data, refetch: refetchValues }] = useLazyQuery(
+    filterItemsQuery,
+    {
+      variables: filterPayload(),
+      fetchPolicy: 'cache-and-network',
+    }
+  );
   // Get item data here
   const [fetchUserCollections, { loading: loadingCollections, data: userCollections }] =
     useLazyQuery(GET_CURRENT_USER);
@@ -274,12 +275,7 @@ export const List: React.SFC<ListProps> = ({
       onCompleted: () => {
         checkUserRole();
         refetchCount();
-      },
-      refetchQueries: () => {
-        if (refetchQueries) {
-          return [{ query: refetchQueries.query, variables: refetchQueries.variables }];
-        }
-        return [{ query: filterItemsQuery, variables: filterPayload() }];
+        refetchValues(filterPayload());
       },
     });
   }
