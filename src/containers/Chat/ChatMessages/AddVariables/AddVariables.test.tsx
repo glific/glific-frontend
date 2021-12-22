@@ -1,17 +1,15 @@
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import axios from 'axios';
 
-import { FLOW_EDITOR_API } from 'config';
 import { responseData, responseData1 } from 'mocks/AddVariables';
 import { AddVariables } from './AddVariables';
 
 jest.mock('axios');
 
 const setVariableMock = jest.fn();
-const mocks = [FLOW_EDITOR_API];
 
 const defaultProps = {
   setVariable: setVariableMock,
