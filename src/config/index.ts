@@ -3,23 +3,32 @@ const envVariables: any = process.env;
 const appName = envVariables.REACT_APP_APPLICATION_NAME;
 
 const API_PORT = envVariables.REACT_APP_GLIFIC_API_PORT;
+const BACKEND_URL = envVariables.REACT_APP_GLIFIC_BACKEND_URL;
 const PROTOCOL = window.location.protocol;
 const API_PREFIX = envVariables.REACT_APP_API_PREFIX;
+const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? 'wss' : 'ws';
+
 // added support for localhost, need to update it after backend fixes
-const HOSTNAME =
+let HOSTNAME =
   API_PREFIX && window.location.hostname !== 'localhost'
     ? `${API_PREFIX}.${window.location.hostname}`
     : window.location.hostname;
 
-const GLIFIC_BACKEND_URL = API_PORT
+let GLIFIC_BACKEND_URL = API_PORT
   ? `${PROTOCOL}//${HOSTNAME}:${API_PORT}`
   : `${PROTOCOL}//${HOSTNAME}`;
 
-const SOCKET_PROTOCOL = PROTOCOL === 'https:' ? `wss://${HOSTNAME}` : `ws://${HOSTNAME}`;
+let SOCKET_URL = API_PORT
+  ? `${SOCKET_PROTOCOL}://${HOSTNAME}:${API_PORT}/socket`
+  : `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
 
-export const SOCKET = API_PORT
-  ? `${SOCKET_PROTOCOL}:${API_PORT}/socket`
-  : `${SOCKET_PROTOCOL}/socket`;
+if (BACKEND_URL) {
+  HOSTNAME = BACKEND_URL;
+  GLIFIC_BACKEND_URL = `${PROTOCOL}//${HOSTNAME}`;
+  SOCKET_URL = `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
+}
+
+export const SOCKET = SOCKET_URL;
 export const FLOW_EDITOR_API = `${GLIFIC_BACKEND_URL}/flow-editor/`;
 export const GLIFIC_API_URL = `${GLIFIC_BACKEND_URL}/api`;
 export const REACT_APP_GLIFIC_REGISTRATION_API = `${GLIFIC_API_URL}/v1/registration`;

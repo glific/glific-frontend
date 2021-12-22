@@ -9,7 +9,7 @@ import { ReactComponent as ClockInactiveIcon } from 'assets/images/icons/Trigger
 import { ReactComponent as DuplicateIcon } from 'assets/images/icons/Flow/Duplicate.svg';
 import { TRIGGER_LIST_QUERY, TRIGGER_QUERY_COUNT } from 'graphql/queries/Trigger';
 import { DELETE_TRIGGER } from 'graphql/mutations/Trigger';
-import { setVariables, FULL_DATE_FORMAT, dayList } from 'common/constants';
+import { FULL_DATE_FORMAT, dayList } from 'common/constants';
 import { List } from 'containers/List/List';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './TriggerList.module.css';
@@ -93,7 +93,6 @@ export const TriggerList: React.SFC<TriggerListProps> = () => {
       button={{ show: true, label: t('+ Create Trigger') }}
       listIcon={triggerIcon}
       dialogMessage={dialogMessage}
-      refetchQueries={{ query: TRIGGER_LIST_QUERY, variables: setVariables() }}
       {...queries}
       {...columnAttributes}
       searchParameter="name"

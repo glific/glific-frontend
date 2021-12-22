@@ -5,7 +5,7 @@ import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 import { List } from 'containers/List/List';
 import { WhatsAppToJsx } from 'common/RichEditor';
-import { DATE_TIME_FORMAT, setVariables } from 'common/constants';
+import { DATE_TIME_FORMAT } from 'common/constants';
 import { GET_TEMPLATES_COUNT, FILTER_TEMPLATES } from 'graphql/queries/Template';
 import { DELETE_TEMPLATE } from 'graphql/mutations/Template';
 import { ReactComponent as DownArrow } from 'assets/images/icons/DownArrow.svg';
@@ -214,10 +214,6 @@ export const Template: React.SFC<TemplateProps> = (props) => {
       additionalAction={additionalAction}
       dialogMessage={dialogMessage}
       filters={appliedFilters}
-      refetchQueries={{
-        query: FILTER_TEMPLATES,
-        variables: setVariables({ term: '' }),
-      }}
       defaultSortBy={defaultSortBy}
       button={{ show: true, label: buttonLabel }}
       {...columnAttributes}
