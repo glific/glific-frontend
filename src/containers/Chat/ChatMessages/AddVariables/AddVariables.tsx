@@ -72,9 +72,9 @@ export const AddVariables: React.FC<AddVariablesPropTypes> = ({
   };
 
   useEffect(() => {
-    const isVariable = template?.numberParameters > 0;
+    const hasVariables = template?.numberParameters > 0;
 
-    if (isVariable) {
+    if (hasVariables) {
       const formFieldItem: any = [];
 
       for (let index = 1; index <= template.numberParameters; index += 1) {
