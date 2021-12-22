@@ -201,7 +201,7 @@ export const Consulting: React.SFC<ConsultingProps> = ({ match, setOpenDialog })
         {...queries}
         title={t('Add consulting record')}
         listItem="consultingHour"
-        listItemName="consultingHour"
+        listItemName="Consulting hours"
         pageLink="consultingHour"
         match={match}
         refetchQueries={[
