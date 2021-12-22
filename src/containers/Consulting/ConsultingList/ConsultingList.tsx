@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@material-ui/core';
 
 import { List } from 'containers/List/List';
-import { setVariables } from 'common/constants';
 import { GET_CONSULTING_HOURS, GET_CONSULTING_HOURS_COUNT } from 'graphql/queries/Consulting';
 import { ReactComponent as ConsultingIcon } from 'assets/images/icons/icon-consulting.svg';
 import { Consulting } from '../Consulting';
@@ -91,10 +90,6 @@ const ConsultingList: React.SFC<ConsultingListProps> = ({ match, openDialog }: a
         listItemName="consultingHour"
         pageLink="consulting-hours"
         listIcon={listIcon}
-        refetchQueries={{
-          query: GET_CONSULTING_HOURS,
-          variables: setVariables(),
-        }}
         restrictedAction={restrictedAction}
         searchParameter="organizationName"
         dialogMessage={dialogMessage}
