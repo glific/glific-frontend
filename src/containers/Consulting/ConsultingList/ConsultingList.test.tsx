@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -7,16 +7,13 @@ import { setUserSession } from 'services/AuthService';
 import ConsultingList from './ConsultingList';
 
 const mocks = listingMock;
-const props = {
-  match: { params: {} },
-  openDialog: false,
-};
+
 setUserSession(JSON.stringify({ organization: { id: '1' }, roles: ['Admin'] }));
 
 const list = (
   <MockedProvider mocks={mocks} addTypename={false}>
     <Router>
-      <ConsultingList {...props} />
+      <ConsultingList />
     </Router>
   </MockedProvider>
 );
@@ -37,5 +34,19 @@ it('Renders ConsultingList component successfully', async () => {
     expect(minutesLabel).toBeInTheDocument();
     expect(typeLabel).toBeInTheDocument();
     expect(actionLabel).toBeInTheDocument();
+  });
+});
+
+it('Renders dialog box on clicking add new button', async () => {
+  const { getByText } = render(list);
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+
+  await waitFor(() => {
+    fireEvent.click(getByText('Add Consulting Hours'));
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Add consulting record')).toBeInTheDocument();
   });
 });
